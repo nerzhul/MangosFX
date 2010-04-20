@@ -197,7 +197,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void AggroAllPlayers(float maxdist);
 	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
 	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
-	bool CanDoSomething() { return (!me || CanDoSomething()) ? false : true; }
+	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }
 
     private:
         bool   m_bCombatMovement;
