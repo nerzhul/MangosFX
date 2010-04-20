@@ -180,7 +180,7 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED) && m_bIsBrazierExtinguished)
             {
@@ -375,7 +375,7 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiRend_Timer < uiDiff)

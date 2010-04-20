@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);

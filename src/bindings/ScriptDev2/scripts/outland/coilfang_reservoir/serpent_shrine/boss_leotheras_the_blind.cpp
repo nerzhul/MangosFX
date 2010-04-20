@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!m_bDemonForm)
@@ -306,7 +306,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blind_demonformAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!me->IsNonMeleeSpellCasted(false))

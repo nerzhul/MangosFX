@@ -460,7 +460,7 @@ void hyjalAI::UpdateAI(const uint32 uiDiff)
     else
         m_uiCheckTimer -= uiDiff;
 
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
     for(uint8 i = 0; i < MAX_SPELL; ++i)

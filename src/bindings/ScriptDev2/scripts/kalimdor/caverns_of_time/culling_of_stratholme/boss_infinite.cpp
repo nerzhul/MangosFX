@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(strike_Timer <= uiDiff)

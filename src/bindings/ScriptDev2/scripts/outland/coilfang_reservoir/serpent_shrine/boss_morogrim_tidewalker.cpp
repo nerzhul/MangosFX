@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //m_uiEarthquake_Timer
@@ -272,7 +272,7 @@ struct MANGOS_DLL_DECL mob_water_globuleAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiCheck_Timer < uiDiff)

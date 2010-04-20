@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Cleave_Timer
@@ -159,7 +159,7 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Charge_Timer
@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Fear_Timer

@@ -827,7 +827,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
         }
 
         // If we don't have a target, or is talking, or has run away, return
-        if (CanDoSomething()) return;
+        if (!CanDoSomething()) return;
 
         DoMeleeAttackIfReady();
     }
@@ -2009,7 +2009,7 @@ struct MANGOS_DLL_DECL boss_maievAI : public ScriptedAI
         }
 
         // Return if we don't have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (TauntTimer < diff)
@@ -2166,7 +2166,7 @@ struct MANGOS_DLL_DECL flame_of_azzinothAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (FlameBlastTimer < diff)
@@ -2211,7 +2211,7 @@ struct MANGOS_DLL_DECL shadow_demonAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething()) return;
+        if (!CanDoSomething()) return;
 
         // Only cast the below on players.
         if (me->getVictim()->GetTypeId() != TYPEID_PLAYER) return;

@@ -254,7 +254,7 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!me->HasAura(SPELL_BERSERK, 0))

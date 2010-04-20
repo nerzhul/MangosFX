@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_lieutenant_drakeAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Whirlwind

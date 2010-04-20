@@ -636,7 +636,7 @@ struct MANGOS_DLL_DECL boss_essence_of_sufferingAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (me->GetHealth() <= (me->GetMaxHealth()*0.1))
@@ -762,7 +762,7 @@ struct MANGOS_DLL_DECL boss_essence_of_desireAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (me->GetHealth() <= (me->GetMaxHealth()*0.1))
@@ -862,7 +862,7 @@ struct MANGOS_DLL_DECL boss_essence_of_angerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!CheckedAggro)

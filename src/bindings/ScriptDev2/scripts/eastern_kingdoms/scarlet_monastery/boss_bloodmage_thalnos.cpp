@@ -66,7 +66,7 @@ struct MANGOS_DLL_DECL boss_bloodmage_thalnosAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //If we are <35% hp

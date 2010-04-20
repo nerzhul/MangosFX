@@ -178,7 +178,7 @@ struct MANGOS_DLL_DECL boss_dorotheeAI : public ScriptedAI
             }else AggroTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (WaterBoltTimer < diff)
@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL mob_titoAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (YipTimer < diff)
@@ -346,7 +346,7 @@ struct MANGOS_DLL_DECL boss_strawmanAI : public ScriptedAI
             }else AggroTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (BrainBashTimer < diff)
@@ -440,7 +440,7 @@ struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
             }else AggroTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (CleaveTimer < diff)
@@ -537,7 +537,7 @@ struct MANGOS_DLL_DECL boss_roarAI : public ScriptedAI
             }else AggroTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (MangleTimer < diff)
@@ -612,7 +612,7 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
@@ -805,7 +805,7 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

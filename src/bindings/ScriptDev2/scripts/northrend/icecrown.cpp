@@ -241,7 +241,7 @@ struct npc_argent_tournament_postAI : public ScriptedAI
         if (Creature* pTarget2 = GetClosestCreatureWithEntry(me,NPC_ICEHOWL, 6.0f))
             DoCast(pTarget2, SPELL_ROPE_BEAM);
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
     }
 };

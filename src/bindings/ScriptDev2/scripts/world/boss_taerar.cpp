@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Sleep_Timer
@@ -211,7 +211,7 @@ struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //PoisonCloud_Timer

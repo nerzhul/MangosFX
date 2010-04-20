@@ -275,7 +275,7 @@ struct MANGOS_DLL_DECL npc_Harry_SilvermoonAI : public ScriptedAI
 	void UpdateAI(const uint32 diff)
 	{
 
-		if (CanDoSomething())
+		if (!CanDoSomething())
 		return;
 
 		DoMeleeAttackIfReady();

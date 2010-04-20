@@ -210,7 +210,7 @@ struct MANGOS_DLL_DECL npc_dirty_larryAI : public ScriptedAI
                 m_uiSayTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -663,7 +663,7 @@ struct MANGOS_DLL_DECL npc_raliq_the_drunkAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiUppercut_Timer < diff)
@@ -736,7 +736,7 @@ struct MANGOS_DLL_DECL npc_salsalabimAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (MagneticPull_Timer < diff)

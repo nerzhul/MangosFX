@@ -86,7 +86,7 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (AcidSpray_Timer < diff)

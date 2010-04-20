@@ -759,7 +759,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
             case 6:
             {
                 //Return since we have no target
-                if (CanDoSomething())
+                if (!CanDoSomething())
                     return;
 
                 //m_uiFireball_Timer
@@ -1082,7 +1082,7 @@ struct MANGOS_DLL_DECL boss_thaladred_the_darkenerAI : public advisorbase_ai
             return;
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //m_uiGaze_Timer
@@ -1157,7 +1157,7 @@ struct MANGOS_DLL_DECL boss_lord_sanguinarAI : public advisorbase_ai
             return;
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //m_uiFear_Timer
@@ -1231,7 +1231,7 @@ struct MANGOS_DLL_DECL boss_grand_astromancer_capernianAI : public advisorbase_a
             return;
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //m_uiYell_Timer
@@ -1340,7 +1340,7 @@ struct MANGOS_DLL_DECL boss_master_engineer_telonicusAI : public advisorbase_ai
             return;
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //m_uiBomb_Timer
@@ -1389,7 +1389,7 @@ struct MANGOS_DLL_DECL mob_phoenix_tkAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiCycle_Timer < uiDiff)

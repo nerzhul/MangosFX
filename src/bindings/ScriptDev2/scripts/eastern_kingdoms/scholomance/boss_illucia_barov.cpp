@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_illuciabarovAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //CurseOfAgony_Timer

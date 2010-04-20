@@ -339,7 +339,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 
 	if(arthas_event == 2)
 	{
-		if (!(CanDoSomething()))
+		if (!(!CanDoSomething()))
 		{
 			if (Exorcism_Timer <= diff)
 			{

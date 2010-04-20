@@ -51,7 +51,7 @@ struct MANGOS_DLL_DECL boss_kurinnaxxAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //If we are <30% cast enrage

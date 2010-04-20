@@ -71,7 +71,7 @@ struct MANGOS_DLL_DECL boss_jindoAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //BrainWashTotem_Timer

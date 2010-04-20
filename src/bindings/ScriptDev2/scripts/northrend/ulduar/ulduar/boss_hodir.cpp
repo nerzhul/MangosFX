@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(AuraCheck_Timer <= diff)

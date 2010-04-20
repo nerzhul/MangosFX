@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
             }else Check_Timer -= diff;
         }
 
-        //if (CanDoSomething())
+        //if (!CanDoSomething())
             //return;
 
         //DoMeleeAttackIfReady();

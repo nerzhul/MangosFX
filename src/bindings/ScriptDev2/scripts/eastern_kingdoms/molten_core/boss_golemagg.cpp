@@ -70,7 +70,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // Pyroblast
@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // Mangle

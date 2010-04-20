@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_noxxionAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //ToxicVolley_Timer

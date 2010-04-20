@@ -189,7 +189,7 @@ struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		Tasks.UpdateEvent(diff);
 
@@ -614,7 +614,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(phase_Timer <= diff)

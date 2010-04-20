@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_arcanist_doanAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (bShielded && bCanDetonate)

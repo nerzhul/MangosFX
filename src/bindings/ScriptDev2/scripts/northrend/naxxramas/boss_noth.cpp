@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
             return;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Blink_Timer

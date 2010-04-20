@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
    
 		if(Outro == false)
 		{
-			if (CanDoSomething())
+			if (!CanDoSomething())
 				return;
 
 			if (Swamp_Timer < diff)

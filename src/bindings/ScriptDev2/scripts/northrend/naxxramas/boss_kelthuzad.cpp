@@ -475,7 +475,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             return;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Check for Chains Of Kelthuzad

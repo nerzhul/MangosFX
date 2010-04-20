@@ -223,7 +223,7 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething()) return;
+        if (!CanDoSomething()) return;
 
 		if (!m_pInstance)
             return;

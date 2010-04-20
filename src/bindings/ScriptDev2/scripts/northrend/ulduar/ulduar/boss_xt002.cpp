@@ -174,7 +174,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		// explosion du coeur 
@@ -303,7 +303,7 @@ struct MANGOS_DLL_DECL boss_xm024_AI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (CanDoSomething())
+		if (!CanDoSomething())
 		{
 			/*if (Unit* pUnit = Unit::GetUnit(*me, m_pInstance->GetData64(TYPE_XT002)))
 				me->GetMotionMaster()->MovePoint(0,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ());*/
@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL boss_xe321_AI : public ScriptedAI
 	
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (CanDoSomething())
+		if (!CanDoSomething())
 			return;
 		
 		if(me->getVictim() && me->GetDistance2d(me->getVictim()->GetPositionX(),me->getVictim()->GetPositionY()) < 4.0f)

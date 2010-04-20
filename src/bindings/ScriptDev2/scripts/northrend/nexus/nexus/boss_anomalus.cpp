@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if (Tasks.CheckPercentLife(52) &&  phase == 1)

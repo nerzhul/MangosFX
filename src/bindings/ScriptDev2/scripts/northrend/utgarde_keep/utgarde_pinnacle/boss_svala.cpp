@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
 			if(m_pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
 				m_bIsIntroDone = false;

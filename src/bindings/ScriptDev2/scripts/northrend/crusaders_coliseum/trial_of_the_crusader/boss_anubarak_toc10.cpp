@@ -144,7 +144,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
     }
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(phase == 1 || phase == 2)
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL mob_swarm_scarabAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -294,7 +294,7 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(Submerge_Timer <= diff)

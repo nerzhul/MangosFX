@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_nadoxAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (invoc_add_timer <= uiDiff)
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL add_nadox : public ScriptedAI // Add
 	void UpdateAI(const uint32 uiDiff) // Début Script add
 
 	{
-		if (CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);

@@ -392,7 +392,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //spell will target dragons, if they are still alive at 35%
@@ -791,7 +791,7 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
     void UpdateAI(const uint32 uiDiff)
     {
         //if no target, update dummy and return
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             dummy_dragonAI::UpdateAI(uiDiff);
             return;
@@ -894,7 +894,7 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
     void UpdateAI(const uint32 uiDiff)
     {
         //if no target, update dummy and return
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             dummy_dragonAI::UpdateAI(uiDiff);
             return;
@@ -967,7 +967,7 @@ struct MANGOS_DLL_DECL mob_vesperonAI : public dummy_dragonAI
     void UpdateAI(const uint32 uiDiff)
     {
         //if no target, update dummy and return
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             dummy_dragonAI::UpdateAI(uiDiff);
             return;
@@ -1037,7 +1037,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -1090,7 +1090,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -1187,7 +1187,7 @@ struct MANGOS_DLL_DECL mob_twilight_whelpAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // twilight torment
@@ -1243,7 +1243,7 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // twilight torment

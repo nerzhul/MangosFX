@@ -217,7 +217,7 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Only do this if we haven't spawned nef yet

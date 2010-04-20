@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL mobs_spectral_ghostly_citizenAI : public ScriptedAI
             }else Die_Timer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

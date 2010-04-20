@@ -101,7 +101,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // always decrease BerserkTimer

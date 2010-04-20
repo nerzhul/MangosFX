@@ -84,7 +84,7 @@ void ScriptedAI::Aggro(Unit* pEnemy)
 void ScriptedAI::UpdateAI(const uint32 uiDiff)
 {
     //Check if we have a current target
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
     if (me->isAttackReady())

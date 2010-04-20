@@ -259,7 +259,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
             }
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!IsMainEvent)
@@ -362,7 +362,7 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (Hemorrhage_Timer < diff)

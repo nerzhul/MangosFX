@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL npc_shenthulAI : public ScriptedAI
             } else Salute_Timer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -175,7 +175,7 @@ struct MANGOS_DLL_DECL npc_thrall_warchiefAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (ChainLightning_Timer < diff)

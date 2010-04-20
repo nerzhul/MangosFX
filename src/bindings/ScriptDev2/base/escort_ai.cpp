@@ -318,7 +318,7 @@ void npc_escortAI::UpdateAI(const uint32 uiDiff)
 void npc_escortAI::UpdateEscortAI(const uint32 uiDiff)
 {
     //Check if we have a current target
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
     DoMeleeAttackIfReady();

@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!m_bHealthBelow && (me->GetHealth()*100 / me->GetMaxHealth()) <= 30)
@@ -262,7 +262,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             } else m_uiMovementTimer -= uiDiff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

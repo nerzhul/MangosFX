@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_maiden_of_virtueAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiHolyground_Timer < uiDiff)

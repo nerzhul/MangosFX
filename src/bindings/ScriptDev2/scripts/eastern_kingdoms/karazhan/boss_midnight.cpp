@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_midnightAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         switch(m_uiPhase)
@@ -246,7 +246,7 @@ struct MANGOS_DLL_DECL boss_attumenAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))

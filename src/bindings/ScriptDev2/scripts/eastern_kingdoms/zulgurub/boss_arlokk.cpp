@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!m_bIsPhaseTwo)

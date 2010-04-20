@@ -397,7 +397,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //blow up bombs happen after bombing is over, so handle this here
@@ -755,7 +755,7 @@ struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
             return;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (buffer_timer < diff)

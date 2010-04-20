@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_emerissAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Sleep_Timer

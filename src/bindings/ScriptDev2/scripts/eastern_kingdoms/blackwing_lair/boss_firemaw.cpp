@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL boss_firemawAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //ShadowFlame_Timer

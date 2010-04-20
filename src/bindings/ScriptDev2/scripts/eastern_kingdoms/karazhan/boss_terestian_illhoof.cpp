@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL mob_kilrekAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiAmplify_Timer < uiDiff)
@@ -258,7 +258,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiCheckKilrek_Timer < uiDiff)
@@ -378,7 +378,7 @@ struct MANGOS_DLL_DECL mob_karazhan_impAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiFirebolt_Timer < uiDiff)

@@ -70,7 +70,7 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //FieryBurst_Timer

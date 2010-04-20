@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(saronite_timer <= diff)
@@ -123,7 +123,7 @@ struct MANGOS_DLL_DECL add_vezaxAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		Tasks.UpdateEvent(diff);
@@ -166,7 +166,7 @@ struct MANGOS_DLL_DECL add2_vezaxAI : public ScriptedAI
 	}
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		Tasks.UpdateEvent(diff);

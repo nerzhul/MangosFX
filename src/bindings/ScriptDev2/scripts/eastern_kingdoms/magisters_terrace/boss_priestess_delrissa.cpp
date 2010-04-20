@@ -227,7 +227,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (HealTimer < diff)
@@ -506,7 +506,7 @@ struct MANGOS_DLL_DECL boss_kagani_nightstrikeAI : public boss_priestess_lackey_
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -606,7 +606,7 @@ struct MANGOS_DLL_DECL boss_ellris_duskhallowAI : public boss_priestess_lackey_c
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -680,7 +680,7 @@ struct MANGOS_DLL_DECL boss_eramas_brightblazeAI : public boss_priestess_lackey_
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -751,7 +751,7 @@ struct MANGOS_DLL_DECL boss_yazzaiAI : public boss_priestess_lackey_commonAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -872,7 +872,7 @@ struct MANGOS_DLL_DECL boss_warlord_salarisAI : public boss_priestess_lackey_com
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -997,7 +997,7 @@ struct MANGOS_DLL_DECL boss_garaxxasAI : public boss_priestess_lackey_commonAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -1099,7 +1099,7 @@ struct MANGOS_DLL_DECL boss_apokoAI : public boss_priestess_lackey_commonAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);
@@ -1194,7 +1194,7 @@ struct MANGOS_DLL_DECL boss_zelfanAI : public boss_priestess_lackey_commonAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         boss_priestess_lackey_commonAI::UpdateAI(diff);

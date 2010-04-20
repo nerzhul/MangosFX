@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL mobs_risen_husk_spiritAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiConsumeFlesh_Timer < uiDiff)
@@ -332,7 +332,7 @@ struct MANGOS_DLL_DECL npc_morokkAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {
@@ -561,7 +561,7 @@ struct MANGOS_DLL_DECL npc_ogronAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {

@@ -208,7 +208,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //No instance
@@ -562,7 +562,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             //No target so we'll use this section to do our random wispers instance wide
             //WisperTimer
@@ -957,7 +957,7 @@ struct MANGOS_DLL_DECL eye_tentacleAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //KillSelfTimer
@@ -1020,7 +1020,7 @@ struct MANGOS_DLL_DECL claw_tentacleAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //EvadeTimer
@@ -1115,7 +1115,7 @@ struct MANGOS_DLL_DECL giant_claw_tentacleAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //EvadeTimer
@@ -1213,7 +1213,7 @@ struct MANGOS_DLL_DECL giant_eye_tentacleAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Check if we have a target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //BeamTimer
@@ -1233,7 +1233,7 @@ struct MANGOS_DLL_DECL giant_eye_tentacleAI : public ScriptedAI
 void flesh_tentacleAI::UpdateAI(const uint32 diff)
 {
     //Check if we have a target
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
     if (Parent)

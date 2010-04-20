@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_sarturaAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (WhirlWind)
@@ -198,7 +198,7 @@ struct MANGOS_DLL_DECL mob_sartura_royal_guardAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!WhirlWind && WhirlWind_Timer < diff)

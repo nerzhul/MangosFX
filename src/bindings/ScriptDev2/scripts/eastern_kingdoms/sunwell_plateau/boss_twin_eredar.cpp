@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_sacrolashAI : public ScriptedAI
 			}
 		}
 
-		if (CanDoSomething())
+		if (!CanDoSomething())
 			return;
 
 		if(sisterdeath)
@@ -415,7 +415,7 @@ struct MANGOS_DLL_DECL boss_alythessAI : public ScriptedAI
 			}
 		}
 
-		if (CanDoSomething())
+		if (!CanDoSomething())
 			return;
 
 		if(sisterdeath)
@@ -557,7 +557,7 @@ struct MANGOS_DLL_DECL mob_shadow_imageAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
 	{
-		if (CanDoSomething())
+		if (!CanDoSomething())
 			return;
 
 		if(touched_timer < diff)

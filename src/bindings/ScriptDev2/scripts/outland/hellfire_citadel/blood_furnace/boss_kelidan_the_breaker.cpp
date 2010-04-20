@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (Firenova)
@@ -197,7 +197,7 @@ struct MANGOS_DLL_DECL mob_shadowmoon_channelerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (MarkOfShadow_Timer < diff)

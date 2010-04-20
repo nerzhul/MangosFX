@@ -68,7 +68,7 @@ struct MANGOS_DLL_DECL boss_hadronoxAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);

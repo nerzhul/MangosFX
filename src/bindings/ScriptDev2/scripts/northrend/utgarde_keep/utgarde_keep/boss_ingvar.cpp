@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-		if (CanDoSomething())
+		if (!CanDoSomething())
             return;
 		phase = 1;
         DoScriptText(m_bIsResurrected ? SAY_AGGRO_SECOND : SAY_AGGRO_FIRST, me);

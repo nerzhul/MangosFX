@@ -47,7 +47,7 @@ struct MANGOS_DLL_DECL boss_shadowvoshAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //CurseOfBlood_Timer

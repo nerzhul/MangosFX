@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiWatch_Timer < uiDiff)
@@ -360,7 +360,7 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // SunderArmor

@@ -148,7 +148,7 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 
 	void Aggro(Unit* pWho)
 	{
-		if (CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		DoCastMe(54164);

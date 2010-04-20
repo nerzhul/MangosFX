@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL npc_sergeant_blyAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (ShieldBash_Timer < diff)
@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL npc_weegli_blastfuseAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

@@ -96,7 +96,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(me->HasAura(SPELL_SUBMERGE,0))

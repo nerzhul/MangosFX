@@ -48,7 +48,7 @@ struct MANGOS_DLL_DECL boss_hungarfenAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if ((me->GetHealth()*100) / me->GetMaxHealth() <= 20)

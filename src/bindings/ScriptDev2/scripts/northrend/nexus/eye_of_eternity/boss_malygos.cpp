@@ -548,7 +548,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                 }else m_uiTimer -= uiDiff;
             }    
         }
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Enrage timer.....

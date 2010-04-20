@@ -558,7 +558,7 @@ struct MANGOS_DLL_DECL npc_freya_helpAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

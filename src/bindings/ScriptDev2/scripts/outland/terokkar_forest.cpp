@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL mob_unkor_the_ruthlessAI : public ScriptedAI
             }
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (Pulverize_Timer < diff)
@@ -309,7 +309,7 @@ struct MANGOS_DLL_DECL npc_akunoAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiChainLightningTimer < uiDiff)
@@ -389,7 +389,7 @@ struct MANGOS_DLL_DECL npc_floonAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiSilence_Timer < uiDiff)
@@ -620,7 +620,7 @@ struct MANGOS_DLL_DECL npc_letollAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {

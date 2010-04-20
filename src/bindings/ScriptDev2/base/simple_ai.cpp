@@ -201,7 +201,7 @@ void SimpleAI::DamageTaken(Unit *killer, uint32 &damage)
 void SimpleAI::UpdateAI(const uint32 diff)
 {
     //Return since we have no target
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
     //Spells

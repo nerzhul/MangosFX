@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
 
     void UpdateFollowerAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
         {
             if (HasFollowState(STATE_FOLLOW_POSTEVENT))
             {

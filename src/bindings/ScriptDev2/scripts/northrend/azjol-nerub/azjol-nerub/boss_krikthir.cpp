@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_silthikAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);
@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL boss_gashraAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		Tasks.UpdateEvent(uiDiff);
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_narjilAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);

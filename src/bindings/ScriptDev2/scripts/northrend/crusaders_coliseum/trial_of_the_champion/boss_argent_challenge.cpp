@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Hammer_Timer < diff)
@@ -219,7 +219,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Holy_Fire_Timer < diff)
@@ -503,7 +503,7 @@ struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff); 

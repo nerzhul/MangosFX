@@ -262,7 +262,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -375,7 +375,7 @@ struct MANGOS_DLL_DECL mob_thurgAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiBloodlustTimer < uiDiff)
@@ -451,7 +451,7 @@ struct MANGOS_DLL_DECL mob_alyson_antilleAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiArcaneTorrentTimer < uiDiff)
@@ -556,7 +556,7 @@ struct MANGOS_DLL_DECL mob_gazakrothAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiFireboltTimer < uiDiff)
@@ -597,7 +597,7 @@ struct MANGOS_DLL_DECL mob_lord_raadanAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiThunderclapTimer < uiDiff)
@@ -648,7 +648,7 @@ struct MANGOS_DLL_DECL mob_darkheartAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiPsychicWailTimer < uiDiff)
@@ -706,7 +706,7 @@ struct MANGOS_DLL_DECL mob_slitherAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiVenomSpitTimer < uiDiff)
@@ -746,7 +746,7 @@ struct MANGOS_DLL_DECL mob_fenstalkerAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiVolatileInfectionTimer < uiDiff)
@@ -787,7 +787,7 @@ struct MANGOS_DLL_DECL mob_koraggAI : public boss_malacrass_addAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiMightyBlowTimer < uiDiff)

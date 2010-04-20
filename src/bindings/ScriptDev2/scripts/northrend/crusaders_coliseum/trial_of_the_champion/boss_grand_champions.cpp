@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (intercept_check < diff)
@@ -330,7 +330,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -470,7 +470,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Chain_Lightning_Timer < diff)
@@ -678,7 +678,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (enemy_check < diff)
@@ -856,7 +856,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Eviscerate_Timer < diff)

@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL npc_aged_dying_ancient_kodoAI : public ScriptedAI
             }
         } else m_uiDespawnTimer -= diff;
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

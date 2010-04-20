@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiBurningBrandTimer < uiDiff)

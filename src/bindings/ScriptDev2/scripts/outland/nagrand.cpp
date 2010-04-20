@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL mob_lumpAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Spear_Throw_Timer
@@ -581,7 +581,7 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiChainLightningTimer < uiDiff)

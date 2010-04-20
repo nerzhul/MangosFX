@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Sleep_Timer
@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL mob_dementeddruidsAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //MoonFire_Timer

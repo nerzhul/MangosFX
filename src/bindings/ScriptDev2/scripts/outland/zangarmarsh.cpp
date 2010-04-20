@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL npc_cooshcooshAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiLightningBolt_Timer < uiDiff)

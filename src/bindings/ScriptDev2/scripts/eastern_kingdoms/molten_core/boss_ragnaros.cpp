@@ -148,7 +148,7 @@ struct MANGOS_DLL_DECL boss_ragnarosAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //WrathOfRagnaros_Timer

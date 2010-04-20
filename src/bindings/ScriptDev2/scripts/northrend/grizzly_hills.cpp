@@ -192,7 +192,7 @@ struct npc_amberpine_woodsmanAI : public ScriptedAI
             }
             ScriptedAI::UpdateAI(uiDiff);              
        
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
     }
 };

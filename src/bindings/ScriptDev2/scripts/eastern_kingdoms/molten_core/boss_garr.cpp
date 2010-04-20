@@ -51,7 +51,7 @@ struct MANGOS_DLL_DECL boss_garrAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //AntiMagicPulse_Timer
@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL mob_fireswornAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Immolate_Timer

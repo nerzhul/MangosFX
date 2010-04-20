@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
             }
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (CorrosiveAcid_Timer < diff)

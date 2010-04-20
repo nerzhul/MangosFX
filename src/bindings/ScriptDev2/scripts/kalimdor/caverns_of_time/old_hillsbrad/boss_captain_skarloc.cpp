@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_captain_skarlocAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Holy_Light

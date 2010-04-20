@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL mob_toc5_risen_ghoulAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Attack < diff)
@@ -241,7 +241,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if (Summon_Ghoul < diff && phase1 && !ghoul)

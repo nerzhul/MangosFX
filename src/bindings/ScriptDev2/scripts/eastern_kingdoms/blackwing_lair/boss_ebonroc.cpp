@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_ebonrocAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Shadowflame Timer

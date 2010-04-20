@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Spell 1 timer

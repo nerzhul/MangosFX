@@ -483,7 +483,7 @@ struct MANGOS_DLL_DECL boss_veknilashAI : public boss_twinemperorsAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (!TryActivateAfterTTelep(diff))
@@ -569,7 +569,7 @@ struct MANGOS_DLL_DECL boss_veklorAI : public boss_twinemperorsAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         // reset arcane burst after teleport - we need to do this because

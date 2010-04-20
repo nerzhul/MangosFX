@@ -187,7 +187,7 @@ void boss_steelbreakerAI::KilledUnit(Unit *who)
 
 void boss_steelbreakerAI::UpdateAI(const uint32 diff)
 {
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
 	if(phase >= 2)
@@ -302,7 +302,7 @@ void boss_runemaster_molgeimAI::JustDied(Unit* Killer)
 
 void boss_runemaster_molgeimAI::UpdateAI(const uint32 diff)
 {
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
 	if(phase >= 2)
@@ -465,7 +465,7 @@ void boss_stormcaller_brundirAI::JustDied(Unit* Killer)
 
 void boss_stormcaller_brundirAI::UpdateAI(const uint32 diff)
 {
-    if (CanDoSomething())
+    if (!CanDoSomething())
         return;
 
 	if(phase >= 2)

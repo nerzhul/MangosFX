@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_championWarAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -212,7 +212,7 @@ struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -353,7 +353,7 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -494,7 +494,7 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if(ResetAggro_Timer <= diff)
@@ -618,7 +618,7 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if(ResetAggro_Timer <= diff)
@@ -761,7 +761,7 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -872,7 +872,7 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -1001,7 +1001,7 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -1126,7 +1126,7 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if(ResetAggro_Timer <= diff)
@@ -1251,7 +1251,7 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -1399,7 +1399,7 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if(ResetAggro_Timer <= diff)
@@ -1543,7 +1543,7 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 		
 		if(ResetAggro_Timer <= diff)
@@ -1676,7 +1676,7 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)
@@ -1802,7 +1802,7 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(ResetAggro_Timer <= diff)

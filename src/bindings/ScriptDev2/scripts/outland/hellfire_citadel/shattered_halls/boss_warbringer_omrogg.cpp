@@ -332,7 +332,7 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             }
         }else m_uiDelay_Timer -= uiDiff;
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (m_uiBlastCount && m_uiBlastWave_Timer <= uiDiff)

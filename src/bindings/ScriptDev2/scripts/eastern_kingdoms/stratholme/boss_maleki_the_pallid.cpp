@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_maleki_the_pallidAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         //Frostbolt

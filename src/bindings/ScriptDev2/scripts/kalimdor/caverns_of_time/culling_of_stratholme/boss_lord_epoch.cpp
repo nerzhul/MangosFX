@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 	   else
 			Steptim -= uiDiff;
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 

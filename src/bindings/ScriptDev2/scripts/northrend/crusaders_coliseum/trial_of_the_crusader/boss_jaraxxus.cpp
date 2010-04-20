@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(incinerate_Timer <= diff)
@@ -277,7 +277,7 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
  
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
  
 		Tasks.UpdateEvent(diff);

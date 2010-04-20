@@ -269,7 +269,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         switch(Phase)
@@ -524,7 +524,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (BurnTimer < diff)

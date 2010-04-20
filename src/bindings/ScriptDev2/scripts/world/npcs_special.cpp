@@ -954,7 +954,7 @@ struct MANGOS_DLL_DECL npc_garments_of_questsAI : public npc_escortAI
             }else RunAwayTimer -= diff;
         }
 
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -983,7 +983,7 @@ struct MANGOS_DLL_DECL npc_guardianAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (CanDoSomething())
+        if (!CanDoSomething())
             return;
 
         if (me->isAttackReady())
