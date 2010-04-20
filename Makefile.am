@@ -20,27 +20,6 @@
 SUBDIRS = dep src
 
 ## Additional files to include when running 'make dist'
-# Win32 project workspace for Visual Studio .NET 2005
-EXTRA_DIST = \
-	win/mangosdVC80.sln \
-	win/VC80/framework.vcproj \
-	win/VC80/game.vcproj \
-	win/VC80/mangosd.vcproj \
-	win/VC80/realmd.vcproj \
-	win/VC80/shared.vcproj \
-	win/VC80/zlib.vcproj \
-	win/VC80/g3dlite.vcproj
-
-# Win32 project workspace for Visual Studio .NET 2008
-EXTRA_DIST += \
-	win/mangosdVC90.sln \
-	win/VC90/framework.vcproj \
-	win/VC90/game.vcproj \
-	win/VC90/mangosd.vcproj \
-	win/VC90/realmd.vcproj \
-	win/VC90/shared.vcproj \
-	win/VC90/zlib.vcproj \
-	win/VC90/g3dlite.vcproj
 
 ACLOCAL_AMFLAGS = -I m4
 
