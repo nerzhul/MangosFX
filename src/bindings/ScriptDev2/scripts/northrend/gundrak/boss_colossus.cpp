@@ -72,6 +72,13 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		add = Tasks.CallCreature(ADD,TEN_MINS,ON_ME);
 	}
 
+	void JustDied(Unit* pWho)
+	{
+		DoScriptText(EMOTE_SURGE, me);
+		if(add)
+			Tasks.FreezeMob(false,add);
+	}
+
 	void UpdateAI(const uint32 uiDiff)
 	{
 		if (!Tasks.CanDoSomething())
@@ -84,19 +91,10 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 			phase = 2 ;
 			phase2();
 		}
-		else if (Tasks.CheckPercentLife(10) && phase == 3)
-		{		
-			DoCastMe(spell_emerger);
-			DoScriptText(EMOTE_SURGE, me);
-			phase = 4 ; 
-			if(add)
-				Tasks.FreezeMob(false,add);
-			Tasks.Kill(me);
-		}
 
 		if (add)
 		{
-			if (phase == 2 && add->isAlive() && (add->GetHealth() * 100 / add->GetMaxHealth()) < 50 )
+			if (phase == 2 && add->isAlive() && (add->GetHealth() * 100 / add->GetMaxHealth()) <= 50 )
 			{
 				Tasks.FreezeMob(true,add);
 				Tasks.FreezeMob(false,me);

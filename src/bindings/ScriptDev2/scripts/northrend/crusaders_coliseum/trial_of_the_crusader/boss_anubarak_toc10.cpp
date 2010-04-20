@@ -389,11 +389,11 @@ struct MANGOS_DLL_DECL anub_spikeAI : public ScriptedAI
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.SetAuraStack(65920,1,me,me,1);
+				Tasks.AddEvent(65920,500,5000,0,TARGET_MAIN);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.SetAuraStack(65922,1,me,me,1);
+				Tasks.AddEvent(65922,500,5000,0,TARGET_MAIN);
 				break;
 		}
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -402,7 +402,7 @@ struct MANGOS_DLL_DECL anub_spikeAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-
+		Tasks.UpdateEvent(diff);
     }
 
 };
