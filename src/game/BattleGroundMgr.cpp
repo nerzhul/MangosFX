@@ -1849,7 +1849,7 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint6
         // Rewards (random)
         *data << uint8(1);                                  // 3.3.3 hasWin_Random
         *data << uint32(2100);                              // 3.3.3 winHonor_Random
-        *data << uint32(25);								// 3.3.3 winArena_Random
+		*data << uint32(plr->HasDoneRandomBattleGround() ? 0 : 25);	// 3.3.3 winArena_Random
         *data << uint32(700);                               // 3.3.3 lossHonor_Random
     }
     if(bgTypeId == BATTLEGROUND_AA)                         // arena

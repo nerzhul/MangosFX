@@ -2274,6 +2274,10 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool IsOutdoorPvPActive();
 		OutdoorPvP * GetOutdoorPvP() const;
 		void VehicleSpellInitialize();
+
+		// daily BG
+		bool HasDoneRandomBattleGround() { return daily_random_BG_done; }
+		void SetRandomBGDone(bool done) { daily_random_BG_done = done; }
 		
     protected:
 
@@ -2575,6 +2579,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_timeSyncClient;
         uint32 m_timeSyncServer;
 		uint8 XpAllowed;
+		bool daily_random_BG_done;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

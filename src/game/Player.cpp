@@ -15855,6 +15855,13 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 		}
 		delete result2;
 	}
+
+	// random BG
+	if(CharacterDatabase.PQuery("SELECT daily_bg FROM character_battleground_status WHERE guid = %u", guid))
+		SetRandomBGDone(true);
+	else
+		SetRandomBGDone(false);
+
     return true;
 }
 

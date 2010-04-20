@@ -2250,6 +2250,9 @@ void World::InitDailyQuestResetTime()
 
 void World::ResetBGDaily()
 {
+	for(SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+        if(itr->second->GetPlayer())
+			itr->second->GetPlayer()->SetRandomBGDone(false);
 	CharacterDatabase.Execute("DELETE FROM character_battleground_status");
 }
 

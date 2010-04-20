@@ -654,26 +654,24 @@ void Player::RewardHonorEndBattlegroud(bool win)
 {
 	uint32 hk = 0;
 	uint32 guid = GetGUIDLow();
-	bool ap = false;
 	if(!win)
 		hk = 5;
 	else
 	{
-		if(CharacterDatabase.PQuery("SELECT daily_bg FROM character_battleground_status WHERE guid = %u", guid))
+		if(HasDoneRandomBattleGround())
 			hk = 15;
 		else
 		{
 			hk = 30;
-			ap = true;
+			SetRandomBGDone(true);
 			CharacterDatabase.PExecute("INSERT INTO character_battleground_status VALUES (%u, %u)", guid, uint64(time(NULL)));
+			ModifyArenaPoints(25);
 		}
 	}
 	
 	if(hk)
 		RewardHonor(NULL, 1, MaNGOS::Honor::hk_honor_at_level(getLevel(),hk));
-	
-	if(ap)
-		ModifyArenaPoints(25);
+		
 }
 
 void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID)
