@@ -149,7 +149,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 		FlyPhase();
 		if (m_pInstance)
            m_pInstance->SetData(TYPE_RAZORSCALE, IN_PROGRESS);
-		Tasks.AggroAllPlayers(350.0f);
+		AggroAllPlayers(350.0f);
 	}
 
 	void EnterCombat(Unit* who)

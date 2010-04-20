@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 		Spawn_Timer = 180000;
 		frigibold_Timer = 45000;
 		SetEquipmentSlots(false, 50760, 48040, 47267);
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
     void JustDied(Unit *victim)
@@ -301,7 +301,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 		phase_Timer = 10000;
 		Spawn_Timer = 180000;
 		CheckDistanceTimer = 1000;
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
     void JustDied(Unit *victim)
@@ -519,7 +519,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 		Spawn_Timer = 180000;
 		CheckDistanceTimer = 1000;
 		Check_Para_Timer = 1000;
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
     void JustDied(Unit *victim)
@@ -757,7 +757,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 		phase = 1;
 		phase_Timer = 45000;
 		CheckDistanceTimer = 1000;
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
 		inCrash = false;
     }
 
@@ -864,7 +864,6 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 				}
 				case 3:
 					inCrash = false;
-					me->SetSpeedRate(MOVE_RUN,2.0f);
 					if(target)
 						me->GetMotionMaster()->MovePoint(0,x,y,z);
 					phase++;
@@ -891,7 +890,6 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 						DoCastMe(SPELL_STAGGERED_DAZE);
 					phase_Timer = 60000;
 					phase = 1;
-					me->SetSpeedRate(MOVE_RUN,1.0f);
 					break;
 			}
 		}

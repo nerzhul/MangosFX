@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 		if(target)
 			me->AddThreat(target,200.0f);
 
-		Tasks.AggroAllPlayers(400.0f);
+		AggroAllPlayers(400.0f);
 
 		phase = 1;
 		if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_THORIM_DOOR)))

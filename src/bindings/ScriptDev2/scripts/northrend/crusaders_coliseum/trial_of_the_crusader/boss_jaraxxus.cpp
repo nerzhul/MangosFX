@@ -315,7 +315,7 @@ struct MANGOS_DLL_DECL mob_mistress_of_painAI : public ScriptedAI
 			Tasks.AddEvent(67073,10000,10000,2000,TARGET_HAS_MANA);
 			break;
         }  
-	Tasks.AggroAllPlayers(150.0f);
+	AggroAllPlayers(150.0f);
     }
  
     void UpdateAI(const uint32 diff)

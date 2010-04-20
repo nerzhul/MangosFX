@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 		Event = EVENT_POP;
 		Event_Timer = 500;
 		eStep = 0;
-		Tasks.AggroAllPlayers(200.0f);
+		AggroAllPlayers(200.0f);
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
 		Tasks.AddSummonEvent(NPC_TENTACLE_TANK,15000,75000,EVENT_PHASE2,15000,1,TEN_MINS*2,NEAR_45M);
@@ -966,7 +966,7 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public ScriptedAI
 		{
 			if(Unit* Sara = Unit::GetUnit((*me), pInstance->GetData64(DATA_YOGG_SARA)))
 				if(Sara->isAlive())
-					Tasks.AggroAllPlayers(200.0f);
+					AggroAllPlayers(200.0f);
 		}
 
 		if(DeathTimer <= uiDiff)
@@ -1023,7 +1023,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public ScriptedAI
 		DoCastMe(SPELL_ERUPT);
 		Tasks.AddEvent(SPELL_FOCUSED_ANGER,500,DAY*1000,0,TARGET_ME);
 		CheckDist_Timer = 1000;
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
 	void CheckPlayers()
@@ -1082,7 +1082,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_BLACK_PLAGUE,5000,7000,7000,TARGET_HAS_MANA);
 		Tasks.AddEvent(SPELL_CURSE_OF_DOOM,20000,20000,10000);
 		Tasks.AddEvent(SPELL_DRAINING_POISON,8000,15000,15000,TARGET_HAS_MANA);
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
 
@@ -1116,7 +1116,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public ScriptedAI
 		DoCastMe(SPELL_ERUPT);
 		targets.clear();
 		squeeze_Timer = 1000;
-		Tasks.AggroAllPlayers(150.0f);
+		AggroAllPlayers(150.0f);
     }
 
 
