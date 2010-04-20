@@ -791,7 +791,7 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
                 // remove BG from BGFreeSlotQueue
                 bg->RemoveFromBGFreeSlotQueue();
             }
-        }
+        } 
     }
 
     // finished iterating through the bgs with free slots, maybe we need to create a new bg
