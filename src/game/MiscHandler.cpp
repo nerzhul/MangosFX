@@ -253,8 +253,8 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
     }
 
     uint32 count = m.size();
-    data.put( 0, clientcount );                             // insert right count, listed count
-    data.put( 4, count > 50 ? count : clientcount );        // insert right count, online count
+    data.put( 4, clientcount );                             // insert right count, listed count
+    data.put( 4, clientcount > 50 ? count : clientcount );        // insert right count, online count
 
     SendPacket(&data);
     sLog.outDebug( "WORLD: Send SMSG_WHO Message" );
