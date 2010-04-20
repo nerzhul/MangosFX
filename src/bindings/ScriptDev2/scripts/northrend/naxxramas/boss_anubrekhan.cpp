@@ -1,0 +1,169 @@
+/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+/* ScriptData
+SDName: Boss_Anubrekhan
+SD%Complete: 70
+SDComment:
+SDCategory: Naxxramas
+EndScriptData */
+
+#include "precompiled.h"
+
+enum
+{
+    SAY_GREET                   = -1533000,
+    SAY_AGGRO1                  = -1533001,
+    SAY_AGGRO2                  = -1533002,
+    SAY_AGGRO3                  = -1533003,
+    SAY_TAUNT1                  = -1533004,
+    SAY_TAUNT2                  = -1533005,
+    SAY_TAUNT3                  = -1533006,
+    SAY_TAUNT4                  = -1533007,
+    SAY_SLAY                    = -1533008,
+
+    SPELL_IMPALE                = 28783,                    //May be wrong spell id. Causes more dmg than I expect
+    SPELL_IMPALE_H              = 56090,
+    SPELL_LOCUSTSWARM           = 28785,                    //This is a self buff that triggers the dmg debuff
+    SPELL_LOCUSTSWARM_H         = 54021,
+
+    //spellId invalid
+    SPELL_SUMMONGUARD           = 29508,                    //Summons 1 crypt guard at targeted location
+
+    SPELL_SELF_SPAWN_5          = 29105,                    //This spawns 5 corpse scarabs ontop of us (most likely the pPlayer casts this on death)
+    SPELL_SELF_SPAWN_10         = 28864,                    //This is used by the crypt guards when they die
+
+    NPC_CRYPT_GUARD             = 16573
+};
+
+struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
+{
+    boss_anubrekhanAI(Creature* pCreature) : ScriptedAI(pCreature)
+    {
+        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
+        HasTaunted = false;
+        Reset();
+    }
+
+    ScriptedInstance* m_pInstance;
+    bool m_bIsHeroic;
+
+	MobEventTasks Tasks;
+    uint32 Impale_Timer;
+    bool HasTaunted;
+
+    void Reset()
+    {
+		Tasks.SetObjects(this,me);
+		Tasks.CleanMyAdds();
+		uint32 LocustSwarm_Timer = urand(80000, 120000);
+
+		if(!m_bIsHeroic)
+			Tasks.AddEvent(SPELL_LOCUSTSWARM_H,LocustSwarm_Timer,90000,0,TARGET_ME);
+		else
+			Tasks.AddEvent(SPELL_LOCUSTSWARM,LocustSwarm_Timer,90000,0,TARGET_ME);
+
+        Impale_Timer = 15000;                               //15 seconds
+		Tasks.AddSummonEvent(16573,LocustSwarm_Timer + 45000,45000,0,0,1,TEN_MINS,NEAR_15M);
+    }
+
+    void KilledUnit(Unit* pVictim)
+    {
+        //Force the player to spawn corpse scarabs via spell
+        if (pVictim->GetTypeId() == TYPEID_PLAYER)
+            pVictim->CastSpell(pVictim, SPELL_SELF_SPAWN_5, true);
+
+        if (urand(0, 4))
+            return;
+
+        DoScriptText(SAY_SLAY, me);
+    }
+
+	void JustDied(Unit* killer)
+	{
+		Tasks.CleanMyAdds();
+		Tasks.GiveEmblemsToGroup((!m_bIsHeroic) ? VAILLANCE : HEROISME);
+	}
+
+    void Aggro(Unit *who)
+    {
+        switch(urand(0, 2))
+        {
+            case 0: DoScriptText(SAY_AGGRO1, me); break;
+            case 1: DoScriptText(SAY_AGGRO2, me); break;
+            case 2: DoScriptText(SAY_AGGRO3, me); break;
+        }
+    }
+
+    void MoveInLineOfSight(Unit *who)
+    {
+        if (!HasTaunted && me->IsWithinDistInMap(who, 60.0f))
+        {
+            switch(urand(0, 4))
+            {
+                case 0: DoScriptText(SAY_GREET, me); break;
+                case 1: DoScriptText(SAY_TAUNT1, me); break;
+                case 2: DoScriptText(SAY_TAUNT2, me); break;
+                case 3: DoScriptText(SAY_TAUNT3, me); break;
+                case 4: DoScriptText(SAY_TAUNT4, me); break;
+            }
+            HasTaunted = true;
+        }
+
+        ScriptedAI::MoveInLineOfSight(who);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!me->SelectHostileTarget() || !me->getVictim())
+            return;
+
+        //Impale_Timer
+        if (Impale_Timer < diff)
+        {
+            //Cast Impale on a random target
+            //Do NOT cast it when we are afflicted by locust swarm
+            if (!me->HasAura(SPELL_LOCUSTSWARM) || !me->HasAura(SPELL_LOCUSTSWARM_H))
+            {
+                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+                    DoCast(target, m_bIsHeroic ? SPELL_IMPALE_H : SPELL_IMPALE);
+            }
+
+            Impale_Timer = 15000;
+        }
+		else 
+			Impale_Timer -= diff;
+
+		Tasks.UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_anubrekhan(Creature* pCreature)
+{
+    return new boss_anubrekhanAI(pCreature);
+}
+
+void AddSC_boss_anubrekhan()
+{
+    Script *newscript;
+    newscript = new Script;
+    newscript->Name = "boss_anubrekhan";
+    newscript->GetAI = &GetAI_boss_anubrekhan;
+    newscript->RegisterSelf();
+}
