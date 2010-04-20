@@ -180,7 +180,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if(phase == 0 || !me->SelectHostileTarget() || !me->getVictim())
+        if(phase == 0 || CanDoSomething())
             return;
 
         if (Phase_Timer < diff)

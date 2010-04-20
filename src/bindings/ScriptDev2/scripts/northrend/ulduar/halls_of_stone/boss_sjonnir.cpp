@@ -93,7 +93,7 @@ struct MANGOS_DLL_DECL boss_sjonnirAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if(enrage_Timer <= uiDiff)

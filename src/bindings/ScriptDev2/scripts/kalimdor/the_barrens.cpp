@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL npc_taskmaster_fizzuleAI : public ScriptedAI
             } else Reset_Timer -= diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -588,7 +588,7 @@ struct MANGOS_DLL_DECL npc_wizzlecranks_shredderAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
         {
             if (m_bIsPostEvent)
             {

@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-		if (!me->SelectHostileTarget() || !me->getVictim())
+		if (CanDoSomething())
             return;
 		phase = 1;
         DoScriptText(m_bIsResurrected ? SAY_AGGRO_SECOND : SAY_AGGRO_FIRST, me);
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		uint32 PercentLife = Tasks.GetPercentLife();

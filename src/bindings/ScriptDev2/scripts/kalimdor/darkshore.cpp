@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
 
     void UpdateFollowerAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
         {
             if (!HasFollowState(STATE_FOLLOW_INPROGRESS))
                 return;

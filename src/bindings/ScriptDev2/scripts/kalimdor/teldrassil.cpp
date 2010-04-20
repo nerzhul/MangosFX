@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL npc_mistAI : public FollowerAI
     //call not needed here, no known abilities
     /*void UpdateFollowerAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

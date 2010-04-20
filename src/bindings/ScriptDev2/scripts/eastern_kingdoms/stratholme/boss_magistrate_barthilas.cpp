@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_magistrate_barthilasAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (FuriousAnger_Timer < diff)

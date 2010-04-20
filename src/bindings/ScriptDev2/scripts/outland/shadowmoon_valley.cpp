@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL mob_mature_netherwing_drakeAI : public ScriptedAI
             return;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (CastTimer < diff)
@@ -246,7 +246,7 @@ struct MANGOS_DLL_DECL mob_enslaved_netherwing_drakeAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
         {
             if (Tapped)
             {
@@ -763,7 +763,7 @@ struct MANGOS_DLL_DECL npc_wildaAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //TODO: add more abilities
@@ -1028,7 +1028,7 @@ struct MANGOS_DLL_DECL mob_torlothAI : public ScriptedAI
         }
         else
         {
-            if (!me->SelectHostileTarget() || !me->getVictim())
+            if (CanDoSomething())
                 return;
 
             if (m_uiCleaveTimer < uiDiff)

@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL mob_stalaggAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_bIsHold)
@@ -271,7 +271,7 @@ struct MANGOS_DLL_DECL mob_feugenAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_bIsHold)
@@ -517,7 +517,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
 				Active_Timer -= uiDiff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (ChainLightning_Timer < uiDiff)

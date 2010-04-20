@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
 	   else
 			Steptim -= uiDiff;
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if (ShadowBolt_Timer < uiDiff)

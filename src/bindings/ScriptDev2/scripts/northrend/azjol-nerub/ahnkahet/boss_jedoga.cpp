@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

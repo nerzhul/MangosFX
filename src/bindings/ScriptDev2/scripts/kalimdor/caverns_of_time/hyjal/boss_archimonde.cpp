@@ -452,7 +452,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
             }else DrainNordrassilTimer -= diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (((me->GetHealth()*100 / me->GetMaxHealth()) < 10) && !BelowTenPercent && !Enraged)

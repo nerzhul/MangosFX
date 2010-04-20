@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
             }
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //ShadowVolley_Timer

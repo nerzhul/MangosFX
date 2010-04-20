@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		me->RemoveAurasDueToSpell(SPELL_CHALEUR);
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (!me->SelectHostileTarget() || !me->getVictim())
+		if (CanDoSomething())
 		{
 			if(CheckReset_Timer <= uiDiff)
 			{

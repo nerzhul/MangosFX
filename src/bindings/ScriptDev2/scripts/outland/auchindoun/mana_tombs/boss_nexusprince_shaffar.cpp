@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiFrostNova_Timer < uiDiff)
@@ -218,7 +218,7 @@ struct MANGOS_DLL_DECL mob_ethereal_beaconAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiArcaneBolt_Timer < uiDiff)

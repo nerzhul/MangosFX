@@ -95,7 +95,7 @@ struct npc_warmage_violetstandAI : public Scripted_NoMovementAI
 
         ScriptedAI::UpdateAI(uiDiff);
 
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
     }
 };

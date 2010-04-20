@@ -197,6 +197,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void AggroAllPlayers(float maxdist);
 	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
 	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
+	bool CanDoSomething() { return (!me || CanDoSomething()) ? false : true; }
 
     private:
         bool   m_bCombatMovement;
@@ -336,10 +337,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 		
 		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
 		void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
-
-		
-
-		bool CanDoSomething() { return (!thisCr || !thisCr->SelectHostileTarget() || !thisCr->getVictim()) ? false : true; }
 
 		bool CheckPercentLife(uint32 percent) { return ((thisCr->GetHealth() * 100 / thisCr->GetMaxHealth()) <= percent) ? true : false; }
 

@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(subphase == 0)
@@ -224,7 +224,7 @@ struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);
@@ -261,7 +261,7 @@ struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 	
 		Tasks.UpdateEvent(uiDiff);
@@ -290,7 +290,7 @@ struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
     {
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);

@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if(incinerate_Timer <= diff)
@@ -277,7 +277,7 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
  
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
  
 		Tasks.UpdateEvent(diff);
@@ -320,7 +320,7 @@ struct MANGOS_DLL_DECL mob_mistress_of_painAI : public ScriptedAI
  
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 	
 		Tasks.UpdateEvent(diff);
@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
     }
 };

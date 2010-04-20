@@ -372,7 +372,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
             }else AggroTimer -= diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim() || Intro)
+        if (CanDoSomething() || Intro)
             return;
 
         if (SummonShadowsTimer < diff)

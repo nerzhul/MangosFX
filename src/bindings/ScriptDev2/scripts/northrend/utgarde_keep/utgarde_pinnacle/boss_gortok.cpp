@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 				m_uiAnimalCheck_Timer -= uiDiff;
         }
 
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);
@@ -289,7 +289,7 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
         // Acid Splatter
@@ -369,7 +369,7 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);
@@ -425,7 +425,7 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
 
     	// Crazed
@@ -486,7 +486,7 @@ struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
 
     	// Enrage1

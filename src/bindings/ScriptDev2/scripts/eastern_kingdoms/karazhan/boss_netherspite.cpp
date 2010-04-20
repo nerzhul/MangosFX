@@ -521,7 +521,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         Active_Event = NULL_EVENT;

@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_theolenkrastinovAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Rend_Timer

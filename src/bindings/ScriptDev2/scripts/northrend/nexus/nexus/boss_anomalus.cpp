@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 		
 		if (Tasks.CheckPercentLife(52) &&  phase == 1)
@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(storm_Timer <= uiDiff)

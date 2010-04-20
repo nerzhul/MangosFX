@@ -282,7 +282,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiPhase == PHASE_1 || m_uiPhase == PHASE_3)
@@ -548,7 +548,7 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //m_uiPoisonBolt_Timer
@@ -589,7 +589,7 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //m_uiToxicSpore_Timer

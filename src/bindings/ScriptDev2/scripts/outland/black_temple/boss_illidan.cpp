@@ -827,7 +827,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
         }
 
         // If we don't have a target, or is talking, or has run away, return
-        if (!me->SelectHostileTarget() || !me->getVictim()) return;
+        if (CanDoSomething()) return;
 
         DoMeleeAttackIfReady();
     }
@@ -1527,7 +1527,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
         }
 
         // If we don't have a target, return.
-        if (!me->SelectHostileTarget() || !me->getVictim() || IsTalking)
+        if (CanDoSomething() || IsTalking)
             return;
 
         // If we are 'caged', then we shouldn't do anything such as cast spells or transform into Demon Form.
@@ -2009,7 +2009,7 @@ struct MANGOS_DLL_DECL boss_maievAI : public ScriptedAI
         }
 
         // Return if we don't have a target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (TauntTimer < diff)
@@ -2166,7 +2166,7 @@ struct MANGOS_DLL_DECL flame_of_azzinothAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (FlameBlastTimer < diff)
@@ -2211,7 +2211,7 @@ struct MANGOS_DLL_DECL shadow_demonAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim()) return;
+        if (CanDoSomething()) return;
 
         // Only cast the below on players.
         if (me->getVictim()->GetTypeId() != TYPEID_PLAYER) return;

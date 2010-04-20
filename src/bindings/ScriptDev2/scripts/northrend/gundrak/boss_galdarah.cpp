@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
 			return;
 
 		if (spell_tourbi_timer < uiDiff && phase_morph == 0)

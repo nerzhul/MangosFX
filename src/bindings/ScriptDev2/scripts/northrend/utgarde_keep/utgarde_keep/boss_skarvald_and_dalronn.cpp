@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiYellDelayTimer && m_uiYellDelayTimer < uiDiff)
@@ -223,7 +223,7 @@ struct MANGOS_DLL_DECL boss_dalronnAI : public boss_s_and_d_dummyAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(AggroSaid == false)

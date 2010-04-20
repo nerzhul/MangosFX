@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL boss_moorabiAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if (transfo != 1 && me->HasAura(spell_transformation, 0))

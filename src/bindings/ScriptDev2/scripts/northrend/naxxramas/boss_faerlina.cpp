@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_faerlinaAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -190,7 +190,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
             else 
 				m_uiDeathDelay_Timer -= uiDiff;
 
-        if (!me->SelectHostileTarget() || !me->getVictim() || m_bIsDead)
+        if (CanDoSomething() || m_bIsDead)
             return;
 
 

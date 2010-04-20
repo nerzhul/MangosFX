@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
 	{	
 
-        if (!Tasks.CanDoSomething() || me->HasAura(66830,0))
+        if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 
 		if (spell_teleport_timer < uiDiff)  

@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_ayamissAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //If he is 70% start phase 2

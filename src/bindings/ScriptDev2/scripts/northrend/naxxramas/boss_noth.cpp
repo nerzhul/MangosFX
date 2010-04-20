@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
             return;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Blink_Timer

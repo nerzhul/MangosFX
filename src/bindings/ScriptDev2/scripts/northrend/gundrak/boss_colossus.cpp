@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
 			return;
 
 		if (Tasks.CheckPercentLife(50) && phase == 1)

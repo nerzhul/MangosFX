@@ -153,7 +153,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if (Stone_Grip_Timer < diff)
@@ -364,7 +364,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 
 	void UpdateAI(const uint32 diff)
     {
-		if (!me->SelectHostileTarget() || !me->getVictim())
+		if (CanDoSomething())
             return;
 
 		if (Spell_Timer < diff)

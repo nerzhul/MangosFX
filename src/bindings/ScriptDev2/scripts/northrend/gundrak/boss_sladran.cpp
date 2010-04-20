@@ -114,7 +114,7 @@ struct MANGOS_DLL_DECL boss_sladranAI : public ScriptedAI
     		
 	void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
                                
         if (invoc_serpent_timer < uiDiff)

@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Spell Enrage, when hp <= 20% gain enrage

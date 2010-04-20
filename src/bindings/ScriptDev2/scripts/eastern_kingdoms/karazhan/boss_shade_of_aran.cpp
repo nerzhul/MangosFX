@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiCloseDoor_Timer)
@@ -530,7 +530,7 @@ struct MANGOS_DLL_DECL water_elementalAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiCast_Timer < uiDiff)

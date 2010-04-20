@@ -192,7 +192,7 @@ struct npc_amberpine_woodsmanAI : public ScriptedAI
             }
             ScriptedAI::UpdateAI(uiDiff);              
        
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
     }
 };

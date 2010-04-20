@@ -48,7 +48,7 @@ struct MANGOS_DLL_DECL mob_jadespine_basiliskAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Cslumber_Timer

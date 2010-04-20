@@ -58,7 +58,7 @@ struct MANGOS_DLL_DECL boss_erekemAI : public ScriptedAI
 	    
 	void Aggro(Unit* pWho)
 	{
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 		DoScriptText(-2000033,me);
 	}
@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL boss_erekemAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
 	{	
-        if (!Tasks.CanDoSomething() || me->HasAura(66830,0))
+        if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 
 		if(Tasks.CheckPercentLife(45) && !bloodlustcasted && !me->HasAura(SPELL_BLOODLUST,0))

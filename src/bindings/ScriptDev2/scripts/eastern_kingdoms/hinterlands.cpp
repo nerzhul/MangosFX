@@ -273,7 +273,7 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
     void UpdateEscortAI(const uint32 uiDiff)
     {
         //Check if we have a current target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_ESCORTING) && m_uiPostEventCount)
             {

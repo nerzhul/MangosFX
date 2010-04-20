@@ -246,7 +246,7 @@ void FollowerAI::UpdateAI(const uint32 uiDiff)
 
 void FollowerAI::UpdateFollowerAI(const uint32 uiDiff)
 {
-    if (!me->SelectHostileTarget() || !me->getVictim())
+    if (CanDoSomething())
         return;
 
     DoMeleeAttackIfReady();

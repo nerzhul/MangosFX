@@ -171,7 +171,7 @@ struct MANGOS_DLL_DECL npc_millhouse_manastormAI : public ScriptedAI
             } else EventProgress_Timer -= diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (!LowHp && ((me->GetHealth()*100 / me->GetMaxHealth()) < 20))

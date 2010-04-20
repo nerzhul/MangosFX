@@ -268,7 +268,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
             return;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		// Health check

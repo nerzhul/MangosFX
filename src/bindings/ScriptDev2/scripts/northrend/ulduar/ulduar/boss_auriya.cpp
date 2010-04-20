@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if(enrage_Timer <= diff)
@@ -197,7 +197,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (!me->SelectHostileTarget() || !me->getVictim())
+		if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public ScriptedAI
 
 	void UpdateAI(const uint32 uiDiff)
 	{
-		if (!me->SelectHostileTarget() || !me->getVictim())
+		if (CanDoSomething())
             return;
 		
 		Tasks.UpdateEvent(uiDiff);

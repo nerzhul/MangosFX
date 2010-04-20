@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_sulfuronAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //DemoralizingShout_Timer
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL mob_flamewaker_priestAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Casting Heal to Sulfuron or other Guards.

@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
         if (m_uiEvadeCheckCooldown < uiDiff)
@@ -310,7 +310,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_uiEvadeCheckCooldown < uiDiff)
@@ -371,7 +371,7 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {  
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (m_bTimeToDie)

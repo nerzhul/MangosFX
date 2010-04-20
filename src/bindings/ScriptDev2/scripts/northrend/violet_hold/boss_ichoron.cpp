@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
 	{
-		if (!Tasks.CanDoSomething() || me->HasAura(66830,0))
+		if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 		protect = true;
 		DoCastMe(SPELL_PROTECTIVE);
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
 	{	
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(Tasks.CheckPercentLife(25))

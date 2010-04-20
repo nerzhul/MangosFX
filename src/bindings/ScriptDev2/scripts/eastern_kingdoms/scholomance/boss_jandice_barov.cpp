@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_jandicebarovAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //CurseOfBlood_Timer
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL mob_illusionofjandicebarovAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Cleave_Timer

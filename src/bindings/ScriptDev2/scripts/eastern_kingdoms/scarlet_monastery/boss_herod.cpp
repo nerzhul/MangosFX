@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL boss_herodAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //If we are <30% hp goes Enraged
@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL mob_scarlet_traineeAI : public npc_escortAI
             }else Start_Timer -= diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();

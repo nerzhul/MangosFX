@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_darkweaver_sythAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (((me->GetHealth()*100) / me->GetMaxHealth() < 90) && !summon90)
@@ -214,7 +214,7 @@ struct MANGOS_DLL_DECL mob_syth_fireAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (flameshock_timer < diff)
@@ -258,7 +258,7 @@ struct MANGOS_DLL_DECL mob_syth_arcaneAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (arcaneshock_timer < diff)
@@ -302,7 +302,7 @@ struct MANGOS_DLL_DECL mob_syth_frostAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (frostshock_timer < diff)
@@ -346,7 +346,7 @@ struct MANGOS_DLL_DECL mob_syth_shadowAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (shadowshock_timer < diff)

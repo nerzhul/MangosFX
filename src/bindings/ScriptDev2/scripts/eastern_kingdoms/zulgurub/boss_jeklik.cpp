@@ -93,7 +93,7 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if ((me->GetHealth()*100 / me->GetMaxHealth() > 50))
@@ -227,7 +227,7 @@ struct MANGOS_DLL_DECL mob_batriderAI : public ScriptedAI
 
     void UpdateAI (const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Bomb_Timer

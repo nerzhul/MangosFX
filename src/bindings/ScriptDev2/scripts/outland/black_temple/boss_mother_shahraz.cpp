@@ -169,7 +169,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (((me->GetHealth()*100 / me->GetMaxHealth()) < 10) && !Enraged)

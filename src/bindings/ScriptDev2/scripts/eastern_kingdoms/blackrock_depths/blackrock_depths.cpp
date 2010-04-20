@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL mob_phalanxAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //ThunderClap_Timer

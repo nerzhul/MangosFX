@@ -53,7 +53,7 @@ struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(uiDiff);

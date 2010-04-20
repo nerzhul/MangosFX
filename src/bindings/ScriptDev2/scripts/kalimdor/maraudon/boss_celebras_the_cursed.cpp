@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL celebras_the_cursedAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //Wrath

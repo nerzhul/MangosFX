@@ -791,7 +791,7 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
                 // remove BG from BGFreeSlotQueue
                 bg->RemoveFromBGFreeSlotQueue();
             }
-        } 
+        }
     }
 
     // finished iterating through the bgs with free slots, maybe we need to create a new bg
@@ -815,6 +815,7 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
     uint32 MaxPlayersPerTeam = bg_template->GetMaxPlayersPerTeam();
     if (sBattleGroundMgr.isTesting())
         MinPlayersPerTeam = 1;
+
     if (bg_template->isArena())
     {
         if (sBattleGroundMgr.isArenaTesting())

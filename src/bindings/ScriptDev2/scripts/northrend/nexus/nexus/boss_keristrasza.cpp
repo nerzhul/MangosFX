@@ -75,7 +75,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(Tasks.CheckPercentLife(25) && !me->HasAura(8599,0))

@@ -287,7 +287,7 @@ struct MANGOS_DLL_DECL mobs_spitelashesAI : public ScriptedAI
                 DoCastMe(6924);                    //visual explosion
             }
         }
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //TODO: add abilities for the different creatures

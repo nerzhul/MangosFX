@@ -558,7 +558,7 @@ struct MANGOS_DLL_DECL npc_freya_helpAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
@@ -962,7 +962,7 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
 		{
 			if(Unit* Sara = Unit::GetUnit((*me), pInstance->GetData64(DATA_YOGG_SARA)))
 				if(Sara->isAlive())

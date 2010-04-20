@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if(phase == 1)
@@ -326,7 +326,7 @@ struct MANGOS_DLL_DECL boss_addThorimAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -361,7 +361,7 @@ struct MANGOS_DLL_DECL boss_runegiantAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);
@@ -396,7 +396,7 @@ struct MANGOS_DLL_DECL boss_runecolossusAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		Tasks.UpdateEvent(diff);

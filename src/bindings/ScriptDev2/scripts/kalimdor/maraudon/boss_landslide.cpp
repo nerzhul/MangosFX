@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_landslideAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //KnockAway_Timer

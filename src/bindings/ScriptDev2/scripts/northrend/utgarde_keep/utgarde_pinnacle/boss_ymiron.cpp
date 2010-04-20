@@ -274,7 +274,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
         }
 
         //Return since we have no target
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
         if (!m_bIsPause)

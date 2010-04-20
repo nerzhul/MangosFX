@@ -111,7 +111,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(Frigibold_count > 0)
@@ -189,7 +189,7 @@ struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 		Tasks.UpdateEvent(diff);
 
@@ -368,7 +368,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(phase_Timer <= diff)
@@ -614,7 +614,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
 		if(phase_Timer <= diff)
@@ -799,7 +799,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(phase_Timer <= diff)

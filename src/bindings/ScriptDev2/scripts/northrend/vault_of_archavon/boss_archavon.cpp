@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
         if (m_uiEvadeCheckCooldown < uiDiff)

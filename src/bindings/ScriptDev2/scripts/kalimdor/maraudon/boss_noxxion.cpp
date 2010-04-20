@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_noxxionAI : public ScriptedAI
         }
 
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         //ToxicVolley_Timer

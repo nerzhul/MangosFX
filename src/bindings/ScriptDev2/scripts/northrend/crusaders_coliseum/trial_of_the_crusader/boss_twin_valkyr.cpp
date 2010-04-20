@@ -232,7 +232,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(HealEvent)
@@ -428,7 +428,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if (!Tasks.CanDoSomething())
+		if (!CanDoSomething())
             return;
 
 		if(HealEvent)

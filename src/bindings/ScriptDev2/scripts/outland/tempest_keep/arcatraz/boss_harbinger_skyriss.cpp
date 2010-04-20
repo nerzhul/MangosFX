@@ -174,7 +174,7 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
             }else Intro_Timer -=diff;
         }
 
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
             return;
 
         if (!IsImage66 && ((me->GetHealth()*100) / me->GetMaxHealth() <= 66))

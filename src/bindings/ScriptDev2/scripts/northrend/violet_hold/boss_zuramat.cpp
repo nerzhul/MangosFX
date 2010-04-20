@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_zuramatAI : public ScriptedAI
 	    
 	void Aggro(Unit* pWho)
 	{
-		if (!Tasks.CanDoSomething() || me->HasAura(66830,0))
+		if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 		DoScriptText(-2000024,me);
 	}
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_zuramatAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
 	{	
-        if (!Tasks.CanDoSomething())
+        if (!CanDoSomething())
             return;
 
 		if(summon_Timer <= uiDiff)

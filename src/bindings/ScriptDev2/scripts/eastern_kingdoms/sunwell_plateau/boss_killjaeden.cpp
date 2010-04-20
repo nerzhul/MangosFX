@@ -339,7 +339,7 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
             pInstance->SetData(DATA_DECIVER, NOT_STARTED); 
         }*/
 
-        if(!me->SelectHostileTarget() || !me->getVictim())
+        if(CanDoSomething())
                return;
 
         if(DarknessExplosionTimer < diff && DarknessOfSoulsCasting)
@@ -614,7 +614,7 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
                 return;
 
         if(BoltTimer < diff)
@@ -680,7 +680,7 @@ struct MANGOS_DLL_DECL mob_orbAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
                 return;
 
         if(SpellTimer < diff)
@@ -832,7 +832,7 @@ struct MANGOS_DLL_DECL mob_killimpAI : public ScriptedAI
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim())
+        if (CanDoSomething())
                 return;
 
         if( me->isAttackReady() && !me->IsNonMeleeSpellCasted(false))

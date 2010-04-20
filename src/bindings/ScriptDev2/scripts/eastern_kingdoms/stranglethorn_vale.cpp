@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL mob_yennikuAI : public ScriptedAI
         else Reset_Timer -= diff;
 
         //Return since we have no target
-        if (!me->SelectHostileTarget() || !me->getVictim() )
+        if (CanDoSomething() )
             return;
 
         DoMeleeAttackIfReady();
