@@ -1175,16 +1175,16 @@ void MobEventTasks::Relocate(float x, float y, float z, bool fly, float Time)
 	thisCr->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
 }
 
-void MobEventTasks::AggroAllPlayers(float maxdist)
+void ScriptedAI::AggroAllPlayers(float maxdist)
 {
-	Map::PlayerList const& lPlayers = thisCr->GetMap()->GetPlayers();
+	Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 	if (!lPlayers.isEmpty())
 	{
 		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 			if (Player* pPlayer = itr->getSource())
-				if(pPlayer->isAlive() && pPlayer->GetDistance2d(thisCr) < maxdist)
+				if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < maxdist)
 				{
-					thisCr->AddThreat(pPlayer,1.0f);
+					me->AddThreat(pPlayer,1.0f);
 				}
 	}
 }

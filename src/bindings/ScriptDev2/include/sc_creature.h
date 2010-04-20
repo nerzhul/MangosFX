@@ -193,6 +193,9 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
     bool EnterEvadeIfOutOfCombatArea(const uint32 uiDiff);
 
+	// LibDevFS Implementation
+	void AggroAllPlayers(float maxdist);
+
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;
@@ -336,7 +339,7 @@ class MANGOS_DLL_SPEC MobEventTasks
 		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
 		void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
 
-		void AggroAllPlayers(float maxdist);
+		
 
 		bool CanDoSomething() { return (!thisCr || !thisCr->SelectHostileTarget() || !thisCr->getVictim()) ? false : true; }
 
