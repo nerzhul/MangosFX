@@ -1,0 +1,9 @@
+autoreconf --install --force
+mkdir objdir
+cd objdir
+../configure --prefix=/opt/mangos --sysconfdir=/opt/mangos --enable-cli --enable-ra --datadir=/opt/mangos/dat
+make
+make install -j4
+cd ..
+rm -r objdir
+
