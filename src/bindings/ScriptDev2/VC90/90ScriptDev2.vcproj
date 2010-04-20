@@ -1565,6 +1565,10 @@
 				Name="northrend"
 				>
 				<File
+					RelativePath="..\scripts\northrend\crystalsong_forest.cpp"
+					>
+				</File>
+				<File
 					RelativePath="..\scripts\northrend\dalaran.cpp"
 					>
 				</File>

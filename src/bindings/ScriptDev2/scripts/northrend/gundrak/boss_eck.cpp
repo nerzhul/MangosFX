@@ -44,6 +44,8 @@ struct MANGOS_DLL_DECL boss_eck : public ScriptedAI
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(spell_morsure,7000,10000,0,TARGET_MAIN);
 		Tasks.AddEvent(spell_enrage,150000,60000,0,TARGET_ME);
+		Tasks.AddEvent(spell_saut_timer,15000,5000);
+		Tasks.AddEvent(spell_crachat_timer,21000,5000,0,TARGET_MAIN);
 		spell_saut_timer = 10000;
 		spell_morsure_timer = 7000;
 		spell_crachat_timer = 25000;
@@ -56,35 +58,10 @@ struct MANGOS_DLL_DECL boss_eck : public ScriptedAI
 		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 	}
 
-    void Aggro(Unit* pWho)
-    {
-    }
-
     void UpdateAI(const uint32 uiDiff)
     { 
 		if (!Tasks.CanDoSomething())
             return;
-
-		if (spell_saut_timer <= uiDiff)
-		{
-				if (i >= 1)
-					spell_saut_timer += 5000 ;
-				else
-					spell_saut_timer = 15000;
-
-				DoCastRandom(spell_saut);
-				i++;
-		}
-		else
-			spell_saut_timer -= uiDiff;
-
-		if (spell_crachat_timer <= uiDiff)
-		{
-				spell_crachat_timer = spell_saut_timer + 6000 ;
-				DoCastVictim(spell_crachat);
-		}
-		else
-			spell_crachat_timer -= uiDiff;
 
 		Tasks.UpdateEvent(uiDiff);
 

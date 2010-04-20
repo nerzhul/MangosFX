@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_sladranAI : public ScriptedAI
 	void invoc_add()
 	{
 		DoScriptText(SAY_SUMMON_SNAKE, me);
-		if ( m_bIsHeroic ==true )
+		if (m_bIsHeroic)
 		{
 			Tasks.CallCreature(id_serpent_hero,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM, 1775.325f , 629.444f, 128.0f);
 			Tasks.CallCreature(id_constrictor_hero,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM, 1775.325f , 629.444f, 128.0f);

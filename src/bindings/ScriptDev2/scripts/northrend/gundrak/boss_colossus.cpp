@@ -32,8 +32,7 @@ enum
 	spell_emerger				= 54850,
 	spell_afflux				= 54801,
 	spell_fusionement			= 54878,
-	id_add_normal				= 29573,
-	id_add_hero					= 31367,
+	ADD							= 29573,
 };
 
 /*######
@@ -44,7 +43,6 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 {
 
 	uint8 phase;
-	uint64 ElementalGUID;
 	Creature *add;
 
 
@@ -52,7 +50,6 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 	{
 		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		ElementalGUID = 0;
 		Reset();
 	}
 
@@ -60,29 +57,19 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
-	void JustSummoned(Creature* pSummoned)
-	{
-		if (pSummoned->GetEntry() == id_add_normal || pSummoned->GetEntry() == id_add_hero)
-			ElementalGUID = pSummoned->GetGUID();
-	}
-
 	void Reset()
 	{	
 		Tasks.SetObjects(this,me);
 		phase = 1 ;
+		Tasks.FreezeMob(false,me);
+		add = NULL;
 		Tasks.AddEvent(spell_coup,1500,10000,0,TARGET_MAIN);
 	}
-
-	void phase4()
-	{
-		Tasks.FreezeMob(true,me);
-		add->SetHealth((add->GetMaxHealth()/2));
-	}	
 
 	void phase2()
 	{
 		Tasks.FreezeMob(true,me);
-		add = me->SummonCreature(m_bIsHeroic ? id_add_hero : id_add_normal, me->GetPositionX() , me->GetPositionY()- 15, me->GetPositionZ()+2, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 8000);
+		add = Tasks.CallCreature(ADD,TEN_MINS,ON_ME);
 	}
 
 	void UpdateAI(const uint32 uiDiff)
@@ -99,26 +86,21 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		}
 		else if (Tasks.CheckPercentLife(10) && phase == 3)
 		{		
-			DoCastMe( spell_emerger);
+			DoCastMe(spell_emerger);
 			DoScriptText(EMOTE_SURGE, me);
 			phase = 4 ; 
-			phase4();
+			if(add)
+				Tasks.FreezeMob(false,add);
+			Tasks.Kill(me);
 		}
 
-		if (Creature* thisAdd = ((Creature*)Unit::GetUnit((*me), ElementalGUID)))
+		if (add)
 		{
-			if (!thisAdd->isAlive())
+			if (phase == 2 && add->isAlive() && (add->GetHealth() * 100 / add->GetMaxHealth()) < 50 )
 			{
-				if (phase == 2)
-				{
-					Tasks.FreezeMob(false,me);
-					phase = 3;
-				}
-				else if (phase == 4)
-				{
-					Tasks.FreezeMob(false,me);
-					Tasks.Kill(me);
-				}
+				Tasks.FreezeMob(true,add);
+				Tasks.FreezeMob(false,me);
+				phase = 3;
 			}
 		}
 
@@ -143,17 +125,14 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 
 	add_drakkari(Creature* pCreature) : ScriptedAI(pCreature)
 	{
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		Reset();
+
 	}
 
-	ScriptedInstance* m_pInstance;
 	MobEventTasks Tasks;
 
 	void UpdateAI(const uint32 uiDiff) // Début Script add
 	{		
-		if (Tasks.GetPercentLife() == 50)
-			Tasks.Kill(me);
-
 		if (Tasks.GetPercentLife() < 50 && Tasks.GetPercentLife() > 40)
 			me->SetHealth((me->GetMaxHealth()/2));
 		else if (Tasks.CheckPercentLife(10)) 
@@ -164,43 +143,6 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 		Tasks.UpdateEvent(uiDiff);
 	}
 };
-
-struct MANGOS_DLL_DECL add2_drakkari : public ScriptedAI // Add Drakkarie
-{	
-
-	uint32 spell_afflux_timer;
-
-	void Reset()
-	{
-		Tasks.SetObjects(this,me);
-		spell_afflux_timer	= 1500 ;      
-		Tasks.AddEvent(spell_afflux,1500,10000,0,TARGET_MAIN);
-	}
-
-	add2_drakkari(Creature* pCreature) : ScriptedAI(pCreature)
-	{
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-	}
-
-	ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-
-	void UpdateAI(const uint32 uiDiff) // Début Script add2
-	{		
-		if (Tasks.CheckPercentLife(10)) 
-			Tasks.Kill(me);
-
-		Tasks.UpdateEvent(uiDiff);
-
-		DoMeleeAttackIfReady();
-	}
-
-};
-
-CreatureAI* GetAI_add2_drakkari(Creature* pCreature)
-{
-	return new add2_drakkari(pCreature);
-} 
 
 CreatureAI* GetAI_add_drakkari(Creature* pCreature)
 {
@@ -213,11 +155,6 @@ void AddSC_add_drakkari()
 	newscript = new Script;
 	newscript->Name = "add_drakkari";
 	newscript->GetAI = &GetAI_add_drakkari;
-	newscript->RegisterSelf(); 
-
-	newscript = new Script;
-	newscript->Name = "add2_drakkari";
-	newscript->GetAI = &GetAI_add2_drakkari;
 	newscript->RegisterSelf(); 
 }
 
