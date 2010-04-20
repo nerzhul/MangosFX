@@ -48,7 +48,7 @@ struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
     {
         /*if (urand(0, 1))
             DoScriptText(SAY_KILL, me);*/
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 uiDiff)

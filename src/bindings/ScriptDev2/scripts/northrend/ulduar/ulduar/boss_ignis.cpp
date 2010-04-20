@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 				Tasks.Kill((*itr));
 			}
 		}
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
     void MoveInLineOfSight(Unit* who) 

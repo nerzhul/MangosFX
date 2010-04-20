@@ -330,7 +330,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 				if (pTemp->isAlive())
 					pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 		}
-		Tasks.GiveEmblemsToGroup((m_bIsRegularMode) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsRegularMode) ? CONQUETE : VAILLANCE);
     }
 
 	void Aggro(Unit* pWho)

@@ -217,7 +217,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
 
 	void JustDied(Unit* /* u */)
 	{
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? TRIOMPHE : CONQUETE ,3);
+		GiveEmblemsToGroup((m_bIsHeroic) ? TRIOMPHE : CONQUETE ,3);
 	}
 
     void SetNextRandomPoint()

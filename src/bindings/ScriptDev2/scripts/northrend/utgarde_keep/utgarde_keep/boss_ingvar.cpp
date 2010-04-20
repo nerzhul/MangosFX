@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
     {
         DoScriptText(m_bIsResurrected ? SAY_DEATH_SECOND : SAY_DEATH_FIRST, me);
 		if(m_bIsResurrected)
-			Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+			GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

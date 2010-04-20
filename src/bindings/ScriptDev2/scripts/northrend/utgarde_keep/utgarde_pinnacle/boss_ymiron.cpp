@@ -223,7 +223,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
         if(m_pInstance)
             m_pInstance->SetData(TYPE_YMIRON, DONE);
 
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 uiDiff)

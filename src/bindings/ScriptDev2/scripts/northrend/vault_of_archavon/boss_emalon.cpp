@@ -280,7 +280,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 				pMinion->SetRespawnDelay(7*RESPAWN_ONE_DAY*1000);
 			}
         }
-		Tasks.GiveEmblemsToGroup((m_bIsRegularMode) ? CONQUETE : VAILLANCE ,3);
+		GiveEmblemsToGroup((m_bIsRegularMode) ? CONQUETE : VAILLANCE ,3);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32& uiDamage)

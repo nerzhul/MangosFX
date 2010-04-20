@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_razuviousAI : public ScriptedAI
                         pDeathKnight->CastSpell(pDeathKnight, SPELL_HOPELESS, true);
             }
         }
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void Aggro(Unit *who)

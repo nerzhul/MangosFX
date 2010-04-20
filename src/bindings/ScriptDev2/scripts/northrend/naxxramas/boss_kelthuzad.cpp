@@ -310,7 +310,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_KELTHUZAD, DONE);
 
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 3);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 3);
     }
 
     void MoveInLineOfSight(Unit* who)

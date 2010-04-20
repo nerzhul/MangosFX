@@ -178,7 +178,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         if(m_pInstance)
             m_pInstance->SetData(TYPE_NOTH, DONE);
 
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void UpdateAI(const uint32 diff)

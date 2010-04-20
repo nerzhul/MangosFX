@@ -143,6 +143,13 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 				pDoneBy->DealDamage(Fjola,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
+	void HealBy(Unit* pHealer,uint32 heal)
+	{
+		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+			if(Fjola->isAlive())
+				me->DealHeal(Fjola,heal, /* TODO : spell proto */ NULL);
+	}
+
     void JustDied(Unit *victim)
     {
         if (m_pInstance)
@@ -159,16 +166,16 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 		switch(difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(CONQUETE,2);
+				GiveEmblemsToGroup(CONQUETE,2);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(TRIOMPHE,2);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(CONQUETE,3);
+				GiveEmblemsToGroup(CONQUETE,3);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 		}
     }
@@ -338,7 +345,11 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 	{
 		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
 			if(Eydis->isAlive())
+			{
 				pDoneBy->DealDamage(Eydis,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
+			}
 	}
 
     void JustDied(Unit *victim)
@@ -364,6 +375,13 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 		if(pDoneTo->GetTypeId() == TYPEID_UNIT)
 			if(pDoneTo->GetEntry() == 34496 || pDoneTo->GetEntry() == 34497)
 				uiDamage = 0;
+	}
+
+	void HealBy(Unit* pHealer,uint32 heal)
+	{
+		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+			if(Eydis->isAlive())		
+				me->DealHeal(Eydis,heal, /* TODO : spell proto */ NULL);
 	}
 
 	void DoEvent()

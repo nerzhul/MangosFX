@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
 				tmp->ForcedDespawn();
 		}
 		GluthAdds.clear();
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
     void Reset()

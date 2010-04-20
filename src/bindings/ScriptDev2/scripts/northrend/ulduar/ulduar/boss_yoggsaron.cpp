@@ -226,7 +226,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
     void JustDied(Unit *victim)
     {
 		Tasks.Speak(CHAT_TYPE_YELL,15761,"Votre destin est scellé, la fin des temps est enfin arrivée pour vous et pour tous les habitants de ces petits bourgeons !");
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,3);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,3);
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, DONE);
     }

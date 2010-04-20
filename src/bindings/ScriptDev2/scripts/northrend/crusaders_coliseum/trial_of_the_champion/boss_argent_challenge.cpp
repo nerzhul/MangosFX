@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 			return;
 		me->ForcedDespawn();
 		m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
-		Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 	}
 
 	void UpdateAI(const uint32 diff)
@@ -214,7 +214,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 			return;
 		me->ForcedDespawn();
 		m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
-		Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
+		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 	}
 
 	void UpdateAI(const uint32 diff)

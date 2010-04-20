@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_uromAI : public ScriptedAI
         
         if (pInstance)
             pInstance->SetData(DATA_UROM_EVENT, DONE);
-//		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+//		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
     void KilledUnit(Unit *victim)
     {

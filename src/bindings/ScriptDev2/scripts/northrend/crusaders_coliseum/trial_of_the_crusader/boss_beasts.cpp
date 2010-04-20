@@ -775,16 +775,16 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 		switch(m_bIsHeroic)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(CONQUETE,2);
+				GiveEmblemsToGroup(CONQUETE,2);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(TRIOMPHE,2);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(CONQUETE,3);
+				GiveEmblemsToGroup(CONQUETE,3);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 		}
     }

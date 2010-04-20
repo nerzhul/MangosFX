@@ -120,16 +120,16 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 		switch(difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(TRIOMPHE,2);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.GiveEmblemsToGroup(TRIOMPHE,4);
+				GiveEmblemsToGroup(TRIOMPHE,4);
 				break;
 		}
 		Tasks.Speak(CHAT_TYPE_YELL,16238,"J'ai échoué... maître...");

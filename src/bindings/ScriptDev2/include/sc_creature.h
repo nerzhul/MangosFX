@@ -195,6 +195,8 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
 	// LibDevFS Implementation
 	void AggroAllPlayers(float maxdist);
+	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
+	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 
     private:
         bool   m_bCombatMovement;
@@ -310,13 +312,9 @@ class MANGOS_DLL_SPEC MobEventTasks
 
 		void Kill(Unit* toKill);
 
-		void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
-
 		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
 
 		void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
-
-		void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
 			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,

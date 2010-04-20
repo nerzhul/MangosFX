@@ -278,7 +278,7 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 						   break;
 					 case 17:
 						   Arthas->SetVisibility(VISIBILITY_OFF);
-						   Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+						   GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 						   Outro = false;
 						   ++Step;
 						   Steptim =11000;

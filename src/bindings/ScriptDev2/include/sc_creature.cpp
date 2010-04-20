@@ -869,19 +869,19 @@ void MobEventTasks::Kill(Unit* toKill)
 	thisCr->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 }
 
-void MobEventTasks::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
+void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
 {
 	if(type == 0)
 		return;
 
-    Map::PlayerList const& lPlayers = thisCr->GetMap()->GetPlayers();
+    Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 	if (!lPlayers.isEmpty())
 		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 			if (Player* pPlayer = itr->getSource())
 				GiveEmblems(type,pPlayer,nb, group5);
 }
 
-void MobEventTasks::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
+void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
 {
 	ItemPosCountVec dest;
 	uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, type, nb, false);
@@ -889,6 +889,7 @@ void MobEventTasks::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool gro
 		if(Item* pItem = pPlayer->StoreNewItem(dest, type, nb, true))
 			pPlayer->SendNewItem(pItem, nb, true, false);
 
+	// Wintergrasp Aura
 	if(group5 && pPlayer->HasAura(57940))
 	{
 		ItemPosCountVec dest;

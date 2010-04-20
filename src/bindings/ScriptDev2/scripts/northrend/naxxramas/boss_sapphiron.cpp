@@ -93,7 +93,7 @@ struct MANGOS_DLL_DECL boss_sapphironAI : public ScriptedAI
     }
 	void JustDied(Unit *victim)
 	{
-		Tasks.GiveEmblemsToGroup((!m_bIsHeroic) ? VAILLANCE : HEROISME, 2);
+		GiveEmblemsToGroup((!m_bIsHeroic) ? VAILLANCE : HEROISME, 2);
 	}
 
     void UpdateAI(const uint32 diff)

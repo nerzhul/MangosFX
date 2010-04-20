@@ -86,7 +86,7 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public ScriptedAI
     {
         /*if (pInstance)
             pInstance->SetData(DATA_INFINITE_EVENT, DONE);*/
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 };
 

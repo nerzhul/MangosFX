@@ -177,7 +177,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
 									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
-									Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
 
@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
 									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
-									Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
 
@@ -464,7 +464,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
 									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
-									Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
 
@@ -672,7 +672,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
 									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
-									Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
 
@@ -850,7 +850,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
 									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
-									Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
+									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
 

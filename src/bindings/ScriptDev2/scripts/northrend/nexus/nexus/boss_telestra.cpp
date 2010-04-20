@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 		me->SetVisibility(VISIBILITY_ON);
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

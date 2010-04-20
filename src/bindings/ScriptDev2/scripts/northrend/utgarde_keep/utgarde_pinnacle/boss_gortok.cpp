@@ -170,7 +170,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 		if(m_pInstance)
             m_pInstance->SetData(TYPE_GORTOK, DONE);
 
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 uiDiff)

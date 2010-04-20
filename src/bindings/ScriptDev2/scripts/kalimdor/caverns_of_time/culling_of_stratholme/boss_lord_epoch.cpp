@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
    void JustDied(Unit *killer)
     {
        DoScriptText(SAY_EPOCH_DEATH, me);
-	   Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+	   GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

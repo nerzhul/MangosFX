@@ -58,7 +58,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_VEZAX, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,2);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,2);
     }
 
     void Aggro(Unit* pWho)

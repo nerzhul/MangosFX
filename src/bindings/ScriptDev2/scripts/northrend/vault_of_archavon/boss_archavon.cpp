@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
         if(m_pInstance)
             m_pInstance->SetData(TYPE_ARCHAVON, DONE);
 
-		Tasks.GiveEmblemsToGroup((m_bIsRegularMode) ? VAILLANCE : HEROISME ,3);
+		GiveEmblemsToGroup((m_bIsRegularMode) ? VAILLANCE : HEROISME ,3);
     }
 
     void UpdateAI(const uint32 uiDiff)

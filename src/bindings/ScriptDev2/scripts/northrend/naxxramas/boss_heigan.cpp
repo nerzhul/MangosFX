@@ -175,7 +175,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 
         if(m_pInstance)
             m_pInstance->SetData(TYPE_HEIGAN, DONE);
-		Tasks.GiveEmblemsToGroup((!m_bIsRegularMode) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((!m_bIsRegularMode) ? VAILLANCE : HEROISME);
     }
 
     void UpdateAI(const uint32 diff)

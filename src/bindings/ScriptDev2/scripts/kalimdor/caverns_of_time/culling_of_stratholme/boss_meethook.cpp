@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL boss_meathookAI : public ScriptedAI
    void JustDied(Unit *killer)
     {
        DoScriptText(SAY_MEATHOOK_DEATH, me);
-	   Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+	   GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

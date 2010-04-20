@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_GOTHIK, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void JustSummoned(Creature* pSummon)

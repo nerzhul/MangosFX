@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
             m_pInstance->SetData(TYPE_THORIM, DONE);
 
 		Tasks.Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)

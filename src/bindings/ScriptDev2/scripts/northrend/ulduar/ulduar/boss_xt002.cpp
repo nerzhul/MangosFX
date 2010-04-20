@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_XT002, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
 

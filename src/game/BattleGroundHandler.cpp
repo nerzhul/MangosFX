@@ -95,9 +95,6 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
         return;
     }
 
-	if(bgTypeId_ == 0)
-		bgTypeId_ = 10;
-
     BattleGroundTypeId bgTypeId = BattleGroundTypeId(bgTypeId_);
 
     sLog.outDebug( "WORLD: Recvd CMSG_BATTLEMASTER_JOIN Message from (GUID: %u TypeId:%u)", GUID_LOPART(guid), bgTypeId_);

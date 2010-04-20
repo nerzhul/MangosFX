@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_AURIAYA, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
     void UpdateAI(const uint32 diff)

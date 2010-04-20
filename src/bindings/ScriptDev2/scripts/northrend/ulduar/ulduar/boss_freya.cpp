@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_FREYA, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)

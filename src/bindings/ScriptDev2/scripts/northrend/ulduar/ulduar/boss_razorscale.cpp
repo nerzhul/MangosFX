@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
 		if (m_pInstance)
            m_pInstance->SetData(TYPE_RAZORSCALE, DONE);
     }

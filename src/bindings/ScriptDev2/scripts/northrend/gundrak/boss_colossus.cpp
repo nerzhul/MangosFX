@@ -77,7 +77,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		DoScriptText(EMOTE_SURGE, me);
 		if(add)
 			Tasks.FreezeMob(false,add);
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 	}
 
 	void UpdateAI(const uint32 uiDiff)

@@ -201,7 +201,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 		if (phase3)
 		{
 			m_pInstance->SetData(TYPE_BLACK_KNIGHT, DONE);
-			Tasks.GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
+			GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 		}
 		if (phase2)
 			if (!me->isAlive())

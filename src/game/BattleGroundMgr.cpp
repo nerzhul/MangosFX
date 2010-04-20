@@ -1837,10 +1837,10 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint6
     *data << uint8(0);                                      // unk
 
     // Rewards
-    *data << uint8(0);                                      // 3.3.3 hasWin
-    *data << uint32(0);                                     // 3.3.3 winHonor
-    *data << uint32(0);                                     // 3.3.3 winArena
-    *data << uint32(0);                                     // 3.3.3 lossHonor
+    *data << uint8(1);                                      // 3.3.3 hasWin
+    *data << uint32(2);                                     // 3.3.3 winHonor
+    *data << uint32(3);                                     // 3.3.3 winArena
+    *data << uint32(5);                                     // 3.3.3 lossHonor
 
     uint8 isRandom = 0;
     *data << uint8(isRandom);                               // 3.3.3 isRandom
@@ -1927,7 +1927,7 @@ BattleGroundQueueTypeId BattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgType
         case BATTLEGROUND_IC:
             return BATTLEGROUND_QUEUE_IC;
         case BATTLEGROUND_RB:
-            return BATTLEGROUND_QUEUE_NONE;
+            return BATTLEGROUND_QUEUE_RANDOM;
         case BATTLEGROUND_AA:
         case BATTLEGROUND_NA:
         case BATTLEGROUND_RL:

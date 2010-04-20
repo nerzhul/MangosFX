@@ -96,7 +96,7 @@ struct MANGOS_DLL_DECL boss_anubrekhanAI : public ScriptedAI
 	void JustDied(Unit* killer)
 	{
 		Tasks.CleanMyAdds();
-		Tasks.GiveEmblemsToGroup((!m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((!m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
     void Aggro(Unit *who)

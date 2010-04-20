@@ -70,7 +70,7 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 		Tasks.CleanMyAdds();
         if (m_pInstance)
             m_pInstance->SetData(TYPE_GROBBULUS, DONE);
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void Aggro(Unit *who)

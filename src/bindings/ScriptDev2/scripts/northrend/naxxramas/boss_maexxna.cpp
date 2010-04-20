@@ -176,7 +176,7 @@ struct MANGOS_DLL_DECL boss_maexxnaAI : public ScriptedAI
 
 	void JustDied(Unit* victim)
 	{
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
     void UpdateAI(const uint32 diff)

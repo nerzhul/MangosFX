@@ -80,7 +80,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			if(tomb->isAlive())
 				Tasks.Kill(tomb);
 
-		Tasks.GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

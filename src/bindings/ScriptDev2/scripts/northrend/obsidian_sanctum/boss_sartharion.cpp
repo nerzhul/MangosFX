@@ -259,7 +259,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_SARTHARION_EVENT, DONE);
 
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 2);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 2);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -720,7 +720,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 						pPlayer->SetPhaseMask(0x00000001,true);
 						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
-		Tasks.GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void UpdateAI(const uint32 uiDiff)
