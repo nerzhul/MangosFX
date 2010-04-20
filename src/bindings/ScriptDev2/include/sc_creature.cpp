@@ -322,17 +322,21 @@ Unit* ScriptedAI::SelectUnit(SelectAggroTarget target, uint32 uiPosition)
     case SELECT_TARGET_RANDOM:
     {
 		Unit* target;
+		uint16 occur_ = 0;
 		bool right_target = true;
 		do
 		{
+			occur_ ++;
 			right_target = true;
-	       		advance(itr, uiPosition +  (rand() % (threatlist.size() - uiPosition)));
+	       	advance(itr, uiPosition +  (rand() % (threatlist.size() - uiPosition)));
 			target = Unit::GetUnit((*me),(*itr)->getUnitGuid());
 			if(!target || (target->GetTypeId() == TYPEID_UNIT && ((Creature*)target)->isTotem()))
 			{
 				itr = threatlist.begin();
 				right_target = false;
 			}
+			if(occur_ > 300)
+				right_target = true;
 		}
 		while(!right_target);
 		return target;
