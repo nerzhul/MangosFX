@@ -514,7 +514,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
     m_lastFallZ = 0;
 
 	XpAllowed = 0;
-
+	
+	SetRandomBGDone(false);
 }
 
 Player::~Player ()

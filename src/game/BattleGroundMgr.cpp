@@ -1858,11 +1858,12 @@ void BattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint6
     *data << uint8(isRandom);                               // 3.3.3 isRandom
     if(isRandom)
     {
+		uint32 hk = MaNGOS::Honor::hk_honor_at_level(plr->getLevel(),plr->HasDoneRandomBattleGround() ? 15 : 30)
         // Rewards (random)
         *data << uint8(1);                                  // 3.3.3 hasWin_Random
-        *data << uint32(2100);                              // 3.3.3 winHonor_Random
+        *data << uint32(hk);                              // 3.3.3 winHonor_Random
 		*data << uint32(plr->HasDoneRandomBattleGround() ? 0 : 25);	// 3.3.3 winArena_Random
-        *data << uint32(700);                               // 3.3.3 lossHonor_Random
+        *data << uint32(MaNGOS::Honor::hk_honor_at_level(plr->getLevel(),5));                               // 3.3.3 lossHonor_Random
     }
     if(bgTypeId == BATTLEGROUND_AA)                         // arena
     {
