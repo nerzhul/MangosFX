@@ -856,6 +856,18 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
         if (CheckPremadeMatch(bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam))
         {
             //create new battleground
+            // TODO: remove not handled bg here !
+            switch(urand(0,5))
+            {
+				case 0:	bgTypeId = BATTLEGROUND_WS;	break;
+				case 1: bgTypeId = BATTLEGROUND_AB;	break;
+				case 2: bgTypeId = BATTLEGROUND_AV;	break;
+				case 3: bgTypeId = BATTLEGROUND_EY;	break;
+				case 4: bgTypeId = BATTLEGROUND_SA;	break;
+				case 5: bgTypeId = BATTLEGROUND_IC;	break;
+				default:
+					break;
+			}
             BattleGround * bg2 = sBattleGroundMgr.CreateNewBattleGround(bgTypeId, bracketEntry, 0, false);
             if (!bg2)
             {
@@ -1610,18 +1622,7 @@ uint32 BattleGroundMgr::CreateBattleGround(BattleGroundTypeId bgTypeId, bool IsA
         case BATTLEGROUND_DS: bg = new BattleGroundDS; break;
         case BATTLEGROUND_RV: bg = new BattleGroundRV; break;
         case BATTLEGROUND_IC: bg = new BattleGroundIC; break;
-        case BATTLEGROUND_RB: 
-			switch(MapID)
-			{
-				case 30:  bg = new BattleGroundAV; 	break;
-				case 489: bg = new BattleGroundWS; 	break;
-				case 529: bg = new BattleGroundAB;  break;
-				case 566: bg = new BattleGroundEY; 	break;
-				case 607: bg = new BattleGroundSA; 	break;
-				case 628: bg = new BattleGroundIC; 	break;
-				default:  bg = new BattleGroundABG; break;
-			}
-			break;
+        case BATTLEGROUND_RB: bg = new BattleGroundABG; break;
         default:bg = new BattleGround;   break;             // placeholder for non implemented BG
     }
 
