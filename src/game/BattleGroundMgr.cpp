@@ -1571,21 +1571,27 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 			switch(urand(0,2))
 			{
 				case 0:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_WS);
 					bg = new BattleGroundWS(*(BattleGroundWS*)bg_template);
 					break;
 				case 1:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_AB);
 					bg = new BattleGroundAB(*(BattleGroundAB*)bg_template);
 					break;
 				case 2:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_EY);
 					bg = new BattleGroundEY(*(BattleGroundEY*)bg_template);
 					break;
 				case 3:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_AV);
 					bg = new BattleGroundAV(*(BattleGroundAV*)bg_template);
 					break;
 				case 4:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_SA);
 					bg = new BattleGroundSA(*(BattleGroundSA*)bg_template);
 					break;
 				case 5:
+					bg_template = GetBattleGroundTemplate(BATTLEGROUND_IC);
 					bg = new BattleGroundIC(*(BattleGroundIC*)bg_template);
 					break;
 				default:
