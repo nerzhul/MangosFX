@@ -504,7 +504,7 @@ void WorldSession::HandleBattlefieldStatusOpcode( WorldPacket & /*recv_data*/ )
             continue;
         BattleGroundTypeId bgTypeId = BattleGroundMgr::BGTemplateId(bgQueueTypeId);
         uint8 arenaType = BattleGroundMgr::BGArenaType(bgQueueTypeId);
-        if (bgTypeId == _player->GetBattleGroundTypeId())
+        if (bgTypeId == _player->GetBattleGroundTypeId() || _player->GetBattleGroundTypeId() == BATTLEGROUND_RB)
         {
             bg = _player->GetBattleGround();
             //i cannot check any variable from player class because player class doesn't know if player is in 2v2 / 3v3 or 5v5 arena

@@ -1269,7 +1269,7 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
     // uint64 in client
 
 	BattleGroundTypeId _bgTypeId = bg->GetTypeID();
-	if(bg->IsRandomBG())
+	if(bg->IsRandomBG() && StatusID != STATUS_IN_PROGRESS)
 		_bgTypeId = BATTLEGROUND_RB;
 
     *data << uint64( uint64(arenatype) | (uint64(0x0D) << 8) | (uint64(_bgTypeId) << 16) | (uint64(0x1F90) << 48) );
