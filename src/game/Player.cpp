@@ -19357,7 +19357,7 @@ bool Player::CanJoinToBattleground() const
 bool Player::CanReportAfkDueToLimit()
 {
     // a player can complain about 15 people per 5 minutes
-    if(m_bgData.bgAfkReportedCount++ >= 15)
+    if(m_bgData.bgAfkReportedCount++ >= 5)
         return false;
 
     return true;
