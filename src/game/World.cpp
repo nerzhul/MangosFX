@@ -1720,6 +1720,7 @@ void World::Update(uint32 diff)
     {
         m_timers[WUPDATE_CORPSES].Reset();
 
+		CharacterDatabase.PExecute("UPDATE needed_variables SET value = '%d' WHERE needed_variables.key = '4'",m_maxActiveSessionCount);
         CorpsesErase();
     }
 
