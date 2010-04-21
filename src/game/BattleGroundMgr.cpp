@@ -33,6 +33,7 @@
 #include "BattleGroundRV.h"
 #include "BattleGroundIC.h"
 #include "BattleGroundABG.h"
+#include "Formulas.h"
 #include "MapManager.h"
 #include "Map.h"
 #include "MapInstanced.h"
