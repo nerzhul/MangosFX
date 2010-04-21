@@ -1556,12 +1556,6 @@ void World::SetInitialWorldSettings()
 		Field *fields = result->Fetch();
 		if(fields[0].GetUInt32() == 1)
 		{
-			if(QueryResult *result2 = CharacterDatabase.Query("SELECT value FROM needed_variables WHERE needed_variables.key = '4';"))
-			{
-				Field *fields2 = result2->Fetch();
-				m_maxActiveSessionCount = fields2[0].GetUInt32();
-			}
-
 			if(QueryResult *result2 = CharacterDatabase.Query("SELECT value FROM needed_variables WHERE needed_variables.key = '3';"))
 			{
 				Field *fields2 = result2->Fetch();
@@ -1570,6 +1564,12 @@ void World::SetInitialWorldSettings()
 
 			CharacterDatabase.PExecute("UPDATE needed_variables set value = '0' where needed_variables.key = '5'");
 		}
+	}
+	
+	if(QueryResult *result = CharacterDatabase.Query("SELECT value FROM needed_variables WHERE needed_variables.key = '4';"))
+	{
+		Field *fields = result->Fetch();
+		m_maxActiveSessionCount = fields[0].GetUInt32();
 	}
 }
 
