@@ -1609,7 +1609,18 @@ uint32 BattleGroundMgr::CreateBattleGround(BattleGroundTypeId bgTypeId, bool IsA
         case BATTLEGROUND_DS: bg = new BattleGroundDS; break;
         case BATTLEGROUND_RV: bg = new BattleGroundRV; break;
         case BATTLEGROUND_IC: bg = new BattleGroundIC; break;
-        case BATTLEGROUND_RB: bg = new BattleGroundABG; break;
+        case BATTLEGROUND_RB: 
+			switch(MapID)
+			{
+				case 30:  bg = new BattleGroundAV; 	break;
+				case 489: bg = new BattleGroundWS; 	break;
+				case 529: bg = new BattleGroundAB;  break;
+				case 566: bg = new BattleGroundEY; 	break;
+				case 607: bg = new BattleGroundSA; 	break;
+				case 628: bg = new BattleGroundIC; 	break;
+				default:  bg = new BattleGroundABG; break;
+			}
+			break;
         default:bg = new BattleGround;   break;             // placeholder for non implemented BG
     }
 
