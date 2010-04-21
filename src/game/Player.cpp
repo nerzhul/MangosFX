@@ -6475,8 +6475,9 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor)
 				if(sGameEventMgr.IsActiveEvent(m_event))
 					honor *= 1.5;
 
-				if(this->GetBattleGround()->IsRandomBG())
-					honor *= 1.3;
+				if(GetBattleGround())
+					if(GetBattleGround()->IsRandomBG())
+						honor *= 1.3;
 			}
 
             int32 v_rank =1;                                //need more info
