@@ -6474,6 +6474,9 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor)
 
 				if(sGameEventMgr.IsActiveEvent(m_event))
 					honor *= 1.5;
+
+				if(this->GetBattleGround()->IsRandomBG())
+					honor *= 1.3;
 			}
 
             int32 v_rank =1;                                //need more info
@@ -6481,7 +6484,6 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor)
             honor = ((f * diff_level * (190 + v_rank*10))/4);
             honor *= ((float)k_level) / 64.5f;              //factor of dependence on levels of the killer
 
-			honor *= 2;
             // count the number of playerkills in one day
             ApplyModUInt32Value(PLAYER_FIELD_KILLS, 1, true);
             // and those in a lifetime
