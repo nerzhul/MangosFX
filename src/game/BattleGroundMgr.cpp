@@ -856,21 +856,6 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
         if (CheckPremadeMatch(bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam))
         {
             //create new battleground
-            // TODO: remove not handled bg here !
-            if(bgTypeId == BATTLEGROUND_RB)
-			{
-				switch(urand(0,2))
-				{
-					case 0:	bgTypeId = BATTLEGROUND_WS;	break;
-					case 1: bgTypeId = BATTLEGROUND_AB;	break;
-					case 2: bgTypeId = BATTLEGROUND_EY;	break;
-					case 3: bgTypeId = BATTLEGROUND_AV;	break;
-					case 4: bgTypeId = BATTLEGROUND_SA;	break;
-					case 5: bgTypeId = BATTLEGROUND_IC;	break;
-					default:
-						break;
-				}
-			}
             BattleGround * bg2 = sBattleGroundMgr.CreateNewBattleGround(bgTypeId, bracketEntry, 0, false);
             if (!bg2)
             {
