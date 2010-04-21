@@ -143,7 +143,7 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
             return;
 		}
         // check if has free queue slots
-        if (!_player->HasFreeBattleGroundQueueId())
+        if (!_player->HasFreeBattleGroundQueueId() || _player->HasFreeBattleGroundQueueId() && bgTypeId == BATTLEGROUND_RB)
             return;
     }
     else

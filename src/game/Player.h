@@ -2027,8 +2027,13 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasFreeBattleGroundQueueId()
         {
             for (int i=0; i < PLAYER_MAX_BATTLEGROUND_QUEUES; ++i)
+            {	
+				if (m_bgBattleGroundQueueID[i].bgQueueTypeId == BATTLEGROUND_QUEUE_RANDOM)
+					return false;
+					
                 if (m_bgBattleGroundQueueID[i].bgQueueTypeId == BATTLEGROUND_QUEUE_NONE)
                     return true;
+            }
             return false;
         }
         void RemoveBattleGroundQueueId(BattleGroundQueueTypeId val)
