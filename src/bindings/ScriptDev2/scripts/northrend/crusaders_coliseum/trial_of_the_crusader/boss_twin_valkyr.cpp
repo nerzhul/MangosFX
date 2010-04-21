@@ -161,7 +161,12 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 				m_pInstance->SetData(TYPE_VALKYRS,DONE);
 				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
+					
+				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+				Fjola->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 			}
+			else
+				me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
 		switch(difficulty)
 		{
@@ -358,8 +363,17 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
             m_pInstance->SetData(TYPE_Fjola_Lightbane, DONE);
             
 		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
-			if(!Eydis->isAlive())		
+			if(!Eydis->isAlive())
+			{
 				m_pInstance->SetData(TYPE_VALKYRS,DONE);
+				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
+					
+				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+				Eydis->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+			}
+			else
+				me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
     }
 
     void Aggro(Unit* pWho)
