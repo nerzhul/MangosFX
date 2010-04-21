@@ -1568,7 +1568,30 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
             bg = new BattleGroundIC(*(BattleGroundIC*)bg_template);
             break;
         case BATTLEGROUND_RB:
-            bg = new BattleGroundABG(*(BattleGroundABG*)bg_template);
+			switch(urand(0,2))
+			{
+				case 0:
+					bg = new BattleGroundWS(*(BattleGroundWS*)bg_template);
+					break;
+				case 1:
+					bg = new BattleGroundAB(*(BattleGroundAB*)bg_template);
+					break;
+				case 2:
+					bg = new BattleGroundEY(*(BattleGroundEY*)bg_template);
+					break;
+				case 3:
+					bg = new BattleGroundAV(*(BattleGroundAV*)bg_template);
+					break;
+				case 4:
+					bg = new BattleGroundSA(*(BattleGroundSA*)bg_template);
+					break;
+				case 5:
+					bg = new BattleGroundIC(*(BattleGroundIC*)bg_template);
+					break;
+				default:
+					break;
+				
+			}
             break;
         default:
             //error, but it is handled few lines above
