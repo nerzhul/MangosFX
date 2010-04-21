@@ -1352,7 +1352,7 @@ void WorldSession::HandleSetTitleOpcode( WorldPacket & recv_data )
 
 void WorldSession::HandleTimeSyncResp( WorldPacket & recv_data )
 {
-    sLog.outDebug("CMSG_TIME_SYNC_RESP");
+    //sLog.outDebug("CMSG_TIME_SYNC_RESP");
 
     uint32 counter, clientTicks;
     recv_data >> counter >> clientTicks;
@@ -1360,12 +1360,12 @@ void WorldSession::HandleTimeSyncResp( WorldPacket & recv_data )
     if(counter != _player->m_timeSyncCounter - 1)
         sLog.outDebug("Wrong time sync counter from player %s (cheater?)", _player->GetName());
 
-	sLog.outDebug("Time sync received: counter %u, client ticks %u, time since last sync %u", counter, clientTicks, clientTicks - _player->m_timeSyncClient);
+	//sLog.outDebug("Time sync received: counter %u, client ticks %u, time since last sync %u", counter, clientTicks, clientTicks - _player->m_timeSyncClient);
 
     uint32 ourTicks = clientTicks + (getMSTime() - _player->m_timeSyncServer);
 
     // diff should be small
-    sLog.outDebug("Our ticks: %u, diff %u, latency %u", ourTicks, ourTicks - clientTicks, GetLatency());
+    //sLog.outDebug("Our ticks: %u, diff %u, latency %u", ourTicks, ourTicks - clientTicks, GetLatency());
 
     _player->m_timeSyncClient = clientTicks;
 }

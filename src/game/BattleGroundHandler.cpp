@@ -90,10 +90,7 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
     recv_data >> joinAsGroup;                               // join as group
 
     if (!sBattlemasterListStore.LookupEntry(bgTypeId_))
-    {
-        sLog.outError("Battleground: invalid bgtype (%u) received. possible cheater? player guid %u",bgTypeId_,_player->GetGUIDLow());
         return;
-    }
 
     BattleGroundTypeId bgTypeId = BattleGroundTypeId(bgTypeId_);
 
@@ -338,11 +335,9 @@ void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
     recv_data >> type >> unk2 >> bgTypeId_ >> unk >> action;
 
     if (!sBattlemasterListStore.LookupEntry(bgTypeId_))
-    {
-        sLog.outError("BattlegroundHandler: invalid bgtype (%u) received.", bgTypeId_);
         return;
-    }
-    if (!_player->InBattleGroundQueue())
+    
+	if (!_player->InBattleGroundQueue())
     {
         sLog.outError("BattlegroundHandler: Invalid CMSG_BATTLEFIELD_PORT received from player (%u), he is not in bg_queue.", _player->GetGUIDLow());
         return;

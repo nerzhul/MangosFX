@@ -564,6 +564,9 @@ class BattleGround
 		Creature* AddCreature(uint32 entry, uint32 type, uint32 teamval, float x, float y, float z, float o, uint32 respawntime = 0);
 		bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
 		Creature* GetBGCreature(uint32 type);
+
+		bool IsRandomBG() { return m_RandomBG; }
+		void SetRandomBG(bool apply) { m_RandomBG = apply; }
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
@@ -645,5 +648,7 @@ class BattleGround
         float m_TeamStartLocY[BG_TEAMS_COUNT];
         float m_TeamStartLocZ[BG_TEAMS_COUNT];
         float m_TeamStartLocO[BG_TEAMS_COUNT];
+
+		bool m_RandomBG;
 };
 #endif

@@ -227,6 +227,7 @@ BattleGround::BattleGround()
     m_LevelMax          = 0;
     m_InBGFreeSlotQueue = false;
     m_SetDeleteThis     = false;
+	m_RandomBG			= false;
 
     m_MaxPlayersPerTeam = 0;
     m_MaxPlayers        = 0;

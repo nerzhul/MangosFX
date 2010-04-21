@@ -453,6 +453,9 @@ bool BattleGroundQueue::InviteGroupToBG(GroupQueueInfo * ginfo, BattleGround * b
         // set invitation
         ginfo->IsInvitedToBGInstanceGUID = bg->GetInstanceID();
         BattleGroundTypeId bgTypeId = bg->GetTypeID();
+		if(bg->IsRandomBG())
+			bgTypeId = BATTLEGROUND_RB;
+
         BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(bgTypeId, bg->GetArenaType());
         BattleGroundBracketId bracket_id = bg->GetBracketId();
 
@@ -1264,7 +1267,12 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
     data->Initialize(SMSG_BATTLEFIELD_STATUS, (4+8+1+1+4+1+4+4+4));
     *data << uint32(QueueSlot);                             // queue id (0...1) - player can be in 2 queues in time
     // uint64 in client
-    *data << uint64( uint64(arenatype) | (uint64(0x0D) << 8) | (uint64(bg->GetTypeID()) << 16) | (uint64(0x1F90) << 48) );
+
+	BattleGroundTypeId _bgTypeId = bg->GetTypeID();
+	if(bg->IsRandomBG())
+		_bgTypeId = BATTLEGROUND_RB;
+
+    *data << uint64( uint64(arenatype) | (uint64(0x0D) << 8) | (uint64(_bgTypeId) << 16) | (uint64(0x1F90) << 48) );
     *data << uint8(0);                                      // 3.3.0
     *data << uint8(0);                                      // 3.3.0
     *data << uint32(bg->GetClientInstanceID());
@@ -1596,8 +1604,8 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 					break;
 				default:
 					break;
-				
 			}
+			bg->SetRandomBG(true);
             break;
         default:
             //error, but it is handled few lines above

@@ -2604,7 +2604,7 @@ enum BattleGroundTypeId
     BATTLEGROUND_DS            = 10,
     BATTLEGROUND_RV            = 11,
     BATTLEGROUND_IC            = 30,
-    BATTLEGROUND_RB           = 32
+    BATTLEGROUND_RB            = 32
 };
 #define MAX_BATTLEGROUND_TYPE_ID 33
 
