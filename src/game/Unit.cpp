@@ -1262,6 +1262,14 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         break;
     }
 
+	// only from players
+    if (GetTypeId() == TYPEID_PLAYER)
+    {
+        uint32 reduction_affected_damage = CalcNotIgnoreDamageRedunction(damage,SpellSchoolMask(damageInfo->schoolMask));
+		damage      -= pVictim->GetSpellDamageReduction(reduction_affected_damage);
+        damageInfo->cleanDamage += resilienceReduction;
+    }
+    
     // damage mitigation
     if (damage > 0)
     {
@@ -1288,18 +1296,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     else
         damage = 0;
 
-	// only from players
-    if (GetTypeId() == TYPEID_PLAYER)
-    {
-        uint32 reduction_affected_damage = CalcNotIgnoreDamageRedunction(damage,SpellSchoolMask(damageInfo->schoolMask));
-        uint32 resilienceReduction;
-        resilienceReduction = pVictim->GetSpellDamageReduction(reduction_affected_damage);
-
-		damage      -= resilienceReduction;
-        damageInfo->cleanDamage += resilienceReduction;
-    }
-
-    damageInfo->damage = damage;
+	damageInfo->damage = damage;
 }
 
 void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
