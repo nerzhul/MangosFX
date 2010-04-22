@@ -1445,6 +1445,7 @@ void Player::Update( uint32 p_time )
             {
                 RemoveAurasDueToSpell(58600);
             }
+
             if (HasAura(61243)) // Parachute Visual
             {
                 float x, y, z;
@@ -13741,11 +13742,7 @@ void Player::AddQuest( Quest const *pQuest, Object *questGiver )
         for(SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
             if(itr->second->autocast && itr->second->IsFitToRequirements(this,zone,area))
                 if( !HasAura(itr->second->spellId,0) )
-				{
-					// Rescricted Flight Area should not be casted while not fly-mounted
-					if(itr->second->spellId != 58600 || (HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED) || HasAuraType(SPELL_AURA_FLY) || isInFlight()))
-						CastSpell(this,itr->second->spellId,true);
-				}
+					CastSpell(this,itr->second->spellId,true);
     }
 
     UpdateForQuestWorldObjects();
@@ -20709,7 +20706,11 @@ void Player::UpdateAreaDependentAuras( uint32 newArea )
     for(SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
         if(itr->second->autocast && itr->second->IsFitToRequirements(this,m_zoneUpdateId,newArea))
             if( !HasAura(itr->second->spellId,0) )
-                CastSpell(this,itr->second->spellId,true);
+			{
+				// Rescricted Flight Area should not be casted while not fly-mounted
+				if(itr->second->spellId != 58600 || (HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED) || HasAuraType(SPELL_AURA_FLY) || isInFlight()))
+					CastSpell(this,itr->second->spellId,true);
+			}
 
 	if(newArea == 4273 && GetVehicle() && GetPositionX() > 400) // Ulduar
     {

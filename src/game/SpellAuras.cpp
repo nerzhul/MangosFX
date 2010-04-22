@@ -2676,7 +2676,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             }
 			case 58600:                                     // Restricted Flight Area
             {
-				if(m_target->IsMounted())
+				if(m_target->IsMounted() && m_target->GetAreaId() != 4598 && m_target->GetZoneId() != 2817)
 				{
 					// Remove Flight Auras
 					m_target->CastSpell(m_target, 58601, true);
