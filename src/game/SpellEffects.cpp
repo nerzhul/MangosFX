@@ -2655,6 +2655,11 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
             m_caster->ModifyPower(POWER_RUNIC_POWER, 25);
             return;
         }
+       case 58931:
+       {
+		   triggered_spell_id = 57940;
+		   break;		   
+	   }
     }
 
     // normal case
