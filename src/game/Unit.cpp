@@ -1295,7 +1295,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         uint32 resilienceReduction;
         resilienceReduction = pVictim->GetSpellDamageReduction(reduction_affected_damage);
 
-		damageInfo->damage      -= resilienceReduction;
+		damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
 
