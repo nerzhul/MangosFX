@@ -2891,8 +2891,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         return SPELL_MISS_NONE;
     }
 
-    // Check for attack from behind
-    if (!pVictim->HasInArc(M_PI,this))
+    // Check for attack from behind but not for deterrence
+    if (!pVictim->HasInArc(M_PI,this) && spell->Id != 19263)
     {
         // Can`t dodge from behind in PvP (but its possible in PvE)
         if (GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
