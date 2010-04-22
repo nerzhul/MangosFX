@@ -438,8 +438,11 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 
 	void ClosePortal(uint32 id_portal)
 	{
-		portals[id_portal]->DealDamage(portals[id_portal],portals[id_portal]->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-		portals[id_portal]->ForcedDespawn();
+		if(portals[id_portal] && portals[id_portal]->isAlive())
+		{
+			portals[id_portal]->DealDamage(portals[id_portal],portals[id_portal]->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+			portals[id_portal]->ForcedDespawn();
+		}
 		portals[id_portal] = NULL;
 		portal_opened[id_portal] = false;
 	}
