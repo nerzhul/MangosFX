@@ -2848,8 +2848,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 
     uint32 missChance = uint32(MeleeSpellMissChance(pVictim, attType, fullSkillDiff, spell)*100.0f);
     // Roll miss
-    uint32 tmp = missChance;
-    if (roll < tmp)
+    if (roll < missChance)
         return SPELL_MISS_MISS;
 
     // Chance resist mechanic (select max value from every mechanic spell effect)
@@ -2866,8 +2865,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         }
     }
     // Roll chance
-    tmp += resist_mech;
-    if (roll < tmp)
+    roll = urand (0, 10000);
+    if (roll < resist_mech)
         return SPELL_MISS_RESIST;
 
     bool canDodge = true;
@@ -2938,8 +2937,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         if (dodgeChance < 0)
             dodgeChance = 0;
 
-        tmp += dodgeChance;
-        if (roll < tmp)
+        roll = urand (0, 10000);
+        if (roll < dodgeChance)
             return SPELL_MISS_DODGE;
     }
 
@@ -2955,8 +2954,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         if (parryChance < 0)
             parryChance = 0;
 
-        tmp += parryChance;
-        if (roll < tmp)
+        roll = urand (0, 10000);
+        if (roll < parryChance)
             return SPELL_MISS_PARRY;
     }
 
