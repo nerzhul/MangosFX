@@ -14488,15 +14488,6 @@ void Unit::ExitVehicle()
         return;
 
     Unit *vehicleBase = m_vehicle->GetBase();
-    const AuraList &modAuras = vehicleBase->GetAurasByType(SPELL_AURA_CONTROL_VEHICLE);
-    /*for (AuraList::const_iterator itr = modAuras.begin(); itr != modAuras.end(); ++itr)
-    {
-        if ((*itr)->GetSourceGUID() == GetGUID())
-        {
-            vehicleBase->RemoveAura((*itr)->GetParentAura());
-            break; // there should be no case that a vehicle has two auras for one source
-        }
-    }*/
 
     if (!m_vehicle)
         return;
@@ -14510,6 +14501,8 @@ void Unit::ExitVehicle()
     data.append(GetPackGUID());
     data << (uint32)2;
     SendMessageToSet(&data,true);
+
+	clearUnitState(UNIT_STAT_ON_VEHICLE);
 	m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
 
     m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
@@ -14518,14 +14511,14 @@ void Unit::ExitVehicle()
     Relocate(vehicle->GetBase()->GetPositionX(),vehicle->GetBase()->GetPositionY(),vehicle->GetBase()->GetPositionZ(),0.0f);
 
     //Send leave vehicle, not correct
+	RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
     if (GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data;
-		((Player*)this)->SetCharm(NULL);
-		((Player*)this)->SetMover(this);
         ((Player*)this)->BuildTeleportAckMsg(&data, vehicle->GetBase()->GetPositionX(),vehicle->GetBase()->GetPositionY(),vehicle->GetBase()->GetPositionZ(), 0.0f);
         ((Player*)this)->GetSession()->SendPacket(&data);
         ((Player*)this)->SetFallInformation(0, GetPositionZ());
+		
     }
     WorldPacket data2;
     BuildHeartBeatMsg(&data2);
@@ -14567,11 +14560,12 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         ((Player*)this)->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
     }
 
-	
-
-    ASSERT(!m_vehicle);
+	if(m_vehicle)
+		return;
 	
     m_vehicle = vehicle;
+
+	addUnitState(UNIT_STAT_ON_VEHICLE);
 
     if (!m_vehicle->AddPassenger(this, seatId))
     {
@@ -14579,6 +14573,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         return;
     }
 
+	
 	m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
     WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
     data.append(GetPackGUID());
@@ -14646,6 +14641,7 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     data.append(vehicleOwner->GetPackGUID());
     data << int8(GetTransSeat());
     data << uint8(0);
+	sLog.outError("%f %f %f %f %f %f",GetPositionX(),GetPositionY(),GetPositionZ(),vehicleOwner->GetPositionX(),vehicleOwner->GetPositionY(),vehicleOwner->GetPositionZ());
     data << GetPositionX() - vehicleOwner->GetPositionX();
     data << GetPositionY() - vehicleOwner->GetPositionY();
     data << GetPositionZ() - vehicleOwner->GetPositionZ();
@@ -14654,9 +14650,10 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     data << GetTransOffsetO();
     data << uint32(0x00800000);
     data << uint32(0);// move time
-    data << uint32(0);//GetTransOffsetX();
-    data << uint32(0);//GetTransOffsetY();
-    data << uint32(0);//GetTransOffsetZ();
+	data << uint32(1);
+    data << uint32(GetTransOffsetX());//GetTransOffsetX();
+    data << uint32(GetTransOffsetY());//GetTransOffsetY();
+    data << uint32(GetTransOffsetZ());//GetTransOffsetZ();
     SendMessageToSet(&data, true);
 }
 

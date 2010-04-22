@@ -79,7 +79,7 @@ class BattleGroundQueue
         void Update(BattleGroundTypeId bgTypeId, BattleGroundBracketId bracket_id, uint8 arenaType = 0, bool isRated = false, uint32 minRating = 0);
 
         void FillPlayersToBG(BattleGround* bg, BattleGroundBracketId bracket_id);
-        bool CheckPremadeMatch(BattleGroundBracketId bracket_id, uint32 MinPlayersPerTeam, uint32 MaxPlayersPerTeam);
+        bool CheckPremadeMatch(BattleGroundBracketId bracket_id, uint32 MaxPlayersPerTeam);
         bool CheckNormalMatch(BattleGround* bg_template, BattleGroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers);
         bool CheckSkirmishForSameFaction(BattleGroundBracketId bracket_id, uint32 minPlayersPerTeam);
         GroupQueueInfo * AddGroup(Player* leader, Group* group, BattleGroundTypeId bgTypeId, PvPDifficultyEntry const*  backetEntry, uint8 ArenaType, bool isRated, bool isPremade, uint32 ArenaRating, uint32 ArenaTeamId = 0);

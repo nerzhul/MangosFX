@@ -153,12 +153,19 @@ void WorldSession::HandleLfgSetAutoJoinOpcode( WorldPacket & recv_data )
     /*LookingForGroup_auto_join = true;*/
 	
 	uint32 roles;
+	uint8 max_instances, instance_mask;
+
 	recv_data >> roles;
-	std::vector<uint32> tmpPacks;
-	// todo : gestion des instances
-	recv_data >> tmpPacks;
-	for(int i=0;i<tmpPacks.size();i++)
-		sLog.outDebug("%u",tmpPacks[i]);
+	recv_data.read_skip<uint8>();
+	recv_data.read_skip<uint32>();
+	recv_data >> max_instances;
+	recv_data >> instance_mask;
+	
+	for(uint8 i=0;i<max_instances;i++)
+		recv_data.read_skip<uint32>(); // 3 bytes per instance
+
+	recv_data.read_skip<uint32>(); // only zeros, end of packets
+	recv_data.hexlike();
     if(!_player)                                            // needed because STATUS_AUTHED
         return;
 
@@ -445,15 +452,12 @@ void WorldSession::SendLfgUpdate(uint8 unk1, uint8 unk2, uint8 unk3)
 void WorldSession::HandleLFDPlayerLockRequest(WorldPacket &recv_data)
 {
 	sLog.outDebug("CMSG_LFD_PLAYER_LOCK_INFO_REQUEST");
-	// rien a dire de ce packet
 	HandleLFDPlayerLockResponse();
 }
 
 void WorldSession::HandleLFDPartyLockRequest(WorldPacket &recv_data)
 {
-	sLog.outDebug("CMSG_LFD_PARTY_LOCK_INFO_REQUEST");
-	// rien a dire de ce packet
-	HandleLFDPlayerLockResponse();
+	//sLog.outDebug("CMSG_LFD_PARTY_LOCK_INFO_REQUEST");
 }
 
 void WorldSession::HandleLFDPlayerLockResponse()
@@ -464,27 +468,27 @@ void WorldSession::HandleLFDPlayerLockResponse()
 	data << uint8(0);
 	for(uint8 i=0;i<2;i++)
 	{
-		data << uint32(0);
+		data << uint32(51970);
 		data << uint8(0);
-		data << uint32(0);
-		data << uint32(0);
-		data << uint32(0);
-		data << uint32(0);
+		data << uint32(51971);
+		data << uint32(51972);
+		data << uint32(51973);
+		data << uint32(51974);
 		data << uint8(0);
 		for(uint8 i=0;i<8;i++)
 		{
-			data << uint32(0);
-			data << uint32(0);
-			data << uint32(0);
+			data << uint32(51969);
+			data << uint32(51968);
+			data << uint32(51967);
 		}
 	}
-	data << uint32(0);
+	data << uint32(51251);
 	for(uint32 i=0;i<3;i++)
 	{
-		data << uint32(0);
-		data << uint32(0);
+		data << uint32(51252);
+		data << uint32(51253);
 	}
 
-	// SMSG   uint8, for(uint8) {uint32,uint32, uint32}}, uint32, for(uint32) {uint32,uint32}
+	// SMSG  uint8, for(uint8) { uint32, uint8, uint32, uint32, uint32, uint32, uint8, for(uint8) {uint32,uint32, uint32}}, uint32, for(uint32) {uint32,uint32}
 	SendPacket(&data);
 }

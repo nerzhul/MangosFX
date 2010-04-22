@@ -313,31 +313,52 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     //SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
+	
+
     VehicleSeatEntry const *veSeat = seat->second.seatInfo;
-	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
-		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
+	/*unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
+		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);*/
+
+	sLog.outError("test 0");
 
     if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800) // not right
 	{
+		sLog.outError("test 1");
+		unit->SendMonsterMoveTransport(me);
+
+		sLog.outError("test 2");
+		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+
+		sLog.outError("test 3");
+
 		me->setFaction(((Player*)unit)->getFaction());
-		me->SetCharmerGUID(unit->GetGUID());
-		((Player*)unit)->SetCharm(me);
+		sLog.outError("test 4");
+		
+		unit->SetCharm(me);
+		sLog.outError("test 5");
+		((Player*)unit)->SetFarSightGUID(me->GetGUID());
+		sLog.outError("test 6");
+		((Player*)unit)->SetClientControl(me, 1);
+		sLog.outError("test 7");
+		((Player*)unit)->SetMover(me);
+
+
 		if (((Player*)unit)->isAFK())
             ((Player*)unit)->ToggleAFK();
 		
-        //((Player*)unit)->SetMover(me);
-        ((Player*)unit)->SetClientControl(this, 1);
+       // ((Player*)unit)->SetMoverInQueve(this);
+        
 		if(((Player*)unit)->GetGroup())
            ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
 
-        ((Player*)unit)->SetFarSightGUID(me->GetGUID());
+		
 		((Player*)unit)->VehicleSpellInitialize();
 	}
 
+	sLog.outError("test 10");
     if(me->IsInWorld())
     {
-        unit->SendMonsterMoveTransport(me);
-
         if(me->GetTypeId() == TYPEID_UNIT)
         {
             /*if(((Creature*)me)->IsAIEnabled)
@@ -384,7 +405,15 @@ void Vehicle::RemovePassenger(Unit *unit)
     {
 		((Player*)unit)->SetMover(unit);
 		((Player*)unit)->SetClientControl(unit, 1);
+		((Player*)unit)->SetMoverInQueve(NULL);
+		((Player*)unit)->RemovePetActionBar();
+		if(((Player*)unit)->GetGroup())
+			((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+		((Player*)unit)->SetFarSightGUID(NULL);
 	}
+	unit->SetCharm(NULL);
+    me->SetCharmerGUID(NULL);
+
 
     //SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 

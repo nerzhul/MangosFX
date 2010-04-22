@@ -115,7 +115,6 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 		{
 			DoCastVictim(spell_tourbi);
 			spell_tourbi_timer = 5000000; // Valeur Fausse mais elle est reset en fin de P2
-			me->Attack(target, true);
 		}
 		else
 			spell_tourbi_timer -= uiDiff;

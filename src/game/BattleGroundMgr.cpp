@@ -589,7 +589,7 @@ void BattleGroundQueue::FillPlayersToBG(BattleGround* bg, BattleGroundBracketId 
 // this method checks if premade versus premade battleground is possible
 // then after 30 mins (default) in queue it moves premade group to normal queue
 // it tries to invite as much players as it can - to MaxPlayersPerTeam, because premade groups have more than MinPlayersPerTeam players
-bool BattleGroundQueue::CheckPremadeMatch(BattleGroundBracketId bracket_id, uint32 MinPlayersPerTeam, uint32 MaxPlayersPerTeam)
+bool BattleGroundQueue::CheckPremadeMatch(BattleGroundBracketId bracket_id, uint32 MaxPlayersPerTeam)
 {
     //check match
     if (!m_QueuedGroups[bracket_id][BG_QUEUE_PREMADE_ALLIANCE].empty() && !m_QueuedGroups[bracket_id][BG_QUEUE_PREMADE_HORDE].empty())
@@ -634,7 +634,7 @@ bool BattleGroundQueue::CheckPremadeMatch(BattleGroundBracketId bracket_id, uint
         if (!m_QueuedGroups[bracket_id][BG_QUEUE_PREMADE_ALLIANCE + i].empty())
         {
             GroupsQueueType::iterator itr = m_QueuedGroups[bracket_id][BG_QUEUE_PREMADE_ALLIANCE + i].begin();
-            if (!(*itr)->IsInvitedToBGInstanceGUID && ((*itr)->JoinTime < time_before || (*itr)->Players.size() < MinPlayersPerTeam))
+            if (!(*itr)->IsInvitedToBGInstanceGUID && ((*itr)->JoinTime < time_before || (*itr)->Players.size() < MaxPlayersPerTeam))
             {
                 //we must insert group to normal queue and erase pointer from premade queue
                 m_QueuedGroups[bracket_id][BG_QUEUE_NORMAL_ALLIANCE + i].push_front((*itr));
@@ -856,7 +856,7 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
     if (bg_template->isBattleGround())
     {
         //check if there is premade against premade match
-        if (CheckPremadeMatch(bracket_id, MinPlayersPerTeam, MaxPlayersPerTeam))
+        if (CheckPremadeMatch(bracket_id, MaxPlayersPerTeam))
         {
             //create new battleground
             BattleGround * bg2 = sBattleGroundMgr.CreateNewBattleGround(bgTypeId, bracketEntry, 0, false);

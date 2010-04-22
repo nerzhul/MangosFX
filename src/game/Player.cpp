@@ -19704,6 +19704,7 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     m_mover = this;
 	m_movedPlayer = NULL;
+	m_mover_in_queve = NULL;
 }
 
 void Player::SendInitialPacketsAfterAddToMap()

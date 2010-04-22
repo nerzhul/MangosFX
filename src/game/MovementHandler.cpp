@@ -470,22 +470,16 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
 	if(GetPlayer() && GetPlayer()->m_mover && guid == GetPlayer()->m_mover->GetGUID())
         return;
 
-    if(Unit *mover = ObjectAccessor::GetUnit(*GetPlayer(), guid))
+    if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
     {
-        GetPlayer()->SetMover(mover);
-
-        /*if(mover != GetPlayer() && mover->canfly())
-        {
-            WorldPacket data(SMSG_MOVE_SET_CAN_FLY, 12);
-            data.append(mover->GetPackGUID());
-            data << uint32(0);
-            SendPacket(&data);
-        }*/
+        _player->m_mover = _player->m_mover_in_queve;
+        _player->m_mover_in_queve = NULL;
     }
-    else
+
+    if(_player->m_mover->GetGUID() != guid)
     {
-        sLog.outError("HandleSetActiveMoverOpcode: incorrect mover guid: mover is " UI64FMTD " and should be " UI64FMTD, guid, _player->m_mover->GetGUID());
-        GetPlayer()->SetMover(GetPlayer());
+        sLog.outError("HandleSetActiveMoverOpcode: incorrect mover guid: mover is " I64FMT " and should be " I64FMT, _player->m_mover->GetGUID(), guid);
+        return;
     }
 }
 

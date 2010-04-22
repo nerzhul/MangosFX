@@ -2107,6 +2107,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool HasMovementFlag(MovementFlags f) const;        // for script access to m_movementInfo.HasMovementFlag
         void UpdateFallInformationIfNeed(MovementInfo const& minfo,uint16 opcode);
         Unit *m_mover;
+		Unit* m_mover_in_queve;
 		
         void SetFallInformation(uint32 time, float z)
         {
@@ -2126,12 +2127,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         void SetClientControl(Unit* target, uint8 allowMove);
 
-		void SetMover(Unit* target)
-        {
-            m_mover->m_movedPlayer = NULL;
-            m_mover = target;
-            m_mover->m_movedPlayer = this;
-        }
+		void SetMover(Unit* target) { m_mover = target ? target : this; }
+		void SetMoverInQueve(Unit* pet) {m_mover_in_queve = pet ? pet : this; }
+
 		WorldObject *m_seer;
 		void SetSeer(WorldObject *target) { m_seer = target; }
         //void EnterVehicle(Vehicle *vehicle);
