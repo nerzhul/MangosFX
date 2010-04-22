@@ -14515,6 +14515,8 @@ void Unit::ExitVehicle()
         ((Player*)this)->BuildTeleportAckMsg(&data, vehicle->GetBase()->GetPositionX(),vehicle->GetBase()->GetPositionY(),vehicle->GetBase()->GetPositionZ(), 0.0f);
         ((Player*)this)->GetSession()->SendPacket(&data);
         ((Player*)this)->SetFallInformation(0, GetPositionZ());
+
+		((Player*)this)->SetMover(NULL);
 		
     }
     WorldPacket data2;
@@ -14638,7 +14640,6 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     data.append(vehicleOwner->GetPackGUID());
     data << int8(GetTransSeat());
     data << uint8(0);
-	sLog.outError("%f %f %f %f %f %f",GetPositionX(),GetPositionY(),GetPositionZ(),vehicleOwner->GetPositionX(),vehicleOwner->GetPositionY(),vehicleOwner->GetPositionZ());
     data << GetPositionX() - vehicleOwner->GetPositionX();
     data << GetPositionY() - vehicleOwner->GetPositionY();
     data << GetPositionZ() - vehicleOwner->GetPositionZ();

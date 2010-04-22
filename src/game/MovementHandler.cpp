@@ -226,7 +226,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 {
     uint32 opcode = recv_data.GetOpcode();
     sLog.outDebug("WORLD: Recvd %s (%u, 0x%X) opcode", LookupOpcodeName(opcode), opcode, opcode);
-    recv_data.hexlike();
 
     Unit *mover = _player->m_mover;
 	if(!mover)
@@ -323,12 +322,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 
 	mover->m_movementInfo = movementInfo;
 
-	if (mover->GetVehicle())
-    {
-        mover->SetOrientation(movementInfo.GetPos()->o);
-        return;
-    }
-
     if(plMover)                                             // nothing is charmed, or player charmed
     {
         plMover->SetPosition(movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
@@ -375,10 +368,11 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     }
     else                                                    // creature charmed
     {
-		//mover->SetPosition(movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
         if(mover->IsInWorld())
 		{
             mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
+			/*if(((Creature*)mover)->isVehicle())
+				((Creature*)mover)->RelocatePassengers(mover->GetMap());*/
 		}
     }
 }
@@ -462,43 +456,39 @@ void WorldSession::HandleForceSpeedChangeAck(WorldPacket &recv_data)
 void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_SET_ACTIVE_MOVER");
-    recv_data.hexlike();
 
-    uint64 guid;
+	uint64 guid;
     recv_data >> guid;
 
-	if(GetPlayer() && GetPlayer()->m_mover && guid == GetPlayer()->m_mover->GetGUID())
-        return;
-
-    if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
+    /*if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
     {
+		sLog.outError("test");
         _player->m_mover = _player->m_mover_in_queve;
         _player->m_mover_in_queve = NULL;
-    }
+    }*/
 
-    if(_player->m_mover->GetGUID() != guid)
-    {
-        sLog.outError("HandleSetActiveMoverOpcode: incorrect mover guid: mover is " I64FMT " and should be " I64FMT, _player->m_mover->GetGUID(), guid);
-        return;
-    }
+/*
+	   else
+		{
+			sLog.outError("HandleSetActiveMoverOpcode: incorrect mover guid: mover is " I64FMT " and should be " I64FMT, _player->m_mover->GetGUID(), guid);
+	    }*/
 }
 
 void WorldSession::HandleMoveNotActiveMover(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_MOVE_NOT_ACTIVE_MOVER");
-    recv_data.hexlike();
 
     uint64 old_mover_guid;
 
     if(!recv_data.readPackGUID(old_mover_guid))
         return;
 
-    /*if(_player->m_mover->GetGUID() == old_mover_guid)
+    if(_player->m_mover->GetGUID() == old_mover_guid)
     {
         sLog.outError("HandleMoveNotActiveMover: incorrect mover guid: mover is " I64FMT " and should be " I64FMT " instead of " UI64FMTD, _player->m_mover->GetGUID(), _player->GetGUID(), old_mover_guid);
         recv_data.rpos(recv_data.wpos());                   // prevent warnings spam
         return;
-    }*/
+    }
 
     MovementInfo mi(recv_data);
 

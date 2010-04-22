@@ -848,6 +848,10 @@ void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
     // Calculate hit result
     target.missCondition = m_caster->SpellHitResult(pVictim, m_spellInfo, m_canReflect);
 
+	if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0080000000000000) && m_spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST)
+		target.missCondition = SPELL_MISS_NONE;
+
+
     // Spell have speed - need calculate incoming time
     if (m_spellInfo->speed > 0.0f)
     {
