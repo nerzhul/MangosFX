@@ -861,12 +861,12 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 	}
 }
 
-void MobEventTasks::Kill(Unit* toKill)
+void ScriptedAI::Kill(Unit* toKill)
 {
 	if(!toKill)
 		return;
 
-	thisCr->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+	me->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 }
 
 void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)

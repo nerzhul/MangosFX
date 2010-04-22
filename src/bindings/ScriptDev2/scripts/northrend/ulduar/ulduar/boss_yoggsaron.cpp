@@ -280,7 +280,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 	void ControlPlayer(Player* plr)
 	{
-		Tasks.Kill(plr);
+		Kill(plr);
 	}
 
 	void PoPYoggPortals()

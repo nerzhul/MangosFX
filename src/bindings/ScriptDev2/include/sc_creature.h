@@ -198,6 +198,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
 	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }
+	void Kill(Unit* toKill);
 
     private:
         bool   m_bCombatMovement;
@@ -310,8 +311,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 			EventShVect.clear();
 			EventSummonVect.clear();
 		}
-
-		void Kill(Unit* toKill);
 
 		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
 

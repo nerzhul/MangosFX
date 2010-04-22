@@ -879,7 +879,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 							if (Player* pPlayer = itr->getSource())
 								if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < 14.0f)
 								{
-									Tasks.Kill(pPlayer);
+									Kill(pPlayer);
 									PlayerHit = true;
 								}
 						}

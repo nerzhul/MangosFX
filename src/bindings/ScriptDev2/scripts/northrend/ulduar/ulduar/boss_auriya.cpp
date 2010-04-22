@@ -190,7 +190,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 					DoCastVictim(SPELL_SEEPING_25);
 				else
 					DoCastVictim(SPELL_SEEPING_10);
-				Tasks.Kill(me);
+				Kill(me);
 			}
 		}
 	}

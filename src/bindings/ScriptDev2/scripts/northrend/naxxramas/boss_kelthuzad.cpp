@@ -625,7 +625,7 @@ struct MANGOS_DLL_DECL mob_shadow_issureAI : public Scripted_NoMovementAI
                     for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
                     {
                         if (i->getSource()->isAlive() && me->GetDistance2d(i->getSource()) < 2.0f)
-                           Tasks.Kill(i->getSource());
+                           Kill(i->getSource());
                     }
                 }
                 me->ForcedDespawn(1500);

@@ -13741,7 +13741,11 @@ void Player::AddQuest( Quest const *pQuest, Object *questGiver )
         for(SpellAreaForAreaMap::const_iterator itr = saBounds.first; itr != saBounds.second; ++itr)
             if(itr->second->autocast && itr->second->IsFitToRequirements(this,zone,area))
                 if( !HasAura(itr->second->spellId,0) )
-                    CastSpell(this,itr->second->spellId,true);
+				{
+					// Rescricted Flight Area should not be casted while not fly-mounted
+					if(itr->second->spellId != 58600 || (HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED) || HasAuraType(SPELL_AURA_FLY) || isInFlight()))
+						CastSpell(this,itr->second->spellId,true);
+				}
     }
 
     UpdateForQuestWorldObjects();

@@ -422,7 +422,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 							if(Flopboum)
 								Jaraxxus->CastSpell(Flopboum,31008,false);
 						}
-						Tasks.Kill(Flopboum);
+						Kill(Flopboum);
 						Tasks.Speak(CHAT_TYPE_YELL,16044,"Vite héros anéantissez le seigneur démon avant qu'il ne puisse ouvrir un portail vers son épouvantable royaume démoniaque !",Fordring);
 						if (Creature* Jaraxxus = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_JARAXXUS))))
 							Jaraxxus->setFaction(14);
@@ -611,7 +611,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 							for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 								if (Player* pPlayer = itr->getSource())
 									if(pPlayer->isAlive() && urand(0,3) == 3)
-										Tasks.Kill(pPlayer);
+										Kill(pPlayer);
 
 						if (Creature* AnubArak = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_ANUBARAK))))
 						{

@@ -169,7 +169,7 @@ void boss_steelbreakerAI::DamageTaken(Unit* pKiller, uint32 &damage)
 				((boss_runemaster_molgeimAI*)((Creature*)Molgeim)->AI())->UpdatePhase();
             }
 		
-		MobsTasks.Kill(me);
+		Kill(me);
     }
 }
 
@@ -286,7 +286,7 @@ void boss_runemaster_molgeimAI::DamageTaken(Unit* pKiller, uint32 &damage)
 				((boss_stormcaller_brundirAI*)((Creature*)Brundir)->AI())->UpdatePhase();
             }
 
-		MobsTasks.Kill(me);
+		Kill(me);
     }
 }
 
@@ -449,7 +449,7 @@ void boss_stormcaller_brundirAI::DamageTaken(Unit* pKiller, uint32 &damage)
 				((boss_runemaster_molgeimAI*)((Creature*)Molgeim)->AI())->UpdatePhase();
             }
 		
-		MobsTasks.Kill(me);        
+		Kill(me);        
     }
 }
 

@@ -276,7 +276,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
             Creature *pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[i]);
             if (pMinion)
 			{
-				Tasks.Kill(pMinion);
+				Kill(pMinion);
 				pMinion->SetRespawnDelay(7*RESPAWN_ONE_DAY*1000);
 			}
         }
@@ -376,7 +376,7 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 
         if (m_bTimeToDie)
         {
-			Tasks.Kill(me);
+			Kill(me);
             return;
         }
 

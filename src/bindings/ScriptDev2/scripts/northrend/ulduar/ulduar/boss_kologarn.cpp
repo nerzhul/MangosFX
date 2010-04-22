@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL mob_ulduar_rubbleAI : public ScriptedAI
     {
 		if (Death_Timer < diff && die)
         {
-			Tasks.Kill(me);
+			Kill(me);
         }
 		else 
 			Death_Timer -= diff;

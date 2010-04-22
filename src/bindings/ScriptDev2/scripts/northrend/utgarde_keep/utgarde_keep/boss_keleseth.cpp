@@ -77,8 +77,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
     {
 		DoScriptText(SAY_DEATH, me);
 		if(tomb)
-			if(tomb->isAlive())
-				Tasks.Kill(tomb);
+			tomb->RemoveFromWorld();
 
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
@@ -100,7 +99,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			me->CastStop();
 
 			targettomb = SelectUnit(SELECT_TARGET_RANDOM,0);			
-			if(tomb = me->SummonCreature(NPC_FROST_TOMB,targettomb->GetPositionX(),targettomb->GetPositionY(),targettomb->GetPositionZ(),0.0f,TEMPSUMMON_TIMED_DESPAWN,20000))
+			if(tomb = Tasks.CallCreature(NPC_FROST_TOMB,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,targettomb->GetPositionX(),targettomb->GetPositionY(),targettomb->GetPositionZ()))
 			{
 				DoScriptText(EMOTE_TOMB,me);
 				if(targettomb)

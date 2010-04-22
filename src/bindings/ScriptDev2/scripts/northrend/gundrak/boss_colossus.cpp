@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 		if (Tasks.GetPercentLife() < 50 && Tasks.GetPercentLife() > 40)
 			me->SetHealth((me->GetMaxHealth()/2));
 		else if (Tasks.CheckPercentLife(10)) 
-			Tasks.Kill(me);
+			Kill(me);
 
 		DoMeleeAttackIfReady();
 

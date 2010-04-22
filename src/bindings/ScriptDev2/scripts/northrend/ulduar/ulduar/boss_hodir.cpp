@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 				if(!isNear)
 				{
 					if((*itr)->plr->HasAura(SPELL_FREEZE))
-						Tasks.Kill((*itr)->plr);
+						Kill((*itr)->plr);
 					else
 					{
 						Tasks.SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);

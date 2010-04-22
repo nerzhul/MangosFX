@@ -123,7 +123,7 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
 					{
 						if((*itr)->isAlive() && (*itr)->GetDistance2d(me->GetPositionX(),me->GetPositionY()) < 7.0f)
 						{
-							Tasks.Kill((*itr));
+							Kill((*itr));
 							me->SetHealth(me->GetHealth() + me->GetMaxHealth() * 0.04);
 						}
 					}

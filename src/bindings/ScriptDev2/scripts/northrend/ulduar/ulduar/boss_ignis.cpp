@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
         {
 			if((*itr))
 			{
-				Tasks.Kill((*itr));
+				Kill((*itr));
 			}
 		}
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 					Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
 
-			Tasks.Kill(me);
+			Kill(me);
 		}
 		else if(me->HasAura(SPELL_FRAGILE_10) && damage > 5000)
 		{
@@ -227,7 +227,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
 					Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
-			Tasks.Kill(me);
+			Kill(me);
 		}
 	}
 

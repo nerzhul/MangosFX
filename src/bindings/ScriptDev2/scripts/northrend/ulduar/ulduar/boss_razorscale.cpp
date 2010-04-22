@@ -170,7 +170,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
             return;
 
         if (me->getVictim() && !me->getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself())
-            Tasks.Kill(me->getVictim());
+            Kill(me->getVictim());
 
 		if(Phase == PHASE_FLY_I || Phase == PHASE_FLY)
 		{

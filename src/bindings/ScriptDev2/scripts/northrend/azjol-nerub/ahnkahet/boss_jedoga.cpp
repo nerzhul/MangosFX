@@ -202,7 +202,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 			
 			if(add_choice)
 				if ((add_choice->GetPositionX() == me->GetPositionX()) && (add_choice->GetPositionY() == me->GetPositionY())) //marche pas
-					Tasks.Kill(add_choice);
+					Kill(add_choice);
 		}
 
 		Tasks.UpdateEvent(uiDiff);

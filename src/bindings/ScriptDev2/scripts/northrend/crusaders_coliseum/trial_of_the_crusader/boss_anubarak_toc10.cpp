@@ -357,7 +357,7 @@ struct MANGOS_DLL_DECL anub_sphereAI : public ScriptedAI
 		if(explode_timer <= diff)
 		{
 			DoCastMe(SPELL_PERMAFROST);
-			Tasks.Kill(me);
+			Kill(me);
 		}
 		else 
 			explode_timer -= diff;

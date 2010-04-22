@@ -1126,7 +1126,7 @@ struct MANGOS_DLL_DECL mob_twilight_eggsAI : public ScriptedAI
 			{
 				if(Creature* cr = Tasks.CallCreature(NPC_TWILIGHT_WHELP,THREE_MINS))
 					cr->SetPhaseMask(0x01,true);
-				Tasks.Kill(me);
+				Kill(me);
 			}
 			hatch_Timer = DAY;
 		}
