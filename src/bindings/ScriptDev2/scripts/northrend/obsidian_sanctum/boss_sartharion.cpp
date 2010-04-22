@@ -720,7 +720,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 						pPlayer->SetPhaseMask(0x00000001,true);
 						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
-		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
+		
     }
 
     void UpdateAI(const uint32 uiDiff)
@@ -786,6 +786,7 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
 						pPlayer->SetPhaseMask(0x00000001,true);
 						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
     void UpdateAI(const uint32 uiDiff)
@@ -890,6 +891,7 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 						pPlayer->SetPhaseMask(0x00000001,true);
 						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
     void UpdateAI(const uint32 uiDiff)
     {
@@ -962,6 +964,7 @@ struct MANGOS_DLL_DECL mob_vesperonAI : public dummy_dragonAI
 						pPlayer->SetPhaseMask(0x00000001,true);
 						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
+		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
     void UpdateAI(const uint32 uiDiff)
