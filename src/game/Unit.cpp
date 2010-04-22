@@ -2883,8 +2883,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         if (pVictim->HasInArc(M_PI,this))
         {
             int32 deflect_chance = pVictim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS)*100;
-            tmp+=deflect_chance;
-            if (roll < tmp)
+			roll = urand (0, 10000);
+            if (roll < deflect_chance)
                 return SPELL_MISS_DEFLECT;
         }
         return SPELL_MISS_NONE;
