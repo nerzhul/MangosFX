@@ -1266,7 +1266,8 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     if (GetTypeId() == TYPEID_PLAYER)
     {
         uint32 reduction_affected_damage = CalcNotIgnoreDamageRedunction(damage,SpellSchoolMask(damageInfo->schoolMask));
-		damage      -= pVictim->GetSpellDamageReduction(reduction_affected_damage);
+        uint32 resilienceReduction = pVictim->GetSpellDamageReduction(reduction_affected_damage);
+		damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
     
