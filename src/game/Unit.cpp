@@ -14605,6 +14605,9 @@ void Unit::ExitVehicle()
 
 void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 {
+	if(true)
+		return;
+
     if (!isAlive() || GetVehicleKit() == vehicle)
         return;
 
