@@ -14777,7 +14777,7 @@ void Unit::BuildVehicleInfo(Unit *target)
 
     //uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
     WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
-    data << target->GetPackGUID();
+    data.append(target->GetPackGUID());
     data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
     data << uint16(0);
     data << uint32(getMSTime());
