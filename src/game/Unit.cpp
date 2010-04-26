@@ -14785,7 +14785,7 @@ void Unit::BuildVehicleInfo(Unit *target)
     data << float(target->GetPositionY());
     data << float(target->GetPositionZ());
     data << float(target->GetOrientation());
-    data.appendPackGUID(target->GetVehicle()->GetGUID());
+    data.appendPackGUID(target->GetVehicleGUID());
     /*data << float(target->m_SeatData.OffsetX);
     data << float(target->m_SeatData.OffsetY);
     data << float(target->m_SeatData.OffsetZ);
