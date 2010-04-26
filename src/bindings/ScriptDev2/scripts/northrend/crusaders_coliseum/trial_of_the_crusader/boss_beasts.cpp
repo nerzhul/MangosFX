@@ -422,7 +422,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 		Tasks.AddEvent(SPELL_FIRE_SPIT,6000,9000,1000,TARGET_RANDOM,2);
 		Tasks.AddNoTankEvent(SPELL_FIRE_SPIT,3000);
 		Tasks.AddEvent(SPELL_MOLTEN_SPEW,15000,15000,1000,TARGET_MAIN,1);
-		switch(difficulty)
+		switch(m_bIsHeroic)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:

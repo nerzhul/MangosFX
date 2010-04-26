@@ -59,8 +59,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(pWho->HasAura(SPELL_INCINERATE_FLESH_10) || pWho->HasAura(SPELL_INCINERATE_FLESH_25) ||
-			pWho->HasAura(SPELL_INCINERATE_FLESH_10_H) || pWho->HasAura(SPELL_INCINERATE_FLESH_25_H))
+		if(pWho->HasAura(SPELL_INCINERATE_FLESH))
 			dmg /= 2;
 
 	}

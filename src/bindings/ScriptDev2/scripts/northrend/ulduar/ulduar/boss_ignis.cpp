@@ -261,8 +261,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 		{
 			if(Unit* fire = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_IGNIS_FIRE) : 0))
 			{
-				if(fire->isAlive() && !me->HasAura(SPELL_FUSION,0) && !me->HasAura(SPELL_FRAGILE_10,0)
-					&& !me->HasAura(SPELL_FRAGILE_25,0))
+				if(fire->isAlive() && !me->HasAura(SPELL_FUSION,0) && !me->HasAura(SPELL_FRAGILE,0))
 				{
 					if(me->GetDistance(fire) < 25.0f)
 					{
