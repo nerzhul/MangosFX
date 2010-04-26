@@ -14775,7 +14775,7 @@ void Unit::BuildVehicleInfo(Unit *target)
     if(!target->GetVehicleGUID())
         return;
 
-    uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
+    //uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
     WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
     data << target->GetPackGUID();
     data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
