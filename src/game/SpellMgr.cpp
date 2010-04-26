@@ -3720,6 +3720,20 @@ bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32
     return true;
 }
 
+SpellEntry const* GetSpellEntryByDifficulty(uint32 id, Difficulty difficulty)
+{
+	SpellDifficultyEntry const* spellDiff = sSpellDifficultyStore.LookupEntry(id);
+	
+	if (!spellDiff)
+		return NULL;
+
+	if (!spellDiff->spellId[difficulty])
+		return NULL;
+	
+	SpellEntry const* spellEntry = sSpellStore.LookupEntry(spellDiff->spellId[difficulty]);
+		return spellEntry;
+}
+
 int32 ApplyHasteToChannelSpell(int32 orginalDuration, SpellEntry const* spellInfo, Spell const* spell)
 {
     if (spell)

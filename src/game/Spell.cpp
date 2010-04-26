@@ -361,8 +361,16 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
 		return;
     ASSERT( info == sSpellStore.LookupEntry( info->Id ) && "`info` must be pointer to sSpellStore element");
 
-    m_spellInfo = info;
-    m_caster = Caster;
+    if (caster->GetTypeId() != TYPEID_PLAYER && caster->IsInWorld() && caster->GetMap()->IsDungeon())
+	{
+		if (SpellEntry const* spellEntry = GetSpellEntryByDifficulty(info->SpellDifficultyId, Caster->GetMap()->GetDifficulty()))
+			m_spellInfo = spellEntry;
+		m_spellInfo = info;
+	}
+	else
+		m_spellInfo = info;
+	
+	m_caster = Caster;
     m_selfContainer = NULL;
     m_triggeringContainer = triggeringContainer;
     m_referencedFromCurrentSpell = false;

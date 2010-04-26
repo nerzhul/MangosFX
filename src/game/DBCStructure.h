@@ -1482,7 +1482,7 @@ struct SpellEntry
     //uint32  PowerDisplayId;                               // 234 PowerDisplay.dbc, new in 3.1
     //float   unk_320_4[3];                                 // 235-237  3.2.0
     //uint32  spellDescriptionVariableID;                   // 238      3.2.0
-    //uint32  SpellDifficultyId;                            // 239      3.3.0
+    uint32  SpellDifficultyId;                              // 239      3.3.0
 
     // helpers
     int32 CalculateSimpleValue(uint8 eff) const { return EffectBasePoints[eff]+int32(1); }
@@ -1557,6 +1557,12 @@ struct SpellShapeshiftEntry
     //uint32 unk3;                                          // 25 unused always 0
     //uint32 unk4;                                          // 26 unused always 0
     uint32 spellId[8];                                      // 27-34 spells which appear in the bar after shapeshifting
+};
+
+struct SpellDifficultyEntry
+{
+	uint32 ID;                                              // 0        m_ID
+	uint32 spellId[MAX_DIFFICULTY];                         // 1-4      m_spellId[4]
 };
 
 struct SpellDurationEntry
