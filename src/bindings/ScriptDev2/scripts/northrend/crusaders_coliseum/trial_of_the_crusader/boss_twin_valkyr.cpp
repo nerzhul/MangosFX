@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 				m_pInstance->SetData(TYPE_VALKYRS,DONE);
 				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
-					
+
 				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 				Fjola->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 			}
@@ -233,11 +233,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 	{
 		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
 			if(Eydis->isAlive())
-			{
 				pDoneBy->DealDamage(Eydis,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
-					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
-			}
 	}
 
     void JustDied(Unit *victim)

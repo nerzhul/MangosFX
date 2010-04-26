@@ -219,24 +219,24 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 		if(!playerAlive)
 		{
 			if (Creature* Gormok = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_GormoktheImpaler))))
-				Gormok->ForcedDespawn(500);
+				Gormok->RemoveFromWorld();
 			if (Creature* Acidmaw = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Acidmaw))))
-				Acidmaw->ForcedDespawn(500);
+				Acidmaw->RemoveFromWorld();
 			if (Creature* Dreadscale = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Dreadscale))))
-				Dreadscale->ForcedDespawn(500);
+				Dreadscale->RemoveFromWorld();
 			if (Creature* Icehowl = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Icehowl))))
-				Icehowl->ForcedDespawn(500);
+				Icehowl->RemoveFromWorld();
 			if (Creature* Jaraxxus = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_JARAXXUS))))
-				Jaraxxus->ForcedDespawn(500);
+				Jaraxxus->RemoveFromWorld();
 			if (Creature* Darkbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Eydis_Darkbane))))
-				Darkbane->ForcedDespawn(500);
+				Darkbane->RemoveFromWorld();
 			if (Creature* Lightbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Fjola_Lightbane))))
-				Lightbane->ForcedDespawn(500);
+				Lightbane->RemoveFromWorld();
 			for(std::vector<uint32>::const_iterator itr = Champions_Guid.begin(); itr != Champions_Guid.end(); ++itr)
 			{
 				if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), (*itr))))
 					if(tmp->isAlive())
-						tmp->ForcedDespawn(500);
+						tmp->RemoveFromWorld();
 			}
 			Champions_Guid.clear();
 			EventStarted = false;
