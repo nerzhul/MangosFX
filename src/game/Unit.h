@@ -1913,6 +1913,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         Vehicle *m_vehicleKit;
 		uint32 m_unitTypeMask;
 		
+		void BuildVehicleInfo(Unit *target);
+		
 		// fss end
 
     private:

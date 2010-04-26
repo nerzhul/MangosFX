@@ -18282,7 +18282,10 @@ void Player::HandleStealthedUnitsDetection()
                 // target aura duration for caster show only if target exist at caster client
                 // send data at target visibility change (adding to client)
                 if((*i)!=this && (*i)->isType(TYPEMASK_UNIT))
+                {
                     SendAurasForTarget(*i);
+                    BuildVehicleInfo(*i);
+				}
             }
         }
         else
@@ -19510,7 +19513,10 @@ void Player::UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* targe
             // target aura duration for caster show only if target exist at caster client
             // send data at target visibility change (adding to client)
             if(target!=this && target->isType(TYPEMASK_UNIT))
+            {
                 SendAurasForTarget((Unit*)target);
+                BuildVehicleInfo((Unit*)target);
+			}
 
             if(target->GetTypeId()==TYPEID_UNIT && ((Creature*)target)->isAlive())
                 ((Creature*)target)->SendMonsterMoveWithSpeedToCurrentDestination(this);

@@ -14766,3 +14766,39 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
 
     return (relocated || turn);
 }
+
+void Unit::BuildVehicleInfo(Unit *target)
+{
+    if(!target)
+        return;
+
+    if(!target->GetVehicleGUID())
+        return;
+
+    uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
+    WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
+    data << target->GetPackGUID();
+    data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
+    data << uint16(0);
+    data << uint32(getMSTime());
+    data << float(target->GetPositionX());
+    data << float(target->GetPositionY());
+    data << float(target->GetPositionZ());
+    data << float(target->GetOrientation());
+    data.appendPackGUID(target->GetVehicle()->GetGUID());
+    /*data << float(target->m_SeatData.OffsetX);
+    data << float(target->m_SeatData.OffsetY);
+    data << float(target->m_SeatData.OffsetZ);
+    data << float(target->m_SeatData.Orientation);
+    data << uint32(veh_time);
+    data << uint8 (target->m_SeatData.seat);*/
+    data << float(0.0);
+    data << float(0.0);
+    data << float(0.0);
+    data << float(0.0);
+    data << uint32(0);
+    data << uint8(0);
+    data << uint32(m_movementInfo.GetFallTime());
+    SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
+}
+
