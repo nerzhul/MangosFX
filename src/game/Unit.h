@@ -1839,7 +1839,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
 		Vehicle *GetVehicleKit()const { return m_vehicleKit; }
         Vehicle *GetVehicle()   const { return m_vehicle; }
-        Vehicle *GetVehicleGUID() { return GetVehicle() ? GetVehicle()->GetGUID() : 0; }
+        uint64 GetVehicleGUID() const { return GetVehicle() ? GetVehicle()->GetGUID() : 0; }
 		uint32 HasUnitTypeMask(uint32 mask) const { return mask & m_unitTypeMask; }
         void AddUnitTypeMask(uint32 mask) { m_unitTypeMask |= mask; }
 		bool IsVehicle() const  { return m_unitTypeMask & UNIT_MASK_VEHICLE; }
