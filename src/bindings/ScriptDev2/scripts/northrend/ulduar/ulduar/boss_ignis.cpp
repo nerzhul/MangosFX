@@ -35,8 +35,7 @@ enum add_spec_spells
 	SPELL_FUSION		=	62373,
 	SPELL_CHALEUR		=	62343,
 	SPELL_ACTIVATE		=	62488,
-	SPELL_FRAGILE_10	=	62382,
-	SPELL_FRAGILE_25	=	67114,
+	SPELL_FRAGILE		=	62382,
 	SPELL_CONE_10		=	62548,
 	SPELL_CONE_25		=	63476,
 };
@@ -206,7 +205,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 	void DamageTaken(Unit* pDoneBy, uint32 &damage)
 	{
 		
-		if(me->HasAura(SPELL_FRAGILE_25) && damage > 3000)
+		if(me->HasAura(SPELL_FRAGILE) && damage > 3000)
 		{
 			damage = 0;
 			if(Unit* Ignis = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_IGNIS) : 0))
@@ -218,7 +217,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 
 			Kill(me);
 		}
-		else if(me->HasAura(SPELL_FRAGILE_10) && damage > 5000)
+		else if(me->HasAura(SPELL_FRAGILE) && damage > 5000)
 		{
 			damage = 0;
 			if(Unit* Ignis = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_IGNIS) : 0))
@@ -252,10 +251,10 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 			nb_stack = 0;
 			me->RemoveAurasDueToSpell(SPELL_FUSION);
 			me->RemoveAurasDueToSpell(SPELL_CHALEUR);
-			DoCastMe( (m_bIsHeroic) ? SPELL_FRAGILE_25 : SPELL_FRAGILE_10);
+			DoCastMe(SPELL_FRAGILE);
 		}
 
-		if(me->HasAura(SPELL_FRAGILE_25) || me->HasAura(SPELL_FRAGILE_25))
+		if(me->HasAura(SPELL_FRAGILE))
 			me->RemoveAurasDueToSpell(SPELL_CHALEUR);
 
 		if(Check_Timer <= uiDiff)

@@ -3,65 +3,25 @@
 enum 
 {
 	SPELL_BERSERK = 64238,
-	SPELL_LIGHT_VORTEX_10 = 66046,
-	SPELL_LIGHT_VORTEX_10_H = 67206,
-	SPELL_LIGHT_VORTEX_25 = 67207,
-	SPELL_LIGHT_VORTEX_25_H = 67208,
-	SPELL_SPEED_OF_THE_VALKYR = 67319,
-	SPELL_POWER_OF_THE_TWINS_10 = 65916,
-	SPELL_POWER_OF_THE_TWINS_10_H = 67248,
-	SPELL_POWER_OF_THE_TWINS_25 = 67249,
-	SPELL_POWER_OF_THE_TWINS_25_H = 67250,
-	SPELL_SHIELD_OF_LIGHTS_10 = 65858,
-	SPELL_SHIELD_OF_LIGHTS_10_H = 67260,
-	SPELL_SHIELD_OF_LIGHTS_25 = 67259,
-	SPELL_SHIELD_OF_LIGHTS_25_H = 67261,
-	SPELL_SURGE_OF_LIGHT_10 = 65766,
-	SPELL_SURGE_OF_LIGHT_10_H = 67270,
-	SPELL_SURGE_OF_LIGHT_25 = 67271,
-	SPELL_SURGE_OF_LIGHT_25_H = 67272,
-	SPELL_TOUCH_OF_LIGHT_10 = 67297,
-	SPELL_TOUCH_OF_LIGHT_25 = 67298,
-	SPELL_TWIN_SPIKE_10 = 66075,
-	SPELL_TWIN_SPIKE_10_H = 67312,
-	SPELL_TWIN_SPIKE_25 = 67313,
-	SPELL_TWIN_SPIKE_25_H = 67314,
-	SPELL_TWINS_PACT2_10 = 65876,
-	SPELL_TWINS_PACT2_10_H = 67306,
-	SPELL_TWINS_PACT2_25 = 67307,
-	SPELL_TWINS_PACT2_25_H = 67308,
+	SPELL_LIGHT_VORTEX = 66046,
+	SPELL_POWER_OF_THE_TWINS = 65916,
+	SPELL_SHIELD_OF_LIGHTS = 65858,
+	SPELL_SURGE_OF_LIGHT = 65766,
+	SPELL_TOUCH_OF_LIGHT = 65950,
+	SPELL_TWIN_SPIKE = 66075,
+	SPELL_TWINS_PACT2 = 65876,
 };
 
-enum
+enum 
 {
 	SPELL_BERSERK_10 = 64238,
 	SPELL_BERSERK_25 = 68378,
-	SPELL_DARK_VORTEX_10 = 66058,
-	SPELL_DARK_VORTEX_10_H = 67182,
-	SPELL_DARK_VORTEX_25 = 67183,
-	SPELL_DARK_VORTEX_25_H = 67184,
-	/*SPELL_POWER_OF_THE_TWINS_10 = 65879,
-	SPELL_POWER_OF_THE_TWINS_10_H = 67244,
-	SPELL_POWER_OF_THE_TWINS_25 = 67245,
-	SPELL_POWER_OF_THE_TWINS_25_H = 67246,*/
-	SPELL_SHIELD_OF_DARKNESS_10 = 65874,
-	SPELL_SHIELD_OF_DARKNESS_10_H = 67257,
-	SPELL_SHIELD_OF_DARKNESS_25 = 67256,
-	SPELL_SHIELD_OF_DARKNESS_25_H = 67258,
-	SPELL_SURGE_OF_DARKNESS_10 = 65768,
-	SPELL_SURGE_OF_DARKNESS_10_H = 67262,
-	SPELL_SURGE_OF_DARKNESS_25 = 67263,
-	SPELL_SURGE_OF_DARKNESS_25_H = 67264,
-	SPELL_TOUCH_OF_DARKNESS_10 = 67282,
-	SPELL_TOUCH_OF_DARKNESS_25 = 67283,
-	SPELL_TWIN_SPIKE2_10 = 66069,
-	SPELL_TWIN_SPIKE2_10_H = 67309,
-	SPELL_TWIN_SPIKE2_25 = 67310,
-	SPELL_TWIN_SPIKE2_25_H = 37311,
-	SPELL_TWINS_PACT_10 = 65875,
-	SPELL_TWINS_PACT_10_H = 67303,
-	SPELL_TWINS_PACT_25 = 67304,
-	SPELL_TWINS_PACT_25_H = 67305,
+	SPELL_DARK_VORTEX = 66058,
+	SPELL_SHIELD_OF_DARKNESS = 65874,
+	SPELL_SURGE_OF_DARKNESS = 65768,
+	SPELL_TOUCH_OF_DARKNESS_ = 66001,
+	SPELL_TWIN_SPIKE2 = 66069,
+	SPELL_TWINS_PACT = 65875,
 };
 
 struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
@@ -82,48 +42,26 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.AddSummonEvent(34628,8000,2000,0,2000,1,TEN_MINS,NEAR_30M);
+		Tasks.AddEvent(66107,8000,2000,500,TARGET_RANDOM);
 		HealEvent = false;
 		HealCast_Timer = 1000;
+		Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS,120000,8000,20000,TARGET_ME);
+		DoCastMe(SPELL_SURGE_OF_DARKNESS);
+		Tasks.AddEvent(SPELL_TOUCH_OF_DARKNESS,20000,20000);
+		Tasks.AddEvent(SPELL_TWIN_SPIKE2,18000,21000,1000,TARGET_MAIN);
 		switch(difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				DoCastMe(SPELL_SURGE_OF_DARKNESS_10);
 				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE2_10,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_10,120000,8000,20000,TARGET_ME);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				DoCastMe(SPELL_SURGE_OF_DARKNESS_25);
 				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE2_25,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_25,120000,8000,20000,TARGET_ME);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				DoCastMe(SPELL_SURGE_OF_DARKNESS_10_H);
 				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				Tasks.AddEvent(SPELL_TOUCH_OF_DARKNESS_10,20000,20000);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE2_10_H,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_10_H,120000,8000,20000,TARGET_ME);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				DoCastMe(SPELL_SURGE_OF_DARKNESS_25_H);
 				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				Tasks.AddEvent(SPELL_TOUCH_OF_DARKNESS_25,20000,20000);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE2_25_H,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_25_H,120000,8000,20000,TARGET_ME);
 				break;
 		}
 		SetEquipmentSlots(false, 45990, 47470, 47267);
@@ -197,41 +135,11 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 	{
 		me->CastStop();
 		if(urand(0,1))
-		{
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastVictim(SPELL_DARK_VORTEX_10);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastVictim(SPELL_DARK_VORTEX_25);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastVictim(SPELL_DARK_VORTEX_10_H);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastVictim(SPELL_DARK_VORTEX_25_H);
-					break;
-			}
-		}
+			DoCastVictim(SPELL_DARK_VORTEX);
 		else
 		{
 			HealEvent = true;
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastMe(SPELL_SHIELD_OF_DARKNESS_10);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastMe(SPELL_SHIELD_OF_DARKNESS_25);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastMe(SPELL_SHIELD_OF_DARKNESS_10_H);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastMe(SPELL_SHIELD_OF_DARKNESS_25_H);
-					break;
-			}
+			DoCastMe(SPELL_SHIELD_OF_DARKNESS);
 		}
 	}
 
@@ -244,21 +152,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 		{
 			if(HealCast_Timer <= diff)
 			{
-				switch(difficulty)
-				{
-					case RAID_DIFFICULTY_10MAN_NORMAL:
-						DoCastMe(SPELL_TWINS_PACT_10);
-						break;
-					case RAID_DIFFICULTY_25MAN_NORMAL:
-						DoCastMe(SPELL_TWINS_PACT_25);
-						break;
-					case RAID_DIFFICULTY_10MAN_HEROIC:
-						DoCastMe(SPELL_TWINS_PACT_10_H);
-						break;
-					case RAID_DIFFICULTY_25MAN_HEROIC:
-						DoCastMe(SPELL_TWINS_PACT_25_H);
-						break;
-				}
+				DoCastMe(SPELL_TWINS_PACT);
 				HealEvent = false;
 				HealCast_Timer = 1000;
 			}
@@ -298,49 +192,38 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.AddSummonEvent(34630,8000,2000,0,2000,1,TEN_MINS,NEAR_30M);
+		Tasks.AddEvent(66078,8000,2000,500,TARGET_RANDOM);
 		HealEvent = false;
 		HealCast_Timer = 1000;
 		Tasks.AddEvent(SPELL_BERSERK,360000,10000,0,TARGET_ME,0,0,true);
+		asks.AddEvent(SPELL_POWER_OF_THE_TWINS,120000,8000,20000,TARGET_ME);
+		Tasks.AddEvent(SPELL_TOUCH_OF_LIGHT,20000,20000);
+		DoCastMe(SPELL_SURGE_OF_LIGHT);
+		Tasks.AddEvent(SPELL_TWIN_SPIKE,18000,21000,1000,TARGET_MAIN);
 		switch(difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				DoCastMe(SPELL_SURGE_OF_LIGHT_10);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE_10,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_10,120000,8000,20000,TARGET_ME);
-				Event_Timer = 40000;
-				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				DoCastMe(SPELL_SURGE_OF_LIGHT_25);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE_25,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_25,120000,8000,20000,TARGET_ME);
 				Event_Timer = 40000;
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				DoCastMe(SPELL_SURGE_OF_LIGHT_10_H);
-				Tasks.AddEvent(SPELL_TOUCH_OF_LIGHT_10,20000,20000);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE_10_H,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_10_H,120000,8000,20000,TARGET_ME);
+			case RAID_DIFFICULTY_25MAN_HEROIC:
 				Event_Timer = 30000;
 				break;
+		}
+		switch(difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
+				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				DoCastMe(SPELL_SURGE_OF_LIGHT_25_H);
-				Tasks.AddEvent(SPELL_TOUCH_OF_LIGHT_25,20000,20000);
-				Tasks.AddEvent(SPELL_TWIN_SPIKE_25_H,18000,21000,1000,TARGET_MAIN);
-				if(urand(0,1))
-					Tasks.AddEvent(SPELL_SPEED_OF_THE_VALKYR,120000,8000,20000,TARGET_ME);
-				else
-					Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS_25_H,120000,8000,20000,TARGET_ME);
-				Event_Timer = 30000;
+				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
 				break;
 		}
 		SetEquipmentSlots(false, 49303, 47146, 47267);
@@ -402,41 +285,11 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 	{
 		me->CastStop();
 		if(urand(0,1))
-		{
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastVictim(SPELL_LIGHT_VORTEX_10);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastVictim(SPELL_LIGHT_VORTEX_25);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastVictim(SPELL_LIGHT_VORTEX_10_H);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastVictim(SPELL_LIGHT_VORTEX_25_H);
-					break;
-			}
-		}
+			DoCastVictim(SPELL_LIGHT_VORTEX);
 		else
 		{
+			DoCastMe(SPELL_SHIELD_OF_LIGHTS);
 			HealEvent = true;
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastMe(SPELL_SHIELD_OF_LIGHTS_10);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastMe(SPELL_SHIELD_OF_LIGHTS_25);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastMe(SPELL_SHIELD_OF_LIGHTS_10_H);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastMe(SPELL_SHIELD_OF_LIGHTS_25_H);
-					break;
-			}
 		}
 	}
 
@@ -449,21 +302,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 		{
 			if(HealCast_Timer <= diff)
 			{
-				switch(difficulty)
-				{
-					case RAID_DIFFICULTY_10MAN_NORMAL:
-						DoCastMe(SPELL_TWINS_PACT2_10);
-						break;
-					case RAID_DIFFICULTY_25MAN_NORMAL:
-						DoCastMe(SPELL_TWINS_PACT2_25);
-						break;
-					case RAID_DIFFICULTY_10MAN_HEROIC:
-						DoCastMe(SPELL_TWINS_PACT2_10_H);
-						break;
-					case RAID_DIFFICULTY_25MAN_HEROIC:
-						DoCastMe(SPELL_TWINS_PACT2_25_H);
-						break;
-				}
+				DoCastMe(SPELL_TWINS_PACT2);
 				HealEvent = false;
 				HealCast_Timer = 1000;
 			}
@@ -574,41 +413,9 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
 				UpdateStacks(Lightbane);
 
 		if(me->GetEntry() == 34630)
-		{
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastMe(65795);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastMe(67238);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastMe(67239);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastMe(67240);
-					break;
-			}
-		}
+			DoCastMe(65795);
 		else if(me->GetEntry() == 34628)
-		{
-			switch(difficulty)
-			{
-				case RAID_DIFFICULTY_10MAN_NORMAL:
-					DoCastMe(67172);
-					break;
-				case RAID_DIFFICULTY_25MAN_NORMAL:
-					DoCastMe(65808);
-					break;
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					DoCastMe(67173);
-					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					DoCastMe(67174);
-					break;
-			}
-		}
+			DoCastMe(65808);
 
 		me->RemoveFromWorld();
 	}
