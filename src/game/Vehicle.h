@@ -36,7 +36,17 @@ struct VehicleSeat
 {
     explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL) {}
     VehicleSeatEntry const *seatInfo;
+    uint8 flags;
     Unit* passenger;
+};
+
+enum VehicleSeatFlags
+{
+    SEAT_FREE           = 0x01,                             // free seat
+    SEAT_FULL           = 0x02,                             // seat occupied by player/creature
+    // special cases
+    SEAT_VEHICLE_FREE   = 0x04,                             // seat occupied by vehicle, but that vehicle is free
+    SEAT_VEHICLE_FULL   = 0x08                              // seat occupied by vehicle and that vehicle is full too
 };
 
 typedef std::map<int8, VehicleSeat> SeatMap;

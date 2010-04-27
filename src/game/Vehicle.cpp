@@ -36,7 +36,11 @@ Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SU
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-                m_Seats.insert(std::make_pair(i, VehicleSeat(veSeat)));
+				VehicleSeat vSeat;
+				vSeat.seatInfo = veSeat;
+				vSeat.passenger = NULL;
+				vSeat.flags = SEAT_FREE;
+                m_Seats.insert(std::make_pair(i, vSeat));
                 if(veSeat->IsUsable())
                     ++m_usableSeatNum;
             }
