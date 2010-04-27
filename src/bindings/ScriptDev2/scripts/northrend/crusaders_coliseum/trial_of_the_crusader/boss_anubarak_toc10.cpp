@@ -44,7 +44,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 	uint32 Submerge_Timer;
 	uint8 phase;
 	Unit* follow_Target;
-	uint32 checkAura_Timer;
 	bool WasAggro;
 
     void Reset()
@@ -65,7 +64,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 		Submerge_Timer = 45000;
 		phase = 1;
 		follow_Target = NULL;
-		checkAura_Timer = 1000;
 		WasAggro = false;
     }
 	void MoveInLineOfSight(Unit* pWho) 
@@ -161,32 +159,10 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 			phase = 3;
 		}
 
-		if(checkAura_Timer <= diff)
-		{
-			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-			if (!lPlayers.isEmpty())
-			{
-				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-				{
-					if (Player* pPlayer = itr->getSource())
-						if(pPlayer->isAlive())
-							if(pPlayer->HasAura(66118))
-							{
-								uint32 dmg = pPlayer->GetHealth() / 10;
-								me->DealDamage(pPlayer,dmg, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-								me->SetHealth(me->GetHealth() + dmg);
-							}
-				}
-			}
-			checkAura_Timer = 1000;
-		}
-		else
-			checkAura_Timer -= diff;
 		Tasks.UpdateEvent(diff,phase);
 
 		if(phase == 1 || phase == 3)
 			DoMeleeAttackIfReady();
-
     }
 
 };
