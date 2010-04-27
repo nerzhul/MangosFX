@@ -414,347 +414,326 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 			{
 				if(m_session->GetPlayer()->getClass() == CLASS_DEATH_KNIGHT)
 					return false;
-
-				HandleCharacterLevel(m_session->GetPlayer(),m_session->GetPlayer()->GetGUID(),m_session->GetPlayer()->getLevel(),60);
-
-				m_session->GetPlayer()->SetLevel(60);
+				Player* plr = m_session->GetPlayer();
+				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),60);
 				ItemPosCountVec dest;
 				uint8 msg;
-				m_session->GetPlayer()->learnSpell(34092, 0,true);
-				m_session->GetPlayer()->ModifyMoney(9500000);
-				switch(m_session->GetPlayer()->getClass())
+				
+				plr->learnSpell(34092, 0,true);
+				plr->ModifyMoney(9500000);
+				switch(plr->getClass())
 				{
 					case CLASS_WARRIOR:
-						m_session->GetPlayer()->learnSpell(71, 0,false);
-						m_session->GetPlayer()->learnSpell(2458, 0,false);
-						m_session->GetPlayer()->learnSpell(20252, 0,false);
-						m_session->GetPlayer()->learnSpell(355, 0,false);
-						m_session->GetPlayer()->learnSpell(750, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22418, 1, false);
+						plr->learnSpell(71, 0,false);
+						plr->learnSpell(2458, 0,false);
+						plr->learnSpell(20252, 0,false);
+						plr->learnSpell(355, 0,false);
+						plr->learnSpell(750, 0,false);
+						
+						msg = plr->AddItem(22418);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22419, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22418, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22419, 1, false);
+							plr->StoreNewItem(dest, 22419, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22416, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22419, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22416, 1, false);
+							plr->StoreNewItem(dest, 22416, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22423, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22416, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22423, 1, false);
+							plr->StoreNewItem(dest, 22423, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22421, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22423, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22421, 1, false);
+							plr->StoreNewItem(dest, 22421, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22422, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22421, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22422, 1, false);
+							plr->StoreNewItem(dest, 22422, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22417, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22422, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22417, 1, false);
+							plr->StoreNewItem(dest, 22417, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22420, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22417, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22420, 1, false);
+							plr->StoreNewItem(dest, 22420, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23059, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22420, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23059, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23059, true);
+							plr->StoreNewItem(dest, 23059, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21134, true);
+							plr->StoreNewItem(dest, 21134, true);
 						break;
 					case CLASS_PALADIN:
-						m_session->GetPlayer()->learnSpell(7328, 0,false);
-						m_session->GetPlayer()->learnSpell(750, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22428, 1, false);
+						plr->learnSpell(7328, 0,false);
+						plr->learnSpell(750, 0,false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22428, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22428, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22429, 1, false);
+							plr->StoreNewItem(dest, 22428, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22429, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22429, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22426, 1, false);
+							plr->StoreNewItem(dest, 22429, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22426, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22426, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22425, 1, false);
+							plr->StoreNewItem(dest, 22426, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22425, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22425, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22424, 1, false);
+							plr->StoreNewItem(dest, 22425, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22424, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22424, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22431, 1, false);
+							plr->StoreNewItem(dest, 22424, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22431, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22431, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22427, 1, false);
+							plr->StoreNewItem(dest, 22431, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22427, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22427, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22430, 1, false);
+							plr->StoreNewItem(dest, 22427, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22430, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22430, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23066, 1, false);
+							plr->StoreNewItem(dest, 22430, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23066, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23066, true);
+							plr->StoreNewItem(dest, 23066, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 1, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21134, true);
+							plr->StoreNewItem(dest, 21134, true);
 						break;
 					case CLASS_DEATH_KNIGHT:
 						// todo
 						break;
 					case CLASS_SHAMAN:
-						m_session->GetPlayer()->learnSpell(5394, 0,false);
-						m_session->GetPlayer()->learnSpell(8071, 0,false);
-						m_session->GetPlayer()->learnSpell(3599, 0,false);
-						m_session->GetPlayer()->learnSpell(8737, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22466, 1, false);
+						plr->learnSpell(5394, 0,false);
+						plr->learnSpell(8071, 0,false);
+						plr->learnSpell(3599, 0,false);
+						plr->learnSpell(8737, 0,false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22466, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22466, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22467, 1, false);
+							plr->StoreNewItem(dest, 22466, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22467, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22467, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22464, 1, false);
+							plr->StoreNewItem(dest, 22467, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22464, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22464, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22471, 1, false);
+							plr->StoreNewItem(dest, 22464, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22471, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22471, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22469, 1, false);
+							plr->StoreNewItem(dest, 22471, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22469, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22469, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22470, 1, false);
+							plr->StoreNewItem(dest, 22469, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22470, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22470, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22465, 1, false);
+							plr->StoreNewItem(dest, 22470, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22465, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22465, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22468, 1, false);
+							plr->StoreNewItem(dest, 22465, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22468, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22468, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23065, 1, false);
+							plr->StoreNewItem(dest, 22468, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23065, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23065, true);
+							plr->StoreNewItem(dest, 23065, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 1, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21839, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21664, 1, false);
+							plr->StoreNewItem(dest, 21839, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21664, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21664, true);
+							plr->StoreNewItem(dest, 21664, true);
 						break;
 					case CLASS_HUNTER:
-						m_session->GetPlayer()->learnSpell(6991, 0,false);
-						m_session->GetPlayer()->learnSpell(982, 0,false);
-						m_session->GetPlayer()->learnSpell(1515, 0,false);
-						m_session->GetPlayer()->learnSpell(883, 0,false);
-						m_session->GetPlayer()->learnSpell(2641, 0,false);
-						m_session->GetPlayer()->learnSpell(8737, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22438, 1, false);
+						plr->learnSpell(6991, 0,false);
+						plr->learnSpell(982, 0,false);
+						plr->learnSpell(1515, 0,false);
+						plr->learnSpell(883, 0,false);
+						plr->learnSpell(2641, 0,false);
+						plr->learnSpell(8737, 0,false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22438, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22438, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22439, 1, false);
+							plr->StoreNewItem(dest, 22438, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22439, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22439, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22436, 1, false);
+							plr->StoreNewItem(dest, 22439, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22436, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22436, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22443, 1, false);
+							plr->StoreNewItem(dest, 22436, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22443, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22443, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22441, 1, false);
+							plr->StoreNewItem(dest, 22443, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22441, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22441, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22442, 1, false);
+							plr->StoreNewItem(dest, 22441, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22442, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22442, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22437, 1, false);
+							plr->StoreNewItem(dest, 22442, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22437, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22437, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22440, 1, false);
+							plr->StoreNewItem(dest, 22437, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22440, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22440, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23067, 1, false);
+							plr->StoreNewItem(dest, 22440, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23067, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23067, true);
+							plr->StoreNewItem(dest, 23067, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21616, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21616, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21616, true);
+							plr->StoreNewItem(dest, 21616, true);
 						break;
 					case CLASS_ROGUE:
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22483, 1, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22483, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22483, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22476, 1, false);
+							plr->StoreNewItem(dest, 22483, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22476, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22476, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22481, 1, false);
+							plr->StoreNewItem(dest, 22476, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22481, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22481, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22478, 1, false);
+							plr->StoreNewItem(dest, 22481, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22478, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22478, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22477, 1, false);
+							plr->StoreNewItem(dest, 22478, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22477, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22477, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22479, 1, false);
+							plr->StoreNewItem(dest, 22477, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22479, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22479, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22480, 1, false);
+							plr->StoreNewItem(dest, 22479, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22480, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22480, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22482, 1, false);
+							plr->StoreNewItem(dest, 22480, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22482, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22482, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23060, 1, false);
+							plr->StoreNewItem(dest, 22482, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23060, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23060, true);
+							plr->StoreNewItem(dest, 23060, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21126, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21126, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21126, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21650, 2, false);
+							plr->StoreNewItem(dest, 21126, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21650, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21650, true);
+							plr->StoreNewItem(dest, 21650, true);
 						break;
 					case CLASS_DRUID:
-						m_session->GetPlayer()->learnSpell(9634, 0,false);
-						m_session->GetPlayer()->learnSpell(768, 0,false);
-						m_session->GetPlayer()->learnSpell(6795, 0,false);
-						m_session->GetPlayer()->learnSpell(1066, 0,false);
-						m_session->GetPlayer()->learnSpell(6807, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22492, 1, false);
+						plr->learnSpell(9634, 0,false);
+						plr->learnSpell(768, 0,false);
+						plr->learnSpell(6795, 0,false);
+						plr->learnSpell(1066, 0,false);
+						plr->learnSpell(6807, 0,false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22492, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22492, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22494, 1, false);
+							plr->StoreNewItem(dest, 22492, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22494, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22494, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22493, 1, false);
+							plr->StoreNewItem(dest, 22494, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22493, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22493, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22490, 1, false);
+							plr->StoreNewItem(dest, 22493, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22490, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22490, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22489, 1, false);
+							plr->StoreNewItem(dest, 22490, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22489, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22489, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22491, 1, false);
+							plr->StoreNewItem(dest, 22489, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22491, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22491, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22488, 1, false);
+							plr->StoreNewItem(dest, 22491, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22488, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22488, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22495, 1, false);
+							plr->StoreNewItem(dest, 22488, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22495, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22495, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23064, 1, false);
+							plr->StoreNewItem(dest, 22495, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23064, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23064, true);
+							plr->StoreNewItem(dest, 23064, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21839, true);
+							plr->StoreNewItem(dest, 21839, true);
 						break;
 					case CLASS_PRIEST:
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22518, 1, false);
+						plr->AddItem(22518);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22519, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22518, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22519, 1, false);
+							plr->StoreNewItem(dest, 22519, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22514, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22519, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22514, 1, false);
+							plr->StoreNewItem(dest, 22514, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22517, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22514, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22517, 1, false);
+							plr->StoreNewItem(dest, 22517, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22513, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22517, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22513, 1, false);
+							plr->StoreNewItem(dest, 22513, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22512, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22513, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22512, 1, false);
+							plr->StoreNewItem(dest, 22512, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22516, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22512, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22516, 1, false);
+							plr->StoreNewItem(dest, 22516, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22515, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22516, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22515, 1, false);
+							plr->StoreNewItem(dest, 22515, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23061, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22515, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23061, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23061, true);
+							plr->StoreNewItem(dest, 23061, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21839, true);
+							plr->StoreNewItem(dest, 21839, true);
 						break;
 					case CLASS_MAGE:
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22502, 1, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22502, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22502, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22503, 1, false);
+							plr->StoreNewItem(dest, 22502, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22503, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22503, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22498, 1, false);
+							plr->StoreNewItem(dest, 22503, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22498, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22498, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22501, 1, false);
+							plr->StoreNewItem(dest, 22498, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22501, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22501, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22497, 1, false);
+							plr->StoreNewItem(dest, 22501, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22497, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22497, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22496, 1, false);
+							plr->StoreNewItem(dest, 22497, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22496, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22496, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22500, 1, false);
+							plr->StoreNewItem(dest, 22496, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22500, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22500, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22499, 1, false);
+							plr->StoreNewItem(dest, 22500, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22499, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22499, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23062, 1, false);
+							plr->StoreNewItem(dest, 22499, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23062, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23062, true);
+							plr->StoreNewItem(dest, 23062, true);
 
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21622, 2, false);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21622, 2, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21622, true);
+							plr->StoreNewItem(dest, 21622, true);
 						break;
 					case CLASS_WARLOCK:
-						m_session->GetPlayer()->learnSpell(688, 0,false);
-						m_session->GetPlayer()->learnSpell(697, 0,false);
-						m_session->GetPlayer()->learnSpell(712, 0,false);
-						m_session->GetPlayer()->learnSpell(691, 0,false);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22510, 1, false);
+						plr->learnSpell(688, 0,false);
+						plr->learnSpell(697, 0,false);
+						plr->learnSpell(712, 0,false);
+						plr->learnSpell(691, 0,false);
+						plr->AddItem(22510);
+						plr->AddItem(22511);
+						plr->AddItem(22506);
+						plr->AddItem(22509);
+						plr->AddItem(22505);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22504, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22510, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22511, 1, false);
+							plr->StoreNewItem(dest, 22504, true);
+						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22508, 1, false);
 						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22511, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22506, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22506, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22509, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22509, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22505, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22505, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22504, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22504, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22508, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22508, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22507, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 22507, true);
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23063, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 23063, true);
-
-						msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21273, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							m_session->GetPlayer()->StoreNewItem(dest, 21273, true);
+							plr->StoreNewItem(dest, 22508, true);
+						plr->AddItem(22507);
+						plr->AddItem(23063);
+						plr->AddItem(21273);
 						break;
 					default:
 						break;
@@ -763,35 +742,91 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 			}
 		}
 	}
+	else if(argstr == "lev70")
+	{
+		if(diamant >= 7)
+		{
+			Player* plr = m_session->GetPlayer();
+			if(plr->getLevel() > 70)
+				PSendSysMessage("Vous avez deja un niveau superieur a celui demandé !");
+			else
+			{
+				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),60);
+				
+				// monte
+				plr->learnSpell(34093, 0,false);
+				// secou
+				plr->learnSpell(45542,0,false);
+				plr->SetSkill(129,plr->GetSkillStep(129),375,375);
+				// cuisine
+				plr->learnSpell(33359,0,false);
+				plr->SetSkill(185,plr->GetSkillStep(185),375,375);
+				// peche
+				plr->learnSpell(33095,0,false);
+				plr->SetSkill(129,plr->GetSkillStep(129),375,375);
+				plr->ModifyMoney(60000000);
+				switch(player->getClass())
+				{
+					case CLASS_WARRIOR:
+						plr->learnSpell(71, 0,false);
+						plr->learnSpell(2458, 0,false);
+						plr->learnSpell(20252, 0,false);
+						plr->learnSpell(355, 0,false);
+						plr->learnSpell(750, 0,false);
+						break;
+					case CLASS_DEATH_KNIGHT:
+					case CLASS_PALADIN:
+					case CLASS_HUNTER:
+					case CLASS_SHAMAN:
+					case CLASS_DRUID:
+					case CLASS_ROGUE:
+					case CLASS_PRIEST:
+					case CLASS_MAGE:
+					case CLASS_WARLOCK:
+						plr->learnSpell(688, 0,false);
+						plr->learnSpell(697, 0,false);
+						plr->learnSpell(712, 0,false);
+						plr->learnSpell(691, 0,false);
+						break;
+				}
+				
+				loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 7 WHERE id = '%u'", m_session->GetAccountId());
+			}
+		}
+		else
+			PSendSysMessage("Vous n'avez pas assez de diamants !");
+	}
 	else if(argstr == "xp")
 	{
 		if(diamant >= 2)
 		{
-			if(m_session->GetPlayer()->getLevel() > 72)
+			Player* plr = m_session->GetPlayer();
+			
+			if(plr->getLevel() > 72)
 				PSendSysMessage("Vous ne pouvez pas gagner de niveaux !");
 			else
 			{
-				switch((m_session->GetPlayer()->getLevel() / 10) % 10)
+				switch((plr->getLevel() / 10) % 10)
 				{
 					case 0:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 9);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 9);
 						break;
 					case 1:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 7);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 7);
 						break;
 					case 2:
 					case 3:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 5);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 5);;
 						break;
 					case 4:
 					case 5:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 3);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 3);
 						break;
 					case 6:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 2);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 2);
 						break;
 					case 7:
-						m_session->GetPlayer()->SetLevel(m_session->GetPlayer()->getLevel() + 1);
+						HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),plr->getLevel() + 1);
 						break;
 					default:
 						break;
