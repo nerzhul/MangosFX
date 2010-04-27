@@ -429,23 +429,14 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(20252, 0,false);
 						plr->learnSpell(355, 0,false);
 						plr->learnSpell(750, 0,false);
-						
 						plr->AddItem(22418);
 						plr->AddItem(22419);
 						plr->AddItem(22416);
 						plr->AddItem(22423);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22421, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22421, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22422, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22422, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22417, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22417, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22420, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22420, true);
+						plr->AddItem(22421);
+						plr->AddItem(22422);
+						plr->AddItem(22417);
+						plr->AddItem(22420);
 						plr->AddItem(23059);
 						plr->AddItem(21134);
 						break;
@@ -455,15 +446,9 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(22428);
 						plr->AddItem(22429);
 						plr->AddItem(22426);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22425, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22425, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22424, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22424, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22431, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22431, true);
+						plr->AddItem(22425);
+						plr->AddItem(22424);
+						plr->AddItem(22431);
 						plr->AddItem(22427);
 						plr->AddItem(22430);
 						plr->AddItem(23066);
@@ -481,15 +466,9 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(22467);
 						plr->AddItem(22464);
 						plr->AddItem(22471);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22469, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22469, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22470, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22470, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22465, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22465, true);
+						plr->AddItem(22469);
+						plr->AddItem(22470);
+						plr->AddItem(22465);
 						plr->AddItem(22468);
 						plr->AddItem(23065);
 						plr->AddItem(21839);
@@ -508,9 +487,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(22443);
 						plr->AddItem(22441);
 						plr->AddItem(22442);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22437, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22437, true);
+						plr->AddItem(22437);
 						plr->AddItem(22440);
 						plr->AddItem(23067);
 						plr->AddItem(21616);
@@ -522,9 +499,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(22478);
 						plr->AddItem(22477);
 						plr->AddItem(22479);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22480, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22480, true);
+						plr->AddItem(22480);
 						plr->AddItem(22482);
 						plr->AddItem(23060);
 						plr->AddItem(21126);
@@ -649,12 +624,22 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(883, 0,false);
 						plr->learnSpell(2641, 0,false);
 						plr->learnSpell(8737, 0,false);
+						plr->AddItem(30139);
+						plr->AddItem(30140);
+						plr->AddItem(30141);
+						plr->AddItem(30142);
+						plr->AddItem(30143);
 						break;
 					case CLASS_SHAMAN:
 						plr->learnSpell(5394, 0,false);
 						plr->learnSpell(8071, 0,false);
 						plr->learnSpell(3599, 0,false);
 						plr->learnSpell(8737, 0,false);
+						plr->AddItem(30169);
+						plr->AddItem(30170);
+						plr->AddItem(30171);
+						plr->AddItem(30172);
+						plr->AddItem(30173);
 						break;
 					case CLASS_DRUID:
 						plr->learnSpell(9634, 0,false);
@@ -662,18 +647,43 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(6795, 0,false);
 						plr->learnSpell(1066, 0,false);
 						plr->learnSpell(6807, 0,false);
+						plr->AddItem(30231);
+						plr->AddItem(30232);
+						plr->AddItem(30233);
+						plr->AddItem(30234);
+						plr->AddItem(30235);
 						break;
 					case CLASS_ROGUE:
+						plr->AddItem(30144);
+						plr->AddItem(30145);
+						plr->AddItem(30146);
+						plr->AddItem(30148);
+						plr->AddItem(30149);
 						break;
 					case CLASS_PRIEST:
+						plr->AddItem(30160);
+						plr->AddItem(30161);
+						plr->AddItem(30162);
+						plr->AddItem(30159);
+						plr->AddItem(30163);
 						break;
 					case CLASS_MAGE:
+						plr->AddItem(30206);
+						plr->AddItem(30205);
+						plr->AddItem(30207);
+						plr->AddItem(30210);
+						plr->AddItem(30196);
 						break;
 					case CLASS_WARLOCK:
 						plr->learnSpell(688, 0,false);
 						plr->learnSpell(697, 0,false);
 						plr->learnSpell(712, 0,false);
 						plr->learnSpell(691, 0,false);
+						plr->AddItem(30211);
+						plr->AddItem(30212);
+						plr->AddItem(30213);
+						plr->AddItem(30215);
+						plr->AddItem(30214);
 						break;
 				}
 				
