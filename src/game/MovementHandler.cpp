@@ -372,7 +372,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		{
             mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
 			if(((Creature*)mover)->isVehicle())
-				((Creature*)mover)->RelocatePassengers(mover->GetPositionX(),mover->GetPositionY(),mover->GetPositionZ(),mover->GetOrientation());
+				((Vehicle*)mover)->RelocatePassengers(mover->GetPositionX(),mover->GetPositionY(),mover->GetPositionZ(),mover->GetOrientation());
 		}
     }
 }
