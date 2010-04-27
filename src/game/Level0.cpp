@@ -430,16 +430,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(355, 0,false);
 						plr->learnSpell(750, 0,false);
 						
-						msg = plr->AddItem(22418);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22419, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22419, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22416, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22416, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22423, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22423, true);
+						plr->AddItem(22418);
+						plr->AddItem(22419);
+						plr->AddItem(22416);
+						plr->AddItem(22423);
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22421, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22421, true);
@@ -452,26 +446,15 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22420, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22420, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23059, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23059, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21134, true);
+						plr->AddItem(23059);
+						plr->AddItem(21134);
 						break;
 					case CLASS_PALADIN:
 						plr->learnSpell(7328, 0,false);
 						plr->learnSpell(750, 0,false);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22428, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22428, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22429, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22429, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22426, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22426, true);
+						plr->AddItem(22428);
+						plr->AddItem(22429);
+						plr->AddItem(22426);
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22425, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22425, true);
@@ -481,19 +464,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22431, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22431, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22427, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22427, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22430, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22430, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23066, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23066, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21134, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21134, true);
+						plr->AddItem(22427);
+						plr->AddItem(22430);
+						plr->AddItem(23066);
+						plr->AddItem(21134);
 						break;
 					case CLASS_DEATH_KNIGHT:
 						// todo
@@ -503,18 +477,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(8071, 0,false);
 						plr->learnSpell(3599, 0,false);
 						plr->learnSpell(8737, 0,false);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22466, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22466, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22467, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22467, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22464, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22464, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22471, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22471, true);
+						plr->AddItem(22466);
+						plr->AddItem(22467);
+						plr->AddItem(22464);
+						plr->AddItem(22471);
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22469, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22469, true);
@@ -524,19 +490,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22465, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22465, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22468, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22468, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23065, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23065, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21839, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21664, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21664, true);
+						plr->AddItem(22468);
+						plr->AddItem(23065);
+						plr->AddItem(21839);
+						plr->AddItem(21664);
 						break;
 					case CLASS_HUNTER:
 						plr->learnSpell(6991, 0,false);
@@ -545,73 +502,33 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(883, 0,false);
 						plr->learnSpell(2641, 0,false);
 						plr->learnSpell(8737, 0,false);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22438, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22438, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22439, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22439, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22436, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22436, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22443, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22443, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22441, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22441, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22442, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22442, true);
+						plr->AddItem(22438);
+						plr->AddItem(22439);
+						plr->AddItem(22436);
+						plr->AddItem(22443);
+						plr->AddItem(22441);
+						plr->AddItem(22442);
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22437, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22437, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22440, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22440, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23067, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23067, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21616, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21616, true);
+						plr->AddItem(22440);
+						plr->AddItem(23067);
+						plr->AddItem(21616);
 						break;
 					case CLASS_ROGUE:
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22483, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22483, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22476, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22476, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22481, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22481, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22478, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22478, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22477, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22477, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22479, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22479, true);
+						plr->AddItem(22483);
+						plr->AddItem(22476);
+						plr->AddItem(22481);
+						plr->AddItem(22478);
+						plr->AddItem(22477);
+						plr->AddItem(22479);
 						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22480, 1, false);
 						if (msg == EQUIP_ERR_OK)
 							plr->StoreNewItem(dest, 22480, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22482, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22482, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23060, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23060, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21126, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21126, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21650, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21650, true);
+						plr->AddItem(22482);
+						plr->AddItem(23060);
+						plr->AddItem(21126);
+						plr->AddItem(21650);
 						break;
 					case CLASS_DRUID:
 						plr->learnSpell(9634, 0,false);
@@ -619,101 +536,40 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(6795, 0,false);
 						plr->learnSpell(1066, 0,false);
 						plr->learnSpell(6807, 0,false);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22492, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22492, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22494, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22494, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22493, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22493, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22490, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22490, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22489, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22489, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22491, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22491, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22488, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22488, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22495, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22495, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23064, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23064, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21839, true);
+						plr->AddItem(22492);
+						plr->AddItem(22494);
+						plr->AddItem(22493);
+						plr->AddItem(22490);
+						plr->AddItem(22489);
+						plr->AddItem(22491);
+						plr->AddItem(22488);
+						plr->AddItem(22495);
+						plr->AddItem(23064);
+						plr->AddItem(21839);
 						break;
 					case CLASS_PRIEST:
 						plr->AddItem(22518);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22519, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22519, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22514, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22514, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22517, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22517, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22513, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22513, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22512, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22512, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22516, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22516, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22515, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22515, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23061, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23061, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21839, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21839, true);
+						plr->AddItem(22519);
+						plr->AddItem(22514);
+						plr->AddItem(22517);
+						plr->AddItem(22513);
+						plr->AddItem(22512);
+						plr->AddItem(22516);
+						plr->AddItem(22515);
+						plr->AddItem(23061);
+						plr->AddItem(21839);
 						break;
 					case CLASS_MAGE:
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22502, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22502, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22503, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22503, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22498, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22498, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22501, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22501, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22497, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22497, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22496, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22496, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22500, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22500, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22499, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22499, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 23062, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 23062, true);
-
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 21622, 2, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 21622, true);
+						plr->AddItem(22502);
+						plr->AddItem(22503);
+						plr->AddItem(22498);
+						plr->AddItem(22501);
+						plr->AddItem(22497);
+						plr->AddItem(22496);
+						plr->AddItem(22500);
+						plr->AddItem(22499);
+						plr->AddItem(23062);
+						plr->AddItem(21622);
 						break;
 					case CLASS_WARLOCK:
 						plr->learnSpell(688, 0,false);
@@ -725,12 +581,8 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(22506);
 						plr->AddItem(22509);
 						plr->AddItem(22505);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22504, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22504, true);
-						msg = plr->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 22508, 1, false);
-						if (msg == EQUIP_ERR_OK)
-							plr->StoreNewItem(dest, 22508, true);
+						plr->AddItem(22504);
+						plr->AddItem(22508);
 						plr->AddItem(22507);
 						plr->AddItem(23063);
 						plr->AddItem(21273);
@@ -773,15 +625,50 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->learnSpell(20252, 0,false);
 						plr->learnSpell(355, 0,false);
 						plr->learnSpell(750, 0,false);
+						plr->AddItem(30120);
+						plr->AddItem(30118);
+						plr->AddItem(30119);
+						plr->AddItem(30121);
+						plr->AddItem(30122);
 						break;
 					case CLASS_DEATH_KNIGHT:
+						break;
 					case CLASS_PALADIN:
+						plr->learnSpell(7328, 0,false);
+						plr->learnSpell(750, 0,false);
+						plr->AddItem(30129);
+						plr->AddItem(30130);
+						plr->AddItem(30132);
+						plr->AddItem(30133);
+						plr->AddItem(30131);
+						break;
 					case CLASS_HUNTER:
+						plr->learnSpell(6991, 0,false);
+						plr->learnSpell(982, 0,false);
+						plr->learnSpell(1515, 0,false);
+						plr->learnSpell(883, 0,false);
+						plr->learnSpell(2641, 0,false);
+						plr->learnSpell(8737, 0,false);
+						break;
 					case CLASS_SHAMAN:
+						plr->learnSpell(5394, 0,false);
+						plr->learnSpell(8071, 0,false);
+						plr->learnSpell(3599, 0,false);
+						plr->learnSpell(8737, 0,false);
+						break;
 					case CLASS_DRUID:
+						plr->learnSpell(9634, 0,false);
+						plr->learnSpell(768, 0,false);
+						plr->learnSpell(6795, 0,false);
+						plr->learnSpell(1066, 0,false);
+						plr->learnSpell(6807, 0,false);
+						break;
 					case CLASS_ROGUE:
+						break;
 					case CLASS_PRIEST:
+						break;
 					case CLASS_MAGE:
+						break;
 					case CLASS_WARLOCK:
 						plr->learnSpell(688, 0,false);
 						plr->learnSpell(697, 0,false);

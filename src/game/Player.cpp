@@ -22738,5 +22738,4 @@ void Player::AddItem(uint32 entry)
 	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, 1, false);
 	if (msg == EQUIP_ERR_OK)
 		m_session->GetPlayer()->StoreNewItem(dest, entry, true);
-
 }
