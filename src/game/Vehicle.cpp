@@ -420,10 +420,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
-    Map *map = me->GetMap();
-    if(!map)
-		return;
-
     // not sure that absolute position calculation is correct, it must depend on vehicle orientation and pitch angle
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if (Unit *passenger = itr->second.passenger)
