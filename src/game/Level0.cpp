@@ -605,8 +605,20 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30119);
 						plr->AddItem(30121);
 						plr->AddItem(30122);
+						plr->AddItem(29993);
+						plr->AddItem(30057);
+						plr->AddItem(30915);
+						plr->AddItem(32323);
 						break;
 					case CLASS_DEATH_KNIGHT:
+						plr->AddItem(29993);
+						plr->AddItem(29983);
+						plr->AddItem(29950);
+						plr->AddItem(30102);
+						plr->AddItem(30057);
+						plr->AddItem(30866);
+						plr->AddItem(30915);
+						plr->AddItem(32323);
 						break;
 					case CLASS_PALADIN:
 						plr->learnSpell(7328, 0,false);
@@ -616,6 +628,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30132);
 						plr->AddItem(30133);
 						plr->AddItem(30131);
+						plr->AddItem(29993);
+						plr->AddItem(30057);
+						plr->AddItem(30915);
+						plr->AddItem(32323);
 						break;
 					case CLASS_HUNTER:
 						plr->learnSpell(6991, 0,false);
@@ -629,6 +645,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30141);
 						plr->AddItem(30142);
 						plr->AddItem(30143);
+						plr->AddItem(29949);
+						plr->AddItem(29924);
+						plr->AddItem(30864);
+						plr->AddItem(30919);
+						plr->AddItem(32323);
 						break;
 					case CLASS_SHAMAN:
 						plr->learnSpell(5394, 0,false);
@@ -640,6 +661,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30171);
 						plr->AddItem(30172);
 						plr->AddItem(30173);
+						plr->AddItem(30108);
+						plr->AddItem(30869);
+						plr->AddItem(30882);
+						plr->AddItem(30873);
+						plr->AddItem(32524);
 						break;
 					case CLASS_DRUID:
 						plr->learnSpell(9634, 0,false);
@@ -652,6 +678,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30233);
 						plr->AddItem(30234);
 						plr->AddItem(30235);
+						plr->AddItem(29988);
+						plr->AddItem(30868);
+						plr->AddItem(30914);
+						plr->AddItem(32352);
+						plr->AddItem(32524);
 						break;
 					case CLASS_ROGUE:
 						plr->AddItem(30144);
@@ -659,6 +690,12 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30146);
 						plr->AddItem(30148);
 						plr->AddItem(30149);
+						plr->AddItem(29962);
+						plr->AddItem(29948);
+						plr->AddItem(30863);
+						plr->AddItem(30891);
+						plr->AddItem(32265);.
+						plr->AddItem(32323);
 						break;
 					case CLASS_PRIEST:
 						plr->AddItem(30160);
@@ -666,6 +703,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30162);
 						plr->AddItem(30159);
 						plr->AddItem(30163);
+						plr->AddItem(29988);
+						plr->AddItem(30871);
+						plr->AddItem(30888);
+						plr->AddItem(30885);
+						plr->AddItem(32524);
 						break;
 					case CLASS_MAGE:
 						plr->AddItem(30206);
@@ -673,6 +715,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30207);
 						plr->AddItem(30210);
 						plr->AddItem(30196);
+						plr->AddItem(29988);
+						plr->AddItem(30871);
+						plr->AddItem(30888);
+						plr->AddItem(30885);
+						plr->AddItem(32524);
 						break;
 					case CLASS_WARLOCK:
 						plr->learnSpell(688, 0,false);
@@ -684,6 +731,11 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(30213);
 						plr->AddItem(30215);
 						plr->AddItem(30214);
+						plr->AddItem(29988);
+						plr->AddItem(30871);
+						plr->AddItem(30888);
+						plr->AddItem(30885);
+						plr->AddItem(32524);
 						break;
 				}
 				
