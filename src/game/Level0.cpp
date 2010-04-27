@@ -592,7 +592,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 				plr->learnSpell(33095,0,false);
 				plr->SetSkill(129,plr->GetSkillStep(129),375,375);
 				plr->ModifyMoney(60000000);
-				switch(player->getClass())
+				switch(plr->getClass())
 				{
 					case CLASS_WARRIOR:
 						plr->learnSpell(71, 0,false);
@@ -694,7 +694,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 						plr->AddItem(29948);
 						plr->AddItem(30863);
 						plr->AddItem(30891);
-						plr->AddItem(32265);.
+						plr->AddItem(32265);
 						plr->AddItem(32323);
 						break;
 					case CLASS_PRIEST:

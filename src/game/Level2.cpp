@@ -4583,9 +4583,43 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			switch(player->getClass())
 			{
 				case CLASS_DRUID:
+					player->AddItem(43260);
+					player->AddItem(32260);
+					player->AddItem(43433);
+					player->AddItem(32323);
+					player->AddItem(43434);
+					player->AddItem(43435);
+					player->AddItem(43436);
+					player->AddItem(43437);
+					player->AddItem(43438);
+					player->AddItem(43439);
+					player->AddItem(32497);
+					player->AddItem(32266);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(30883);
+					player->AddItem(32257);
+					break;
 				case CLASS_DEATH_KNIGHT:
 				case CLASS_WARRIOR:
 				case CLASS_PALADIN:
+					player->AddItem(41113);
+					player->AddItem(41114);
+					player->AddItem(41345);
+					player->AddItem(40669);
+					player->AddItem(41238);
+					player->AddItem(40671);
+					player->AddItem(40675);
+					player->AddItem(41116);
+					player->AddItem(40672);
+					player->AddItem(40673);
+					player->AddItem(34213);
+					player->AddItem(29297);
+					player->AddItem(32501);
+					player->AddItem(37127);
+					player->AddItem(29362);
+					player->AddItem(28516);
+					player->AddItem(39490);
 					break;
 			}
 		}
@@ -4593,34 +4627,140 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 		{
 			switch(player->getClass())
 			{
-				case CLASS_DRUID:
+				case CLASS_PALADIN:
+					player->AddItem(41350);
+					player->AddItem(32260);
+					player->AddItem(41351);
+					player->AddItem(32323);
+					player->AddItem(41353);
+					player->AddItem(41354);
+					player->AddItem(41349);
+					player->AddItem(41352);
+					player->AddItem(41347);
+					player->AddItem(41348);
+					player->AddItem(33055);
+					player->AddItem(29997);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(29993);
+					player->AddItem(33503);
+					break;
 				case CLASS_DEATH_KNIGHT:
 				case CLASS_WARRIOR:
+					player->AddItem(41350);
+					player->AddItem(32260);
+					player->AddItem(41351);
+					player->AddItem(32323);
+					player->AddItem(41353);
+					player->AddItem(41354);
+					player->AddItem(41349);
+					player->AddItem(41352);
+					player->AddItem(41347);
+					player->AddItem(41348);
+					player->AddItem(33055);
+					player->AddItem(29997);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(29993);
+					player->AddItem(29993);
+					player->AddItem(30105);
 					break;
-				case CLASS_PALADIN:
-				{	
-					
+				case CLASS_DRUID:
+					player->AddItem(43260);
+					player->AddItem(32260);
+					player->AddItem(43433);
+					player->AddItem(32323);
+					player->AddItem(43434);
+					player->AddItem(43435);
+					player->AddItem(43436);
+					player->AddItem(43437);
+					player->AddItem(43438);
+					player->AddItem(43439);
+					player->AddItem(32497);
+					player->AddItem(32266);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(30883);
+					player->AddItem(32257);
 					break;
-				}
 				case CLASS_SHAMAN:
+					player->AddItem(43447);
+					player->AddItem(32260);
+					player->AddItem(43449);
+					player->AddItem(32323);
+					player->AddItem(43445);
+					player->AddItem(43444);
+					player->AddItem(43446);
+					player->AddItem(43442);
+					player->AddItem(43448);
+					player->AddItem(43443);
+					player->AddItem(32497);
+					player->AddItem(32266);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(32236);
+					player->AddItem(32944);
+					player->AddItem(33507);
 					break;
 				case CLASS_HUNTER:
-				{
-					
+					player->AddItem(43447);
+					player->AddItem(32260);
+					player->AddItem(43449);
+					player->AddItem(32323);
+					player->AddItem(43445);
+					player->AddItem(43444);
+					player->AddItem(43446);
+					player->AddItem(43442);
+					player->AddItem(43448);
+					player->AddItem(43443);
+					player->AddItem(32497);
+					player->AddItem(32266);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(32269);
+					player->AddItem(30082);
+					player->AddItem(30105);
 					break;
-				}
 				case CLASS_ROGUE:
-				{
-					
+					player->AddItem(43260);
+					player->AddItem(32260);
+					player->AddItem(43433);
+					player->AddItem(32323);
+					player->AddItem(43434);
+					player->AddItem(43435);
+					player->AddItem(43436);
+					player->AddItem(43437);
+					player->AddItem(43438);
+					player->AddItem(43439);
+					player->AddItem(32497);
+					player->AddItem(32266);
+					player->AddItem(30627);
+					player->AddItem(32505);
+					player->AddItem(32269);
+					player->AddItem(30082);
+					player->AddItem(30105);
 					break;
-				}
+
 				case CLASS_MAGE:
 				case CLASS_WARLOCK:
-				{
-					
-					break;
-				}
 				case CLASS_PRIEST:
+					player->AddItem(43971);
+					player->AddItem(28731);
+					player->AddItem(43973);
+					player->AddItem(45810);
+					player->AddItem(43972);
+					player->AddItem(43974);
+					player->AddItem(41516);
+					player->AddItem(43969);
+					player->AddItem(43975);
+					player->AddItem(43970);
+					player->AddItem(32247);
+					player->AddItem(30667);
+					player->AddItem(32483);
+					player->AddItem(28785);
+					player->AddItem(32237);
+					player->AddItem(32361);
+					player->AddItem(32363);
 					break;
 			}
 		}
@@ -4628,10 +4768,81 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 		{
 			switch(player->getClass())
 			{
-				case CLASS_DRUID:
+				case CLASS_DRUID:			
+					player->AddItem(43261);
+					player->AddItem(28731);
+					player->AddItem(43262);
+					player->AddItem(45810);
+					player->AddItem(43263);
+					player->AddItem(43264);
+					player->AddItem(43265);
+					player->AddItem(43266);
+					player->AddItem(43271);
+					player->AddItem(43273);
+					player->AddItem(32247);
+					player->AddItem(30667);
+					player->AddItem(32483);
+					player->AddItem(28785);
+					player->AddItem(32237);
+					player->AddItem(32361);
+					player->AddItem(33510);
+					break;
 				case CLASS_SHAMAN:
+					player->AddItem(43455);
+					player->AddItem(28731);
+					player->AddItem(43457);
+					player->AddItem(45810);
+					player->AddItem(43453);
+					player->AddItem(43452);
+					player->AddItem(43454);
+					player->AddItem(43450);
+					player->AddItem(43456);
+					player->AddItem(43451);
+					player->AddItem(32247);
+					player->AddItem(30667);
+					player->AddItem(32483);
+					player->AddItem(28785);
+					player->AddItem(32237);
+					player->AddItem(29267);
+					player->AddItem(33506);
+					break;
 				case CLASS_PRIEST:
+					player->AddItem(43971);
+					player->AddItem(28731);
+					player->AddItem(43973);
+					player->AddItem(45810);
+					player->AddItem(43972);
+					player->AddItem(43974);
+					player->AddItem(41516);
+					player->AddItem(43969);
+					player->AddItem(43975);
+					player->AddItem(43970);
+					player->AddItem(32247);
+					player->AddItem(30667);
+					player->AddItem(32483);
+					player->AddItem(28785);
+					player->AddItem(32237);
+					player->AddItem(32361);
+					player->AddItem(32363);
+					break;
 				case CLASS_PALADIN:
+					player->AddItem(42728);
+					player->AddItem(28731);
+					player->AddItem(42727);
+					player->AddItem(45810);
+					player->AddItem(42725);
+					player->AddItem(42723);
+					player->AddItem(42724);
+					player->AddItem(42729);
+					player->AddItem(42726);
+					player->AddItem(42730);
+					player->AddItem(32247);
+					player->AddItem(30667);
+					player->AddItem(32483);
+					player->AddItem(28785);
+					player->AddItem(32500);
+					player->AddItem(29267);
+					player->AddItem(33502);
 					break;
 			}
 		}
@@ -4809,7 +5020,10 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			player->learnSpell(674, 0,false);
 			break;
 		case CLASS_PRIEST:
+			break;
 		case CLASS_DEATH_KNIGHT:
+			player->learnSpell(50977, 0,false);
+			player->learnSpell(53428, 0,false);
 			break;
 		
 		default:
