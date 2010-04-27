@@ -133,13 +133,38 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
             return;
         }
 
+		if (_player->GetBattleGroundQueueIndex(bgQueueTypeIdRandom) < PLAYER_MAX_BATTLEGROUND_QUEUES)
+		{
+
+			//player is already in random queue
+			WorldPacket data;
+			sBattleGroundMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_IN_RANDOM_BG);
+			_player->GetSession()->SendPacket(&data);
+			return;
+
+		}
+
+		if(_player->InBattleGroundQueue() && bgTypeId == BATTLEGROUND_RB)
+		{
+			//player is already in queue, can't start random queue
+			WorldPacket data;
+			sBattleGroundMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_IN_NON_RANDOM_BG);
+			_player->GetSession()->SendPacket(&data);
+			return;
+		}
+
         // check if already in queue
         if (_player->GetBattleGroundQueueIndex(bgQueueTypeId) < PLAYER_MAX_BATTLEGROUND_QUEUES)
             return;
 
         // check if has free queue slots
         if (!_player->HasFreeBattleGroundQueueId())
+        {
+			WorldPacket data;
+			sBattleGroundMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_BATTLEGROUND_TOO_MANY_QUEUES);
+			_player->GetSession()->SendPacket(&data);
             return;
+		}
     }
     else
     {

@@ -32,6 +32,7 @@
 #include "InstanceSaveMgr.h"
 #include "MapInstanced.h"
 #include "Util.h"
+#include "BattleGroundMgr.h"
 
 Group::Group()
 {
@@ -1525,6 +1526,14 @@ GroupJoinBattlegroundResult Group::CanJoinBattleGroundQueue(BattleGround const* 
         // check if member can join any more battleground queues
         if(!member->HasFreeBattleGroundQueueId())
             return ERR_GROUP_JOIN_BATTLEGROUND_DESERTERS;
+            
+        BattleGroundQueueTypeId bgQueueTypeIdRandom = BattleGroundMgr::BGQueueTypeId(BATTLEGROUND_RB, 0);
+        // don't let join if someone from the group is in bg queue random
+        if(member->InBattleGroundQueueForBattleGroundQueueType(bgQueueTypeIdRandom))
+			return ERR_IN_RANDOM_BG;
+		// don't let join to bg queue random if someone from the group is already in bg queue
+		if(bgOrTemplate->GetTypeID() == BATTLEGROUND_RB && member->InBattleGroundQueue())
+			return ERR_IN_NON_RANDOM_BG;
     }
     return GroupJoinBattlegroundResult(bgOrTemplate->GetTypeID());
 }
