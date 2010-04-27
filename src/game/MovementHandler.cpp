@@ -371,8 +371,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         if(mover->IsInWorld())
 		{
             mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
-			/*if(((Creature*)mover)->isVehicle())
-				((Creature*)mover)->RelocatePassengers(mover->GetMap());*/
+			if(((Creature*)mover)->isVehicle())
+				((Creature*)mover)->RelocatePassengers(mover->GetPositionX(),mover->GetPositionY(),mover->GetPositionZ(),mover->GetOrientation());
 		}
     }
 }
