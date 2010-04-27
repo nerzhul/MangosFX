@@ -5029,6 +5029,34 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 		default:
 			break;
 	}
+	switch(player->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_NIGHTELF:
+		case RACE_GNOME:
+		case RACE_DRAENEI:
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(932),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(72),24000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(946),42000);
+			break;
+		case RACE_ORC:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_TAUREN:
+		case RACE_TROLL:
+		case RACE_BLOODELF:
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(934),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(947),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(76),24000);
+			break;
+		default:
+			break;
+	}
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(942),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(989),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(935),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(1011),24000);
+	
 	player->UpdateSkillsToMaxSkillsForLevel();
 	return true;
 }
