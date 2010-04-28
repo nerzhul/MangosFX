@@ -28,10 +28,12 @@
 #include "CreatureAI.h"
 #include "ZoneScript.h"
 
-Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo, uint32 vhId) : Creature(CREATURE_SUBTYPE_VEHICLE), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
+Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo, uint32 vhId) : Creature(CREATURE_SUBTYPE_VEHICLE)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
     m_vehicleId = vhId;
+    m_vehicleInfo = vehInfo;
+    me = unit;
     InitSeats();
 }
 
@@ -54,7 +56,6 @@ void Vehicle::InitSeats()
             }
         }
     }
-    // NOTE : there can be vehicles without seats (eg. 180) - probably some TEST vehicles
 }
 
 Vehicle::~Vehicle()
@@ -176,7 +177,7 @@ void Vehicle::Die()
 void Vehicle::Reset()
 {
     sLog.outDebug("Vehicle::Reset");
-    if(m_usableSeatNum || me->GetEntry() == 32930)
+    if(me->GetEntry() == 32930)
     {
         if (me->GetTypeId() == TYPEID_PLAYER)
         {
@@ -274,28 +275,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 {
     if(unit->GetVehicle() != this)
         return false;
-
+        
     SeatMap::iterator seat;
-    if(seatId < 0) // no specific seat requirement
-    {
-        for (seat = m_Seats.begin(); seat != m_Seats.end(); ++seat)
-            if(!seat->second.passenger && seat->second.seatInfo->IsUsable())
-                break;
+    seat = m_Seats.find(seatId);
 
-        if(seat == m_Seats.end()) // no available seat
-            return false;
-    }
-    else
-    {
-        seat = m_Seats.find(seatId);
-        if(seat == m_Seats.end())
-            return false;
-
-        if(seat->second.passenger)
-            seat->second.passenger->ExitVehicle();
-
-        ASSERT(!seat->second.passenger);
-    }
+    // this should never happen
+    if(seat == m_Seats.end())
+        return;
 
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
@@ -388,17 +374,6 @@ void Vehicle::RemovePassenger(Unit *unit)
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
     seat->second.passenger = NULL;
-    if(seat->second.seatInfo->IsUsable())
-    {
-        if(!m_usableSeatNum)
-        {
-            if (me->GetTypeId() == TYPEID_PLAYER)
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
-            else
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-        }
-        ++m_usableSeatNum;
-    }
 
 	me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
