@@ -313,7 +313,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	if(unit->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
-        data0 << unit->GetPackGUID();
+        data0.append(unit->GetPackGUID());
         data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ? 2 : 0);
         unit->SendMessageToSet(&data0,true);
     }
