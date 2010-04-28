@@ -82,6 +82,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
         SeatMap m_Seats;
 		void InstallAccessory(uint32 entry, int8 seatId, bool minion = true);
+		void ChangeSeatFlag(uint8 seat, uint8 flag);
 
     protected:
         uint32 m_vehicleId;

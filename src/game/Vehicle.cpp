@@ -45,8 +45,7 @@ void Vehicle::InitSeats()
         {
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-                VehicleSeat newseat;
-                newseat.seatInfo = veSeat;
+                VehicleSeat newseat(veSeat);
                 newseat.passenger = NULL;
                 newseat.flags = SEAT_FREE;
                 newseat.vs_flags = sObjectMgr.GetSeatFlags(seatId);
@@ -508,4 +507,18 @@ void Vehicle::Dismiss()
     SendObjectDeSpawnAnim(GetGUID());
     CombatStop();
     AddObjectToRemoveList();
+}
+
+void Vehicle::ChangeSeatFlag(uint8 seat, uint8 flag)
+{
+    SeatMap::iterator i_seat = m_Seats.find(seat);
+    // this should never happen
+    if(i_seat == m_Seats.end())
+        return;
+
+    if(i_seat->second.flags != flag)
+    {
+        i_seat->second.flags = flag;
+        // TODO: implement that : EmptySeatsCountChanged();
+    }
 }
