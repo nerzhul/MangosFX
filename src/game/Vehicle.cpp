@@ -519,6 +519,54 @@ void Vehicle::ChangeSeatFlag(uint8 seat, uint8 flag)
     if(i_seat->second.flags != flag)
     {
         i_seat->second.flags = flag;
-        // TODO: implement that : EmptySeatsCountChanged();
+        EmptySeatsCountChanged();
+    }
+}
+
+int8 Vehicle::GetEmptySeatsCount(bool force)
+{
+    int8 count = 0;
+    for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+   {
+        if(itr->second.flags & (SEAT_FREE | SEAT_VEHICLE_FREE))
+        {
+            if(!force && (itr->second.vs_flags & SF_UNACCESSIBLE))
+                continue;
+
+            count++;
+        }
+    }
+
+    return count;
+}
+
+void Vehicle::EmptySeatsCountChanged()
+{
+    uint8 m_count = GetTotalSeatsCount();
+    uint8 p_count = GetEmptySeatsCount(false);
+    uint8 u_count = GetEmptySeatsCount(true);
+
+    // seats accesibles by players
+    if(p_count > 0)
+        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+    else
+        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+
+    if(u_count == m_count)
+    {
+        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+    }
+    else
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+
+    if(uint64 vehicleGUID = me->GetVehicleGUID())
+    {
+        if(Unit *vehicle = ObjectAccessor::GetUnit(*me,vehicleGUID))
+        {
+            if(u_count > 0)
+                vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FREE);
+            else
+                vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FULL);
+        }
     }
 }

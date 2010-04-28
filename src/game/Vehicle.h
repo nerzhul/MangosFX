@@ -85,6 +85,10 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         SeatMap m_Seats;
 		void InstallAccessory(uint32 entry, int8 seatId, bool minion = true);
 		void ChangeSeatFlag(uint8 seat, uint8 flag);
+		
+		int8 GetTotalSeatsCount() { return m_Seats.size(); }
+		int8 GetEmptySeatsCount(bool force = true);
+		void EmptySeatsCountChanged();
 
     protected:
         uint32 m_vehicleId;

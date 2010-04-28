@@ -14671,16 +14671,15 @@ void Unit::ChangeSeat(int8 seatId, bool next)
 
     if (seatId < 0)
     {
-        seatId = m_vehicle->GetNextEmptySeat(GetTransSeat(), next);
+        seatId = m_vehicle->GetNextEmptySeatNum(m_movementInfo.GetTransportSeat(), next);
         if (seatId < 0)
             return;
     }
-    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
+    else if (seatId == m_movementInfo.GetTransportSeat() || !m_vehicle->HasEmptySeat(seatId))
         return;
 
     m_vehicle->RemovePassenger(this);
-    if (!m_vehicle->AddPassenger(this, seatId))
-        ASSERT(false);
+    EnterVehicle(m_vehicle, seatId);
 }
 
 Unit *Unit::GetVehicleBase() const
@@ -14783,18 +14782,12 @@ void Unit::BuildVehicleInfo(Unit *target)
     data << float(target->GetPositionZ());
     data << float(target->GetOrientation());
     data.appendPackGUID(target->GetVehicleGUID());
-    /*data << float(target->m_SeatData.OffsetX);
+    data << float(target->m_SeatData.OffsetX);
     data << float(target->m_SeatData.OffsetY);
     data << float(target->m_SeatData.OffsetZ);
     data << float(target->m_SeatData.Orientation);
-    data << uint32(veh_time);
-    data << uint8 (target->m_SeatData.seat);*/
-    data << float(0.0);
-    data << float(0.0);
-    data << float(0.0);
-    data << float(0.0);
-    data << uint32(0);
-    data << uint8(0);
+    data << uint32(/*veh_time*/0);
+    data << uint8 (target->m_SeatData.seat);
     data << uint32(m_movementInfo.GetFallTime());
     SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
 }

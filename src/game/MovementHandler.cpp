@@ -518,8 +518,14 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     MovementInfo mi(recv_data);
 
     _player->m_movementInfo = mi;
-
-	_player->ExitVehicle();
+	
+	if(Vehicle *vehicle = ObjectAccessor::GetUnit(*_player,vehicleGUID))
+    {
+        /*if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
+            vehicle->Dismiss();
+        else*/
+            _player->ExitVehicle();
+    }
 }
 
 void WorldSession::HandleMountSpecialAnimOpcode(WorldPacket& /*recvdata*/)
@@ -624,6 +630,10 @@ void WorldSession::HandleRequestVehicleExit(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_REQUEST_VEHICLE_EXIT");
     recv_data.hexlike();
+    uint64 vehicleGUID = GetPlayer()->GetVehicleGUID();
+
+    if(!vehicleGUID)                                        // something wrong here...
+        return;
     GetPlayer()->ExitVehicle();
 }
 
