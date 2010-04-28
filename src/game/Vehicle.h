@@ -37,6 +37,7 @@ enum PowerType
 struct VehicleSeat
 {
     explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL) {}
+    explicit VehicleSeat() : passenger(NULL) {}
     VehicleSeatEntry const *seatInfo;
     uint8 flags;
     Unit* passenger;

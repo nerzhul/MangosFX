@@ -45,8 +45,8 @@ void Vehicle::InitSeats()
         {
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-                VehicleSeat newseat(veSeat);
-                newseat.passenger = NULL;
+                VehicleSeat newseat;
+                newseat.seatInfo = veSeat;
                 newseat.flags = SEAT_FREE;
                 newseat.vs_flags = sObjectMgr.GetSeatFlags(seatId);
                 m_Seats[i] = newseat;
