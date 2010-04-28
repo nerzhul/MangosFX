@@ -381,6 +381,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         }
     }
 
+	EmptySeatsCountChanged();
     return true;
 }
 
