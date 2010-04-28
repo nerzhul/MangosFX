@@ -299,7 +299,25 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
     seat->second.passenger = unit;
-	
+    
+    if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
+    {
+        if(((Vehicle*)unit)->GetEmptySeatsCount(true) == 0)
+            seat->second.flags = SEAT_VEHICLE_FULL;
+        else
+            seat->second.flags = SEAT_VEHICLE_FREE;
+    }
+    else
+        seat->second.flags = SEAT_FULL;
+
+	if(unit->GetTypeId() == TYPEID_PLAYER)
+    {
+        WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
+        data0 << unit->GetPackGUID();
+        data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ? 2 : 0);
+        unit->SendMessageToSet(&data0,true);
+    }
+    
     if(seat->second.seatInfo->IsUsable())
     {
         ASSERT(m_usableSeatNum);
@@ -324,20 +342,8 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
 		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
 
-	unit->m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX);      // transport offsetX
-    unit->m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY);      // transport offsetY
-    unit->m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ);      // transport offsetZ
-    unit->m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
-//    unit->m_SeatData.c_time = me->GetCreationTime();
-    unit->m_SeatData.dbc_seat = veSeat->m_ID;
-    unit->m_SeatData.seat = seatId;
-    unit->m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
-//    unit->m_SeatData.v_flags = me->GetVehicleFlags();
-
     if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800) // not right
 	{
-		unit->SendMonsterMoveTransport(me);
-
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
 		me->setFaction(((Player*)unit)->getFaction());

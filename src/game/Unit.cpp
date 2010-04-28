@@ -14613,23 +14613,17 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         if (m_vehicle == vehicle)
         {
             if (seatId >= 0)
-            {
-                sLog.outDebug("EnterVehicle: %u leave vehicle %u seat %d and enter %d.", GetEntry(), m_vehicle->GetBase()->GetEntry(), GetTransSeat(), seatId);
-                ChangeSeat(seatId);
-            }
+                 ChangeSeat(seatId);
             return;
         }
         else
-        {
-            sLog.outDebug("EnterVehicle: %u exit %u and enter %u.", GetEntry(), m_vehicle->GetBase()->GetEntry(), vehicle->GetBase()->GetEntry());
             ExitVehicle();
-        }
     }
+    
+    vehicle->FindFreeSeat(&seatId, false);
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
-//        ((Player*)this)->StopCastingCharm();
-//        ((Player*)this)->StopCastingBindSight();
         ((Player*)this)->Unmount();
         ((Player*)this)->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
     }
@@ -14638,9 +14632,26 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
+    
+	/*if(GetTypeId() == TYPEID_PLAYER) TODO: add this if necessary
+        ((Player*)this)->SendEnterVehicle(v);*/
 
 	addUnitState(UNIT_STAT_ON_VEHICLE);
 
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + v->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
+    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + v->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
+    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + v->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
+    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
+    m_SeatData.c_time = 0/*v->GetCreationTime()*/;
+    m_SeatData.dbc_seat = veSeat->m_ID;
+    m_SeatData.seat = seat_id;
+    m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
+    m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
+    
+    InterruptNonMeleeSpells(false);
+    
+    SendMonsterMoveTransport(m_vehicle);
+    
     if (!m_vehicle->AddPassenger(this, seatId))
     {
         m_vehicle = NULL;
@@ -14649,10 +14660,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	
 	m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
-    WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
-    data.append(GetPackGUID());
-    data << (uint32)2;
-    SendMessageToSet(&data,true);
 
     //movementInfo is set in AddPassenger
     //packets are sent in AddPassenger
@@ -14712,7 +14719,7 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, GetPackGUID().size()+vehicleOwner->GetPackGUID().size());
     data.append(GetPackGUID());
     data.append(vehicleOwner->GetPackGUID());
-    data << int8(GetTransSeat());
+    data << int8(m_seatData.seat);
     data << uint8(0);
     data << GetPositionX() - vehicleOwner->GetPositionX();
     data << GetPositionY() - vehicleOwner->GetPositionY();
