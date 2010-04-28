@@ -58,7 +58,7 @@ typedef std::map<int8, VehicleSeat> SeatMap;
 class MANGOS_DLL_DECL Vehicle : public Creature
 {
     public:
-        explicit Vehicle(Unit *unit, VehicleEntry const *vehInfo);
+        explicit Vehicle(Unit *unit, VehicleEntry const *vehInfo, uint32 vhId);
         virtual ~Vehicle();
 
         uint32 GetVehicleId() { return m_vehicleId; }

@@ -28,7 +28,7 @@
 #include "CreatureAI.h"
 #include "ZoneScript.h"
 
-Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
+Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo,uint32 vhId) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
     InitSeats();
