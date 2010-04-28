@@ -434,17 +434,47 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(Map* map)
 {
-    // not sure that absolute position calculation is correct, it must depend on vehicle orientation and pitch angle
-    for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
-        if (Unit *passenger = itr->second.passenger)
+    for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+    {
+        if(itr->second.flags & SEAT_FULL)
         {
-			float px = me->GetPositionX() + passenger->m_SeatData.OffsetX;
-            float py = me->GetPositionY() + passenger->m_SeatData.OffsetY;
-            float pz = me->GetPositionZ() + passenger->m_SeatData.OffsetZ;
-            float po = me->GetOrientation() + passenger->m_SeatData.Orientation;
-            passenger->SetPosition(px, py, pz, po);
+            // passenger cant be NULL here
+            Unit *passengers = itr->second.passenger;
+            assert(passengers);
+
+            float xx = GetPositionX() + passengers->m_SeatData.OffsetX;
+            float yy = GetPositionY() + passengers->m_SeatData.OffsetY;
+            float zz = GetPositionZ() + passengers->m_SeatData.OffsetZ;
+            //float oo = passengers->m_SeatData.Orientation;
+            // this is not correct, we should recalculate
+            // actual rotation depending on vehicle
+            float oo = passengers->GetOrientation();
+
+            if(passengers->GetTypeId() == TYPEID_PLAYER)
+                ((Player*)passengers)->SetPosition(xx, yy, zz, oo);
+            else
+                map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
         }
+        else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
+        {
+            // passenger cant be NULL here
+            Unit *passengers = itr->second.passenger;
+            assert(passengers);
+
+            float xx = GetPositionX() + passengers->m_SeatData.OffsetX;
+            float yy = GetPositionY() + passengers->m_SeatData.OffsetY;
+            float zz = GetPositionZ() + passengers->m_SeatData.OffsetZ;
+            //float oo = passengers->m_SeatData.Orientation;
+            // this is not correct, we should recalculate
+            // actual rotation depending on vehicle
+            float oo = passengers->GetOrientation();
+
+            map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+            ((Vehicle*)passengers)->RellocatePassengers(map);
+        }
+    }
 }
+
 void Vehicle::Dismiss()
 {
     Uninstall();
