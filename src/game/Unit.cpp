@@ -14620,7 +14620,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
             ExitVehicle();
     }
     
-    vehicle->FindFreeSeat(&seatId, false);
+    Vehicle *v = vehicle->FindFreeSeat(&seatId, false);
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
@@ -14638,27 +14638,22 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	addUnitState(UNIT_STAT_ON_VEHICLE);
 	
-	if(m_vehicle->GetTypeId() == TYPEID_UNIT)
-	{
-		uint32 entry = m_vehicle->GetEntry();
-		CreatureInfo const *cinfo = sObjectMgr.GetCreatureTemplate(entry);
-		VehicleEntry const *ve = sVehicleStore.LookupEntry(cinfo->VehicleId);
-		if(!ve)
-			return;
-		VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
-		if(!veSeat)
-			return;
+	VehicleEntry const *ve = sVehicleStore.LookupEntry(v->GetVehicleId());
+	if(!ve)
+		return;
+	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
+	if(!veSeat)
+		return;
 
-		m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
-		m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
-		m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
-		m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
-		m_SeatData.c_time = 0/*v->GetCreationTime()*/;
-		m_SeatData.dbc_seat = veSeat->m_ID;
-		m_SeatData.seat = seatId;
-		m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
-		m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
-	}
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
+	m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
+	m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
+	m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
+	m_SeatData.c_time = 0/*v->GetCreationTime()*/;
+	m_SeatData.dbc_seat = veSeat->m_ID;
+	m_SeatData.seat = seatId;
+	m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
+	m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
     
     InterruptNonMeleeSpells(false);
     
@@ -14720,7 +14715,7 @@ bool Unit::CreateVehicleKit(uint32 id)
     if (!vehInfo)
         return false;
 
-    m_vehicleKit = new Vehicle(this, vehInfo);
+    m_vehicleKit = new Vehicle(this, vehInfo, id);
     m_updateFlag |= UPDATEFLAG_VEHICLE;
     m_unitTypeMask |= UNIT_MASK_VEHICLE;
     return true;
