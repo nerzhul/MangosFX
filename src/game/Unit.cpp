@@ -14641,7 +14641,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(((Creature*)m_vehicle)->GetCreatureInfo()->VehicleId);
     if(!ve)
         return;
-	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seat_id]);
+	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
     if(!veSeat)
         return;
 
@@ -14726,7 +14726,7 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, GetPackGUID().size()+vehicleOwner->GetPackGUID().size());
     data.append(GetPackGUID());
     data.append(vehicleOwner->GetPackGUID());
-    data << int8(m_seatData.seat);
+    data << int8(m_SeatData.seat);
     data << uint8(0);
     data << GetPositionX() - vehicleOwner->GetPositionX();
     data << GetPositionY() - vehicleOwner->GetPositionY();
