@@ -519,7 +519,7 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
 
     _player->m_movementInfo = mi;
 	
-	if(Vehicle *vehicle = ObjectAccessor::GetUnit(*_player,vehicleGUID))
+	if(Unit *vehicle = ObjectAccessor::GetUnit(*_player,vehicleGUID))
     {
         /*if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
             vehicle->Dismiss();
