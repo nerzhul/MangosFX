@@ -40,6 +40,7 @@ struct VehicleSeat
     VehicleSeatEntry const *seatInfo;
     uint8 flags;
     Unit* passenger;
+    uint32 vs_flags;
 };
 
 enum VehicleSeatFlags
