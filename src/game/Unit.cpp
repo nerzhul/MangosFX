@@ -14641,7 +14641,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(m_vehicle->GetTypeId() == TYPEID_UNIT)
 	{
 		uint32 entry = m_vehicle->GetEntry();
-		CreatureInfo const *cinfo = ObjectMgr::GetCreatureTemplate(entry);
+		CreatureInfo const *cinfo = sObjectMgr.GetCreatureTemplate(entry);
 		VehicleEntry const *ve = sVehicleStore.LookupEntry(cinfo->VehicleId);
 		if(!ve)
 			return;
