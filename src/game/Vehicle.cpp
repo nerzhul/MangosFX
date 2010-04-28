@@ -241,30 +241,6 @@ Unit *Vehicle::GetPassenger(int8 seatId) const
     return seat->second.passenger;
 }
 
-int8 Vehicle::GetNextEmptySeat(int8 seatId, bool next) const
-{
-    SeatMap::const_iterator seat = m_Seats.find(seatId);
-    if(seat == m_Seats.end()) return -1;
-    while(seat->second.passenger || !seat->second.seatInfo->IsUsable())
-    {
-        if(next)
-        {
-            ++seat;
-            if(seat == m_Seats.end())
-                seat = m_Seats.begin();
-        }
-        else
-        {
-            if(seat == m_Seats.begin())
-                seat = m_Seats.end();
-            --seat;
-        }
-        if(seat->first == seatId)
-            return -1; // no available seat
-    }
-    return seat->first;
-}
-
 void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
 {
     if(Unit *passenger = GetPassenger(seatId))
@@ -572,4 +548,101 @@ void Vehicle::EmptySeatsCountChanged()
 			}
         }
     }
+}
+
+int8 Vehicle::GetNextEmptySeatNum(int8 seatId, bool next) const
+{
+    SeatMap::const_iterator seat = m_Seats.find(seatId);
+    if(seat == m_Seats.end()) return -1;
+    while(seat->second.passenger || !seat->second.seatInfo->IsUsable())
+    {
+        if(next)
+        {
+            ++seat;
+            if(seat == m_Seats.end())
+                seat = m_Seats.begin();
+        }
+        else
+        {
+            if(seat == m_Seats.begin())
+                seat = m_Seats.end();
+            --seat;
+        }
+        if(seat->first == seatId)
+            return -1; // no available seat
+    }
+    return seat->first;
+}
+
+Vehicle* Vehicle::GetNextEmptySeat(int8 *seatId, bool next, bool force)
+{
+    SeatMap::const_iterator i_seat = m_Seats.find(*seatId);
+    if(i_seat == m_Seats.end()) return GetFirstEmptySeat(seatId, force);
+
+    while((i_seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FULL)) || (!force && (i_seat->second.vs_flags & SF_UNACCESSIBLE)))
+    {
+        if(next)
+        {
+            ++i_seat;
+            if(i_seat == m_Seats.end())
+                i_seat = m_Seats.begin();
+        }
+        else
+        {
+            if(i_seat == m_Seats.begin())
+                i_seat = m_Seats.end();
+            --i_seat;
+        }
+        if(i_seat->first == *seatId)
+            return NULL;
+    }
+    *seatId = i_seat->first;
+    if(i_seat->second.flags & SEAT_VEHICLE_FREE)
+    {
+        if(Vehicle *v = (Vehicle*)i_seat->second.passenger)
+            return v->FindFreeSeat(seatId, force);
+        return NULL;
+    }
+
+    return this;
+}
+
+Vehicle* Vehicle::FindFreeSeat(int8 *seatid, bool force)
+{
+    SeatMap::const_iterator i_seat = m_Seats.find(*seatid);
+    if(i_seat == m_Seats.end())
+        return GetFirstEmptySeat(seatid, force);
+    if((i_seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FULL)) || (!force && (i_seat->second.vs_flags & SF_UNACCESSIBLE)))
+        return GetNextEmptySeat(seatid, true, force);
+    if(i_seat->second.flags & SEAT_VEHICLE_FREE)
+    {
+        // this should never be NULL
+        if(Vehicle *v = (Vehicle*)i_seat->second.passenger)
+            return v->FindFreeSeat(seatid, force);
+        return NULL;
+    }
+    return this;
+}
+
+Vehicle* Vehicle::GetFirstEmptySeat(int8 *seatId, bool force)
+{
+    for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+    {
+        if(itr->second.flags & SEAT_FREE)
+        {
+            if(!force && (itr->second.vs_flags & SF_UNACCESSIBLE))
+                continue;
+
+            *seatId = itr->first;
+            return this;
+        }
+        else if(itr->second.flags & SEAT_VEHICLE_FREE)
+        {
+            *seatId = itr->first;
+            if(Vehicle *v = (Vehicle*)itr->second.passenger)
+                return v->FindFreeSeat(seatId, force);
+        }
+    }
+
+    return NULL;
 }

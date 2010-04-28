@@ -76,7 +76,8 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
         bool HasEmptySeat(int8 seatId) const;
         Unit *GetPassenger(int8 seatId) const;
-        int8 GetNextEmptySeat(int8 seatId, bool next) const;
+        //int8 GetNextEmptySeat(int8 seatId, bool next) const;
+        Vehicle* GetNextEmptySeat(int8 *seatId, bool next = true, bool force = true);
         bool AddPassenger(Unit *passenger, int8 seatId = -1);
         void RemovePassenger(Unit *passenger);
         void RemoveAllPassengers();
@@ -90,6 +91,8 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 		int8 GetEmptySeatsCount(bool force = true);
 		void EmptySeatsCountChanged();
 		int8 GetNextEmptySeatNum(int8 seatId, bool next) const;
+		Vehicle* FindFreeSeat(int8 *seatid, bool force = true);
+        Vehicle* GetFirstEmptySeat(int8 *seatId, bool force = true);
 
     protected:
         uint32 m_vehicleId;
