@@ -410,6 +410,9 @@ void Vehicle::RelocatePassengers(Map* map)
     {
 		sLog.outError("TEST");
 		uint8 flags = itr->second.flags;
+		if(!flags)
+			continue;
+			
         if(flags & SEAT_FULL)
         {
             // passenger cant be NULL here
