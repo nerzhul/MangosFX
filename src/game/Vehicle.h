@@ -65,7 +65,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void Reset();
         void Die();
         void InstallAllAccessories();
-		void RelocatePassengers(float x, float y, float z, float ang);
+		void RelocatePassengers(Map* map);
 
         Unit *GetBase() const { return me; }
         VehicleEntry const *GetVehicleInfo() { return m_vehicleInfo; }

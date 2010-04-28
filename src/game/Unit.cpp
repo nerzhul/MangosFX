@@ -14724,9 +14724,9 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     data << uint32(0x00800000);
     data << uint32(0);// move time
 	data << uint32(1);
-    data << uint32(GetTransOffsetX());//GetTransOffsetX();
-    data << uint32(GetTransOffsetY());//GetTransOffsetY();
-    data << uint32(GetTransOffsetZ());//GetTransOffsetZ();
+    data << m_SeatData.OffsetX;
+    data << m_SeatData.OffsetY;
+    data << m_SeatData.OffsetZ;
     SendMessageToSet(&data, true);
 }
 
@@ -14759,7 +14759,7 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
         SetOrientation(orientation);
 
     if ((relocated || turn) && IsVehicle())
-        GetVehicleKit()->RelocatePassengers(x,y,z,orientation);
+        GetVehicleKit()->RelocatePassengers(GetMap());
 
     return (relocated || turn);
 }

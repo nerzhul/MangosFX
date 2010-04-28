@@ -36,8 +36,7 @@ Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SU
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-				VehicleSeat vSeat;
-				vSeat.seatInfo = veSeat;
+				VehicleSeat vSeat(veSeat);
 				vSeat.passenger = NULL;
 				vSeat.flags = SEAT_FREE;
                 m_Seats.insert(std::make_pair(i, vSeat));
@@ -298,6 +297,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
     seat->second.passenger = unit;
+	
     if(seat->second.seatInfo->IsUsable())
     {
         ASSERT(m_usableSeatNum);
@@ -321,6 +321,16 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     VehicleSeatEntry const *veSeat = seat->second.seatInfo;
 	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
 		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
+
+	unit->m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX);      // transport offsetX
+    unit->m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY);      // transport offsetY
+    unit->m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ);      // transport offsetZ
+    unit->m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
+//    unit->m_SeatData.c_time = me->GetCreationTime();
+    unit->m_SeatData.dbc_seat = veSeat->m_ID;
+    unit->m_SeatData.seat = seatId;
+    unit->m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
+//    unit->m_SeatData.v_flags = me->GetVehicleFlags();
 
     if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800) // not right
 	{
@@ -359,7 +369,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 ((Creature*)me)->AI()->PassengerBoarded(unit, seat->first, true);*/
 
             // update all passenger's positions
-            RelocatePassengers(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
+            RelocatePassengers(me->GetMap());
         }
     }
 
@@ -422,17 +432,16 @@ void Vehicle::RemovePassenger(Unit *unit)
     //CastSpell(this, 45472, true);                           // Parachute
 }
 
-void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
+void Vehicle::RelocatePassengers(Map* map)
 {
     // not sure that absolute position calculation is correct, it must depend on vehicle orientation and pitch angle
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if (Unit *passenger = itr->second.passenger)
         {
-			float px = x + passenger->m_movementInfo.GetPos()->x;
-            float py = y + passenger->m_movementInfo.GetPos()->y;
-            float pz = z + passenger->m_movementInfo.GetPos()->z;
-            float po = ang + passenger->m_movementInfo.GetPos()->o;
-
+			float px = me->GetPositionX() + passenger->m_SeatData.OffsetX;
+            float py = me->GetPositionY() + passenger->m_SeatData.OffsetY;
+            float pz = me->GetPositionZ() + passenger->m_SeatData.OffsetZ;
+            float po = me->GetOrientation() + passenger->m_SeatData.Orientation;
             passenger->SetPosition(px, py, pz, po);
         }
 }
