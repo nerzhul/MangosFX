@@ -36,13 +36,15 @@ Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SU
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-				VehicleSeat vSeat;
-				vSeat.seatInfo = veSeat;
+				VehicleSeat vSeat(veSeat);
 				vSeat.passenger = NULL;
 				vSeat.flags = SEAT_FREE;
                 m_Seats.insert(std::make_pair(i, vSeat));
                 if(veSeat->IsUsable())
+				{
                     ++m_usableSeatNum;
+					++m_maxSeatsNum;
+				}
             }
     }
     ASSERT(!m_Seats.empty());
@@ -424,8 +426,13 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
+	uint32 i=0;
     // not sure that absolute position calculation is correct, it must depend on vehicle orientation and pitch angle
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+	{
+		if(i>=m_maxSeatsNum)
+			break;
+
         if (Unit *passenger = itr->second.passenger)
         {
 			float px = x + passenger->m_movementInfo.GetPos()->x;
@@ -434,7 +441,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
             float po = ang + passenger->m_movementInfo.GetPos()->o;
 
             passenger->SetPosition(px, py, pz, po);
-        }
+     
+		}
+		i++;
+	}
 }
 void Vehicle::Dismiss()
 {

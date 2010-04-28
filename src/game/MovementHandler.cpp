@@ -256,7 +256,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         return;
     }
 
-	if(mover->GetTypeId == TYPEID_UNIT) {
+	if(mover->GetTypeId() == TYPEID_UNIT) {
 		if(((Creature*)mover)->isVehicle() && opcode == MSG_MOVE_JUMP)
 			return;
 	}
