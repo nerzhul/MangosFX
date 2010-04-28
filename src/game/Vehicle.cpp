@@ -408,7 +408,8 @@ void Vehicle::RelocatePassengers(Map* map)
 {
     for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
     {
-        if(itr->second.flags & SEAT_FULL)
+		sLog.outError("TEST");
+        //if(itr->second.flags & SEAT_FULL)
         {
             // passenger cant be NULL here
             Unit *passengers = itr->second.passenger;
@@ -427,7 +428,7 @@ void Vehicle::RelocatePassengers(Map* map)
             else
                 map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
         }
-        else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
+        /*else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
         {
             // passenger cant be NULL here
             Unit *passengers = itr->second.passenger;
@@ -443,7 +444,7 @@ void Vehicle::RelocatePassengers(Map* map)
 
             map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
             ((Vehicle*)passengers)->RelocatePassengers(map);
-        }
+        }*/
     }
 }
 
