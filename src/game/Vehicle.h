@@ -89,6 +89,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 		int8 GetTotalSeatsCount() { return m_Seats.size(); }
 		int8 GetEmptySeatsCount(bool force = true);
 		void EmptySeatsCountChanged();
+		int8 GetNextEmptySeatNum(int8 seatId, bool next) const;
 
     protected:
         uint32 m_vehicleId;

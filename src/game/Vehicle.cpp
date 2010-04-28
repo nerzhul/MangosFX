@@ -563,10 +563,13 @@ void Vehicle::EmptySeatsCountChanged()
     {
         if(Unit *vehicle = ObjectAccessor::GetUnit(*me,vehicleGUID))
         {
-            if(u_count > 0)
-                vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FREE);
-            else
-                vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FULL);
+			if(vehicle->isVehicle())
+			{
+				if(u_count > 0)
+					((Vehicle*)vehicle)->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FREE);
+				else
+					((Vehicle*)vehicle)->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FULL);
+			}
         }
     }
 }
