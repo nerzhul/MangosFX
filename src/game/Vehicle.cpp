@@ -413,7 +413,7 @@ void Vehicle::RelocatePassengers(Map* map)
         if(flags & SEAT_FULL)
         {
             // passenger cant be NULL here
-            Unit *passengers = itr->second.passenger
+            Unit *passengers = itr->second.passenger;
             if(!passengers)
 				continue;
 			float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
