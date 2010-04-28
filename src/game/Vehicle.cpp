@@ -318,19 +318,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ? 2 : 0);
         unit->SendMessageToSet(&data0,true);
     }
-    
-    if(seat->second.seatInfo->IsUsable())
-    {
-        ASSERT(m_usableSeatNum);
-        --m_usableSeatNum;
-        if(!m_usableSeatNum)
-        {
-            if (me->GetTypeId() == TYPEID_PLAYER)
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
-            else
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-        }
-    }
 
     if(seat->second.seatInfo->m_flags && !(seat->second.seatInfo->m_flags & 0x400))
         unit->addUnitState(UNIT_STAT_ON_VEHICLE);
