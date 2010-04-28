@@ -412,21 +412,21 @@ void Vehicle::RelocatePassengers(Map* map)
         //if(itr->second.flags & SEAT_FULL)
         {
             // passenger cant be NULL here
-            Unit *passengers = itr->second.passenger;
-            assert(passengers);
+            if(Unit *passengers = itr->second.passenger)
+            {
+				float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
+				float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
+				float zz = me->GetPositionZ() + passengers->m_SeatData.OffsetZ;
+				//float oo = passengers->m_SeatData.Orientation;
+				// this is not correct, we should recalculate
+				// actual rotation depending on vehicle
+				float oo = passengers->GetOrientation();
 
-            float xx = GetPositionX() + passengers->m_SeatData.OffsetX;
-            float yy = GetPositionY() + passengers->m_SeatData.OffsetY;
-            float zz = GetPositionZ() + passengers->m_SeatData.OffsetZ;
-            //float oo = passengers->m_SeatData.Orientation;
-            // this is not correct, we should recalculate
-            // actual rotation depending on vehicle
-            float oo = passengers->GetOrientation();
-
-            if(passengers->GetTypeId() == TYPEID_PLAYER)
-                ((Player*)passengers)->SetPosition(xx, yy, zz, oo);
-            else
-                map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+				if(passengers->GetTypeId() == TYPEID_PLAYER)
+					((Player*)passengers)->SetPosition(xx, yy, zz, oo);
+				else
+					map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+			}
         }
         /*else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
         {
