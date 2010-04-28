@@ -14651,7 +14651,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
     m_SeatData.c_time = 0/*v->GetCreationTime()*/;
     m_SeatData.dbc_seat = veSeat->m_ID;
-    m_SeatData.seat = seat_id;
+    m_SeatData.seat = seatId;
     m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
     m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
     
