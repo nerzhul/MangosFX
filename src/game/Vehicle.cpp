@@ -281,7 +281,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
     // this should never happen
     if(seat == m_Seats.end())
-        return;
+        return false;
 
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
