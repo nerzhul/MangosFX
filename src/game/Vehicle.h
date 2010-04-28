@@ -32,6 +32,8 @@ enum PowerType
     POWER_PYRITE    = 41,
 };
 
+#define MAX_SEAT 8
+
 struct VehicleSeat
 {
     explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL) {}
@@ -89,6 +91,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
         
     private:
+		void InitSeats();
         void SaveToDB(uint32, uint8)                        // overwrited of Creature::SaveToDB     - don't must be called
         {
             ASSERT(false);

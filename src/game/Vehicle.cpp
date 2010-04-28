@@ -31,20 +31,30 @@
 Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
-    for (uint32 i = 0; i < 8; ++i)
+    InitSeats();
+}
+
+void Vehicle::InitSeats()
+{
+    m_Seats.clear();
+
+    for(uint32 i = 0; i < MAX_SEAT; ++i)
     {
-        if(uint32 seatId = m_vehicleInfo->m_seatID[i])
+        uint32 seatId = m_vehicleInfo->m_seatID[i];
+        if(seatId)
+        {
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
             {
-				VehicleSeat vSeat(veSeat);
-				vSeat.passenger = NULL;
-				vSeat.flags = SEAT_FREE;
-                m_Seats.insert(std::make_pair(i, vSeat));
-                if(veSeat->IsUsable())
-                    ++m_usableSeatNum;
+                VehicleSeat newseat;
+                newseat.seatInfo = veSeat;
+                newseat.passenger = NULL;
+                newseat.flags = SEAT_FREE;
+                newseat.vs_flags = sObjectMgr.GetSeatFlags(seatId);
+                m_Seats[i] = newseat;
             }
+        }
     }
-    ASSERT(!m_Seats.empty());
+    // NOTE : there can be vehicles without seats (eg. 180) - probably some TEST vehicles
 }
 
 Vehicle::~Vehicle()
@@ -156,11 +166,10 @@ void Vehicle::Uninstall()
 
 void Vehicle::Die()
 {
-    sLog.outDebug("Vehicle::Die %u", me->GetEntry());
     for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if(Unit *passenger = itr->second.passenger)
-            if(passenger->HasUnitTypeMask(UNIT_MASK_ACCESSORY))
-                passenger->setDeathState(JUST_DIED);
+            if(((Creature*)passenger)->isVehicle())
+				((Vehicle*)passenger)->Dismiss();
     RemoveAllPassengers();
 }
 
@@ -183,7 +192,6 @@ void Vehicle::Reset()
 
 void Vehicle::RemoveAllPassengers()
 {
-    sLog.outDebug("Vehicle::RemoveAllPassengers");
     for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if(Unit *passenger = itr->second.passenger)
         {
@@ -195,10 +203,29 @@ void Vehicle::RemoveAllPassengers()
             if(itr->second.passenger)
             {
                 sLog.outError("Vehicle %u cannot remove passenger %u. %u is still on it.", me->GetEntry(), passenger->GetEntry(), itr->second.passenger->GetEntry());
-                //ASSERT(!itr->second.passenger);
                 itr->second.passenger = NULL;
             }
         }
+        
+    //TODO:clean function
+    for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+    {
+        if(itr->second.flags & SEAT_FULL)
+        {
+            if(Unit *passenger = itr->second.passenger)                     // this cant be NULL, but..
+                passenger->ExitVehicle();
+        }
+        else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
+        {
+            if(Unit *passenger = itr->second.passenger)                     // this cant be NULL, but..
+            {
+                passenger->ExitVehicle();
+                ((Vehicle*)passenger)->Dismiss();
+            }
+        }
+    }
+    // make sure everything is cleared
+    InitSeats();
 }
 
 bool Vehicle::HasEmptySeat(int8 seatId) const
@@ -470,7 +497,7 @@ void Vehicle::RelocatePassengers(Map* map)
             float oo = passengers->GetOrientation();
 
             map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
-            ((Vehicle*)passengers)->RellocatePassengers(map);
+            ((Vehicle*)passengers)->RelocatePassengers(map);
         }
     }
 }
