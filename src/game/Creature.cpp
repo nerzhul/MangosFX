@@ -1401,32 +1401,6 @@ bool Creature::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index)
             return true;
     }
 
-	// Heal immunity
-    if (isVehicle()/* && !(((Vehicle*)this)->GetVehicleFlags() & VF_CAN_BE_HEALED)*/)
-    {
-        switch(spellInfo->Effect[index])
-        {
-            case SPELL_EFFECT_APPLY_AURA:
-                switch(spellInfo->EffectApplyAuraName[index])
-                {
-                    case SPELL_AURA_PERIODIC_HEAL:
-                    case SPELL_AURA_OBS_MOD_HEALTH:
-                    case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
-                    case SPELL_AURA_MOD_REGEN:
-                        return true;
-                    default: break;
-                }
-                break;
-            case SPELL_EFFECT_HEAL:
-            case SPELL_EFFECT_HEAL_MAX_HEALTH:
-            // NOTE : this too?
-            case SPELL_EFFECT_HEAL_MECHANICAL:
-            case SPELL_EFFECT_HEAL_PCT:
-                return true;
-            default : break;
-        }
-    }
-
     return Unit::IsImmunedToSpellEffect(spellInfo, index);
 }
 

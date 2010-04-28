@@ -1736,8 +1736,6 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         m_movementInfo.SetTransportData(0, 0.0f, 0.0f, 0.0f, 0.0f, 0, -1);
     }
 
-	ExitVehicle();
-
     // The player was ported to another map and looses the duel immediately.
     // We have to perform this check before the teleport, otherwise the
     // ObjectAccessor won't find the flag.
@@ -18322,7 +18320,7 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     if(npc)
     {
         // not let cheating with start flight mounted
-        if(IsMounted() || GetVehicle())
+        if(IsMounted())
         {
             WorldPacket data(SMSG_ACTIVATETAXIREPLY, 4);
             data << uint32(ERR_TAXIPLAYERALREADYMOUNTED);
@@ -18351,7 +18349,6 @@ bool Player::ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc 
     else
     {
         RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
-		ExitVehicle();
 
         if( m_ShapeShiftFormSpellId && m_form != FORM_BATTLESTANCE && m_form != FORM_BERSERKERSTANCE && m_form != FORM_DEFENSIVESTANCE && m_form != FORM_SHADOW )
             RemoveAurasDueToSpell(m_ShapeShiftFormSpellId);
@@ -19760,7 +19757,7 @@ void Player::SendInitialPacketsAfterAddToMap()
     {
         WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 10);
         data2.append(GetPackGUID());
-        data2 << (uint32)((m_SeatData.s_flags & SF_CAN_CAST) ? 2 : 0);
+        data2 << (uint32)2;
         SendMessageToSet(&data2,true);
     }
 
@@ -21043,6 +21040,99 @@ void Player::InitGlyphsForLevel()
 
     SetUInt32Value(PLAYER_GLYPHS_ENABLED, value);
 }
+
+/*
+void Player::EnterVehicle(Vehicle *vehicle)
+{
+    VehicleEntry const *ve = sVehicleStore.LookupEntry(vehicle->GetVehicleId());
+    if(!ve)
+        return;
+
+    VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[0]);
+    if(!veSeat)
+        return;
+
+    vehicle->SetCharmerGUID(GetGUID());
+    vehicle->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+    vehicle->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+    vehicle->setFaction(getFaction());
+
+    SetCharm(vehicle);                                      // charm
+    SetFarSightGUID(vehicle->GetGUID());                    // set view
+
+    SetClientControl(vehicle, 1);                           // redirect controls to vehicle
+    SetMover(vehicle);
+
+    WorldPacket data(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
+    GetSession()->SendPacket(&data);
+
+    data.Initialize(MSG_MOVE_TELEPORT_ACK, 30);
+    data.append(GetPackGUID());
+    data << uint32(0);                                      // counter?
+    data << uint32(MOVEFLAG_ONTRANSPORT);                   // transport
+    data << uint16(0);                                      // special flags
+    data << uint32(getMSTime());                            // time
+    data << vehicle->GetPositionX();                        // x
+    data << vehicle->GetPositionY();                        // y
+    data << vehicle->GetPositionZ();                        // z
+    data << vehicle->GetOrientation();                      // o
+    // transport part, TODO: load/calculate seat offsets
+    data << uint64(vehicle->GetGUID());                     // transport guid
+    data << float(veSeat->m_attachmentOffsetX);             // transport offsetX
+    data << float(veSeat->m_attachmentOffsetY);             // transport offsetY
+    data << float(veSeat->m_attachmentOffsetZ);             // transport offsetZ
+    data << float(0);                                       // transport orientation
+    data << uint32(getMSTime());                            // transport time
+    data << uint8(0);                                       // seat
+    // end of transport part
+    data << uint32(0);                                      // fall time
+    GetSession()->SendPacket(&data);
+
+    data.Initialize(SMSG_PET_SPELLS, 8+2+4+4+4*MAX_UNIT_ACTION_BAR_INDEX+1+1);
+    data << uint64(vehicle->GetGUID());
+    data << uint16(0);
+    data << uint32(0);
+    data << uint32(0x00000101);
+
+    for(uint32 i = 0; i < 10; ++i)
+        data << uint16(0) << uint8(0) << uint8(i+8);
+
+    data << uint8(0);
+    data << uint8(0);
+    GetSession()->SendPacket(&data);
+}
+
+void Player::ExitVehicle(Vehicle *vehicle)
+{
+    vehicle->SetCharmerGUID(0);
+    vehicle->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+    vehicle->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+    vehicle->setFaction((GetTeam() == ALLIANCE) ? vehicle->GetCreatureInfo()->faction_A : vehicle->GetCreatureInfo()->faction_H);
+
+    SetCharm(NULL);
+    SetFarSightGUID(0);
+
+    SetClientControl(vehicle, 0);
+    SetMover(NULL);
+
+    WorldPacket data(MSG_MOVE_TELEPORT_ACK, 30);
+    data.append(GetPackGUID());
+    data << uint32(0);                                      // counter?
+    data << uint32(MOVEFLAG_FLY_UNK1);                      // fly unk
+    data << uint16(0x40);                                   // special flags
+    data << uint32(getMSTime());                            // time
+    data << vehicle->GetPositionX();                        // x
+    data << vehicle->GetPositionY();                        // y
+    data << vehicle->GetPositionZ();                        // z
+    data << vehicle->GetOrientation();                      // o
+    data << uint32(0);                                      // fall time
+    GetSession()->SendPacket(&data);
+
+    RemovePetActionBar();
+
+    // maybe called at dummy aura remove?
+    // CastSpell(this, 45472, true);                        // Parachute
+}*/
 
 bool Player::isTotalImmune()
 {

@@ -775,11 +775,6 @@ void WorldSession::BuildPartyMemberStatsChangedPacket(Player *player, WorldPacke
         else
             *data << (uint64) 0;
     }
-
-	if (mask & GROUP_UPDATE_FLAG_VEHICLE_SEAT)
-    {
-        *data << (uint32) player->m_SeatData.dbc_seat;
-    }
 }
 
 /*this procedure handles clients CMSG_REQUEST_PARTY_MEMBER_STATS request*/
@@ -809,7 +804,7 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
 
     uint32 mask1 = 0x00040BFF;                              // common mask, real flags used 0x000040BFF
     if(pet)
-        mask1 = 0xFFFFFFFF;                                 // for hunters and other classes with pets
+        mask1 = 0x7FFFFFFF;                                 // for hunters and other classes with pets
 
     Powers powerType = player->getPowerType();
     data << (uint32) mask1;                                 // group update mask
@@ -863,7 +858,6 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
             }
         }
         data.put<uint64>(petMaskPos,petauramask);           // GROUP_UPDATE_FLAG_PET_AURAS
-		data << uint32(player->m_SeatData.dbc_seat);
     }
     else
     {

@@ -2337,9 +2337,6 @@ void Aura::TriggerSpell()
 
 	switch(GetId())
 	{
-		case 812:
-			trigger_spell_id = 17830;
-			break;
 		case 42177:
 			trigger_spell_id = 42179;
 			break;

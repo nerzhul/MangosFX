@@ -32,16 +32,12 @@ enum PowerType
     POWER_PYRITE    = 41,
 };
 
-#define MAX_SEAT 8
-
 struct VehicleSeat
 {
     explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL) {}
-    explicit VehicleSeat() : passenger(NULL) {}
     VehicleSeatEntry const *seatInfo;
     uint8 flags;
     Unit* passenger;
-    uint32 vs_flags;
 };
 
 enum VehicleSeatFlags
@@ -58,7 +54,7 @@ typedef std::map<int8, VehicleSeat> SeatMap;
 class MANGOS_DLL_DECL Vehicle : public Creature
 {
     public:
-        explicit Vehicle(Unit *unit, VehicleEntry const *vehInfo, uint32 vhId);
+        explicit Vehicle(Unit *unit, VehicleEntry const *vehInfo);
         virtual ~Vehicle();
 
         uint32 GetVehicleId() { return m_vehicleId; }
@@ -69,15 +65,14 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void Reset();
         void Die();
         void InstallAllAccessories();
-		void RelocatePassengers(Map* map);
+		void RelocatePassengers(float x, float y, float z, float ang);
 
         Unit *GetBase() const { return me; }
         VehicleEntry const *GetVehicleInfo() { return m_vehicleInfo; }
 
         bool HasEmptySeat(int8 seatId) const;
         Unit *GetPassenger(int8 seatId) const;
-        //int8 GetNextEmptySeat(int8 seatId, bool next) const;
-        Vehicle* GetNextEmptySeat(int8 *seatId, bool next = true, bool force = true);
+        int8 GetNextEmptySeat(int8 seatId, bool next) const;
         bool AddPassenger(Unit *passenger, int8 seatId = -1);
         void RemovePassenger(Unit *passenger);
         void RemoveAllPassengers();
@@ -85,22 +80,15 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
         SeatMap m_Seats;
 		void InstallAccessory(uint32 entry, int8 seatId, bool minion = true);
-		void ChangeSeatFlag(uint8 seat, uint8 flag);
-		
-		int8 GetTotalSeatsCount() { return m_Seats.size(); }
-		int8 GetEmptySeatsCount(bool force = true);
-		void EmptySeatsCountChanged();
-		int8 GetNextEmptySeatNum(int8 seatId, bool next) const;
-		Vehicle* FindFreeSeat(int8 *seatid, bool force = true);
-        Vehicle* GetFirstEmptySeat(int8 *seatId, bool force = true);
 
     protected:
         uint32 m_vehicleId;
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
+        uint32 m_usableSeatNum;
+
         
     private:
-		void InitSeats();
         void SaveToDB(uint32, uint8)                        // overwrited of Creature::SaveToDB     - don't must be called
         {
             ASSERT(false);

@@ -256,7 +256,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         return;
     }
 
-	if(mover->GetTypeId() == TYPEID_UNIT) {
+	if(mover->GetTypeId == TYPEID_UNIT) {
 		if(((Creature*)mover)->isVehicle() && opcode == MSG_MOVE_JUMP)
 			return;
 	}
@@ -325,6 +325,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     movementInfo.Write(data);                               // write data
     GetPlayer()->SendMessageToSet(&data, false);
 
+	mover->m_movementInfo = movementInfo;
+
     if(plMover)                                             // nothing is charmed, or player charmed
     {
         plMover->SetPosition(movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
@@ -375,7 +377,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
 		{
             mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
 			if(((Creature*)mover)->isVehicle())
-				((Vehicle*)mover)->RelocatePassengers(mover->GetMap());
+				((Vehicle*)mover)->RelocatePassengers(mover->GetPositionX(),mover->GetPositionY(),mover->GetPositionZ(),mover->GetOrientation());
 		}
     }
 }
@@ -463,11 +465,12 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
 	uint64 guid;
     recv_data >> guid;
 
-    if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
+    /*if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
     {
+		sLog.outError("test");
         _player->m_mover = _player->m_mover_in_queve;
         _player->m_mover_in_queve = NULL;
-    }
+    }*/
 
 /*
 	   else
@@ -502,7 +505,7 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     sLog.outDebug("WORLD: Recvd CMSG_DISMISS_CONTROLLED_VEHICLE");
     recv_data.hexlike();
 
-    uint64 vehicleGUID = _player->GetVehicleGUID();
+    uint64 vehicleGUID = _player->GetCharmGUID();
 
     if(!vehicleGUID)                                        // something wrong here...
     {
@@ -518,14 +521,8 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     MovementInfo mi(recv_data);
 
     _player->m_movementInfo = mi;
-	
-	if(Unit *vehicle = ObjectAccessor::GetUnit(*_player,vehicleGUID))
-    {
-        /*if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
-            vehicle->Dismiss();
-        else*/
-            _player->ExitVehicle();
-    }
+
+	_player->ExitVehicle();
 }
 
 void WorldSession::HandleMountSpecialAnimOpcode(WorldPacket& /*recvdata*/)
@@ -630,10 +627,6 @@ void WorldSession::HandleRequestVehicleExit(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_REQUEST_VEHICLE_EXIT");
     recv_data.hexlike();
-    uint64 vehicleGUID = GetPlayer()->GetVehicleGUID();
-
-    if(!vehicleGUID)                                        // something wrong here...
-        return;
     GetPlayer()->ExitVehicle();
 }
 
