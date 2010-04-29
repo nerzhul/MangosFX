@@ -427,10 +427,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		if(i>=m_maxSeatsNum)
 			break;
 
-		VehicleSeat _seat = itr->second;
+		VehicleSeat* _seat = (*itr->second);
 		if(_seat)
 		{
-			if (Unit *passengers = _seat.passenger)
+			if (Unit *passengers = _seat->passenger)
 			{
 				sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
 				float xx = x + passengers->m_SeatData.OffsetX;
