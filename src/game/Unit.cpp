@@ -14786,7 +14786,7 @@ void Unit::BuildVehicleInfo(Unit *target)
     if(!target)
         return;
 
-    if(!target->GetVehicleGUID())
+    if(!target->GetVehicle())
         return;
 
     //uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());

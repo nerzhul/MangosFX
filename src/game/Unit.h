@@ -1854,6 +1854,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		bool SetPosition(float x, float y, float z, float orientation, bool teleport = false);
 		Player *m_movedPlayer;
 		SeatData m_SeatData;
+		void BuildVehicleInfo(Unit *target);
 		// fin fss
 
     protected:
@@ -1914,9 +1915,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		Vehicle *m_vehicle;
         Vehicle *m_vehicleKit;
 		uint32 m_unitTypeMask;
-		
-		void BuildVehicleInfo(Unit *target);
-		
 		// fss end
 
     private:
