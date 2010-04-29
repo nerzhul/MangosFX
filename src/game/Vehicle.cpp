@@ -422,23 +422,24 @@ void Vehicle::RemovePassenger(Unit *unit)
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
 	uint32 i=0;
-    // not sure that absolute position calculation is correct, it must depend on vehicle orientation and pitch angle
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
 		if(i>=m_maxSeatsNum)
 			break;
 
-        if (Unit *passenger = itr->second.passenger)
+        if (Unit *passengers = itr->second.passenger)
         {
-			sLog.outError("%f %f",x,passenger->m_movementInfo.GetPos()->x);
-			float px = x + passenger->m_movementInfo.GetPos()->x;
-            float py = y + passenger->m_movementInfo.GetPos()->y;
-            float pz = z + passenger->m_movementInfo.GetPos()->z;
-            float po = ang + passenger->m_movementInfo.GetPos()->o;
+			sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
+			float px = x + passengers->m_SeatData.OffsetX;
+            float py = y + passengers->m_SeatData.OffsetY;
+            float pz = z + passengers->m_SeatData.OffsetZ;
+			float po = ang + passengers->m_SeatData.Orientation;
 
-            passenger->SetPosition(px, py, pz, po);
-     
-		}
+			if(passengers->GetTypeId() == TYPEID_PLAYER)
+                ((Player*)passengers)->SetPosition(xx, yy, zz, oo);
+            else
+                map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+ 		}
 		i++;
 	}
 }
