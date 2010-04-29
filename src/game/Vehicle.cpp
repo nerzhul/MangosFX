@@ -28,7 +28,7 @@
 #include "CreatureAI.h"
 #include "ZoneScript.h"
 
-Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
+Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
     InitSeats();
@@ -42,6 +42,8 @@ Vehicle::~Vehicle()
 
 void Vehicle::InitSeats()
 {
+	m_maxSeatsNum = 0;
+	m_usableSeatNum = 0;
 	for (uint32 i = 0; i < MAX_SEAT; ++i)
     {
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
@@ -185,6 +187,7 @@ void Vehicle::Reset()
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }
+    InitSeats();
 }
 
 void Vehicle::RemoveAllPassengers()
@@ -308,7 +311,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     unit->SetVehicleGUID(me->GetGUID());
     if(seat->second.seatInfo->IsUsable())
     {
-        ASSERT(m_usableSeatNum);
         --m_usableSeatNum;
         if(!m_usableSeatNum)
         {
@@ -422,7 +424,7 @@ void Vehicle::RemovePassenger(Unit *unit)
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
 	uint32 i=0;
-	sLog.outError("%u",m_maxSeatsNum);
+	sLog.outError("seat number : %u",m_maxSeatsNum);
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
 		if(i >= m_maxSeatsNum)

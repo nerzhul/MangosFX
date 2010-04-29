@@ -143,7 +143,7 @@ VisibleNotifier::Notify()
         if((*vItr)!=&i_player && (*vItr)->isType(TYPEMASK_UNIT))
         {
             i_player.SendAurasForTarget((Unit*)(*vItr));
-            //i_player.BuildVehicleInfo((Unit*)(*vItr));
+            i_player.BuildVehicleInfo((Unit*)(*vItr));
 		}
 
         // non finished movements show to player
