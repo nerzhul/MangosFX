@@ -430,6 +430,7 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 
         if (Unit *passenger = itr->second.passenger)
         {
+			sLog.outError("%f %f",x,passenger->m_movementInfo.GetPos()->x);
 			float px = x + passenger->m_movementInfo.GetPos()->x;
             float py = y + passenger->m_movementInfo.GetPos()->y;
             float pz = z + passenger->m_movementInfo.GetPos()->z;
