@@ -58,7 +58,6 @@ void Vehicle::InitSeats()
 				}
             }
     }
-    ASSERT(!m_Seats.empty());
 }
 void Vehicle::Install()
 {
