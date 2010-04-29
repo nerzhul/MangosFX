@@ -228,8 +228,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     sLog.outDebug("WORLD: Recvd %s (%u, 0x%X) opcode", LookupOpcodeName(opcode), opcode, opcode);
 
     Unit *mover = _player->m_mover;
-	if(!mover)
-		return;
     Player *plMover = mover->GetTypeId() == TYPEID_PLAYER ? (Player*)mover : NULL;
 
     // ignore, waiting processing in WorldSession::HandleMoveWorldportAckOpcode and WorldSession::HandleMoveTeleportAck
@@ -465,12 +463,11 @@ void WorldSession::HandleSetActiveMoverOpcode(WorldPacket &recv_data)
 	uint64 guid;
     recv_data >> guid;
 
-    /*if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
+    if(_player->m_mover_in_queve && _player->m_mover_in_queve->GetGUID() == guid)
     {
-		sLog.outError("test");
         _player->m_mover = _player->m_mover_in_queve;
         _player->m_mover_in_queve = NULL;
-    }*/
+    }
 
 /*
 	   else

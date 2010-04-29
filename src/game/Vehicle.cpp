@@ -410,18 +410,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 		if(((Player*)unit)->GetGroup())
 			((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
 	}
-
-
-    //SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-
-    /*if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800)
-        me->RemoveCharmedBy(unit);*/
-
-    /*if(me->GetTypeId() == TYPEID_UNIT && ((Creature*)me)->IsAIEnabled)
-        ((Creature*)me)->AI()->PassengerBoarded(unit, seat->first, false);*/
-
-    // only for flyable vehicles?
-    //CastSpell(this, 45472, true);                           // Parachute
 }
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
