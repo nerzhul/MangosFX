@@ -430,10 +430,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
         if (Unit *passengers = itr->second.passenger)
         {
 			sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
-			float px = x + passengers->m_SeatData.OffsetX;
-            float py = y + passengers->m_SeatData.OffsetY;
-            float pz = z + passengers->m_SeatData.OffsetZ;
-			float po = ang + passengers->m_SeatData.Orientation;
+			float xx = x + passengers->m_SeatData.OffsetX;
+            float yy = y + passengers->m_SeatData.OffsetY;
+            float zz = z + passengers->m_SeatData.OffsetZ;
+			float oo = ang + passengers->m_SeatData.Orientation;
 
 			if(passengers->GetTypeId() == TYPEID_PLAYER)
                 ((Player*)passengers)->SetPosition(xx, yy, zz, oo);
