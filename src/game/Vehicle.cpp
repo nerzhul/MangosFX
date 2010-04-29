@@ -429,7 +429,6 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
-		sLog.outError("Seat Number itr %u",i);
 		VehicleSeat seat = itr->second;
 		if (Unit *passengers = seat.passenger)
 		{
