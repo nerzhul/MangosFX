@@ -1853,6 +1853,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		void SendMonsterMoveTransport(Unit *vehicleOwner);
 		bool SetPosition(float x, float y, float z, float orientation, bool teleport = false);
 		Player *m_movedPlayer;
+		SeatData m_SeatData;
 		// fin fss
 
     protected:

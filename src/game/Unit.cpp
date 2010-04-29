@@ -14639,6 +14639,25 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	
     m_vehicle = vehicle;
 
+	// TODO: refund that
+	VehicleEntry const *ve = sVehicleStore.LookupEntry(((Creature*)m_vehicle)->GetCreatureInfo()->VehicleId);
+    if(!ve)
+        return;
+
+	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
+    if(!veSeat)
+        return;
+
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
+    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
+    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
+    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
+    m_SeatData.c_time = 0/*v->GetCreationTime()*/;
+    m_SeatData.dbc_seat = veSeat->m_ID;
+    m_SeatData.seat = seatId;
+    m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
+    m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
+
 	addUnitState(UNIT_STAT_ON_VEHICLE);
 
     if (!m_vehicle->AddPassenger(this, seatId))
@@ -14713,20 +14732,20 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, GetPackGUID().size()+vehicleOwner->GetPackGUID().size());
     data.append(GetPackGUID());
     data.append(vehicleOwner->GetPackGUID());
-    data << int8(GetTransSeat());
+    data << uint8(m_SeatData.seat);
     data << uint8(0);
-    data << GetPositionX() - vehicleOwner->GetPositionX();
-    data << GetPositionY() - vehicleOwner->GetPositionY();
-    data << GetPositionZ() - vehicleOwner->GetPositionZ();
+    data << vehicleOwner->GetPositionX();
+    data << vehicleOwner->GetPositionY();
+    data << vehicleOwner->GetPositionZ();
     data << uint32(getMSTime());
     data << uint8(4);
     data << GetTransOffsetO();
     data << uint32(0x00800000);
     data << uint32(0);// move time
 	data << uint32(1);
-    data << uint32(GetTransOffsetX());//GetTransOffsetX();
-    data << uint32(GetTransOffsetY());//GetTransOffsetY();
-    data << uint32(GetTransOffsetZ());//GetTransOffsetZ();
+    data << m_SeatData.OffsetX;
+    data << m_SeatData.OffsetY;
+    data << m_SeatData.OffsetZ;
     SendMessageToSet(&data, true);
 }
 
@@ -14783,18 +14802,12 @@ void Unit::BuildVehicleInfo(Unit *target)
     data << float(target->GetPositionZ());
     data << float(target->GetOrientation());
     data.appendPackGUID(target->GetVehicleGUID());
-    /*data << float(target->m_SeatData.OffsetX);
+    data << float(target->m_SeatData.OffsetX);
     data << float(target->m_SeatData.OffsetY);
     data << float(target->m_SeatData.OffsetZ);
     data << float(target->m_SeatData.Orientation);
-    data << uint32(veh_time);
-    data << uint8 (target->m_SeatData.seat);*/
-    data << float(0.0);
-    data << float(0.0);
-    data << float(0.0);
-    data << float(0.0);
-    data << uint32(0);
-    data << uint8(0);
+    data << uint32(0/*veh_time*/);
+    data << uint8 (target->m_SeatData.seat);
     data << uint32(m_movementInfo.GetFallTime());
     SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
 }
