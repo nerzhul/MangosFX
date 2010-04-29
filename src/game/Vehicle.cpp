@@ -427,22 +427,19 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		if(i>=m_maxSeatsNum)
 			break;
 
-		VehicleSeat* _seat = (*itr->second);
-		if(_seat)
+		VehicleSeat seat = itr->second;
+		if (Unit *passengers = seat.passenger)
 		{
-			if (Unit *passengers = _seat->passenger)
-			{
-				sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
-				float xx = x + passengers->m_SeatData.OffsetX;
-				float yy = y + passengers->m_SeatData.OffsetY;
-				float zz = z + passengers->m_SeatData.OffsetZ;
-				float oo = ang + passengers->m_SeatData.Orientation;
+			sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
+			float xx = x + passengers->m_SeatData.OffsetX;
+			float yy = y + passengers->m_SeatData.OffsetY;
+			float zz = z + passengers->m_SeatData.OffsetZ;
+			float oo = ang + passengers->m_SeatData.Orientation;
 
-				if(passengers->GetTypeId() == TYPEID_PLAYER)
-					((Player*)passengers)->SetPosition(xx, yy, zz, oo);
-				else
-					me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
-			}
+			if(passengers->GetTypeId() == TYPEID_PLAYER)
+				((Player*)passengers)->SetPosition(xx, yy, zz, oo);
+			else
+				me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
 		}
 		i++;
 	}
