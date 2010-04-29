@@ -14628,8 +14628,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
-//        ((Player*)this)->StopCastingCharm();
-//        ((Player*)this)->StopCastingBindSight();
         ((Player*)this)->Unmount();
         ((Player*)this)->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
     }
@@ -14665,7 +14663,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         m_vehicle = NULL;
         return;
     }
-
 	
 	m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
     WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);

@@ -270,6 +270,8 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
 		WorldPacket data;
 		accessory->BuildHeartBeatMsg(&data);
 		accessory->SendMessageToSet(&data, false);
+		if(accessory->isVehicle())
+			accessory->BuildVehicleInfo(accessory);
     }
 }
 
@@ -351,7 +353,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		if(((Player*)unit)->GetGroup())
            ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
 
-		//((Player*)unit)->SetFarSightGUID(me->GetGUID());
+		((Player*)unit)->SetFarSightGUID(me->GetGUID());
 
 		((Player*)unit)->VehicleSpellInitialize();
 	}
