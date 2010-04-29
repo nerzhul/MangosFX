@@ -4507,8 +4507,13 @@ void Unit::RemoveAurasWithInterruptFlags(uint32 flags)
 {
     for (AuraMap::iterator iter = m_Auras.begin(); iter != m_Auras.end(); )
     {
-        if (iter->second->GetSpellProto()->AuraInterruptFlags & flags)
-            RemoveAura(iter);
+		if(iter->second->GetSpellProto())
+        {
+			if (iter->second->GetSpellProto()->AuraInterruptFlags & flags)
+				RemoveAura(iter);
+			else
+				++iter;
+		}
         else
             ++iter;
     }
