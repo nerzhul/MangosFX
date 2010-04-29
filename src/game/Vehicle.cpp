@@ -422,6 +422,7 @@ void Vehicle::RemovePassenger(Unit *unit)
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
 	uint32 i=0;
+	sLog.outError("%u",m_maxSeatsNum);
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
 		if(i>=m_maxSeatsNum)
