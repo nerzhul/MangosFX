@@ -14691,21 +14691,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         m_vehicle = NULL;
         return;
     }
-	
-	m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
-    WorldPacket data(SMSG_FORCE_MOVE_ROOT, 10);
-    data.append(GetPackGUID());
-    data << (uint32)2;
-    SendMessageToSet(&data,true);
-
-    //movementInfo is set in AddPassenger
-    //packets are sent in AddPassenger
-
-    if (GetTypeId() == TYPEID_PLAYER)
-    {
-        WorldPacket data(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
-        ((Player*)this)->GetSession()->SendPacket(&data);
-    }
 }
 
 void Unit::ChangeSeat(int8 seatId, bool next)
