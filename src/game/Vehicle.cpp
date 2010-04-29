@@ -31,7 +31,18 @@
 Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo), m_usableSeatNum(0)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
-    for (uint32 i = 0; i < 8; ++i)
+    InitSeats();
+}
+
+Vehicle::~Vehicle()
+{
+    for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+        ASSERT(!itr->second.passenger);
+}
+
+void Vehicle::InitSeats()
+{
+	for (uint32 i = 0; i < MAX_SEAT; ++i)
     {
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
             if(VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(seatId))
@@ -49,13 +60,6 @@ Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SU
     }
     ASSERT(!m_Seats.empty());
 }
-
-Vehicle::~Vehicle()
-{
-    for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
-        ASSERT(!itr->second.passenger);
-}
-
 void Vehicle::Install()
 {
     if(Creature *cre = dynamic_cast<Creature*>(me))

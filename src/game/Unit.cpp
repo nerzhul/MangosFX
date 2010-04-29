@@ -14640,7 +14640,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_vehicle = vehicle;
 
 	// TODO: refund that
-	VehicleEntry const *ve = sVehicleStore.LookupEntry(((Creature*)m_vehicle)->GetCreatureInfo()->VehicleId);
+	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleId());
     if(!ve)
         return;
 
@@ -14722,6 +14722,7 @@ bool Unit::CreateVehicleKit(uint32 id)
         return false;
 
     m_vehicleKit = new Vehicle(this, vehInfo);
+    m_vehicleKit->SetVehicleId(id);
     m_updateFlag |= UPDATEFLAG_VEHICLE;
     m_unitTypeMask |= UNIT_MASK_VEHICLE;
     return true;
