@@ -438,7 +438,7 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 			if(passengers->GetTypeId() == TYPEID_PLAYER)
                 ((Player*)passengers)->SetPosition(xx, yy, zz, oo);
             else
-                map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+                me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
  		}
 		i++;
 	}
