@@ -301,14 +301,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
         if(seat->second.passenger)
             seat->second.passenger->ExitVehicle();
-
-        ASSERT(!seat->second.passenger);
     }
 
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
+	unit->SetVehicleGUID(me->GetGUID());
     seat->second.passenger = unit;
-    unit->SetVehicleGUID(me->GetGUID());
+    
     if(seat->second.seatInfo->IsUsable())
     {
         --m_usableSeatNum;
@@ -320,9 +319,14 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }
-
-    if(seat->second.seatInfo->m_flags && !(seat->second.seatInfo->m_flags & 0x400))
-        unit->addUnitState(UNIT_STAT_ON_VEHICLE);
+    
+    if(unit->GetTypeId() == TYPEID_PLAYER)
+    {
+        WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
+        data0 << unit->GetPackGUID();
+        data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ? 2 : 0);
+        unit->SendMessageToSet(&data0,true);
+    }
 
     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
@@ -334,31 +338,27 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
     if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800) // not right
 	{
-		unit->SendMonsterMoveTransport(me);
-
-		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
-
-		me->setFaction(((Player*)unit)->getFaction());
-		
+		me->GetMotionMaster()->Clear(false);
+		me->GetMotionMaster()->MoveIdle();
 		me->SetCharmerGUID(unit->GetGUID());
-
 		unit->SetCharm(me);
 		
 		((Player*)unit)->SetClientControl(me, 1);
-		((Player*)unit)->SetMover(me);
-
+		((Player*)unit)->SetMoverInQueve(me);
+		
+		if(((Player*)unit)->GetGroup())
+           ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+           
+        ((Player*)unit)->SetFarSightGUID(me->GetGUID());
+        
+        ((Player*)unit)->VehicleSpellInitialize();
+        
+        me->setFaction(((Player*)unit)->getFaction());
+        
+		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
 		if (((Player*)unit)->isAFK())
             ((Player*)unit)->ToggleAFK();
-		
-       ((Player*)unit)->SetMoverInQueve(me);
-        
-		if(((Player*)unit)->GetGroup())
-           ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
-
-		((Player*)unit)->SetFarSightGUID(me->GetGUID());
-
-		((Player*)unit)->VehicleSpellInitialize();
 	}
 
     if(me->IsInWorld())

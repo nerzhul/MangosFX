@@ -14643,7 +14643,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	
     m_vehicle = vehicle;
 
-	// TODO: refund that
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleId());
     if(!ve)
         return;
@@ -14663,6 +14662,29 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_SeatData.v_flags = 0/*v->GetVehicleFlags()*/;
 
 	addUnitState(UNIT_STAT_ON_VEHICLE);
+	InterruptNonMeleeSpells(false);
+
+	if(Pet *pet = GetPet())
+        pet->Remove(PET_SAVE_AS_CURRENT);
+
+	WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
+    data.append(GetPackGUID());
+    data.append(m_vehicle->GetBase()->GetPackGUID());
+    data << uint8(m_SeatData.seat);
+    data << uint8(0);                                       // new in 3.1
+    data << m_vehicle->GetBase()->GetPositionX();
+    data << m_vehicle->GetBase()->GetPositionY();
+    data << m_vehicle->GetBase()->GetPositionZ();
+    data << uint32(getMSTime());
+    data << uint8(4);                                       // unknown
+    data << float(0);                                       // facing angle
+    data << uint32(0x00800000);
+    data << uint32(0);                                      // Time in between points
+    data << uint32(1);                                      // 1 single waypoint
+    data << m_SeatData.OffsetX;
+    data << m_SeatData.OffsetY;
+    data << m_SeatData.OffsetZ;
+    SendMessageToSet(&data, true);
 
     if (!m_vehicle->AddPassenger(this, seatId))
     {
@@ -14795,7 +14817,7 @@ void Unit::BuildVehicleInfo(Unit *target)
     if(!target->GetVehicle())
         return;
 
-    //uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
+    uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
     WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
     data.append(target->GetPackGUID());
     data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
@@ -14810,7 +14832,7 @@ void Unit::BuildVehicleInfo(Unit *target)
     data << float(target->m_SeatData.OffsetY);
     data << float(target->m_SeatData.OffsetZ);
     data << float(target->m_SeatData.Orientation);
-    data << uint32(0/*veh_time*/);
+    data << uint32(veh_time);
     data << uint8 (target->m_SeatData.seat);
     data << uint32(m_movementInfo.GetFallTime());
     SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
