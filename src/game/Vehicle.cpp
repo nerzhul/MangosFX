@@ -420,7 +420,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
-	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,m_vehicleId);
 	if(m_maxSeatsNum == 0)
 		return;
 		
@@ -429,7 +428,6 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		VehicleSeat seat = itr->second;
 		if (Unit *passengers = seat.passenger)
 		{
-			sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
 			float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
 			float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
 			float zz = me->GetPositionZ() + passengers->m_SeatData.OffsetZ;

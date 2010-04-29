@@ -254,10 +254,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         return;
     }
 
-	if(mover->GetTypeId() == TYPEID_UNIT && opcode == MSG_MOVE_JUMP) {
-		if(((Creature*)mover)->isVehicle())
-			return;
-	}
+	if(_player->GetVehicleGUID() && opcode == MSG_MOVE_JUMP) 
+		return;
 	
     /* handle special cases */
 	if (movementInfo.HasMovementFlag(MOVEFLAG_ONTRANSPORT) && !mover->GetVehicle())
