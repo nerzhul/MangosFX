@@ -317,13 +317,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }
-    /*if(unit->GetTypeId() == TYPEID_PLAYER)
+    if(unit->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
         data0.append(unit->GetPackGUID());
         data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ?2 : 0);
         unit->SendMessageToSet(&data0,true);
-    }*/
+    }
 
     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
@@ -333,30 +333,70 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
 		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
 
-    if(unit->GetTypeId() == TYPEID_PLAYER && seat->first == 0 && seat->second.seatInfo->m_flags & 0x800) // not right
-	{
-		me->GetMotionMaster()->Clear(false);
-		me->GetMotionMaster()->MoveIdle();
-		me->SetCharmerGUID(unit->GetGUID());
-		unit->SetCharm(me);
-		
-		((Player*)unit)->SetClientControl(me, 1);
-		((Player*)unit)->SetMoverInQueve(me);
-		
-		if(((Player*)unit)->GetGroup())
-           ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
-           
-        ((Player*)unit)->SetFarSightGUID(me->GetGUID());
-        
-        ((Player*)unit)->VehicleSpellInitialize();
-        
-        me->setFaction(((Player*)unit)->getFaction());
-        
-		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+	if(seat->second.vs_flags & SF_MAIN_RIDER)
+    {
+        if(!(GetVehicleFlags() & VF_MOVEMENT))
+		{
+			me->GetMotionMaster()->Clear(false);
+			me->GetMotionMaster()->MoveIdle();
+			me->SetCharmerGUID(unit->GetGUID());
+			unit->SetCharm(me);
+			if(unit->GetTypeId() == TYPEID_PLAYER)
+			{
+				((Player*)unit)->SetClientControl(me, 1);
+				((Player*)unit)->SetMoverInQueve(me);
+			}
+/*			if(canFly() || HasAuraType(SPELL_AURA_FLY) || HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+            {
+                WorldPacket data3(SMSG_MOVE_SET_CAN_FLY, 12);
+                data3.append(me->GetPackGUID();
+                data3 << (uint32)(0);
+                SendMessageToSet(&data3,false);
+            }*/
+		}
 
-		if (((Player*)unit)->isAFK())
-            ((Player*)unit)->ToggleAFK();
+		SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(GetEntry());
+        for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
+        {
+            if (unit->GetTypeId() == TYPEID_UNIT || itr->second.IsFitToRequirements((Player*)unit))
+            {
+                Unit *caster = (itr->second.castFlags & 0x1) ? unit : this;
+                Unit *target = (itr->second.castFlags & 0x2) ? unit : this;
+
+                caster->CastSpell(target, itr->second.spellId, true);
+            }
+        }
+
+		if(unit->GetTypeId() == TYPEID_PLAYER) // not right
+		{
+			if(((Player*)unit)->GetGroup())
+			   ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+	           
+			((Player*)unit)->SetFarSightGUID(me->GetGUID());
+	        
+			((Player*)unit)->VehicleSpellInitialize();
+	        
+			if (((Player*)unit)->isAFK())
+				((Player*)unit)->ToggleAFK();
+		}
+
+		if(!(GetVehicleFlags() & VF_FACTION))
+		me->setFaction(((Player*)unit)->getFaction());
+
+		if(GetVehicleFlags() & VF_CANT_MOVE)
+        {
+            WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 10);
+			data2.append(me->GetPackGUID());
+            data2 << (uint32)(2);
+            SendMessageToSet(&data2,false);
+        }
+
+		if(GetVehicleFlags() & VF_NON_SELECTABLE)
+            SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 	}
+	
+	if(seat->second.vs_flags & SF_UNATTACKABLE)
+        unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
     if(me->IsInWorld())
     {
@@ -459,9 +499,6 @@ void Vehicle::RemovePassenger(Unit *unit)
         seat->second.flags = SEAT_FREE;
         //EmptySeatsCountChanged();
     }
-
-	me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
-
 }
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
@@ -472,18 +509,35 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
 		VehicleSeat seat = itr->second;
-		if (Unit *passengers = seat.passenger)
-		{
-			float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
+		if(seat.flags & SEAT_FULL)
+        {
+			if (Unit *passengers = seat.passenger)
+			{
+				float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
+				float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
+				float zz = me->GetPositionZ() + passengers->m_SeatData.OffsetZ;
+				float oo = ang + passengers->m_SeatData.Orientation;
+
+				if(passengers->GetTypeId() == TYPEID_PLAYER)
+					((Player*)passengers)->SetPosition(xx, yy, zz, oo);
+				else
+					me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+			}
+		}
+		else if(itr->second.flags & (SEAT_VEHICLE_FULL | SEAT_VEHICLE_FREE))
+        {
+            // passenger cant be NULL here
+            Unit *passengers = itr->second.passenger;
+            assert(passengers);
+
+            float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
 			float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
 			float zz = me->GetPositionZ() + passengers->m_SeatData.OffsetZ;
 			float oo = ang + passengers->m_SeatData.Orientation;
 
-			if(passengers->GetTypeId() == TYPEID_PLAYER)
-				((Player*)passengers)->SetPosition(xx, yy, zz, oo);
-			else
-				me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
-		}
+            me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
+            ((Vehicle*)passengers)->RelocatePassengers(x,y,z,ang);
+        }
 	}
 }
 void Vehicle::Dismiss()
