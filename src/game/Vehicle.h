@@ -96,7 +96,6 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         uint32 m_vehicleId;
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
-        uint32 m_usableSeatNum;
 		uint32 m_maxSeatsNum;
         
     private:

@@ -851,6 +851,7 @@ void CreatureEventAI::JustReachedHome()
 
 void CreatureEventAI::EnterEvadeMode()
 {
+	me->ExitVehicle();
     me->RemoveAllAuras();
     me->DeleteThreatList();
     me->CombatStop(true);

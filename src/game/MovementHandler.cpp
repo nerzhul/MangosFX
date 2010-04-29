@@ -645,7 +645,8 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 			GetPlayer()->ChangeSeat(-1, true);
 			break;
 		case CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE:
-		
+		{
+			sLog.outError("TEST");
 			 uint64 guid;
 			 if(!recv_data.readPackGUID(guid) || vehicle_base->GetGUID() != guid)
 				 return;
@@ -667,8 +668,10 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 						_player->EnterVehicle(vehicle, seatId);
 					}
 			break;
+		}
 		case CMSG_REQUEST_VEHICLE_SWITCH_SEAT:
-			{
+		{
+			sLog.outError("TEST2");
 			uint64 vehicleGUID = _player->GetVehicleGUID();
 		    if(!vehicleGUID)                                        // something wrong here...
 				return;
@@ -692,23 +695,23 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 									if(!_player->IsWithinDistInMap(vehUnit, 10))
 										return;
 
-									/*if(Vehicle *v = veh->FindFreeSeat(&seatId, false))
+									if(Vehicle *v = veh->FindFreeSeat(&seatId, false))
 									{
 										veh->RemovePassenger(_player);
 										_player->EnterVehicle(v, seatId);
-									}*/
+									}
 								}
 							return;
 						}
 					}
-					/*if(Vehicle *v = vehicle->FindFreeSeat(&seatId, false))
+					if(Vehicle *v = vehicle->FindFreeSeat(&seatId, false))
 					{
 						vehicle->RemovePassenger(_player);
-						_player->EnterVehicle(v, seatId, false);
-					}*/
+						_player->EnterVehicle(v, seatId);
+					}
 				}
 			break;
-			}
+		}
  	    default:
 			break;
     }

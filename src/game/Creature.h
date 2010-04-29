@@ -635,6 +635,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
 		void SetReactState(ReactStates st) { m_reactState = st; }
         ReactStates GetReactState() { return m_reactState; }
         bool HasReactState(ReactStates state) const { return (m_reactState == state); }
+		bool isHostileVehicle();
 
     protected:
         bool CreateFromProto(uint32 guidlow,uint32 Entry,uint32 team, const CreatureData *data = NULL, uint32 vehId = 0);

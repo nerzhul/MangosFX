@@ -45,7 +45,6 @@ void Vehicle::InitSeats()
 {
 	m_Seats.clear();
 	m_maxSeatsNum = 0;
-	m_usableSeatNum = 0;
 	for (uint32 i = 0; i < MAX_SEAT; ++i)
     {
         if(uint32 seatId = m_vehicleInfo->m_seatID[i])
@@ -56,10 +55,7 @@ void Vehicle::InitSeats()
 				vSeat.flags = SEAT_FREE;
                 m_Seats.insert(std::make_pair(i, vSeat));
                 if(veSeat->IsUsable())
-				{
-                    ++m_usableSeatNum;
 					++m_maxSeatsNum;
-				}
             }
     }
 }
@@ -190,7 +186,7 @@ void Vehicle::Die()
 void Vehicle::Reset()
 {
     sLog.outDebug("Vehicle::Reset");
-    if(m_usableSeatNum || me->GetEntry() == 32930)
+    /*if(m_usableSeatNum || me->GetEntry() == 32930)
     {
         if (me->GetTypeId() == TYPEID_PLAYER)
         {
@@ -201,7 +197,7 @@ void Vehicle::Reset()
             InstallAllAccessories();
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
-    }
+    }*/
 }
 
 void Vehicle::RemoveAllPassengers()
@@ -213,7 +209,10 @@ void Vehicle::RemoveAllPassengers()
             if(passenger->IsVehicle())
                 passenger->GetVehicleKit()->RemoveAllPassengers();
             if(passenger->GetVehicle() != this)
+			{
                 sLog.outError("Vehicle %u has invalid passenger %u.", me->GetEntry(), passenger->GetEntry());
+				return;
+			}
             passenger->ExitVehicle();
             if(itr->second.passenger)
             {
@@ -315,36 +314,32 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
-    seat->second.passenger = unit;
+	seat->second.passenger = unit;
+
+	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
+    {
+        if(((Vehicle*)unit)->GetEmptySeatsCount(true) == 0)
+            seat->second.flags = SEAT_VEHICLE_FULL;
+        else
+            seat->second.flags = SEAT_VEHICLE_FREE;
+    }
+    else
+    {
+        seat->second.flags = SEAT_FULL;
+    }
+
     SetVehicleId(m_vehicleInfo->m_ID);
     
-    if(seat->second.seatInfo->IsUsable())
-    {
-        --m_usableSeatNum;
-        if(!m_usableSeatNum)
-        {
-            if (me->GetTypeId() == TYPEID_PLAYER)
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
-            else
-                me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-        }
-    }
-    
-	/*if(unit->GetTypeId() == TYPEID_PLAYER)
+	if(unit->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
         data0.append(unit->GetPackGUID());
         data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ?2 : 0);
         unit->SendMessageToSet(&data0,true);
-    }*/
+    }
 
     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
-	
-
-    VehicleSeatEntry const *veSeat = seat->second.seatInfo;
-	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
-		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
 
 	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
@@ -510,18 +505,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 		return;
 
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
-
-    if(seat->second.seatInfo->IsUsable())
-    {
-        if(!m_usableSeatNum)
-        {
-            if (me->GetTypeId() == TYPEID_PLAYER)
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
-            else
-                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-        }
-        ++m_usableSeatNum;
-    }
 
 	if((seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FREE | SEAT_VEHICLE_FULL)) && seat->second.passenger == unit)
     {

@@ -116,6 +116,7 @@ ReactorAI::EnterEvadeMode()
         DEBUG_LOG("Creature stopped attacking, victim %s [guid=%u]", victim->isAlive() ? "out run him" : "is dead", me->GetGUIDLow());
     }
 
+	me->ExitVehicle();
     me->RemoveAllAuras();
     me->DeleteThreatList();
     i_victimGuid = 0;

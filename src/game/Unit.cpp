@@ -8785,6 +8785,14 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
     if(GetTypeId()==TYPEID_PLAYER && IsMounted())
         return false;
 
+	// player (also npc?) cannot attack on vehicle
+    if(GetTypeId()==TYPEID_PLAYER && GetVehicleGUID())
+        return false;
+
+    // player (also npc?) cannot attack on vehicle
+    if(GetTypeId()==TYPEID_UNIT && ((Creature*)this)->isVehicle() && GetCharmerGUID() && !((Creature*)this)->isHostileVehicle())
+        return false;
+
     // nobody can attack GM in GM-mode
     if(victim->GetTypeId()==TYPEID_PLAYER)
     {
@@ -11982,7 +11990,8 @@ bool Unit::SelectHostileTarget()
     }
 
     // enter in evade mode in other case
-    ((Creature*)this)->AI()->EnterEvadeMode();
+    if(!((Creature*)this)->isVehicle())
+        ((Creature*)this)->AI()->EnterEvadeMode();
 
     return false;
 }
@@ -14581,6 +14590,8 @@ void Unit::ExitVehicle()
 
         if(GetTypeId() == TYPEID_PLAYER)
         {
+			if(Pet *pet = ((Player*)this)->GetPet())
+				pet->Remove(PET_SAVE_AS_DELETED);
             ((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
             ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
             ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
@@ -14602,23 +14613,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if (!isAlive() || GetVehicleKit() == vehicle)
         return;
 
-    if (m_vehicle)
-    {
-        if (m_vehicle == vehicle)
-        {
-            if (seatId >= 0)
-            {
-                sLog.outDebug("EnterVehicle: %u leave vehicle %u seat %d and enter %d.", GetEntry(), m_vehicle->GetBase()->GetEntry(), GetTransSeat(), seatId);
-                ChangeSeat(seatId);
-            }
-            return;
-        }
-        else
-        {
-            sLog.outDebug("EnterVehicle: %u exit %u and enter %u.", GetEntry(), m_vehicle->GetBase()->GetEntry(), vehicle->GetBase()->GetEntry());
-            ExitVehicle();
-        }
-    }
+    ExitVehicle();
 
     if (GetTypeId() == TYPEID_PLAYER)
     {

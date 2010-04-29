@@ -2144,3 +2144,15 @@ float Creature::GetBaseSpeed() const
     }
     return m_creatureInfo->speed;
 }
+
+bool Creature::isHostileVehicle()
+{
+	switch(GetEntry())
+	{
+		case 32930:
+		case 33118:
+			return true;
+		default:
+			return false;		
+	}
+}
