@@ -14568,6 +14568,7 @@ void Unit::ExitVehicle()
 
     Vehicle *vehicle = m_vehicle;
     m_vehicle = NULL;
+	SetVehicleGUID(0);
 
     WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 10);
     data.append(GetPackGUID());

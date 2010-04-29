@@ -1839,7 +1839,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
 		Vehicle *GetVehicleKit()const { return m_vehicleKit; }
         Vehicle *GetVehicle()   const { return m_vehicle; }
-        uint64 GetVehicleGUID() { return (m_vehicle ? ((Unit*)m_vehicle)->GetGUID() : 0); }
+        uint64 GetVehicleGUID() { return m_vehicleGUID; }
+        void SetVehicleGUID(uint64 guid) { m_vehicleGUID = guid; }
 		uint32 HasUnitTypeMask(uint32 mask) const { return mask & m_unitTypeMask; }
         void AddUnitTypeMask(uint32 mask) { m_unitTypeMask |= mask; }
 		bool IsVehicle() const  { return m_unitTypeMask & UNIT_MASK_VEHICLE; }
@@ -1915,6 +1916,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		Vehicle *m_vehicle;
         Vehicle *m_vehicleKit;
 		uint32 m_unitTypeMask;
+		uint64 m_vehicleGUID;
 		// fss end
 
     private:

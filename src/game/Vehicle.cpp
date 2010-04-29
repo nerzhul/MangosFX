@@ -305,6 +305,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
     seat->second.passenger = unit;
+    unit->SetVehicleGUID(me->GetGUID());
     if(seat->second.seatInfo->IsUsable())
     {
         ASSERT(m_usableSeatNum);
@@ -388,6 +389,7 @@ void Vehicle::RemovePassenger(Unit *unit)
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
     seat->second.passenger = NULL;
+    unit->SetVehicleGUID(0);
     if(seat->second.seatInfo->IsUsable())
     {
         if(!m_usableSeatNum)
