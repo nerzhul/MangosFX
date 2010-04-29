@@ -42,6 +42,7 @@ Vehicle::~Vehicle()
 
 void Vehicle::InitSeats()
 {
+	m_Seats.clear();
 	m_maxSeatsNum = 0;
 	m_usableSeatNum = 0;
 	for (uint32 i = 0; i < MAX_SEAT; ++i)
@@ -427,9 +428,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 	sLog.outError("seat number : %u",m_maxSeatsNum);
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
-		if(i >= m_maxSeatsNum)
-			break;
+		/*if(i >= m_maxSeatsNum)
+			break;*/
 
+		sLog.outError("Seat Number itr %u",i);
 		VehicleSeat seat = itr->second;
 		if (Unit *passengers = seat.passenger)
 		{
