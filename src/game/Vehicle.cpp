@@ -24,6 +24,7 @@
 #include "Util.h"
 #include "WorldPacket.h"
 #include "TemporarySummon.h"
+#include "SpellMgr.h"
 
 #include "CreatureAI.h"
 #include "ZoneScript.h"
@@ -333,7 +334,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	unit->m_movementInfo.SetTransportData(me->GetGUID(),veSeat->m_attachmentOffsetX,
 		veSeat->m_attachmentOffsetY, veSeat->m_attachmentOffsetZ, 0, 0, seat->first);
 
-	if(seat->second.vs_flags & SF_MAIN_RIDER)
+	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
         if(!(GetVehicleFlags() & VF_MOVEMENT))
 		{
@@ -355,13 +356,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             }*/
 		}
 
-		SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(GetEntry());
+		SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
         for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
         {
             if (unit->GetTypeId() == TYPEID_UNIT || itr->second.IsFitToRequirements((Player*)unit))
             {
-                Unit *caster = (itr->second.castFlags & 0x1) ? unit : this;
-                Unit *target = (itr->second.castFlags & 0x2) ? unit : this;
+                Unit *caster = (itr->second.castFlags & 0x1) ? unit : me;
+                Unit *target = (itr->second.castFlags & 0x2) ? unit : me;
 
                 caster->CastSpell(target, itr->second.spellId, true);
             }
@@ -375,6 +376,8 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 			((Player*)unit)->SetFarSightGUID(me->GetGUID());
 	        
 			((Player*)unit)->VehicleSpellInitialize();
+
+			BuildVehicleActionBar((Player*)unit);
 	        
 			if (((Player*)unit)->isAFK())
 				((Player*)unit)->ToggleAFK();
@@ -392,7 +395,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         }
 
 		if(GetVehicleFlags() & VF_NON_SELECTABLE)
-            SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 	}
 	
 	if(seat->second.vs_flags & SF_UNATTACKABLE)
@@ -411,6 +414,74 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     }
 
     return true;
+}
+
+void Vehicle::BuildVehicleActionBar(Player *plr) const
+{
+    WorldPacket data(SMSG_PET_SPELLS, 8+2+4+4+4*10+1+1);
+    data << uint64(me->GetGUID());
+    data << uint16(0x00000000);                     // creature family, not used in vehicles
+    data << uint32(0x00000000);                     // unk
+    data << uint32(0x00000101);                     // react state
+
+    /*for(uint32 i = 0; i <= MAX_VEHICLE_SPELLS; ++i)
+    {
+        data << uint16(m_VehicleData ? m_VehicleData->v_spells[i] : NULL) << uint8(0) << uint8(i+8);
+    }*/
+
+	for (uint32 i = 0; i < MAX_VEHICLE_SPELLS; ++i)
+    {
+		uint32 spellId = ((Creature*)me)->m_spells[i];
+        if(!spellId)
+            continue;
+
+        SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+        if(!spellInfo)
+            continue;
+
+        if(IsPassiveSpell(spellId))
+        {
+            me->CastSpell(me, spellId, true);
+            data << uint16(0) << uint8(0) << uint8(i+8);
+        }
+        else
+            data << uint16(spellId) << uint8(0) << uint8(i+8);
+    }
+	for (uint32 i = MAX_VEHICLE_SPELLS-2; i < MAX_VEHICLE_SPELLS; ++i)
+        data << uint16(0) << uint8(0) << uint8(i+8);
+
+    data << uint8(0);                               //aditional spells in spellbook, not used in vehicles
+
+    uint8 cooldownsCount = m_CreatureSpellCooldowns.size() + m_CreatureCategoryCooldowns.size();
+    data << uint8(cooldownsCount);
+    time_t curTime = time(NULL);
+
+    for(CreatureSpellCooldowns::const_iterator itr = m_CreatureSpellCooldowns.begin(); itr != m_CreatureSpellCooldowns.end(); ++itr)
+    {
+        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILISECONDS : 0;
+
+        data << uint32(itr->first);                         // spellid
+        data << uint16(0);                                  // spell category?
+        data << uint32(cooldown);                           // cooldown
+        data << uint32(0);                                  // category cooldown
+    }
+
+    for(CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.begin(); itr != m_CreatureCategoryCooldowns.end(); ++itr)
+    {
+        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILISECONDS : 0;
+
+        data << uint32(itr->first);                         // spellid
+        data << uint16(0);                                  // spell category?
+        data << uint32(0);                                  // cooldown
+        data << uint32(cooldown);                           // category cooldown
+    }
+
+    plr->GetSession()->SendPacket(&data);
+
+    data.Initialize(SMSG_PET_GUIDS, 12);
+    data << uint32(1);                                        // count
+    data << uint64(me->GetGUID());
+    plr->GetSession()->SendPacket(&data);
 }
 
 void Vehicle::RemovePassenger(Unit *unit)

@@ -81,6 +81,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void RemovePassenger(Unit *passenger);
         void RemoveAllPassengers();
         void Dismiss();
+		void BuildVehicleActionBar(Player *plr) const;
 
         SeatMap m_Seats;
 		void InstallAccessory(uint32 entry, int8 seatId, bool minion = true);

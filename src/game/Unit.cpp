@@ -14647,7 +14647,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_SeatData.dbc_seat = veSeat->m_ID;
     m_SeatData.seat = seatId;
     m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
-    m_SeatData.v_flags = v->GetVehicleFlags();
+    m_SeatData.v_flags = m_vehicle->GetVehicleFlags();
 
 	addUnitState(UNIT_STAT_ON_VEHICLE);
 	InterruptNonMeleeSpells(false);
