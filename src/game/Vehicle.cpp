@@ -427,7 +427,8 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		if(i>=m_maxSeatsNum)
 			break;
 
-		if(VehicleSeat seat = itr->second)
+		VehicleSeat seat = itr->second;
+		if(seat)
 		{
 			if (Unit *passengers = seat.passenger)
 			{
