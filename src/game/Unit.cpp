@@ -10876,7 +10876,7 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
             }
         }
 
-		if(VehicleId !=0)
+		/*if(VehicleId !=0)
         {
             if(VehicleEntry const *ve = sVehicleStore.LookupEntry(VehicleId))
             {
@@ -10894,7 +10894,7 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
                     ((Player*)this)->GetSession()->SendPacket( &data );
                 }
             }
-        }
+        }*/
     }
 }
 

@@ -86,12 +86,6 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
 		Tasks.SetObjects(this,me);
 		Tasks.CleanMyAdds();
 
-		for(std::vector<Creature*>::iterator itr = NovosAdds.begin(); itr!= NovosAdds.end(); ++itr)
-		{
-			Creature *pAdd = *itr;
-			if (pAdd && pAdd->isAlive())
-				pAdd->ForcedDespawn(1000);
-		}
 		NovosAdds.clear();
 		crystals = 4;
         Phase = IDLE;
@@ -190,7 +184,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
                 if(pCrystalHandler = me->SummonCreature(CREATURE_CRYSTAL_HANDLER, CrystalHandlerSpawnPoint.x, CrystalHandlerSpawnPoint.y , CrystalHandlerSpawnPoint.z, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN,20000))
 				{
 					pCrystalHandler->GetMotionMaster()->MovePoint(0, AddDestinyPoint.x, AddDestinyPoint.y, AddDestinyPoint.z);
-					NovosAdds.push_back(pCrystalHandler);
+					//NovosAdds.push_back(pCrystalHandler);
 				}
                 uiCrystalHandlerTimer = urand(20000,30000);
             } 
@@ -234,12 +228,6 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
             /*if (m_bIsHeroic && bAchiev)
                 pInstance->DoCompleteAchievement(ACHIEV_OH_NOVOS);*/
         }
-        for(std::vector<Creature*>::iterator itr = NovosAdds.begin(); itr!= NovosAdds.end(); ++itr)
-		{
-			if (Creature *pAdd = *itr)
-				if(pAdd->isAlive())
-					pAdd->ForcedDespawn();
-		}
 
 		Tasks.CleanMyAdds();
 		NovosAdds.clear();
