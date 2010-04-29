@@ -304,6 +304,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	unit->SetVehicleGUID(me->GetGUID());
     seat->second.passenger = unit;
+    SetVehicleId(m_vehicleInfo->m_ID);
     
     if(seat->second.seatInfo->IsUsable())
     {
@@ -419,7 +420,7 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
-	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,GetVehicleInfo()->m_ID);
+	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,m_vehicleId);
 	if(m_maxSeatsNum == 0)
 		return;
 		
