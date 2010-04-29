@@ -14696,8 +14696,7 @@ void Unit::ChangeSeat(int8 seatId, bool next)
         return;
 
     m_vehicle->RemovePassenger(this);
-    if (!m_vehicle->AddPassenger(this, seatId))
-        ASSERT(false);
+	EnterVehicle(m_vehicle,seatId);
 }
 
 Unit *Unit::GetVehicleBase() const

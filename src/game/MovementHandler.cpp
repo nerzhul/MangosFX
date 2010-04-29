@@ -694,7 +694,7 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 
 									/*if(Vehicle *v = veh->FindFreeSeat(&seatId, false))
 									{
-										vehicle->RemovePassenger(_player);
+										veh->RemovePassenger(_player);
 										_player->EnterVehicle(v, seatId);
 									}*/
 								}

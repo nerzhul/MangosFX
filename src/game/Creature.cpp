@@ -1063,16 +1063,12 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const 
 
 	if(!vehId)
 		vehId = cinfo->VehicleId;
-
-	if(vehId)
-		sLog.outError("Create vehicle %u entry %u",vehId,Entry);
 		
 	if(vehId && !CreateVehicleKit(vehId))
 		vehId = 0;
 
 	if(vehId)
 		this->m_subtype = CREATURE_SUBTYPE_VEHICLE;
-
 
     Object::_Create(guidlow, Entry, vehId ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
 

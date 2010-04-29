@@ -3984,7 +3984,7 @@ void Aura::HandleModPossess(bool apply, bool Real)
             m_target->GetMotionMaster()->Clear();
             m_target->GetMotionMaster()->MoveIdle();
         }
-        else if(m_target->GetTypeId() == TYPEID_PLAYER)
+        else if(m_target->GetTypeId() == TYPEID_PLAYER && !m_target->GetVehicleGUID())
         {
             ((Player*)m_target)->SetClientControl(m_target, 0);
         }
@@ -4001,7 +4001,7 @@ void Aura::HandleModPossess(bool apply, bool Real)
         m_target->SetCharmerGUID(0);
         p_caster->InterruptSpell(CURRENT_CHANNELED_SPELL);  // the spell is not automatically canceled when interrupted, do it now
 
-        if(m_target->GetTypeId() == TYPEID_PLAYER)
+        if(m_target->GetTypeId() == TYPEID_PLAYER && !m_target->GetVehicleGUID())
         {
             ((Player*)m_target)->setFactionForRace(m_target->getRace());
             ((Player*)m_target)->SetClientControl(m_target, 1);

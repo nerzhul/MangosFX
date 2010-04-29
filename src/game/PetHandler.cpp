@@ -41,8 +41,9 @@ void WorldSession::HandlePetAction( WorldPacket & recv_data )
     uint32 spellid = UNIT_ACTION_BUTTON_ACTION(data);
     uint8 flag = UNIT_ACTION_BUTTON_TYPE(data);             //delete = 0x07 CastSpell = C1
 
-    // used also for charmed creature
+	// used also for charmed creature
     Unit* pet= ObjectAccessor::GetUnit(*_player, guid1);
+
     sLog.outDetail("HandlePetAction.Pet %u flag is %u, spellid is %u, target %u.", uint32(GUID_LOPART(guid1)), uint32(flag), spellid, uint32(GUID_LOPART(guid2)) );
     if (!pet)
     {
@@ -73,11 +74,14 @@ void WorldSession::HandlePetAction( WorldPacket & recv_data )
     }
 
     CharmInfo *charmInfo = pet->GetCharmInfo();
-    if(!charmInfo)
+	if(!charmInfo && !pet->IsVehicle())
     {
         sLog.outError("WorldSession::HandlePetAction: object (GUID: %u TypeId: %u) is considered pet-like but doesn't have a charminfo!", pet->GetGUIDLow(), pet->GetTypeId());
         return;
     }
+
+	if(pet->IsVehicle() && flag >= 8 && flag <= 13)
+		flag = ACT_ENABLED;
 
     switch(flag)
     {
