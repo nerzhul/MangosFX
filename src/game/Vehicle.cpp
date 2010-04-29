@@ -303,7 +303,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             seat->second.passenger->ExitVehicle();
     }
 
-    sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
+    sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
     seat->second.passenger = unit;
@@ -319,14 +319,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }
-    
-    if(unit->GetTypeId() == TYPEID_PLAYER)
+    /*if(unit->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
         data0.append(unit->GetPackGUID());
-        data0 << (uint32)(/*(seat->second.vs_flags & SF_CAN_CAST) ? */2/* : 0*/);
+        data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ?2 : 0);
         unit->SendMessageToSet(&data0,true);
-    }
+    }*/
 
     unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
@@ -423,7 +422,7 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
-	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,m_vehicleId);
+	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,GetVehicleInfo()->m_ID);
 	if(m_maxSeatsNum == 0)
 		return;
 		
@@ -433,9 +432,9 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 		if (Unit *passengers = seat.passenger)
 		{
 			sLog.outError("%f %f",x,passengers->m_SeatData.OffsetX);
-			float xx = x + passengers->m_SeatData.OffsetX;
-			float yy = y + passengers->m_SeatData.OffsetY;
-			float zz = z + passengers->m_SeatData.OffsetZ;
+			float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
+			float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
+			float zz = me->GetPositionZ() + passengers->m_SeatData.OffsetZ;
 			float oo = ang + passengers->m_SeatData.Orientation;
 
 			if(passengers->GetTypeId() == TYPEID_PLAYER)

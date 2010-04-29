@@ -254,8 +254,8 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
         return;
     }
 
-	if(mover->GetTypeId() == TYPEID_UNIT) {
-		if(((Creature*)mover)->isVehicle() && opcode == MSG_MOVE_JUMP)
+	if(mover->GetTypeId() == TYPEID_UNIT && opcode == MSG_MOVE_JUMP) {
+		if(((Creature*)mover)->isVehicle())
 			return;
 	}
 	
@@ -322,8 +322,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     data.appendPackGUID(mover->GetGUID());                  // write guid
     movementInfo.Write(data);                               // write data
     GetPlayer()->SendMessageToSet(&data, false);
-
-	mover->m_movementInfo = movementInfo;
 
     if(plMover)                                             // nothing is charmed, or player charmed
     {

@@ -14643,7 +14643,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	
     m_vehicle = vehicle;
 
-	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleId());
+	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleInfo()->m_ID);
     if(!ve)
         return;
 
