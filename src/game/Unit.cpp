@@ -14646,9 +14646,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if(!veSeat)
         return;
 
-	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
-    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
-    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
+    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
+    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
     m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
     m_SeatData.c_time = 0/*v->GetCreationTime()*/;
     m_SeatData.dbc_seat = veSeat->m_ID;
