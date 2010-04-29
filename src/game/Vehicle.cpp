@@ -423,13 +423,12 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 {
-	uint32 i=0;
 	sLog.outError("seat number : %u for vehicle %u",m_maxSeatsNum,m_vehicleId);
+	if(m_maxSeatsNum == 0)
+		return;
+		
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
-		/*if(i >= m_maxSeatsNum)
-			break;*/
-
 		sLog.outError("Seat Number itr %u",i);
 		VehicleSeat seat = itr->second;
 		if (Unit *passengers = seat.passenger)
@@ -445,7 +444,6 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 			else
 				me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
 		}
-		i++;
 	}
 }
 void Vehicle::Dismiss()
