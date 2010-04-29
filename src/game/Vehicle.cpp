@@ -383,12 +383,11 @@ void Vehicle::RemovePassenger(Unit *unit)
         if(seat->second.passenger == unit)
             break;
 
-    ASSERT(seat != m_Seats.end());
+    if(seat == m_Seats.end())
+		return;
 
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
-    seat->second.passenger = NULL;
-    unit->SetVehicleGUID(0);
     if(seat->second.seatInfo->IsUsable())
     {
         if(!m_usableSeatNum)
@@ -401,21 +400,68 @@ void Vehicle::RemovePassenger(Unit *unit)
         ++m_usableSeatNum;
     }
 
+	if((seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FREE | SEAT_VEHICLE_FULL)) && seat->second.passenger == unit)
+    {
+        unit->SetVehicleGUID(0);
+
+        if(seat->second.vs_flags & SF_MAIN_RIDER)
+        {
+            RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
+            if(unit->GetTypeId() == TYPEID_PLAYER)
+            {
+                ((Player*)unit)->SetMover(NULL);
+                ((Player*)unit)->SetClientControl(unit, 1);
+                ((Player*)unit)->SetMoverInQueve(NULL);
+                ((Player*)unit)->RemovePetActionBar();
+
+                if(((Player*)unit)->GetGroup())
+                    ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+            }
+            unit->SetCharm(NULL);
+            SetCharmerGUID(NULL);
+            setFaction(GetCreatureInfo()->faction_A);
+        }
+        if(GetVehicleFlags() & VF_NON_SELECTABLE)
+            RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        if(seat->second.vs_flags & SF_UNATTACKABLE)
+            unit->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        // restore player control
+        if(unit->GetTypeId() == TYPEID_PLAYER)
+        {
+            ((Player*)unit)->SetFarSightGUID(NULL);
+
+            if(seat->second.vs_flags & SF_CAN_CAST)
+            {
+                WorldPacket data0(SMSG_FORCE_MOVE_UNROOT, 10);
+                data0.append(unit->GetPackGUID());
+                data0 << (uint32)(2);                        // can rotate
+                unit->SendMessageToSet(&data0,true);
+            }
+            else
+            {
+                WorldPacket data1(SMSG_FORCE_MOVE_UNROOT, 10);
+				data1.append(unit->GetPackGUID());
+                data1 << (uint32)(0);                        // cannot rotate
+                unit->SendMessageToSet(&data1,true);
+            }
+        }
+        unit->m_SeatData.OffsetX = 0.0f;
+        unit->m_SeatData.OffsetY = 0.0f;
+        unit->m_SeatData.OffsetZ = 0.0f;
+        unit->m_SeatData.Orientation = 0.0f;
+        unit->m_SeatData.c_time = 0;
+        unit->m_SeatData.dbc_seat = 0;
+        unit->m_SeatData.seat = 0;
+        unit->m_SeatData.s_flags = 0;
+        unit->m_SeatData.v_flags = 0;
+
+        seat->second.passenger = NULL;
+        seat->second.flags = SEAT_FREE;
+        //EmptySeatsCountChanged();
+    }
+
 	me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
-	unit->clearUnitState(UNIT_STAT_ON_VEHICLE);
-
-	if(unit->GetTypeId() == TYPEID_PLAYER)
-    {
-		((Player*)unit)->SetCharm(NULL);
-		((Player*)unit)->SetFarSightGUID(0);
-		((Player*)unit)->SetClientControl(me, 0);
-		((Player*)unit)->SetMover(NULL);
-
-		((Player*)unit)->RemovePetActionBar();
-		if(((Player*)unit)->GetGroup())
-			((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
-	}
 }
 
 void Vehicle::RelocatePassengers(float x, float y, float z, float ang)

@@ -14561,52 +14561,40 @@ void Unit::SetAuraStack(uint32 spellId, Unit *target, uint32 stack)
 
 void Unit::ExitVehicle()
 {
-    if (!m_vehicle)
-        return;
-
-    Unit *vehicleBase = m_vehicle->GetBase();
-
-    if (!m_vehicle)
-        return;
-
-    m_vehicle->RemovePassenger(this);
-
-    Vehicle *vehicle = m_vehicle;
-    m_vehicle = NULL;
-	SetVehicleGUID(0);
-
-    WorldPacket data(SMSG_FORCE_MOVE_UNROOT, 10);
-    data.append(GetPackGUID());
-    data << (uint32)2;
-    SendMessageToSet(&data,true);
-
-	clearUnitState(UNIT_STAT_ON_VEHICLE);
-	m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
-
-    m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
-	m_movementInfo.SetTransportData(this->GetGUID(),0,0,0,0,0,0);
-
-    Relocate(vehicle->GetBase()->GetPositionX(),vehicle->GetBase()->GetPositionY(),vehicle->GetBase()->GetPositionZ(),0.0f);
-
-    //Send leave vehicle, not correct
-	RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
-    if (GetTypeId() == TYPEID_PLAYER)
+	if(uint64 vehicleGUID = GetVehicleGUID())
     {
-        WorldPacket data;
-        ((Player*)this)->BuildTeleportAckMsg(&data, vehicle->GetBase()->GetPositionX(),vehicle->GetBase()->GetPositionY(),vehicle->GetBase()->GetPositionZ(), 0.0f);
-        ((Player*)this)->GetSession()->SendPacket(&data);
-        ((Player*)this)->SetFallInformation(0, GetPositionZ());
+        float v_size = 0.0f;
+		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
+			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
+			{
+				if(m_SeatData.s_flags & SF_MAIN_RIDER)
+				{
+					if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
+					{
+						// will be deleted at next update
+//						vehicle->SetSpawnDuration(1);
+					}
+				}
+				v_size = vehicle->GetBase()->GetObjectSize();
+				vehicle->RemovePassenger(this);
+			}
 
-		((Player*)this)->SetMover(NULL);
-		
+        if(GetTypeId() == TYPEID_PLAYER)
+        {
+            ((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+            ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+            ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
+        }
+
+        float x = GetPositionX();
+        float y = GetPositionY();
+        float z = GetPositionZ() + 2.0f;
+        GetClosePoint(x, y, z, 2.0f + v_size);
+        SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
+		if(m_vehicle)
+			m_vehicle->RemovePassenger(this);
+		m_vehicle = NULL;
     }
-    WorldPacket data2;
-    BuildHeartBeatMsg(&data2);
-    SendMessageToSet(&data2, false);
-
-   /* if (vehicle->GetBase()->HasUnitTypeMask(UNIT_MASK_MINION))
-        if (((Minion*)vehicle->GetBase())->GetOwner() == this)
-            vehicle->Dismiss();*/
 }
 
 void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
@@ -14651,9 +14639,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if(!veSeat)
         return;
 
-	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
-    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
-    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ /*+ m_vehicle->GetObjectSize()*/) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
+    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
+    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
     m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
     m_SeatData.c_time = 0/*v->GetCreationTime()*/;
     m_SeatData.dbc_seat = veSeat->m_ID;

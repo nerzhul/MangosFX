@@ -36,9 +36,10 @@ enum PowerType
 
 struct VehicleSeat
 {
-    explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL) {}
+    explicit VehicleSeat(VehicleSeatEntry const *_seatInfo) : seatInfo(_seatInfo), passenger(NULL), vs_flags(0) {}
     VehicleSeatEntry const *seatInfo;
     uint8 flags;
+	uint32 vs_flags;
     Unit* passenger;
 };
 
@@ -71,6 +72,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
         Unit *GetBase() const { return me; }
         VehicleEntry const *GetVehicleInfo() { return m_vehicleInfo; }
+		uint32 GetVehicleFlags() { return /*m_VehicleData ? m_VehicleData->v_flags : NULL*/0; }
 
         bool HasEmptySeat(int8 seatId) const;
         Unit *GetPassenger(int8 seatId) const;
