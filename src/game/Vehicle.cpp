@@ -425,7 +425,7 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 	sLog.outError("%u",m_maxSeatsNum);
     for (SeatMap::const_iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
 	{
-		if(i>=m_maxSeatsNum)
+		if(i >= m_maxSeatsNum)
 			break;
 
 		VehicleSeat seat = itr->second;
