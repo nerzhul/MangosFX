@@ -188,7 +188,6 @@ void Vehicle::Reset()
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }
-    InitSeats();
 }
 
 void Vehicle::RemoveAllPassengers()
