@@ -280,9 +280,6 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
 
 bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 {
-    if(unit->GetVehicle() != this)
-        return false;
-
     SeatMap::iterator seat;
     if(seatId < 0) // no specific seat requirement
     {
