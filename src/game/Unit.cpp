@@ -2524,10 +2524,10 @@ void Unit::AttackerStateUpdate (Unit *pVictim, WeaponAttackType attType, bool ex
     if(!extra && extraAttacks)
     {
 		int i=0;
-        while(m_extraAttacks)
+        while(m_extraAttacks && i < 1500)
         {
 			i++;
-			if(i>2500)
+			if(i>1450)
 				sLog.outError("AttackerStateUpdate Boucle");
             AttackerStateUpdate(pVictim, BASE_ATTACK, true);
             if(m_extraAttacks > 0)
@@ -2545,9 +2545,6 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(const Unit *pVictim, WeaponAttackT
 
     // Critical hit chance
     float crit_chance = GetUnitCriticalChance(attType, pVictim);
-
-	if (crit_chance < 0.0f)
-       crit_chance = 0.0f;
 
     // stunned target cannot dodge and this is check in GetUnitDodgeChance() (returned 0 in this case)
     float dodge_chance = pVictim->GetUnitDodgeChance();
