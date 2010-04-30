@@ -160,6 +160,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
     {
         case GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING:
             m_goValue->building.health = goinfo->building.intactNumHits + goinfo->building.damagedNumHits;
+            SetGoAnimProgress(255);
             break;
 	}
 	// fss end
@@ -1475,6 +1476,8 @@ void GameObject::TakenDamage(uint32 damage)
     else
         m_goValue->building.health = 0;
 
+	uint8 life = (uint8)ceil(m_goValue->building.health / (m_goInfo->building.intactNumHits + m_goInfo->building.damagedNumHits) * 255/100);
+	SetGoAnimProgress(life);
     if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED)) // from damaged to destroyed
     {
         if(!m_goValue->building.health)
