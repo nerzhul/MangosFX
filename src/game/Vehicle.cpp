@@ -29,7 +29,8 @@
 #include "CreatureAI.h"
 #include "ZoneScript.h"
 
-Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), me(unit), m_vehicleInfo(vehInfo)
+Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), 
+me(unit), m_vehicleInfo(vehInfo),m_regentimer(4000)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
     InitSeats();
@@ -174,6 +175,21 @@ void Vehicle::Uninstall()
             if(passenger->HasUnitTypeMask(UNIT_MASK_ACCESSORY))
                 ((TemporarySummon*)passenger)->UnSummon();
     RemoveAllPassengers();
+}
+
+void Vehicle::Update(uint32 diff)
+{
+	if(m_regentimer <= diff)
+	{
+		if(me->getPowerType() == POWER_ENERGY)
+		{
+			uint8 count = me->GetPower() + 20;
+			me->ModifyPower(POWER_ENERGY, count > 100 ? 100 : count);
+		}
+		m_regentimer = 4000;
+	}
+	else
+		m_regentimer -= diff;
 }
 
 void Vehicle::Die()

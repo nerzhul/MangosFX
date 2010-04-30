@@ -68,6 +68,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void Reset();
         void Die();
         void InstallAllAccessories();
+        void Update(uint32 diff);
 		void RelocatePassengers(float x, float y, float z, float ang);
 
         Unit *GetBase() const { return me; }
@@ -97,6 +98,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
 		uint32 m_maxSeatsNum;
+		uint32 m_regentimer;
         
     private:
 		void InitSeats();
