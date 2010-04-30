@@ -14613,6 +14613,7 @@ void Unit::ExitVehicle()
 			m_vehicle->RemovePassenger(this);
 
 		clearUnitState(UNIT_STAT_ON_VEHICLE);
+
 		m_vehicle = NULL;
     }
 }

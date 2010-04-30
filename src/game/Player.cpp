@@ -19787,8 +19787,7 @@ void Player::SendInitialPacketsAfterAddToMap()
 	}
 	
 	clearUnitState(UNIT_STAT_ON_VEHICLE);
-
-	AddWintergraspBuffIfCan(GetMapId());
+ 	AddWintergraspBuffIfCan(GetMapId());
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
