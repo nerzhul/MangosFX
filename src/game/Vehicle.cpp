@@ -186,7 +186,7 @@ void Vehicle::Die()
 void Vehicle::Reset()
 {
     sLog.outDebug("Vehicle::Reset");
-    /*if(m_usableSeatNum || me->GetEntry() == 32930)
+    if(true || me->GetEntry() == 32930)
     {
         if (me->GetTypeId() == TYPEID_PLAYER)
         {
@@ -197,7 +197,7 @@ void Vehicle::Reset()
             InstallAllAccessories();
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
-    }*/
+    }
 }
 
 void Vehicle::RemoveAllPassengers()

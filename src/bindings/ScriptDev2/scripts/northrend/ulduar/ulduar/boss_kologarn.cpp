@@ -231,6 +231,8 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 				{
 					if (pGripTarget->HasAura(SPELL_STONE_GRIP))
 						pGripTarget->RemoveAurasDueToSpell(SPELL_STONE_GRIP);
+
+					pGripTarget->ExitVehicle();
 				}
 				grip = false;
 				gripdmg = 0;
@@ -254,6 +256,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 			{
 				Tasks.SetAuraStack(SPELL_STONE_GRIP,1,target,me);
 				pGripTarget = target;
+				target->EnterVehicle(me);
 				grip = true;
 				gripdmg = 0;
 				//target->EnterVehicle(me->GetVehicle());
