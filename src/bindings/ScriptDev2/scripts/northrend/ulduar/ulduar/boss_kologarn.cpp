@@ -328,10 +328,11 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
             m_pInstance->SetData(TYPE_KOLOGARN, DONE);
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LEFT_ARM))))
 				if (pTemp->isAlive())
-					pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+					Kill(pTemp);
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_RIGHT_ARM))))
 				if (pTemp->isAlive())
-					pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+					Kill(pTemp);
+
 		}
 		GiveEmblemsToGroup((m_bIsRegularMode) ? CONQUETE : VAILLANCE);
     }
@@ -389,6 +390,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LEFT_ARM))))
 				if (!pTemp->isAlive())
 					pTemp->Respawn();
+			//me->GetVehicleKit()->InstallAccessory(32933);
             left = true;
         }
 		else 
@@ -399,6 +401,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_RIGHT_ARM))))
 				if (!pTemp->isAlive())
 					pTemp->Respawn();
+			//me->GetVehicleKit()->InstallAccessory(32934);
             right = true;
         }
 		else 
