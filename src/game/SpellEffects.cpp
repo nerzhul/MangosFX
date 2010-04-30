@@ -7920,11 +7920,10 @@ void Spell::EffectWMODamage(uint32 /*i*/)
             gameObjTarget->TakenDamage(uint32(damage));
 			WorldPacket data(SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 8+8+8+4+4);
 			data.append(gameObjTarget->GetPackGUID());
-			data.append(caster->GetPackGUID());
-			if (Unit *who = caster->GetCharmerOrOwner())
+			if (Unit *who = caster->GetVehicleKit()->GetBase())
 				data.append(who->GetPackGUID());
-			else
-				data << uint32(damage);
+			data.append(caster->GetPackGUID());
+			data << uint32(damage);
 			data << uint32(m_spellInfo->Id);
 			gameObjTarget->SendMessageToSet(&data, false);
         }
