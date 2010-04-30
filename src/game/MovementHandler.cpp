@@ -632,10 +632,6 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: Recvd CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE");
 
-    Unit* vehicle_base = GetPlayer()->GetVehicleBase();
-	if(!vehicle_base)
-        return;
-
     switch (recv_data.GetOpcode())
     {
 		case CMSG_REQUEST_VEHICLE_PREV_SEAT:
@@ -646,7 +642,10 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 			break;
 		case CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE:
 		{
-			sLog.outError("TEST");
+			
+			Unit* vehicle_base = GetPlayer()->GetVehicleBase();
+			if(!vehicle_base)
+				return;
 			 uint64 guid;
 			 if(!recv_data.readPackGUID(guid) || vehicle_base->GetGUID() != guid)
 				 return;
@@ -671,7 +670,6 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 		}
 		case CMSG_REQUEST_VEHICLE_SWITCH_SEAT:
 		{
-			sLog.outError("TEST2");
 			uint64 vehicleGUID = _player->GetVehicleGUID();
 		    if(!vehicleGUID)                                        // something wrong here...
 				return;
@@ -697,7 +695,7 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 
 									if(Vehicle *v = veh->FindFreeSeat(&seatId, false))
 									{
-										veh->RemovePassenger(_player);
+										_player->ExitVehicle();
 										_player->EnterVehicle(v, seatId);
 									}
 								}
@@ -706,7 +704,7 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 					}
 					if(Vehicle *v = vehicle->FindFreeSeat(&seatId, false))
 					{
-						vehicle->RemovePassenger(_player);
+						_player->ExitVehicle();
 						_player->EnterVehicle(v, seatId);
 					}
 				}

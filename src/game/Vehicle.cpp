@@ -311,7 +311,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             seat->second.passenger->ExitVehicle();
     }
 
-    sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
+    sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
 	seat->second.passenger = unit;

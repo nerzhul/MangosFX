@@ -7871,7 +7871,7 @@ void Spell::EffectRenamePet(uint32 /*eff_idx*/)
 
 void Spell::EffectSummonVehicle(uint32 i)
 {
-    /*uint32 creature_entry = m_spellInfo->EffectMiscValue[i];
+    uint32 creature_entry = m_spellInfo->EffectMiscValue[i];
     if(!creature_entry)
         return;
 
@@ -7888,7 +7888,7 @@ void Spell::EffectSummonVehicle(uint32 i)
     else
         m_caster->GetClosePoint(px,py,pz,3.0f);
 
-    Vehicle *v = m_caster->SummonVehicle(creature_entry, px, py, pz, m_caster->GetOrientation());
+    /*Vehicle *v = m_caster->SummonVehicle(creature_entry, px, py, pz, m_caster->GetOrientation());
     if(!v)
         return;
 

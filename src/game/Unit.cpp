@@ -14613,7 +14613,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if (!isAlive() || GetVehicleKit() == vehicle)
         return;
 
-    ExitVehicle();
+	if(m_vehicle)
+		if (m_vehicle != vehicle)
+			ExitVehicle();
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
