@@ -680,7 +680,7 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
             if( updateMask->GetBit( index ) )
             {
                 // send in current format (float as float, uint32 as uint32)
-                if ( index == GAMEOBJECT_DYNAMIC )
+                if (false && index == GAMEOBJECT_DYNAMIC )
                 {
                     if(IsActivateToQuest )
                     {

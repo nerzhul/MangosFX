@@ -1558,7 +1558,6 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 			m_caster->GetMap()->VisitWorld(x, y, radius, searcher);
             for(std::list<GameObject*>::iterator itr = goList.begin(); itr != goList.end(); ++itr)
                 AddGOTarget(*itr, effIndex);
-
 			break;
 		}
         case TARGET_RANDOM_ENEMY_CHAIN_IN_AREA:

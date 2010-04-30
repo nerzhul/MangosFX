@@ -3892,7 +3892,6 @@ void Spell::EffectSummonType(uint32 i)
                     break;
                 case SUMMON_PROP_TYPE_SIEGE_VEH:
                 case SUMMON_PROP_TYPE_DRAKE_VEH:
-                    // TODO
                     EffectSummonVehicle(i);
                     break;
                 default:
@@ -3921,7 +3920,6 @@ void Spell::EffectSummonType(uint32 i)
         }
         case SUMMON_PROP_GROUP_VEHICLE:
         {
-            // TODO
             EffectSummonVehicle(i);
             break;
         }
