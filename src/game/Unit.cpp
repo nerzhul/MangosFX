@@ -14617,8 +14617,17 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
         return;
 
 	if(m_vehicle)
+	{
 		if (m_vehicle != vehicle)
 			ExitVehicle();
+			
+		if(seatId < 0)
+		{
+			if(Vehicle *v = m_vehicle->FindFreeSeat(&seatId, false))
+				EnterVehicle(v, seatId);
+			return;
+		}
+	}
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
