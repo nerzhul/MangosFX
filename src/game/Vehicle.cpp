@@ -318,7 +318,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
-        if(((Vehicle*)unit)->GetEmptySeatsCount(true) == 0)
+		if(unit->GetVehicleKit()->GetEmptySeatsCount(true) == 0)
             seat->second.flags = SEAT_VEHICLE_FULL;
         else
             seat->second.flags = SEAT_VEHICLE_FREE;
@@ -601,7 +601,7 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
 			float oo = ang + passengers->m_SeatData.Orientation;
 
             me->GetMap()->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
-            ((Vehicle*)passengers)->RelocatePassengers(x,y,z,ang);
+			passengers->GetVehicleKit()->RelocatePassengers(x,y,z,ang);
         }
 	}
 }
