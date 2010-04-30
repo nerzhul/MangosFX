@@ -498,7 +498,7 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     sLog.outDebug("WORLD: Recvd CMSG_DISMISS_CONTROLLED_VEHICLE");
     recv_data.hexlike();
 
-    uint64 vehicleGUID = _player->GetCharmGUID();
+    uint64 vehicleGUID = _player->GetVehicleGUID();
 
     if(!vehicleGUID)                                        // something wrong here...
     {

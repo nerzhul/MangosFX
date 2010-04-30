@@ -293,6 +293,9 @@ void WorldSession::LogoutPlayer(bool Save)
 
     if (_player)
     {
+		if(_player->GetVehicleGUID())
+			_player->ExitVehicle();
+			
         if (uint64 lguid = GetPlayer()->GetLootGUID())
             DoLootRelease(lguid);
 
