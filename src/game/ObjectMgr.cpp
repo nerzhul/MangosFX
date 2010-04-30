@@ -136,7 +136,6 @@ ObjectMgr::ObjectMgr()
     m_hiGoGuid          = 1;
     m_hiCorpseGuid      = 1;
     m_hiPetNumber       = 1;
-    m_ItemTextId        = 1;
     m_mailid            = 1;
     m_equipmentSetGuid  = 1;
     m_guildId           = 1;
@@ -5723,13 +5722,6 @@ void ObjectMgr::SetHighestGuids()
         delete result;
     }
 
-    result = CharacterDatabase.Query( "SELECT MAX(id) FROM item_text" );
-    if( result )
-    {
-        m_ItemTextId = (*result)[0].GetUInt32()+1;
-        delete result;
-    }
-
     result = CharacterDatabase.Query( "SELECT MAX(guid) FROM corpse" );
     if( result )
     {
@@ -5807,29 +5799,6 @@ uint32 ObjectMgr::GenerateMailID()
         World::StopNow(ERROR_EXIT_CODE);
     }
     return m_mailid++;
-}
-
-/*uint32 ObjectMgr::GenerateItemTextID()
-{
-    if(m_ItemTextId>=0xFFFFFFFE)
-    {
-        sLog.outError("Item text ids overflow!! Can't continue, shutting down server. ");
-        World::StopNow(ERROR_EXIT_CODE);
-    }
-    return m_ItemTextId++;
-}*/
-
-void ObjectMgr::CreateItemText(uint32 guid, std::string text)
-{
-    // insert new item text to container
-    mItemTexts[ guid ] = text;
-
-    // save new item text
-    CharacterDatabase.escape_string(text);
-    //any Delete query needed, itemTextId is maximum of all ids
-    std::ostringstream query;
-    query << "INSERT INTO item_text (id,text) VALUES ( '" << guid << "', '" << text << "')";
-    CharacterDatabase.Execute(query.str().c_str());         // needs to be run this way, because mail body may be more than 1024 characters
 }
 
 uint32 ObjectMgr::GenerateLowGuid(HighGuid guidhigh)

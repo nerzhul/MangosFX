@@ -686,7 +686,6 @@ class ObjectMgr
         uint32 GeneratePetNumber();
 
         void CreateItemText(uint32 guid, std::string text);
-        void AddItemText(uint32 guid, std::string text) { mItemTexts[guid] = text; }
         std::string GetItemText( uint32 id )
         {
             ItemTextMap::const_iterator itr = mItemTexts.find( id );
@@ -939,7 +938,6 @@ class ObjectMgr
         uint32 m_auctionid;
         uint64 m_equipmentSetGuid;
         uint32 m_guildId;
-        uint32 m_ItemTextId;
         uint32 m_mailid;
         uint32 m_hiPetNumber;
 
