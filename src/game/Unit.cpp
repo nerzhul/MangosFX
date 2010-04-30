@@ -14704,7 +14704,7 @@ void Unit::ChangeSeat(int8 seatId, bool next)
     else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
         return;
 
-	ExitVehicle();
+    m_vehicle->RemovePassenger(this);
 	EnterVehicle(m_vehicle,seatId);
 }
 
