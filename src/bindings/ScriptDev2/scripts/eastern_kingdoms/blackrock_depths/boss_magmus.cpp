@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
             m_pInstance->SetData(TYPE_IRON_HALL, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -78,13 +78,13 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
         //WarStomp_Timer
         if (Tasks.CheckPercentLife(51))
         {
-            if (m_uiWarStomp_Timer < uiDiff)
+            if (m_uiWarStomp_Timer < diff)
             {
                 DoCastVictim(SPELL_WARSTOMP);
                 m_uiWarStomp_Timer = 8000;
             }
             else
-                m_uiWarStomp_Timer -= uiDiff;
+                m_uiWarStomp_Timer -= diff;
         }
         
         Tasks.UpdateEvent(diff);

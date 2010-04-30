@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_MIGHTYBLOW,8000,18000,0,TARGET_MAIN);
 		Tasks.AddEvent(SPELL_HAMSTRING,12000,15000,0,TARGET_MAIN);
-		Tasks.addEvent(SPELL_CLEAVE,16000,9000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_CLEAVE,16000,9000,0,TARGET_MAIN);
         Adds_Timer = 0;
         Medics = false;
     }

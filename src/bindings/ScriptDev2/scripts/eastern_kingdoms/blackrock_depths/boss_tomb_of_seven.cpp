@@ -225,7 +225,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
         //Summon Voidwalkers
         if (!m_bHasSummoned && Tasks.CheckPercentLife(50))
         {
-            SPELL_SUMMON_VOIDWALKERS, true);
+            me->CastSpell(me,SPELL_SUMMON_VOIDWALKERS, true);
             m_bHasSummoned = true;
         }
 		Tasks.UpdateEvent(diff);
