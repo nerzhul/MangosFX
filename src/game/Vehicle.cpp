@@ -388,7 +388,8 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->ToggleAFK();
 		}
 
-		if(!(GetVehicleFlags() & VF_FACTION))
+		if(!((Creature*)me)->isHostileVehicle())
+		//if(!(GetVehicleFlags() & VF_FACTION))
 			me->setFaction(((Player*)unit)->getFaction());
 
 		if(GetVehicleFlags() & VF_CANT_MOVE)
@@ -399,14 +400,16 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             SendMessageToSet(&data2,false);
         }
 
-		if(GetVehicleFlags() & VF_NON_SELECTABLE)
-            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+		/*if(!((Creature*)me)->isHostileVehicle())
+		//if(GetVehicleFlags() & VF_NON_SELECTABLE)
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/
 
 		seat->second.flags = SEAT_FULL;
 	}
 	
-	if(seat->second.vs_flags & SF_UNATTACKABLE)
-        unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+	/*if(!((Creature*)me)->isHostileVehicle())
+	//if(seat->second.vs_flags & SF_UNATTACKABLE)
+        unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/
 
     if(me->IsInWorld())
     {
@@ -527,10 +530,10 @@ void Vehicle::RemovePassenger(Unit *unit)
             me->SetCharmerGUID(NULL);
             me->setFaction(((Creature*)me)->GetCreatureInfo()->faction_A);
         }
-        if(GetVehicleFlags() & VF_NON_SELECTABLE)
-            RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+        /*if(GetVehicleFlags() & VF_NON_SELECTABLE)
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         if(seat->second.vs_flags & SF_UNATTACKABLE)
-            unit->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            unit->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/
         // restore player control
         if(unit->GetTypeId() == TYPEID_PLAYER)
         {
