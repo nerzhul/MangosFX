@@ -19763,14 +19763,6 @@ void Player::SendInitialPacketsAfterAddToMap()
         SendMessageToSet(&data2,true);
     }
 
-	if(GetVehicleGUID())
-    {
-        WorldPacket data3(SMSG_FORCE_MOVE_ROOT, 10);
-		data3.append(GetPackGUID());
-        data3 << (uint32)((m_SeatData.s_flags & SF_CAN_CAST) ? 2 : 0);
-        SendMessageToSet(&data3,true);
-    }
-
     SendAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map
     SendItemDurations();                                    // must be after add to map
@@ -19794,7 +19786,6 @@ void Player::SendInitialPacketsAfterAddToMap()
 		GetSession()->SendPacket(&aura_update);
 	}
 
-	ExitVehicle();
 	AddWintergraspBuffIfCan(GetMapId());
 }
 

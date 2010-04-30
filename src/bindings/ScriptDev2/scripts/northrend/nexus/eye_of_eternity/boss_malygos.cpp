@@ -503,7 +503,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     pPlayer->ExitVehicle();
 
                 if(Creature *pTemp = me->SummonCreature(NPC_WYRMREST_SKYTALON, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0,TEMPSUMMON_TIMED_DESPAWN,600000))
-                    pPlayer->EnterVehicle(pTemp, 0);
+                    pPlayer->EnterVehicle(pTemp);
             }
         }
     }

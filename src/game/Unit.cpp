@@ -14624,20 +14624,10 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if (!isAlive() || GetVehicleKit() == vehicle)
         return;
 
-	sLog.outError("SEAT %u",seatId);
 	if(m_vehicle)
 	{
 		if (m_vehicle != vehicle)
-		{
 			ExitVehicle();
-		}
-			
-		if(seatId < 0)
-		{
-			if(Vehicle *v = m_vehicle->FindFreeSeat(&seatId, false))
-				EnterVehicle(v, seatId);
-			return;
-		}
 	}
 
     if (GetTypeId() == TYPEID_PLAYER)
@@ -14650,6 +14640,12 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
+
+	seatId = m_vehicle->FindFreeSeat();
+
+	sLog.outError("SEAT ID : %u",seatId);
+	if(seatId == -1)
+		return;
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleInfo()->m_ID);
     if(!ve)

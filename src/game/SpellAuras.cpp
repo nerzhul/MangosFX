@@ -8794,7 +8794,7 @@ void Aura::HandleAuraControlVehicle(bool apply, bool Real)
 
     if (apply)
     {
-		caster->EnterVehicle(m_target->GetVehicleKit(), -1);
+		caster->EnterVehicle(m_target);
     }
     else
     {

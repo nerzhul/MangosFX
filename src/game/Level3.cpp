@@ -6511,7 +6511,7 @@ bool ChatHandler::HandleDebugEnterVehicle(const char * args)
     uint32 entry = (uint32)atoi(i);
     int8 seatId = j ? (int8)atoi(j) : -1;
 
-    m_session->GetPlayer()->EnterVehicle(target, -1);
+    m_session->GetPlayer()->EnterVehicle(target);
 
     PSendSysMessage("Unit %u entered vehicle %d", entry, (int32)seatId);
     return true;

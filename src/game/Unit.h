@@ -1845,8 +1845,8 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void AddUnitTypeMask(uint32 mask) { m_unitTypeMask |= mask; }
 		bool IsVehicle() const  { return m_unitTypeMask & UNIT_MASK_VEHICLE; }
 		void ExitVehicle();
-		void EnterVehicle(Unit *base, int8 seatId = -1) { EnterVehicle(base->GetVehicleKit(), seatId); }
-		void EnterVehicle(Vehicle *vehicle, int8 seatId);
+		void EnterVehicle(Unit *base) { EnterVehicle(base->GetVehicleKit()); }
+		void EnterVehicle(Vehicle *vehicle, int8 seatId = -1);
 		void ChangeSeat(int8 seatId, bool next = true);
 		Unit *GetVehicleBase()  const;
 		bool CreateVehicleKit(uint32 id);

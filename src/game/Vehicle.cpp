@@ -385,7 +385,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             }*/
 		}
 
-		SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
+		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
         for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
         {
             if (unit->GetTypeId() == TYPEID_UNIT || itr->second.IsFitToRequirements((Player*)unit))
@@ -395,7 +395,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				if(caster && target)
 					caster->CastSpell(target, itr->second.spellId, true);
             }
-        }
+        }*/
 
 		if(unit->GetTypeId() == TYPEID_PLAYER) // not right
 		{
@@ -642,7 +642,7 @@ int8 Vehicle::GetEmptySeatsCount(bool force)
 {
     int8 count = 0;
     for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
-   {
+    {
         if(itr->second.flags & (SEAT_FREE | SEAT_VEHICLE_FREE))
         {
             if(!force && (itr->second.vs_flags & SF_UNACCESSIBLE))
@@ -718,6 +718,15 @@ Vehicle* Vehicle::FindFreeSeat(int8 *seatid, bool force)
     return this;
 }
 
+int8 Vehicle::FindFreeSeat()
+{
+	for (SeatMap::iterator seat = m_Seats.begin(); seat != m_Seats.end(); ++seat)
+		if(!seat->second.passenger && seat->second.seatInfo->IsUsable())
+			return seat->first;
+
+	return -1;
+
+}
 Vehicle* Vehicle::GetNextEmptySeat(int8 *seatId, bool next, bool force)
 {
     SeatMap::const_iterator i_seat = m_Seats.find(*seatId);
