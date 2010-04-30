@@ -371,6 +371,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 			if(unit->GetTypeId() == TYPEID_PLAYER)
 			{
 				((Player*)unit)->SetClientControl(me, 1);
+				((Player*)unit)->SetMover(me);
 				((Player*)unit)->SetMoverInQueve(me);
 			}
 /*			if(canFly() || HasAuraType(SPELL_AURA_FLY) || HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
