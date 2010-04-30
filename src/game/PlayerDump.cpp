@@ -674,7 +674,6 @@ DumpReturn PlayerDumpReader::LoadDump(const std::string& file, uint32 account, s
 
     sObjectMgr.m_hiItemGuid += items.size();
     sObjectMgr.m_mailid     += mails.size();
-    sObjectMgr.m_ItemTextId += itemTexts.size();
 
     if(incHighest)
         ++sObjectMgr.m_hiCharGuid;
