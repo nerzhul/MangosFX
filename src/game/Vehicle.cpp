@@ -107,15 +107,15 @@ void Vehicle::InstallAllAccessories()
         case 27850:InstallAccessory(27905,1);break;
         case 28782:InstallAccessory(28768,0,false);break; // Acherus Deathcharger
         case 28312:
-			me->setPowerType((Powers)POWER_STEAM);
-            me->SetMaxPower((Powers)POWER_STEAM, 100);
-            me->ModifyPower(power, 100);
+			me->setPowerType(POWER_ENERGY);
+            me->SetMaxPower(POWER_ENERGY, 100);
+            me->ModifyPower(POWER_ENERGY, 100);
 			InstallAccessory(28319,7);
 			break;
         case 32627:
-			me->setPowerType((Powers)POWER_STEAM);
-            me->SetMaxPower((Powers)POWER_STEAM, 100);
-            me->ModifyPower(power, 100);
+			me->setPowerType(POWER_ENERGY);
+            me->SetMaxPower(POWER_ENERGY, 100);
+            me->ModifyPower(POWER_ENERGY, 100);
 			InstallAccessory(32629,7);
 			break;
         case 32930:
@@ -161,7 +161,7 @@ void Vehicle::InstallAllAccessories()
 		case 32629:
 			me->setPowerType(POWER_ENERGY);
             me->SetMaxPower(POWER_ENERGY, 100);
-            me->ModifyPower(power, 100);
+            me->ModifyPower(POWER_ENERGY, 100);
 			break;
     }
 }
