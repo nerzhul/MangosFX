@@ -2546,6 +2546,9 @@ MeleeHitOutcome Unit::RollMeleeOutcomeAgainst(const Unit *pVictim, WeaponAttackT
     // Critical hit chance
     float crit_chance = GetUnitCriticalChance(attType, pVictim);
 
+	if (crit_chance < 0.0f)
+       crit_chance = 0.0f;
+
     // stunned target cannot dodge and this is check in GetUnitDodgeChance() (returned 0 in this case)
     float dodge_chance = pVictim->GetUnitDodgeChance();
     float block_chance = pVictim->GetUnitBlockChance();
