@@ -19794,6 +19794,7 @@ void Player::SendInitialPacketsAfterAddToMap()
 		GetSession()->SendPacket(&aura_update);
 	}
 
+	ExitVehicle();
 	AddWintergraspBuffIfCan(GetMapId());
 }
 

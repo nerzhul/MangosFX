@@ -540,12 +540,12 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						if(team == ALLIANCE)
 						{
 							Tasks.Speak(CHAT_TYPE_SAY,16068,"Même les plus puissants serviteurs du Roi Liche ne sont pas de taille face à l'Alliance. Hourra pour nos vainqueurs !",Varian);
-							Event_Timer = 7000;
+							Event_Timer = 61000;
 						}
 						else
 						{
 							Tasks.Speak(CHAT_TYPE_SAY,16025,"Doutez vous encore de la puissance de la Horde, Paladin ? Nous relèverons tous les gants !",Garrosh);
-							Event_Timer = 6000;
+							Event_Timer = 60000;
 						}
 						break;
 					case 3:

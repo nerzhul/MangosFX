@@ -514,7 +514,6 @@ void WorldSession::HandleDismissControlledVehicle(WorldPacket &recv_data)
     MovementInfo mi(recv_data);
 
     _player->m_movementInfo = mi;
-
 	_player->ExitVehicle();
 }
 
@@ -611,7 +610,9 @@ void WorldSession::HandleEjectPasenger(WorldPacket &data)
             uint64 guid;
             data >> guid;
             if(Player* Pl=ObjectAccessor::FindPlayer(guid))
+			{
                 Pl->ExitVehicle();
+			}
         }
     }
 }

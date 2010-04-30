@@ -1227,8 +1227,6 @@ void OutdoorPvPWG::UpdateTenacityStack()
 
         for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
             (*itr)->SetAuraStack(SPELL_TENACITY_VEHICLE, (*itr), newStack);
-
-		
     }
 }
 

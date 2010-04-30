@@ -327,7 +327,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             return false;
 
         if(seat->second.passenger)
+		{
             seat->second.passenger->ExitVehicle();
+		}
     }
 
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
@@ -383,7 +385,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
             }*/
 		}
 
-		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
+		SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
         for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
         {
             if (unit->GetTypeId() == TYPEID_UNIT || itr->second.IsFitToRequirements((Player*)unit))
@@ -393,7 +395,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				if(caster && target)
 					caster->CastSpell(target, itr->second.spellId, true);
             }
-        }*/
+        }
 
 		if(unit->GetTypeId() == TYPEID_PLAYER) // not right
 		{

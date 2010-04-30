@@ -8794,7 +8794,7 @@ void Aura::HandleAuraControlVehicle(bool apply, bool Real)
 
     if (apply)
     {
-		caster->EnterVehicle(m_target->GetVehicleKit(), m_modifier.m_amount - 1);
+		caster->EnterVehicle(m_target->GetVehicleKit(), -1);
     }
     else
     {
@@ -8807,7 +8807,7 @@ void Aura::HandleAuraControlVehicle(bool apply, bool Real)
 
         // some SPELL_AURA_CONTROL_VEHICLE auras have a dummy effect on the player - remove them
         caster->RemoveAurasDueToSpell(GetId());
-        caster->ExitVehicle();
+		caster->ExitVehicle();
     }
 }
 

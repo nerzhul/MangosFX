@@ -259,7 +259,6 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 				target->EnterVehicle(me->GetVehicleKit(),0);
 				grip = true;
 				gripdmg = 0;
-				//target->EnterVehicle(me->GetVehicle());
 			}
 			Stone_Grip_Timer = 30000;
         }
