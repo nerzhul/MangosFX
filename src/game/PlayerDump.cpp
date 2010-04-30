@@ -648,8 +648,6 @@ DumpReturn PlayerDumpReader::LoadDump(const std::string& file, uint32 account, s
                     ROLLBACK(DUMP_FILE_BROKEN);
                 if(!changenth(line, 6, newguid))
                     ROLLBACK(DUMP_FILE_BROKEN);
-                if(!changeGuid(line, 8, itemTexts, sObjectMgr.m_ItemTextId))
-                    ROLLBACK(DUMP_FILE_BROKEN);
                 break;
             }
             case DTT_MAIL_ITEM:                             // mail_items
@@ -661,18 +659,6 @@ DumpReturn PlayerDumpReader::LoadDump(const std::string& file, uint32 account, s
                     ROLLBACK(DUMP_FILE_BROKEN);
                 if(!changenth(line, 4, newguid))
                     ROLLBACK(DUMP_FILE_BROKEN);
-                break;
-            }
-            case DTT_ITEM_TEXT:                             // item_text
-            {
-                // id
-                if(!changeGuid(line, 1, itemTexts, sObjectMgr.m_ItemTextId))
-                    ROLLBACK(DUMP_FILE_BROKEN);
-
-                // add it to cache
-                uint32 id= atoi(getnth(line,1).c_str());
-                std::string text = getnth(line,2);
-                sObjectMgr.AddItemText(id,text);
                 break;
             }
             default:
