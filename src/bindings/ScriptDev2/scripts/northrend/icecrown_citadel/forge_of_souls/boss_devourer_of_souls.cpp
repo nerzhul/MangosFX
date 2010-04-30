@@ -34,7 +34,6 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public ScriptedAI
 
     void UpdateAI(const uint32 uiDiff)
     {
-        //Return since we have no target
         if (!CanDoSomething())
             return;
 	
@@ -46,7 +45,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+       GiveEmblemsToGroup(m_bIsHeroic ? TRIOMPHE : 0,1,true);
     }
 };
 
