@@ -14611,6 +14611,8 @@ void Unit::ExitVehicle()
         SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
 		if(m_vehicle)
 			m_vehicle->RemovePassenger(this);
+
+		clearUnitState(UNIT_STAT_ON_VEHICLE);
 		m_vehicle = NULL;
     }
 }
