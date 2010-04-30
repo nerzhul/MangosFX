@@ -33,19 +33,16 @@ struct MANGOS_DLL_DECL boss_anubshiahAI : public ScriptedAI
 {
     boss_anubshiahAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 ShadowBolt_Timer;
-    uint32 CurseOfTongues_Timer;
-    uint32 CurseOfWeakness_Timer;
-    uint32 DemonArmor_Timer;
-    uint32 EnvelopingWeb_Timer;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        ShadowBolt_Timer = 7000;
-        CurseOfTongues_Timer = 24000;
-        CurseOfWeakness_Timer = 12000;
-        DemonArmor_Timer = 3000;
-        EnvelopingWeb_Timer = 16000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_SHADOWBOLT,7000,7000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_CURSEOFTONGUES,24000,18000);
+		Tasks.AddEvent(SPELL_CURSEOFWEAKNESS,12000,45000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_DEMONARMOR,3000,300000,0,TARGET_ME);
+		Tasks.AddEvent(SPELL_ENVELOPINGWEB,16000,12000);
     }
 
     void UpdateAI(const uint32 diff)
@@ -53,45 +50,8 @@ struct MANGOS_DLL_DECL boss_anubshiahAI : public ScriptedAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-
-        //ShadowBolt_Timer
-        if (ShadowBolt_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWBOLT);
-            ShadowBolt_Timer = 7000;
-        }else ShadowBolt_Timer -= diff;
-
-        //CurseOfTongues_Timer
-        if (CurseOfTongues_Timer < diff)
-        {
-            Unit* target = NULL;
-            target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            if (target) DoCast(target,SPELL_CURSEOFTONGUES);
-            CurseOfTongues_Timer = 18000;
-        }else CurseOfTongues_Timer -= diff;
-
-        //CurseOfWeakness_Timer
-        if (CurseOfWeakness_Timer < diff)
-        {
-            DoCastVictim(SPELL_CURSEOFWEAKNESS);
-            CurseOfWeakness_Timer = 45000;
-        }else CurseOfWeakness_Timer -= diff;
-
-        //DemonArmor_Timer
-        if (DemonArmor_Timer < diff)
-        {
-            DoCastMe(SPELL_DEMONARMOR);
-            DemonArmor_Timer = 300000;
-        }else DemonArmor_Timer -= diff;
-
-        //EnvelopingWeb_Timer
-        if (EnvelopingWeb_Timer < diff)
-        {
-            Unit* target = NULL;
-            target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            if (target) DoCast(target,SPELL_ENVELOPINGWEB);
-            EnvelopingWeb_Timer = 12000;
-        }else EnvelopingWeb_Timer -= diff;
+        
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

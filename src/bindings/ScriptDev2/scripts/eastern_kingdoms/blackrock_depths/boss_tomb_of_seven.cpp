@@ -112,20 +112,18 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-    uint32 m_uiShadowVolley_Timer;
-    uint32 m_uiImmolate_Timer;
-    uint32 m_uiCurseOfWeakness_Timer;
-    uint32 m_uiDemonArmor_Timer;
     uint32 m_uiCallToFight_Timer;
     uint8 m_uiDwarfRound;
     bool m_bHasSummoned;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        m_uiShadowVolley_Timer = 10000;
-        m_uiImmolate_Timer = 18000;
-        m_uiCurseOfWeakness_Timer = 5000;
-        m_uiDemonArmor_Timer = 16000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_SHADOWBOLTVOLLEY,10000,12000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_IMMOLATE,18000,25000);
+		Tasks.AddEvent(SPELL_CURSEOFWEAKNESS,5000,45000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_DEMONARMOR,16000,300000,0,TARGET_ME);
         m_uiCallToFight_Timer = 0;
         m_uiDwarfRound = 0;
         m_bHasSummoned = false;
@@ -224,51 +222,14 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //ShadowVolley_Timer
-        if (m_uiShadowVolley_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWBOLTVOLLEY);
-            m_uiShadowVolley_Timer = 12000;
-        }
-        else
-            m_uiShadowVolley_Timer -= diff;
-
-        //Immolate_Timer
-        if (m_uiImmolate_Timer < diff)
-        {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCast(target,SPELL_IMMOLATE);
-
-            m_uiImmolate_Timer = 25000;
-        }
-        else
-            m_uiImmolate_Timer -= diff;
-
-        //CurseOfWeakness_Timer
-        if (m_uiCurseOfWeakness_Timer < diff)
-        {
-            DoCastVictim(SPELL_CURSEOFWEAKNESS);
-            m_uiCurseOfWeakness_Timer = 45000;
-        }
-        else
-            m_uiCurseOfWeakness_Timer -= diff;
-
-        //DemonArmor_Timer
-        if (m_uiDemonArmor_Timer < diff)
-        {
-            DoCastMe(SPELL_DEMONARMOR);
-            m_uiDemonArmor_Timer = 300000;
-        }
-        else
-            m_uiDemonArmor_Timer -= diff;
-
         //Summon Voidwalkers
-        if (!m_bHasSummoned && me->GetHealth()*100 / me->GetMaxHealth() <= 50)
+        if (!m_bHasSummoned && Tasks.CheckPercentLife(50))
         {
-            me->CastSpell(me, SPELL_SUMMON_VOIDWALKERS, true);
+            SPELL_SUMMON_VOIDWALKERS, true);
             m_bHasSummoned = true;
         }
-
+		Tasks.UpdateEvent(diff);
+		
         DoMeleeAttackIfReady();
     }
 };

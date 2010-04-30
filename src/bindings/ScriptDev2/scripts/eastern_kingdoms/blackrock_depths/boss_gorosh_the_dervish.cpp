@@ -30,13 +30,13 @@ struct MANGOS_DLL_DECL boss_gorosh_the_dervishAI : public ScriptedAI
 {
     boss_gorosh_the_dervishAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 WhirlWind_Timer;
-    uint32 MortalStrike_Timer;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        WhirlWind_Timer = 12000;
-        MortalStrike_Timer = 22000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_WHIRLWIND,12000,15000,0,TARGET_ME);
+		Tasks.AddEvent(SPELL_MORTALSTRIKE,22000,15000,0,TARGET_MAIN);
     }
 
     void UpdateAI(const uint32 diff)
@@ -44,20 +44,8 @@ struct MANGOS_DLL_DECL boss_gorosh_the_dervishAI : public ScriptedAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-
-        //WhirlWind_Timer
-        if (WhirlWind_Timer < diff)
-        {
-            DoCastMe(SPELL_WHIRLWIND);
-            WhirlWind_Timer = 15000;
-        }else WhirlWind_Timer -= diff;
-
-        //MortalStrike_Timer
-        if (MortalStrike_Timer < diff)
-        {
-            DoCastVictim(SPELL_MORTALSTRIKE);
-            MortalStrike_Timer = 15000;
-        }else MortalStrike_Timer -= diff;
+        
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

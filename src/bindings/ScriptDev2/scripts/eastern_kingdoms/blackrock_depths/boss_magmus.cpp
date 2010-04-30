@@ -40,12 +40,14 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 
-    uint32 m_uiFieryBurst_Timer;
     uint32 m_uiWarStomp_Timer;
+    
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        m_uiFieryBurst_Timer = 5000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_FIERYBURST,5000,6000,0,TARGET_MAIN);
         m_uiWarStomp_Timer = 0;
     }
 
@@ -73,17 +75,8 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //FieryBurst_Timer
-        if (m_uiFieryBurst_Timer < uiDiff)
-        {
-            DoCastVictim(SPELL_FIERYBURST);
-            m_uiFieryBurst_Timer = 6000;
-        }
-        else
-            m_uiFieryBurst_Timer -= uiDiff;
-
         //WarStomp_Timer
-        if (me->GetHealth()*100 / me->GetMaxHealth() < 51)
+        if (Tasks.CheckPercentLife(51))
         {
             if (m_uiWarStomp_Timer < uiDiff)
             {
@@ -93,6 +86,8 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
             else
                 m_uiWarStomp_Timer -= uiDiff;
         }
+        
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

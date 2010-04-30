@@ -109,11 +109,13 @@ void Vehicle::InstallAllAccessories()
         case 28312:
 			me->setPowerType((Powers)POWER_STEAM);
             me->SetMaxPower((Powers)POWER_STEAM, 100);
+            me->ModifyPower(power, 100);
 			InstallAccessory(28319,7);
 			break;
         case 32627:
 			me->setPowerType((Powers)POWER_STEAM);
             me->SetMaxPower((Powers)POWER_STEAM, 100);
+            me->ModifyPower(power, 100);
 			InstallAccessory(32629,7);
 			break;
         case 32930:
@@ -157,8 +159,9 @@ void Vehicle::InstallAllAccessories()
         case 35491:InstallAccessory(35451,0,false);break; //Black Knight
 		case 28319:
 		case 32629:
-			me->setPowerType((Powers)POWER_ENERGY);
-            me->SetMaxPower((Powers)POWER_ENERGY, 100);
+			me->setPowerType(POWER_ENERGY);
+            me->SetMaxPower(POWER_ENERGY, 100);
+            me->ModifyPower(power, 100);
 			break;
     }
 }

@@ -32,12 +32,13 @@ struct MANGOS_DLL_DECL boss_grizzleAI : public ScriptedAI
 {
     boss_grizzleAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 GroundTremor_Timer;
     uint32 Frenzy_Timer;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        GroundTremor_Timer = 12000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_GROUNDTREMOR,12000,8000,0,TARGET_MAIN);
         Frenzy_Timer =0;
     }
 
@@ -47,15 +48,8 @@ struct MANGOS_DLL_DECL boss_grizzleAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //GroundTremor_Timer
-        if (GroundTremor_Timer < diff)
-        {
-            DoCastVictim(SPELL_GROUNDTREMOR);
-            GroundTremor_Timer = 8000;
-        }else GroundTremor_Timer -= diff;
-
         //Frenzy_Timer
-        if (me->GetHealth()*100 / me->GetMaxHealth() < 51)
+        if (Tasks.CheckPercentLife(51))
         {
             if (Frenzy_Timer < diff)
             {
@@ -64,6 +58,8 @@ struct MANGOS_DLL_DECL boss_grizzleAI : public ScriptedAI
                 Frenzy_Timer = 15000;
             }else Frenzy_Timer -= diff;
         }
+        
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

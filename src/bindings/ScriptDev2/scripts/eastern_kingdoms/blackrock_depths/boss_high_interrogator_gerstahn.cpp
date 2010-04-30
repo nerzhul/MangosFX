@@ -32,17 +32,15 @@ struct MANGOS_DLL_DECL boss_high_interrogator_gerstahnAI : public ScriptedAI
 {
     boss_high_interrogator_gerstahnAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 ShadowWordPain_Timer;
-    uint32 ManaBurn_Timer;
-    uint32 PsychicScream_Timer;
-    uint32 ShadowShield_Timer;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        ShadowWordPain_Timer = 4000;
-        ManaBurn_Timer = 14000;
-        PsychicScream_Timer = 32000;
-        ShadowShield_Timer = 8000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_SHADOWWORDPAIN,4000,7000);
+		Tasks.AddEvent(SPELL_MANABURN,14000,10000);
+		Tasks.AddEvent(SPELL_PSYCHICSCREAM,32000,30000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_SHADOWSHIELD,8000,25000,0,TARGET_ME);
     }
 
     void UpdateAI(const uint32 diff)
@@ -51,37 +49,7 @@ struct MANGOS_DLL_DECL boss_high_interrogator_gerstahnAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //ShadowWordPain_Timer
-        if (ShadowWordPain_Timer < diff)
-        {
-            Unit* target = NULL;
-            target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            if (target)DoCast(target,SPELL_SHADOWWORDPAIN);
-            ShadowWordPain_Timer = 7000;
-        }else ShadowWordPain_Timer -= diff;
-
-        //ManaBurn_Timer
-        if (ManaBurn_Timer < diff)
-        {
-            Unit* target = NULL;
-            target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            if (target)DoCast(target,SPELL_MANABURN);
-            ManaBurn_Timer = 10000;
-        }else ManaBurn_Timer -= diff;
-
-        //PsychicScream_Timer
-        if (PsychicScream_Timer < diff)
-        {
-            DoCastVictim(SPELL_PSYCHICSCREAM);
-            PsychicScream_Timer = 30000;
-        }else PsychicScream_Timer -= diff;
-
-        //ShadowShield_Timer
-        if (ShadowShield_Timer < diff)
-        {
-            DoCastMe(SPELL_SHADOWSHIELD);
-            ShadowShield_Timer = 25000;
-        }else ShadowShield_Timer -= diff;
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

@@ -29,16 +29,17 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
 {
     boss_ambassador_flamelashAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 FireBlast_Timer;
     uint32 Spirit_Timer;
     int Rand;
     int RandX;
     int RandY;
     Creature* Summoned;
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        FireBlast_Timer = 2000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_FIREBLAST,2000,7000,0,TARGET_MAIN);
         Spirit_Timer = 24000;
     }
 
@@ -68,13 +69,6 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //FireBlast_Timer
-        if (FireBlast_Timer < diff)
-        {
-            DoCastVictim(SPELL_FIREBLAST);
-            FireBlast_Timer = 7000;
-        }else FireBlast_Timer -= diff;
-
         //Spirit_Timer
         if (Spirit_Timer < diff)
         {
@@ -85,6 +79,8 @@ struct MANGOS_DLL_DECL boss_ambassador_flamelashAI : public ScriptedAI
 
             Spirit_Timer = 30000;
         }else Spirit_Timer -= diff;
+        
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

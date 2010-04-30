@@ -31,9 +31,6 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
 {
     boss_general_angerforgeAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    uint32 MightyBlow_Timer;
-    uint32 HamString_Timer;
-    uint32 Cleave_Timer;
     uint32 Adds_Timer;
     bool Medics;
     int Rand1;
@@ -44,12 +41,15 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
     int Rand2Y;
     Creature* SummonedAdds;
     Creature* SummonedMedics;
+    
+    MobEventTasks Tasks;
 
     void Reset()
     {
-        MightyBlow_Timer = 8000;
-        HamString_Timer = 12000;
-        Cleave_Timer = 16000;
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(SPELL_MIGHTYBLOW,8000,18000,0,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_HAMSTRING,12000,15000,0,TARGET_MAIN);
+		Tasks.addEvent(SPELL_CLEAVE,16000,9000,0,TARGET_MAIN);
         Adds_Timer = 0;
         Medics = false;
     }
@@ -102,29 +102,8 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //MightyBlow_Timer
-        if (MightyBlow_Timer < diff)
-        {
-            DoCastVictim(SPELL_MIGHTYBLOW);
-            MightyBlow_Timer = 18000;
-        }else MightyBlow_Timer -= diff;
-
-        //HamString_Timer
-        if (HamString_Timer < diff)
-        {
-            DoCastVictim(SPELL_HAMSTRING);
-            HamString_Timer = 15000;
-        }else HamString_Timer -= diff;
-
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            DoCastVictim(SPELL_CLEAVE);
-            Cleave_Timer = 9000;
-        }else Cleave_Timer -= diff;
-
         //Adds_Timer
-        if (me->GetHealth()*100 / me->GetMaxHealth() < 21)
+        if (Tasks.CheckPercentLife(21))
         {
             if (Adds_Timer < diff)
             {
@@ -138,13 +117,15 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
         }
 
         //Summon Medics
-        if (!Medics && me->GetHealth()*100 / me->GetMaxHealth() < 21)
+        if (!Medics && Tasks.CheckPercentLife(21))
         {
             SummonMedics(me->getVictim());
             SummonMedics(me->getVictim());
             Medics = true;
         }
 
+		Tasks.UpdateEvent(diff);
+		
         DoMeleeAttackIfReady();
     }
 };
