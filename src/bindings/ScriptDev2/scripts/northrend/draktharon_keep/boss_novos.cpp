@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
                     pTemp->SetGoState(GO_STATE_READY);
             }*/
         }
-		Tasks.FreezeMob(false,me,true);
+		FreezeMob(false,me,true);
 
 		Phase = PHASE_1;
 		uiTimer = 1000;

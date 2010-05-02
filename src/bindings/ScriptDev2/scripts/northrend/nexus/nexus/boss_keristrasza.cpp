@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		if(Tasks.CheckPercentLife(25) && !me->HasAura(8599,0))
+		if(CheckPercentLife(25) && !me->HasAura(8599,0))
 			DoCastMe(SPELL_ENRAGE);
 
 		Tasks.UpdateEvent(uiDiff);

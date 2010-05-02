@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
             if(me->isAlive())
             {
         	    m_pInstance->SetData(TYPE_GORTOK, NOT_STARTED);
-        	    Tasks.FreezeMob(true,me);
+        	    FreezeMob(true,me);
         	}
 
             Unit* pTemp = NULL;
@@ -96,28 +96,28 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
-        	    Tasks.FreezeMob(true,(Creature*)pTemp);
+        	    FreezeMob(true,(Creature*)pTemp);
             }
 
             if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_RAVENOUS_FURBOLG)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
-        	    Tasks.FreezeMob(true,(Creature*)pTemp);
+        	    FreezeMob(true,(Creature*)pTemp);
             }
 
             if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_MASSIVE_JORMUNGAR)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
-        	    Tasks.FreezeMob(true,(Creature*)pTemp);
+        	    FreezeMob(true,(Creature*)pTemp);
             }
 
             if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_FEROCIOUS_RHINO)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
-        	    Tasks.FreezeMob(true,(Creature*)pTemp);
+        	    FreezeMob(true,(Creature*)pTemp);
             }
         }
     }
@@ -205,7 +205,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 					{
 						if(!pTemp->getVictim())
 						{
-							Tasks.FreezeMob(false,pTemp);
+							FreezeMob(false,pTemp);
 							((Unit*)pTemp)->SetStandState(UNIT_STAND_STATE_STAND);
 							pTemp->AI()->AttackStart(SelectUnit(SELECT_TARGET_RANDOM,0));
 						}
@@ -214,7 +214,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 
                 if (m_uiAnimalCounter == 5)
                 {
-					Tasks.FreezeMob(false,me);
+					FreezeMob(false,me);
                     ((Unit*)me)->SetStandState(UNIT_STAND_STATE_STAND);
                     m_uiAnimalCheck_Timer = 10000000;
                     AttackStart(SelectUnit(SELECT_TARGET_RANDOM,0));
@@ -266,7 +266,7 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
             if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 
-		Tasks.FreezeMob(true,me);
+		FreezeMob(true,me);
     }
 
     void AttackStart(Unit* pWho)
@@ -345,7 +345,7 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
         if (m_pInstance)
             if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
-		Tasks.FreezeMob(true,me);
+		FreezeMob(true,me);
 
     }
 
@@ -402,7 +402,7 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
         if (m_pInstance)
             if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
-		Tasks.FreezeMob(true,me);
+		FreezeMob(true,me);
     }
 
     void AttackStart(Unit* pWho)
@@ -463,7 +463,7 @@ struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
             if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 
-		Tasks.FreezeMob(true,me);
+		FreezeMob(true,me);
     }
 
     void AttackStart(Unit* pWho)
@@ -490,7 +490,7 @@ struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
             return;
 
     	// Enrage1
-		if(Tasks.CheckPercentLife(20) && !me->HasAura(SPELL_ENRAGE_1,0))
+		if(CheckPercentLife(20) && !me->HasAura(SPELL_ENRAGE_1,0))
             DoCastMe( SPELL_ENRAGE_1);
 
 		Tasks.UpdateEvent(uiDiff);

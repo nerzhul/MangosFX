@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL boss_grizzleAI : public ScriptedAI
             return;
 
         //Frenzy_Timer
-        if (Tasks.CheckPercentLife(51))
+        if (CheckPercentLife(51))
         {
             if (Frenzy_Timer < diff)
             {

@@ -199,6 +199,9 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }
 	void Kill(Unit* toKill);
+	bool CheckPercentLife(uint32 percent) { return (GetPercentLife() <= percent) ? true : false; }
+	uint32 GetPercentLife() { return (me->GetHealth() * 100 / me->GetMaxHealth()); }
+	void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
 
     private:
         bool   m_bCombatMovement;
@@ -314,8 +317,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 
 		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
 
-		void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
-
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
 			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
 			float x = 0,float y = 0, float z = 0, bool force = false);
@@ -336,10 +337,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 		
 		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
 		void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
-
-		bool CheckPercentLife(uint32 percent) { return ((thisCr->GetHealth() * 100 / thisCr->GetMaxHealth()) <= percent) ? true : false; }
-
-		uint32 GetPercentLife() { return ((thisCr) ? (thisCr->GetHealth() * 100 / thisCr->GetMaxHealth()) : 0); }
 
 	private:
 		ScriptedAI* thisAI;

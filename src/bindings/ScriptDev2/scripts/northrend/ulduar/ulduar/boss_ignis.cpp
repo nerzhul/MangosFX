@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 			if((*itr))
 			{
 				((Creature*)(*itr))->Respawn();
-				Tasks.FreezeMob(true,((Creature*)(*itr)));
+				FreezeMob(true,((Creature*)(*itr)));
 			}
 		}
 		IgnisAdds.clear();
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 				Tasks.Speak(CHAT_TYPE_YELL,15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
 				IgnisAdds.push_back(tmpcr);
 				DoCast(tmpcr,SPELL_ACTIVATE);
-				Tasks.FreezeMob(false,(Creature*)tmpcr);
+				FreezeMob(false,(Creature*)tmpcr);
 				tmpcr->AddThreat(me->getVictim());
 				me->CastStop();
 				Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,1,me,me);
@@ -197,7 +197,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 	{
 		Tasks.SetObjects(this,me);
 		nb_stack = 0;
-		Tasks.FreezeMob(true,me,true);
+		FreezeMob(true,me,true);
 		Check_Timer = 1000;
 		CheckReset_Timer = 5000;
 	}

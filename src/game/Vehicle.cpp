@@ -384,20 +384,21 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->SetMover(me);
 				((Player*)unit)->SetMoverInQueve(me);
 			}
-/*			if(canFly() || HasAuraType(SPELL_AURA_FLY) || HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+			if(me->canFly() || me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
                 WorldPacket data3(SMSG_MOVE_SET_CAN_FLY, 12);
                 data3.append(me->GetPackGUID();
                 data3 << (uint32)(0);
                 SendMessageToSet(&data3,false);
-            }*/
+            }
 			BuildVehicleActionBar((Player*)unit);
 		}
 
 		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
         for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
         {
-            if (unit->GetTypeId() == TYPEID_UNIT || itr->second.IsFitToRequirements((Player*)unit))
+            if (unit->GetTypeId() == TYPEID_UNIT || 
+				unit->GetTypeId() == TYPEID_PLAYER && itr->second.IsFitToRequirements((Player*)unit))
             {
                 Unit *caster = (itr->second.castFlags & 0x1) ? unit : me;
                 Unit *target = (itr->second.castFlags & 0x2) ? unit : me;
@@ -539,7 +540,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 		
         if(seat->second.vs_flags & SF_MAIN_RIDER)
         {
-            RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
             if(unit->GetTypeId() == TYPEID_PLAYER)
             {
                 ((Player*)unit)->SetMover(NULL);

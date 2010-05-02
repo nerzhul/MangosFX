@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_erekemAI : public ScriptedAI
         if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 
-		if(Tasks.CheckPercentLife(45) && !bloodlustcasted && !me->HasAura(SPELL_BLOODLUST,0))
+		if(CheckPercentLife(45) && !bloodlustcasted && !me->HasAura(SPELL_BLOODLUST,0))
 		{
 			me->CastStop();
 			DoCastMe(SPELL_BLOODLUST);

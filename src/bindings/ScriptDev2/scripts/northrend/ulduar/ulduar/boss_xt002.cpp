@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 		OpenHeart = false;
 		addspawn_Timer = 1000;
 		Heart_Count = 0;
-		Tasks.FreezeMob(false,me);
+		FreezeMob(false,me);
 
 		Tasks.AddEvent(44779,360000,60000,0,TARGET_ME);
 		Tasks.AddEvent(SPELL_LIFE_SPARK_HARD,12000,28000,0,TARGET_RANDOM,1);
@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 			nbexplode++;
 			me->CastStop();
 			DoCastMe(SPELL_SLEEP);
-			Tasks.FreezeMob(true,me);
+			FreezeMob(true,me);
 			Tasks.Speak(CHAT_TYPE_SAY,15725,"Ah, tellement fatiguÃ©, je vais me reposer une petite minute.");
 			Heart = me->SummonCreature(NPC_HEART_XT002,me->GetPositionX() + 5.0f,me->GetPositionY() + 5.0f,me->GetPositionZ() + 1.0f,-me->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,30000);
 
@@ -218,7 +218,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 						HARDMODE = true;
 						OpenHeart = false;
 						Heart = NULL;
-						Tasks.FreezeMob(true,me);
+						FreezeMob(true,me);
 						Heart_Count = 0;
 					}
 					else
@@ -237,7 +237,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 					{
 						Heart = NULL;
 						OpenHeart = false;	
-						Tasks.FreezeMob(false,me);
+						FreezeMob(false,me);
 						Tasks.Speak(CHAT_TYPE_SAY,15726,"Je suis prêt, à jouer !");
 						Heart_Count = 0;
 					}

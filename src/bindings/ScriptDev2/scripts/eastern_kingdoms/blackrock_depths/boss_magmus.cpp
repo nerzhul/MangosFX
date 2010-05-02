@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
             return;
 
         //WarStomp_Timer
-        if (Tasks.CheckPercentLife(51))
+        if (CheckPercentLife(51))
         {
             if (m_uiWarStomp_Timer < diff)
             {

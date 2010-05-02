@@ -14640,8 +14640,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
-
-	seatId = m_vehicle->FindFreeSeat();
+	sLog.outError("SEAT ID : %u",seatId);
+	if(seatId < 0)
+		seatId = m_vehicle->FindFreeSeat();
 
 	sLog.outError("SEAT ID : %u",seatId);
 	if(seatId == -1)
@@ -14703,11 +14704,11 @@ void Unit::ChangeSeat(int8 seatId, bool next)
 
     if (seatId < 0)
     {
-        seatId = m_vehicle->GetNextEmptySeat(GetTransSeat(), next);
+		seatId = m_vehicle->FindFreeSeat();
         if (seatId < 0)
             return;
     }
-    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
+    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat())
         return;
 
     m_vehicle->RemovePassenger(this);

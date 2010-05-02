@@ -91,21 +91,21 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
             return;
 
 		life = me->GetHealth()*100 / me->GetMaxHealth();
-		if(Tasks.CheckPercentLife(75) && add == 0)
+		if(CheckPercentLife(75) && add == 0)
 		{
 			DoScriptText(-2000044,me);
 			me->CastStop();
 			add++;
 			DoCastMe(m_bIsHeroic ? SPELL_ADD1_H : SPELL_ADD1);
 		}
-		else if(Tasks.CheckPercentLife(50) && add == 1)
+		else if(CheckPercentLife(50) && add == 1)
 		{
 			DoScriptText(-2000045,me);
 			me->CastStop();
 			add++;
 			DoCastMe(m_bIsHeroic ? SPELL_ADD2_H : SPELL_ADD2);
 		}
-		else if(Tasks.CheckPercentLife(25) && add == 2)
+		else if(CheckPercentLife(25) && add == 2)
 		{
 			DoScriptText(-2000046,me);
 			me->CastStop();

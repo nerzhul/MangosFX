@@ -124,7 +124,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
 		if(subphase == 0)
 			Tasks.UpdateEvent(uiDiff);
 
-		if((Tasks.CheckPercentLife(56) && phase == 1) || (Tasks.CheckPercentLife(25) && phase == 2))
+		if((CheckPercentLife(56) && phase == 1) || (CheckPercentLife(25) && phase == 2))
 		{
 			if(phase_Timer <= uiDiff)
 			{

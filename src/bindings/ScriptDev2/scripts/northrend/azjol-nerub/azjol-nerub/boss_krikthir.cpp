@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_krikthirAI : public ScriptedAI
 
 		Tasks.UpdateEvent(uiDiff);
 
-		if(Tasks.CheckPercentLife(30) && !me->HasAura(SPELL_ENRAGE,0))
+		if(CheckPercentLife(30) && !me->HasAura(SPELL_ENRAGE,0))
 			DoCastMe(SPELL_ENRAGE);
 
         DoMeleeAttackIfReady();

@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 		
-		if (Tasks.CheckPercentLife(52) &&  phase == 1)
+		if (CheckPercentLife(52) &&  phase == 1)
 			Do_Spec_Phase(uiDiff);
 
 		if(phase_invoc_Timer <= uiDiff && invoc)
