@@ -299,17 +299,15 @@ enum MobConstantes
 	THREE_MINS	=	180000,
 	TEN_MINS	=	600000,
 };
-
+/*
 class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 {
 	public:
-		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature);
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
 		~LibDevFSAI() {};
-
 	private:
 		MobEventTasks Tasks;
-
-}
+}*/
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -329,6 +327,10 @@ class MANGOS_DLL_SPEC MobEventTasks
 			EventShVect.clear();
 			EventSummonVect.clear();
 		}
+
+		 void AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase = 0, uint32 Diff = 0,
+			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
+			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
 
 		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
 

@@ -14597,8 +14597,6 @@ void Unit::ExitVehicle()
 
         if(GetTypeId() == TYPEID_PLAYER)
         {
-			if(Pet *pet = ((Player*)this)->GetPet())
-				pet->Remove(PET_SAVE_AS_DELETED);
             ((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
             ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
             ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
@@ -14611,8 +14609,6 @@ void Unit::ExitVehicle()
         SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
 		if(m_vehicle)
 			m_vehicle->RemovePassenger(this);
-
-		clearUnitState(UNIT_STAT_ON_VEHICLE);
 
 		m_vehicle = NULL;
     }
@@ -14639,13 +14635,13 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
-	sLog.outError("SEAT ID : %u",seatId);
+	sLog.outError("SEAT ID : %d",seatId);
 	if(seatId < 0)
-		seatId = m_vehicle->FindFreeSeat();
+		m_vehicle->FindFreeSeat(&seatId,false);
 
-	sLog.outError("SEAT ID : %u",seatId);
+	/*sLog.outError("SEAT ID : %u",seatId);
 	if(seatId == -1)
-		return;
+		return;*/
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleInfo()->m_ID);
     if(!ve)
@@ -14707,7 +14703,7 @@ void Unit::ChangeSeat(int8 seatId, bool next)
         if (seatId < 0)
             return;
     }
-    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat())
+    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
         return;
 
     m_vehicle->RemovePassenger(this);

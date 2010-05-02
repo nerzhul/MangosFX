@@ -42,7 +42,6 @@ Vehicle::~Vehicle()
 
 void Vehicle::InitSeats()
 {
-	UsableSeats.clear();
 	m_Seats.clear();
 	m_maxSeatsNum = 0;
 	for (uint32 i = 0; i < MAX_SEAT; ++i)
@@ -57,11 +56,9 @@ void Vehicle::InitSeats()
                 if(veSeat->IsUsable())
 				{
 					++m_maxSeatsNum;
-					UsableSeats.push_back(i);
 				}
             }
     }
-	sLog.outError("Seat Size : %u",UsableSeats.size());
 }
 void Vehicle::Install()
 {
@@ -245,14 +242,11 @@ void Vehicle::RemoveAllPassengers()
 	InitSeats();
 }
 
-bool Vehicle::HasEmptySeat()
+bool Vehicle::HasEmptySeat(int32 seatId)
 {
-    /*SeatMap::const_iterator seat = m_Seats.find(seatId);
+    SeatMap::const_iterator seat = m_Seats.find(seatId);
     if(seat == m_Seats.end()) return false;
-    return !seat->second.passenger;*/
-	if(!UsableSeats.empty())
-		return true;
-	return false;
+    return !seat->second.passenger;
 }
 
 Unit *Vehicle::GetPassenger(int8 seatId) const
@@ -318,7 +312,7 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
 bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 {
     SeatMap::iterator seat;
-    /*if(seatId < 0) // no specific seat requirement
+    if(seatId < 0) // no specific seat requirement
     {
         for (seat = m_Seats.begin(); seat != m_Seats.end(); ++seat)
             if(!seat->second.passenger && seat->second.seatInfo->IsUsable())
@@ -327,7 +321,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         if(seat == m_Seats.end()) // no available seat
             return false;
     }
-    else*/
+    else
     {
         seat = m_Seats.find(seatId);
         if(seat == m_Seats.end())
@@ -339,12 +333,10 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		}
     }
 
-    sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
+    sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
 	seat->second.passenger = unit;
-	UsableSeats.erase(UsableSeats.begin());
-	sLog.outError("Seat Size : %u",UsableSeats.size());
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
 		if(unit->GetVehicleKit()->GetEmptySeatsCount(true) == 0)
@@ -383,15 +375,15 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->SetClientControl(me, 1);
 				((Player*)unit)->SetMover(me);
 				((Player*)unit)->SetMoverInQueve(me);
+				BuildVehicleActionBar((Player*)unit);
 			}
-			if(me->canFly() || me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+			if(/*me->canFly() ||*/ me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
                 WorldPacket data3(SMSG_MOVE_SET_CAN_FLY, 12);
-                data3.append(me->GetPackGUID();
+                data3.append(me->GetPackGUID());
                 data3 << (uint32)(0);
                 SendMessageToSet(&data3,false);
             }
-			BuildVehicleActionBar((Player*)unit);
 		}
 
 		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
@@ -595,7 +587,6 @@ void Vehicle::RemovePassenger(Unit *unit)
 		unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
 
         EmptySeatsCountChanged();
-		UsableSeats.push_back(seat->first);
     }
 }
 
@@ -729,11 +720,7 @@ Vehicle* Vehicle::FindFreeSeat(int8 *seatid, bool force)
 
 int8 Vehicle::FindFreeSeat()
 {
-	if(!HasEmptySeat())
-		return UsableSeats.front();
-
 	return -1;
-
 }
 Vehicle* Vehicle::GetNextEmptySeat(int8 *seatId, bool next, bool force)
 {
