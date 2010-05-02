@@ -204,7 +204,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
 	void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
 	void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
-	void SetFlying(bool fly, Creature* who);
+	void SetFlying(bool fly, Creature* who = NULL);
 
     private:
         bool   m_bCombatMovement;

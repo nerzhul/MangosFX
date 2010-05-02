@@ -64,6 +64,7 @@ struct MANGOS_DLL_DECL boss_sapphironAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
+		SetFlying(false);
 		if(!m_bIsHeroic)
 		{
 			Tasks.AddEvent(SPELL_QUEUE_H,5000,5000,0,TARGET_MAIN,1);
@@ -110,11 +111,11 @@ struct MANGOS_DLL_DECL boss_sapphironAI : public ScriptedAI
                 if (Fly_Timer < diff)
                 {
                     phase = 2;
+					SetFlying(true);
                     me->InterruptNonMeleeSpells(false);
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LIFTOFF);
                     me->GetMotionMaster()->Clear(false);
                     me->GetMotionMaster()->MoveIdle();
-                    DoCastMe(11010);
                     me->SetHover(true);
                     DoCastMe(18430);
                     Icebolt_Timer = 4000;
@@ -129,8 +130,7 @@ struct MANGOS_DLL_DECL boss_sapphironAI : public ScriptedAI
         {
 			if (Icebolt_Timer < diff && Icebolt_Count < ((m_bIsHeroic) ? 3:2))
             {
-                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-					DoCast(target,SPELL_ICEBOLT);
+				DoCastRandom(SPELL_ICEBOLT);
 
                 ++Icebolt_Count;
                 Icebolt_Timer = 4000;
@@ -159,6 +159,7 @@ struct MANGOS_DLL_DECL boss_sapphironAI : public ScriptedAI
                 {
                     phase = 1;
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
+					SetFlying(false);
                     me->SetHover(false);
                     me->GetMotionMaster()->Clear(false);
                     me->GetMotionMaster()->MoveChase(me->getVictim());

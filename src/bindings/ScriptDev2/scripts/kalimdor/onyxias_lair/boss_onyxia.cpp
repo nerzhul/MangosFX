@@ -126,6 +126,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
+		SetFlying(false);
         if (!IsCombatMovement())
             SetCombatMovement(true);
 
@@ -248,6 +249,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
                     m_uiPhase = PHASE_BREATH;
 
                     SetCombatMovement(false);
+					SetFlying(true);
 
                     me->GetMotionMaster()->Clear(false);
                     me->GetMotionMaster()->MoveIdle();
@@ -269,6 +271,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
             if (me->GetHealth()*100 / me->GetMaxHealth() < 40)
             {
                 m_uiPhase = PHASE_END;
+				SetFlying(false);
                 DoScriptText(SAY_PHASE_3_TRANS, me);
 
                 SetCombatMovement(true);

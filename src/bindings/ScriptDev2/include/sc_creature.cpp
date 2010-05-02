@@ -1156,6 +1156,9 @@ void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* s
 
 void ScriptedAI::SetFlying(bool fly, Creature* who)
 {
+	if(!who)
+		who = me;
+
 	if (fly)
     {
 		who->SetReactState(REACT_PASSIVE);
