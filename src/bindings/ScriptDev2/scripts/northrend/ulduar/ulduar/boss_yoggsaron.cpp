@@ -218,14 +218,14 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_YELL,15757,"Hahahahaha ! hahahahaha !");
+			Speak(CHAT_TYPE_YELL,15757,"Hahahahaha ! hahahahaha !");
 		else
-			Tasks.Speak(CHAT_TYPE_YELL,15758,"Une souffrance Ã©ternelle vous attend.");
+			Speak(CHAT_TYPE_YELL,15758,"Une souffrance Ã©ternelle vous attend.");
     }
 
     void JustDied(Unit *victim)
     {
-		Tasks.Speak(CHAT_TYPE_YELL,15761,"Votre destin est scellÃ©, la fin des temps est enfin arrivÃ©e pour vous et pour tous les habitants de ces petits bourgeons !");
+		Speak(CHAT_TYPE_YELL,15761,"Votre destin est scellÃ©, la fin des temps est enfin arrivÃ©e pour vous et pour tous les habitants de ces petits bourgeons !");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,3);
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, DONE);
@@ -248,24 +248,24 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				switch(urand(0,2))
 				{
 					case 0:
-						Tasks.Speak(CHAT_TYPE_YELL,15762,"Un milliers de morts...");
+						Speak(CHAT_TYPE_YELL,15762,"Un milliers de morts...");
 						break;
 					case 1:
-						Tasks.Speak(CHAT_TYPE_YELL,15763,"Ou un unique meurtre");
+						Speak(CHAT_TYPE_YELL,15763,"Ou un unique meurtre");
 						break;
 					case 2:
-						Tasks.Speak(CHAT_TYPE_YELL,15764,"Vos querelles mesquines ne font que me renforcer");
+						Speak(CHAT_TYPE_YELL,15764,"Vos querelles mesquines ne font que me renforcer");
 						break;
 				}
 				break;
 			case 1:
-				Tasks.Speak(CHAT_TYPE_YELL,15765,"Sa progÃ©niture a vite appris ses leçons. Vous allez vite apprendre la vôtre.");
+				Speak(CHAT_TYPE_YELL,15765,"Sa progÃ©niture a vite appris ses leçons. Vous allez vite apprendre la vôtre.");
 				break;
 			case 2:
 				if(urand(0,1))
-					Tasks.Speak(CHAT_TYPE_YELL,15766,"Il'Rilne Shol Anal");
+					Speak(CHAT_TYPE_YELL,15766,"Il'Rilne Shol Anal");
 				else
-					Tasks.Speak(CHAT_TYPE_YELL,15767,"Il apprendra... aucun règne n'est Ã©ternel, sauf celui de la mort");
+					Speak(CHAT_TYPE_YELL,15767,"Il apprendra... aucun règne n'est Ã©ternel, sauf celui de la mort");
 				break;
 			default:
 				break;
@@ -335,13 +335,13 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				ControlPlayer((Player*)tar);
 		}
 		else
-			Tasks.SetAuraStack(SPELL_Sanity,stk - count,tar,tar,1);
+			SetAuraStack(SPELL_Sanity,stk - count,tar,tar,1);
 	}
 
 	void GoPhase3()
 	{
 		Event = EVENT_PHASE3;
-		Tasks.Speak(CHAT_TYPE_YELL,15755,"Contemplez le vrai visage de la mort et sachez que votre fin approche");
+		Speak(CHAT_TYPE_YELL,15755,"Contemplez le vrai visage de la mort et sachez que votre fin approche");
 		me->RemoveAurasDueToSpell(AURA_SHADOWY_BARRIER_1);
 	}
 
@@ -377,7 +377,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 				if(TentacleText_Timer <= diff)
 				{
-					Tasks.Speak(CHAT_TYPE_YELL,15756,"La folie vous emportera !");
+					Speak(CHAT_TYPE_YELL,15756,"La folie vous emportera !");
 
 					TentacleText_Timer = urand(60000,75000);
 				}
@@ -747,7 +747,7 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public ScriptedAI
 							uint32 nbstack = pPlayer->GetAura(SPELL_Sanity,0)->GetStackAmount() + 20;
 							if(nbstack> 100)
 								nbstack = 100;
-							Tasks.SetAuraStack(SPELL_Sanity,nbstack,pPlayer,me,1);
+							SetAuraStack(SPELL_Sanity,nbstack,pPlayer,me,1);
 						}
 					}
 	}
@@ -854,20 +854,20 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_YELL,15778,"Incapables !");
+			Speak(CHAT_TYPE_YELL,15778,"Incapables !");
 		else
-			Tasks.Speak(CHAT_TYPE_YELL,15779,"Aurait-il pu être sauvÃ© ?");
+			Speak(CHAT_TYPE_YELL,15779,"Aurait-il pu être sauvÃ© ?");
     }
 
 	void JustDied(Unit *victim)
     {
-		Tasks.Speak(CHAT_TYPE_YELL,15754,"Je suis le rêve Ã©veillÃ©, le monstre de vos cauchemars, le dÃ©mon aux milliers de visages, tremblez devant mon vÃ©ritable aspect, à genoux devant le dieu de la mort !");
+		Speak(CHAT_TYPE_YELL,15754,"Je suis le rêve Ã©veillÃ©, le monstre de vos cauchemars, le dÃ©mon aux milliers de visages, tremblez devant mon vÃ©ritable aspect, à genoux devant le dieu de la mort !");
 		Tasks.CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
 	}
 
     void Aggro(Unit* pWho)
     {
-		Tasks.Speak(CHAT_TYPE_YELL,15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais");
+		Speak(CHAT_TYPE_YELL,15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais");
     }
 
 	void StartEvent()
@@ -878,9 +878,9 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 		EventStarted = true;
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_YELL,15771,"Aaaaaaaaaaaaaaaaah ! Au secours ! Je vous en prie, arrêtez les !");
+			Speak(CHAT_TYPE_YELL,15771,"Aaaaaaaaaaaaaaaaah ! Au secours ! Je vous en prie, arrêtez les !");
 		else
-			Tasks.Speak(CHAT_TYPE_YELL,15772,"Qu'est ce que vous me voulez ? Laissez moi tranquille !");
+			Speak(CHAT_TYPE_YELL,15772,"Qu'est ce que vous me voulez ? Laissez moi tranquille !");
 
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
@@ -888,7 +888,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 						if(me->GetDistance2d(pPlayer) < 350.0f && !pPlayer->isGameMaster())
-							Tasks.SetAuraStack(SPELL_Sanity,100,pPlayer,pPlayer,1);
+							SetAuraStack(SPELL_Sanity,100,pPlayer,pPlayer,1);
 
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);

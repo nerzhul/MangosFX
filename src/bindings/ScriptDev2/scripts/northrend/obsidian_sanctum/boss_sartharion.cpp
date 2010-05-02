@@ -310,7 +310,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 
         if (bCanUseWill && !me->HasAura(SPELL_WILL_OF_SARTHARION,0))
 		{
-			Tasks.SetAuraStack(SPELL_WILL_OF_SARTHARION,1,me,me,1);
+			SetAuraStack(SPELL_WILL_OF_SARTHARION,1,me,me,1);
 			me->SetHealth(me->GetMaxHealth());
 			
 		}
@@ -359,7 +359,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 
         if (pMap && pMap->IsDungeon())
         {
-			Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"La lave autour de Sartharion bouillonne !");
+			Speak(CHAT_TYPE_BOSS_EMOTE,0,"La lave autour de Sartharion bouillonne !");
 			switch(urand(0,3))
 			{
 				case 0:
@@ -404,7 +404,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 			if((pTemp && pTemp->isAlive()) || (pTemp2 && pTemp2->isAlive()) || (pTemp3 && pTemp3->isAlive()))
 			{
 				DoScriptText(SAY_SARTHARION_BERSERK,me);
-				Tasks.SetAuraStack(SPELL_BERSERK,1,me,me);
+				SetAuraStack(SPELL_BERSERK,1,me,me);
 				m_bIsBerserk = true;
 			}
         }
@@ -718,7 +718,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
 		
     }
@@ -784,7 +784,7 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -872,9 +872,9 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 		{
 			if(Sartha->isAlive())
 				if(m_pInstance->GetData(TYPE_SARTHARION_EVENT) == IN_PROGRESS)
-					Tasks.SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SAR,1,Sartha,me,1);
+					SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SAR,1,Sartha,me,1);
 				else
-					Tasks.SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SHA,1,me,me,1);
+					SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SHA,1,me,me,1);
 		}
 	}
 
@@ -889,7 +889,7 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -962,7 +962,7 @@ struct MANGOS_DLL_DECL mob_vesperonAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -1034,7 +1034,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
     }
 
@@ -1087,7 +1087,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						Tasks.SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						SetAuraStack(61885,1,pPlayer,pPlayer,1);
 					}
     }
 
@@ -1221,7 +1221,7 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.SetAuraStack(SPELL_FLAME_TSUNAMI,1,me,me,1);
+		SetAuraStack(SPELL_FLAME_TSUNAMI,1,me,me,1);
 		SetCombatMovement(false);
         m_uiBumpTimer = 1000;
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
@@ -1237,7 +1237,7 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
 					if(plr->isAlive() && plr->GetDistance2d(me) < 8.0f)
 					{
 						plr->CastStop();
-						Tasks.SetAuraStack(57491,1,plr,plr,1);
+						SetAuraStack(57491,1,plr,plr,1);
 						plr->CastSpell(plr,SPELL_FLAME_TSUNAMI_LEAP,true);
 					}
 

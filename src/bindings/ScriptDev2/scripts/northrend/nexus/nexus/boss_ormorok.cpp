@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		if(Tasks.CheckPercentLife(20))
+		if(CheckPercentLife(20))
 		{
 			if(!m_bIsHeroic && !me->HasAura(SPELL_FRENZY))
 				DoCastMe(SPELL_FRENZY);

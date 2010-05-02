@@ -78,9 +78,9 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_SAY,16236,"Flat'chir");
+			Speak(CHAT_TYPE_SAY,16236,"Flat'chir");
 		else
-			Tasks.Speak(CHAT_TYPE_SAY,16237,"Encore un âme pour repaître l'armée des morts");
+			Speak(CHAT_TYPE_SAY,16237,"Encore un âme pour repaître l'armée des morts");
     }
 
     void JustDied(Unit *victim)
@@ -103,13 +103,13 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				GiveEmblemsToGroup(TRIOMPHE,4);
 				break;
 		}
-		Tasks.Speak(CHAT_TYPE_YELL,16238,"J'ai échoué... maître...");
+		Speak(CHAT_TYPE_YELL,16238,"J'ai échoué... maître...");
     }
 
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
-		Tasks.Speak(CHAT_TYPE_SAY,16234,"Ce terreau sera votre tombeau !");
+		Speak(CHAT_TYPE_SAY,16234,"Ce terreau sera votre tombeau !");
         if (m_pInstance)
             m_pInstance->SetData(TYPE_ANUBARAK, IN_PROGRESS);
     }
@@ -126,11 +126,11 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				{
 					phase = 2;
 					me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-					Tasks.Speak(CHAT_TYPE_YELL,16240,"Aoum Na'akish ! DÃ©vorez mes serviteurs !");
+					Speak(CHAT_TYPE_YELL,16240,"Aoum Na'akish ! DÃ©vorez mes serviteurs !");
 					if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
 						follow_Target = target;
-						Tasks.SetAuraStack(SPELL_MARK,1,follow_Target,me);
+						SetAuraStack(SPELL_MARK,1,follow_Target,me);
 						if(Creature* spike = Tasks.CallCreature(34660,60000))
 						{
 							spike->GetMotionMaster()->MoveFollow(target,0.5f,0.0f);
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				else
 				{
 					follow_Target = NULL;
-					Tasks.Speak(CHAT_TYPE_TEXT_EMOTE,0,"Anub'Arak ressort des profondeurs !");
+					Speak(CHAT_TYPE_TEXT_EMOTE,0,"Anub'Arak ressort des profondeurs !");
 					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
 					phase = 1;
@@ -155,7 +155,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 
 		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30.0f && phase == 1)
 		{
-			Tasks.Speak(CHAT_TYPE_YELL,16241,"L'essaim va vous submerger !");
+			Speak(CHAT_TYPE_YELL,16241,"L'essaim va vous submerger !");
 			phase = 3;
 		}
 
@@ -242,7 +242,7 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
 			{
 				DoCastMe(SPELL_SUBMERGE_1);
 				submerged = true;
-				Tasks.Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien s'enfouit");
+				Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien s'enfouit");
 			}
 			Submerge_Timer = urand(20000,30000);
 		}
@@ -253,7 +253,7 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
         {
              me->RemoveAurasDueToSpell(SPELL_SUBMERGE_1);
              submerged = false;
-             Tasks.Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien sort du sol");
+             Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien sort du sol");
          };
 
 		Tasks.UpdateEvent(diff);

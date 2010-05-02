@@ -8792,8 +8792,8 @@ bool Unit::Attack(Unit *victim, bool meleeAttack)
         return false;
 
 	// player (also npc?) cannot attack on vehicle
-    if(GetTypeId()==TYPEID_PLAYER && GetVehicleGUID())
-        return false;
+    /*if(GetTypeId()==TYPEID_PLAYER && GetVehicleGUID())
+        return false;*/
 
     // player (also npc?) cannot attack on vehicle
     if(GetTypeId()==TYPEID_UNIT && ((Creature*)this)->isVehicle() && GetCharmerGUID() && !((Creature*)this)->isHostileVehicle())
@@ -14639,8 +14639,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
-
-	seatId = m_vehicle->FindFreeSeat();
+	sLog.outError("SEAT ID : %u",seatId);
+	if(seatId < 0)
+		seatId = m_vehicle->FindFreeSeat();
 
 	sLog.outError("SEAT ID : %u",seatId);
 	if(seatId == -1)
@@ -14664,7 +14665,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
     m_SeatData.v_flags = m_vehicle->GetVehicleFlags();
 
-	addUnitState(UNIT_STAT_ON_VEHICLE);
 	InterruptNonMeleeSpells(false);
 
 	if(Pet *pet = GetPet())
@@ -14703,11 +14703,11 @@ void Unit::ChangeSeat(int8 seatId, bool next)
 
     if (seatId < 0)
     {
-        seatId = m_vehicle->GetNextEmptySeat(GetTransSeat(), next);
+		seatId = m_vehicle->FindFreeSeat();
         if (seatId < 0)
             return;
     }
-    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
+    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat())
         return;
 
     m_vehicle->RemovePassenger(this);

@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 				DoScriptText(EMOTE_TOMB,me);
 				if(targettomb)
 					tomb->CastSpell(targettomb,SPELL_FROST_TOMB_CHAN,false);
-				Tasks.SetAuraStack(48400,1,targettomb,tomb);
+				SetAuraStack(48400,1,targettomb,tomb);
 			}
 		}
 		else
@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 						if(cr[i])
 						{
 							cr[i]->Respawn();
-							Tasks.Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
+							Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
 						}
 					}
 					DoScriptText(SAY_SKELETONS, me);

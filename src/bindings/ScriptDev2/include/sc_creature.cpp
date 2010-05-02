@@ -824,7 +824,7 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 							break;
 						case NO_TANK:
 							if(thisCr->getVictim() && thisCr->getVictim()->GetDistance2d(thisCr) > 10.0f)
-								thisAI->DoCastRandom((*itr).SpellId);
+								thisAI->DoCastVictim((*itr).SpellId);
 							break;
 						case TARGET_OTHER:
 							// todo : consultation d'un vecteur spécial...
@@ -901,7 +901,7 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 	
 }
 
-void MobEventTasks::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
+void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
 {
 	if(tmpCr->isAlive())
 	{
@@ -1089,7 +1089,7 @@ void MobEventTasks::GetNewTargetForMyAdds(Unit* target)
 	}
 }
 
-void MobEventTasks::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
+void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
 {
 	if(module == 0)
 	{
@@ -1129,10 +1129,10 @@ void MobEventTasks::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	}
 }
 
-void MobEventTasks::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
+void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
 {
 	if(!spkCr)
-		spkCr = thisCr;
+		spkCr = me;
 
 	if(soundid > 0 && GetSoundEntriesStore()->LookupEntry(soundid))
 		spkCr->PlayDirectSound(soundid);
@@ -1154,8 +1154,11 @@ void MobEventTasks::Speak(uint8 type, uint32 soundid, std::string text, Creature
 	}
 }
 
-void MobEventTasks::SetFlying(bool fly, Creature* who)
+void ScriptedAI::SetFlying(bool fly, Creature* who)
 {
+	if(!who)
+		who = me;
+
 	if (fly)
     {
 		who->SetReactState(REACT_PASSIVE);
@@ -1170,10 +1173,10 @@ void MobEventTasks::SetFlying(bool fly, Creature* who)
     }
 }
 
-void MobEventTasks::Relocate(float x, float y, float z, bool fly, float Time)
+void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
 {
-	thisCr->GetMap()->CreatureRelocation(thisCr,x,y,z,0.0f);
-	thisCr->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
+	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
+	me->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
 }
 
 void ScriptedAI::AggroAllPlayers(float maxdist)

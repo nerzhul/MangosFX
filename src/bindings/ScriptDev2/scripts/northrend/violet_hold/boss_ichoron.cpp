@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		if(Tasks.CheckPercentLife(25))
+		if(CheckPercentLife(25))
 		{
 			if(!me->HasAura(SPELL_PROTECTIVE,0) && protect == true)
 			{

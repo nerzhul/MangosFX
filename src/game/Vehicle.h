@@ -82,7 +82,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 		void EmptySeatsCountChanged();
 		void ChangeSeatFlag(uint8 seat, uint8 flag);
 
-        bool HasEmptySeat(int8 seatId) const;
+        bool HasEmptySeat();
         Unit *GetPassenger(int8 seatId) const;
         int8 GetNextEmptySeat(int8 seatId, bool next) const;
         bool AddPassenger(Unit *passenger, int8 seatId = -1);
@@ -96,6 +96,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 
     protected:
         uint32 m_vehicleId;
+		std::vector<uint32> UsableSeats;
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
 		uint32 m_maxSeatsNum;

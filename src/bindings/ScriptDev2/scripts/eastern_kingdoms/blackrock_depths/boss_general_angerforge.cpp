@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
             return;
 
         //Adds_Timer
-        if (Tasks.CheckPercentLife(21))
+        if (CheckPercentLife(21))
         {
             if (Adds_Timer < diff)
             {
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_general_angerforgeAI : public ScriptedAI
         }
 
         //Summon Medics
-        if (!Medics && Tasks.CheckPercentLife(21))
+        if (!Medics && CheckPercentLife(21))
         {
             SummonMedics(me->getVictim());
             SummonMedics(me->getVictim());

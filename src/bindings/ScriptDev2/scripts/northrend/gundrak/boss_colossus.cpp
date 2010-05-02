@@ -61,14 +61,14 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 	{	
 		Tasks.SetObjects(this,me);
 		phase = 1 ;
-		Tasks.FreezeMob(false,me);
+		FreezeMob(false,me);
 		add = NULL;
 		Tasks.AddEvent(spell_coup,1500,10000,0,TARGET_MAIN);
 	}
 
 	void phase2()
 	{
-		Tasks.FreezeMob(true,me);
+		FreezeMob(true,me);
 		add = Tasks.CallCreature(ADD,TEN_MINS,ON_ME);
 	}
 
@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 	{
 		DoScriptText(EMOTE_SURGE, me);
 		if(add)
-			Tasks.FreezeMob(false,add);
+			FreezeMob(false,add);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 	}
 
@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		if (!CanDoSomething())
 			return;
 
-		if (Tasks.CheckPercentLife(50) && phase == 1)
+		if (CheckPercentLife(50) && phase == 1)
 		{	 
 			DoCastMe(spell_emerger);
 			DoScriptText(EMOTE_SURGE, me);
@@ -97,8 +97,8 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		{
 			if (phase == 2 && add->isAlive() && (add->GetHealth() * 100 / add->GetMaxHealth()) <= 50 )
 			{
-				Tasks.FreezeMob(true,add);
-				Tasks.FreezeMob(false,me);
+				FreezeMob(true,add);
+				FreezeMob(false,me);
 				phase = 3;
 			}
 		}
@@ -128,9 +128,9 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 
 	void UpdateAI(const uint32 uiDiff) // Début Script add
 	{		
-		if (Tasks.GetPercentLife() < 50 && Tasks.GetPercentLife() > 40)
+		if (GetPercentLife() < 50 && GetPercentLife() > 40)
 			me->SetHealth((me->GetMaxHealth()/2));
-		else if (Tasks.CheckPercentLife(10)) 
+		else if (CheckPercentLife(10)) 
 			Kill(me);
 
 		DoMeleeAttackIfReady();

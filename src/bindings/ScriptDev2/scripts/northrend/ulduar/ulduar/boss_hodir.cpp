@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-		Tasks.Speak(CHAT_TYPE_YELL,15552,"Vous allez souffrir pour cet entretien");
+		Speak(CHAT_TYPE_YELL,15552,"Vous allez souffrir pour cet entretien");
         me->SetInCombatWithZone();
 
         if (m_pInstance)
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 					uint32 stk = 0;
 					if(pPlayer->HasAura(SPELL_BITING_COLD))
 						stk = pPlayer->GetAura(SPELL_BITING_COLD,0)->GetStackAmount();
-					Tasks.SetAuraStack(SPELL_BITING_COLD,stk + 1,pPlayer,me,1);
+					SetAuraStack(SPELL_BITING_COLD,stk + 1,pPlayer,me,1);
 					me->DealDamage(pPlayer, 200*(stk + 1), NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FROST, GetSpellStore()->LookupEntry(SPELL_BITING_COLD), false);
 				}
 			}
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 						Kill((*itr)->plr);
 					else
 					{
-						Tasks.SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
+						SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
 						Tasks.CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
 							(*itr)->plr->GetPositionY(),(*itr)->plr->GetPositionZ());
 					}
@@ -353,7 +353,7 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public Scripted_NoMovementAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.SetAuraStack(62297,1,me,me,1);
+		SetAuraStack(62297,1,me,me,1);
 		me->setFaction(14);
 		me->SetMaxHealth(m_bIsHeroic ? 180000:60000);
 		me->SetHealth(m_bIsHeroic ? 180000:60000);

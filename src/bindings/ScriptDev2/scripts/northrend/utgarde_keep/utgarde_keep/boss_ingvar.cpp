@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		uint32 PercentLife = Tasks.GetPercentLife();
+		uint32 PercentLife = GetPercentLife();
 		if((PercentLife < 79 && PercentLife > 72) || (PercentLife < 52 && PercentLife > 47) || (PercentLife < 27 && PercentLife > 22))
 		{
 			if(m_bIsHeroic == true)

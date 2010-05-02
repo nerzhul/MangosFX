@@ -19517,7 +19517,7 @@ void Player::UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* targe
             if(target!=this && target->isType(TYPEMASK_UNIT))
             {
                 SendAurasForTarget((Unit*)target);
-                BuildVehicleInfo((Unit*)target);
+                //BuildVehicleInfo((Unit*)target);
 			}
 
             if(target->GetTypeId()==TYPEID_UNIT && ((Creature*)target)->isAlive())

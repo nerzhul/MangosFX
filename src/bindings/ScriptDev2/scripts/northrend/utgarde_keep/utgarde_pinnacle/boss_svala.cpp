@@ -340,7 +340,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 						{
                     	    RitualChannelerAlive = true;
 							if (m_uiSacrificer && !m_uiSacrificer->HasAura(SPELL_PARALYSE))
-								Tasks.SetAuraStack(SPELL_PARALYSE,1,target,target,1);
+								SetAuraStack(SPELL_PARALYSE,1,target,target,1);
 						}
                 }
 

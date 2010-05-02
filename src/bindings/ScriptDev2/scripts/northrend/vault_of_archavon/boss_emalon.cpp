@@ -155,7 +155,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
                 me->SetHealth(me->GetMaxHealth());
                 me->SetVisibility(VISIBILITY_OFF);
                 Init();
-				Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Un seide de la tempete vient defendre Emalon !");
+				Speak(CHAT_TYPE_BOSS_EMOTE,0,"Un seide de la tempete vient defendre Emalon !");
                 me->SetInCombatWithZone();
                 DoResetThreat();
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
@@ -328,7 +328,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
             Creature* pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[rand()%4]);
             if(pMinion && pMinion->isAlive())
             {
-				Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Emalon surchage un seide de la tempete !");
+				Speak(CHAT_TYPE_BOSS_EMOTE,0,"Emalon surchage un seide de la tempete !");
                 pMinion->SetHealth(pMinion->GetMaxHealth());
                 pMinion->CastSpell(pMinion, SPELL_OVERCHARGE, false);
             }

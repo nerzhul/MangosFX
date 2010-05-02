@@ -128,9 +128,9 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_SAY,15739,"Ne pourriez vous pas au moins essayer de vous défendre ?");
+			Speak(CHAT_TYPE_SAY,15739,"Ne pourriez vous pas au moins essayer de vous défendre ?");
 		else
-			Tasks.Speak(CHAT_TYPE_SAY,15740,"Pitoyable...");
+			Speak(CHAT_TYPE_SAY,15740,"Pitoyable...");
     }
 
     void JustDied(Unit *victim)
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THORIM, DONE);
 
-		Tasks.Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
+		Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 		if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_THORIM_DOOR)))
             pDoor->SetGoState(GO_STATE_ACTIVE);
 		SetCombatMovement(false);
-		Tasks.Relocate(2134.884f,-290.130f,438.247f);
+		Relocate(2134.884f,-290.130f,438.247f);
 	}
 
 
@@ -188,7 +188,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 								SetCombatMovement(true);
 
 								if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_THORIM_BIGADD))))
-									Tasks.Relocate(pSerpent);
+									Relocate(pSerpent);
 							}
 					}
 				}

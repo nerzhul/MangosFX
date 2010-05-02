@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
                     {
                         Unit *pTemp = Unit::GetUnit((*me),(*itr)->getUnitGuid());
                         if (pTemp && pTemp->GetTypeId() == TYPEID_PLAYER)
-							Tasks.SetAuraStack(SPELL_GIFT_OF_THARON_JA,1,pTemp,me);
+							SetAuraStack(SPELL_GIFT_OF_THARON_JA,1,pTemp,me);
                     }
                     uiPhaseTimer = 20000;
                     Phase = FLESH;

@@ -425,12 +425,12 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
 		{
 			u->RemoveAurasDueToSpell(67590);
 			if(urand(0,1))
-				Tasks.SetAuraStack(65724,1,u,me,1);
+				SetAuraStack(65724,1,u,me,1);
 			else
-				Tasks.SetAuraStack(65748,1,u,me,1);
+				SetAuraStack(65748,1,u,me,1);
 		}
 		else
-			Tasks.SetAuraStack(67590,stk + 7,u,me,1);
+			SetAuraStack(67590,stk + 7,u,me,1);
 	}
 
     void UpdateAI(const uint32 diff)
