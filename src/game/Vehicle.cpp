@@ -456,11 +456,6 @@ void Vehicle::BuildVehicleActionBar(Player *plr) const
     data << uint32(0x00000000);                     // unk
     data << uint32(0x00000101);                     // react state
 
-    /*for(uint32 i = 0; i <= MAX_VEHICLE_SPELLS; ++i)
-    {
-        data << uint16(m_VehicleData ? m_VehicleData->v_spells[i] : NULL) << uint8(0) << uint8(i+8);
-    }*/
-
 	for (uint32 i = 0; i < MAX_VEHICLE_SPELLS; ++i)
     {
 		uint32 spellId = ((Creature*)me)->m_spells[i];
