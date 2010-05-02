@@ -824,7 +824,7 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 							break;
 						case NO_TANK:
 							if(thisCr->getVictim() && thisCr->getVictim()->GetDistance2d(thisCr) > 10.0f)
-								thisAI->DoCastRandom((*itr).SpellId);
+								thisAI->DoCastVictim((*itr).SpellId);
 							break;
 						case TARGET_OTHER:
 							// todo : consultation d'un vecteur spécial...

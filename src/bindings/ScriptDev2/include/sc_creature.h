@@ -300,6 +300,16 @@ enum MobConstantes
 	TEN_MINS	=	600000,
 };
 
+class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
+{
+	public:
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature);
+		~LibDevFSAI() {};
+
+	private:
+		MobEventTasks Tasks;
+
+}
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
