@@ -391,6 +391,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 data3 << (uint32)(0);
                 SendMessageToSet(&data3,false);
             }*/
+			BuildVehicleActionBar((Player*)unit);
 		}
 
 		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
@@ -412,8 +413,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		   ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
            
 		((Player*)unit)->SetFarSightGUID(me->GetGUID());
-
-		BuildVehicleActionBar((Player*)unit);
         
 		if (((Player*)unit)->isAFK())
 			((Player*)unit)->ToggleAFK();
