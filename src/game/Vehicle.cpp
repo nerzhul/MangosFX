@@ -414,13 +414,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		//if(!(GetVehicleFlags() & VF_FACTION))
 			me->setFaction(((Player*)unit)->getFaction());
 
-		if(GetVehicleFlags() & VF_CANT_MOVE)
+		/*if(GetVehicleFlags() & VF_CANT_MOVE)
         {
             WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 10);
 			data2.append(me->GetPackGUID());
             data2 << (uint32)(2);
             SendMessageToSet(&data2,false);
-        }
+        }*/
 
 		/*if(!((Creature*)me)->isHostileVehicle())
 		//if(GetVehicleFlags() & VF_NON_SELECTABLE)
@@ -618,7 +618,8 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang)
         {
             // passenger cant be NULL here
             Unit *passengers = itr->second.passenger;
-            assert(passengers);
+            if(!passengers)
+				return;
 
             float xx = me->GetPositionX() + passengers->m_SeatData.OffsetX;
 			float yy = me->GetPositionY() + passengers->m_SeatData.OffsetY;
