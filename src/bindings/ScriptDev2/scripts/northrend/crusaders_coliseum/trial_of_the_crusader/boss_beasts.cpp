@@ -697,7 +697,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 			{
 				case 1:
 					me->CastStop();
-					Tasks.Relocate(563.723f,141.723f,393.9f);
+					Relocate(563.723f,141.723f,393.9f);
 					DoCastVictim(SPELL_MASSIVE_CRASH);
 					phase_Timer = 6000;
 					phase++;

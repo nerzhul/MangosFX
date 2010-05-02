@@ -199,7 +199,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
             pSpell->Id == SPELL_BREATH_NE_TO_SW)
         {
             if (m_pPointData)
-				Tasks.Relocate(m_pPointData->fX, m_pPointData->fY, m_pPointData->fZ);
+				Relocate(m_pPointData->fX, m_pPointData->fY, m_pPointData->fZ);
         }
     }
 

@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 				}
 				else if(subphase == 1)
 				{
-					Tasks.Relocate(5297.3f,2506.6f,686.1f);
+					Relocate(5297.3f,2506.6f,686.1f);
 					DoCastMe(SPELL_SOULSTORM);
 					Teleport_Timer = DAY;
 				}

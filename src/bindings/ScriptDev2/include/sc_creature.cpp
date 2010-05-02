@@ -1173,10 +1173,10 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
     }
 }
 
-void MobEventTasks::Relocate(float x, float y, float z, bool fly, float Time)
+void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
 {
-	thisCr->GetMap()->CreatureRelocation(thisCr,x,y,z,0.0f);
-	thisCr->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
+	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
+	me->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
 }
 
 void ScriptedAI::AggroAllPlayers(float maxdist)

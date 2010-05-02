@@ -319,7 +319,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 		FlyPoint++;
 		if(FlyPoint >= 9)
 			FlyPoint = 0;
-		Tasks.Relocate(FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2],true,100);
+		Relocate(FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2],true,100);
 	}
 
     void FlyPhase()
@@ -337,7 +337,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 		Phase = PHASE_GROUND;
 		SetCombatMovement(true);
         me->SetSpeedRate(MOVE_WALK, 1.5f, false);
-		Tasks.Relocate(585.315f,-172.646f,391.517f);
+		Relocate(585.315f,-172.646f,391.517f);
 		IsFlying = false;
 		CheckDist_Timer = 3000;
 	}

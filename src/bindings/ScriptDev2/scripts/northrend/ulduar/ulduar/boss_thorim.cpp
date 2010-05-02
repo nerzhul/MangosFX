@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 		if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_THORIM_DOOR)))
             pDoor->SetGoState(GO_STATE_ACTIVE);
 		SetCombatMovement(false);
-		Tasks.Relocate(2134.884f,-290.130f,438.247f);
+		Relocate(2134.884f,-290.130f,438.247f);
 	}
 
 
@@ -188,7 +188,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 								SetCombatMovement(true);
 
 								if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_THORIM_BIGADD))))
-									Tasks.Relocate(pSerpent);
+									Relocate(pSerpent);
 							}
 					}
 				}

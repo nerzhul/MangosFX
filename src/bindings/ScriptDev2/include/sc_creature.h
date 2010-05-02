@@ -205,6 +205,8 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
 	void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
 	void SetFlying(bool fly, Creature* who = NULL);
+	void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
+	void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
 
     private:
         bool   m_bCombatMovement;
@@ -327,9 +329,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 		void CleanMyAdds();
 
 		void GetNewTargetForMyAdds(Unit* target);
-		
-		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
-		void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
 
 	private:
 		ScriptedAI* thisAI;
