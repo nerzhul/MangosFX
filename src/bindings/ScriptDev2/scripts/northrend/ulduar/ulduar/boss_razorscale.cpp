@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void FlyPhase()
     {
-        Tasks.SetFlying(true,me);
+        SetFlying(true,me);
 		Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille s'envole !");
 		IsFlying = true;
 		SetCombatMovement(false);
@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
 	void GroundPhase()
 	{
-		Tasks.SetFlying(false,me);
+		SetFlying(false,me);
 		Phase = PHASE_GROUND;
 		SetCombatMovement(true);
         me->SetSpeedRate(MOVE_WALK, 1.5f, false);

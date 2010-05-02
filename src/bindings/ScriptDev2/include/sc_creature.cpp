@@ -1154,7 +1154,7 @@ void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* s
 	}
 }
 
-void MobEventTasks::SetFlying(bool fly, Creature* who)
+void ScriptedAI::SetFlying(bool fly, Creature* who)
 {
 	if (fly)
     {
