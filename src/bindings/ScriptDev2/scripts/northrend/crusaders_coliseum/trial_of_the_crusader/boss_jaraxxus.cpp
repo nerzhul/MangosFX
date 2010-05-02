@@ -282,7 +282,7 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.SetAuraStack(66201,1,me,me,1);
+		SetAuraStack(66201,1,me,me,1);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetRespawnDelay(DAY);

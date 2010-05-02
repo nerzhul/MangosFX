@@ -399,7 +399,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						if(Creature* Jaraxxus = Tasks.CallCreature(34780,TEN_MINS,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f))
 						{
 							Jaraxxus->setFaction(35);
-							Tasks.SetAuraStack(67924,1,Jaraxxus,me,0);
+							SetAuraStack(67924,1,Jaraxxus,me,0);
 							//((ScriptedAI*)Jarraxus->AI())->DoResetThreat();
 						}
 						Event_Timer = 11000;

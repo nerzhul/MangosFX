@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 
 		phase = 1;
 		
-		Tasks.SetAuraStack(SPELL_ATTUNED_TO_NATURE,150,me,me,1);
+		SetAuraStack(SPELL_ATTUNED_TO_NATURE,150,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)

@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 				DoScriptText(EMOTE_TOMB,me);
 				if(targettomb)
 					tomb->CastSpell(targettomb,SPELL_FROST_TOMB_CHAN,false);
-				Tasks.SetAuraStack(48400,1,targettomb,tomb);
+				SetAuraStack(48400,1,targettomb,tomb);
 			}
 		}
 		else

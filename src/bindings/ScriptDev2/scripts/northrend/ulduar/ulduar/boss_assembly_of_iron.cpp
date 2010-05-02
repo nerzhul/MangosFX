@@ -141,7 +141,7 @@ void boss_steelbreakerAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		MobsTasks.SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		MobsSetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
     if(phase >= 2)
         Disruption_Timer = 30000;
 }
@@ -256,7 +256,7 @@ void boss_runemaster_molgeimAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		MobsTasks.SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		MobsSetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
 
 	RuneD_Timer = 30000;
 	if(phase == 3)
@@ -415,7 +415,7 @@ void boss_stormcaller_brundirAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		MobsTasks.SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		MobsSetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
     if(phase >= 2)
 		LightW_Timer = urand(20000,40000);
     if(phase >= 3)

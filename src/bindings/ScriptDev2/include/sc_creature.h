@@ -203,6 +203,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	uint32 GetPercentLife() { return (me->GetHealth() * 100 / me->GetMaxHealth()); }
 	void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
 	void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
+	void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
 
     private:
         bool   m_bCombatMovement;
@@ -322,16 +323,10 @@ class MANGOS_DLL_SPEC MobEventTasks
 			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
 			float x = 0,float y = 0, float z = 0, bool force = false);
 
-		void AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase = 0, uint32 Diff = 0,
-			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME, 
-			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
-
 		void CleanMyAdds();
 
 		void GetNewTargetForMyAdds(Unit* target);
 
-		void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
-		
 		void SetFlying(bool fly, Creature* who);
 		
 		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);

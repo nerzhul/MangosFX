@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 					if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
 						follow_Target = target;
-						Tasks.SetAuraStack(SPELL_MARK,1,follow_Target,me);
+						SetAuraStack(SPELL_MARK,1,follow_Target,me);
 						if(Creature* spike = Tasks.CallCreature(34660,60000))
 						{
 							spike->GetMotionMaster()->MoveFollow(target,0.5f,0.0f);

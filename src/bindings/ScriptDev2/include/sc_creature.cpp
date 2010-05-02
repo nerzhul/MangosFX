@@ -1089,7 +1089,7 @@ void MobEventTasks::GetNewTargetForMyAdds(Unit* target)
 	}
 }
 
-void MobEventTasks::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
+void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
 {
 	if(module == 0)
 	{

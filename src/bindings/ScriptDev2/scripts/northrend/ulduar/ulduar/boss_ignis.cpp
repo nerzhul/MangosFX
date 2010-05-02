@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 				FreezeMob(false,(Creature*)tmpcr);
 				tmpcr->AddThreat(me->getVictim());
 				me->CastStop();
-				Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,1,me,me);
+				SetAuraStack(SPELL_CREATOR_STRENGH,1,me,me);
 			}
 
 			if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
@@ -212,7 +212,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 				if(Ignis->isAlive())
 				{
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
-					Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
+					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
 
 			Kill(me);
@@ -224,7 +224,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 				if(Ignis->isAlive())
 				{
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
-					Tasks.SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
+					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
 			Kill(me);
 		}

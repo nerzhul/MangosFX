@@ -166,7 +166,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 			Tasks.AddEvent(SPELL_FERAL_POUNCE_25,10000,10000,2000,TARGET_MAIN);
 		}
 		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
-		Tasks.SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me);
+		SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me);
 	}
 
 	void DamageTaken(Unit* done_by, uint32 &damage)
@@ -180,7 +180,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 				me->SetHealth(me->GetMaxHealth());
 				if(me->HasAura(SPELL_FERAL_ESSENCE))
 					if(me->GetAura(SPELL_FERAL_ESSENCE,0)->GetStackAmount() > 1)
-						Tasks.SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me,1);
+						SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me,1);
 					else
 						me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
 			}
@@ -250,7 +250,7 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public ScriptedAI
 
 	void MoveInLineOfSight(Unit* tar)
 	{
-		Tasks.SetAuraStack(SPELL_PACK_STR,1,me,me);	
+		SetAuraStack(SPELL_PACK_STR,1,me,me);	
 	}
 
 	void UpdateAI(const uint32 uiDiff)

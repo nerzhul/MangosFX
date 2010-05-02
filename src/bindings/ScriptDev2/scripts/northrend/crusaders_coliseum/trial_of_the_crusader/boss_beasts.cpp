@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 					Tasks.CallCreature(NPC_FRIGBOLD,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
 
 				Frigibold_count--;
-				Tasks.SetAuraStack(SPELL_RISING_ANGER,5 - Frigibold_count,me,me,1);
+				SetAuraStack(SPELL_RISING_ANGER,5 - Frigibold_count,me,me,1);
 				frigibold_Timer = 60000;
 			}
 			else
@@ -271,7 +271,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
-						Tasks.SetAuraStack(SPELL_ENRAGE,1,Dreadscale,Dreadscale,1);
+						SetAuraStack(SPELL_ENRAGE,1,Dreadscale,Dreadscale,1);
 						break;
 				}
 			}
@@ -453,7 +453,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
-						Tasks.SetAuraStack(SPELL_ENRAGE,1,Acidmaw,Acidmaw,1);
+						SetAuraStack(SPELL_ENRAGE,1,Acidmaw,Acidmaw,1);
 						break;
 				}
 			}
@@ -523,7 +523,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 								pPlayer->RemoveAurasDueToSpell(66830);
 							}
 							else if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration() < 10000)
-								Tasks.SetAuraStack(66830,1,pPlayer,me,1);
+								SetAuraStack(66830,1,pPlayer,me,1);
 						}
 						else
 							pPlayer->SetSpeedRate(MOVE_RUN,1.0f,true);						
@@ -728,7 +728,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 								for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 									if (Player* pPlayer = itr->getSource())
 										if(pPlayer->isAlive())
-											Tasks.SetAuraStack(SPELL_SURGE_OF_ADRENALINE,1,pPlayer,me,1);
+											SetAuraStack(SPELL_SURGE_OF_ADRENALINE,1,pPlayer,me,1);
 							}
 							break;
 						}
@@ -828,7 +828,7 @@ struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public ScriptedAI
 		
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		Tasks.SetAuraStack(30914,1,me,me,1);
+		SetAuraStack(30914,1,me,me,1);
 		switch(m_bIsHeroic)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -882,7 +882,7 @@ struct MANGOS_DLL_DECL boss_gormok_flameAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		Tasks.SetAuraStack(66318,1,me,me,1);
+		SetAuraStack(66318,1,me,me,1);
 		SetCombatMovement(false);
 		
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);

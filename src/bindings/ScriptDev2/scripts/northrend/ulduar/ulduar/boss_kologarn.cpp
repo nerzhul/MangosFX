@@ -254,7 +254,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 			//stone grip emote
 			if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 			{
-				Tasks.SetAuraStack(SPELL_STONE_GRIP,1,target,me);
+				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
 				pGripTarget = target;
 				target->EnterVehicle(me->GetVehicleKit(),0);
 				grip = true;
