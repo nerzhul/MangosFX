@@ -657,7 +657,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
             m_pInstance->SetData(TYPE_Icehowl, DONE);
 			m_pInstance->SetData(TYPE_EVENT_BEAST, DONE);
 			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_FORDRING))))
-				Tasks.Speak(CHAT_TYPE_SAY,16041,"La menagerie monstrueuse est vaincue !",tmp);
+				Speak(CHAT_TYPE_SAY,16041,"La menagerie monstrueuse est vaincue !",tmp);
 			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ANNOUNCER))))
 				tmp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		}
@@ -710,7 +710,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 					if(target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
 						txt += std::string(target->GetName());
-						Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,txt);
+						Speak(CHAT_TYPE_BOSS_EMOTE,0,txt);
 						me->SetFacingToObject(target);
 						x = target->GetPositionX();
 						y = target->GetPositionY();

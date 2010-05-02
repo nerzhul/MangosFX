@@ -80,21 +80,21 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
     {
         Tasks.CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
 		Tasks.CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
-		Tasks.Speak(CHAT_TYPE_SAY,15473,"Certaines choses ne doivent pas êtres dérangÃ©es !");
+		Speak(CHAT_TYPE_SAY,15473,"Certaines choses ne doivent pas êtres dérangÃ©es !");
     }
 
     void KilledUnit(Unit* victim)
     {
         DoScriptText(SAY_SLAY_1, me);
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_YELL,15474,"Le secret meurt avec vous !");
+			Speak(CHAT_TYPE_YELL,15474,"Le secret meurt avec vous !");
 		else 
-			Tasks.Speak(CHAT_TYPE_YELL,15475,"Vous n'en rÃ©chapperez pas !");
+			Speak(CHAT_TYPE_YELL,15475,"Vous n'en rÃ©chapperez pas !");
     }
 
     void JustDied(Unit *victim)
     {
-		Tasks.Speak(CHAT_TYPE_YELL,15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
+		Speak(CHAT_TYPE_YELL,15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_AURIAYA, DONE);
@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
 		if(enrage_Timer <= diff)
 		{
 			DoCastMe(SPELL_ENRAGE);
-			Tasks.Speak(CHAT_TYPE_YELL,15477,"Vous me faîtes perdre mon temps.");
+			Speak(CHAT_TYPE_YELL,15477,"Vous me faîtes perdre mon temps.");
 			enrage_Timer = 60000;
 		}
 		else

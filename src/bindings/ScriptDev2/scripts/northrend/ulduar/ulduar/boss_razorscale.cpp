@@ -210,7 +210,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 			{
 				if(Phase == PHASE_FLY_I || Phase == PHASE_FLY)
 				{
-					Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Remuez vous ! Elle ne va pas rester au sol longtemps !");
+					Speak(CHAT_TYPE_BOSS_EMOTE,0,"Remuez vous ! Elle ne va pas rester au sol longtemps !");
 					GroundPhase();
 				}
 				else if(Phase == PHASE_GROUND)
@@ -228,14 +228,14 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
         {
 			GroundPhase();
 			Phase = PHASE_GROUND_F;
-			Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille reste au sol définitivement");
+			Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille reste au sol définitivement");
         }
 
         if (Phase >= PHASE_FLY && Phase < PHASE_SLEEP)
         {
             if (FlameBreathTimer <= diff)
             {
-				Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille inspire profondemment");
+				Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille inspire profondemment");
 				DoCastVictim((m_bIsHeroic ? SPELL_FLAMEBREATH_H : SPELL_FLAMEBREATH));
                 FlameBreathTimer = 15000;
             }
@@ -325,7 +325,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
     void FlyPhase()
     {
         Tasks.SetFlying(true,me);
-		Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille s'envole !");
+		Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille s'envole !");
 		IsFlying = true;
 		SetCombatMovement(false);
 		FlyPoint = 0;

@@ -202,6 +202,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	bool CheckPercentLife(uint32 percent) { return (GetPercentLife() <= percent) ? true : false; }
 	uint32 GetPercentLife() { return (me->GetHealth() * 100 / me->GetMaxHealth()); }
 	void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
+	void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
 
     private:
         bool   m_bCombatMovement;
@@ -331,8 +332,6 @@ class MANGOS_DLL_SPEC MobEventTasks
 
 		void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
 		
-		void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
-
 		void SetFlying(bool fly, Creature* who);
 		
 		void Relocate(float x, float y, float z, bool fly = false, float Time = 0);

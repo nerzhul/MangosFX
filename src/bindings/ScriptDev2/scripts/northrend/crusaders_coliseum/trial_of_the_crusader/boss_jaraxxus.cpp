@@ -50,9 +50,9 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_SAY,16145,"Cafard insignifiant !");
+			Speak(CHAT_TYPE_SAY,16145,"Cafard insignifiant !");
 		else
-			Tasks.Speak(CHAT_TYPE_SAY,16146,"Banni, au néant !");
+			Speak(CHAT_TYPE_SAY,16146,"Banni, au néant !");
     }
 
     void JustDied(Unit *victim)
@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
         if (m_pInstance)
 		{
             m_pInstance->SetData(TYPE_JARAXXUS, DONE);
-			Tasks.Speak(CHAT_TYPE_SAY,16147,"Un autre prendra ma place. Votre monde est condamné.");
+			Speak(CHAT_TYPE_SAY,16147,"Un autre prendra ma place. Votre monde est condamné.");
 			if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 				((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_JARAXXUS_OUTRO);
 		}
@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_JARAXXUS, IN_PROGRESS);
 
-		Tasks.Speak(CHAT_TYPE_YELL,16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
+		Speak(CHAT_TYPE_YELL,16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
     }
 
     void UpdateAI(const uint32 diff)
@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
 		if(incinerate_Timer <= diff)
 		{
-			Tasks.Speak(CHAT_TYPE_YELL,16149,"Que brûle la chair !");
+			Speak(CHAT_TYPE_YELL,16149,"Que brûle la chair !");
 			DoCastRandom(SPELL_INCINERATE_FLESH);
 			incinerate_Timer = 20000;
 		}
@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
 		if(portal_Timer <= diff)
 		{
-			Tasks.Speak(CHAT_TYPE_SAY,16150,"Viens, ma soeur, ton maître t'appelle.");
+			Speak(CHAT_TYPE_SAY,16150,"Viens, ma soeur, ton maître t'appelle.");
 			Tasks.CallCreature(34825,TEN_MINS,NEAR_15M,AGGRESSIVE_MAIN);
 			portal_Timer = 120000;
 		}

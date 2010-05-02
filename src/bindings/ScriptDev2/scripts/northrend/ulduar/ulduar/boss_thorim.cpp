@@ -128,9 +128,9 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_SAY,15739,"Ne pourriez vous pas au moins essayer de vous défendre ?");
+			Speak(CHAT_TYPE_SAY,15739,"Ne pourriez vous pas au moins essayer de vous défendre ?");
 		else
-			Tasks.Speak(CHAT_TYPE_SAY,15740,"Pitoyable...");
+			Speak(CHAT_TYPE_SAY,15740,"Pitoyable...");
     }
 
     void JustDied(Unit *victim)
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_THORIM, DONE);
 
-		Tasks.Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
+		Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 

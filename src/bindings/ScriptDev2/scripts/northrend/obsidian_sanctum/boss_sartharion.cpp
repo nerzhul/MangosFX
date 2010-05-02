@@ -359,7 +359,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 
         if (pMap && pMap->IsDungeon())
         {
-			Tasks.Speak(CHAT_TYPE_BOSS_EMOTE,0,"La lave autour de Sartharion bouillonne !");
+			Speak(CHAT_TYPE_BOSS_EMOTE,0,"La lave autour de Sartharion bouillonne !");
 			switch(urand(0,3))
 			{
 				case 0:

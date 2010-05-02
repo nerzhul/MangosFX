@@ -1129,10 +1129,10 @@ void MobEventTasks::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	}
 }
 
-void MobEventTasks::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
+void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
 {
 	if(!spkCr)
-		spkCr = thisCr;
+		spkCr = me;
 
 	if(soundid > 0 && GetSoundEntriesStore()->LookupEntry(soundid))
 		spkCr->PlayDirectSound(soundid);

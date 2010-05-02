@@ -98,19 +98,19 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 
     void EnterCombat(Unit* who)
     {
-        Tasks.Speak(CHAT_TYPE_YELL,15564,"Jeunes insolents ! Les lames qui serviront � reconquérir ce monde seront trempées dans votre sang !");
+        Speak(CHAT_TYPE_YELL,15564,"Jeunes insolents ! Les lames qui serviront � reconquérir ce monde seront trempées dans votre sang !");
     }
     void KilledUnit(Unit* victim)
     {
         if(urand(0,1))
-			Tasks.Speak(CHAT_TYPE_YELL,15569,"Encore des déchets pour la décharge !");
+			Speak(CHAT_TYPE_YELL,15569,"Encore des déchets pour la décharge !");
 		else
-			Tasks.Speak(CHAT_TYPE_YELL,15570,"Vos ossements serviront de petit bois !");
+			Speak(CHAT_TYPE_YELL,15570,"Vos ossements serviront de petit bois !");
     }
 
     void JustDied(Unit *victim)
     {
-        Tasks.Speak(CHAT_TYPE_YELL,15572,"J'ai... échoué...");
+        Speak(CHAT_TYPE_YELL,15572,"J'ai... échoué...");
 		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
         {
 			if((*itr))
@@ -136,7 +136,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 		{
 			if(Unit* tmpcr = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_IGNIS_ADDS)))
 			{
-				Tasks.Speak(CHAT_TYPE_YELL,15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
+				Speak(CHAT_TYPE_YELL,15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
 				IgnisAdds.push_back(tmpcr);
 				DoCast(tmpcr,SPELL_ACTIVATE);
 				FreezeMob(false,(Creature*)tmpcr);
@@ -160,9 +160,9 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 					m_pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
 
 			if(urand(0,1))
-				Tasks.Speak(CHAT_TYPE_YELL,15567,"Que la fournaise vous consume !");
+				Speak(CHAT_TYPE_YELL,15567,"Que la fournaise vous consume !");
 			else
-				Tasks.Speak(CHAT_TYPE_YELL,15568,"Br�leeeeeeeeeeeez !");
+				Speak(CHAT_TYPE_YELL,15568,"Br�leeeeeeeeeeeez !");
 
 			if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
 				Fire_Timer = 25000;

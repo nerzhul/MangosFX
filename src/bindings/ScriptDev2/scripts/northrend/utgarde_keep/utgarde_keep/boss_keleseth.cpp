@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 						if(cr[i])
 						{
 							cr[i]->Respawn();
-							Tasks.Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
+							Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
 						}
 					}
 					DoScriptText(SAY_SKELETONS, me);
