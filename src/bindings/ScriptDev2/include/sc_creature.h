@@ -10,6 +10,7 @@
 #include "Map.h"
 #include "Util.h"
 #include "Vehicle.h"
+#include "sc_instance.h"
 
 //Spell targets used by SelectSpell
 enum SelectTarget
