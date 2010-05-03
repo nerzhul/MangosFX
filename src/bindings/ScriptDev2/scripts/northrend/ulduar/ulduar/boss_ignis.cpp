@@ -284,25 +284,16 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 	}
 };
 
-struct MANGOS_DLL_DECL add_scorchAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_scorchAI : public LibDevFSAI
 {
-    add_scorchAI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_scorchAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+		InitInstance();
     }
-
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 CheckTimer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		SetCombatMovement(false);
 		CheckTimer = 10;
@@ -316,7 +307,7 @@ struct MANGOS_DLL_DECL add_scorchAI : public ScriptedAI
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < 13.0f)
-						me->DealDamage(pPlayer,(m_bIsHeroic ? 3500 : 2200), NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, NULL, false);
+						me->DealDamage(pPlayer,(m_difficulty ? 3500 : 2200), NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, NULL, false);
 		}
 	}
 
@@ -327,7 +318,7 @@ struct MANGOS_DLL_DECL add_scorchAI : public ScriptedAI
 		  if(me->GetDistance2d(Ignis_Coords[0][0],Ignis_Coords[0][1]) < 10.0f || me->GetDistance2d(Ignis_Coords[1][0],Ignis_Coords[1][1]))
 			  me->ForcedDespawn(1000);
 
-			if(m_bIsHeroic)
+			if(m_difficulty)
 			{
 				if(!me->HasAura(SPELL_CONE_25))
 					DoCastMe(SPELL_CONE_25);
