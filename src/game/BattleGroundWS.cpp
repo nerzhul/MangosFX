@@ -99,9 +99,9 @@ void BattleGroundWS::Update(uint32 diff)
                 EndBattleGround(HORDE);
             else
             {
-                // if 0 => tie
                 EndBattleGround(m_LastCapturedFlagTeam);
             }
+			m_EndTimer = 600000;
         }
         else
         {
