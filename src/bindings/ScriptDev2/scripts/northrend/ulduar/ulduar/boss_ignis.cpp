@@ -49,35 +49,11 @@ const static float Ignis_Coords[2][2] =
 	{517.598f,	276.068f},
 };
 
-struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 {
-    boss_ignis_AI(Creature *pCreature) : ScriptedAI(pCreature) {
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
-	}
-
-	ScriptedInstance* m_pInstance;
-	uint32 Assemblage_Timer;
-	uint32 Fire_Timer;
-	Difficulty m_bIsHeroic;
-	std::vector<Unit*> IgnisAdds;
-	MobEventTasks Tasks;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
-        {
-			if((*itr))
-			{
-				((Creature*)(*itr))->Respawn();
-				FreezeMob(true,((Creature*)(*itr)));
-			}
-		}
-		IgnisAdds.clear();
-
-		if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
+    boss_ignis_AI(Creature *pCreature) : LibDevFSAI(pCreature) {
+		InitInstance();
+		if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 		{
 			Tasks.AddEvent(SPELL_FLAME_JETS_H,32000,25000,0,TARGET_MAIN,0);
 			Tasks.AddEvent(SPELL_SCORCH_H,10000,25000,0,TARGET_MAIN,0);
@@ -91,15 +67,36 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 			Tasks.AddEvent(SPELL_SLAG_POT,5000,30000,0,TARGET_RANDOM,0);
 			Assemblage_Timer = 40000;
 		}
+	}
+
+	uint32 Assemblage_Timer;
+	uint32 Fire_Timer;
+	std::vector<Unit*> IgnisAdds;
+
+    void Reset()
+    {
+		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
+        {
+			if((*itr))
+			{
+				((Creature*)(*itr))->Respawn();
+				FreezeMob(true,((Creature*)(*itr)));
+			}
+		}
+		IgnisAdds.clear();
+		if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+			Assemblage_Timer = 30000;
+		else
+			Assemblage_Timer = 40000;
+		
 		Fire_Timer = 10000;
     }
-
-	
 
     void EnterCombat(Unit* who)
     {
         Speak(CHAT_TYPE_YELL,15564,"Jeunes insolents ! Les lames qui serviront � reconquérir ce monde seront trempées dans votre sang !");
     }
+    
     void KilledUnit(Unit* victim)
     {
         if(urand(0,1))
@@ -113,11 +110,9 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
         Speak(CHAT_TYPE_YELL,15572,"J'ai... échoué...");
 		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
         {
-			if((*itr))
-			{
 				Kill((*itr));
-			}
 		}
+		pInstance->SetData(TYPE_IGNIS,DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
@@ -134,7 +129,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 		me->RemoveAurasDueToSpell(SPELL_CHALEUR);
 		if(Assemblage_Timer <= diff)
 		{
-			if(Unit* tmpcr = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_IGNIS_ADDS)))
+			if(Unit* tmpcr = Unit::GetUnit(*me, pInstance->GetData64(DATA_IGNIS_ADDS)))
 			{
 				Speak(CHAT_TYPE_YELL,15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
 				IgnisAdds.push_back(tmpcr);
@@ -164,8 +159,8 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public ScriptedAI
 			else
 				Speak(CHAT_TYPE_YELL,15568,"Br�leeeeeeeeeeeez !");
 
-			if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
-				Fire_Timer = 25000;
+			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+				Fire_Timer = 20000;
 			else
 				Fire_Timer = 25000;
 		}

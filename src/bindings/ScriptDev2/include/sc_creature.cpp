@@ -865,6 +865,9 @@ void ScriptedAI::Kill(Unit* toKill)
 {
 	if(!toKill)
 		return;
+		
+	if(!toKill->isAlive())
+		return;
 
 	me->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 }

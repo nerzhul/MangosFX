@@ -463,8 +463,8 @@ void WorldSession::HandleLFDPartyLockRequest(WorldPacket &recv_data)
 void WorldSession::HandleLFDPlayerLockResponse()
 {
 	// debug partiel des donjons aléatoire
-	sLog.outDebug("SMSG_LFG_PLAYER_LOCK_INFO_RESPONSE");
-	WorldPacket data(SMSG_LFG_PLAYER_LOCK_INFO_RESPONSE);
+	sLog.outDebug("SMSG_LFG_PLAYER_INFO");
+	WorldPacket data(SMSG_LFG_PLAYER_INFO);
 	data << uint8(0);
 	for(uint8 i=0;i<2;i++)
 	{
