@@ -350,8 +350,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
 		~LibDevFSAI() {};
 	protected:
-		
-	private:
 		void InitInstance()
 		{
 			pInstance = (ScriptedInstance*)me->GetInstanceData();
@@ -359,7 +357,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			Tasks.SetObjects(this,me);
 			Reset();
 		}
-		
+	private:
 		MobEventTasks Tasks;
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
