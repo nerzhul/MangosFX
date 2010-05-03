@@ -348,7 +348,17 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 	public:
 		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
 		~LibDevFSAI() {};
+	protected:
+		
 	private:
+		void InitInstance()
+		{
+			pInstance = (ScriptedInstance*)me->GetInstanceData();
+			m_difficulty = me->GetMap()->GetDifficulty();
+		}
+		
 		MobEventTasks Tasks;
-}
+		ScriptedInstance* pInstance;
+		Difficulty m_difficulty;
+};
 #endif
