@@ -228,6 +228,9 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     sLog.outDebug("WORLD: Recvd %s (%u, 0x%X) opcode", LookupOpcodeName(opcode), opcode, opcode);
 
     Unit *mover = _player->m_mover;
+	if(!mover)
+		return;
+
     Player *plMover = mover->GetTypeId() == TYPEID_PLAYER ? (Player*)mover : NULL;
 
 	if(_player->GetVehicleGUID() && opcode == MSG_MOVE_JUMP) 
