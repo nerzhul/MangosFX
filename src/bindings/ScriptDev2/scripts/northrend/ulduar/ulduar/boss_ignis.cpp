@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 				Kill((*itr));
 		}
 		pInstance->SetData(TYPE_IGNIS,DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
     void MoveInLineOfSight(Unit* who) 
@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 				SetAuraStack(SPELL_CREATOR_STRENGH,1,me,me);
 			}
 
-			if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
+			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 				Assemblage_Timer = 40000;
 			else
 				Assemblage_Timer = 30000;
@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		{
 			if(Creature* fire = me->SummonCreature(NPC_FIRE,me->getVictim()->GetPositionX(),
 					me->getVictim()->GetPositionY(),me->getVictim()->GetPositionZ(),0.0f,TEMPSUMMON_TIMED_DESPAWN,25000))
-					m_pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
+					pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
 
 			if(urand(0,1))
 				Speak(CHAT_TYPE_YELL,15567,"Que la fournaise vous consume !");
