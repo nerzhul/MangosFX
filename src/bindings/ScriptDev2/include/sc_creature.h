@@ -299,15 +299,7 @@ enum MobConstantes
 	THREE_MINS	=	180000,
 	TEN_MINS	=	600000,
 };
-/*
-class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
-{
-	public:
-		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
-		~LibDevFSAI() {};
-	private:
-		MobEventTasks Tasks;
-}*/
+
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -350,4 +342,13 @@ class MANGOS_DLL_SPEC MobEventTasks
 		std::vector<uint64> MyAdds;
 
 };
+
+class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
+{
+	public:
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
+		~LibDevFSAI() {};
+	private:
+		MobEventTasks Tasks;
+}
 #endif
