@@ -1526,6 +1526,8 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
         case TARGET_TOTEM_FIRE:
         case TARGET_SELF:
         case TARGET_SELF2:
+			targetUnitMap.push_back(m_caster);
+            break;
         case TARGET_AREAEFFECT_CUSTOM:
         {
 			if (m_spellInfo->Effect[effIndex] == SPELL_EFFECT_PERSISTENT_AREA_AURA)
