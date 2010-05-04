@@ -1538,14 +1538,14 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				break;
 			}
 
-			std::list<Unit*> tempTargetUnitMap;
+			UnitList tempTargetUnitMap;
 			SpellScriptTargetBounds bounds = sSpellMgr.GetSpellScriptTargetBounds(m_spellInfo->Id);
 			// fill real target list if no spell script target defined
 			FillAreaTargets(bounds.first != bounds.second ? tempTargetUnitMap : targetUnitMap, m_targets.m_destX, m_targets.m_destY, radius, PUSH_DEST_CENTER, SPELL_TARGETS_ALL);
 			
 			if (!tempTargetUnitMap.empty())
 			{
-				for (std::list<Unit*>::const_iterator iter = tempTargetUnitMap.begin(); iter != tempTargetUnitMap.end(); ++iter)
+				for (UnitList::const_iterator iter = tempTargetUnitMap.begin(); iter != tempTargetUnitMap.end(); ++iter)
 				{
 					if ((*iter)->GetTypeId() != TYPEID_UNIT)
 						continue;
@@ -1562,6 +1562,17 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							break;
 						}
 					}
+				}
+			}
+			else
+			{
+				// remove not targetable units if spell has no script targets
+				for (UnitList::const_iterator itr = targetUnitMap.begin(); itr != targetUnitMap.end(); )
+				{
+					if (!(*itr)->isTargetableForAttack(m_spellInfo->AttributesEx3 & SPELL_ATTR_EX3_CAST_ON_DEAD))
+						targetUnitMap.erase(itr++);
+					else
+						++itr;
 				}
 			}
 			break;

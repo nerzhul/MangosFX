@@ -419,8 +419,6 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 					return false;
 				Player* plr = m_session->GetPlayer();
 				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),60);
-				ItemPosCountVec dest;
-				uint8 msg;
 				
 				plr->learnSpell(34092, 0,true);
 				plr->ModifyMoney(9500000);
