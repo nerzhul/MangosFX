@@ -407,7 +407,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	else if(argstr == "lev60")
 	{
 		if(m_session->GetPlayer()->getLevel() > 60)
+		{
 			PSendSysMessage("Vous avez deja un niveau superieur a celui demandé !");
+			return true;
+		}
 		else
 		{
 			if(diamant >= 5)
@@ -575,7 +578,12 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 		{
 			Player* plr = m_session->GetPlayer();
 			if(plr->getLevel() > 70)
+			{
 				PSendSysMessage("Vous avez deja un niveau superieur a celui demandé !");
+				return true;
+			}
+			else if(m_session->GetPlayer()->getClass() == CLASS_DEATH_KNIGHT)
+				return false;
 			else
 			{
 				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),60);
