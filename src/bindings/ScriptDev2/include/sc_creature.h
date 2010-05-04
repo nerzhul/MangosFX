@@ -350,6 +350,26 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
 		~LibDevFSAI() {};
 	protected:
+		void AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			SpellCastTarget targ = TARGET_RANDOM, uint8 phase = 0, uint32 TextId = 0,
+			bool MaxPriority = false, uint16 Repeat = 1, bool front = true);
+
+		void AddNoTankEvent(uint32 SpellId, uint32 Timer) { AddEvent(SpellId,Timer,Timer,0,NO_TANK); }
+
+		void AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase = 0, uint32 Diff = 0,
+			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
+			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
+
+		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
+
+		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
+			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
+			float x = 0,float y = 0, float z = 0, bool force = false);
+
+		void CleanMyAdds();
+
+		void GetNewTargetForMyAdds(Unit* target);
+
 		void InitInstance()
 		{
 			pInstance = (ScriptedInstance*)me->GetInstanceData();
@@ -361,5 +381,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:
+		std::vector<EventSh> EventShVect;
+		std::vector<EventSummon> EventSummonVect;
+		std::vector<uint64> MyAdds;
 };
 #endif

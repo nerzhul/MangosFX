@@ -762,6 +762,178 @@ void ScriptedAI::DoCompleteQuest(uint32 entry, Player* player)
     player->CompleteQuest(entry);
 }
 
+void ScriptedAI::Kill(Unit* toKill)
+{
+	if(!toKill)
+		return;
+		
+	if(!toKill->isAlive())
+		return;
+
+	me->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+}
+
+void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
+{
+	if(type == 0)
+		return;
+
+    Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+	if (!lPlayers.isEmpty())
+		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+				GiveEmblems(type,pPlayer,nb, group5);
+}
+
+void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
+{
+	ItemPosCountVec dest;
+	uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, type, nb, false);
+	if (msg == EQUIP_ERR_OK)
+		if(Item* pItem = pPlayer->StoreNewItem(dest, type, nb, true))
+			pPlayer->SendNewItem(pItem, nb, true, false);
+
+	// Wintergrasp Aura
+	if(group5 && pPlayer->HasAura(57940))
+	{
+		ItemPosCountVec dest;
+	        uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 43228, 4, false);
+	        if (msg == EQUIP_ERR_OK)
+                	if(Item* pItem = pPlayer->StoreNewItem(dest, 43228, 4, true))
+        	                pPlayer->SendNewItem(pItem, 4, true, false);
+	}
+	
+}
+
+void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
+{
+	if(tmpCr->isAlive())
+	{
+		tmpCr->CastStop();
+		tmpCr->AttackStop();
+		if(freeze)
+		{
+			tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+			tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+			if(OOC)
+				tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+			tmpCr->CastSpell(tmpCr,66830,false);
+		}
+		else
+		{
+			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+			tmpCr->RemoveAurasDueToSpell(66830);
+		}
+	}
+}
+
+void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
+{
+	if(module == 0)
+	{
+		if (!target->HasAura(spell))
+		{
+			if(stacks > 0)
+			{
+				for(int k=0;k<stacks;k++)
+					for(int i=0;i<3;i++)
+					{
+						Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
+						target->AddAura(aur);
+					}
+			}
+		}
+		else
+		{
+			if (target->GetAura(spell, 0)->GetStackAmount() == 1 && stacks == -1 
+				|| target->GetAura(spell, 0)->GetStackAmount() < stacks)
+					target->RemoveAurasDueToSpell(spell);
+			else
+				target->GetAura(spell,0)->modStackAmount(stacks);
+		}
+	}
+	else
+	{
+		if(GetSpellStore()->LookupEntry(spell))
+		{
+			target->RemoveAurasDueToSpell(spell);
+			for(int k=0;k<stacks;k++)
+				for(int i=0;i<3;i++)
+				{
+					Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
+					target->AddAura(aur);
+				}
+		}
+	}
+}
+
+void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
+{
+	if(!spkCr)
+		spkCr = me;
+
+	if(soundid > 0 && GetSoundEntriesStore()->LookupEntry(soundid))
+		spkCr->PlayDirectSound(soundid);
+
+	switch(type)
+    {
+        case CHAT_TYPE_SAY:
+			spkCr->MonsterSay(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_YELL:
+            spkCr->MonsterYell(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_TEXT_EMOTE:
+            spkCr->MonsterTextEmote(text.c_str(), spkCr ? spkCr->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_BOSS_EMOTE:
+            spkCr->MonsterTextEmote(text.c_str(), spkCr ? spkCr->GetGUID() : 0, true);
+            break;
+	}
+}
+
+void ScriptedAI::SetFlying(bool fly, Creature* who)
+{
+	if(!who)
+		who = me;
+
+	if (fly)
+    {
+		who->SetReactState(REACT_PASSIVE);
+        who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+        who->AddMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
+    }
+    else
+    {
+		who->SetReactState(REACT_AGGRESSIVE);
+        who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+        who->RemoveMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
+    }
+}
+
+void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
+{
+	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
+	me->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
+}
+
+void ScriptedAI::AggroAllPlayers(float maxdist)
+{
+	Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+	if (!lPlayers.isEmpty())
+	{
+		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+				if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < maxdist)
+				{
+					me->AddThreat(pPlayer,1.0f);
+				}
+	}
+}
+void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
+							 SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front){}
 void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 			SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
 {
@@ -778,7 +950,7 @@ void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uin
 	tmpEvent.RequireFront = front;
 	EventShVect.push_back(tmpEvent);
 }
-
+void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase){}
 void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 {
 	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
@@ -861,73 +1033,9 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 	}
 }
 
-void ScriptedAI::Kill(Unit* toKill)
-{
-	if(!toKill)
-		return;
-		
-	if(!toKill->isAlive())
-		return;
 
-	me->DealDamage(toKill, toKill->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-}
-
-void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
-{
-	if(type == 0)
-		return;
-
-    Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-	if (!lPlayers.isEmpty())
-		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-			if (Player* pPlayer = itr->getSource())
-				GiveEmblems(type,pPlayer,nb, group5);
-}
-
-void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
-{
-	ItemPosCountVec dest;
-	uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, type, nb, false);
-	if (msg == EQUIP_ERR_OK)
-		if(Item* pItem = pPlayer->StoreNewItem(dest, type, nb, true))
-			pPlayer->SendNewItem(pItem, nb, true, false);
-
-	// Wintergrasp Aura
-	if(group5 && pPlayer->HasAura(57940))
-	{
-		ItemPosCountVec dest;
-	        uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 43228, 4, false);
-	        if (msg == EQUIP_ERR_OK)
-                	if(Item* pItem = pPlayer->StoreNewItem(dest, 43228, 4, true))
-        	                pPlayer->SendNewItem(pItem, 4, true, false);
-	}
-	
-}
-
-void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
-{
-	if(tmpCr->isAlive())
-	{
-		tmpCr->CastStop();
-		tmpCr->AttackStop();
-		if(freeze)
-		{
-			tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-			tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-			if(OOC)
-				tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
-			tmpCr->CastSpell(tmpCr,66830,false);
-		}
-		else
-		{
-			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-			tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
-			tmpCr->RemoveAurasDueToSpell(66830);
-		}
-	}
-}
-
+Creature* LibDevFSAI::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc WhereZone, Comportement Compo,
+									  float x, float y, float z, bool force){ return NULL; }
 Creature* MobEventTasks::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc WhereZone, Comportement Compo,
 								 float x, float y, float z, bool force)
 {
@@ -1043,6 +1151,9 @@ Creature* MobEventTasks::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc Wh
 	return tmp;
 }
 
+void LibDevFSAI::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,
+			uint32 nb_spawn, uint32 Despawn, ZoneInvoc WhereZone, 
+			Comportement Compo, uint32 TextId){}
 void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,
 			uint32 nb_spawn, uint32 Despawn, ZoneInvoc WhereZone, 
 			Comportement Compo, uint32 TextId)
@@ -1062,6 +1173,19 @@ void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer,
 
 }
 
+void LibDevFSAI::CleanMyAdds()
+{
+	if(!MyAdds.empty())
+	{
+		for(std::vector<uint64>::iterator itr = MyAdds.begin(); itr < MyAdds.end(); ++itr)
+		{
+			if (Creature* cr = ((Creature*)Unit::GetUnit(*me,(*itr))))
+				if(cr->isAlive())
+					cr->ForcedDespawn(1000);
+		}
+		MyAdds.clear();
+	}
+}
 void MobEventTasks::CleanMyAdds()
 {
 	if(!MyAdds.empty())
@@ -1073,6 +1197,22 @@ void MobEventTasks::CleanMyAdds()
 					cr->ForcedDespawn(1000);
 		}
 		MyAdds.clear();
+	}
+}
+
+void LibDevFSAI::GetNewTargetForMyAdds(Unit* target)
+{
+	if(!MyAdds.empty())
+	{
+		for(std::vector<uint64>::iterator itr = MyAdds.begin(); itr < MyAdds.end(); ++itr)
+		{
+			if (Creature* cr = ((Creature*)Unit::GetUnit(*me,(*itr))))
+				if(cr->isAlive())
+				{
+					cr->DeleteThreatList();
+					cr->AddThreat(target,150);
+				}				
+		}
 	}
 }
 
@@ -1092,106 +1232,3 @@ void MobEventTasks::GetNewTargetForMyAdds(Unit* target)
 	}
 }
 
-void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
-{
-	if(module == 0)
-	{
-		if (!target->HasAura(spell))
-		{
-			if(stacks > 0)
-			{
-				for(int k=0;k<stacks;k++)
-					for(int i=0;i<3;i++)
-					{
-						Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
-						target->AddAura(aur);
-					}
-			}
-		}
-		else
-		{
-			if (target->GetAura(spell, 0)->GetStackAmount() == 1 && stacks == -1 
-				|| target->GetAura(spell, 0)->GetStackAmount() < stacks)
-					target->RemoveAurasDueToSpell(spell);
-			else
-				target->GetAura(spell,0)->modStackAmount(stacks);
-		}
-	}
-	else
-	{
-		if(GetSpellStore()->LookupEntry(spell))
-		{
-			target->RemoveAurasDueToSpell(spell);
-			for(int k=0;k<stacks;k++)
-				for(int i=0;i<3;i++)
-				{
-					Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
-					target->AddAura(aur);
-				}
-		}
-	}
-}
-
-void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr)
-{
-	if(!spkCr)
-		spkCr = me;
-
-	if(soundid > 0 && GetSoundEntriesStore()->LookupEntry(soundid))
-		spkCr->PlayDirectSound(soundid);
-
-	switch(type)
-    {
-        case CHAT_TYPE_SAY:
-			spkCr->MonsterSay(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
-            break;
-        case CHAT_TYPE_YELL:
-            spkCr->MonsterYell(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
-            break;
-        case CHAT_TYPE_TEXT_EMOTE:
-            spkCr->MonsterTextEmote(text.c_str(), spkCr ? spkCr->GetGUID() : 0);
-            break;
-        case CHAT_TYPE_BOSS_EMOTE:
-            spkCr->MonsterTextEmote(text.c_str(), spkCr ? spkCr->GetGUID() : 0, true);
-            break;
-	}
-}
-
-void ScriptedAI::SetFlying(bool fly, Creature* who)
-{
-	if(!who)
-		who = me;
-
-	if (fly)
-    {
-		who->SetReactState(REACT_PASSIVE);
-        who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
-        who->AddMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
-    }
-    else
-    {
-		who->SetReactState(REACT_AGGRESSIVE);
-        who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
-        who->RemoveMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
-    }
-}
-
-void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
-{
-	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
-	me->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
-}
-
-void ScriptedAI::AggroAllPlayers(float maxdist)
-{
-	Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-	if (!lPlayers.isEmpty())
-	{
-		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-			if (Player* pPlayer = itr->getSource())
-				if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < maxdist)
-				{
-					me->AddThreat(pPlayer,1.0f);
-				}
-	}
-}
