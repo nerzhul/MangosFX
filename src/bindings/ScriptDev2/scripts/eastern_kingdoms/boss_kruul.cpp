@@ -1,89 +1,38 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Kruul
-SD%Complete: 100
-SDComment: Highlord Kruul are presumably no longer in-game on regular bases, however future events could bring him back.
-SDCategory: Bosses
-EndScriptData */
-
 #include "precompiled.h"
 
-#define SPELL_SHADOWVOLLEY          21341
-#define SPELL_CLEAVE                20677
-#define SPELL_THUNDERCLAP           23931
-#define SPELL_TWISTEDREFLECTION     21063
-#define SPELL_VOIDBOLT              21066
-#define SPELL_RAGE                  21340
-#define SPELL_CAPTURESOUL           21054
-
-struct MANGOS_DLL_DECL boss_kruulAI : public ScriptedAI
+enum Spells
 {
-    boss_kruulAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_SHADOWVOLLEY          21341,
+	SPELL_CLEAVE                20677,
+	SPELL_THUNDERCLAP           23931,
+	SPELL_TWISTEDREFLECTION     21063,
+	SPELL_VOIDBOLT              21066,
+	SPELL_RAGE                  21340,
+	SPELL_CAPTURESOUL           21054
+}
 
-    uint32 ShadowVolley_Timer;
-    uint32 Cleave_Timer;
-    uint32 ThunderClap_Timer;
-    uint32 TwistedReflection_Timer;
-    uint32 VoidBolt_Timer;
-    uint32 Rage_Timer;
-    uint32 Hound_Timer;
-    int Rand;
-    int RandX;
-    int RandY;
-    Creature* Summoned;
+struct MANGOS_DLL_DECL boss_kruulAI : public LibDevFSAI
+{
+    boss_kruulAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitBoss();
+		AddEventOnTank(SPELL_SHADOWVOLLEY,10000,5000);
+		AddEventOnTank(SPELL_CLEAVE,14000,10000);
+		AddEventOnTank(SPELL_THUNDERCLAP,20000,12000);
+		AddEventOnTank(SPELL_TWISTEDREFLECTION,25000,30000);
+		AddEventOnTank(SPELL_VOIDBOLT,30000,18000);
+		AddEventOnTank(SPELL_RAGE,60000,70000);
+		AddSummonEvent(19207,8000,45000,0,0,3,300000,NEAR_7M);
+	}
 
     void Reset()
     {
-        ShadowVolley_Timer = 10000;
-        Cleave_Timer = 14000;
-        ThunderClap_Timer = 20000;
-        TwistedReflection_Timer = 25000;
-        VoidBolt_Timer = 30000;
-        Rage_Timer = 60000;                                 //Cast rage after 1 minute
-        Hound_Timer = 8000;
+		ResetTimers();
     }
 
     void KilledUnit()
     {
-        // When a player, pet or totem gets killed, Lord Kazzak casts this spell to instantly regenerate 70,000 health.
         DoCastMe(SPELL_CAPTURESOUL);
-
-    }
-
-    void SummonHounds(Unit* victim)
-    {
-        Rand = rand()%10;
-        switch(urand(0, 1))
-        {
-            case 0: RandX = 0 - Rand; break;
-            case 1: RandX = 0 + Rand; break;
-        }
-        Rand = 0;
-        Rand = rand()%10;
-        switch(urand(0, 1))
-        {
-            case 0: RandY = 0 - Rand; break;
-            case 1: RandY = 0 + Rand; break;
-        }
-        Rand = 0;
-        Summoned = DoSpawnCreature(19207, RandX, RandY, 0, 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 300000);
-        if (Summoned)
-            ((CreatureAI*)Summoned->AI())->AttackStart(victim);
     }
 
     void UpdateAI(const uint32 diff)
@@ -91,74 +40,8 @@ struct MANGOS_DLL_DECL boss_kruulAI : public ScriptedAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-
-        //ShadowVolley_Timer
-        if (ShadowVolley_Timer < diff)
-        {
-            if (rand()%100 < 46)
-            {
-                DoCastVictim(SPELL_SHADOWVOLLEY);
-            }
-
-            ShadowVolley_Timer = 5000;
-        }else ShadowVolley_Timer -= diff;
-
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            if (rand()%100 < 50)
-            {
-                DoCastVictim(SPELL_CLEAVE);
-            }
-
-            Cleave_Timer = 10000;
-        }else Cleave_Timer -= diff;
-
-        //ThunderClap_Timer
-        if (ThunderClap_Timer < diff)
-        {
-            if (rand()%100 < 20)
-            {
-                DoCastVictim(SPELL_THUNDERCLAP);
-            }
-
-            ThunderClap_Timer = 12000;
-        }else ThunderClap_Timer -= diff;
-
-        //TwistedReflection_Timer
-        if (TwistedReflection_Timer < diff)
-        {
-            DoCastVictim(SPELL_TWISTEDREFLECTION);
-            TwistedReflection_Timer = 30000;
-        }else TwistedReflection_Timer -= diff;
-
-        //VoidBolt_Timer
-        if (VoidBolt_Timer < diff)
-        {
-            if (rand()%100 < 40)
-            {
-                DoCastVictim(SPELL_VOIDBOLT);
-            }
-
-            VoidBolt_Timer = 18000;
-        }else VoidBolt_Timer -= diff;
-
-        //Rage_Timer
-        if (Rage_Timer < diff)
-        {
-            DoCastMe(SPELL_RAGE);
-            Rage_Timer = 70000;
-        }else Rage_Timer -= diff;
-
-        //Hound_Timer
-        if (Hound_Timer < diff)
-        {
-            SummonHounds(me->getVictim());
-            SummonHounds(me->getVictim());
-            SummonHounds(me->getVictim());
-
-            Hound_Timer = 45000;
-        }else Hound_Timer -= diff;
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
