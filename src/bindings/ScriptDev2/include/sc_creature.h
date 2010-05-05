@@ -377,7 +377,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			Tasks.SetObjects(this,me);
 			Reset();
 		}
-		MobEventTasks Tasks;
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:

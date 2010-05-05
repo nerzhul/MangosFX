@@ -933,7 +933,21 @@ void ScriptedAI::AggroAllPlayers(float maxdist)
 	}
 }
 void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
-							 SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front){}
+							 SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
+{
+	EventSh tmpEvent;
+	tmpEvent.SpellId = SpellId;
+	tmpEvent.phase = phase;
+	tmpEvent.Timer = Timer;
+	tmpEvent.targ = targ;
+	tmpEvent.Diff = Diff;
+	tmpEvent.Repeat = Repeat;
+	tmpEvent.NormTimer = NormTimer;
+	tmpEvent.TextId = TextId;
+	tmpEvent.MaxPriority = MaxPriority;
+	tmpEvent.RequireFront = front;
+	EventShVect.push_back(tmpEvent);
+}
 void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 			SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
 {
@@ -950,7 +964,88 @@ void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uin
 	tmpEvent.RequireFront = front;
 	EventShVect.push_back(tmpEvent);
 }
-void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase){}
+void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase)
+{
+	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+	{
+		if((*itr).phase == phase)
+		{
+			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			{
+				if((*itr).MaxPriority)
+					me->CastStop();
+				
+				if((*itr).TextId != 0)
+					DoScriptText((*itr).TextId,me);
+				
+				for(uint16 i=0;i<(*itr).Repeat;i++)
+				{
+					switch((*itr).targ)
+					{
+						case TARGET_MAIN:
+							DoCastVictim((*itr).SpellId);
+							break;
+						case TARGET_RANDOM:
+							DoCastRandom((*itr).SpellId,false,(*itr).RequireFront);
+							break;
+						case TARGET_ME:
+							DoCastMe((*itr).SpellId);
+							break;
+						case TARGET_LOW_HP:
+							DoCastLowHP((*itr).SpellId);
+							break;
+						case TARGET_NEAR:
+							DoCastNear((*itr).SpellId);
+							break;
+						case TARGET_HAS_MANA:
+							DoCastHasMana((*itr).SpellId);
+							break;
+						case PLAYER_RANDOM:
+							DoCastPlayer((*itr).SpellId);
+							break;
+						case HEAL_MY_FRIEND:
+							if(Unit* target = DoSelectLowestHpFriendly(30.0f,100))
+								DoCast(target,(*itr).SpellId);
+							break;
+						case NO_TANK:
+							if(me->getVictim() && me->getVictim()->GetDistance2d(me) > 10.0f)
+								DoCastVictim((*itr).SpellId);
+							break;
+						case TARGET_OTHER:
+							// todo : consultation d'un vecteur spécial...
+						default:
+							break;
+					}
+				}
+				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
+			}
+			else
+				(*itr).Timer -= uiDiff;	
+		}
+	}
+
+	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+	{
+		if((*itr).phase == phase)
+		{
+			if((*itr).TextId != 0)
+				DoScriptText((*itr).TextId,me);
+
+			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			{
+
+				for(int i=0;i<(*itr).Repeat;i++)
+				{
+					CallCreature((*itr).entry,(*itr).despawnTime,(*itr).WhereS,(*itr).Compo);
+				}
+				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
+			}
+			else
+				(*itr).Timer -= uiDiff;	
+		}
+	}
+}
+
 void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 {
 	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
@@ -1035,7 +1130,119 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 
 
 Creature* LibDevFSAI::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc WhereZone, Comportement Compo,
-									  float x, float y, float z, bool force){ return NULL; }
+									  float x, float y, float z, bool force)
+{
+	Creature* tmp = NULL;
+	if((me->isAlive() || force) && MyAdds.size() < MAX_ADDS)
+	{
+		float randX = x ,randY = y ,randZ = (me) ? me->GetPositionZ() + 1 : 0;
+		switch(WhereZone)
+		{
+			case ON_ME:
+				randX = 0;
+				randY = 0;
+				break;
+			case NEAR_7M:
+				randX = urand(5,9);
+				randY = urand(5,9);
+				if(urand(0,1))
+					randX = -randX;
+				if(urand(0,1))
+					randY = -randY;
+				break;
+			case NEAR_15M:
+				randX = urand(13,17);
+				randY = urand(13,17);
+				if(urand(0,1))
+					randX = -randX;
+				if(urand(0,1))
+					randY = -randY;
+				break;
+			case NEAR_30M:
+				randX = urand(28,32);
+				randY = urand(28,32);
+				if(urand(0,1))
+					randX = -randX;
+				if(urand(0,1))
+					randY = -randY;
+				break;
+			case NEAR_45M:
+				randX = urand(10,45);
+				randY = urand(10,45);
+				if(urand(0,1))
+					randX = -randX;
+				if(urand(0,1))
+					randY = -randY;
+				break;
+			case NEAR_60M:
+				randX = urand(45,60);
+				randY = urand(45,60);
+				if(urand(0,1))
+					randX = -randX;
+				if(urand(0,1))
+					randY = -randY;
+				break;
+			case PREC_COORDS:
+				randX = x;
+				randY = y;
+				randZ = z;
+				break;
+			default:
+				randX = 0;
+				randY = 0;
+				break;
+		}
+
+		if(WhereZone != PREC_COORDS)
+			tmp = me->SummonCreature(entry,me->GetPositionX() + randX,me->GetPositionY() + randY, me->GetPositionZ() + 1.0f,me->GetOrientation(), TEMPSUMMON_TIMED_DESPAWN, Despawn);
+		else
+			tmp = me->SummonCreature(entry,randX,randY,randZ,0.0f, TEMPSUMMON_TIMED_DESPAWN, Despawn);
+
+		if(tmp && tmp->isAlive())
+		{
+			switch(Compo)
+			{
+				case AGGRESSIVE_MAIN:
+					if(me->getVictim())
+						tmp->AddThreat(me->getVictim(),1);
+					break;
+				case AGGRESSIVE_RANDOM:
+				{
+					Unit* tmptar;
+					uint8 MAXLOOP = 0;
+					do
+					{
+						tmptar = SelectUnit(SELECT_TARGET_RANDOM,0);
+						MAXLOOP++;
+					}
+					while(tmptar && tmptar->GetDistance2d(me) < 40.0f && MAXLOOP < 50);
+					if(tmptar)
+						tmp->AddThreat(tmptar,1);
+					break;
+				}
+				case VERY_AGGRESSIVE_MAIN:
+					if(me->getVictim())
+						tmp->AddThreat(me->getVictim(),1000.0);
+					break;
+				case VERY_AGGRESSIVE_RANDOM:
+					if(Unit* tmptar = SelectUnit(SELECT_TARGET_RANDOM,0))
+						tmp->AddThreat(tmptar,1000.0);
+					break;
+				case GO_TO_CREATOR:
+					tmp->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					break;
+				case NOTHING:
+				default:
+					break;
+			}
+	
+			tmp->SetRespawnDelay(RESPAWN_ONE_DAY*1000);
+
+			MyAdds.push_back(tmp->GetGUID());
+		}
+	}
+	return tmp;
+}
 Creature* MobEventTasks::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc WhereZone, Comportement Compo,
 								 float x, float y, float z, bool force)
 {
@@ -1153,7 +1360,22 @@ Creature* MobEventTasks::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc Wh
 
 void LibDevFSAI::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,
 			uint32 nb_spawn, uint32 Despawn, ZoneInvoc WhereZone, 
-			Comportement Compo, uint32 TextId){}
+			Comportement Compo, uint32 TextId)
+{
+	EventSummon tmpEvent;
+	tmpEvent.Compo = Compo;
+	tmpEvent.Repeat = nb_spawn;
+	tmpEvent.despawnTime = Despawn;
+	tmpEvent.diff = Diff;
+	tmpEvent.entry = entry;
+	tmpEvent.NormTimer = NormTimer;
+	tmpEvent.Timer = Timer;
+	tmpEvent.phase = phase;
+	tmpEvent.WhereS = WhereZone;
+	tmpEvent.TextId = TextId;
+	EventSummonVect.push_back(tmpEvent);
+
+}
 void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,
 			uint32 nb_spawn, uint32 Despawn, ZoneInvoc WhereZone, 
 			Comportement Compo, uint32 TextId)
