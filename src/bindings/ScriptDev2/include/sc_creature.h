@@ -372,9 +372,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void InitInstance()
 		{
+			EventShVect.clear();
+			EventSummonVect.clear();
 			pInstance = (ScriptedInstance*)me->GetInstanceData();
 			m_difficulty = me->GetMap()->GetDifficulty();
-			Tasks.SetObjects(this,me);
 			Reset();
 		}
 		ScriptedInstance* pInstance;
