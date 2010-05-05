@@ -41,7 +41,7 @@ struct MANGOS_DLL_DECL boss_emerissAI : public LibDevFSAI
         DoScriptText(SAY_AGGRO, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())

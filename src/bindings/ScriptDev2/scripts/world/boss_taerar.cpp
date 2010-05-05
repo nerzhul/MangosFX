@@ -18,8 +18,8 @@ enum
     SPELL_SUMMONSHADE_3     = 24843,
 
     //Spells of Shades of Taerar
-    SPELL_POSIONCLOUD       = 24840,
-    SPELL_POSIONBREATH      = 20667
+    SPELL_POISONCLOUD       = 24840,
+    SPELL_POISONBREATH      = 20667
 };
 
 uint32 m_auiSpellSummonShade[]=
@@ -65,9 +65,9 @@ struct MANGOS_DLL_DECL boss_taerarAI : public LibDevFSAI
             pSummoned->AI()->AttackStart(pTarget);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if (m_bShades && m_uiShades_Timer < uiDiff)
+        if (m_bShades && m_uiShades_Timer < diff)
         {
             //Become unbanished again
             me->setFaction(14);

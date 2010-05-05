@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public LibDevFSAI
             pSummoned->AI()->AttackStart(pTarget);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
 			return;
