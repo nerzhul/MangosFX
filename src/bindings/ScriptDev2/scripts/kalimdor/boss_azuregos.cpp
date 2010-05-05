@@ -1,41 +1,20 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Azuregos
-SD%Complete: 90
-SDComment: Teleport not included, spell reflect not effecting dots (Core problem)
-SDCategory: Azshara
-EndScriptData */
-
 #include "precompiled.h"
 
-#define SAY_TELEPORT            -1000100
-
-#define SPELL_MARKOFFROST        23182
-#define SPELL_MANASTORM          21097
-#define SPELL_CHILL              21098
-#define SPELL_FROSTBREATH        21099
-#define SPELL_REFLECT            22067
-#define SPELL_CLEAVE              8255                      //Perhaps not right ID
-#define SPELL_ENRAGE             23537
-
-struct MANGOS_DLL_DECL boss_azuregosAI : public ScriptedAI
+enum Spells 
 {
-    boss_azuregosAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SAY_TELEPORT            -1000100
+	SPELL_MARKOFFROST        23182
+	SPELL_MANASTORM          21097
+	SPELL_CHILL              21098
+	SPELL_FROSTBREATH        21099
+	SPELL_REFLECT            22067
+	SPELL_CLEAVE              8255                      //Perhaps not right ID
+	SPELL_ENRAGE             23537
+}
+
+struct MANGOS_DLL_DECL boss_azuregosAI : public LibDevFSAI
+{
+    boss_azuregosAI(Creature* pCreature) : LibDevFSAI(pCreature) {Reset();}
 
     uint32 MarkOfFrost_Timer;
     uint32 ManaStorm_Timer;
