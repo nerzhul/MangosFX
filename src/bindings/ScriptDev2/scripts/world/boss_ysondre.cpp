@@ -94,7 +94,7 @@ struct MANGOS_DLL_DECL mob_dementeddruidsAI : public LibDevFSAI
 
     void Reset() { ResetTimers(); }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;

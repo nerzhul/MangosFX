@@ -2,26 +2,26 @@
 
 enum Texts
 {
-	SAY_AGGRO                   -1000159,
-	SAY_EARTHQUAKE_1            -1000160,
-	SAY_EARTHQUAKE_2            -1000161,
-	SAY_OVERRUN_1               -1000162,
-	SAY_OVERRUN_2               -1000163,
-	SAY_SLAY_1                  -1000164,
-	SAY_SLAY_2                  -1000165,
-	SAY_SLAY_3                  -1000166,
-	SAY_DEATH                   -1000167
+	SAY_AGGRO                  = -1000159,
+	SAY_EARTHQUAKE_1           = -1000160,
+	SAY_EARTHQUAKE_2           = -1000161,
+	SAY_OVERRUN_1              = -1000162,
+	SAY_OVERRUN_2              = -1000163,
+	SAY_SLAY_1                 = -1000164,
+	SAY_SLAY_2                 = -1000165,
+	SAY_SLAY_3                 = -1000166,
+	SAY_DEATH                  = -1000167
 };
 
 enum Spells
 {
-	SPELL_EARTHQUAKE            32686,
-	SPELL_SUNDER_ARMOR          33661,
-	SPELL_CHAIN_LIGHTNING       33665,
-	SPELL_OVERRUN               32636,
-	SPELL_ENRAGE                33653,
-	SPELL_MARK_DEATH            37128,
-	SPELL_AURA_DEATH            37131
+	SPELL_EARTHQUAKE           = 32686,
+	SPELL_SUNDER_ARMOR         = 33661,
+	SPELL_CHAIN_LIGHTNING      = 33665,
+	SPELL_OVERRUN              = 32636,
+	SPELL_ENRAGE               = 33653,
+	SPELL_MARK_DEATH           = 37128,
+	SPELL_AURA_DEATH           = 37131
 };
 struct MANGOS_DLL_DECL boss_doomwalkerAI : public LibDevFSAI
 {

@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_taerarAI : public LibDevFSAI
         }
         else if (m_bShades)
         {
-            m_uiShades_Timer -= uiDiff;
+            m_uiShades_Timer -= diff;
             //Do nothing while banished
             return;
         }
@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public LibDevFSAI
         ResetTimers();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
