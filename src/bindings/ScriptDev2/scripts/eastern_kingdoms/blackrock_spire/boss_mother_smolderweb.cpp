@@ -11,7 +11,7 @@ struct MANGOS_DLL_DECL boss_mothersmolderwebAI : public LibDevFSAI
 {
     boss_mothersmolderwebAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitAI();
+		InitIA();
 		AddEventOnMe(SPELL_CRYSTALIZE,20000,15000);
 		AddEventOnMe(SPELL_MOTHERSMILK,10000,5000,7500);
 	}
@@ -24,7 +24,7 @@ struct MANGOS_DLL_DECL boss_mothersmolderwebAI : public LibDevFSAI
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
         if (me->GetHealth() <= damage)
-            me->CastSpell(me,SPELL_SUMMON_SPIRE_SPIDERLING,true);
+            DoCastMe(SPELL_SUMMON_SPIRE_SPIDERLING,true);
     }
 
     void UpdateAI(const uint32 diff)

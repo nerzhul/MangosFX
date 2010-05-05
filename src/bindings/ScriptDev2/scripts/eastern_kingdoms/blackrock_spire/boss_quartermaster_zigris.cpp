@@ -1,46 +1,27 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Quartmaster_Zigris
-SD%Complete: 100
-SDComment: Needs revision
-SDCategory: Blackrock Spire
-EndScriptData */
-
 #include "precompiled.h"
 
-#define SPELL_SHOOT             16496
-#define SPELL_STUNBOMB          16497
-#define SPELL_HEALING_POTION    15504
-#define SPELL_HOOKEDNET         15609
-
-struct MANGOS_DLL_DECL boss_quatermasterzigrisAI : public ScriptedAI
+enum Spells
 {
-    boss_quatermasterzigrisAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_SHOOT            = 16496,
+	SPELL_STUNBOMB         = 16497,
+	SPELL_HEALING_POTION   = 15504,
+	SPELL_HOOKEDNET        = 15609
+};
 
-    uint32 Shoot_Timer;
-    uint32 StunBomb_Timer;
-    //uint32 HelingPotion_Timer;
+struct MANGOS_DLL_DECL boss_quatermasterzigrisAI : public LibDevFSAI
+{
+    boss_quatermasterzigrisAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_SHOOT,1000,500);
+		AddEventOnTank(SPELL_STUNBOMB,16000,14000);
+		AddEventMaxPrioOnMe(SPELL_HEALING_POTION,25000,30000);
+		AddEventMaxPrioOnTank(SPELL_HOOKEDNET,12000,15000);
+    }
 
     void Reset()
     {
-        Shoot_Timer = 1000;
-        StunBomb_Timer = 16000;
-        //HelingPotion_Timer = 25000;
+        ResetTimers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -48,21 +29,9 @@ struct MANGOS_DLL_DECL boss_quatermasterzigrisAI : public ScriptedAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-
-        //Shoot_Timer
-        if (Shoot_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHOOT);
-            Shoot_Timer = 500;
-        }else Shoot_Timer -= diff;
-
-        //StunBomb_Timer
-        if (StunBomb_Timer < diff)
-        {
-            DoCastVictim(SPELL_STUNBOMB);
-            StunBomb_Timer = 14000;
-        }else StunBomb_Timer -= diff;
-
+		
+		UpdateEvent(diff);
+		
         DoMeleeAttackIfReady();
     }
 };

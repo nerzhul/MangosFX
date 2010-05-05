@@ -23,7 +23,7 @@ struct MANGOS_DLL_DECL boss_overlordwyrmthalakAI : public LibDevFSAI
 {
     boss_overlordwyrmthalakAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitAI();
+		InitIA();
 		AddEventOnTank(SPELL_BLASTWAVE,20000,20000);
 		AddEventOnTank(SPELL_SHOUT,2000,10000);
 		AddEventOnTank(SPELL_CLEAVE,6000,7000);

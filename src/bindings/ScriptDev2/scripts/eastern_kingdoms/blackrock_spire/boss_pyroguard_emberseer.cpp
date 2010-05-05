@@ -11,7 +11,7 @@ struct MANGOS_DLL_DECL boss_pyroguard_emberseerAI : public LibDevFSAI
 {
     boss_pyroguard_emberseerAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitAI();
+		InitIA();
 		AddEventOnTank(SPELL_FIRENOVA,6000,6000);
 		AddEventOnTank(SPELL_FLAMEBUFFET,3000,14000);
 		AddEvent(SPELL_PYROBLAST,14000,15000);

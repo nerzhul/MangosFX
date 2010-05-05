@@ -2,8 +2,8 @@
 
 enum Spells
 {
-	SPELL_CROWDPUMMEL     "  10887,
-	SPELL_MIGHTYBLOW      "  14099
+	SPELL_CROWDPUMMEL     =  10887,
+	SPELL_MIGHTYBLOW      =  14099
 };
 
 #define ADD_1X                  -169.839203
@@ -14,7 +14,7 @@ struct MANGOS_DLL_DECL boss_halyconAI : public LibDevFSAI
 {
     boss_halyconAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitAI();
+		InitIA();
 		AddEventOnTank(SPELL_CROWDPUMMEL,8000,14000);
 		AddEventOnTank(SPELL_MIGHTYBLOW,14000,10000);
 	}

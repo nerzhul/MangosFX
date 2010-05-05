@@ -13,7 +13,7 @@ struct MANGOS_DLL_DECL boss_drakkisathAI : public LibDevFSAI
 {
     boss_drakkisathAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitAI();
+		InitIA();
 		AddEventOnTank(SPELL_FIRENOVA,6000,10000);
 		AddEventOnTank(SPELL_CLEAVE,8000,8000);
 		AddEventOnTank(SPELL_CONFLIGURATION,15000,18000);
