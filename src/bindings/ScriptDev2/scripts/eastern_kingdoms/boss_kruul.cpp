@@ -2,13 +2,13 @@
 
 enum Spells
 {
-	SPELL_SHADOWVOLLEY          21341,
-	SPELL_CLEAVE                20677,
-	SPELL_THUNDERCLAP           23931,
-	SPELL_TWISTEDREFLECTION     21063,
-	SPELL_VOIDBOLT              21066,
-	SPELL_RAGE                  21340,
-	SPELL_CAPTURESOUL           21054
+	SPELL_SHADOWVOLLEY        =  21341,
+	SPELL_CLEAVE              =  20677,
+	SPELL_THUNDERCLAP         =  23931,
+	SPELL_TWISTEDREFLECTION   =  21063,
+	SPELL_VOIDBOLT            =  21066,
+	SPELL_RAGE                =  21340,
+	SPELL_CAPTURESOUL         =  21054
 };
 
 struct MANGOS_DLL_DECL boss_kruulAI : public LibDevFSAI
