@@ -36,6 +36,7 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
         //m_uiMarkOfNature_Timer = 45000;
         m_uiLightningWave_Timer = 12000;
         m_uiSummonDruidModifier = 0;

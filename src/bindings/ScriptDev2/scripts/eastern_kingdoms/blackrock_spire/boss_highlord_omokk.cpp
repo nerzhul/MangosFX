@@ -23,35 +23,34 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define SPELL_WARSTOMP          24375
-#define SPELL_CLEAVE            15579
-#define SPELL_STRIKE            18368
-#define SPELL_REND              18106
-#define SPELL_SUNDERARMOR       24317
-#define SPELL_KNOCKAWAY         20686
-#define SPELL_SLOW              22356
-
-struct MANGOS_DLL_DECL boss_highlordomokkAI : public ScriptedAI
+enum Spells
 {
-    boss_highlordomokkAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_WARSTOMP         = 24375,
+	SPELL_CLEAVE           = 15579,
+	SPELL_STRIKE           = 18368,
+	SPELL_REND             = 18106,
+	SPELL_SUNDERARMOR      = 24317,
+	SPELL_KNOCKAWAY        = 20686,
+	SPELL_SLOW             = 22356
+};
 
-    uint32 WarStomp_Timer;
-    uint32 Cleave_Timer;
-    uint32 Strike_Timer;
-    uint32 Rend_Timer;
-    uint32 SunderArmor_Timer;
-    uint32 KnockAway_Timer;
-    uint32 Slow_Timer;
+struct MANGOS_DLL_DECL boss_highlordomokkAI : public LibDevFSAI
+{
+    boss_highlordomokkAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_WARSTOMP,15000,14000);
+		AddEventOnTank(SPELL_CLEAVE,6000,8000);
+		AddEventOnTank(SPELL_STRIKE,10000,10000);
+		AddEventOnTank(SPELL_REND,14000,18000);
+		AddEventOnTank(SPELL_SUNDERARMOR,2000,25000);
+		AddEventOnTank(SPELL_KNOCKAWAY,18000,12000);
+		AddEventOnTank(SPELL_SLOW,24000,18000);
+	}
 
     void Reset()
     {
-        WarStomp_Timer = 15000;
-        Cleave_Timer = 6000;
-        Strike_Timer = 10000;
-        Rend_Timer = 14000;
-        SunderArmor_Timer = 2000;
-        KnockAway_Timer = 18000;
-        Slow_Timer = 24000;
+		ResetTimers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -59,55 +58,8 @@ struct MANGOS_DLL_DECL boss_highlordomokkAI : public ScriptedAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-
-        //WarStomp_Timer
-        if (WarStomp_Timer < diff)
-        {
-            DoCastVictim(SPELL_WARSTOMP);
-            WarStomp_Timer = 14000;
-        }else WarStomp_Timer -= diff;
-
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            DoCastVictim(SPELL_CLEAVE);
-            Cleave_Timer = 8000;
-        }else Cleave_Timer -= diff;
-
-        //Strike_Timer
-        if (Strike_Timer < diff)
-        {
-            DoCastVictim(SPELL_STRIKE);
-            Strike_Timer = 10000;
-        }else Strike_Timer -= diff;
-
-        //Rend_Timer
-        if (Rend_Timer < diff)
-        {
-            DoCastVictim(SPELL_REND);
-            Rend_Timer = 18000;
-        }else Rend_Timer -= diff;
-
-        //SunderArmor_Timer
-        if (SunderArmor_Timer < diff)
-        {
-            DoCastVictim(SPELL_SUNDERARMOR);
-            SunderArmor_Timer = 25000;
-        }else SunderArmor_Timer -= diff;
-
-        //KnockAway_Timer
-        if (KnockAway_Timer < diff)
-        {
-            DoCastVictim(SPELL_KNOCKAWAY);
-            KnockAway_Timer = 12000;
-        }else KnockAway_Timer -= diff;
-
-        //Slow_Timer
-        if (Slow_Timer < diff)
-        {
-            DoCastVictim(SPELL_SLOW);
-            Slow_Timer = 18000;
-        }else Slow_Timer -= diff;
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

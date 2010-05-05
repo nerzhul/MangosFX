@@ -40,6 +40,7 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
         Enrage_Timer    = 0;
         Quake_Timer     = urand(25000, 35000);
         Overrun_Timer   = urand(30000, 45000);
