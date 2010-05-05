@@ -1,0 +1,14 @@
+autoreconf --install --force
+aclocal
+autoheader
+autoconf
+automake --add-missing
+automake src/bindings/Scriptdev2/Makefile
+mkdir objdir
+cd objdir
+../configure --prefix=/home/nerzhul/mangos/server --sysconfdir=/home/nerzhul/mangos/server/etc --enable-cli --enable-ra --datadir=/home/nerzhul/mangos/server/dat
+make
+make install -j8
+cd ..
+
+

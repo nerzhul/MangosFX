@@ -71,7 +71,8 @@ am__v_at_0 = @
 libmangosauth_a_AR = $(AR) $(ARFLAGS)
 libmangosauth_a_LIBADD =
 am_libmangosauth_a_OBJECTS = AuthCrypt.$(OBJEXT) BigNumber.$(OBJEXT) \
-	Hmac.$(OBJEXT) SARC4.$(OBJEXT) Sha1.$(OBJEXT) md5.$(OBJEXT)
+	HMACSHA1.$(OBJEXT) SARC4.$(OBJEXT) Sha1.$(OBJEXT) \
+	md5.$(OBJEXT)
 libmangosauth_a_OBJECTS = $(am_libmangosauth_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -259,8 +260,8 @@ libmangosauth_a_SOURCES = \
 	AuthCrypt.h \
 	BigNumber.cpp \
 	BigNumber.h \
-	Hmac.cpp \
-	Hmac.h \
+	HMACSHA1.cpp \
+	HMACSHA1.h \
 	SARC4.cpp \
 	SARC4.h \
 	Sha1.cpp \
@@ -318,7 +319,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/AuthCrypt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BigNumber.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Hmac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HMACSHA1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SARC4.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Sha1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@

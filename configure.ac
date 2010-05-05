@@ -274,7 +274,6 @@ AC_CONFIG_FILES([
    dep/src/zlib/Makefile
    dep/Makefile
    dep/tbb/Makefile
-   doc/Doxyfile
    doc/Makefile
    Makefile
    sql/Makefile
@@ -297,7 +296,6 @@ AC_CONFIG_FILES([
    src/mangosd/mangosd.conf.dist
    src/bindings/Makefile
    src/bindings/ScriptDev2/Makefile
-   src/bindings/ScriptDev2/scriptdev2.conf.dist
    src/bindings/ScriptDev2/config.h
 ])
 

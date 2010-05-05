@@ -1,0 +1,11 @@
+aclocal
+autoheader
+autoconf
+automake --add-missing
+automake src/bindings/ScriptDev2/Makefile
+cd objdir
+make
+make install -j8
+cd ..
+
+
