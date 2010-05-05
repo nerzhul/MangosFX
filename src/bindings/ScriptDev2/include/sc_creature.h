@@ -384,6 +384,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			Reset();
 		}
 		
+		void ResetTimers();
+		
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:

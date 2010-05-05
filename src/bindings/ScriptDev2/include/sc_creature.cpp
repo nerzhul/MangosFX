@@ -1046,6 +1046,15 @@ void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase)
 	}
 }
 
+void LibDevFSAI::ResetTimers()
+{
+	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
+		
+	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
+}
+
 void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 {
 	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
