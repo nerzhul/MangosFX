@@ -25,9 +25,9 @@ enum
     SPELL_TWISTEDREFLECTION         = 21063
 };
 
-struct MANGOS_DLL_DECL boss_doomlordkazzakAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_doomlordkazzakAI : public LibDevFSAI
 {
-    boss_doomlordkazzakAI(Creature* pCreature) : ScriptedAI(pCreature) 
+    boss_doomlordkazzakAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
 		InitIA();
 		AddEventOnTank(SPELL_SHADOWVOLLEY,urand(6000,10000),4000,2000);
