@@ -30,7 +30,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
     {		
 		CleanMyAdds();
 		
-		switch(m_bIsHeroic)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 				Frigibold_count = 4;
@@ -58,9 +58,9 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
 		CleanMyAdds();
-        if (m_pInstance)
+        if (pInstance)
 		{
-			switch(m_bIsHeroic)
+			switch(m_difficulty)
 			{
 				case RAID_DIFFICULTY_10MAN_NORMAL:
 				case RAID_DIFFICULTY_25MAN_NORMAL:
@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
+        if (pInstance)
 		{
             pInstance->SetData(TYPE_GormoktheImpaler, IN_PROGRESS);
 			pInstance->SetData(TYPE_EVENT_BEAST, IN_PROGRESS);
