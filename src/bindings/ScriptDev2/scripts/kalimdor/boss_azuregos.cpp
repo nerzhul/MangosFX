@@ -2,7 +2,7 @@
 
 enum Spells 
 {
-	SAY_TELEPORT           = -1000100
+	SAY_TELEPORT           = -1000100,
 	SPELL_MARKOFFROST      =  23182,
 	SPELL_MANASTORM        =  21097,
 	SPELL_CHILL            =  21098,
