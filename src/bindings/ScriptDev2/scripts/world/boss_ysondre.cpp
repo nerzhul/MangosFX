@@ -1,26 +1,3 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Ysondre
-SD%Complete: 90
-SDComment: Mark of Nature & Teleport missing
-SDCategory: Bosses
-EndScriptData */
-
 #include "precompiled.h"
 
 enum
@@ -42,22 +19,23 @@ enum
 };
 
 // Ysondre script
-struct MANGOS_DLL_DECL boss_ysondreAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_ysondreAI : public LibDevFSAI
 {
-    boss_ysondreAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+    boss_ysondreAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitBoss();
+		AddEvent(SPELL_SLEEP,urand(15000,20000),8000,8000);
+		AddEventOnTank(SPELL_NOXIOUSBREATH,8000,14000,6000);
+		AddEventOnMe(SPELL_TAILSWEEP,4000,2000);
+		AddEvent(SPELL_LIGHTNINGWAVE,12000,7000,5000);
+	}
 
-    uint32 m_uiSleep_Timer;
-    uint32 m_uiNoxiousBreath_Timer;
-    uint32 m_uiTailSweep_Timer;
     //uint32 m_uiMarkOfNature_Timer;
     uint32 m_uiLightningWave_Timer;
     uint32 m_uiSummonDruidModifier;
 
     void Reset()
     {
-        m_uiSleep_Timer = urand(15000, 20000);
-        m_uiNoxiousBreath_Timer = 8000;
-        m_uiTailSweep_Timer = 4000;
         //m_uiMarkOfNature_Timer = 45000;
         m_uiLightningWave_Timer = 12000;
         m_uiSummonDruidModifier = 0;
@@ -77,36 +55,7 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public ScriptedAI
     void UpdateAI(const uint32 uiDiff)
     {
         if (!CanDoSomething())
-            return;
-
-        //Sleep_Timer
-        if (m_uiSleep_Timer < uiDiff)
-        {
-            if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                DoCast(pTarget, SPELL_SLEEP);
-
-            m_uiSleep_Timer = urand(8000, 15000);
-        }
-        else
-            m_uiSleep_Timer -= uiDiff;
-
-        //NoxiousBreath_Timer
-        if (m_uiNoxiousBreath_Timer < uiDiff)
-        {
-            DoCastVictim(SPELL_NOXIOUSBREATH);
-            m_uiNoxiousBreath_Timer = urand(14000, 20000);
-        }
-        else
-            m_uiNoxiousBreath_Timer -= uiDiff;
-
-        //Tailsweep every 2 seconds
-        if (m_uiTailSweep_Timer < uiDiff)
-        {
-            DoCastMe( SPELL_TAILSWEEP);
-            m_uiTailSweep_Timer = 2000;
-        }
-        else
-            m_uiTailSweep_Timer -= uiDiff;
+			return;
 
         //MarkOfNature_Timer
         //if (m_uiMarkOfNature_Timer < uiDiff)
@@ -117,58 +66,40 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public ScriptedAI
         //else
             //m_uiMarkOfNature_Timer -= uiDiff;
 
-        //LightningWave_Timer
-        if (m_uiLightningWave_Timer < uiDiff)
-        {
-            //Cast LIGHTNINGWAVE on a Random target
-            if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                DoCast(pTarget, SPELL_LIGHTNINGWAVE);
-
-            m_uiLightningWave_Timer = urand(7000, 12000);
-        }
-        else
-            m_uiLightningWave_Timer -= uiDiff;
-
         //Summon Druids
-        if ((me->GetHealth()*100 / me->GetMaxHealth()) <= (100-(25*m_uiSummonDruidModifier)))
+        if (CheckPercentLife(100-(25*m_uiSummonDruidModifier)))
         {
             DoScriptText(SAY_SUMMONDRUIDS, me);
 
             for(int i = 0; i < 10; ++i)
-                DoCastMe( SPELL_SUMMONDRUIDS, true);
+                DoCastMe(SPELL_SUMMONDRUIDS, true);
 
             ++m_uiSummonDruidModifier;
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 };
 
 // Summoned druid script
-struct MANGOS_DLL_DECL mob_dementeddruidsAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_dementeddruidsAI : public LibDevFSAI
 {
-    mob_dementeddruidsAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
-
-    uint32 m_uiMoonFire_Timer;
-
-    void Reset()
+    mob_dementeddruidsAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-        m_uiMoonFire_Timer = 3000;
-    }
+		InitIA();
+		AddEventOnTank(SPELL_MOONFIRE,3000,5000);
+	}
+
+    void Reset() { ResetTimers(); }
 
     void UpdateAI(const uint32 uiDiff)
     {
         if (!CanDoSomething())
             return;
 
-        //MoonFire_Timer
-        if (m_uiMoonFire_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_MOONFIRE);
-            m_uiMoonFire_Timer = 5000;
-        }
-        else
-            m_uiMoonFire_Timer -= uiDiff;
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

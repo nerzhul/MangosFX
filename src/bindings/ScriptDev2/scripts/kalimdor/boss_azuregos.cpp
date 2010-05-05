@@ -16,7 +16,7 @@ struct MANGOS_DLL_DECL boss_azuregosAI : public LibDevFSAI
 {
     boss_azuregosAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     { 
-		InitBoss();
+		InitIA();
 		AddEventOnTank(SPELL_MARKOFFROST,35000,25000);
 		AddEventOnTank(SPELL_CHILL,urand(10000,30000),13000,12000);
 		AddEventOnTank(SPELL_FROSTBREATH,4000,10000,5000);

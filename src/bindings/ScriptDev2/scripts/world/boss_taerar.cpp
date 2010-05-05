@@ -1,26 +1,3 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Taerar
-SD%Complete: 70
-SDComment: Mark of Nature & Teleport NYI. Fix the way to be banished.
-SDCategory: Bosses
-EndScriptData */
-
 #include "precompiled.h"
 
 enum
@@ -50,16 +27,19 @@ uint32 m_auiSpellSummonShade[]=
     SPELL_SUMMONSHADE_1, SPELL_SUMMONSHADE_2, SPELL_SUMMONSHADE_3
 };
 
-struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_taerarAI : public LibDevFSAI
 {
-    boss_taerarAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+    boss_taerarAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEvent(SPELL_SLEEP,urand(15000,20000),8000,7000);
+		AddEventOnTank(SPELL_NOXIOUSBREATH,8000,14000,6000);
+		AddEventOnMe(SPELL_TAILSWEEP,4000,2000);
+		AddEventOnTank(SPELL_ARCANEBLAST,12000,7000,5000);
+		AddEventOnTank(SPELL_BELLOWINGROAR,25000,30000);
+	}
 
-    uint32 m_uiSleep_Timer;
-    uint32 m_uiNoxiousBreath_Timer;
-    uint32 m_uiTailSweep_Timer;
     //uint32 m_uiMarkOfNature_Timer;
-    uint32 m_uiArcaneBlast_Timer;
-    uint32 m_uiBellowingRoar_Timer;
     uint32 m_uiShades_Timer;
     uint32 m_uiShadesSummoned;
 
@@ -67,15 +47,10 @@ struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
 
     void Reset()
     {
-        m_uiSleep_Timer = urand(15000, 20000);
-        m_uiNoxiousBreath_Timer = 8000;
-        m_uiTailSweep_Timer = 4000;
+		ResetTimers();
         //m_uiMarkOfNature_Timer = 45000;
-        m_uiArcaneBlast_Timer = 12000;
-        m_uiBellowingRoar_Timer = 30000;
         m_uiShades_Timer = 60000;                               //The time that Taerar is banished
         m_uiShadesSummoned = 0;
-
         m_bShades = false;
     }
 
@@ -110,35 +85,6 @@ struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //Sleep_Timer
-        if (m_uiSleep_Timer < uiDiff)
-        {
-            if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
-                DoCast(pTarget, SPELL_SLEEP);
-
-            m_uiSleep_Timer = urand(8000, 15000);
-        }
-        else
-            m_uiSleep_Timer -= uiDiff;
-
-        //NoxiousBreath_Timer
-        if (m_uiNoxiousBreath_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_NOXIOUSBREATH);
-            m_uiNoxiousBreath_Timer = urand(14000, 20000);
-        }
-        else
-            m_uiNoxiousBreath_Timer -= uiDiff;
-
-        //Tailsweep every 2 seconds
-        if (m_uiTailSweep_Timer < uiDiff)
-        {
-            DoCastMe( SPELL_TAILSWEEP);
-            m_uiTailSweep_Timer = 2000;
-        }
-        else
-            m_uiTailSweep_Timer -= uiDiff;
-
         //MarkOfNature_Timer
         //if (m_uiMarkOfNature_Timer < uiDiff)
         //{
@@ -148,26 +94,8 @@ struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
         //else
             //m_uiMarkOfNature_Timer -= uiDiff;
 
-        //ArcaneBlast_Timer
-        if (m_uiArcaneBlast_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_ARCANEBLAST);
-            m_uiArcaneBlast_Timer = urand(7000, 12000);
-        }
-        else
-            m_uiArcaneBlast_Timer -= uiDiff;
-
-        //BellowingRoar_Timer
-        if (m_uiBellowingRoar_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_BELLOWINGROAR);
-            m_uiBellowingRoar_Timer = urand(20000, 30000);
-        }
-        else
-            m_uiBellowingRoar_Timer -= uiDiff;
-
         //Summon 3 Shades at 75%, 50% and 25% (if bShades is true we already left in line 117, no need to check here again)
-        if (!m_bShades && (me->GetHealth()*100 / me->GetMaxHealth()) <= (100-(25*m_uiShadesSummoned)))
+        if (!m_bShades && CheckPercentLife(100-(25*m_uiShadesSummoned)))
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
@@ -190,23 +118,26 @@ struct MANGOS_DLL_DECL boss_taerarAI : public ScriptedAI
             }
             m_uiShades_Timer = 60000;
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 };
 
 // Shades of Taerar Script
-struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public LibDevFSAI
 {
-    boss_shadeoftaerarAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
-
-    uint32 m_uiPoisonCloud_Timer;
-    uint32 m_uiPosionBreath_Timer;
+    boss_shadeoftaerarAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_POISONCLOUD,8000,30000);
+		AddEventOnTank(SPELL_POISONBREATH,12000,12000);
+	}
 
     void Reset()
     {
-        m_uiPoisonCloud_Timer = 8000;
-        m_uiPosionBreath_Timer = 12000;
+        ResetTimers();
     }
 
     void UpdateAI(const uint32 uiDiff)
@@ -214,23 +145,7 @@ struct MANGOS_DLL_DECL boss_shadeoftaerarAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //PoisonCloud_Timer
-        if (m_uiPoisonCloud_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_POSIONCLOUD);
-            m_uiPoisonCloud_Timer = 30000;
-        }
-        else
-            m_uiPoisonCloud_Timer -= uiDiff;
-
-        //PosionBreath_Timer
-        if (m_uiPosionBreath_Timer < uiDiff)
-        {
-            DoCastVictim( SPELL_POSIONBREATH);
-            m_uiPosionBreath_Timer = 12000;
-        }
-        else
-            m_uiPosionBreath_Timer -= uiDiff;
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

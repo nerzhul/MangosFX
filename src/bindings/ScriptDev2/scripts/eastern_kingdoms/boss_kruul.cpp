@@ -15,7 +15,7 @@ struct MANGOS_DLL_DECL boss_kruulAI : public LibDevFSAI
 {
     boss_kruulAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitBoss();
+		InitIA();
 		AddEventOnTank(SPELL_SHADOWVOLLEY,10000,5000);
 		AddEventOnTank(SPELL_CLEAVE,14000,10000);
 		AddEventOnTank(SPELL_THUNDERCLAP,20000,12000);
