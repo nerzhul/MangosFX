@@ -1309,12 +1309,6 @@ void Spell::EffectDummy(uint32 i)
 					return;
 
 				}
-				case 48021: //FSS Lignes capteur tellurique
-				{
-
-
-					return;
-				}
 				case 47190: //FSS mod (ne marche pas)
 				{
 					//Fly Spiritual form
@@ -1688,6 +1682,13 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastSpell(m_caster, spell_id, true);
                     return;
                 }
+				// Koralon Meteor hands
+				case 66725:
+					m_caster->CastSpell(m_caster,66765,true);
+					return;
+				case 68161:
+					m_caster->CastSpell(m_caster,67333,true);
+					return;
             }
             break;
         }
@@ -5257,9 +5258,9 @@ void Spell::EffectWeaponDmg(uint32 i)
         case SPELLFAMILY_DEATHKNIGHT:
         {
             // Blood Strike, Heart Strike, Obliterate
-            // Blood-Caked Strike, Scourge Strike
+            // Blood-Caked Strike
             if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0002000001400000) ||
-                m_spellInfo->SpellIconID == 1736 || m_spellInfo->SpellIconID == 3143)
+                m_spellInfo->SpellIconID == 1736)
             {
                 uint32 count = 0;
                 Unit::AuraMap const& auras = unitTarget->GetAuras();

@@ -1,42 +1,25 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Gyth
-SD%Complete: 100
-SDComment:
-SDCategory: Blackrock Spire
-EndScriptData */
-
 #include "precompiled.h"
 
-#define SPELL_CORROSIVEACID      20667
-#define SPELL_FREEZE             18763
-#define SPELL_FLAMEBREATH        20712
-
-struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
+enum Spells
 {
-    boss_gythAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_CORROSIVEACID     = 20667,
+	SPELL_FREEZE            = 18763,
+	SPELL_FLAMEBREATH       = 20712
+};
+
+struct MANGOS_DLL_DECL boss_gythAI : public LibDevFSAI
+{
+    boss_gythAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitIA();
+		AddEventOnTank(SPELL_CORROSIVEACID,8000,7000);
+		AddEventOnTank(SPELL_FREEZE,11000,16000);
+		AddEventOnTank(SPELL_FLAMEBREATH,4000,10500);
+	}
 
     uint32 Aggro_Timer;
     uint32 Dragons_Timer;
     uint32 Orc_Timer;
-    uint32 CorrosiveAcid_Timer;
-    uint32 Freeze_Timer;
-    uint32 Flamebreath_Timer;
     uint32 Line1Count;
     uint32 Line2Count;
 
@@ -50,12 +33,10 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
 
     void Reset()
     {
+		ResetTimers();
         Dragons_Timer = 3000;
         Orc_Timer = 60000;
         Aggro_Timer = 60000;
-        CorrosiveAcid_Timer = 8000;
-        Freeze_Timer = 11000;
-        Flamebreath_Timer = 4000;
         Event = false;
         SummonedDragons = false;
         SummonedOrcs= false;
@@ -147,29 +128,8 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
         // we take part in the fight
         if (bAggro)
         {
-            // CorrosiveAcid_Timer
-            if (CorrosiveAcid_Timer < diff)
-            {
-                DoCastVictim( SPELL_CORROSIVEACID);
-                CorrosiveAcid_Timer = 7000;
-            } else CorrosiveAcid_Timer -= diff;
-
-            // Freeze_Timer
-            if (Freeze_Timer < diff)
-            {
-                DoCastVictim( SPELL_FREEZE);
-                Freeze_Timer = 16000;
-            } else Freeze_Timer -= diff;
-
-            // Flamebreath_Timer
-            if (Flamebreath_Timer < diff)
-            {
-                DoCastVictim(SPELL_FLAMEBREATH);
-                Flamebreath_Timer = 10500;
-            } else Flamebreath_Timer -= diff;
-
             //Summon Rend
-            if (!SummonedRend && me->GetHealth()*100 / me->GetMaxHealth() < 11
+            if (!SummonedRend && CheckPercentLife(11)
                 && me->GetHealth() > 0)
             {
                 //summon Rend and Change model to normal Gyth
@@ -180,6 +140,8 @@ struct MANGOS_DLL_DECL boss_gythAI : public ScriptedAI
                 me->SummonCreature(10429, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 900000);
                 SummonedRend = true;
             }
+
+			UpdateEvent(diff);
 
             DoMeleeAttackIfReady();
         }                                                   // end if Aggro

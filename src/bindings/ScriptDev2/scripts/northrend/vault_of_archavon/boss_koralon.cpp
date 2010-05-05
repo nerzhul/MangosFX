@@ -1,47 +1,37 @@
 #include "precompiled.h"
 #include "vault_of_archavon.h"
 
-#define SP_BURNING_FURY_AURA    66895
-#define SP_BURNING_FURY_AURA2   68168
-#define SP_BURNING_FURY_EFFECT  66721
-
-#define SP_BURNING_BREATH       66665
-#define H_SP_BURNING_BREATH     67328 //DBM
-#define SP_BB_EFFECT            66670
-#define H_SP_BB_EFFECT          67329
-
-#define SP_METEOR_FISTS         66725 //DBM
-#define H_SP_METEOR_FISTS       68161       
-#define SP_METEOR_FISTS_EFF     66765
-#define H_SP_METEOR_FISTS_EFF   67333
-
-#define SP_CINDER       66684
-#define H_SP_CINDER     67332
-
-
-struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
+enum Spells
 {
-    boss_koralonAI(Creature* pCreature) : ScriptedAI(pCreature)
+	SPELL_BURNING_FURY_AURA		 = 66895,
+	SPELL_CINDER				 = 66684,
+	SPELL_METEOR_FISTS			 = 66725,
+
+	SPELL_BURNING_BREATH		 = 66665,
+	SPELL_BB_EFFECT				 = 66670,
+	SPELL_METEOR_FISTS_EFF		 = 66765,
+	
+};
+
+struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
+{
+    boss_koralonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Regular = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
+		InitIA();
+		AddEventOnMe(SPELL_METEOR_FISTS,25000,45000);
+		AddEvent(SPELL_CINDER,15000,35000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
     }
 
-    ScriptedInstance* pInstance;
-    bool Regular;
     uint32 BurningBreathTimer;
     uint32 FlamesTimer;
 
     uint32 BBTickTimer;
     uint32 BBTicks;
     bool BB;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SP_METEOR_FISTS_EFF,47000,45000,0,TARGET_MAIN);
+		me->RemoveAurasDueToSpell(SPELL_BURNING_FURY_AURA);
         BurningBreathTimer = 25000;
         FlamesTimer = 15000;
 
@@ -53,16 +43,16 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        DoCast(me, SP_BURNING_FURY_AURA);
+        DoCast(me, SPELL_BURNING_FURY_AURA);
 
         if(pInstance) 
 			pInstance->SetData(TYPE_KORALON, IN_PROGRESS);
-    };
+    }
 
     void JustDied(Unit *killer)
     {
         if(pInstance) pInstance->SetData(TYPE_KORALON, DONE);
-    };
+    }
 
     void UpdateAI(const uint32 diff)
     {
@@ -71,7 +61,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
 
         if(BurningBreathTimer < diff)
         {
-            DoCastMe(Regular ? SP_BURNING_BREATH : H_SP_BURNING_BREATH);
+            DoCastMe(SPELL_BURNING_BREATH);
             BurningBreathTimer = 45000;
 
             BB = true;
@@ -84,7 +74,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
         {
             if(BBTickTimer < diff)
             {
-                DoCast(NULL, Regular ? SP_BB_EFFECT : H_SP_BB_EFFECT, true);
+                DoCast(NULL, SPELL_BB_EFFECT, true);
                 BBTickTimer = 1000;
                 ++BBTicks;
                 if(BBTicks > 2) BB = false;
@@ -92,17 +82,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public ScriptedAI
             else BBTickTimer -= diff;
         }
 
-        if(FlamesTimer < diff)
-        {
-            int flames = Regular ? 3 : 5;
-            int i;
-            for(i=0; i< flames; ++i)
-				DoCastRandom(Regular ? SP_CINDER : H_SP_CINDER);
-            FlamesTimer = 20000;
-        }
-        else FlamesTimer -= diff;
-
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

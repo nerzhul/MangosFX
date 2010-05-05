@@ -1068,6 +1068,26 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
             m_healthLeech += damageInfo.damage;
 
         caster->DealSpellDamage(&damageInfo, true);
+
+		// Scourge Strike, here because needs to use final damage in second part of the spell
+		if (m_spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0800000000000000))
+		{
+			uint32 count = 0;
+			Unit::AuraMap const& auras = unitTarget->GetAuras();
+			for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+			{
+				if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
+					itr->second->GetCasterGUID() == caster->GetGUID() &&
+					IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
+					++count;
+			}
+			if (count)
+			{
+				int32 bp = count * CalculateDamage(2, unitTarget) * damageInfo.damage / 100;
+				if (bp)
+					caster->CastCustomSpell(unitTarget, 70890, &bp, NULL, NULL, true);
+			}
+		}
     }
     // Passive spell hits/misses or active spells only misses (only triggers)
     else
