@@ -9,7 +9,7 @@ enum Spells
 	SPELL_VOIDBOLT              21066,
 	SPELL_RAGE                  21340,
 	SPELL_CAPTURESOUL           21054
-}
+};
 
 struct MANGOS_DLL_DECL boss_kruulAI : public LibDevFSAI
 {
