@@ -356,6 +356,14 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void AddNoTankEvent(uint32 SpellId, uint32 Timer) { AddEvent(SpellId,Timer,Timer,0,NO_TANK); }
 
+		void AddEventOnMe(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			uint8 phase = 0, uint32 TextId = 0,	bool MaxPriority = false, uint16 Repeat = 1, bool front = true)
+			{ AddEvent(SpellId,Timer,NormTimer,Diff,TARGET_ME,phase,TextId,MaxPriority,Repeat,front); }
+			
+		void AddEventOnTank(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			uint8 phase = 0, uint32 TextId = 0,	bool MaxPriority = false, uint16 Repeat = 1, bool front = true)
+			{ AddEvent(SpellId,Timer,NormTimer,Diff,TARGET_MAIN,phase,TextId,MaxPriority,Repeat,front); }
+			
 		void AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase = 0, uint32 Diff = 0,
 			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
 			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
