@@ -55,16 +55,16 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		InitInstance();
 		if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 		{
-			Tasks.AddEvent(SPELL_FLAME_JETS_H,32000,25000,0,TARGET_MAIN,0);
-			Tasks.AddEvent(SPELL_SCORCH_H,10000,25000,0,TARGET_MAIN,0);
-			Tasks.AddEvent(SPELL_SLAG_POT_H,100,30000,0,TARGET_RANDOM,0);
+			AddEvent(SPELL_FLAME_JETS_H,32000,25000,0,TARGET_MAIN,0);
+			AddEvent(SPELL_SCORCH_H,10000,25000,0,TARGET_MAIN,0);
+			AddEvent(SPELL_SLAG_POT_H,100,30000,0,TARGET_RANDOM,0);
 			Assemblage_Timer = 30000;
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_FLAME_JETS,32000,25000,0,TARGET_MAIN,0);
-			Tasks.AddEvent(SPELL_SCORCH,10000,25000,0,TARGET_MAIN,0);
-			Tasks.AddEvent(SPELL_SLAG_POT,5000,30000,0,TARGET_RANDOM,0);
+			AddEvent(SPELL_FLAME_JETS,32000,25000,0,TARGET_MAIN,0);
+			AddEvent(SPELL_SCORCH,10000,25000,0,TARGET_MAIN,0);
+			AddEvent(SPELL_SLAG_POT,5000,30000,0,TARGET_RANDOM,0);
 			Assemblage_Timer = 40000;
 		}
 	}
@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		else
 			Fire_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
