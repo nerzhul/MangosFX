@@ -11,18 +11,16 @@ enum GormoktheImpalerSpells
 	NPC_FRIGBOLD = 34800,
 };
 
-struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 {
-    boss_GormoktheImpaler_AI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_GormoktheImpaler_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        AddEvent(26662,540000,10000,0,TARGET_ME);
+		AddEvent(SPELL_IMPALE,20000,10000,0,TARGET_MAIN);
+		AddEvent(SPELL_STAGGERING_STOMP,30000,25000,0,TARGET_MAIN);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty m_bIsHeroic;
 	uint8 Frigibold_count;
 	uint32 frigibold_Timer;
 	uint32 Spawn_Timer;
@@ -30,11 +28,8 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 
     void Reset()
     {		
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
-		Tasks.AddEvent(26662,540000,10000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_IMPALE,20000,10000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_STAGGERING_STOMP,30000,25000,0,TARGET_MAIN);
+		CleanMyAdds();
+		
 		switch(m_bIsHeroic)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -62,23 +57,23 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-		Tasks.CleanMyAdds();
+		CleanMyAdds();
         if (m_pInstance)
 		{
 			switch(m_bIsHeroic)
 			{
 				case RAID_DIFFICULTY_10MAN_NORMAL:
 				case RAID_DIFFICULTY_25MAN_NORMAL:
-					m_pInstance->SetData(TYPE_GormoktheImpaler, DONE);
-					if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+					pInstance->SetData(TYPE_GormoktheImpaler, DONE);
+					if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 						((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_JORM);
 					break;
 				case RAID_DIFFICULTY_10MAN_HEROIC:
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(Spawnable)
 					{
-						m_pInstance->SetData(TYPE_GormoktheImpaler, DONE);
-						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+						pInstance->SetData(TYPE_GormoktheImpaler, DONE);
+						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_JORM);
 					}
 					break;
@@ -92,8 +87,8 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 
         if (m_pInstance)
 		{
-            m_pInstance->SetData(TYPE_GormoktheImpaler, IN_PROGRESS);
-			m_pInstance->SetData(TYPE_EVENT_BEAST, IN_PROGRESS);
+            pInstance->SetData(TYPE_GormoktheImpaler, IN_PROGRESS);
+			pInstance->SetData(TYPE_EVENT_BEAST, IN_PROGRESS);
 		}
     }
 
@@ -107,7 +102,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 			if(frigibold_Timer <= diff)
 			{
 				if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-					Tasks.CallCreature(NPC_FRIGBOLD,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+					CallCreature(NPC_FRIGBOLD,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
 
 				Frigibold_count--;
 				SetAuraStack(SPELL_RISING_ANGER,5 - Frigibold_count,me,me,1);
@@ -121,7 +116,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 		{
 			if(Spawn_Timer <= diff)
 			{
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_JORM);
 				Spawn_Timer = 180000;
 				Spawnable = false;
@@ -129,7 +124,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public ScriptedAI
 			else
 				Spawn_Timer -= diff;
 		}
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
@@ -149,26 +144,17 @@ enum add_GormoktheImpaler
 	SPELL_HEAD_CRACK = 66407, 
 };
 
-struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public ScriptedAI
+struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public LibDevFSAI
 {
-    add_GormoktheImpaler_AI(Creature* pCreature) : ScriptedAI(pCreature)
+    add_GormoktheImpaler_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        AddEvent(SPELL_BATTER,12000,7000,3000,TARGET_MAIN);
+		AddEvent(SPELL_FIRE_BOMB,14000,20000,2000);
+		AddEvent(SPELL_HEAD_CRACK,12000,26000,1000,TARGET_MAIN);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty m_bIsHeroic;
-
-    void Reset()
-    {		
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_BATTER,12000,7000,3000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_FIRE_BOMB,14000,20000,2000);
-		Tasks.AddEvent(SPELL_HEAD_CRACK,12000,26000,1000,TARGET_MAIN);
-    }
+    void Reset(){}
 
     void Aggro(Unit* pWho)
     {
@@ -179,7 +165,7 @@ struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public ScriptedAI
     {
         if (!CanDoSomething())
             return;
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
