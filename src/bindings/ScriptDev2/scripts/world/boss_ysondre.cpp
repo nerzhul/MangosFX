@@ -23,7 +23,7 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public LibDevFSAI
 {
     boss_ysondreAI(Creature* pCreature) : LibDevFSAI(pCreature) 
     {
-		InitBoss();
+		InitIA();
 		AddEvent(SPELL_SLEEP,urand(15000,20000),8000,8000);
 		AddEventOnTank(SPELL_NOXIOUSBREATH,8000,14000,6000);
 		AddEventOnMe(SPELL_TAILSWEEP,4000,2000);
