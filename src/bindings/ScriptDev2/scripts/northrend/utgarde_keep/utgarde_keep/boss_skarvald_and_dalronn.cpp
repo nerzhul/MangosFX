@@ -161,21 +161,21 @@ struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
         DoScriptText(SAY_SKA_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiYellDelayTimer && m_uiYellDelayTimer < uiDiff)
+        if (m_uiYellDelayTimer && m_uiYellDelayTimer < diff)
         {
             if (Creature* pBuddy = GetBuddy())
                 DoScriptText(m_aYell[0].m_iTextReplyId, pBuddy);
 
             m_uiYellDelayTimer = 0;
         }
-        else m_uiYellDelayTimer -= uiDiff;
+        else m_uiYellDelayTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -221,23 +221,23 @@ struct MANGOS_DLL_DECL boss_dalronnAI : public boss_s_and_d_dummyAI
 			DoScriptText(SAY_DAL_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
 		if(AggroSaid == false)
 		{
-			if(Aggro_Text_Timer <= uiDiff)
+			if(Aggro_Text_Timer <= diff)
 			{
 				DoScriptText(m_aYell[1].m_iTextId, me);
 				AggroSaid = true;
 			}
 			else
-				Aggro_Text_Timer -= uiDiff;
+				Aggro_Text_Timer -= diff;
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

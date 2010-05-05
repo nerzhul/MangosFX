@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 			Tasks.CallCreature(29321,TEN_MINS,NEAR_30M,GO_TO_CREATOR);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething())
             return;
@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 				drain_Timer = 15000;
 			}
 
-			if(drain_Timer <= uiDiff)
+			if(drain_Timer <= diff)
 			{
 				protect = true;
 				DoScriptText(SOUND_BUBBLE,me);
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 				drain_Timer = 100000000;
 			}
 			else
-				drain_Timer -= uiDiff;
+				drain_Timer -= diff;
 		}
 		else
 		{
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 			}
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}

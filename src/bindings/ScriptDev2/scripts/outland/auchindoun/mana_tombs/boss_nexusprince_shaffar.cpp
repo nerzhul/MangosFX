@@ -120,12 +120,12 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
         DoScriptText(SAY_DEAD, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiFrostNova_Timer < uiDiff)
+        if (m_uiFrostNova_Timer < diff)
         {
             if (me->IsNonMeleeSpellCasted(false))
                 me->InterruptNonMeleeSpells(true);
@@ -133,23 +133,23 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
             DoCastMe(SPELL_FROSTNOVA);
             m_uiFrostNova_Timer = urand(17500, 25000);
             m_bCanBlink = true;
-        }else m_uiFrostNova_Timer -= uiDiff;
+        }else m_uiFrostNova_Timer -= diff;
 
-        if (m_uiFrostbolt_Timer < uiDiff)
+        if (m_uiFrostbolt_Timer < diff)
         {
             DoCastVictim(SPELL_FROSTBOLT);
             m_uiFrostbolt_Timer = urand(4500, 6000);
-        }else m_uiFrostbolt_Timer -= uiDiff;
+        }else m_uiFrostbolt_Timer -= diff;
 
-        if (m_uiFireBall_Timer < uiDiff)
+        if (m_uiFireBall_Timer < diff)
         {
             DoCastVictim(SPELL_FIREBALL);
             m_uiFireBall_Timer = urand(4500, 6000);
-        }else m_uiFireBall_Timer -= uiDiff;
+        }else m_uiFireBall_Timer -= diff;
 
         if (m_bCanBlink)
         {
-            if (m_uiBlink_Timer < uiDiff)
+            if (m_uiBlink_Timer < diff)
             {
                 if (me->IsNonMeleeSpellCasted(false))
                     me->InterruptNonMeleeSpells(true);
@@ -163,10 +163,10 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
 
                 m_uiBlink_Timer = urand(1000, 2500);
                 m_bCanBlink = false;
-            }else m_uiBlink_Timer -= uiDiff;
+            }else m_uiBlink_Timer -= diff;
         }
 
-        if (m_uiBeacon_Timer < uiDiff)
+        if (m_uiBeacon_Timer < diff)
         {
             if (!urand(0,3))
                 DoScriptText(SAY_SUMMON, me);
@@ -174,7 +174,7 @@ struct MANGOS_DLL_DECL boss_nexusprince_shaffarAI : public ScriptedAI
             DoCastMe(SPELL_ETHEREAL_BEACON,true);
 
             m_uiBeacon_Timer = 10000;
-        }else m_uiBeacon_Timer -= uiDiff;
+        }else m_uiBeacon_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -216,18 +216,18 @@ struct MANGOS_DLL_DECL mob_ethereal_beaconAI : public ScriptedAI
             pSummoned->AI()->AttackStart(me->getVictim());
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiArcaneBolt_Timer < uiDiff)
+        if (m_uiArcaneBolt_Timer < diff)
         {
             DoCastVictim(SPELL_ARCANE_BOLT);
             m_uiArcaneBolt_Timer = urand(2000, 4500);
-        }else m_uiArcaneBolt_Timer -= uiDiff;
+        }else m_uiArcaneBolt_Timer -= diff;
 
-        if (m_uiApprentice_Timer < uiDiff)
+        if (m_uiApprentice_Timer < diff)
         {
             if (me->IsNonMeleeSpellCasted(false))
                 me->InterruptNonMeleeSpells(true);
@@ -237,7 +237,7 @@ struct MANGOS_DLL_DECL mob_ethereal_beaconAI : public ScriptedAI
             me->ForcedDespawn();
             return;
 
-        }else m_uiApprentice_Timer -= uiDiff;
+        }else m_uiApprentice_Timer -= diff;
 
         //should they do meele?
         DoMeleeAttackIfReady();

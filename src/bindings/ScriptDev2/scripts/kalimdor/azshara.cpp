@@ -135,15 +135,15 @@ struct MANGOS_DLL_DECL npc_rizzle_sprysprocketAI : public npc_escortAI
         //pSummoned->CastSpell(pSummoned,SPELL_PERIODIC_GRENADE,false,0,0,me->GetGUID());
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (m_bIsIntro)
         {
-            if (m_uiIntroTimer < uiDiff)
+            if (m_uiIntroTimer < diff)
                 m_uiIntroTimer = 1500;
             else
             {
-                m_uiIntroTimer -= uiDiff;
+                m_uiIntroTimer -= diff;
                 return;
             }
 
@@ -168,13 +168,13 @@ struct MANGOS_DLL_DECL npc_rizzle_sprysprocketAI : public npc_escortAI
             return;
         }
 
-        if (m_uiDepthChargeTimer < uiDiff)
+        if (m_uiDepthChargeTimer < diff)
         {
             if (!HasEscortState(STATE_ESCORT_PAUSED))
                 me->CastSpell(me,SPELL_SUMMON_DEPTH_CHARGE,false);
 
             m_uiDepthChargeTimer = urand(10000, 15000);
-        }else m_uiDepthChargeTimer -= uiDiff;
+        }else m_uiDepthChargeTimer -= diff;
     }
 };
 

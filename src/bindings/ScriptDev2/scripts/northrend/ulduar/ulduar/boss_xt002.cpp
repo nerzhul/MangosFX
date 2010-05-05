@@ -301,7 +301,7 @@ struct MANGOS_DLL_DECL boss_xm024_AI : public ScriptedAI
 	}
     ScriptedInstance* m_pInstance;
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 		{
@@ -311,7 +311,7 @@ struct MANGOS_DLL_DECL boss_xm024_AI : public ScriptedAI
 		else
 		{
 
-			Tasks.UpdateEvent(uiDiff);
+			Tasks.UpdateEvent(diff);
 				
 			DoMeleeAttackIfReady();
 		}
@@ -331,7 +331,7 @@ struct MANGOS_DLL_DECL boss_xe321_AI : public ScriptedAI
 	void Reset() {}
     ScriptedInstance* m_pInstance;
 	
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 			return;
@@ -355,7 +355,7 @@ struct MANGOS_DLL_DECL boss_xs013_AI : public ScriptedAI
 
     ScriptedInstance* m_pInstance;
 	
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		me->ClearInCombat();
 		if(m_pInstance)

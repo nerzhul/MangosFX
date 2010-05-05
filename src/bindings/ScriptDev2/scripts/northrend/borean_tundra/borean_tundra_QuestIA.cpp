@@ -40,7 +40,7 @@ struct MANGOS_DLL_DECL cocoon_warsongAI : public ScriptedAI
 		
 	}
 
-	void UpdateAI(const uint32 uiDiff) {}
+	void UpdateAI(const uint32 diff) {}
 };
 
 

@@ -457,6 +457,7 @@ extern void AddSC_boss_championEdCRaid();
 extern void AddSC_boss_AA_toc10();
 extern void AddSC_boss_twin_valkyr();
 extern void AddSC_crystalsong_forest();
+extern void AddSC_boss_koralon();
 
 void AddScripts()
 {
@@ -913,4 +914,5 @@ void AddScripts()
 	AddSC_boss_twin_valkyr();
 	AddSC_boss_AA_toc10();
 	AddSC_crystalsong_forest();
+	AddSC_boss_koralon();
 }

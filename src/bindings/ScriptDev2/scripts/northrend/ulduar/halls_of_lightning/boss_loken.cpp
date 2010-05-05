@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -151,7 +151,7 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
         if (m_bIsAura)
         {
             // workaround for PULSING_SHOCKWAVE
-            /*if (m_uiPulsingShockwave_Timer < uiDiff)
+            /*if (m_uiPulsingShockwave_Timer < diff)
             {
                 Map *map = me->GetMap();
                 if (map->IsDungeon())
@@ -176,11 +176,11 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
                         }
                 }
                 m_uiPulsingShockwave_Timer = 2000;
-            }else m_uiPulsingShockwave_Timer -= uiDiff;*/
+            }else m_uiPulsingShockwave_Timer -= diff;*/
         }
         else
         {
-            if (m_uiResumePulsingShockwave_Timer < uiDiff)
+            if (m_uiResumePulsingShockwave_Timer < diff)
             {
                 //breaks at movement, can we assume when it's time, this spell is casted and also must stop movement?
                 //me->CastSpell(me, SPELL_PULSING_SHOCKWAVE_AURA, true);
@@ -190,10 +190,10 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
                 m_uiResumePulsingShockwave_Timer = 2000;
             }
             else
-                m_uiResumePulsingShockwave_Timer -= uiDiff;
+                m_uiResumePulsingShockwave_Timer -= diff;
         }
 
-        if (m_uiArcLightning_Timer < uiDiff)
+        if (m_uiArcLightning_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_ARC_LIGHTNING);
@@ -201,9 +201,9 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
             m_uiArcLightning_Timer = urand(15000, 16000);
         }
         else
-            m_uiArcLightning_Timer -= uiDiff;
+            m_uiArcLightning_Timer -= diff;
 
-        if (m_uiLightningNova_Timer < uiDiff)
+        if (m_uiLightningNova_Timer < diff)
         {
             switch(urand(0, 2))
             {
@@ -219,7 +219,7 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
             m_uiLightningNova_Timer = urand(20000, 21000);
         }
         else
-            m_uiLightningNova_Timer -= uiDiff;
+            m_uiLightningNova_Timer -= diff;
 
         // Health check
         if ((me->GetHealth()*100 / me->GetMaxHealth()) < (100-(25*m_uiHealthAmountModifier)))

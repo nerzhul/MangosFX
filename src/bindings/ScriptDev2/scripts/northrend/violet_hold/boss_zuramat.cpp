@@ -37,9 +37,9 @@ struct MANGOS_DLL_DECL add_zuramatAI: public ScriptedAI
 		DoCastMe(m_bIsHeroic ? 59747 : 54342);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
-		if(move_Timer <= uiDiff)
+		if(move_Timer <= diff)
 		{
 			urand(0,1) ? x = me->GetPositionX() - urand(2,4) : x = me->GetPositionX() + urand(2,4);
 
@@ -49,7 +49,7 @@ struct MANGOS_DLL_DECL add_zuramatAI: public ScriptedAI
 			move_Timer = 1000;
 		}
 		else
-			move_Timer -= uiDiff;
+			move_Timer -= diff;
 	}
 };
 
@@ -115,21 +115,21 @@ struct MANGOS_DLL_DECL boss_zuramatAI : public ScriptedAI
 		}
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething())
             return;
 
-		if(summon_Timer <= uiDiff)
+		if(summon_Timer <= diff)
 		{
 			me->CastStop();
 			DoCastMe(SPELL_SUMMON);
 			summon_Timer = urand(7000,11000);
 		}
 		else
-			summon_Timer -= uiDiff;
+			summon_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}

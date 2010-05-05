@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -166,18 +166,18 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
 
         // Growth
         // Gruul can cast this spell up to 30 times
-        if (m_uiGrowth_Timer < uiDiff)
+        if (m_uiGrowth_Timer < diff)
         {
             DoScriptText(EMOTE_GROW, me);
             DoCastMe(SPELL_GROWTH);
             m_uiGrowth_Timer = 30000;
         }
         else
-            m_uiGrowth_Timer -= uiDiff;
+            m_uiGrowth_Timer -= diff;
 
         if (m_bPerformingGroundSlam)
         {
-            if (m_uiGroundSlamTimer < uiDiff)
+            if (m_uiGroundSlamTimer < diff)
             {
                 m_uiGroundSlamTimer     = 120000;
                 m_uiHurtfulStrike_Timer = 8000;
@@ -189,12 +189,12 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
                 DoCastMe( SPELL_SHATTER);
             }
             else
-                m_uiGroundSlamTimer -= uiDiff;
+                m_uiGroundSlamTimer -= diff;
         }
         else
         {
             // Hurtful Strike
-            if (m_uiHurtfulStrike_Timer < uiDiff)
+            if (m_uiHurtfulStrike_Timer < diff)
             {
                 // Find 2nd-aggro target within melee range.
                 Unit *pTarget = NULL;
@@ -222,19 +222,19 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
                 m_uiHurtfulStrike_Timer = 8000;
             }
             else
-                m_uiHurtfulStrike_Timer -= uiDiff;
+                m_uiHurtfulStrike_Timer -= diff;
 
             // Reverberation
-            if (m_uiReverberation_Timer < uiDiff)
+            if (m_uiReverberation_Timer < diff)
             {
                 DoCastVictim( SPELL_REVERBERATION, true);
                 m_uiReverberation_Timer = urand(15000, 25000);
             }
             else
-                m_uiReverberation_Timer -= uiDiff;
+                m_uiReverberation_Timer -= diff;
 
             // Cave In
-            if (m_uiCaveIn_Timer < uiDiff)
+            if (m_uiCaveIn_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                     DoCast(pTarget,SPELL_CAVE_IN);
@@ -246,10 +246,10 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
 
             }
             else
-                m_uiCaveIn_Timer -= uiDiff;
+                m_uiCaveIn_Timer -= diff;
 
             // Ground Slam, Gronn Lord's Grasp, Stoned, Shatter
-            if (m_uiGroundSlamTimer < uiDiff)
+            if (m_uiGroundSlamTimer < diff)
             {
                 me->GetMotionMaster()->Clear();
                 me->GetMotionMaster()->MoveIdle();
@@ -260,7 +260,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
                 DoCastMe( SPELL_GROUND_SLAM);
             }
             else
-                m_uiGroundSlamTimer -= uiDiff;
+                m_uiGroundSlamTimer -= diff;
 
             DoMeleeAttackIfReady();
         }

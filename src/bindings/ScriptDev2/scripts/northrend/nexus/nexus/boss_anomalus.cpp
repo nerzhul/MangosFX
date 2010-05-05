@@ -94,40 +94,40 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
 		phase_invoc_Timer = 45000;
 	}
 	
-	void Do_Spec_Phase(const uint32 uiDiff)
+	void Do_Spec_Phase(const uint32 diff)
 	{
 		if(invoc == false)
 			portail_phase();
 		else
 		{
-			if(invoc_Timer <= uiDiff)
+			if(invoc_Timer <= diff)
 				call_portal();
 			else
 			{
 				// todo : arriver a cast le sort
 				DoCastMe(SPELL_CHARGE_RIFT);
-				invoc_Timer -= uiDiff;
+				invoc_Timer -= diff;
 			}
 
-			phase_invoc_Timer -= uiDiff;
+			phase_invoc_Timer -= diff;
 		}
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 		
 		if (CheckPercentLife(52) &&  phase == 1)
-			Do_Spec_Phase(uiDiff);
+			Do_Spec_Phase(diff);
 
-		if(phase_invoc_Timer <= uiDiff && invoc)
+		if(phase_invoc_Timer <= diff && invoc)
 		{
 			invoc = false;
 			phase++;
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -156,12 +156,12 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
 		storm_Timer = 1000;
     }
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-		if(storm_Timer <= uiDiff)
+		if(storm_Timer <= diff)
 		{
 			me->SetSpeedRate(MOVE_WALK,0.01f,true);
 			target = SelectUnit(SELECT_TARGET_RANDOM,0);
@@ -172,9 +172,9 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
 			storm_Timer = 1200;
 		}
 		else
-			storm_Timer -= uiDiff;
+			storm_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 };
 

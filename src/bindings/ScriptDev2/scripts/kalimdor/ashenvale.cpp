@@ -178,20 +178,20 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
         pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED) && m_bIsBrazierExtinguished)
             {
-                if (m_uiEventTimer < uiDiff)
+                if (m_uiEventTimer < diff)
                 {
                     ++m_uiWaveId;
                     DoWaveSummon();
                     m_uiEventTimer = 10000;
                 }
                 else
-                    m_uiEventTimer -= uiDiff;
+                    m_uiEventTimer -= diff;
             }
 
             return;
@@ -373,26 +373,26 @@ struct MANGOS_DLL_DECL npc_torekAI : public npc_escortAI
         pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiRend_Timer < uiDiff)
+        if (m_uiRend_Timer < diff)
         {
             DoCastVictim( SPELL_REND);
             m_uiRend_Timer = 20000;
         }
         else
-            m_uiRend_Timer -= uiDiff;
+            m_uiRend_Timer -= diff;
 
-        if (m_uiThunderclap_Timer < uiDiff)
+        if (m_uiThunderclap_Timer < diff)
         {
             DoCastMe( SPELL_THUNDERCLAP);
             m_uiThunderclap_Timer = 30000;
         }
         else
-            m_uiThunderclap_Timer -= uiDiff;
+            m_uiThunderclap_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

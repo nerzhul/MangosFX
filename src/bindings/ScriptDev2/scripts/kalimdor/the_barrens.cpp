@@ -586,13 +586,13 @@ struct MANGOS_DLL_DECL npc_wizzlecranks_shredderAI : public npc_escortAI
             pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (m_bIsPostEvent)
             {
-                if (m_uiPostEventTimer < uiDiff)
+                if (m_uiPostEventTimer < diff)
                 {
                     switch(m_uiPostEventCount)
                     {
@@ -618,7 +618,7 @@ struct MANGOS_DLL_DECL npc_wizzlecranks_shredderAI : public npc_escortAI
                     m_uiPostEventTimer = 5000;
                 }
                 else
-                    m_uiPostEventTimer -= uiDiff;
+                    m_uiPostEventTimer -= diff;
             }
 
             return;

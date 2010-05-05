@@ -116,17 +116,17 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
             DoScriptText(SAY_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
 		if(subphase == 0)
-			Tasks.UpdateEvent(uiDiff);
+			Tasks.UpdateEvent(diff);
 
 		if((CheckPercentLife(56) && phase == 1) || (CheckPercentLife(25) && phase == 2))
 		{
-			if(phase_Timer <= uiDiff)
+			if(phase_Timer <= diff)
 			{
 				switch(subphase)
 				{
@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
 				}
 			}
 			else
-				phase_Timer -= uiDiff;
+				phase_Timer -= diff;
 
 		}
 
@@ -222,12 +222,12 @@ struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
 		}
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 };
 
@@ -259,12 +259,12 @@ struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
 		}
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 	
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 };
 
@@ -288,12 +288,12 @@ struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_ARCA_TIME,2000,8000,2000);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 };
 CreatureAI* GetAI_boss_telestra(Creature* pCreature)

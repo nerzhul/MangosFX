@@ -227,26 +227,26 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (!m_bIsBerserk)
         {
-            if (m_uiBerserkTimer < uiDiff)
+            if (m_uiBerserkTimer < diff)
             {
                 DoScriptText(SAY_BERSERK, me);
                 DoCastMe( SPELL_BERSERK,true);
                 m_bIsBerserk = true;
             }
             else
-                m_uiBerserkTimer -= uiDiff;
+                m_uiBerserkTimer -= diff;
         }
 
         if (m_uiPhase != PHASE_FINAL)
         {
-            if (m_uiCheckTimer < uiDiff)
+            if (m_uiCheckTimer < diff)
             {
                 if (m_pInstance)
                     PhaseChange();
@@ -256,20 +256,20 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 m_uiCheckTimer = IN_MILISECONDS;
             }
             else
-                m_uiCheckTimer -= uiDiff;
+                m_uiCheckTimer -= diff;
         }
 
         if (m_uiPhase == PHASE_FINAL || m_uiPhase == PHASE_SINGLE)
         {
-            if (m_uiFrenzyTimer < uiDiff)
+            if (m_uiFrenzyTimer < diff)
             {
                 DoCastMe( SPELL_FRENZY);
                 m_uiFrenzyTimer = 16*IN_MILISECONDS;
             }
             else
-                m_uiFrenzyTimer -= uiDiff;
+                m_uiFrenzyTimer -= diff;
 
-            if (m_uiSaberLashTimer < uiDiff)
+            if (m_uiSaberLashTimer < diff)
             {
                 DoScriptText(urand(0, 1) ? SAY_SABERLASH1 : SAY_SABERLASH2, me);
 
@@ -277,20 +277,20 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 m_uiSaberLashTimer = 20*IN_MILISECONDS;
             }
             else
-                m_uiSaberLashTimer -= uiDiff;
+                m_uiSaberLashTimer -= diff;
         }
 
         if (m_uiPhase == PHASE_FINAL || m_uiPhase == PHASE_TOTEM)
         {
-            if (m_uiTotemTimer < uiDiff)
+            if (m_uiTotemTimer < diff)
             {
                 DoCastMe( SPELL_SUMMON_TOTEM);
                 m_uiTotemTimer = 20*IN_MILISECONDS;
             }
             else
-                m_uiTotemTimer -= uiDiff;
+                m_uiTotemTimer -= diff;
 
-            if (m_uiShockTimer < uiDiff)
+            if (m_uiShockTimer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                 {
@@ -303,7 +303,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
                 }
             }
             else
-                m_uiShockTimer -= uiDiff;
+                m_uiShockTimer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -354,26 +354,26 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
             pHalazzi->AI()->KilledUnit(pVictim);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiFrenzyTimer < uiDiff)
+        if (m_uiFrenzyTimer < diff)
         {
             DoCastMe( SPELL_LYNX_FRENZY);
             m_uiFrenzyTimer = urand(20000, 30000);          //subsequent frenzys casted every 20-30 seconds
         }
         else
-            m_uiFrenzyTimer -= uiDiff;
+            m_uiFrenzyTimer -= diff;
 
-        if (m_uiShredArmorTimer < uiDiff)
+        if (m_uiShredArmorTimer < diff)
         {
             DoCastVictim( SPELL_SHRED_ARMOR);
             m_uiShredArmorTimer = 4000;
         }
         else
-            m_uiShredArmorTimer -= uiDiff;
+            m_uiShredArmorTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

@@ -91,53 +91,53 @@ struct MANGOS_DLL_DECL boss_sjonnirAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		if(enrage_Timer <= uiDiff)
+		if(enrage_Timer <= diff)
 		{
 			DoCastMe(SPELL_FRENZY);
 			enrage_Timer = 240000;
 		}
 		else
-			enrage_Timer -= uiDiff;
+			enrage_Timer -= diff;
 
-		if(Chain_Timer <= uiDiff)
+		if(Chain_Timer <= diff)
 		{
 			target = SelectUnit(SELECT_TARGET_RANDOM, 0);
 			DoCast(target, m_bIsHeroic ? SPELL_CHAINLIGHTNING_H : SPELL_CHAINLIGHTNING_N);
 			Chain_Timer = urand(8000,10000);
 		}
 		else
-			Chain_Timer -= uiDiff;
+			Chain_Timer -= diff;
 
-		if(Ring_Timer <= uiDiff)
+		if(Ring_Timer <= diff)
 		{
 			target = SelectUnit(SELECT_TARGET_TOPAGGRO, 0);
 			DoCast(target, m_bIsHeroic ? SPELL_LIGHTNINGRING_H : SPELL_LIGHTNINGRING_N);
 			Ring_Timer = urand(13000,17000);
 		}
 		else
-			Ring_Timer -= uiDiff;
+			Ring_Timer -= diff;
 		
-		if(Shield_Timer <= uiDiff)
+		if(Shield_Timer <= diff)
 		{
 			DoCastMe( m_bIsHeroic ? SPELL_LIGHTNINGSHIELD_H : SPELL_LIGHTNINGSHIELD_N);
 			Shield_Timer = urand(28000,30000);
 		}
 		else
-			Shield_Timer -= uiDiff;
+			Shield_Timer -= diff;
 		
-		if(Charge_Timer <= uiDiff)
+		if(Charge_Timer <= diff)
 		{
 			target = SelectUnit(SELECT_TARGET_RANDOM, 0);
 			DoCast(target, m_bIsHeroic ? SPELL_STATICCHARGE_H : SPELL_STATICCHARGE_N);
 			Charge_Timer = urand(12000,14000);
 		}
 		else
-			Charge_Timer -= uiDiff;
+			Charge_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

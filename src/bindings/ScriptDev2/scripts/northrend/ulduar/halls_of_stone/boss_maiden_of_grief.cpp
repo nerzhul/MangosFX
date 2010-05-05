@@ -93,43 +93,43 @@ struct MANGOS_DLL_DECL boss_maiden_of_griefAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
 
-		if(m_bIsHeroic && PartingSorrow_Timer <= uiDiff)
+		if(m_bIsHeroic && PartingSorrow_Timer <= diff)
 		{
 			DoCastRandom(SPELL_PARTINGSORROW_H);
 			PartingSorrow_Timer = urand (12500,14500);
 		}
 		else
-			PartingSorrow_Timer -= uiDiff;
+			PartingSorrow_Timer -= diff;
 
-		if(Pillar_Timer <= uiDiff)
+		if(Pillar_Timer <= diff)
 		{
 			DoCastVictim(m_bIsHeroic ? SPELL_PILLAROFWOE_H : SPELL_PILLAROFWOE_N);
 			Pillar_Timer = urand(9000,13000);
 		}
 		else
-			Pillar_Timer -= uiDiff;
+			Pillar_Timer -= diff;
 
-		if(Shock_Timer <= uiDiff)
+		if(Shock_Timer <= diff)
 		{
 			DoCastVictim(m_bIsHeroic ? SPELL_SHOCKOFSORROW_H : SPELL_SHOCKOFSORROW_N);
 			Shock_Timer = urand(10000,12000);
 		}
 		else
-			Shock_Timer -= uiDiff;
+			Shock_Timer -= diff;
 
-		if(Storm_Timer <= uiDiff)
+		if(Storm_Timer <= diff)
 		{
 			DoCastVictim(m_bIsHeroic ? SPELL_STORMOFGRIEF_H : SPELL_STORMOFGRIEF_N);
 			Storm_Timer = urand(16000,18000);
 		}
 		else
-			Storm_Timer -= uiDiff;
+			Storm_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

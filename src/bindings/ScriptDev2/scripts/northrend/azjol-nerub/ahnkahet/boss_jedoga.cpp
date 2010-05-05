@@ -180,13 +180,13 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 	}
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         DoMeleeAttackIfReady();
-		if (phase_2_timer < uiDiff )
+		if (phase_2_timer < diff )
 		{
 			phase_2();
 			phase_2_timer = 50000;
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 		
 		}
 		else
-			phase_2_timer -= uiDiff;
+			phase_2_timer -= diff;
 
 		if(phase == 2)
 		{
@@ -205,7 +205,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 					Kill(add_choice);
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 		
 		
@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL add_jedoga : public ScriptedAI
     }
 	 
 		
-	void UpdateAI(const uint32 uiDiff) // Début Script add
+	void UpdateAI(const uint32 diff) // Début Script add
 	{	
 		SetCombatMovement(false);
 		me->DeleteThreatList();

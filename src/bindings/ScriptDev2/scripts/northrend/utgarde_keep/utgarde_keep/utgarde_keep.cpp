@@ -128,17 +128,17 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
             m_pInstance->SetData(m_uiForgeEncounterId, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiBurningBrandTimer < uiDiff)
+        if (m_uiBurningBrandTimer < diff)
         {
             DoCastVictim( m_bIsHeroic ? SPELL_BURNING_BRAND_H : SPELL_BURNING_BRAND);
             m_uiBurningBrandTimer = 15000;
         }
-        else m_uiBurningBrandTimer -= uiDiff;
+        else m_uiBurningBrandTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

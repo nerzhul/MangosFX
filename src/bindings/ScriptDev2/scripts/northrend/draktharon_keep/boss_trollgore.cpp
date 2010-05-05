@@ -98,13 +98,13 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
             pInstance->SetData(DATA_TROLLGORE_EVENT, IN_PROGRESS);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
 		if (!CanDoSomething())
             return;
 
-        if (uiSpawnTimer < uiDiff)
+        if (uiSpawnTimer < diff)
         {
 			uint8 _rand;
 			if(m_bIsHeroic == true)
@@ -117,11 +117,11 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
             uiSpawnTimer = urand(30000,40000);
         } 
 		else 
-			uiSpawnTimer -= uiDiff;
+			uiSpawnTimer -= diff;
 
         if (bAchiev)
         {
-            if (uiAuraCountTimer < uiDiff)
+            if (uiAuraCountTimer < diff)
             {
                 if (me->HasAura(SPELL_CONSUME) || me->HasAura(H_SPELL_CONSUME))
                 {
@@ -137,10 +137,10 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
                 uiAuraCountTimer = 16000;
             } 
 			else 
-				uiAuraCountTimer -= uiDiff;
+				uiAuraCountTimer -= diff;
         }
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

@@ -299,7 +299,7 @@ struct MANGOS_DLL_DECL instance_dark_portal : public ScriptedInstance
         }
     }
 
-    void Update(uint32 uiDiff)
+    void Update(uint32 diff)
     {
         if (m_auiEncounter[1] != IN_PROGRESS)
             return;
@@ -313,7 +313,7 @@ struct MANGOS_DLL_DECL instance_dark_portal : public ScriptedInstance
 
         if (m_uiNextPortal_Timer)
         {
-            if (m_uiNextPortal_Timer <= uiDiff)
+            if (m_uiNextPortal_Timer <= diff)
             {
                 ++m_uiRiftPortalCount;
 
@@ -323,7 +323,7 @@ struct MANGOS_DLL_DECL instance_dark_portal : public ScriptedInstance
                 m_uiNextPortal_Timer = RiftWaves[GetRiftWaveId()].NextPortalTime;
             }
             else
-                m_uiNextPortal_Timer -= uiDiff;
+                m_uiNextPortal_Timer -= diff;
         }
     }
 };

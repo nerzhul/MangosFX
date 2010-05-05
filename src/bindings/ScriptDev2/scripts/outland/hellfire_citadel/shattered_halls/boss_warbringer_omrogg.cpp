@@ -116,17 +116,17 @@ struct MANGOS_DLL_DECL mob_omrogg_headsAI : public ScriptedAI
         m_bDeathYell = true;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_bDeathYell)
             return;
 
-        if (m_uiDeath_Timer < uiDiff)
+        if (m_uiDeath_Timer < diff)
         {
             DoScriptText(YELL_DIE_R, me);
             m_uiDeath_Timer = false;
             me->setDeathState(JUST_DIED);
-        }else m_uiDeath_Timer -= uiDiff;
+        }else m_uiDeath_Timer -= diff;
     }
 };
 
@@ -288,9 +288,9 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_pInstance->SetData(TYPE_OMROGG, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if (m_uiDelay_Timer < uiDiff)
+        if (m_uiDelay_Timer < diff)
         {
             m_uiDelay_Timer = 3500;
 
@@ -330,12 +330,12 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
                 DoScriptText(KillingDelay[m_iKilling].id, pSource);
                 m_bKillingYell = false;
             }
-        }else m_uiDelay_Timer -= uiDiff;
+        }else m_uiDelay_Timer -= diff;
 
         if (!CanDoSomething())
             return;
 
-        if (m_uiBlastCount && m_uiBlastWave_Timer <= uiDiff)
+        if (m_uiBlastCount && m_uiBlastWave_Timer <= diff)
         {
             DoCastMe(SPELL_BLAST_WAVE);
             m_uiBlastWave_Timer = 5000;
@@ -343,18 +343,18 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
 
             if (m_uiBlastCount == 3)
                 m_uiBlastCount = 0;
-        }else m_uiBlastWave_Timer -= uiDiff;
+        }else m_uiBlastWave_Timer -= diff;
 
-        if (m_uiBurningMaul_Timer < uiDiff)
+        if (m_uiBurningMaul_Timer < diff)
         {
             DoScriptText(EMOTE_ENRAGE, me);
             DoCastMe( m_bIsHeroic ? H_SPELL_BURNING_MAUL : SPELL_BURNING_MAUL);
             m_uiBurningMaul_Timer = 40000;
             m_uiBlastWave_Timer = 16000;
             m_uiBlastCount = 1;
-        }else m_uiBurningMaul_Timer -= uiDiff;
+        }else m_uiBurningMaul_Timer -= diff;
 
-        if (m_uiResetThreat_Timer < uiDiff)
+        if (m_uiResetThreat_Timer < diff)
         {
             if (Unit *target = SelectUnit(SELECT_TARGET_RANDOM,0))
             {
@@ -363,19 +363,19 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
                 me->AddThreat(target, 0.0f);
             }
             m_uiResetThreat_Timer = urand(25000, 40000);
-        }else m_uiResetThreat_Timer -= uiDiff;
+        }else m_uiResetThreat_Timer -= diff;
 
-        if (m_uiFear_Timer < uiDiff)
+        if (m_uiFear_Timer < diff)
         {
             DoCastMe(SPELL_FEAR);
             m_uiFear_Timer = urand(15000, 35000);
-        }else m_uiFear_Timer -= uiDiff;
+        }else m_uiFear_Timer -= diff;
 
-        if (m_uiThunderClap_Timer < uiDiff)
+        if (m_uiThunderClap_Timer < diff)
         {
             DoCastMe(SPELL_THUNDERCLAP);
             m_uiThunderClap_Timer = urand(15000, 30000);
-        }else m_uiThunderClap_Timer -= uiDiff;
+        }else m_uiThunderClap_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

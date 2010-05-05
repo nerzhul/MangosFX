@@ -205,14 +205,14 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiphase == 0)
             return;
         // Flying & adds
         /*else if (m_uiphase == 1)
         {
-            if (m_uiPlayerCheck_Timer < uiDiff)
+            if (m_uiPlayerCheck_Timer < diff)
             {
                 Map *map = me->GetMap();
                 if (map->IsDungeon() && m_pInstance->GetData(TYPE_SKADI) == IN_PROGRESS)
@@ -236,9 +236,9 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
                     }
                 }
                 m_uiPlayerCheck_Timer = 1000;
-            } else m_uiPlayerCheck_Timer -= uiDiff;
+            } else m_uiPlayerCheck_Timer -= diff;
 
-            if (m_uiMoveNext_Timer < uiDiff)
+            if (m_uiMoveNext_Timer < diff)
             {
                 switch(m_uiWaypointId)
                 {
@@ -255,12 +255,12 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
                     break;
                 }
                 m_uiMoveNext_Timer = 25000; // prevent stuck
-            } else m_uiMoveNext_Timer -= uiDiff;
+            } else m_uiMoveNext_Timer -= diff;
         }*/
         // Land & attack
 		else if (m_uiphase == 2)
 		{
-			Tasks.UpdateEvent(uiDiff,2);
+			Tasks.UpdateEvent(diff,2);
 
 			DoMeleeAttackIfReady();
 		}

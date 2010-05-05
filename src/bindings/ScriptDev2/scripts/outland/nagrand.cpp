@@ -579,37 +579,37 @@ struct MANGOS_DLL_DECL npc_maghar_captiveAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiChainLightningTimer < uiDiff)
+        if (m_uiChainLightningTimer < diff)
         {
             DoCastVictim( SPELL_CHAIN_LIGHTNING);
             m_uiChainLightningTimer = urand(7000, 14000);
         }
         else
-            m_uiChainLightningTimer -= uiDiff;
+            m_uiChainLightningTimer -= diff;
 
         if (me->GetHealth()*100 < me->GetMaxHealth()*30)
         {
-            if (m_uiHealTimer < uiDiff)
+            if (m_uiHealTimer < diff)
             {
                 DoCastMe( SPELL_HEALING_WAVE);
                 m_uiHealTimer = 5000;
             }
             else
-                m_uiHealTimer -= uiDiff;
+                m_uiHealTimer -= diff;
         }
 
-        if (m_uiFrostShockTimer < uiDiff)
+        if (m_uiFrostShockTimer < diff)
         {
             DoCastVictim( SPELL_FROST_SHOCK);
             m_uiFrostShockTimer = urand(7500, 15000);
         }
         else
-            m_uiFrostShockTimer -= uiDiff;
+            m_uiFrostShockTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

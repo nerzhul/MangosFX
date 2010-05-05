@@ -220,14 +220,14 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (m_uiCloseDoor_Timer)
         {
-            if (m_uiCloseDoor_Timer <= uiDiff)
+            if (m_uiCloseDoor_Timer <= diff)
             {
                 if (m_pInstance)
                 {
@@ -238,30 +238,30 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
                 }
             }
             else
-                m_uiCloseDoor_Timer -= uiDiff;
+                m_uiCloseDoor_Timer -= diff;
         }
 
         //Cooldowns for casts
         if (m_uiArcaneCooldown)
         {
-            if (m_uiArcaneCooldown >= uiDiff)
-                m_uiArcaneCooldown -= uiDiff;
+            if (m_uiArcaneCooldown >= diff)
+                m_uiArcaneCooldown -= diff;
             else
                 m_uiArcaneCooldown = 0;
         }
 
         if (m_uiFireCooldown)
         {
-            if (m_uiFireCooldown >= uiDiff)
-                m_uiFireCooldown -= uiDiff;
+            if (m_uiFireCooldown >= diff)
+                m_uiFireCooldown -= diff;
             else
                 m_uiFireCooldown = 0;
         }
 
         if (m_uiFrostCooldown)
         {
-            if (m_uiFrostCooldown >= uiDiff)
-                m_uiFrostCooldown -= uiDiff;
+            if (m_uiFrostCooldown >= diff)
+                m_uiFrostCooldown -= diff;
             else
                 m_uiFrostCooldown = 0;
         }
@@ -296,8 +296,8 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         //Drink Inturrupt Timer
         if (m_bDrinking && !m_bDrinkInturrupted)
         {
-            if (m_uiDrinkInturrupt_Timer >= uiDiff)
-                m_uiDrinkInturrupt_Timer -= uiDiff;
+            if (m_uiDrinkInturrupt_Timer >= diff)
+                m_uiDrinkInturrupt_Timer -= diff;
             else
             {
                 me->SetStandState(UNIT_STAND_STATE_STAND);
@@ -313,7 +313,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             return;
 
         //Normal casts
-        if (m_uiNormalCast_Timer < uiDiff)
+        if (m_uiNormalCast_Timer < diff)
         {
             if (!me->IsNonMeleeSpellCasted(false))
             {
@@ -342,9 +342,9 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             m_uiNormalCast_Timer = 1000;
         }
         else
-            m_uiNormalCast_Timer -= uiDiff;
+            m_uiNormalCast_Timer -= diff;
 
-        if (m_uiSecondarySpell_Timer < uiDiff)
+        if (m_uiSecondarySpell_Timer < diff)
         {
             switch(urand(0, 1))
             {
@@ -359,9 +359,9 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             m_uiSecondarySpell_Timer = urand(5000, 20000);
         }
         else
-            m_uiSecondarySpell_Timer -= uiDiff;
+            m_uiSecondarySpell_Timer -= diff;
 
-        if (m_uiSuperCast_Timer < uiDiff)
+        if (m_uiSuperCast_Timer < diff)
         {
             uint8 auiAvailable[2];
 
@@ -419,7 +419,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             m_uiSuperCast_Timer = urand(35000, 40000);
         }
         else
-            m_uiSuperCast_Timer -= uiDiff;
+            m_uiSuperCast_Timer -= diff;
 
         if (!m_bElementalsSpawned && me->GetHealth()*100 / me->GetMaxHealth() < 40)
         {
@@ -437,7 +437,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             DoScriptText(SAY_ELEMENTALS, me);
         }
 
-        if (m_uiBerserk_Timer < uiDiff)
+        if (m_uiBerserk_Timer < diff)
         {
             for (uint32 i = 0; i < 5; ++i)
             {
@@ -453,17 +453,17 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
             m_uiBerserk_Timer = 60000;
         }
         else
-            m_uiBerserk_Timer -= uiDiff;
+            m_uiBerserk_Timer -= diff;
 
         //Flame Wreath check
         if (m_uiFlameWreath_Timer)
         {
-            if (m_uiFlameWreath_Timer >= uiDiff)
-                m_uiFlameWreath_Timer -= uiDiff;
+            if (m_uiFlameWreath_Timer >= diff)
+                m_uiFlameWreath_Timer -= diff;
             else
                 m_uiFlameWreath_Timer = 0;
 
-            if (m_uiFlameWreathCheck_Timer < uiDiff)
+            if (m_uiFlameWreathCheck_Timer < diff)
             {
                 for (uint32 i = 0; i < 3; ++i)
                 {
@@ -481,7 +481,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
                 m_uiFlameWreathCheck_Timer = 500;
             }
             else
-                m_uiFlameWreathCheck_Timer -= uiDiff;
+                m_uiFlameWreathCheck_Timer -= diff;
         }
 
         if (m_uiArcaneCooldown && m_uiFireCooldown && m_uiFrostCooldown)
@@ -528,18 +528,18 @@ struct MANGOS_DLL_DECL water_elementalAI : public ScriptedAI
         m_uiCast_Timer = urand(2000, 5000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiCast_Timer < uiDiff)
+        if (m_uiCast_Timer < diff)
         {
             DoCastVictim( SPELL_WATERBOLT);
             m_uiCast_Timer = urand(2000, 5000);
         }
         else
-            m_uiCast_Timer -= uiDiff;
+            m_uiCast_Timer -= diff;
     }
 };
 

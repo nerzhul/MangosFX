@@ -227,13 +227,13 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
         SetFollowPaused(false);
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (HasFollowState(STATE_FOLLOW_POSTEVENT))
             {
-                if (m_uiEndEventTimer < uiDiff)
+                if (m_uiEndEventTimer < diff)
                 {
                     if (!pSpraggle || !pSpraggle->isAlive())
                     {
@@ -285,19 +285,19 @@ struct MANGOS_DLL_DECL npc_ringoAI : public FollowerAI
                     ++m_uiEndEventProgress;
                 }
                 else
-                    m_uiEndEventTimer -= uiDiff;
+                    m_uiEndEventTimer -= diff;
             }
             else if (HasFollowState(STATE_FOLLOW_INPROGRESS))
             {
                 if (!HasFollowState(STATE_FOLLOW_PAUSED))
                 {
-                    if (m_uiFaintTimer < uiDiff)
+                    if (m_uiFaintTimer < diff)
                     {
                         SetFaint();
                         m_uiFaintTimer = urand(60000, 120000);
                     }
                     else
-                        m_uiFaintTimer -= uiDiff;
+                        m_uiFaintTimer -= diff;
                 }
             }
 

@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -245,11 +245,11 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             m_pInstance->SetData(TYPE_NAZAN, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!me->getVictim() && m_uiMovementTimer)
         {
-            if (m_uiMovementTimer <= uiDiff)
+            if (m_uiMovementTimer <= diff)
             {
                 if (m_pInstance)
                 {
@@ -259,7 +259,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
                         DoMoveToCenter();
                 }
                 m_uiMovementTimer = 0;
-            } else m_uiMovementTimer -= uiDiff;
+            } else m_uiMovementTimer -= diff;
         }
 
         if (!CanDoSomething())

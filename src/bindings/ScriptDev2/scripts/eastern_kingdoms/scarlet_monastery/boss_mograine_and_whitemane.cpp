@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -185,18 +185,18 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
             return;
 
         //m_uiCrusaderStrike_Timer
-        if (m_uiCrusaderStrike_Timer < uiDiff)
+        if (m_uiCrusaderStrike_Timer < diff)
         {
             DoCastVictim(SPELL_CRUSADERSTRIKE);
             m_uiCrusaderStrike_Timer = 10000;
-        }else m_uiCrusaderStrike_Timer -= uiDiff;
+        }else m_uiCrusaderStrike_Timer -= diff;
 
         //m_uiHammerOfJustice_Timer
-        if (m_uiHammerOfJustice_Timer < uiDiff)
+        if (m_uiHammerOfJustice_Timer < diff)
         {
             DoCastVictim(SPELL_HAMMEROFJUSTICE);
             m_uiHammerOfJustice_Timer = 60000;
-        }else m_uiHammerOfJustice_Timer -= uiDiff;
+        }else m_uiHammerOfJustice_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -287,7 +287,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         DoScriptText(SAY_WH_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -295,7 +295,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         if (m_bCanResurrect)
         {
             //When casting resuruction make sure to delay so on rez when reinstate battle deepsleep runs out
-            if (m_pInstance && m_uiWait_Timer < uiDiff)
+            if (m_pInstance && m_uiWait_Timer < diff)
             {
                 if (Creature* pMograine = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_MOGRAINE)))
                 {
@@ -304,7 +304,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
                     m_bCanResurrect = false;
                 }
             }
-            else m_uiWait_Timer -= uiDiff;
+            else m_uiWait_Timer -= diff;
         }
 
         //Cast Deep sleep when health is less than 50%
@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
             return;
 
         //If we are <75% hp cast healing spells at self or Mograine
-        if (m_uiHeal_Timer < uiDiff)
+        if (m_uiHeal_Timer < diff)
         {
             Creature* pTarget = NULL;
 
@@ -344,21 +344,21 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
                 DoCast(pTarget, SPELL_HEAL);
 
             m_uiHeal_Timer = 13000;
-        }else m_uiHeal_Timer -= uiDiff;
+        }else m_uiHeal_Timer -= diff;
 
         //m_uiPowerWordShield_Timer
-        if (m_uiPowerWordShield_Timer < uiDiff)
+        if (m_uiPowerWordShield_Timer < diff)
         {
             DoCastMe(SPELL_POWERWORDSHIELD);
             m_uiPowerWordShield_Timer = 15000;
-        }else m_uiPowerWordShield_Timer -= uiDiff;
+        }else m_uiPowerWordShield_Timer -= diff;
 
         //m_uiHolySmite_Timer
-        if (m_uiHolySmite_Timer < uiDiff)
+        if (m_uiHolySmite_Timer < diff)
         {
             DoCastVictim(SPELL_HOLYSMITE);
             m_uiHolySmite_Timer = 6000;
-        }else m_uiHolySmite_Timer -= uiDiff;
+        }else m_uiHolySmite_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

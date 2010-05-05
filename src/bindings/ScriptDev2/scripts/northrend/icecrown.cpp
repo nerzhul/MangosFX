@@ -197,12 +197,12 @@ struct npc_argent_valiantAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -230,7 +230,7 @@ struct npc_argent_tournament_postAI : public ScriptedAI
     npc_argent_tournament_postAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
 	void Reset(){};
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (me->IsNonMeleeSpellCasted(false))
             return;
@@ -280,7 +280,7 @@ struct npc_alorah_and_grimminAI : public ScriptedAI
 
 	MobEventTasks Tasks;
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (uiCast = 1)
         {

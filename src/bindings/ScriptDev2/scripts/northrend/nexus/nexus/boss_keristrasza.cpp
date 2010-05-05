@@ -73,7 +73,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
             DoScriptText(SAY_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
 		if(CheckPercentLife(25) && !me->HasAura(8599,0))
 			DoCastMe(SPELL_ENRAGE);
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

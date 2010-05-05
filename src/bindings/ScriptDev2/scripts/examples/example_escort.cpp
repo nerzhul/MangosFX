@@ -124,29 +124,29 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
             DoScriptText(SAY_DEATH_3, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Must update npc_escortAI
-        npc_escortAI::UpdateAI(uiDiff);
+        npc_escortAI::UpdateAI(diff);
 
         //Combat check
         if (me->getVictim())
         {
-            if (m_uiDeathCoilTimer < uiDiff)
+            if (m_uiDeathCoilTimer < diff)
             {
                 DoScriptText(SAY_SPELL, me);
                 me->CastSpell(me->getVictim(), SPELL_DEATH_COIL, false);
                 m_uiDeathCoilTimer = 4000;
             }
             else
-                m_uiDeathCoilTimer -= uiDiff;
+                m_uiDeathCoilTimer -= diff;
         }
         else
         {
             //Out of combat but being escorted
             if (HasEscortState(STATE_ESCORT_ESCORTING))
             {
-                if (m_uiChatTimer < uiDiff)
+                if (m_uiChatTimer < diff)
                 {
                     if (me->HasAura(SPELL_ELIXIR_OF_FORTITUDE, 0))
                     {
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL example_escortAI : public npc_escortAI
                     m_uiChatTimer = 12000;
                 }
                 else
-                    m_uiChatTimer -= uiDiff;
+                    m_uiChatTimer -= diff;
             }
         }
     }

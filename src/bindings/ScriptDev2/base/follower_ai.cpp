@@ -182,11 +182,11 @@ void FollowerAI::EnterEvadeMode()
     Reset();
 }
 
-void FollowerAI::UpdateAI(const uint32 uiDiff)
+void FollowerAI::UpdateAI(const uint32 diff)
 {
     if (HasFollowState(STATE_FOLLOW_INPROGRESS) && !me->getVictim())
     {
-        if (m_uiUpdateFollowTimer < uiDiff)
+        if (m_uiUpdateFollowTimer < diff)
         {
             if (HasFollowState(STATE_FOLLOW_COMPLETE) && !HasFollowState(STATE_FOLLOW_POSTEVENT))
             {
@@ -238,13 +238,13 @@ void FollowerAI::UpdateAI(const uint32 uiDiff)
             m_uiUpdateFollowTimer = 1000;
         }
         else
-            m_uiUpdateFollowTimer -= uiDiff;
+            m_uiUpdateFollowTimer -= diff;
     }
 
-    UpdateFollowerAI(uiDiff);
+    UpdateFollowerAI(diff);
 }
 
-void FollowerAI::UpdateFollowerAI(const uint32 uiDiff)
+void FollowerAI::UpdateFollowerAI(const uint32 diff)
 {
     if (!CanDoSomething())
         return;

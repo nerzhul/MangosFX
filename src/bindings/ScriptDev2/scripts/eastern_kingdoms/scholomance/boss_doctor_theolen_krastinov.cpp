@@ -59,40 +59,40 @@ struct MANGOS_DLL_DECL boss_theolenkrastinovAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         //Rend_Timer
-        if (m_uiRend_Timer < uiDiff)
+        if (m_uiRend_Timer < diff)
         {
             DoCastVictim( SPELL_REND);
             m_uiRend_Timer = 10000;
         }
         else
-            m_uiRend_Timer -= uiDiff;
+            m_uiRend_Timer -= diff;
 
         //m_uiBackhand_Timer
-        if (m_uiBackhand_Timer < uiDiff)
+        if (m_uiBackhand_Timer < diff)
         {
             DoCastVictim( SPELL_BACKHAND);
             m_uiBackhand_Timer = 10000;
         }
         else
-            m_uiBackhand_Timer -= uiDiff;
+            m_uiBackhand_Timer -= diff;
 
         //Frenzy_Timer
         if (me->GetHealth()*100 / me->GetMaxHealth() < 26)
         {
-            if (m_uiFrenzy_Timer < uiDiff)
+            if (m_uiFrenzy_Timer < diff)
             {
                 DoCastMe( SPELL_FRENZY);
                 DoScriptText(EMOTE_GENERIC_FRENZY_KILL, me);
                 m_uiFrenzy_Timer = 120000;
             }
             else
-                m_uiFrenzy_Timer -= uiDiff;
+                m_uiFrenzy_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();

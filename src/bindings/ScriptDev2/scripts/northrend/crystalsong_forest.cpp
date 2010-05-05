@@ -58,9 +58,9 @@ struct npc_warmage_violetstandAI : public Scripted_NoMovementAI
     }
 
 	MobEventTasks Tasks;
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if (m_uiTimer <= uiDiff)
+        if (m_uiTimer <= diff)
         {
             me->CastStop();
             Creature* pTarget = GetClosestCreatureWithEntry(me,NPC_TRANSITUS_SHIELD_DUMMY,32.0f);
@@ -91,9 +91,9 @@ struct npc_warmage_violetstandAI : public Scripted_NoMovementAI
                     break;
             }
         }
-        else m_uiTimer -= uiDiff;
+        else m_uiTimer -= diff;
 
-        ScriptedAI::UpdateAI(uiDiff);
+        ScriptedAI::UpdateAI(diff);
 
         if (!CanDoSomething())
             return;

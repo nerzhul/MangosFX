@@ -260,7 +260,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         m_lAddsEntryList.clear();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -373,12 +373,12 @@ struct MANGOS_DLL_DECL mob_thurgAI : public boss_malacrass_addAI
         m_uiCleaveTimer = 10000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiBloodlustTimer < uiDiff)
+        if (m_uiBloodlustTimer < diff)
         {
             std::list<Creature*> lTempList = DoFindFriendlyMissingBuff(50.0f, SPELL_BLOODLUST);
 
@@ -391,15 +391,15 @@ struct MANGOS_DLL_DECL mob_thurgAI : public boss_malacrass_addAI
             m_uiBloodlustTimer = 12000;
         }
         else
-            m_uiBloodlustTimer -= uiDiff;
+            m_uiBloodlustTimer -= diff;
 
-        if (m_uiCleaveTimer < uiDiff)
+        if (m_uiCleaveTimer < diff)
         {
             DoCastVictim( SPELL_CLEAVE);
             m_uiCleaveTimer = 12000;
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+            m_uiCleaveTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -449,12 +449,12 @@ struct MANGOS_DLL_DECL mob_alyson_antilleAI : public boss_malacrass_addAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiArcaneTorrentTimer < uiDiff)
+        if (m_uiArcaneTorrentTimer < diff)
         {
             if (IsEnemyPlayerInRangeForSpell(SPELL_ARCANE_TORRENT))
             {
@@ -465,9 +465,9 @@ struct MANGOS_DLL_DECL mob_alyson_antilleAI : public boss_malacrass_addAI
                 m_uiArcaneTorrentTimer = 1000;
         }
         else
-            m_uiArcaneTorrentTimer -= uiDiff;
+            m_uiArcaneTorrentTimer -= diff;
 
-        if (m_uiFlashHealTimer < uiDiff)
+        if (m_uiFlashHealTimer < diff)
         {
             //this will fail if we previously was following target and pTarget is now different than before
             if (Unit* pTarget = DoSelectLowestHpFriendly(RANGE_FRIENDLY_TARGET*2, 30000))
@@ -494,9 +494,9 @@ struct MANGOS_DLL_DECL mob_alyson_antilleAI : public boss_malacrass_addAI
             m_uiFlashHealTimer = 2500;
         }
         else
-            m_uiFlashHealTimer -= uiDiff;
+            m_uiFlashHealTimer -= diff;
 
-        if (m_uiDispelMagicTimer < uiDiff)
+        if (m_uiDispelMagicTimer < diff)
         {
             Unit* pTarget = NULL;
             std::list<Creature*> lTempList = DoFindFriendlyCC(RANGE_FRIENDLY_TARGET);
@@ -512,7 +512,7 @@ struct MANGOS_DLL_DECL mob_alyson_antilleAI : public boss_malacrass_addAI
             m_uiDispelMagicTimer = 12000;
         }
         else
-            m_uiDispelMagicTimer -= uiDiff;
+            m_uiDispelMagicTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -554,18 +554,18 @@ struct MANGOS_DLL_DECL mob_gazakrothAI : public boss_malacrass_addAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiFireboltTimer < uiDiff)
+        if (m_uiFireboltTimer < diff)
         {
             DoCastVictim( SPELL_FIREBOLT);
             m_uiFireboltTimer = 1000;
         }
         else
-            m_uiFireboltTimer -= uiDiff;
+            m_uiFireboltTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -595,12 +595,12 @@ struct MANGOS_DLL_DECL mob_lord_raadanAI : public boss_malacrass_addAI
         m_uiThunderclapTimer = 13000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiThunderclapTimer < uiDiff)
+        if (m_uiThunderclapTimer < diff)
         {
             if (IsEnemyPlayerInRangeForSpell(SPELL_THUNDERCLAP))
             {
@@ -611,15 +611,15 @@ struct MANGOS_DLL_DECL mob_lord_raadanAI : public boss_malacrass_addAI
                 m_uiThunderclapTimer = 1000;
         }
         else
-            m_uiThunderclapTimer -= uiDiff;
+            m_uiThunderclapTimer -= diff;
 
-        if (m_uiFlameBreathTimer < uiDiff)
+        if (m_uiFlameBreathTimer < diff)
         {
             DoCastVictim( SPELL_FLAME_BREATH);
             m_uiFlameBreathTimer = 12000;
         }
         else
-            m_uiFlameBreathTimer -= uiDiff;
+            m_uiFlameBreathTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -646,12 +646,12 @@ struct MANGOS_DLL_DECL mob_darkheartAI : public boss_malacrass_addAI
         m_uiPsychicWailTimer = 8000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiPsychicWailTimer < uiDiff)
+        if (m_uiPsychicWailTimer < diff)
         {
             if (IsEnemyPlayerInRangeForSpell(SPELL_PSYCHIC_WAIL))
             {
@@ -662,7 +662,7 @@ struct MANGOS_DLL_DECL mob_darkheartAI : public boss_malacrass_addAI
                 m_uiPsychicWailTimer = 1000;
         }
         else
-            m_uiPsychicWailTimer -= uiDiff;
+            m_uiPsychicWailTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -704,12 +704,12 @@ struct MANGOS_DLL_DECL mob_slitherAI : public boss_malacrass_addAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiVenomSpitTimer < uiDiff)
+        if (m_uiVenomSpitTimer < diff)
         {
             if (Unit* pVictim = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pVictim, SPELL_VENOM_SPIT);
@@ -717,7 +717,7 @@ struct MANGOS_DLL_DECL mob_slitherAI : public boss_malacrass_addAI
             m_uiVenomSpitTimer = 2500;
         }
         else
-            m_uiVenomSpitTimer -= uiDiff;
+            m_uiVenomSpitTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -744,18 +744,18 @@ struct MANGOS_DLL_DECL mob_fenstalkerAI : public boss_malacrass_addAI
         m_uiVolatileInfectionTimer = 15000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiVolatileInfectionTimer < uiDiff)
+        if (m_uiVolatileInfectionTimer < diff)
         {
             DoCastVictim( SPELL_VOLATILE_INFECTION);
             m_uiVolatileInfectionTimer = 12000;
         }
         else
-            m_uiVolatileInfectionTimer -= uiDiff;
+            m_uiVolatileInfectionTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -785,20 +785,20 @@ struct MANGOS_DLL_DECL mob_koraggAI : public boss_malacrass_addAI
         m_uiMightyBlowTimer = 10000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiMightyBlowTimer < uiDiff)
+        if (m_uiMightyBlowTimer < diff)
         {
             DoCastVictim( SPELL_MIGHTY_BLOW);
             m_uiMightyBlowTimer = 12000;
         }
         else
-            m_uiMightyBlowTimer -= uiDiff;
+            m_uiMightyBlowTimer -= diff;
 
-        if (m_uiColdStareTimer < uiDiff)
+        if (m_uiColdStareTimer < diff)
         {
             if (Unit* pVictim = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pVictim, SPELL_COLD_STARE);
@@ -806,7 +806,7 @@ struct MANGOS_DLL_DECL mob_koraggAI : public boss_malacrass_addAI
             m_uiColdStareTimer = 12000;
         }
         else
-            m_uiColdStareTimer -= uiDiff;
+            m_uiColdStareTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

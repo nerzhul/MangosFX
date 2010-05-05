@@ -90,12 +90,12 @@ struct MANGOS_DLL_DECL boss_krikthirAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		if(CheckPercentLife(30) && !me->HasAura(SPELL_ENRAGE,0))
 			DoCastMe(SPELL_ENRAGE);
@@ -139,12 +139,12 @@ struct MANGOS_DLL_DECL boss_silthikAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_TOILE,5000,13000,5000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -181,12 +181,12 @@ struct MANGOS_DLL_DECL boss_gashraAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_MORS_N,10000,8000,3000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		percent = ((float)me->GetHealth() * 100/(float)me->GetMaxHealth());
 		if(percent < 40 && !me->HasAura(SPELL_GASHRA_ENRAGE,0))
@@ -231,12 +231,12 @@ struct MANGOS_DLL_DECL boss_narjilAI : public ScriptedAI
 		}
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

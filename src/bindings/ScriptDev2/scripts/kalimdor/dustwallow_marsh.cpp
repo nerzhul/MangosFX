@@ -89,12 +89,12 @@ struct MANGOS_DLL_DECL mobs_risen_husk_spiritAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiConsumeFlesh_Timer < uiDiff)
+        if (m_uiConsumeFlesh_Timer < diff)
         {
             if (me->GetEntry() == NPC_RISEN_HUSK)
                 DoCastVictim(SPELL_CONSUME_FLESH);
@@ -102,9 +102,9 @@ struct MANGOS_DLL_DECL mobs_risen_husk_spiritAI : public ScriptedAI
             m_uiConsumeFlesh_Timer = 15000;
         }
         else
-            m_uiConsumeFlesh_Timer -= uiDiff;
+            m_uiConsumeFlesh_Timer -= diff;
 
-        if (m_uiIntangiblePresence_Timer < uiDiff)
+        if (m_uiIntangiblePresence_Timer < diff)
         {
             if (me->GetEntry() == NPC_RISEN_SPIRIT)
                 DoCastVictim(SPELL_INTANGIBLE_PRESENCE);
@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL mobs_risen_husk_spiritAI : public ScriptedAI
             m_uiIntangiblePresence_Timer = 20000;
         }
         else
-            m_uiIntangiblePresence_Timer -= uiDiff;
+            m_uiIntangiblePresence_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -150,12 +150,12 @@ struct MANGOS_DLL_DECL npc_restless_apparitionAI : public ScriptedAI
         m_uiTalk_Timer = 1000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_uiTalk_Timer)
             return;
 
-        if (m_uiTalk_Timer <= uiDiff)
+        if (m_uiTalk_Timer <= diff)
         {
             switch(urand(0, 7))
             {
@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL npc_restless_apparitionAI : public ScriptedAI
             m_uiTalk_Timer = 0;
         }
         else
-            m_uiTalk_Timer -= uiDiff;
+            m_uiTalk_Timer -= diff;
     }
 };
 
@@ -330,7 +330,7 @@ struct MANGOS_DLL_DECL npc_morokkAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
@@ -559,13 +559,13 @@ struct MANGOS_DLL_DECL npc_ogronAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {
-                if (m_uiGlobalTimer < uiDiff)
+                if (m_uiGlobalTimer < diff)
                 {
                     m_uiGlobalTimer = 5000;
 
@@ -678,7 +678,7 @@ struct MANGOS_DLL_DECL npc_ogronAI : public npc_escortAI
                         ++m_uiPhaseCounter;
                 }
                 else
-                    m_uiGlobalTimer -= uiDiff;
+                    m_uiGlobalTimer -= diff;
             }
 
             return;

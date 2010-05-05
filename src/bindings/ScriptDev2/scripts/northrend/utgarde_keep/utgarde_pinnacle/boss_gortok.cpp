@@ -173,11 +173,11 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (m_uiAnimalCounter)
         {
-            if(m_uiAnimalCheck_Timer < uiDiff)
+            if(m_uiAnimalCheck_Timer < diff)
             {
             	Creature* pTemp = NULL;
 				
@@ -226,13 +226,13 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
                 }
             }
 			else
-				m_uiAnimalCheck_Timer -= uiDiff;
+				m_uiAnimalCheck_Timer -= diff;
         }
 
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -286,14 +286,14 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
 		if (!CanDoSomething())
             return;
 
         // Acid Splatter
-        if(AcidSplatter_timer <= uiDiff)
+        if(AcidSplatter_timer <= diff)
         {
             DoCastMe( m_bIsHeroic ? SPELL_ACID_SPLATTER_H : SPELL_ACID_SPLATTER_N);
 
@@ -303,9 +303,9 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
             AcidSplatter_timer = urand(10000,14000);
         }
 		else
-			AcidSplatter_timer -= uiDiff;
+			AcidSplatter_timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -366,13 +366,13 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -422,7 +422,7 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -432,7 +432,7 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
         if(percent < 20 && !me->HasAura(SPELL_CRAZED))
             DoCastMe( SPELL_CRAZED);
   
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -483,7 +483,7 @@ struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -493,7 +493,7 @@ struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
 		if(CheckPercentLife(20) && !me->HasAura(SPELL_ENRAGE_1,0))
             DoCastMe( SPELL_ENRAGE_1);
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

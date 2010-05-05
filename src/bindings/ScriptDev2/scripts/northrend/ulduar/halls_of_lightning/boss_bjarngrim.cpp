@@ -204,14 +204,14 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         // Change stance
-        if (m_uiChangeStance_Timer < uiDiff)
+        if (m_uiChangeStance_Timer < diff)
         {
             //wait for current spell to finish before change stance
             if (me->IsNonMeleeSpellCasted(false))
@@ -252,92 +252,92 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
             return;
         }
         else
-            m_uiChangeStance_Timer -= uiDiff;
+            m_uiChangeStance_Timer -= diff;
 
         switch(m_uiStance)
         {
             case STANCE_DEFENSIVE:
             {
-                if (m_uiReflection_Timer < uiDiff)
+                if (m_uiReflection_Timer < diff)
                 {
                     DoCastMe( SPELL_SPELL_REFLECTION);
                     m_uiReflection_Timer = urand(8000, 9000);
                 }
                 else
-                    m_uiReflection_Timer -= uiDiff;
+                    m_uiReflection_Timer -= diff;
 
-                if (m_uiKnockAway_Timer < uiDiff)
+                if (m_uiKnockAway_Timer < diff)
                 {
                     DoCastMe( SPELL_KNOCK_AWAY);
                     m_uiKnockAway_Timer = urand(20000, 21000);
                 }
                 else
-                    m_uiKnockAway_Timer -= uiDiff;
+                    m_uiKnockAway_Timer -= diff;
 
-                if (m_uiPummel_Timer < uiDiff)
+                if (m_uiPummel_Timer < diff)
                 {
                     DoCastVictim( SPELL_PUMMEL);
                     m_uiPummel_Timer = urand(10000, 11000);
                 }
                 else
-                    m_uiPummel_Timer -= uiDiff;
+                    m_uiPummel_Timer -= diff;
 
-                if (m_uiIronform_Timer < uiDiff)
+                if (m_uiIronform_Timer < diff)
                 {
                     DoCastMe( SPELL_IRONFORM);
                     m_uiIronform_Timer = urand(25000, 26000);
                 }
                 else
-                    m_uiIronform_Timer -= uiDiff;
+                    m_uiIronform_Timer -= diff;
 
                 break;
             }
             case STANCE_BERSERKER:
             {
-                if (m_uiIntercept_Timer < uiDiff)
+                if (m_uiIntercept_Timer < diff)
                 {
                     //not much point is this, better random target and more often?
                     DoCastVictim( SPELL_INTERCEPT);
                     m_uiIntercept_Timer = urand(45000, 46000);
                 }
                 else
-                    m_uiIntercept_Timer -= uiDiff;
+                    m_uiIntercept_Timer -= diff;
 
-                if (m_uiWhirlwind_Timer < uiDiff)
+                if (m_uiWhirlwind_Timer < diff)
                 {
                     DoCastMe( SPELL_WHIRLWIND);
                     m_uiWhirlwind_Timer = urand(10000, 11000);
                 }
                 else
-                    m_uiWhirlwind_Timer -= uiDiff;
+                    m_uiWhirlwind_Timer -= diff;
 
-                if (m_uiCleave_Timer < uiDiff)
+                if (m_uiCleave_Timer < diff)
                 {
                     DoCastVictim( SPELL_CLEAVE);
                     m_uiCleave_Timer = urand(8000, 9000);
                 }
                 else
-                    m_uiCleave_Timer -= uiDiff;
+                    m_uiCleave_Timer -= diff;
 
                 break;
             }
             case STANCE_BATTLE:
             {
-                if (m_uiMortalStrike_Timer < uiDiff)
+                if (m_uiMortalStrike_Timer < diff)
                 {
                     DoCastVictim( SPELL_MORTAL_STRIKE);
                     m_uiMortalStrike_Timer = urand(20000, 21000);
                 }
                 else
-                    m_uiMortalStrike_Timer -= uiDiff;
+                    m_uiMortalStrike_Timer -= diff;
 
-                if (m_uiSlam_Timer < uiDiff)
+                if (m_uiSlam_Timer < diff)
                 {
                     DoCastVictim( SPELL_SLAM);
                     m_uiSlam_Timer = urand(15000, 16000);
                 }
                 else
-                    m_uiSlam_Timer -= uiDiff;
+                    m_uiSlam_Timer -= diff;
 
                 break;
             }
@@ -384,21 +384,21 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-        if (m_uiArcWeld_Timer < uiDiff)
+        if (m_uiArcWeld_Timer < diff)
         {
             DoCastVictim( SPELL_ARC_WELD);
             m_uiArcWeld_Timer = urand(20000, 21000);
         }
         else
-            m_uiArcWeld_Timer -= uiDiff;
+            m_uiArcWeld_Timer -= diff;
 
-        if (m_uiRenewSteel_Timer < uiDiff)
+        if (m_uiRenewSteel_Timer < diff)
         {
             if (m_pInstance)
             {
@@ -411,7 +411,7 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
             m_uiRenewSteel_Timer = urand(10000, 14000);
         }
         else
-            m_uiRenewSteel_Timer -= uiDiff;
+            m_uiRenewSteel_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

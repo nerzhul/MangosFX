@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
                 afSpawnDiffs[i][0], afSpawnDiffs[i][1], 0.0f, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
         if (m_bCorruptedForm)
         {
             //MarkOfCorruption_Timer
-            if (m_uiMarkOfCorruption_Timer < uiDiff)
+            if (m_uiMarkOfCorruption_Timer < diff)
             {
                 if (m_uiMarkOfCorruption_Count <= 5)
                 {
@@ -190,19 +190,19 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
                 }
 
                 m_uiMarkOfCorruption_Timer = 15000;
-            }else m_uiMarkOfCorruption_Timer -= uiDiff;
+            }else m_uiMarkOfCorruption_Timer -= diff;
 
             //VileSludge_Timer
-            if (m_uiVileSludge_Timer < uiDiff)
+            if (m_uiVileSludge_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     DoCast(pTarget, SPELL_VILE_SLUDGE);
 
                 m_uiVileSludge_Timer = 15000;
-            }else m_uiVileSludge_Timer -= uiDiff;
+            }else m_uiVileSludge_Timer -= diff;
 
             //PosCheck_Timer
-            if (m_uiPosCheck_Timer < uiDiff)
+            if (m_uiPosCheck_Timer < diff)
             {
                 float fPosX, fPosY, fPosZ;
                 me->GetCombatStartPosition(fPosX, fPosY, fPosZ);
@@ -227,13 +227,13 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
                 }
 
                 m_uiPosCheck_Timer = 2500;
-            }else m_uiPosCheck_Timer -=uiDiff;
+            }else m_uiPosCheck_Timer -=diff;
         }
         // clean form
         else
         {
             //MarkOfHydross_Timer
-            if (m_uiMarkOfHydross_Timer < uiDiff)
+            if (m_uiMarkOfHydross_Timer < diff)
             {
                 if (m_uiMarkOfHydross_Count <= 5)
                 {
@@ -256,19 +256,19 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
                 }
 
                 m_uiMarkOfHydross_Timer = 15000;
-            }else m_uiMarkOfHydross_Timer -= uiDiff;
+            }else m_uiMarkOfHydross_Timer -= diff;
 
             //WaterTomb_Timer
-            if (m_uiWaterTomb_Timer < uiDiff)
+            if (m_uiWaterTomb_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     DoCast(pTarget, SPELL_WATER_TOMB);
 
                 m_uiWaterTomb_Timer = 7000;
-            }else m_uiWaterTomb_Timer -= uiDiff;
+            }else m_uiWaterTomb_Timer -= diff;
 
             //PosCheck_Timer
-            if (m_uiPosCheck_Timer < uiDiff)
+            if (m_uiPosCheck_Timer < diff)
             {
                 float fPosX, fPosY, fPosZ;
                 me->GetCombatStartPosition(fPosX, fPosY, fPosZ);
@@ -293,15 +293,15 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
                 }
 
                 m_uiPosCheck_Timer = 2500;
-            }else m_uiPosCheck_Timer -=uiDiff;
+            }else m_uiPosCheck_Timer -=diff;
         }
 
         //EnrageTimer
-        if (m_uiEnrageTimer < uiDiff)
+        if (m_uiEnrageTimer < diff)
         {
             DoCastMe( SPELL_ENRAGE);
             m_uiEnrageTimer = 60000;
-        }else m_uiEnrageTimer -= uiDiff;
+        }else m_uiEnrageTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

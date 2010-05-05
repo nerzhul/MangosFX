@@ -289,7 +289,7 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public ScriptedAI
 		SetCombatMovement(false);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;

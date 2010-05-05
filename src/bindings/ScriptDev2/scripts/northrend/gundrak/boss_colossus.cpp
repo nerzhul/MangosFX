@@ -80,7 +80,7 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 			return;
@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 
 	MobEventTasks Tasks;
 
-	void UpdateAI(const uint32 uiDiff) // Début Script add
+	void UpdateAI(const uint32 diff) // Début Script add
 	{		
 		if (GetPercentLife() < 50 && GetPercentLife() > 40)
 			me->SetHealth((me->GetMaxHealth()/2));
@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL add_drakkari : public ScriptedAI // Add Drakkarie
 
 		DoMeleeAttackIfReady();
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 };
 

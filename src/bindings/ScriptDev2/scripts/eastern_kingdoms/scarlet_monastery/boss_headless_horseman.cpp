@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_headless_horsemanAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;

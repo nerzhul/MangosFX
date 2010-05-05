@@ -148,38 +148,38 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (!m_bPhaseTwo)
         {
-            if (m_uiDispell_Timer < uiDiff)
+            if (m_uiDispell_Timer < diff)
             {
                 DoCastMe( SPELL_DISPELL);
                 m_uiDispell_Timer = urand(15000, 30000);
             }
             else
-                m_uiDispell_Timer -= uiDiff;
+                m_uiDispell_Timer -= diff;
 
-            if (m_uiRenew_Timer < uiDiff)
+            if (m_uiRenew_Timer < diff)
             {
                 DoCastMe( SPELL_RENEW);
                 m_uiRenew_Timer = urand(20000, 30000);
             }
             else
-                m_uiRenew_Timer -= uiDiff;
+                m_uiRenew_Timer -= diff;
 
-            if (m_uiHolyWrath_Timer < uiDiff)
+            if (m_uiHolyWrath_Timer < diff)
             {
                 DoCastVictim( SPELL_HOLY_WRATH);
                 m_uiHolyWrath_Timer = urand(15000, 25000);
             }
             else
-                m_uiHolyWrath_Timer -= uiDiff;
+                m_uiHolyWrath_Timer -= diff;
 
-            if (m_uiHolyNova_Timer < uiDiff)
+            if (m_uiHolyNova_Timer < diff)
             {
                 m_uiTargetsInRangeCount = 0;
                 for(uint8 i = 0; i < 10; ++i)
@@ -200,9 +200,9 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
                 }
             }
             else
-                m_uiHolyNova_Timer -= uiDiff;
+                m_uiHolyNova_Timer -= diff;
 
-            if (m_uiHolyFire_Timer < uiDiff && m_uiTargetsInRangeCount < 3)
+            if (m_uiHolyFire_Timer < diff && m_uiTargetsInRangeCount < 3)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                     DoCast(pTarget, SPELL_HOLY_FIRE);
@@ -210,19 +210,19 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
                 m_uiHolyFire_Timer = 8000;
             }
             else
-                m_uiHolyFire_Timer -= uiDiff;
+                m_uiHolyFire_Timer -= diff;
         }
         else
         {
-            if (m_uiPoisonCloud_Timer < uiDiff)
+            if (m_uiPoisonCloud_Timer < diff)
             {
                 DoCastVictim( SPELL_POISON_CLOUD);
                 m_uiPoisonCloud_Timer = 15000;
             }
             else
-                m_uiPoisonCloud_Timer -= uiDiff;
+                m_uiPoisonCloud_Timer -= diff;
 
-            if (m_uiVenomSpit_Timer < uiDiff)
+            if (m_uiVenomSpit_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                     DoCast(pTarget, SPELL_VENOMSPIT);
@@ -230,9 +230,9 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
                 m_uiVenomSpit_Timer = urand(15000, 20000);
             }
             else
-                m_uiVenomSpit_Timer -= uiDiff;
+                m_uiVenomSpit_Timer -= diff;
 
-            if (m_uiParasitic_Timer < uiDiff)
+            if (m_uiParasitic_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                     DoCast(pTarget, SPELL_PARASITIC);
@@ -240,16 +240,16 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
                 m_uiParasitic_Timer = 10000;
             }
             else
-                m_uiParasitic_Timer -= uiDiff;
+                m_uiParasitic_Timer -= diff;
         }
 
-        if (m_uiTrash_Timer < uiDiff)
+        if (m_uiTrash_Timer < diff)
         {
             DoCastVictim( SPELL_TRASH);
             m_uiTrash_Timer = urand(10000, 20000);
         }
         else
-            m_uiTrash_Timer -= uiDiff;
+            m_uiTrash_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

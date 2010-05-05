@@ -123,13 +123,13 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
 
     //*** HANDLED FUNCTION ***
     //Update AI is called Every single map update (roughly once every 100ms if a player is within the grid)
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Out of combat timers
         if (!me->getVictim())
         {
             //Random Say timer
-            if (m_uiSay_Timer < uiDiff)
+            if (m_uiSay_Timer < diff)
             {
                 //Random switch between 5 outcomes
                 switch(urand(0, 4))
@@ -144,16 +144,16 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 m_uiSay_Timer = 45000;                      //Say something agian in 45 seconds
             }
             else
-                m_uiSay_Timer -= uiDiff;
+                m_uiSay_Timer -= diff;
 
             //Rebuff timer
-            if (m_uiRebuff_Timer < uiDiff)
+            if (m_uiRebuff_Timer < diff)
             {
                 DoCastMe( SPELL_BUFF);
                 m_uiRebuff_Timer = 900000;                  //Rebuff agian in 15 minutes
             }
             else
-                m_uiRebuff_Timer -= uiDiff;
+                m_uiRebuff_Timer -= diff;
         }
 
         //Return since we have no target
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
             return;
 
         //Spell 1 timer
-        if (m_uiSpell_1_Timer < uiDiff)
+        if (m_uiSpell_1_Timer < diff)
         {
             //Cast spell one on our current target.
             if (rand()%50 > 10)
@@ -172,23 +172,23 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
             m_uiSpell_1_Timer = 5000;
         }
         else
-            m_uiSpell_1_Timer -= uiDiff;
+            m_uiSpell_1_Timer -= diff;
 
         //Spell 2 timer
-        if (m_uiSpell_2_Timer < uiDiff)
+        if (m_uiSpell_2_Timer < diff)
         {
             //Cast spell one on our current target.
             DoCastVictim( SPELL_TWO);
             m_uiSpell_2_Timer = 37000;
         }
         else
-            m_uiSpell_2_Timer -= uiDiff;
+            m_uiSpell_2_Timer -= diff;
 
         //Beserk timer
         if (m_uiPhase > 1)
         {
             //Spell 3 timer
-            if (m_uiSpell_3_Timer < uiDiff)
+            if (m_uiSpell_3_Timer < diff)
             {
                 //Cast spell one on our current target.
                 DoCastVictim( SPELL_THREE);
@@ -196,9 +196,9 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 m_uiSpell_3_Timer = 19000;
             }
             else
-                m_uiSpell_3_Timer -= uiDiff;
+                m_uiSpell_3_Timer -= diff;
 
-            if (m_uiBeserk_Timer < uiDiff)
+            if (m_uiBeserk_Timer < diff)
             {
                 //Say our line then cast uber death spell
                 DoScriptText(SAY_BESERK, me, me->getVictim());
@@ -208,11 +208,11 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 m_uiBeserk_Timer = 12000;
             }
             else
-                m_uiBeserk_Timer -= uiDiff;
+                m_uiBeserk_Timer -= diff;
         }
         else if (m_uiPhase == 1)                            //Phase timer
         {
-            if (m_uiPhase_Timer < uiDiff)
+            if (m_uiPhase_Timer < diff)
             {
                 //Go to next phase
                 ++m_uiPhase;
@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL example_creatureAI : public ScriptedAI
                 DoCastMe( SPELL_ENRAGE);
             }
             else
-                m_uiPhase_Timer -= uiDiff;
+                m_uiPhase_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();

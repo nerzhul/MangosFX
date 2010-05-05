@@ -47,44 +47,44 @@ struct MANGOS_DLL_DECL boss_krystallusAI : public ScriptedAI
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X,1.0);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
             return;
 
 		percent = ((float)me->GetHealth() * 100/(float)me->GetMaxHealth());
 
-		if(Boulder_Timer <= uiDiff)
+		if(Boulder_Timer <= diff)
 		{
 			DoCastRandom(m_bIsHeroic ? SPELL_SHATTER_H : SPELL_SHATTER_N);
 			Boulder_Timer = urand(8000,11000);
 		}
 		else
-			Boulder_Timer -= uiDiff;
+			Boulder_Timer -= diff;
 
-		if(Shatter_Timer <= uiDiff)
+		if(Shatter_Timer <= diff)
 		{
 			DoCastVictim(m_bIsHeroic ? SPELL_SHATTER_H : SPELL_SHATTER_N);
 			Shatter_Timer = urand(18000,21000);
 		}
 		else
-			Shatter_Timer -= uiDiff;
+			Shatter_Timer -= diff;
 
-		if(Stomp_Timer <= uiDiff)
+		if(Stomp_Timer <= diff)
 		{
 			DoCastVictim(m_bIsHeroic ? SPELL_STOMP_H : SPELL_STOMP_N);
 			Stomp_Timer = urand(8000,14000);
 		}
 		else
-			Stomp_Timer -= uiDiff;
+			Stomp_Timer -= diff;
 
-		if(m_bIsHeroic && GroundSpike_Timer <= uiDiff)
+		if(m_bIsHeroic && GroundSpike_Timer <= diff)
 		{
 			DoCastVictim(SPELL_GROUND_SPIKE_H);
 			GroundSpike_Timer = urand(15000,18000);
 		}
 		else
-			GroundSpike_Timer -= uiDiff;
+			GroundSpike_Timer -= diff;
 
 		if(percent < (float)(break_Count * 10))
 		{

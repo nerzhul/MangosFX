@@ -110,23 +110,23 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
 		GiveEmblemsToGroup((m_bIsRegularMode) ? VAILLANCE : HEROISME ,3);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-        if (m_uiEvadeCheckCooldown < uiDiff)
+        if (m_uiEvadeCheckCooldown < diff)
         {
             if (me->GetDistance2d(138.287f, -101.09f) > 150.0f)
                 EnterEvadeMode();
             m_uiEvadeCheckCooldown = 2000;
         }
         else
-            m_uiEvadeCheckCooldown -= uiDiff;
+            m_uiEvadeCheckCooldown -= diff;
 
         if (m_bImpaleInProgress)
         {
-            if (m_uiImpaleAfterStompTimer < uiDiff)
+            if (m_uiImpaleAfterStompTimer < diff)
             {
                 if (Unit* pTarget = me->getVictim())
                 {
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
             }
             else
             {
-                m_uiImpaleAfterStompTimer -= uiDiff;
+                m_uiImpaleAfterStompTimer -= diff;
                 return;
             }
         }
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
                 m_bCrushingLeapInProgress = false;
                 return;
             }
-            if ((m_uiCrushingLeapSecureTimer < uiDiff) || (m_pCrushingLeapTarget && me->IsWithinDist(m_pCrushingLeapTarget, 5.0f)))
+            if ((m_uiCrushingLeapSecureTimer < diff) || (m_pCrushingLeapTarget && me->IsWithinDist(m_pCrushingLeapTarget, 5.0f)))
             {
                 //me->AddThreat(m_pCrushingLeapTarget, -100000000.0f);
                 me->SetSpeedRate(MOVE_RUN, m_fDefaultMoveSpeed);
@@ -165,14 +165,14 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
                 m_bCrushingLeapInProgress = false;
             }
             else
-                m_uiCrushingLeapSecureTimer -= uiDiff;
+                m_uiCrushingLeapSecureTimer -= diff;
 
             return;
         }
 
         if (m_bRockShardsInProgress)
         {
-            if (m_uiRockShardsProgressTimer < uiDiff)
+            if (m_uiRockShardsProgressTimer < diff)
             {
                 m_bRockShardsInProgress = false;
                 /*if (m_pRockShardsTarget)
@@ -180,9 +180,9 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
                 return;
             }
             else
-                m_uiRockShardsProgressTimer -= uiDiff;
+                m_uiRockShardsProgressTimer -= diff;
 
-            if (m_uiRockShardTimer < uiDiff)
+            if (m_uiRockShardTimer < diff)
             {
                 if (m_pRockShardsTarget && m_pRockShardsTarget->isAlive())
                 {
@@ -192,12 +192,12 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
                 m_uiRockShardTimer = 100;
             }
             else
-                m_uiRockShardsTimer -= uiDiff;
+                m_uiRockShardsTimer -= diff;
 
             return;
         }
 
-        if (m_uiRockShardsTimer < uiDiff)
+        if (m_uiRockShardsTimer < diff)
         {
             m_bRockShardsInProgress = true;
             m_uiRockShardsProgressTimer = 3000;
@@ -209,9 +209,9 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
             return;
         }
         else
-            m_uiRockShardsTimer -= uiDiff;
+            m_uiRockShardsTimer -= diff;
 
-        if (m_uiCrushingLeapTimer < uiDiff)
+        if (m_uiCrushingLeapTimer < diff)
         {
             ThreatList const& tList = me->getThreatManager().getThreatList();
             std::list<Unit*> lTargets;
@@ -240,9 +240,9 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
             return;
         }
         else
-            m_uiCrushingLeapTimer -= uiDiff;
+            m_uiCrushingLeapTimer -= diff;
 
-        if (m_uiStompTimer < uiDiff)
+        if (m_uiStompTimer < diff)
         {
             DoCastMe(m_bIsRegularMode ? SPELL_STOMP_N : SPELL_STOMP_H);
             m_uiImpaleAfterStompTimer = 1000;
@@ -250,9 +250,9 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
             m_uiStompTimer = urand(45000,60000);
         }
         else
-            m_uiStompTimer -= uiDiff;
+            m_uiStompTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
     }

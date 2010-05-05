@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
         SetFollowPaused(false);
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
@@ -142,13 +142,13 @@ struct MANGOS_DLL_DECL npc_kerlonianAI : public FollowerAI
 
             if (!HasFollowState(STATE_FOLLOW_PAUSED))
             {
-                if (m_uiFallAsleepTimer < uiDiff)
+                if (m_uiFallAsleepTimer < diff)
                 {
                     SetSleeping();
                     m_uiFallAsleepTimer = urand(25000, 90000);
                 }
                 else
-                    m_uiFallAsleepTimer -= uiDiff;
+                    m_uiFallAsleepTimer -= diff;
             }
 
             return;

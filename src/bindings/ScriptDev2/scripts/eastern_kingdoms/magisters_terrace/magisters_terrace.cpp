@@ -98,11 +98,11 @@ struct MANGOS_DLL_DECL npc_kalecgosAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiTransformTimer)
         {
-            if (m_uiTransformTimer < uiDiff)
+            if (m_uiTransformTimer < diff)
             {
                 me->CastSpell(me,SPELL_ORB_KILL_CREDIT,false);
                 DoWorkaroundForQuestCredit();
@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL npc_kalecgosAI : public ScriptedAI
                 me->UpdateEntry(NPC_KAEL);
 
                 m_uiTransformTimer = 0;
-            }else m_uiTransformTimer -= uiDiff;
+            }else m_uiTransformTimer -= diff;
         }
     }
 };

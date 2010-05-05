@@ -206,11 +206,11 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
         //GetCreatureListWithEntryInGrid(m_lAbedneumGUIDList, me, NPC_ABEDNEUM, 50.0f);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bIsActivateKaddrak)
         {
-            if (m_uiKaddrak_Encounter_timer < uiDiff)
+            if (m_uiKaddrak_Encounter_timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     if (!m_lKaddrakGUIDList.empty())
@@ -221,11 +221,11 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
                 m_uiKaddrak_Encounter_timer = 1500;
             }
             else
-                m_uiKaddrak_Encounter_timer -= uiDiff;
+                m_uiKaddrak_Encounter_timer -= diff;
         }
         if (m_bIsActivateMarnak)
         {
-            if (m_uiMarnak_Encounter_timer < uiDiff)
+            if (m_uiMarnak_Encounter_timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     if (Creature* pTemp = me->SummonCreature(NPC_DARK_MATTER_TARGET, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 1000))
@@ -238,11 +238,11 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
                 m_uiMarnak_Encounter_timer = 30000 + rand()%1000;
             }
             else
-                m_uiMarnak_Encounter_timer -= uiDiff;
+                m_uiMarnak_Encounter_timer -= diff;
         }
         if (m_bIsActivateAbedneum)
         {
-            if (m_uiAbedneum_Encounter_timer < uiDiff)
+            if (m_uiAbedneum_Encounter_timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                     if (Creature* pTemp = me->SummonCreature(NPC_SEARING_GAZE_TARGET, pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 10000))
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
                 m_uiAbedneum_Encounter_timer = 30000 + rand()%1000;
             }
             else
-                m_uiAbedneum_Encounter_timer -= uiDiff;
+                m_uiAbedneum_Encounter_timer -= diff;
         }
     }
 };
@@ -420,9 +420,9 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
         m_uiStep++;
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
-        if (m_uiPhase_timer < uiDiff)
+        if (m_uiPhase_timer < diff)
         {
             switch(m_uiStep)
             {
@@ -704,7 +704,7 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     break;
             }
         }
-        else m_uiPhase_timer -= uiDiff;
+        else m_uiPhase_timer -= diff;
  
         if (!m_bIsLowHP && (me->GetHealth()*100 / me->GetMaxHealth()) <= 30)
         {

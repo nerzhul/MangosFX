@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL npc_mistAI : public FollowerAI
     }
 
     //call not needed here, no known abilities
-    /*void UpdateFollowerAI(const uint32 uiDiff)
+    /*void UpdateFollowerAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;

@@ -264,12 +264,12 @@ struct MANGOS_DLL_DECL mob_crystal_handlerAI : public ScriptedAI
             ((boss_novosAI*)pNovos->AI())->RemoveCrystal();*/
     }
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 

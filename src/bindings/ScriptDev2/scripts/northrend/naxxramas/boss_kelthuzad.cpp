@@ -609,10 +609,10 @@ struct MANGOS_DLL_DECL mob_shadow_issureAI : public Scripted_NoMovementAI
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiShadowIssure_Timer)
-            if (m_uiShadowIssure_Timer < uiDiff)
+            if (m_uiShadowIssure_Timer < diff)
             {
                 Map *map = me->GetMap();
                 if (map->IsDungeon())
@@ -631,7 +631,7 @@ struct MANGOS_DLL_DECL mob_shadow_issureAI : public Scripted_NoMovementAI
                 me->ForcedDespawn(1500);
                 m_uiShadowIssure_Timer = 0;
             }
-            else m_uiShadowIssure_Timer -= uiDiff;
+            else m_uiShadowIssure_Timer -= diff;
     }
 };
 

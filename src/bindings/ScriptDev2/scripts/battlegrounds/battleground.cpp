@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL npc_spirit_guideAI : public ScriptedAI
 		me->SetFloatValue(UNIT_MOD_CAST_SPEED, 1.0f);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         // auto cast the whole time this spell
         if (!me->GetCurrentSpell(CURRENT_CHANNELED_SPELL))

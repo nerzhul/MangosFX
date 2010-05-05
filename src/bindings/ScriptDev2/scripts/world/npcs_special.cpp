@@ -310,15 +310,15 @@ struct MANGOS_DLL_DECL npc_chicken_cluckAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         // Reset flags after a certain time has passed so that the next player has to start the 'event' again
         if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER))
         {
-            if (m_uiResetFlagTimer < uiDiff)
+            if (m_uiResetFlagTimer < diff)
                 EnterEvadeMode();
             else
-                m_uiResetFlagTimer -= uiDiff;
+                m_uiResetFlagTimer -= diff;
         }
 
         if (me->SelectHostileTarget() && me->getVictim())
@@ -1438,9 +1438,9 @@ struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public ScriptedAI
 	
 	MobEventTasks Tasks;
 	    
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	
 		DoMeleeAttackIfReady();
 	}

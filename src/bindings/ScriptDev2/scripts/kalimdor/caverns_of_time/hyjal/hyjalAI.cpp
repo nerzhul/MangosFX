@@ -380,14 +380,14 @@ void hyjalAI::JustDied(Unit* pKiller)
     //TODO: in case they die during boss encounter, then what? despawn boss?
 }
 
-void hyjalAI::UpdateAI(const uint32 uiDiff)
+void hyjalAI::UpdateAI(const uint32 diff)
 {
     if (!m_bIsEventInProgress)
         return;
 
     if (m_bIsSummoningWaves && m_pInstance)
     {
-        if (m_uiWaveMoveTimer < uiDiff)
+        if (m_uiWaveMoveTimer < diff)
         {
             // Skip the master timer, and start next wave in 5. Clear the list, it should not be any here now.
             if (!m_pInstance->GetData(DATA_TRASH))
@@ -413,15 +413,15 @@ void hyjalAI::UpdateAI(const uint32 uiDiff)
             m_uiWaveMoveTimer = 10000;
         }
         else
-            m_uiWaveMoveTimer -= uiDiff;
+            m_uiWaveMoveTimer -= diff;
 
-        if (m_uiNextWaveTimer < uiDiff)
+        if (m_uiNextWaveTimer < diff)
             SummonNextWave();
         else
-            m_uiNextWaveTimer -= uiDiff;
+            m_uiNextWaveTimer -= diff;
     }
 
-    if (m_uiCheckTimer < uiDiff)
+    if (m_uiCheckTimer < diff)
     {
         for(uint8 i = 0; i < 2; ++i)
         {
@@ -458,7 +458,7 @@ void hyjalAI::UpdateAI(const uint32 uiDiff)
         m_uiCheckTimer = 5000;
     }
     else
-        m_uiCheckTimer -= uiDiff;
+        m_uiCheckTimer -= diff;
 
     if (!CanDoSomething())
         return;
@@ -467,7 +467,7 @@ void hyjalAI::UpdateAI(const uint32 uiDiff)
     {
         if (m_aSpells[i].m_uiSpellId)
         {
-            if (m_uiSpellTimer[i] < uiDiff)
+            if (m_uiSpellTimer[i] < diff)
             {
                 if (me->IsNonMeleeSpellCasted(false))
                     me->InterruptNonMeleeSpells(false);
@@ -488,7 +488,7 @@ void hyjalAI::UpdateAI(const uint32 uiDiff)
                 }
             }
             else
-                m_uiSpellTimer[i] -= uiDiff;
+                m_uiSpellTimer[i] -= diff;
         }
     }
 

@@ -59,13 +59,13 @@ struct MANGOS_DLL_DECL boss_ysondreAI : public LibDevFSAI
 			return;
 
         //MarkOfNature_Timer
-        //if (m_uiMarkOfNature_Timer < uiDiff)
+        //if (m_uiMarkOfNature_Timer < diff)
         //{
         //    DoCastVictim( SPELL_MARKOFNATURE);
         //    m_uiMarkOfNature_Timer = 45000;
         //}
         //else
-            //m_uiMarkOfNature_Timer -= uiDiff;
+            //m_uiMarkOfNature_Timer -= diff;
 
         //Summon Druids
         if (CheckPercentLife(100-(25*m_uiSummonDruidModifier)))

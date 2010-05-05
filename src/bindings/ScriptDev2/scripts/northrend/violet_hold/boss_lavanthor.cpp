@@ -46,12 +46,12 @@ struct MANGOS_DLL_DECL boss_lavanthorAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
 	bool m_bIsHeroic;
 	    
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	
 		DoMeleeAttackIfReady();
 

@@ -62,14 +62,14 @@ struct MANGOS_DLL_DECL boss_meathookAI : public ScriptedAI
         }
     }
 
-   void UpdateAI(const uint32 uiDiff)
+   void UpdateAI(const uint32 diff)
    {
 
         if (!CanDoSomething())
             return;
 
 
-		if (Chain_Timer < uiDiff)
+		if (Chain_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, m_bIsHeroic ? SPELL_CHAIN_H : SPELL_CHAIN_N);
@@ -77,24 +77,24 @@ struct MANGOS_DLL_DECL boss_meathookAI : public ScriptedAI
             Chain_Timer = urand(5800,6300);
         }
 		else 
-			Chain_Timer -= uiDiff;
+			Chain_Timer -= diff;
 
-		if (Exploded_Timer < uiDiff)
+		if (Exploded_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, m_bIsHeroic ? SPELL_EXPLODED_H : SPELL_EXPLODED_N);
             Exploded_Timer = urand(8500,9600);
         }
 		else 
-			Exploded_Timer -= uiDiff;
+			Exploded_Timer -= diff;
 
-		if (Frenzy_Timer <= uiDiff)
+		if (Frenzy_Timer <= diff)
         {
             DoCastMe(SPELL_FRENZY);
             Frenzy_Timer = urand(22000,25000);
         }
 		else
-			Frenzy_Timer -= uiDiff;
+			Frenzy_Timer -= diff;
 
 		DoMeleeAttackIfReady();
   }

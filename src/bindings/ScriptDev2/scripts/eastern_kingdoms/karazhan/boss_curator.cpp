@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
         // always decrease BerserkTimer
         if (!m_bIsBerserk)
         {
-            if (m_uiBerserkTimer < uiDiff)
+            if (m_uiBerserkTimer < diff)
             {
                 // break evocation if we are under it's effect
                 if (me->HasAura(SPELL_EVOCATION))
@@ -125,7 +125,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
                 m_bIsBerserk = true;
             }
             else
-                m_uiBerserkTimer -= uiDiff;
+                m_uiBerserkTimer -= diff;
         }
 
         // not supposed to do anything while evocate
@@ -134,7 +134,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
 
         if (!m_bIsEnraged && !m_bIsBerserk)
         {
-            if (m_uiFlareTimer < uiDiff)
+            if (m_uiFlareTimer < diff)
             {
                 m_uiFlareTimer = 10000;
 
@@ -171,7 +171,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
                 }
             }
             else
-                m_uiFlareTimer -= uiDiff;
+                m_uiFlareTimer -= diff;
 
             if (me->GetHealth()*100 < me->GetMaxHealth()*15)
             {
@@ -184,7 +184,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
             }
         }
 
-        if (m_uiHatefulBoltTimer < uiDiff)
+        if (m_uiHatefulBoltTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_TOPAGGRO, 1))
                 me->CastSpell(pTarget, SPELL_HATEFUL_BOLT, false);
@@ -192,7 +192,7 @@ struct MANGOS_DLL_DECL boss_curatorAI : public ScriptedAI
             m_uiHatefulBoltTimer = m_bIsEnraged ? 7000 : 15000;
         }
         else
-            m_uiHatefulBoltTimer -= uiDiff;
+            m_uiHatefulBoltTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

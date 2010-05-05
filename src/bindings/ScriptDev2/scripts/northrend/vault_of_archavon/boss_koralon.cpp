@@ -18,7 +18,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     boss_koralonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
 		InitIA();
-		AddEventOnMe(SPELL_METEOR_FISTS,25000,45000);
+		AddEventMaxPrioOnMe(SPELL_METEOR_FISTS,25000,45000);
 		AddEvent(SPELL_CINDER,15000,35000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
     }
 
@@ -28,6 +28,14 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     uint32 BBTickTimer;
     uint32 BBTicks;
     bool BB;
+
+	void DamageDeal(Unit* pDoneTo, uint32& dmg)
+	{
+		if(me->getVictim() && pDoneTo == me->getVictim())
+		{
+
+		}
+	}
 
     void Reset()
     {

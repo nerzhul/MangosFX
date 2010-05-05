@@ -126,7 +126,7 @@ struct npc_tallhorn_stagAI : public ScriptedAI
     npc_tallhorn_stagAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
 	void Reset(){};
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (GameObject* haunch = GetClosestGameObjectWithEntry(me,OBJECT_HAUNCH, 2.0f))
         {
@@ -162,7 +162,7 @@ struct npc_amberpine_woodsmanAI : public ScriptedAI
         m_uiPhase = 1;
     }  
        
-        void UpdateAI(const uint32 uiDiff)
+        void UpdateAI(const uint32 diff)
     {  
                 if (Creature* stag = GetClosestCreatureWithEntry(me,TALLHORN_STAG, 0.2f))
                 {
@@ -171,7 +171,7 @@ struct npc_amberpine_woodsmanAI : public ScriptedAI
                 else
             if (m_uiPhase)
             {
-                if (m_uiTimer <= uiDiff)
+                if (m_uiTimer <= diff)
                 {
                     switch(m_uiPhase)
                     {
@@ -188,9 +188,9 @@ struct npc_amberpine_woodsmanAI : public ScriptedAI
                     }
                 }
                 else
-                m_uiTimer -= uiDiff;
+                m_uiTimer -= diff;
             }
-            ScriptedAI::UpdateAI(uiDiff);              
+            ScriptedAI::UpdateAI(diff);              
        
         if (!CanDoSomething())
             return;

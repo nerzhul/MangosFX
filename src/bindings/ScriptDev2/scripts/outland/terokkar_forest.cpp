@@ -307,18 +307,18 @@ struct MANGOS_DLL_DECL npc_akunoAI : public npc_escortAI
         pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiChainLightningTimer < uiDiff)
+        if (m_uiChainLightningTimer < diff)
         {
             DoCastVictim( SPELL_CHAIN_LIGHTNING);
             m_uiChainLightningTimer = urand(7000, 14000);
         }
         else
-            m_uiChainLightningTimer -= uiDiff;
+            m_uiChainLightningTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -387,28 +387,28 @@ struct MANGOS_DLL_DECL npc_floonAI : public ScriptedAI
             me->setFaction(m_uiNormFaction);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiSilence_Timer < uiDiff)
+        if (m_uiSilence_Timer < diff)
         {
             DoCastVictim(SPELL_SILENCE);
             m_uiSilence_Timer = 30000;
-        }else m_uiSilence_Timer -= uiDiff;
+        }else m_uiSilence_Timer -= diff;
 
-        if (m_uiFrostNova_Timer < uiDiff)
+        if (m_uiFrostNova_Timer < diff)
         {
             DoCastMe(SPELL_FROST_NOVA);
             m_uiFrostNova_Timer = 20000;
-        }else m_uiFrostNova_Timer -= uiDiff;
+        }else m_uiFrostNova_Timer -= diff;
 
-        if (m_uiFrostbolt_Timer < uiDiff)
+        if (m_uiFrostbolt_Timer < diff)
         {
             DoCastVictim(SPELL_FROSTBOLT);
             m_uiFrostbolt_Timer = 5000;
-        }else m_uiFrostbolt_Timer -= uiDiff;
+        }else m_uiFrostbolt_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -618,13 +618,13 @@ struct MANGOS_DLL_DECL npc_letollAI : public npc_escortAI
             pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_PAUSED))
             {
-                if (m_uiEventTimer < uiDiff)
+                if (m_uiEventTimer < diff)
                 {
                     m_uiEventTimer = 7000;
 
@@ -693,7 +693,7 @@ struct MANGOS_DLL_DECL npc_letollAI : public npc_escortAI
                     ++m_uiEventCount;
                 }
                 else
-                    m_uiEventTimer -= uiDiff;
+                    m_uiEventTimer -= diff;
             }
 
             return;
@@ -773,12 +773,12 @@ struct MANGOS_DLL_DECL npc_mana_bomb_exp_triggerAI : public ScriptedAI
         pManaBomb = pGo;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_bIsActivated)
             return;
 
-        if (m_uiEventTimer < uiDiff)
+        if (m_uiEventTimer < diff)
         {
             m_uiEventTimer = 1000;
 
@@ -819,7 +819,7 @@ struct MANGOS_DLL_DECL npc_mana_bomb_exp_triggerAI : public ScriptedAI
             ++m_uiEventCounter;
         }
         else
-            m_uiEventTimer -= uiDiff;
+            m_uiEventTimer -= diff;
     }
 };
 

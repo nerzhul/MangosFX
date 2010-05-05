@@ -94,22 +94,22 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
 		if(me->HasAura(SPELL_SUBMERGE,0))
 		{
-			if(Necrophores_Timer <= uiDiff)
+			if(Necrophores_Timer <= diff)
 			{
 				DoCastMe(SPELL_NECROPHORES);
 				Necrophores_Timer = -2500;
 			}
 			else
-				Necrophores_Timer -= uiDiff;
+				Necrophores_Timer -= diff;
 
-			if(Empaler_Timer <= uiDiff)
+			if(Empaler_Timer <= diff)
 			{
 				me->CastStop();
 				me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -119,19 +119,19 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 				Empaler_Timer = -2500;
 			}
 			else
-				Empaler_Timer -= uiDiff;
+				Empaler_Timer -= diff;
 		}
 		else
 		{
-			if(Marteler_Timer <= uiDiff)
+			if(Marteler_Timer <= diff)
 			{
 				DoCastVictim(m_bIsHeroic ? SPELL_MARTELER_H : SPELL_MARTELER_N);
 				Marteler_Timer = urand(25000,30000);
 			}
 			else
-				Marteler_Timer -= uiDiff;
+				Marteler_Timer -= diff;
 
-			if(Submerge_Timer <= uiDiff)
+			if(Submerge_Timer <= diff)
 			{
 				me->CastStop();
 				DoCastMe(SPELL_SUBMERGE);
@@ -151,9 +151,9 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 				Empaler_Timer = 15000;
 			}
 			else
-				Submerge_Timer -= uiDiff;
+				Submerge_Timer -= diff;
 
-			Tasks.UpdateEvent(uiDiff);
+			Tasks.UpdateEvent(diff);
 
 			DoMeleeAttackIfReady();
 		}

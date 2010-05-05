@@ -92,12 +92,12 @@ struct MANGOS_DLL_DECL boss_taldaramAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-		if (disparition_timer < uiDiff)
+		if (disparition_timer < diff)
 		{
 			switch(urand(0,1))
 			{
@@ -109,19 +109,19 @@ struct MANGOS_DLL_DECL boss_taldaramAI : public ScriptedAI
 			disparition_timer = urand(33000,35000);
 		}
 		else
-			disparition_timer -= uiDiff;
+			disparition_timer -= diff;
 
-		if (etreinte_timer <= uiDiff)
+		if (etreinte_timer <= diff)
 		{
 			me->RemoveAurasDueToSpell(66830);
 			me->SetVisibility(VISIBILITY_ON);
 			DoCastRandom((m_bIsHeroic) ? SPELL_ETREINTE_H : SPELL_ETREINTE_N);
 		}
 		else
-			etreinte_timer -= uiDiff;
+			etreinte_timer -= diff;
 
 		
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 
         DoMeleeAttackIfReady();

@@ -136,7 +136,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
@@ -146,13 +146,13 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 		{
 			if(m_bIsHeroic == true)
 			{
-				if(Smash_Timer <= uiDiff)
+				if(Smash_Timer <= diff)
 				{
 					DoCastRandom(m_bIsResurrected ? SPELL_DARK_SMASH : SPELL_SMASH);
 					Smash_Timer = 6000;
 				}
 				else
-					Smash_Timer -= uiDiff;
+					Smash_Timer -= diff;
 			}
 		}
 
@@ -171,7 +171,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 		{
 			me->AttackStop();
 			me->StopMoving();
-			if(Annhylde_Wait_Timer <= uiDiff)
+			if(Annhylde_Wait_Timer <= diff)
 			{
 				if(rez_phase == 1)
 				{
@@ -223,11 +223,11 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public ScriptedAI
 
 			}
 			else
-				Annhylde_Wait_Timer -= uiDiff;
+				Annhylde_Wait_Timer -= diff;
 		}
 		
-		Tasks.UpdateEvent(uiDiff);
-		Tasks.UpdateEvent(uiDiff,phase);
+		Tasks.UpdateEvent(diff);
+		Tasks.UpdateEvent(diff,phase);
 
         DoMeleeAttackIfReady();
     }
@@ -255,9 +255,9 @@ struct MANGOS_DLL_DECL axe_ingvarAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_SHADOW_AXE_PROC,1000,2000);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 	}
 
 };

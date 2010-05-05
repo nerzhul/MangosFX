@@ -249,11 +249,11 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
         m_bRaidWiped = false;
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (HasEscortState(STATE_ESCORT_PAUSED))
         {
-            if (m_uiTalkTimer < uiDiff)
+            if (m_uiTalkTimer < diff)
             {
                 if (m_uiTalkCount > 3)
                 {
@@ -267,14 +267,14 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
                 Talk(m_uiTalkCount++);
             }
             else
-                m_uiTalkTimer -= uiDiff;
+                m_uiTalkTimer -= diff;
         }
 
         if (m_bPerformanceReady)
         {
             if (!m_bRaidWiped)
             {
-                if (m_uiWipeTimer < uiDiff)
+                if (m_uiWipeTimer < diff)
                 {
                     Map *pMap = me->GetMap();
                     if (!pMap->IsDungeon())
@@ -300,7 +300,7 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
                     m_uiWipeTimer = 15000;
                 }
                 else
-                    m_uiWipeTimer -= uiDiff;
+                    m_uiWipeTimer -= diff;
             }
         }
     }

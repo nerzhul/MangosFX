@@ -498,7 +498,7 @@ struct MANGOS_DLL_DECL yogg_brainAI : public Scripted_NoMovementAI
 				Yogg->DealDamage(Yogg,Yogg->GetMaxHealth() * damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!me->SelectHostileTarget() && !me->getVictim())
@@ -512,7 +512,7 @@ struct MANGOS_DLL_DECL yogg_brainAI : public Scripted_NoMovementAI
 					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->GoPhase3();
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -960,7 +960,7 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public ScriptedAI
 		DeathTimer = DAY;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
 		{
@@ -969,14 +969,14 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public ScriptedAI
 					AggroAllPlayers(200.0f);
 		}
 
-		if(DeathTimer <= uiDiff)
+		if(DeathTimer <= diff)
 		{
 			me->RemoveFromWorld();
 		}
 		else
-			DeathTimer -= uiDiff;
+			DeathTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -1043,17 +1043,17 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public ScriptedAI
 			me->CastStop();
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if(CheckDist_Timer <= uiDiff)
+        if(CheckDist_Timer <= diff)
 		{
 			CheckPlayers();
 			CheckDist_Timer = 1000;
 		}
 		else
-			CheckDist_Timer -= uiDiff;
+			CheckDist_Timer -= diff;
       
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -1086,9 +1086,9 @@ struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public ScriptedAI
     }
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -1120,9 +1120,9 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public ScriptedAI
     }
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-		if(squeeze_Timer <= uiDiff)
+		if(squeeze_Timer <= diff)
 		{
 			if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 				if(target->isAlive())
@@ -1135,9 +1135,9 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public ScriptedAI
 			squeeze_Timer = 35000;
 		}
 		else
-			squeeze_Timer -= uiDiff;
+			squeeze_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

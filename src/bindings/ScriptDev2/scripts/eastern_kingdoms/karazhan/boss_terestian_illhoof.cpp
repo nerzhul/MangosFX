@@ -113,13 +113,13 @@ struct MANGOS_DLL_DECL mob_kilrekAI : public ScriptedAI
             ERROR_INST_DATA(me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-        if (m_uiAmplify_Timer < uiDiff)
+        if (m_uiAmplify_Timer < diff)
         {
             me->InterruptNonMeleeSpells(false);
             DoCastVictim( SPELL_AMPLIFY_FLAMES);
@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL mob_kilrekAI : public ScriptedAI
             m_uiAmplify_Timer = urand(10000, 20000);
         }
         else
-            m_uiAmplify_Timer -= uiDiff;
+            m_uiAmplify_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -256,12 +256,12 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             m_pInstance->SetData(TYPE_TERESTIAN, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiCheckKilrek_Timer < uiDiff)
+        if (m_uiCheckKilrek_Timer < diff)
         {
 
             m_uiCheckKilrek_Timer = 5000;
@@ -288,9 +288,9 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             }
         }
         else
-            m_uiCheckKilrek_Timer -= uiDiff;
+            m_uiCheckKilrek_Timer -= diff;
 
-        if (m_uiSacrifice_Timer < uiDiff)
+        if (m_uiSacrifice_Timer < diff)
         {
             Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1);
             if (pTarget && pTarget->isAlive() && pTarget->GetTypeId() == TYPEID_PLAYER)
@@ -310,18 +310,18 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             }
         }
         else
-            m_uiSacrifice_Timer -= uiDiff;
+            m_uiSacrifice_Timer -= diff;
 
-        if (m_uiShadowbolt_Timer < uiDiff)
+        if (m_uiShadowbolt_Timer < diff)
         {
             DoCastVictim(SPELL_SHADOW_BOLT);
 
             m_uiShadowbolt_Timer = 10000;
         }
         else
-            m_uiShadowbolt_Timer -= uiDiff;
+            m_uiShadowbolt_Timer -= diff;
 
-        if (m_uiSummon_Timer < uiDiff)
+        if (m_uiSummon_Timer < diff)
         {
             if (!m_bSummonedPortals)
             {
@@ -345,17 +345,17 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             m_uiSummon_Timer = 5000;
         }
         else
-            m_uiSummon_Timer -= uiDiff;
+            m_uiSummon_Timer -= diff;
 
         if (!m_bBerserk)
         {
-            if (m_uiBerserk_Timer < uiDiff)
+            if (m_uiBerserk_Timer < diff)
             {
                 DoCastMe( SPELL_BERSERK);
                 m_bBerserk = true;
             }
             else
-                m_uiBerserk_Timer -= uiDiff;
+                m_uiBerserk_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -375,19 +375,19 @@ struct MANGOS_DLL_DECL mob_karazhan_impAI : public ScriptedAI
         me->ApplySpellImmune(0, IMMUNITY_SCHOOL, SPELL_SCHOOL_MASK_FIRE, true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-        if (m_uiFirebolt_Timer < uiDiff)
+        if (m_uiFirebolt_Timer < diff)
         {
             DoCastVictim( SPELL_FIREBOLT);
             m_uiFirebolt_Timer = 2200;
         }
         else
-            m_uiFirebolt_Timer -= uiDiff;
+            m_uiFirebolt_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

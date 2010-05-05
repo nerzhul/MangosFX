@@ -265,11 +265,11 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiDelayRes_Timer)
         {
-            if (m_uiDelayRes_Timer <= uiDiff)
+            if (m_uiDelayRes_Timer <= diff)
             {
                 m_uiDelayRes_Timer = 0;
                 m_bFakeDeath = false;
@@ -285,7 +285,7 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
                 me->AddThreat(pTarget, 0.0f);
             }
             else
-                m_uiDelayRes_Timer -= uiDiff;
+                m_uiDelayRes_Timer -= diff;
         }
     }
 
@@ -487,7 +487,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Phase 1
         switch (m_uiPhase)
@@ -502,7 +502,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 {
                     //Subphase 1 - Start
                     case 0:
-                        if (m_uiPhase_Timer < uiDiff)
+                        if (m_uiPhase_Timer < diff)
                         {
                             DoScriptText(SAY_INTRO_THALADRED, me);
 
@@ -511,13 +511,13 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                             ++m_uiPhaseSubphase;
                         }
                         else
-                            m_uiPhase_Timer -= uiDiff;
+                            m_uiPhase_Timer -= diff;
 
                         break;
 
                     //Subphase 1 - Unlock advisor
                     case 1:
-                        if (m_uiPhase_Timer < uiDiff)
+                        if (m_uiPhase_Timer < diff)
                         {
                             pAdvisor = (Creature*)(Unit::GetUnit((*me), m_auiAdvisorGuid[0]));
 
@@ -534,7 +534,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                             ++m_uiPhaseSubphase;
                         }
                         else
-                            m_uiPhase_Timer -= uiDiff;
+                            m_uiPhase_Timer -= diff;
 
                         break;
 
@@ -554,7 +554,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                     //Subphase 2 - Unlock advisor
                     case 3:
-                        if (m_uiPhase_Timer < uiDiff)
+                        if (m_uiPhase_Timer < diff)
                         {
                             pAdvisor = (Creature*)(Unit::GetUnit((*me), m_auiAdvisorGuid[1]));
 
@@ -571,7 +571,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                             ++m_uiPhaseSubphase;
                         }
                         else
-                            m_uiPhase_Timer -= uiDiff;
+                            m_uiPhase_Timer -= diff;
 
                         break;
 
@@ -591,7 +591,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                     //Subphase 3 - Unlock advisor
                     case 5:
-                        if (m_uiPhase_Timer < uiDiff)
+                        if (m_uiPhase_Timer < diff)
                         {
                             pAdvisor = (Creature*)(Unit::GetUnit((*me), m_auiAdvisorGuid[2]));
 
@@ -608,7 +608,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                             ++m_uiPhaseSubphase;
                         }
                         else
-                            m_uiPhase_Timer -= uiDiff;
+                            m_uiPhase_Timer -= diff;
 
                         break;
 
@@ -628,7 +628,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                     //Subphase 4 - Unlock advisor
                     case 7:
-                        if (m_uiPhase_Timer < uiDiff)
+                        if (m_uiPhase_Timer < diff)
                         {
                             pAdvisor = (Creature*)(Unit::GetUnit((*me), m_auiAdvisorGuid[3]));
 
@@ -644,7 +644,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                             m_uiPhase_Timer = 3000;
                             ++m_uiPhaseSubphase;
-                        }else m_uiPhase_Timer -= uiDiff;
+                        }else m_uiPhase_Timer -= diff;
                         break;
 
                     //End of phase 1
@@ -672,10 +672,10 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
             {
                 if (m_uiPhaseSubphase == 0)
                 {
-                    if (m_uiPhase_Timer < uiDiff)
+                    if (m_uiPhase_Timer < diff)
                     {
                         m_uiPhaseSubphase = 1;
-                    }else m_uiPhase_Timer -= uiDiff;
+                    }else m_uiPhase_Timer -= diff;
                 }
 
                 //Spawn weapons
@@ -694,7 +694,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                 if (m_uiPhaseSubphase == 2)
                 {
-                    if (m_uiPhase_Timer < uiDiff)
+                    if (m_uiPhase_Timer < diff)
                     {
                         DoScriptText(SAY_PHASE3_ADVANCE, me);
                         m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_3_ADVISOR_ALL);
@@ -702,7 +702,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         m_uiPhaseSubphase = 0;
                     }
                     else
-                        m_uiPhase_Timer -= uiDiff;
+                        m_uiPhase_Timer -= diff;
                 }
 
                 break;
@@ -730,7 +730,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     m_uiPhase_Timer = TIME_PHASE_3_4;
                 }
 
-                if (m_uiPhase_Timer < uiDiff)
+                if (m_uiPhase_Timer < diff)
                 {
                     DoScriptText(SAY_PHASE4_INTRO2, me);
                     m_uiPhase = PHASE_4_SOLO;
@@ -749,7 +749,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     m_uiPhase_Timer = 30000;
                 }
                 else
-                    m_uiPhase_Timer -= uiDiff;
+                    m_uiPhase_Timer -= diff;
 
                 break;
             }
@@ -765,7 +765,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 //m_uiFireball_Timer
                 if (!m_bInGravityLapse && !m_bChainPyros && m_uiPhase != 5)
                 {
-                    if (m_uiFireball_Timer < uiDiff)
+                    if (m_uiFireball_Timer < diff)
                     {
                         if (!m_bIsCastingFireball)
                         {
@@ -788,19 +788,19 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         }
                     }
                     else
-                        m_uiFireball_Timer -= uiDiff;
+                        m_uiFireball_Timer -= diff;
 
                     //m_uiArcaneDisruption_Timer
-                    if (m_uiArcaneDisruption_Timer < uiDiff)
+                    if (m_uiArcaneDisruption_Timer < diff)
                     {
                         DoCastVictim( SPELL_ARCANE_DISRUPTION, true);
                         m_uiArcaneDisruption_Timer = 60000;
                     }
                     else
-                        m_uiArcaneDisruption_Timer -= uiDiff;
+                        m_uiArcaneDisruption_Timer -= diff;
 
                     //m_uiFlameStrike_Timer
-                    if (m_uiFlameStrike_Timer < uiDiff)
+                    if (m_uiFlameStrike_Timer < diff)
                     {
                         if (Unit* pUnit = SelectUnit(SELECT_TARGET_RANDOM, 0))
                             DoCast(pUnit, SPELL_FLAME_STRIKE);
@@ -808,9 +808,9 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         m_uiFlameStrike_Timer = 30000;
                     }
                     else
-                        m_uiFlameStrike_Timer -= uiDiff;
+                        m_uiFlameStrike_Timer -= diff;
 
-                    if (m_uiMindControl_Timer < uiDiff)
+                    if (m_uiMindControl_Timer < diff)
                     {
                         if (me->getThreatManager().getThreatList().size() >= 2)
                             for (uint32 i = 0; i < 3; ++i)
@@ -822,11 +822,11 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         m_uiMindControl_Timer = 60000;
                     }
                     else
-                        m_uiMindControl_Timer -= uiDiff;
+                        m_uiMindControl_Timer -= diff;
                 }
 
                 //m_uiPhoenix_Timer
-                if (m_uiPhoenix_Timer < uiDiff)
+                if (m_uiPhoenix_Timer < diff)
                 {
                     DoCastMe( SPELL_PHOENIX_ANIMATION);
 
@@ -843,7 +843,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     m_uiPhoenix_Timer = 60000;
                 }
                 else
-                    m_uiPhoenix_Timer -= uiDiff;
+                    m_uiPhoenix_Timer -= diff;
 
                 //Phase 4 specific spells
                 if (m_uiPhase == PHASE_4_SOLO)
@@ -869,7 +869,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     }
 
                     //m_uiShockBarrier_Timer
-                    if (m_uiShockBarrier_Timer < uiDiff)
+                    if (m_uiShockBarrier_Timer < diff)
                     {
                         DoCastMe( SPELL_SHOCK_BARRIER);
                         m_bChainPyros = true;
@@ -877,7 +877,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         m_uiShockBarrier_Timer = 60000;
                     }
                     else
-                        m_uiShockBarrier_Timer -= uiDiff;
+                        m_uiShockBarrier_Timer -= diff;
 
                     //Chain Pyros (3 of them max)
                     if (m_bChainPyros && !me->IsNonMeleeSpellCasted(false))
@@ -898,7 +898,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
                 if (m_uiPhase == PHASE_5_GRAVITY)
                 {
-                    if (m_uiPhase_Timer < uiDiff)
+                    if (m_uiPhase_Timer < diff)
                     {
                         me->InterruptNonMeleeSpells(false);
                         me->RemoveAurasDueToSpell(SPELL_FULLPOWER);
@@ -910,7 +910,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         AttackStart(me->getVictim());
                     }
                     else
-                        m_uiPhase_Timer -= uiDiff;
+                        m_uiPhase_Timer -= diff;
                 }
 
                 //Phase 5
@@ -918,7 +918,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 {
 
                     //m_uiGravityLapse_Timer
-                    if (m_uiGravityLapse_Timer < uiDiff)
+                    if (m_uiGravityLapse_Timer < diff)
                     {
                         ThreatList::const_iterator i = me->getThreatManager().getThreatList().begin();
                         switch(m_uiGravityLapse_Phase)
@@ -1007,21 +1007,21 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         }
                     }
                     else
-                        m_uiGravityLapse_Timer -= uiDiff;
+                        m_uiGravityLapse_Timer -= diff;
 
                     if (m_bInGravityLapse)
                     {
                         //m_uiShockBarrier_Timer
-                        if (m_uiShockBarrier_Timer < uiDiff)
+                        if (m_uiShockBarrier_Timer < diff)
                         {
                             DoCastMe( SPELL_SHOCK_BARRIER);
                             m_uiShockBarrier_Timer = 20000;
                         }
                         else
-                            m_uiShockBarrier_Timer -= uiDiff;
+                            m_uiShockBarrier_Timer -= diff;
 
                         //m_uiNetherBeam_Timer
-                        if (m_uiNetherBeam_Timer < uiDiff)
+                        if (m_uiNetherBeam_Timer < diff)
                         {
                             if (Unit* pUnit = SelectUnit(SELECT_TARGET_RANDOM, 0))
                                 DoCast(pUnit, SPELL_NETHER_BEAM);
@@ -1029,7 +1029,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                             m_uiNetherBeam_Timer = 4000;
                         }
                         else
-                            m_uiNetherBeam_Timer -= uiDiff;
+                            m_uiNetherBeam_Timer -= diff;
                     }
                 }
 
@@ -1073,9 +1073,9 @@ struct MANGOS_DLL_DECL boss_thaladred_the_darkenerAI : public advisorbase_ai
         me->AddThreat(pWho, 5000000.0f);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        advisorbase_ai::UpdateAI(uiDiff);
+        advisorbase_ai::UpdateAI(diff);
 
         //Faking death, don't do anything
         if (m_bFakeDeath)
@@ -1086,7 +1086,7 @@ struct MANGOS_DLL_DECL boss_thaladred_the_darkenerAI : public advisorbase_ai
             return;
 
         //m_uiGaze_Timer
-        if (m_uiGaze_Timer < uiDiff)
+        if (m_uiGaze_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
@@ -1097,25 +1097,25 @@ struct MANGOS_DLL_DECL boss_thaladred_the_darkenerAI : public advisorbase_ai
             m_uiGaze_Timer = 8500;
         }
         else
-            m_uiGaze_Timer -= uiDiff;
+            m_uiGaze_Timer -= diff;
 
         //m_uiSilence_Timer
-        if (m_uiSilence_Timer < uiDiff)
+        if (m_uiSilence_Timer < diff)
         {
             DoCastVictim( SPELL_SILENCE);
             m_uiSilence_Timer = 20000;
         }
         else
-            m_uiSilence_Timer -= uiDiff;
+            m_uiSilence_Timer -= diff;
 
         //m_uiPsychicBlow_Timer
-        if (m_uiPsychicBlow_Timer < uiDiff)
+        if (m_uiPsychicBlow_Timer < diff)
         {
             DoCastVictim( SPELL_PSYCHIC_BLOW);
             m_uiPsychicBlow_Timer = urand(20000, 25000);
         }
         else
-            m_uiPsychicBlow_Timer -= uiDiff;
+            m_uiPsychicBlow_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -1148,9 +1148,9 @@ struct MANGOS_DLL_DECL boss_lord_sanguinarAI : public advisorbase_ai
         DoScriptText(SAY_SANGUINAR_AGGRO, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        advisorbase_ai::UpdateAI(uiDiff);
+        advisorbase_ai::UpdateAI(diff);
 
         //Faking death, don't do anything
         if (m_bFakeDeath)
@@ -1161,13 +1161,13 @@ struct MANGOS_DLL_DECL boss_lord_sanguinarAI : public advisorbase_ai
             return;
 
         //m_uiFear_Timer
-        if (m_uiFear_Timer < uiDiff)
+        if (m_uiFear_Timer < diff)
         {
             DoCastVictim( SPELL_BELLOWING_ROAR);
             m_uiFear_Timer = urand(25000, 35000);           //approximately every 30 seconds
         }
         else
-            m_uiFear_Timer -= uiDiff;
+            m_uiFear_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -1222,9 +1222,9 @@ struct MANGOS_DLL_DECL boss_grand_astromancer_capernianAI : public advisorbase_a
             return;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        advisorbase_ai::UpdateAI(uiDiff);
+        advisorbase_ai::UpdateAI(diff);
 
         //Faking Death, don't do anything
         if (m_bFakeDeath)
@@ -1237,26 +1237,26 @@ struct MANGOS_DLL_DECL boss_grand_astromancer_capernianAI : public advisorbase_a
         //m_uiYell_Timer
         if (!m_bYell)
         {
-            if (m_uiYell_Timer < uiDiff)
+            if (m_uiYell_Timer < diff)
             {
                 DoScriptText(SAY_CAPERNIAN_AGGRO, me);
                 m_bYell = true;
             }
             else
-                m_uiYell_Timer -= uiDiff;
+                m_uiYell_Timer -= diff;
         }
 
         //m_uiFireball_Timer
-        if (m_uiFireball_Timer < uiDiff)
+        if (m_uiFireball_Timer < diff)
         {
             DoCastVictim( SPELL_CAPERNIAN_FIREBALL);
             m_uiFireball_Timer = 4000;
         }
         else
-            m_uiFireball_Timer -= uiDiff;
+            m_uiFireball_Timer -= diff;
 
         //m_uiConflagration_Timer
-        if (m_uiConflagration_Timer < uiDiff)
+        if (m_uiConflagration_Timer < diff)
         {
             Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
 
@@ -1268,10 +1268,10 @@ struct MANGOS_DLL_DECL boss_grand_astromancer_capernianAI : public advisorbase_a
             m_uiConflagration_Timer = urand(10000, 15000);
         }
         else
-            m_uiConflagration_Timer -= uiDiff;
+            m_uiConflagration_Timer -= diff;
 
         //m_uiArcaneExplosion_Timer
-        if (m_uiArcaneExplosion_Timer < uiDiff)
+        if (m_uiArcaneExplosion_Timer < diff)
         {
             bool m_bInMeleeRange = false;
             Unit* pTarget = NULL;
@@ -1295,7 +1295,7 @@ struct MANGOS_DLL_DECL boss_grand_astromancer_capernianAI : public advisorbase_a
             m_uiArcaneExplosion_Timer = urand(4000, 6000);
         }
         else
-            m_uiArcaneExplosion_Timer -= uiDiff;
+            m_uiArcaneExplosion_Timer -= diff;
 
         //Do NOT deal any melee damage.
     }
@@ -1331,9 +1331,9 @@ struct MANGOS_DLL_DECL boss_master_engineer_telonicusAI : public advisorbase_ai
         DoScriptText(SAY_TELONICUS_AGGRO, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        advisorbase_ai::UpdateAI(uiDiff);
+        advisorbase_ai::UpdateAI(diff);
 
         //Faking Death, do nothing
         if (m_bFakeDeath)
@@ -1344,16 +1344,16 @@ struct MANGOS_DLL_DECL boss_master_engineer_telonicusAI : public advisorbase_ai
             return;
 
         //m_uiBomb_Timer
-        if (m_uiBomb_Timer < uiDiff)
+        if (m_uiBomb_Timer < diff)
         {
             DoCastVictim( SPELL_BOMB);
             m_uiBomb_Timer = 25000;
         }
         else
-            m_uiBomb_Timer -= uiDiff;
+            m_uiBomb_Timer -= diff;
 
         //m_uiRemoteToy_Timer
-        if (m_uiRemoteToy_Timer < uiDiff)
+        if (m_uiRemoteToy_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_REMOTE_TOY);
@@ -1361,7 +1361,7 @@ struct MANGOS_DLL_DECL boss_master_engineer_telonicusAI : public advisorbase_ai
             m_uiRemoteToy_Timer = urand(10000, 15000);
         }
         else
-            m_uiRemoteToy_Timer -= uiDiff;
+            m_uiRemoteToy_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -1387,12 +1387,12 @@ struct MANGOS_DLL_DECL mob_phoenix_tkAI : public ScriptedAI
         me->SummonCreature(NPC_PHOENIX_EGG,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,16000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiCycle_Timer < uiDiff)
+        if (m_uiCycle_Timer < diff)
         {
             //spell Burn should possible do this, but it doesn't, so do this for now.
             uint32 uiDmg = urand(4500,5500);
@@ -1403,7 +1403,7 @@ struct MANGOS_DLL_DECL mob_phoenix_tkAI : public ScriptedAI
             m_uiCycle_Timer = 2000;
         }
         else
-            m_uiCycle_Timer -= uiDiff;
+            m_uiCycle_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -1441,18 +1441,18 @@ struct MANGOS_DLL_DECL mob_phoenix_egg_tkAI : public ScriptedAI
         pSummoned->CastSpell(pSummoned,SPELL_REBIRTH,false);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_uiRebirth_Timer)
             return;
 
-        if (m_uiRebirth_Timer <= uiDiff)
+        if (m_uiRebirth_Timer <= diff)
         {
             me->SummonCreature(NPC_PHOENIX,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetOrientation(),TEMPSUMMON_CORPSE_DESPAWN,5000);
             m_uiRebirth_Timer = 0;
         }
         else
-            m_uiRebirth_Timer -= uiDiff;
+            m_uiRebirth_Timer -= diff;
     }
 };
 

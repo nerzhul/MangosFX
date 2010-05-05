@@ -147,7 +147,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -156,16 +156,16 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         if (!m_bDemonForm)
         {
             //Whirlwind_Timer
-            if (m_uiWhirlwind_Timer < uiDiff)
+            if (m_uiWhirlwind_Timer < diff)
             {
                 DoCastMe( SPELL_WHIRLWIND);
                 m_uiWhirlwind_Timer = 30000;
-            }else m_uiWhirlwind_Timer -= uiDiff;
+            }else m_uiWhirlwind_Timer -= diff;
 
             //Switch_Timer
             if (!m_bIsFinalForm)
             {
-                if (m_uiSwitch_Timer < uiDiff)
+                if (m_uiSwitch_Timer < diff)
                 {
                     DoScriptText(SAY_SWITCH_TO_DEMON, me);
 
@@ -186,13 +186,13 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
 
                     m_uiInnerDemon_Timer = 15000;
                     m_uiSwitch_Timer = 60000;
-                }else m_uiSwitch_Timer -= uiDiff;
+                }else m_uiSwitch_Timer -= diff;
             }
         }
         else
         {
             //inner demon
-            if (m_uiInnerDemon_Timer < uiDiff)
+            if (m_uiInnerDemon_Timer < diff)
             {
                 DoScriptText(SAY_INNER_DEMONS, me);
 
@@ -202,14 +202,14 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 DoCastMe( SPELL_INSIDIOUS_WHISPER);
 
                 m_uiInnerDemon_Timer = 60000;
-            }else m_uiInnerDemon_Timer -= uiDiff;
+            }else m_uiInnerDemon_Timer -= diff;
 
             //chaos blast spam
             if (!me->IsNonMeleeSpellCasted(false))
                 me->CastSpell(me->getVictim(), SPELL_CHAOS_BLAST, false);
 
             //Switch_Timer
-            if (m_uiSwitch_Timer < uiDiff)
+            if (m_uiSwitch_Timer < diff)
             {
                 if (me->IsNonMeleeSpellCasted(false))
                     me->InterruptNonMeleeSpells(false);
@@ -228,7 +228,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
 
                 m_uiWhirlwind_Timer = 18500;
                 m_uiSwitch_Timer = 45000;
-            }else m_uiSwitch_Timer -= uiDiff;
+            }else m_uiSwitch_Timer -= diff;
         }
 
         if (!m_bIsFinalForm && (me->GetHealth()*100 / me->GetMaxHealth()) < 15)
@@ -260,14 +260,14 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         }
 
         //m_uiEnrage_Timer
-        if (m_uiEnrage_Timer < uiDiff)
+        if (m_uiEnrage_Timer < diff)
         {
             if (me->IsNonMeleeSpellCasted(false))
                 me->InterruptNonMeleeSpells(false);
 
             DoCastMe( SPELL_ENRAGE);
             m_uiEnrage_Timer = MINUTE*5*IN_MILISECONDS;
-        }else m_uiEnrage_Timer -= uiDiff;
+        }else m_uiEnrage_Timer -= diff;
 
         if (!m_bDemonForm)
             DoMeleeAttackIfReady();
@@ -303,7 +303,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blind_demonformAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())

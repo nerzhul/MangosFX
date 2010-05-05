@@ -143,16 +143,16 @@ struct MANGOS_DLL_DECL npc_cooshcooshAI : public ScriptedAI
             me->setFaction(m_uiNormFaction);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiLightningBolt_Timer < uiDiff)
+        if (m_uiLightningBolt_Timer < diff)
         {
             DoCastVictim(SPELL_LIGHTNING_BOLT);
             m_uiLightningBolt_Timer = 5000;
-        }else m_uiLightningBolt_Timer -= uiDiff;
+        }else m_uiLightningBolt_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

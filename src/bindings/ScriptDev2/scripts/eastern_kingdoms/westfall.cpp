@@ -144,12 +144,12 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
         pSummoned->AI()->AttackStart(me);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiShootTimer < uiDiff)
+        if (m_uiShootTimer < diff)
         {
             m_uiShootTimer = 1000;
 
@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL npc_daphne_stilwellAI : public npc_escortAI
 
         }
         else
-            m_uiShootTimer -= uiDiff;
+            m_uiShootTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

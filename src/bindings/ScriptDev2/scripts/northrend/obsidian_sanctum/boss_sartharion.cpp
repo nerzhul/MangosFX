@@ -389,7 +389,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -419,26 +419,26 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         // hard enrage
         if (!m_bIsHardEnraged)
         {
-            if (m_uiEnrageTimer < uiDiff)
+            if (m_uiEnrageTimer < diff)
             {
                 DoCastMe(SPELL_PYROBUFFET, true);
                 m_bIsHardEnraged = true;
             }
             else
-                m_uiEnrageTimer -= uiDiff;
+                m_uiEnrageTimer -= diff;
         }
 
         // flame tsunami
-        if (m_uiFlameTsunamiTimer < uiDiff)
+        if (m_uiFlameTsunamiTimer < diff)
         {
             SendFlameTsunami();
             m_uiFlameTsunamiTimer = 30000;
         }
         else
-            m_uiFlameTsunamiTimer -= uiDiff;
+            m_uiFlameTsunamiTimer -= diff;
 
          // Lavas Strike
-        if (m_uiLavaStrikeTimer < uiDiff)
+        if (m_uiLavaStrikeTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
@@ -454,40 +454,40 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
             m_uiLavaStrikeTimer = urand(5000, 20000);
         }
         else
-            m_uiLavaStrikeTimer -= uiDiff;
+            m_uiLavaStrikeTimer -= diff;
 
         // call tenebron
-        if (!m_bHasCalledTenebron && m_uiTenebronTimer < uiDiff)
+        if (!m_bHasCalledTenebron && m_uiTenebronTimer < diff)
         {
             CallDragon(DATA_TENEBRON);
             m_bHasCalledTenebron = true;
         }
         else
-            m_uiTenebronTimer -= uiDiff;
+            m_uiTenebronTimer -= diff;
 
         // call shadron
-        if (!m_bHasCalledShadron && m_uiShadronTimer < uiDiff)
+        if (!m_bHasCalledShadron && m_uiShadronTimer < diff)
         {
             CallDragon(DATA_SHADRON);
             m_bHasCalledShadron = true;
         }
         else
-            m_uiShadronTimer -= uiDiff;
+            m_uiShadronTimer -= diff;
 
         // call vesperon
-        if (!m_bHasCalledVesperon && m_uiVesperonTimer < uiDiff)
+        if (!m_bHasCalledVesperon && m_uiVesperonTimer < diff)
         {
             CallDragon(DATA_VESPERON);
             m_bHasCalledVesperon = true;
         }
         else
-            m_uiVesperonTimer -= uiDiff;
+            m_uiVesperonTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
-        EnterEvadeIfOutOfCombatArea(uiDiff);
+        EnterEvadeIfOutOfCombatArea(diff);
     }
 };
 
@@ -723,11 +723,11 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 		
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bCanMoveFree && m_uiMoveNextTimer)
         {
-            if (m_uiMoveNextTimer <= uiDiff)
+            if (m_uiMoveNextTimer <= diff)
             {
                 me->GetMotionMaster()->MovePoint(m_uiWaypointId,
                     m_aDragonCommon[m_uiWaypointId].m_fX, m_aDragonCommon[m_uiWaypointId].m_fY, m_aDragonCommon[m_uiWaypointId].m_fZ);
@@ -735,7 +735,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
                 m_uiMoveNextTimer = 0;
             }
             else
-                m_uiMoveNextTimer -= uiDiff;
+                m_uiMoveNextTimer -= diff;
         }
     }
 };
@@ -789,16 +789,16 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //if no target, update dummy and return
         if (!CanDoSomething())
         {
-            dummy_dragonAI::UpdateAI(uiDiff);
+            dummy_dragonAI::UpdateAI(diff);
             return;
         }
 
-		if(EggTimer <= uiDiff)
+		if(EggTimer <= diff)
 		{
 			for(uint8 i=0;i<6;i++)
 				if(Creature* cr = Tasks.CallCreature(30882,THREE_MINS,NEAR_7M))
@@ -806,9 +806,9 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
 			EggTimer = 30000;
 		}
 		else
-			EggTimer -= uiDiff;
+			EggTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -893,24 +893,24 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //if no target, update dummy and return
         if (!CanDoSomething())
         {
-            dummy_dragonAI::UpdateAI(uiDiff);
+            dummy_dragonAI::UpdateAI(diff);
             return;
         }
 
-		if(m_uiAcolyteShadronTimer <= uiDiff)
+		if(m_uiAcolyteShadronTimer <= diff)
 		{
 			DoShadronEvent();
 			m_uiAcolyteShadronTimer = 60000;
 		}
 		else
-			m_uiAcolyteShadronTimer -= uiDiff;
+			m_uiAcolyteShadronTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -967,16 +967,16 @@ struct MANGOS_DLL_DECL mob_vesperonAI : public dummy_dragonAI
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //if no target, update dummy and return
         if (!CanDoSomething())
         {
-            dummy_dragonAI::UpdateAI(uiDiff);
+            dummy_dragonAI::UpdateAI(diff);
             return;
         }
 
-        Tasks.UpdateEvent(uiDiff);
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -1038,7 +1038,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 					}
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -1091,7 +1091,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
 					}
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -1187,20 +1187,20 @@ struct MANGOS_DLL_DECL mob_twilight_whelpAI : public ScriptedAI
         m_uiFadeArmorTimer = 1000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         // twilight torment
-        if (m_uiFadeArmorTimer < uiDiff)
+        if (m_uiFadeArmorTimer < diff)
         {
             DoCastVictim( SPELL_FADE_ARMOR);
             m_uiFadeArmorTimer = urand(5000, 10000);
         }
         else
-            m_uiFadeArmorTimer -= uiDiff;
+            m_uiFadeArmorTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -1243,20 +1243,20 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
 
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         // twilight torment
-        if (m_uiBumpTimer < uiDiff)
+        if (m_uiBumpTimer < diff)
         {
             TsunamiBump();
             m_uiBumpTimer = 1000;
         }
         else
-            m_uiBumpTimer -= uiDiff;
+            m_uiBumpTimer -= diff;
     }
 };
 

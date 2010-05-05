@@ -226,11 +226,11 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (m_bIsWalking)
         {
-            if (m_uiPause_Timer < uiDiff)
+            if (m_uiPause_Timer < diff)
             {
                 DoScriptText(ActiveBot[m_uiActiveOrder[m_uiActivedNumber]].say, me);
                 DoCastMe( SPELL_CHANNEL_YMIRON_TO_SPIRIT); // should be on spirit
@@ -253,12 +253,12 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 m_bIsPause = true;
                 m_bIsWalking = false;
                 m_uiPause_Timer = 3000;
-            } else m_uiPause_Timer -= uiDiff;
+            } else m_uiPause_Timer -= diff;
             return;
         }
         else if (m_bIsPause)
         {
-            if (m_uiPause_Timer < uiDiff)
+            if (m_uiPause_Timer < diff)
             {
                 m_uiAbility_BJORN_Timer = 5000;
                 m_uiAbility_HALDOR_Timer = 5000;
@@ -269,7 +269,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 m_uiPause_Timer = 0;
             } 
 			else
-				m_uiPause_Timer -= uiDiff;
+				m_uiPause_Timer -= diff;
             return;
         }
 
@@ -279,9 +279,9 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 
         if (!m_bIsPause)
         {
-			Tasks.UpdateEvent(uiDiff);
+			Tasks.UpdateEvent(diff);
 
-             if (m_uiDarkSlash_Timer < uiDiff)
+             if (m_uiDarkSlash_Timer < diff)
             {
                 //DoCastVictim( SPELL_DARK_SLASH); // not working
                 int32 dmg = me->getVictim()->GetHealth() / 50; // workaround for damage
@@ -289,10 +289,10 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 m_uiDarkSlash_Timer = urand(30000,35000);
             } 
 			else
-				m_uiDarkSlash_Timer -= uiDiff;
+				m_uiDarkSlash_Timer -= diff;
 
             // Abilities ------------------------------------------------------------------------------
-            if (m_bIsActiveWithBJORN && m_uiAbility_BJORN_Timer < uiDiff)
+            if (m_bIsActiveWithBJORN && m_uiAbility_BJORN_Timer < diff)
             {
                 //DoCastMe( SPELL_SUMMON_SPIRIT_FOUNT); // works fine, but using summon has better control
                 if (Creature* pTemp = me->SummonCreature(NPC_SPIRIT_FOUNT, 385+rand()%10, -330+rand()%10, 104.756, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 180000))
@@ -308,25 +308,25 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 m_bIsActiveWithBJORN = false; // only one orb
             } 
 			else 
-				m_uiAbility_BJORN_Timer -= uiDiff;
+				m_uiAbility_BJORN_Timer -= diff;
 
-            if (m_bIsActiveWithHALDOR && m_uiAbility_HALDOR_Timer < uiDiff)
+            if (m_bIsActiveWithHALDOR && m_uiAbility_HALDOR_Timer < diff)
             {
                 DoCastVictim( m_bIsHeroic ? SPELL_SPIRIT_STRIKE_H : SPELL_SPIRIT_STRIKE_N);
                 m_uiAbility_HALDOR_Timer = 5000; // overtime
             } 
 			else 
-				m_uiAbility_HALDOR_Timer -= uiDiff;
+				m_uiAbility_HALDOR_Timer -= diff;
 
-            if (m_bIsActiveWithRANULF && m_uiAbility_RANULF_Timer < uiDiff)
+            if (m_bIsActiveWithRANULF && m_uiAbility_RANULF_Timer < diff)
             {
                 DoCastMe( m_bIsHeroic ? SPELL_SPIRIT_BURST_H : SPELL_SPIRIT_BURST_N);
                 m_uiAbility_RANULF_Timer = 10000; // overtime
             } 
 			else 
-				m_uiAbility_RANULF_Timer -= uiDiff;
+				m_uiAbility_RANULF_Timer -= diff;
 
-            if (m_bIsActiveWithTORGYN && m_uiAbility_TORGYN_Timer < uiDiff)
+            if (m_bIsActiveWithTORGYN && m_uiAbility_TORGYN_Timer < diff)
             {
                 float x,y,z;
                 x = me->GetPositionX()-5;
@@ -347,7 +347,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 m_uiAbility_TORGYN_Timer = 15000; // overtime
             } 
 			else
-				m_uiAbility_TORGYN_Timer -= uiDiff;
+				m_uiAbility_TORGYN_Timer -= diff;
 
             // Health check -----------------------------------------------------------------------------
            if ((me->GetHealth()*100 / me->GetMaxHealth()) < (100-(m_uiHealthAmountMultipler * m_uiHealthAmountModifier)))

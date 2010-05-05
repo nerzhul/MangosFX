@@ -340,11 +340,11 @@ struct MANGOS_DLL_DECL instance_stratholme : public ScriptedInstance
         return 0;
     }
 
-    void Update(uint32 uiDiff)
+    void Update(uint32 diff)
     {
         if (m_uiBaronRun_Timer)
         {
-            if (m_uiBaronRun_Timer <= uiDiff)
+            if (m_uiBaronRun_Timer <= diff)
             {
                 if (GetData(TYPE_BARON_RUN) != DONE)
                     SetData(TYPE_BARON_RUN, FAIL);
@@ -353,12 +353,12 @@ struct MANGOS_DLL_DECL instance_stratholme : public ScriptedInstance
                 debug_log("SD2: Instance Stratholme: Baron run event reached end. Event has state %u.",GetData(TYPE_BARON_RUN));
             }
             else
-                m_uiBaronRun_Timer -= uiDiff;
+                m_uiBaronRun_Timer -= diff;
         }
 
         if (m_uiSlaugtherSquare_Timer)
         {
-            if (m_uiSlaugtherSquare_Timer <= uiDiff)
+            if (m_uiSlaugtherSquare_Timer <= diff)
             {
                 if (Creature* pBaron = instance->GetCreature(m_uiBaronGUID))
                 {
@@ -373,7 +373,7 @@ struct MANGOS_DLL_DECL instance_stratholme : public ScriptedInstance
                 m_uiSlaugtherSquare_Timer = 0;
             }
             else
-                m_uiSlaugtherSquare_Timer -= uiDiff;
+                m_uiSlaugtherSquare_Timer -= diff;
         }
     }
 };

@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -196,31 +196,31 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         }
 
         //m_uiArcingSmash_Timer
-        if (m_uiArcingSmash_Timer < uiDiff)
+        if (m_uiArcingSmash_Timer < diff)
         {
             DoCastVictim( SPELL_ARCING_SMASH);
             m_uiArcingSmash_Timer = urand(8000, 12000);
         }
         else
-            m_uiArcingSmash_Timer -= uiDiff;
+            m_uiArcingSmash_Timer -= diff;
 
         //m_uiWhirlwind_Timer
-        if (m_uiWhirlwind_Timer < uiDiff)
+        if (m_uiWhirlwind_Timer < diff)
         {
             DoCastVictim( SPELL_WHIRLWIND);
             m_uiWhirlwind_Timer = urand(30000, 40000);
         }
         else
-            m_uiWhirlwind_Timer -= uiDiff;
+            m_uiWhirlwind_Timer -= diff;
 
         //m_uiMightyBlow_Timer
-        if (m_uiMightyBlow_Timer < uiDiff)
+        if (m_uiMightyBlow_Timer < diff)
         {
             DoCastVictim( SPELL_MIGHTY_BLOW);
             m_uiMightyBlow_Timer = urand(20000, 35000);
         }
         else
-            m_uiMightyBlow_Timer -= uiDiff;
+            m_uiMightyBlow_Timer -= diff;
 
         //Entering Phase 2
         if (!m_bPhase2 && (me->GetHealth()*100 / me->GetMaxHealth()) < 50)
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         if (m_bPhase2)
         {
             //m_uiCharge_Timer
-            if (m_uiCharge_Timer < uiDiff)
+            if (m_uiCharge_Timer < diff)
             {
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
                     DoCast(pTarget, SPELL_CHARGE);
@@ -241,16 +241,16 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
                 m_uiCharge_Timer = urand(14000, 20000);
             }
             else
-                m_uiCharge_Timer -= uiDiff;
+                m_uiCharge_Timer -= diff;
 
             //m_uiFear_Timer
-            if (m_uiFear_Timer < uiDiff)
+            if (m_uiFear_Timer < diff)
             {
                 DoCastVictim( SPELL_FEAR);
                 m_uiFear_Timer = urand(20000, 35000);
             }
             else
-                m_uiFear_Timer -= uiDiff;
+                m_uiFear_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -312,7 +312,7 @@ struct MANGOS_DLL_DECL boss_olm_the_summonerAI : public Council_Base_AI
         m_uiSummon_Timer    = 10000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -326,31 +326,31 @@ struct MANGOS_DLL_DECL boss_olm_the_summonerAI : public Council_Base_AI
         }
 
         //m_uiDarkDecay_Timer
-        if (m_uiDarkDecay_Timer < uiDiff)
+        if (m_uiDarkDecay_Timer < diff)
         {
             DoCastVictim( SPELL_DARK_DECAY);
             m_uiDarkDecay_Timer = 20000;
         }
         else
-            m_uiDarkDecay_Timer -= uiDiff;
+            m_uiDarkDecay_Timer -= diff;
 
         //m_uiDeathCoil_Timer
-        if (m_uiDeathCoil_Timer < uiDiff)
+        if (m_uiDeathCoil_Timer < diff)
         {
             DoCastVictim( SPELL_DEATH_COIL);
             m_uiDeathCoil_Timer = urand(8000, 13000);
         }
         else
-            m_uiDeathCoil_Timer -= uiDiff;
+            m_uiDeathCoil_Timer -= diff;
 
         //m_uiSummon_Timer
-        if (m_uiSummon_Timer < uiDiff)
+        if (m_uiSummon_Timer < diff)
         {
             DoCastVictim( SPELL_SUMMON_WILD_FELHUNTER);
             m_uiSummon_Timer = urand(25000, 35000);
         }
         else
-            m_uiSummon_Timer -= uiDiff;
+            m_uiSummon_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -402,7 +402,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -415,41 +415,41 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
             return;
         }
 
-        if (m_uiGreatherPolymorph_Timer < uiDiff)
+        if (m_uiGreatherPolymorph_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_GREATER_POLYMORPH);
             m_uiGreatherPolymorph_Timer = urand(15000, 20000);
         }
         else
-            m_uiGreatherPolymorph_Timer -= uiDiff;
+            m_uiGreatherPolymorph_Timer -= diff;
 
         //LightningBolt_Timer
-        if (m_uiLightningBolt_Timer < uiDiff)
+        if (m_uiLightningBolt_Timer < diff)
         {
             DoCastVictim( SPELL_LIGHTNING_BOLT);
             m_uiLightningBolt_Timer = urand(2500, 4000);
         }
         else
-            m_uiLightningBolt_Timer -= uiDiff;
+            m_uiLightningBolt_Timer -= diff;
 
         //ArcaneShock_Timer
-        if (m_uiArcaneShock_Timer < uiDiff)
+        if (m_uiArcaneShock_Timer < diff)
         {
             DoCastVictim( SPELL_ARCANE_SHOCK);
             m_uiArcaneShock_Timer = urand(15000, 20000);
         }
         else
-            m_uiArcaneShock_Timer -= uiDiff;
+            m_uiArcaneShock_Timer -= diff;
 
         //ArcaneExplosion_Timer
-        if (m_uiArcaneExplosion_Timer < uiDiff)
+        if (m_uiArcaneExplosion_Timer < diff)
         {
             DoCastVictim( SPELL_ARCANE_EXPLOSION);
             m_uiArcaneExplosion_Timer = 30000;
         }
         else
-            m_uiArcaneExplosion_Timer -= uiDiff;
+            m_uiArcaneExplosion_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -471,7 +471,7 @@ struct MANGOS_DLL_DECL boss_blindeye_the_seerAI : public Council_Base_AI
         m_uiPrayerofHealing_Timer           = urand(45000, 55000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -485,31 +485,31 @@ struct MANGOS_DLL_DECL boss_blindeye_the_seerAI : public Council_Base_AI
         }
 
         //m_uiGreaterPowerWordShield_Timer
-        if (m_uiGreaterPowerWordShield_Timer < uiDiff)
+        if (m_uiGreaterPowerWordShield_Timer < diff)
         {
             DoCastMe( SPELL_GREATER_PW_SHIELD);
             m_uiGreaterPowerWordShield_Timer = urand(30000, 40000);
         }
         else
-            m_uiGreaterPowerWordShield_Timer -= uiDiff;
+            m_uiGreaterPowerWordShield_Timer -= diff;
 
         //m_uiHeal_Timer
-        if (m_uiHeal_Timer < uiDiff)
+        if (m_uiHeal_Timer < diff)
         {
             DoCastMe( SPELL_HEAL);
             m_uiHeal_Timer = urand(15000, 40000);
         }
         else
-            m_uiHeal_Timer -= uiDiff;
+            m_uiHeal_Timer -= diff;
 
         //PrayerofHealing_Timer
-        if (m_uiPrayerofHealing_Timer < uiDiff)
+        if (m_uiPrayerofHealing_Timer < diff)
         {
             DoCastMe( SPELL_PRAYEROFHEALING);
             m_uiPrayerofHealing_Timer = urand(35000, 50000);
         }
         else
-            m_uiPrayerofHealing_Timer -= uiDiff;
+            m_uiPrayerofHealing_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -546,7 +546,7 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -560,26 +560,26 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
         }
 
         //m_uiGreaterFireball_Timer
-        if (m_uiGreaterFireball_Timer < uiDiff)
+        if (m_uiGreaterFireball_Timer < diff)
         {
             DoCastVictim( SPELL_GREATER_FIREBALL);
             m_uiGreaterFireball_Timer = 3200;
         }
         else
-            m_uiGreaterFireball_Timer -= uiDiff;
+            m_uiGreaterFireball_Timer -= diff;
 
         //SpellShield_Timer
-        if (m_uiSpellShield_Timer < uiDiff)
+        if (m_uiSpellShield_Timer < diff)
         {
             me->InterruptNonMeleeSpells(false);
             DoCastVictim( SPELL_SPELLSHIELD);
             m_uiSpellShield_Timer = 30000;
         }
         else
-            m_uiSpellShield_Timer -= uiDiff;
+            m_uiSpellShield_Timer -= diff;
 
         //BlastWave_Timer
-        if (m_uiBlastWave_Timer < uiDiff)
+        if (m_uiBlastWave_Timer < diff)
         {
             bool bInRange = false;
             Unit* pTarget = NULL;
@@ -605,7 +605,7 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
             }
         }
         else
-            m_uiBlastWave_Timer -= uiDiff;
+            m_uiBlastWave_Timer -= diff;
     }
 };
 

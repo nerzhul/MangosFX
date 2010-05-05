@@ -507,7 +507,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
             }
         }
     }
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if(m_uiPhase == PHASE_NOSTART)
         {
@@ -519,17 +519,17 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                 m_uiSubPhase = SUBPHASE_UP;
             }
             else if(m_uiSubPhase == SUBPHASE_UP){
-                if(m_uiSpeechTimer[m_uiSpeechCount] <= uiDiff)
+                if(m_uiSpeechTimer[m_uiSpeechCount] <= diff)
                 {
                     DoScriptText(SAY_INTRO1-m_uiSpeechCount, me);
                     m_uiSpeechCount++;
                     if(m_uiSpeechCount == 5){
                         m_uiSubPhase = SUBPHASE_FLY_DOWN1;
                     }
-                }else m_uiSpeechTimer[m_uiSpeechCount] -= uiDiff;
+                }else m_uiSpeechTimer[m_uiSpeechCount] -= diff;
             }
             else if(m_uiSubPhase == SUBPHASE_FLY_DOWN1){
-                if(m_uiTimer <= uiDiff)
+                if(m_uiTimer <= diff)
                 {
                     float x, y, z;
                     me->GetPosition(x, y, z);
@@ -537,32 +537,32 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     DoMovement(x, y, z, 0, false);
                     m_uiSubPhase = SUBPHASE_FLY_DOWN2;
                     m_uiTimer = 1500;
-                }else m_uiTimer -= uiDiff;
+                }else m_uiTimer -= diff;
             }
             else if(m_uiSubPhase == SUBPHASE_FLY_DOWN2){
-                if(m_uiTimer <= uiDiff)
+                if(m_uiTimer <= diff)
                 {
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     m_uiSubPhase = 0;
                     m_uiPhase = PHASE_FLOOR;
-                }else m_uiTimer -= uiDiff;
+                }else m_uiTimer -= diff;
             }    
         }
         if (!CanDoSomething())
             return;
 
         //Enrage timer.....
-        if(m_uiEnrageTimer <= uiDiff)
+        if(m_uiEnrageTimer <= diff)
         {
             DoCast(me, SPELL_BERSERK);
             m_uiEnrageTimer = 600000;
-        }else m_uiEnrageTimer -= uiDiff;
+        }else m_uiEnrageTimer -= diff;
 
         if(m_uiPhase == PHASE_FLOOR)
         {
             if(m_uiSubPhase == SUBPHASE_VORTEX)
             {
-                if(m_uiTimer <= uiDiff)
+                if(m_uiTimer <= diff)
                 {
                     DoVortex(m_uiVortexPhase);
                     
@@ -584,13 +584,13 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     m_uiVortexPhase++;
                 }
 				else 
-					m_uiTimer -= uiDiff;
+					m_uiTimer -= diff;
                 return;
             }
 
             
             //Vortex
-            if(m_uiVortexTimer <= uiDiff)
+            if(m_uiVortexTimer <= diff)
             {
                 PowerSpark(3);
                 DoVortex(0);
@@ -600,24 +600,24 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                 m_uiTimer = 1000;
                 DoScriptText(SAY_VORTEX, me);
                 return;
-            }else m_uiVortexTimer -= uiDiff;
+            }else m_uiVortexTimer -= diff;
 
             //Arcane Breath
-            if(m_uiArcaneBreathTimer <= uiDiff)
+            if(m_uiArcaneBreathTimer <= diff)
             {
                 DoCast(me, m_bIsRegularMode ? SPELL_ARCANE_BREATH : SPELL_ARCANE_BREATH_H);
                 m_uiArcaneBreathTimer = 15000 + urand(3000, 8000);
-            }else m_uiArcaneBreathTimer -= uiDiff;
+            }else m_uiArcaneBreathTimer -= diff;
 
             //PowerSpark
-            if(m_uiPowerSparkTimer<= uiDiff)
+            if(m_uiPowerSparkTimer<= diff)
             {
                 PowerSpark(1);
                 m_uiPowerSparkTimer = 40000;
-            }else m_uiPowerSparkTimer -= uiDiff;
+            }else m_uiPowerSparkTimer -= diff;
 
             //Health check
-            if(m_uiTimer<= uiDiff)
+            if(m_uiTimer<= diff)
             {
                 uint8 health = me->GetHealth()*100 / me->GetMaxHealth();                    
                 if(health <= 50)
@@ -632,7 +632,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     return;
                 }
                 m_uiTimer = 1500;
-            }else m_uiTimer -= uiDiff;  
+            }else m_uiTimer -= diff;  
 
             DoMeleeAttackIfReady();
         }
@@ -640,7 +640,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
         {
             if(m_uiSubPhase == SUBPHASE_TALK)
             {
-                if(m_uiTimer <= uiDiff)
+                if(m_uiTimer <= diff)
                 {
                     float x, y, z;
                     if(Creature *pTrigger = GetClosestCreatureWithEntry(me, NPC_AOE_TRIGGER, 60.0f))
@@ -654,18 +654,18 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     DoSpawnShell();
                     m_uiShellTimer = 30000;
                     m_uiSubPhase = 0;
-                }else m_uiTimer -= uiDiff;
+                }else m_uiTimer -= diff;
             }
             
             //Arcane overload (bubble)
-            if(m_uiShellTimer <= uiDiff)
+            if(m_uiShellTimer <= diff)
             {
                 DoSpawnShell();
                 m_uiShellTimer = 30000;
-            }else m_uiShellTimer -= uiDiff;
+            }else m_uiShellTimer -= diff;
 
             // Arcane Pulse
-            if(m_uiDeepBreathTimer <= uiDiff)
+            if(m_uiDeepBreathTimer <= diff)
             {
                 DoScriptText(SAY_ARCANE_PULSE, me);
                 DoScriptText(SAY_ARCANE_PULSE_WARN, me);
@@ -673,17 +673,17 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     pTrigger->CastSpell(pTrigger, SPELL_ARCANE_PULSE, false);
 
                 m_uiDeepBreathTimer = 60000;
-            }else m_uiDeepBreathTimer -= uiDiff;
+            }else m_uiDeepBreathTimer -= diff;
 
             // Arcane Storm
-            if(m_uiArcaneStormTimer <= uiDiff)
+            if(m_uiArcaneStormTimer <= diff)
             {
                 DoCast(me, m_bIsRegularMode ? SPELL_ARCANE_STORM : SPELL_ARCANE_STORM_H);
                 m_uiArcaneStormTimer = 20000;
-            }else m_uiArcaneStormTimer -= uiDiff;
+            }else m_uiArcaneStormTimer -= diff;
 
             //Health check
-            if(m_uiTimer<= uiDiff)
+            if(m_uiTimer<= diff)
             {
                 if(!IsThereAnyAdd())
                 {
@@ -695,13 +695,13 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     return;
                 }
                 m_uiTimer = 5000;
-            }else m_uiTimer -= uiDiff;  
+            }else m_uiTimer -= diff;  
         }
         else if(m_uiPhase == PHASE_DRAGONS)
         {
             if(m_uiSubPhase == SUBPHASE_DESTROY_PLATFORM)
             {
-                if(m_uiTimer<= uiDiff)
+                if(m_uiTimer<= diff)
                 {
                     if(Creature *pTrigger = GetClosestCreatureWithEntry(me, NPC_AOE_TRIGGER, 60.0f))
                         pTrigger->CastSpell(pTrigger, SPELL_DESTROY_PLATFROM_BOOM, false);
@@ -712,7 +712,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                     me->GetMotionMaster()->MoveChase(me->getVictim());
                 }
 				else 
-					m_uiTimer -= uiDiff;
+					m_uiTimer -= diff;
                 return;
             }
 
@@ -782,9 +782,9 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public ScriptedAI
                 ((boss_malygosAI*)pMalygos->AI())->m_lSparkGUIDList.clear();
         }
     }
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if(m_uiCheckTimer <= uiDiff)
+        if(m_uiCheckTimer <= diff)
         {
             if(isDead)
             {
@@ -802,7 +802,7 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public ScriptedAI
                 }
             }
             m_uiCheckTimer = 2500;
-        }else m_uiCheckTimer -= uiDiff;
+        }else m_uiCheckTimer -= diff;
     }
 };
 /*######

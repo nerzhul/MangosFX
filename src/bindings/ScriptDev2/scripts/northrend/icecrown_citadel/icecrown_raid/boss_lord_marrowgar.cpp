@@ -79,40 +79,40 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
             m_pInstance->SetData(TYPE_MARROWGAR, FAIL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (BoneStorm_Timer < uiDiff)
+        if (BoneStorm_Timer < diff)
         {
             DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_BONE_STORM : H_SPELL_BONE_STORM);
             BoneStorm_Timer = 90000;
         }
-        else BoneStorm_Timer -= uiDiff;
+        else BoneStorm_Timer -= diff;
 
-        if (BoneSpike_Timer < uiDiff)
+        if (BoneSpike_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_BONE_SPIKE : H_SPELL_BONE_SPIKE);
             SaberLash_Timer = 4000;
             BoneSpike_Timer = 30000;
         }
-        else BoneSpike_Timer -= uiDiff;
+        else BoneSpike_Timer -= diff;
 
-        if (ColdFlame_Timer < uiDiff)
+        if (ColdFlame_Timer < diff)
         {
             DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_COLDFLAME : H_SPELL_COLDFLAME);
             ColdFlame_Timer = 15000;
         }
-        else ColdFlame_Timer -= uiDiff;
+        else ColdFlame_Timer -= diff;
 
-        if (SaberLash_Timer < uiDiff)
+        if (SaberLash_Timer < diff)
         {
             DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_SABER_LASH : H_SPELL_SABER_LASH);
             SaberLash_Timer = 1000;
         }
-        else SaberLash_Timer -= uiDiff;
+        else SaberLash_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

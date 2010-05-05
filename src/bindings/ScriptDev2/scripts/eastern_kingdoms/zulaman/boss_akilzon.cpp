@@ -124,26 +124,26 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiCallLightTimer < uiDiff)
+        if (m_uiCallLightTimer < diff)
         {
             me->CastSpell(me->getVictim(), SPELL_CALL_LIGHTNING, false);
             m_uiCallLightTimer = urand(15000, 25000);
-        }else m_uiCallLightTimer -= uiDiff;
+        }else m_uiCallLightTimer -= diff;
 
-        if (m_uiStaticDisruptTimer < uiDiff)
+        if (m_uiStaticDisruptTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
                 me->CastSpell(pTarget, SPELL_STATIC_DISRUPTION, false);
 
             m_uiStaticDisruptTimer = urand(7000, 14000);
-        }else m_uiStaticDisruptTimer -= uiDiff;
+        }else m_uiStaticDisruptTimer -= diff;
 
-        if (m_uiStormTimer < uiDiff)
+        if (m_uiStormTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
@@ -155,29 +155,29 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
             }
 
             m_uiStormTimer = 60000;
-        }else m_uiStormTimer -= uiDiff;
+        }else m_uiStormTimer -= diff;
 
-        if (m_uiGustOfWindTimer < uiDiff)
+        if (m_uiGustOfWindTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
                 me->CastSpell(pTarget, SPELL_GUST_OF_WIND, false);
 
             m_uiGustOfWindTimer = urand(20000, 30000);
-        }else m_uiGustOfWindTimer -= uiDiff;
+        }else m_uiGustOfWindTimer -= diff;
 
-        if (m_uiSummonEagleTimer < uiDiff)
+        if (m_uiSummonEagleTimer < diff)
         {
             DoScriptText(urand(0,1) ? SAY_SUMMON : SAY_SUMMON_ALT, me);
             DoSummonEagles();
             m_uiSummonEagleTimer = 60000;
-        }else m_uiSummonEagleTimer -= uiDiff;
+        }else m_uiSummonEagleTimer -= diff;
 
-        if (!m_bIsBerserk && m_uiBerserkTimer < uiDiff)
+        if (!m_bIsBerserk && m_uiBerserkTimer < diff)
         {
             DoScriptText(SAY_ENRAGE, me);
             me->CastSpell(me, SPELL_BERSERK, true);
             m_bIsBerserk = true;
-        }else m_uiBerserkTimer -= uiDiff;
+        }else m_uiBerserkTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -258,24 +258,24 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (m_bCanMoveToRandom)
         {
-            if (m_uiReturnTimer < uiDiff)
+            if (m_uiReturnTimer < diff)
             {
                 DoMoveToRandom();
                 m_uiReturnTimer = 800;
-            }else m_uiReturnTimer -= uiDiff;
+            }else m_uiReturnTimer -= diff;
         }
 
         if (!m_bCanCast)
             return;
 
-        if (m_uiEagleSwoopTimer < uiDiff)
+        if (m_uiEagleSwoopTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
             {
@@ -286,7 +286,7 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
             }
 
             m_uiEagleSwoopTimer = urand(4000, 6000);
-        }else m_uiEagleSwoopTimer -= uiDiff;
+        }else m_uiEagleSwoopTimer -= diff;
     }
 };
 

@@ -270,14 +270,14 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         //Check if we have a current target
         if (!CanDoSomething())
         {
             if (HasEscortState(STATE_ESCORT_ESCORTING) && m_uiPostEventCount)
             {
-                if (m_uiPostEventTimer < uiDiff)
+                if (m_uiPostEventTimer < diff)
                 {
                     m_uiPostEventTimer = 3000;
 
@@ -302,7 +302,7 @@ struct MANGOS_DLL_DECL npc_rinjiAI : public npc_escortAI
                     }
                 }
                 else
-                    m_uiPostEventTimer -= uiDiff;
+                    m_uiPostEventTimer -= diff;
             }
 
             return;

@@ -666,7 +666,7 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bCanMoveNext)
         {
@@ -685,7 +685,7 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
 
         if (m_bWaypointEnd)
         {
-            if (m_uiHatchlingTimer < uiDiff)
+            if (m_uiHatchlingTimer < diff)
             {
                 m_uiHatchlingTimer = 10000;
 
@@ -709,7 +709,7 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
 
                 ++m_uiHatchlingCount;
 
-            }else m_uiHatchlingTimer -= uiDiff;
+            }else m_uiHatchlingTimer -= diff;
         }
     }
 };

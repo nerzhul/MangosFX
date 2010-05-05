@@ -81,12 +81,12 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
         DoScriptText(SAY_SLAY, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiHandOfThaurissan_Timer < uiDiff)
+        if (m_uiHandOfThaurissan_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(pTarget,SPELL_HANDOFTHAURISSAN);
@@ -104,16 +104,16 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
             //}
         }
         else
-            m_uiHandOfThaurissan_Timer -= uiDiff;
+            m_uiHandOfThaurissan_Timer -= diff;
 
         //AvatarOfFlame_Timer
-        if (m_uiAvatarOfFlame_Timer < uiDiff)
+        if (m_uiAvatarOfFlame_Timer < diff)
         {
             DoCastVictim(SPELL_AVATAROFFLAME);
             m_uiAvatarOfFlame_Timer = 18000;
         }
         else
-            m_uiAvatarOfFlame_Timer -= uiDiff;
+            m_uiAvatarOfFlame_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -188,41 +188,41 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         //MindBlast_Timer
-        if (m_uiMindBlast_Timer < uiDiff)
+        if (m_uiMindBlast_Timer < diff)
         {
             DoCastVictim(SPELL_MINDBLAST);
             m_uiMindBlast_Timer = 14000;
         }
         else
-            m_uiMindBlast_Timer -= uiDiff;
+            m_uiMindBlast_Timer -= diff;
 
         //ShadowWordPain_Timer
-        if (m_uiShadowWordPain_Timer < uiDiff)
+        if (m_uiShadowWordPain_Timer < diff)
         {
             DoCastVictim(SPELL_SHADOWWORDPAIN);
             m_uiShadowWordPain_Timer = 18000;
         }
         else
-            m_uiShadowWordPain_Timer -= uiDiff;
+            m_uiShadowWordPain_Timer -= diff;
 
         //Smite_Timer
-        if (m_uiSmite_Timer < uiDiff)
+        if (m_uiSmite_Timer < diff)
         {
             DoCastVictim(SPELL_SMITE);
             m_uiSmite_Timer = 10000;
         }
         else
-            m_uiSmite_Timer -= uiDiff;
+            m_uiSmite_Timer -= diff;
 
         //Heal_Timer
-        if (m_uiHeal_Timer < uiDiff)
+        if (m_uiHeal_Timer < diff)
         {
             if (Creature* pEmperor = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_EMPEROR)))
             {
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
             m_uiHeal_Timer = 10000;
         }
         else
-            m_uiHeal_Timer -= uiDiff;
+            m_uiHeal_Timer -= diff;
 
         //No meele?
     }

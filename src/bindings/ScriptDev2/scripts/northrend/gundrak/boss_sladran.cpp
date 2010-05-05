@@ -112,20 +112,20 @@ struct MANGOS_DLL_DECL boss_sladranAI : public ScriptedAI
 	}
 
     		
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
                                
-        if (invoc_serpent_timer < uiDiff)
+        if (invoc_serpent_timer < diff)
         {
 			invoc_add();
             invoc_serpent_timer = 13000;
 		}
 		else
-			invoc_serpent_timer -= uiDiff;
+			invoc_serpent_timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
         
         DoMeleeAttackIfReady();
 	}
@@ -158,9 +158,9 @@ struct MANGOS_DLL_DECL mob_sladranAI : public ScriptedAI //script Serpent
 
     
    
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-       	if (spell_morsure_timer < uiDiff)
+       	if (spell_morsure_timer < diff)
         {					
 			Unit* target;
 			target = SelectUnit(SELECT_TARGET_TOPAGGRO,0);
@@ -176,7 +176,7 @@ struct MANGOS_DLL_DECL mob_sladranAI : public ScriptedAI //script Serpent
             }
 		}
         else
-            spell_morsure_timer -= uiDiff;
+            spell_morsure_timer -= diff;
 
 		DoMeleeAttackIfReady();
 		       
@@ -205,9 +205,9 @@ struct MANGOS_DLL_DECL mob_sladran2AI : public ScriptedAI //script Constrictor
 
     
    
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-       	if (spell_poigne_timer < uiDiff)
+       	if (spell_poigne_timer < diff)
         {						
 			Unit* target;
 			target = SelectUnit(SELECT_TARGET_TOPAGGRO,0);
@@ -217,7 +217,7 @@ struct MANGOS_DLL_DECL mob_sladran2AI : public ScriptedAI //script Constrictor
 			spell_poigne_timer = 9000;
 		}
         else
-           spell_poigne_timer -= uiDiff;
+           spell_poigne_timer -= diff;
 
 		DoMeleeAttackIfReady();
 		       

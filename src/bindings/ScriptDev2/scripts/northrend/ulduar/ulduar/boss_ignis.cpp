@@ -225,18 +225,18 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 		}
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 		{
-			if(CheckReset_Timer <= uiDiff)
+			if(CheckReset_Timer <= diff)
 			{
 				if(!me->HasAura(66830))
 					DoCastMe(66830);
 				CheckReset_Timer = 5000;
 			}
 			else
-				CheckReset_Timer -= uiDiff;
+				CheckReset_Timer -= diff;
 			return;
 		}
             
@@ -252,7 +252,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 		if(me->HasAura(SPELL_FRAGILE))
 			me->RemoveAurasDueToSpell(SPELL_CHALEUR);
 
-		if(Check_Timer <= uiDiff)
+		if(Check_Timer <= diff)
 		{
 			if(Unit* fire = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_IGNIS_FIRE) : 0))
 			{
@@ -273,7 +273,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 			Check_Timer = 1000;
 		}
 		else
-			Check_Timer -= uiDiff;
+			Check_Timer -= diff;
 
 		DoMeleeAttackIfReady();
 	}
@@ -306,9 +306,9 @@ struct MANGOS_DLL_DECL add_scorchAI : public LibDevFSAI
 		}
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-      if(CheckTimer <= uiDiff)
+      if(CheckTimer <= diff)
 	  {
 		  if(me->GetDistance2d(Ignis_Coords[0][0],Ignis_Coords[0][1]) < 10.0f || me->GetDistance2d(Ignis_Coords[1][0],Ignis_Coords[1][1]))
 			  me->ForcedDespawn(1000);
@@ -328,7 +328,7 @@ struct MANGOS_DLL_DECL add_scorchAI : public LibDevFSAI
 			CheckTimer = 1000;
 	  }
 	  else
-		  CheckTimer -= uiDiff;
+		  CheckTimer -= diff;
 
     }
 };

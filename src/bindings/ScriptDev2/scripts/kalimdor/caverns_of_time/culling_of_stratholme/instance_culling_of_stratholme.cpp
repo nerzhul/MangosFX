@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
         return 0;
     }
 
-	void Update(uint32 uiDiff)
+	void Update(uint32 diff)
 	{
 
 		if(GetData(TYPE_VAGUE_EVENT) == IN_PROGRESS)
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 				corrupteur_guid = Arthas->SummonCreature(BOSS_CORRUPTEUR,2328.122f,1273.243f,133.1f,2.09f,TEMPSUMMON_TIMED_DESPAWN,1800000)->GetGUID();
 			}
 
-			if(StartVague_Timer <= uiDiff)
+			if(StartVague_Timer <= diff)
 			{
 				if(nbvague < 10)
 				{
@@ -232,12 +232,12 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 				StartVague_Timer = 80000;
 			}
 			else
-				StartVague_Timer -= uiDiff;
+				StartVague_Timer -= diff;
 		}
 
 		if(ActiveTimer)
 		{
-			if(Instance_Timer <= uiDiff)
+			if(Instance_Timer <= diff)
 			{
 				if(min_Timer < 1)
 					if(Creature* corr = (Creature*)Unit::GetUnit((*Arthas), corrupteur_guid))
@@ -251,7 +251,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 				Instance_Timer = 60000;
 			}
 			else
-				Instance_Timer -= uiDiff;
+				Instance_Timer -= diff;
 		}
 	}
 };

@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         // Splitted
         if (me->GetVisibility() == VISIBILITY_OFF)
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
                 return;
             }
 
-            if (m_uiSplit_Timer < uiDiff)
+            if (m_uiSplit_Timer < diff)
             {
                 m_uiSplit_Timer = 2500;
 
@@ -263,7 +263,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
                 }
             }
             else
-                m_uiSplit_Timer -= uiDiff;
+                m_uiSplit_Timer -= diff;
 
             return;
         }
@@ -284,7 +284,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
             DoCast(me, SPELL_DISPERSE);
         }
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

@@ -66,12 +66,12 @@ struct MANGOS_DLL_DECL boss_hadronoxAI : public ScriptedAI
         me->SetHealth(me->GetHealth() + (me->GetMaxHealth() * 0.1));
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

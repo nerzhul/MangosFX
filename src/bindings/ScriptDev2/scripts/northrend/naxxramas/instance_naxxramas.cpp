@@ -661,9 +661,9 @@ struct MANGOS_DLL_DECL instance_naxxramas : public ScriptedInstance
             pRamp->SetGoState(GO_STATE_ACTIVE);
     }
 
-	void Update(uint32 uiDiff)
+	void Update(uint32 diff)
 	{
-		if(CheckInstance_Timer <= uiDiff)
+		if(CheckInstance_Timer <= diff)
 		{
 			if(GetData(TYPE_FAERLINA) == NOT_STARTED)
 			{
@@ -681,7 +681,7 @@ struct MANGOS_DLL_DECL instance_naxxramas : public ScriptedInstance
 			CheckInstance_Timer = 5000;
 		}
 		else
-			CheckInstance_Timer -= uiDiff;
+			CheckInstance_Timer -= diff;
 
 	}
 };

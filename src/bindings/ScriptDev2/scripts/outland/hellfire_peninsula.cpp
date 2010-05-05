@@ -301,12 +301,12 @@ struct MANGOS_DLL_DECL npc_demoniac_scryerAI : public ScriptedAI
             ((Creature*)pTarget)->ForcedDespawn();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bIsComplete || !me->isAlive())
             return;
 
-        if (m_uiSpawnButtressTimer <= uiDiff)
+        if (m_uiSpawnButtressTimer <= diff)
         {
             if (m_uiButtressCount >= MAX_BUTTRESS)
             {
@@ -326,15 +326,15 @@ struct MANGOS_DLL_DECL npc_demoniac_scryerAI : public ScriptedAI
             DoSpawnButtress();
         }
         else
-            m_uiSpawnButtressTimer -= uiDiff;
+            m_uiSpawnButtressTimer -= diff;
 
-        if (m_uiSpawnDemonTimer <= uiDiff)
+        if (m_uiSpawnDemonTimer <= diff)
         {
             DoSpawnDemon();
             m_uiSpawnDemonTimer = 15000;
         }
         else
-            m_uiSpawnDemonTimer -= uiDiff;
+            m_uiSpawnDemonTimer -= diff;
     }
 };
 

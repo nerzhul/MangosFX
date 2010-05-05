@@ -116,11 +116,11 @@ struct MANGOS_DLL_DECL npc_draenei_survivorAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiSayThanksTimer)
         {
-            if (m_uiSayThanksTimer <= uiDiff)
+            if (m_uiSayThanksTimer <= diff)
             {
                 me->RemoveAurasDueToSpell(SPELL_IRRIDATION);
 
@@ -145,26 +145,26 @@ struct MANGOS_DLL_DECL npc_draenei_survivorAI : public ScriptedAI
 
                 m_uiRunAwayTimer = 10000;
                 m_uiSayThanksTimer = 0;
-            }else m_uiSayThanksTimer -= uiDiff;
+            }else m_uiSayThanksTimer -= diff;
 
             return;
         }
 
         if (m_uiRunAwayTimer)
         {
-            if (m_uiRunAwayTimer <= uiDiff)
+            if (m_uiRunAwayTimer <= diff)
                 me->ForcedDespawn();
             else
-                m_uiRunAwayTimer -= uiDiff;
+                m_uiRunAwayTimer -= diff;
 
             return;
         }
 
-        if (m_uiSayHelpTimer < uiDiff)
+        if (m_uiSayHelpTimer < diff)
         {
             m_bCanSayHelp = true;
             m_uiSayHelpTimer = 20000;
-        }else m_uiSayHelpTimer -= uiDiff;
+        }else m_uiSayHelpTimer -= diff;
     }
 };
 
@@ -410,19 +410,19 @@ struct MANGOS_DLL_DECL npc_nestlewood_owlkinAI : public ScriptedAI
         m_uiDespawnTimer = 0;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //timer gets adjusted by the triggered aura effect
         if (m_uiDespawnTimer)
         {
-            if (m_uiDespawnTimer <= uiDiff)
+            if (m_uiDespawnTimer <= diff)
             {
                 //once we are able to, despawn us
                 me->ForcedDespawn();
                 return;
             }
             else
-                m_uiDespawnTimer -= uiDiff;
+                m_uiDespawnTimer -= diff;
         }
 
         if (!CanDoSomething())
