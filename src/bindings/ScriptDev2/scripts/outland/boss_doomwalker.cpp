@@ -32,6 +32,7 @@ struct MANGOS_DLL_DECL boss_doomwalkerAI : public LibDevFSAI
 		AddEventOnTank(SPELL_SUNDER_ARMOR,urand(5000,13000),10000,15000);
     }
 
+	uint32 Quake_Timer;
     uint32 Enrage_Timer;
     uint32 Overrun_Timer;
 
