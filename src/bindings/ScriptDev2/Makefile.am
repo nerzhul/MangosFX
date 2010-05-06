@@ -435,6 +435,7 @@ scripts/northrend/utgarde_keep/utgarde_pinnacle/utgarde_pinnacle.h \
 scripts/northrend/vault_of_archavon/vault_of_archavon.h \
 scripts/northrend/vault_of_archavon/boss_archavon.cpp \
 scripts/northrend/vault_of_archavon/boss_emalon.cpp \
+scripts/northrend/vault_of_archavon/boss_koralon.cpp \
 scripts/northrend/vault_of_archavon/instance_vault.cpp \
 scripts/outland/blades_edge_mountains.cpp \
 scripts/outland/boss_doomlord_kazzak.cpp \
