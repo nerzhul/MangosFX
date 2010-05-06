@@ -947,6 +947,7 @@ void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32
 	tmpEvent.MaxPriority = MaxPriority;
 	tmpEvent.RequireFront = front;
 	EventShVect.push_back(tmpEvent);
+	SavedEventSh.push_back(tmpEvent);
 }
 void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 			SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
@@ -966,7 +967,7 @@ void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uin
 }
 void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+	for(SpellEvents::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
@@ -1024,7 +1025,7 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 		}
 	}
 
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+	for(SummonEvents::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
@@ -1048,16 +1049,18 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 
 void LibDevFSAI::ResetTimers()
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
-		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
+	EventShVect.clear();
+	EventSummonVect.clear();
+	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
+		EventShVect.push_back(*itr);
 		
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
-		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
+	for(SummonEvents::iterator itr = SavedEventSummon.begin(); itr!= SavedEventSummon.end(); ++itr)
+		EventSummonVect.push_back(*itr);
 }
 
 void MobEventTasks::UpdateEvent(uint32 diff, uint32 phase)
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+	for(SpellEvents::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
@@ -1115,7 +1118,7 @@ void MobEventTasks::UpdateEvent(uint32 diff, uint32 phase)
 		}
 	}
 
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+	for(SummonEvents::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
@@ -1383,6 +1386,7 @@ void LibDevFSAI::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, ui
 	tmpEvent.WhereS = WhereZone;
 	tmpEvent.TextId = TextId;
 	EventSummonVect.push_back(tmpEvent);
+	SavedEventSummon.push_back(tmpEvent);
 
 }
 void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,

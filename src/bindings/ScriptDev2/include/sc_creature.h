@@ -301,6 +301,9 @@ enum MobConstantes
 	TEN_MINS	=	600000,
 };
 
+typedef std::vector<EventSh> SpellEvents;
+typedef std::vector<EventSummon> SummonEvents;
+
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -338,8 +341,8 @@ class MANGOS_DLL_SPEC MobEventTasks
 	private:
 		ScriptedAI* thisAI;
 		Creature* thisCr;
-		std::vector<EventSh> EventShVect;
-		std::vector<EventSummon> EventSummonVect;
+		SpellEvents EventShVect;
+		SummonEvents EventSummonVect;
 		std::vector<uint64> MyAdds;
 
 };
@@ -409,8 +412,11 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:
-		std::vector<EventSh> EventShVect;
-		std::vector<EventSummon> EventSummonVect;
+		SpellEvents EventShVect;
+		SummonEvents EventSummonVect;
+		SpellEvents SavedEventSh;
+		SummonEvents SavedEventSummon;
 		std::vector<uint64> MyAdds;
+		
 };
 #endif
