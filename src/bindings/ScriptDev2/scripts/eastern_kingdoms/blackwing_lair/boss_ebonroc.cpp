@@ -23,25 +23,29 @@ EndScriptData */
 
 #include "precompiled.h"
 
-#define SPELL_SHADOWFLAME           22539
-#define SPELL_WINGBUFFET            18500
-#define SPELL_SHADOWOFEBONROC       23340
-#define SPELL_HEAL                  41386                   //Thea Heal spell of his Shadow
-
-struct MANGOS_DLL_DECL boss_ebonrocAI : public ScriptedAI
+enum Spells
 {
-    boss_ebonrocAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_SHADOWFLAME          = 22539,
+	SPELL_WINGBUFFET           = 18500,
+	SPELL_SHADOWOFEBONROC      = 23340,
+	SPELL_HEAL                 = 41386                   //Thea Heal spell of his Shadow
+};
 
-    uint32 ShadowFlame_Timer;
-    uint32 WingBuffet_Timer;
-    uint32 ShadowOfEbonroc_Timer;
+struct MANGOS_DLL_DECL boss_ebonrocAI : public LibDevFSAI
+{
+    boss_ebonrocAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_SHADOWFLAME,15000,12000,3000);
+		AddEventOnTank(SPELL_WINGBUFFET,30000,25000);
+		AddEventOnTank(SPELL_SHADOWOFEBONROC,45000,25000,10000);
+	}
+
     uint32 Heal_Timer;
 
     void Reset()
     {
-        ShadowFlame_Timer = 15000;                          //These times are probably wrong
-        WingBuffet_Timer = 30000;
-        ShadowOfEbonroc_Timer = 45000;
+		ResetTimers();
         Heal_Timer = 1000;
     }
 
@@ -55,35 +59,15 @@ struct MANGOS_DLL_DECL boss_ebonrocAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //Shadowflame Timer
-        if (ShadowFlame_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWFLAME);
-            ShadowFlame_Timer = urand(12000, 15000);
-        }else ShadowFlame_Timer -= diff;
-
-        //Wing Buffet Timer
-        if (WingBuffet_Timer < diff)
-        {
-            DoCastVictim(SPELL_WINGBUFFET);
-            WingBuffet_Timer = 25000;
-        }else WingBuffet_Timer -= diff;
-
-        //Shadow of Ebonroc Timer
-        if (ShadowOfEbonroc_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWOFEBONROC);
-            ShadowOfEbonroc_Timer = urand(25000, 35000);
-        }else ShadowOfEbonroc_Timer -= diff;
-
         if (me->getVictim()->HasAura(SPELL_SHADOWOFEBONROC,0))
         {
             if (Heal_Timer < diff)
             {
-                DoCastMe( SPELL_HEAL);
+                DoCastMe(SPELL_HEAL);
                 Heal_Timer = urand(1000, 3000);
             }else Heal_Timer -= diff;
         }
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

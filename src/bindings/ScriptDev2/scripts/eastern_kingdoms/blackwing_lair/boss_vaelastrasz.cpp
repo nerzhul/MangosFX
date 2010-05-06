@@ -31,30 +31,32 @@ EndScriptData */
 
 #define GOSSIP_ITEM         "Start Event <Needs Gossip Text>"
 
-#define SPELL_ESSENCEOFTHERED       23513
-#define SPELL_FLAMEBREATH           23461
-#define SPELL_FIRENOVA              23462
-#define SPELL_TAILSWIPE             15847
-#define SPELL_BURNINGADRENALINE     23620
-#define SPELL_CLEAVE                20684                   //Chain cleave is most likely named something different and contains a dummy effect
-
-struct MANGOS_DLL_DECL boss_vaelAI : public ScriptedAI
+enum Spells
 {
-    boss_vaelAI(Creature* pCreature) : ScriptedAI(pCreature)
+	SPELL_ESSENCEOFTHERED      = 23513,
+	SPELL_FLAMEBREATH          = 23461,
+	SPELL_FIRENOVA             = 23462,
+	SPELL_TAILSWIPE            = 15847,
+	SPELL_BURNINGADRENALINE    = 23620,
+	SPELL_CLEAVE               = 20684                   //Chain cleave is most likely named something different and contains a dummy effect
+};
+struct MANGOS_DLL_DECL boss_vaelAI : public LibDevFSAI
+{
+    boss_vaelAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         pCreature->SetUInt32Value(UNIT_NPC_FLAGS,1);
         pCreature->setFaction(35);
         pCreature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-        Reset();
+        InitIA();
+        AddEventOnTank(SPELL_CLEAVE,8000,15000);
+        AddEventOnTank(SPELL_FLAMEBREATH,11000,4000,4000);
+        AddEvent(SPELL_BURNINGADRENALINE,15000,15000,0,TARGET_RANDOM,0,0,true,3);
+        AddEventOnTank(SPELL_FIRENOVA,5000,5000);
     }
 
     uint64 PlayerGUID;
     uint32 SpeachTimer;
     uint32 SpeachNum;
-    uint32 Cleave_Timer;
-    uint32 FlameBreath_Timer;
-    uint32 FireNova_Timer;
-    uint32 BurningAdrenalineCaster_Timer;
     uint32 BurningAdrenalineTank_Timer;
     uint32 TailSwipe_Timer;
     bool HasYelled;
@@ -65,11 +67,7 @@ struct MANGOS_DLL_DECL boss_vaelAI : public ScriptedAI
         PlayerGUID = 0;
         SpeachTimer = 0;
         SpeachNum = 0;
-        Cleave_Timer = 8000;                                //These times are probably wrong
-        FlameBreath_Timer = 11000;
-        BurningAdrenalineCaster_Timer = 15000;
         BurningAdrenalineTank_Timer = 45000;
-        FireNova_Timer = 5000;
         TailSwipe_Timer = 20000;
         HasYelled = false;
         DoingSpeach = false;
@@ -143,45 +141,11 @@ struct MANGOS_DLL_DECL boss_vaelAI : public ScriptedAI
             return;
 
         // Yell if hp lower than 15%
-        if (me->GetHealth()*100 / me->GetMaxHealth() < 15 && !HasYelled)
+        if (CheckPercentLife(15) && !HasYelled)
         {
             DoScriptText(SAY_HALFLIFE, me);
             HasYelled = true;
         }
-
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            DoCastVictim(SPELL_CLEAVE);
-            Cleave_Timer = 15000;
-        }else Cleave_Timer -= diff;
-
-        //FlameBreath_Timer
-        if (FlameBreath_Timer < diff)
-        {
-            DoCastVictim(SPELL_FLAMEBREATH);
-            FlameBreath_Timer = urand(4000, 8000);
-        }else FlameBreath_Timer -= diff;
-
-        //BurningAdrenalineCaster_Timer
-        if (BurningAdrenalineCaster_Timer < diff)
-        {
-            Unit* target = NULL;
-
-            int i = 0 ;
-            while (i < 3)                                   // max 3 tries to get a random target with power_mana
-            {
-                ++i;
-                target = SelectUnit(SELECT_TARGET_RANDOM,1);//not aggro leader
-                if (target)
-                    if (target->getPowerType() == POWER_MANA)
-                        i=3;
-            }
-            if (target)                                     // cast on self (see below)
-                target->CastSpell(target,SPELL_BURNINGADRENALINE,1);
-
-            BurningAdrenalineCaster_Timer = 15000;
-        }else BurningAdrenalineCaster_Timer -= diff;
 
         //BurningAdrenalineTank_Timer
         if (BurningAdrenalineTank_Timer < diff)
@@ -193,24 +157,19 @@ struct MANGOS_DLL_DECL boss_vaelAI : public ScriptedAI
             BurningAdrenalineTank_Timer = 45000;
         }else BurningAdrenalineTank_Timer -= diff;
 
-        //FireNova_Timer
-        if (FireNova_Timer < diff)
-        {
-            DoCastVictim(SPELL_FIRENOVA);
-            FireNova_Timer = 5000;
-        }else FireNova_Timer -= diff;
-
         //TailSwipe_Timer
         if (TailSwipe_Timer < diff)
         {
             //Only cast if we are behind
-            /*if (!me->HasInArc(M_PI, me->getVictim()))
+            if (!me->HasInArc(M_PI, me->getVictim()))
             {
-            DoCastVictim(SPELL_TAILSWIPE);
-            }*/
+				DoCastVictim(SPELL_TAILSWIPE);
+            }
 
             TailSwipe_Timer = 20000;
         }else TailSwipe_Timer -= diff;
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

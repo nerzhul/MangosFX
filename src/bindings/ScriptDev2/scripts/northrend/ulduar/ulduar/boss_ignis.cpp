@@ -75,6 +75,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
         {
 			if((*itr))

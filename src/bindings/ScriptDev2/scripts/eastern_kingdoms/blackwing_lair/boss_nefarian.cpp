@@ -58,24 +58,25 @@ EndScriptData */
 #define SPELL_HUNTER                23436                   //bow broke
 #define SPELL_ROGUE                 23414                   //Paralise
 
-struct MANGOS_DLL_DECL boss_nefarianAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_nefarianAI : public LibDevFSAI
 {
-    boss_nefarianAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+    boss_nefarianAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_SHADOWFLAME,12000,12000);
+		AddEventOnTank(SPELL_BELLOWINGROAR,30000,30000);
+		AddEventOnTank(SPELL_VEILOFSHADOW,15000,15000);
+		AddEventOnTank(SPELL_CLEAVE,7000,7000);
+		AddEventOnMe(SPELL_TAILLASH,10000,10000);
+    }
 
-    uint32 ShadowFlame_Timer;
-    uint32 BellowingRoar_Timer;
-    uint32 VeilOfShadow_Timer;
-    uint32 Cleave_Timer;
     uint32 TailLash_Timer;
     uint32 ClassCall_Timer;
     bool Phase3;
 
     void Reset()
     {
-        ShadowFlame_Timer = 12000;                          //These times are probably wrong
-        BellowingRoar_Timer = 30000;
-        VeilOfShadow_Timer = 15000;
-        Cleave_Timer = 7000;
+		ResetTimers();
         TailLash_Timer = 10000;
         ClassCall_Timer = 35000;                            //35-40 seconds
         Phase3 = false;
@@ -112,43 +113,6 @@ struct MANGOS_DLL_DECL boss_nefarianAI : public ScriptedAI
     {
         if (!CanDoSomething())
             return;
-
-        //ShadowFlame_Timer
-        if (ShadowFlame_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWFLAME);
-            ShadowFlame_Timer = 12000;
-        }else ShadowFlame_Timer -= diff;
-
-        //BellowingRoar_Timer
-        if (BellowingRoar_Timer < diff)
-        {
-            DoCastVictim(SPELL_BELLOWINGROAR);
-            BellowingRoar_Timer = 30000;
-        }else BellowingRoar_Timer -= diff;
-
-        //VeilOfShadow_Timer
-        if (VeilOfShadow_Timer < diff)
-        {
-            DoCastVictim(SPELL_VEILOFSHADOW);
-            VeilOfShadow_Timer = 15000;
-        }else VeilOfShadow_Timer -= diff;
-
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            DoCastVictim(SPELL_CLEAVE);
-            Cleave_Timer = 7000;
-        }else Cleave_Timer -= diff;
-
-        //TailLash_Timer
-        if (TailLash_Timer < diff)
-        {
-            //Cast NYI since we need a better check for behind target
-            //DoCastVictim(SPELL_TAILLASH);
-
-            TailLash_Timer = 10000;
-        }else TailLash_Timer -= diff;
 
         //ClassCall_Timer
         if (ClassCall_Timer < diff)
@@ -201,11 +165,13 @@ struct MANGOS_DLL_DECL boss_nefarianAI : public ScriptedAI
         }else ClassCall_Timer -= diff;
 
         //Phase3 begins when we are below X health
-        if (!Phase3 && (me->GetHealth()*100 / me->GetMaxHealth()) < 20)
+        if (!Phase3 && CheckPercentLife(20))
         {
             Phase3 = true;
             DoScriptText(SAY_RAISE_SKELETONS, me);
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

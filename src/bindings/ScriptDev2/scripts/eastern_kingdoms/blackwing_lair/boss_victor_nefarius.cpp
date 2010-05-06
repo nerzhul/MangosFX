@@ -67,12 +67,12 @@ EndScriptData */
 //If nefarian dies then he will kill himself then he will kill himself in his hiding place
 //To prevent players from doing the event twice
 
-struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_victor_nefariusAI : public LibDevFSAI
 {
-    boss_victor_nefariusAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_victor_nefariusAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
+		InitIA();
         NefarianGUID = 0;
-        Reset();
         srand(time(NULL));
         switch(urand(0, 19))
         {
@@ -157,12 +157,12 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
                 DrakType2 = CREATURE_RED_DRAKANOID;
                 break;
         }
+        AddEvent(SPELL_SHADOWBOLT,5000,3000,7000);
+        AddEvent(SPELL_FEAR,8000,10000,10000);
     }
 
     uint32 SpawnedAdds;
     uint32 AddSpawnTimer;
-    uint32 ShadowBoltTimer;
-    uint32 FearTimer;
     uint32 MindControlTimer;
     uint32 ResetTimer;
     uint32 DrakType1;
@@ -174,8 +174,6 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
     {
         SpawnedAdds = 0;
         AddSpawnTimer = 10000;
-        ShadowBoltTimer = 5000;
-        FearTimer = 8000;
         ResetTimer = 900000;                                //On official it takes him 15 minutes(900 seconds) to reset. We are only doing 1 minute to make testing easier
         NefarianGUID = 0;
         NefCheckTime = 2000;
@@ -223,28 +221,6 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
         //Only do this if we haven't spawned nef yet
         if (SpawnedAdds < 42)
         {
-            //ShadowBoltTimer
-            if (ShadowBoltTimer < diff)
-            {
-                Unit* target = NULL;
-                target = SelectUnit(SELECT_TARGET_RANDOM,0);
-                if (target)
-                    DoCast(target,SPELL_SHADOWBOLT);
-
-                ShadowBoltTimer = urand(3000, 10000);
-            }else ShadowBoltTimer -= diff;
-
-            //FearTimer
-            if (FearTimer < diff)
-            {
-                Unit* target = NULL;
-                target = SelectUnit(SELECT_TARGET_RANDOM,0);
-                if (target)
-                    DoCast(target,SPELL_FEAR);
-
-                FearTimer = urand(10000, 20000);
-            }else FearTimer -= diff;
-
             //Add spawning mechanism
             if (AddSpawnTimer < diff)
             {
@@ -320,6 +296,8 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public ScriptedAI
 
                 AddSpawnTimer = 4000;
             }else AddSpawnTimer -= diff;
+            
+            UpdateEvent(diff);
         }
         else if (NefarianGUID)
         {

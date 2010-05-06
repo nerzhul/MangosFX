@@ -18,7 +18,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     boss_koralonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
 		InitIA();
-		AddEventMaxPrioOnMe(SPELL_METEOR_FISTS,25000,35000);
+		AddEventMaxPrioOnMe(SPELL_METEOR_FISTS,25000,45000);
 		AddEvent(SPELL_CINDER,15000,45000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
     }
 
@@ -35,10 +35,16 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
 		dmg = 0;
 		if(me->getVictim() && pDoneTo == me->getVictim() && dmg > 9000 && me->HasAura(SPELL_METEOR_FISTS))
 		{
+			bool offTank_here = false;
 			if(Unit* offTank = SelectUnit(SELECT_TARGET_TOPAGGRO,1))
-				if(offTank->isAlive())
-					me->DealDamage(offTank,fireDmg, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);	
-			me->DealDamage(me->getVictim(),fireDmg, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
+			{
+				if(offTank->isAlive() && me->HasInArc(offTank))
+				{
+					me->DealDamage(offTank,fireDmg, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
+					offTank_here = true;
+				}
+			}
+			me->DealDamage(me->getVictim(),offTank_here ? fireDmg : fireDmg * 2, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
 		}
 	}
 

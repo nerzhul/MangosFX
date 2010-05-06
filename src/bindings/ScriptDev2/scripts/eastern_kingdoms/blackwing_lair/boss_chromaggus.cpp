@@ -23,7 +23,7 @@ EndScriptData */
 
 #include "precompiled.h"
 
-enum
+enum Spells
 {
     EMOTE_GENERIC_FRENZY_KILL   = -1000001,
     EMOTE_SHIMMER               = -1469003,
@@ -57,9 +57,9 @@ enum
     SPELL_ENRAGE                = 28747
 };
 
-struct MANGOS_DLL_DECL boss_chromaggusAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_chromaggusAI : public LibDevFSAI
 {
-    boss_chromaggusAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_chromaggusAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         //Select the 2 breaths that we are going to use until despawned
         //5 possiblities for the first breath, 4 for the second, 20 total possiblites
@@ -160,6 +160,10 @@ struct MANGOS_DLL_DECL boss_chromaggusAI : public ScriptedAI
         };
 
         EnterEvadeMode();
+        InitIA();
+        AddEventOnTank(Breath1_Spell,30000,60000);
+        AddEventOnTank(Breath2_Spell,60000,60000);
+        AddEventOnMe(SPELL_FRENZY,15000,10000,5000,0,EMOTE_GENERIC_FRENZY_KILL);
     }
 
     uint32 Breath1_Spell;
@@ -167,21 +171,16 @@ struct MANGOS_DLL_DECL boss_chromaggusAI : public ScriptedAI
     uint32 CurrentVurln_Spell;
 
     uint32 Shimmer_Timer;
-    uint32 Breath1_Timer;
-    uint32 Breath2_Timer;
     uint32 Affliction_Timer;
-    uint32 Frenzy_Timer;
     bool Enraged;
 
     void Reset()
     {
+		ResetTimers();
         CurrentVurln_Spell = 0;                             //We use this to store our last vurlnability spell so we can remove it later
 
         Shimmer_Timer = 0;                                  //Time till we change vurlnerabilites
-        Breath1_Timer = 30000;                              //First breath is 30 seconds
-        Breath2_Timer = 60000;                              //Second is 1 minute so that we can alternate
         Affliction_Timer = 10000;                           //This is special - 5 seconds means that we cast this on 1 pPlayer every 5 sconds
-        Frenzy_Timer = 15000;
 
         Enraged = false;
     }
@@ -215,20 +214,6 @@ struct MANGOS_DLL_DECL boss_chromaggusAI : public ScriptedAI
             DoScriptText(EMOTE_SHIMMER, me);
             Shimmer_Timer = 45000;
         }else Shimmer_Timer -= diff;
-
-        //Breath1_Timer
-        if (Breath1_Timer < diff)
-        {
-            DoCastVictim(Breath1_Spell);
-            Breath1_Timer = 60000;
-        }else Breath1_Timer -= diff;
-
-        //Breath2_Timer
-        if (Breath2_Timer < diff)
-        {
-            DoCastVictim(Breath2_Spell);
-            Breath2_Timer = 60000;
-        }else Breath2_Timer -= diff;
 
         //Affliction_Timer
         if (Affliction_Timer < diff)
@@ -280,21 +265,15 @@ struct MANGOS_DLL_DECL boss_chromaggusAI : public ScriptedAI
             Affliction_Timer = 10000;
         }else Affliction_Timer -= diff;
 
-        //Frenzy_Timer
-        if (Frenzy_Timer < diff)
-        {
-            DoCastMe(SPELL_FRENZY);
-            DoScriptText(EMOTE_GENERIC_FRENZY_KILL, me);
-            Frenzy_Timer = urand(10000, 15000);
-        }else Frenzy_Timer -= diff;
-
         //Enrage if not already enraged and below 20%
-        if (!Enraged && (me->GetHealth()*100 / me->GetMaxHealth()) < 20)
+        if (!Enraged && CheckPercentLife(20))
         {
             DoCastMe(SPELL_ENRAGE);
             Enraged = true;
         }
 
+		UpdateEvent(diff);
+		
         DoMeleeAttackIfReady();
     }
 };

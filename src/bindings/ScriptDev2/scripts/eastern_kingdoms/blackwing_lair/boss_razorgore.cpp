@@ -30,14 +30,23 @@ EndScriptData */
 #define SAY_EGGS_BROKEN3        -1469024
 #define SAY_DEATH               -1469025
 
-#define SPELL_CLEAVE            22540
-#define SPELL_WARSTOMP          24375
-#define SPELL_FIREBALLVOLLEY    22425
-#define SPELL_CONFLAGRATION     23023
-
-struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
+enum Spells
 {
-    boss_razorgoreAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_CLEAVE           = 22540,
+	SPELL_WARSTOMP         = 24375,
+	SPELL_FIREBALLVOLLEY   = 22425,
+	SPELL_CONFLAGRATION    = 23023
+};
+
+struct MANGOS_DLL_DECL boss_razorgoreAI : public LibDevFSAI
+{
+    boss_razorgoreAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_CLEAVE,15000,7000,6000);
+		AddEventOnTank(SPELL_WARSTOMP,35000,15000,10000);
+		AddEventOnTank(SPELL_FIREBALLVOLLEY,7000,12000,3000);
+    }
 
     uint32 Cleave_Timer;
     uint32 WarStomp_Timer;
@@ -46,9 +55,7 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
 
     void Reset()
     {
-        Cleave_Timer = 15000;                               //These times are probably wrong
-        WarStomp_Timer = 35000;
-        FireballVolley_Timer = 7000;
+        ResetTimers();
         Conflagration_Timer = 12000;
     }
 
@@ -67,35 +74,13 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //Cleave_Timer
-        if (Cleave_Timer < diff)
-        {
-            DoCastVictim(SPELL_CLEAVE);
-            Cleave_Timer = urand(7000, 10000);
-        }else Cleave_Timer -= diff;
-
-        //WarStomp_Timer
-        if (WarStomp_Timer < diff)
-        {
-            DoCastVictim(SPELL_WARSTOMP);
-            WarStomp_Timer = urand(15000, 25000);
-        }else WarStomp_Timer -= diff;
-
-        //FireballVolley_Timer
-        if (FireballVolley_Timer < diff)
-        {
-            DoCastVictim(SPELL_FIREBALLVOLLEY);
-            FireballVolley_Timer = urand(12000, 15000);
-        }else FireballVolley_Timer -= diff;
-
         //Conflagration_Timer
         if (Conflagration_Timer < diff)
         {
             DoCastVictim(SPELL_CONFLAGRATION);
-            //We will remove this threat reduction and add an aura check.
 
-            //if (me->getThreatManager().getThreat(me->getVictim()))
-            //me->getThreatManager().modifyThreatPercent(me->getVictim(),-50);
+            if (me->getThreatManager().getThreat(me->getVictim()))
+				me->getThreatManager().modifyThreatPercent(me->getVictim(),-50);
 
             Conflagration_Timer = 12000;
         }else Conflagration_Timer -= diff;
@@ -108,6 +93,8 @@ struct MANGOS_DLL_DECL boss_razorgoreAI : public ScriptedAI
             if (target)
                 me->TauntApply(target);
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

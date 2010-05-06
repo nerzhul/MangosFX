@@ -1,35 +1,19 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Firemaw
-SD%Complete: 100
-SDComment:
-SDCategory: Blackwing Lair
-EndScriptData */
-
 #include "precompiled.h"
 
-#define SPELL_SHADOWFLAME       22539
-#define SPELL_WINGBUFFET        23339
-#define SPELL_FLAMEBUFFET       23341
-
-struct MANGOS_DLL_DECL boss_firemawAI : public ScriptedAI
+enum Spells
 {
-    boss_firemawAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
+	SPELL_SHADOWFLAME      = 22539,
+	SPELL_WINGBUFFET       = 23339,
+	SPELL_FLAMEBUFFET      = 23341
+};
+struct MANGOS_DLL_DECL boss_firemawAI : public LibDevFSAI
+{
+    boss_firemawAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    {
+		InitIA();
+		AddEventOnTank(SPELL_SHADOWFLAME,30000,15000,3000);
+		AddEventOnTank(SPELL_FLAMEBUFFET,5000,5000);
+    }
 
     uint32 ShadowFlame_Timer;
     uint32 WingBuffet_Timer;
@@ -37,9 +21,8 @@ struct MANGOS_DLL_DECL boss_firemawAI : public ScriptedAI
 
     void Reset()
     {
-        ShadowFlame_Timer = 30000;                          //These times are probably wrong
+		ResetTimers();
         WingBuffet_Timer = 24000;
-        FlameBuffet_Timer = 5000;
     }
 
     void Aggro(Unit* pWho)
@@ -52,13 +35,6 @@ struct MANGOS_DLL_DECL boss_firemawAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //ShadowFlame_Timer
-        if (ShadowFlame_Timer < diff)
-        {
-            DoCastVictim(SPELL_SHADOWFLAME);
-            ShadowFlame_Timer = urand(15000, 18000);
-        }else ShadowFlame_Timer -= diff;
-
         //WingBuffet_Timer
         if (WingBuffet_Timer < diff)
         {
@@ -69,12 +45,7 @@ struct MANGOS_DLL_DECL boss_firemawAI : public ScriptedAI
             WingBuffet_Timer = 25000;
         }else WingBuffet_Timer -= diff;
 
-        //FlameBuffet_Timer
-        if (FlameBuffet_Timer < diff)
-        {
-            DoCastVictim(SPELL_FLAMEBUFFET);
-            FlameBuffet_Timer = 5000;
-        }else FlameBuffet_Timer -= diff;
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
