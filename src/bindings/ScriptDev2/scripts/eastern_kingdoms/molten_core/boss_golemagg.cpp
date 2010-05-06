@@ -68,13 +68,13 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
             m_pInstance->SetData(TYPE_GOLEMAGG, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         // Pyroblast
-        if (m_uiPyroblastTimer < uiDiff)
+        if (m_uiPyroblastTimer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_PYROBLAST);
@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
             m_uiPyroblastTimer = 7*IN_MILISECONDS;
         }
         else
-            m_uiPyroblastTimer -= uiDiff;
+            m_uiPyroblastTimer -= diff;
 
         // Enrage
         if (!m_bEnraged && me->GetHealth()*100 < me->GetMaxHealth()*10)
@@ -94,24 +94,24 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
         // Earthquake
         if (m_bEnraged)
         {
-            if (m_uiEarthquakeTimer < uiDiff)
+            if (m_uiEarthquakeTimer < diff)
             {
                 DoCastVictim( SPELL_EARTHQUAKE);
                 m_uiEarthquakeTimer = 3*IN_MILISECONDS;
             }
             else
-                m_uiEarthquakeTimer -= uiDiff;
+                m_uiEarthquakeTimer -= diff;
         }
 
         /*
         // Golemagg's Trust
-        if (m_uiBuffTimer < uiDiff)
+        if (m_uiBuffTimer < diff)
         {
             DoCastMe( SPELL_GOLEMAGG_TRUST);
             m_uiBuffTimer = 2.5*IN_MILISECONDS;
         }
         else
-            m_uiBuffTimer -= uiDiff;
+            m_uiBuffTimer -= diff;
         */
 
         DoMeleeAttackIfReady();
@@ -154,19 +154,19 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         // Mangle
-        if (m_uiMangleTimer < uiDiff)
+        if (m_uiMangleTimer < diff)
         {
             DoCastVictim( SPELL_MANGLE);
             m_uiMangleTimer = 10*IN_MILISECONDS;
         }
         else
-            m_uiMangleTimer -= uiDiff;
+            m_uiMangleTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

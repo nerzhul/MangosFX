@@ -477,19 +477,19 @@ struct MANGOS_DLL_DECL npc_khadgars_servantAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (m_uiRandomTalkCooldown)
         {
-            if (m_uiRandomTalkCooldown <= uiDiff)
+            if (m_uiRandomTalkCooldown <= diff)
                 m_uiRandomTalkCooldown = 0;
             else
-                m_uiRandomTalkCooldown -= uiDiff;
+                m_uiRandomTalkCooldown -= diff;
         }
 
         if (HasEscortState(STATE_ESCORT_PAUSED))
         {
-            if (m_uiTalkTimer <= uiDiff)
+            if (m_uiTalkTimer <= diff)
             {
                 ++m_uiTalkCount;
                 m_uiTalkTimer = 7500;
@@ -619,7 +619,7 @@ struct MANGOS_DLL_DECL npc_khadgars_servantAI : public npc_escortAI
                 }
             }
             else
-                m_uiTalkTimer -= uiDiff;
+                m_uiTalkTimer -= diff;
         }
     }
 };

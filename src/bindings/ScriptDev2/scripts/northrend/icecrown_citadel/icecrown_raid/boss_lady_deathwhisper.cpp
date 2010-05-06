@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
             if (!me->HasAura(SPELL_MANA_BARRIER))
                  DoCastSpellIfCan(me, SPELL_MANA_BARRIER);
 
-            if (Summon_Cult_Timer < uiDiff)
+            if (Summon_Cult_Timer < diff)
             {
                 if (SpawnLeft)
                 {
@@ -177,15 +177,15 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
                 Summon_Cult_Count++;
                 Summon_Cult_Timer = 60000;
             }
-            else Summon_Cult_Timer -= uiDiff;
+            else Summon_Cult_Timer -= diff;
 
-            if (ShadowBolt_Timer < uiDiff)
+            if (ShadowBolt_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                      DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_SHADOW_BOLT : H_SPELL_SHADOW_BOLT);
                 ShadowBolt_Timer = 5000;
             }
-            else ShadowBolt_Timer -= uiDiff;
+            else ShadowBolt_Timer -= diff;
 
             DoStartNoMovement(me->getVictim());
         }
@@ -195,50 +195,50 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
             if (me->HasAura(SPELL_MANA_BARRIER))
                 me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
 
-            if (Insignificance_Timer < uiDiff)
+            if (Insignificance_Timer < diff)
             {
                  DoCastSpellIfCan(me->getVictim(), SPELL_INSIGNIFICANCE);
                 Insignificance_Timer = 5000+rand()%40000;
             }
-            else Insignificance_Timer -= uiDiff;
+            else Insignificance_Timer -= diff;
 
-            if (FrostboltVolley_Timer < uiDiff)
+            if (FrostboltVolley_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                      DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_FROSTBOLT_VOLLEY : H_SPELL_FROSTBOLT_VOLLEY);
                 FrostboltVolley_Timer = 40000;
             }
-            else FrostboltVolley_Timer -= uiDiff;
+            else FrostboltVolley_Timer -= diff;
 
             if (Summon_Shade_Count < Summon_Cult_Count)
             {
-                if (Summon_Shade_Timer < uiDiff)
+                if (Summon_Shade_Timer < diff)
                 {
                      DoCastSpellIfCan(me, SPELL_VENGEFUL_SHADE);
                     Summon_Shade_Count++;
                     Summon_Shade_Timer = 25000;
                 }
-                else Summon_Shade_Timer -= uiDiff;
+                else Summon_Shade_Timer -= diff;
             }
 
-            if (Frostbolt_Timer < uiDiff)
+            if (Frostbolt_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                      DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_FROSTBOLT : H_SPELL_FROSTBOLT);
                 Frostbolt_Timer = 15000;
             }
-            else Frostbolt_Timer -= uiDiff;
+            else Frostbolt_Timer -= diff;
 
             DoMeleeAttackIfReady();
         }
 
-        if (DeathAndDecay_Timer < uiDiff)
+        if (DeathAndDecay_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                  DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_DEATH_AND_DECAY : H_SPELL_DEATH_AND_DECAY);
             DeathAndDecay_Timer = 30000;
         }
-        else DeathAndDecay_Timer -= uiDiff;
+        else DeathAndDecay_Timer -= diff;
     }
 };
 

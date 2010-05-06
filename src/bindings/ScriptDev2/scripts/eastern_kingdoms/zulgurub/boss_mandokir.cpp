@@ -218,12 +218,12 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiWatch_Timer < uiDiff)
+        if (m_uiWatch_Timer < diff)
         {
             //If someone is watched
             if (m_uiWatchTarget)
@@ -253,30 +253,30 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
             m_uiWatch_Timer = 20000;
         }
         else
-            m_uiWatch_Timer -= uiDiff;
+            m_uiWatch_Timer -= diff;
 
         if (!m_uiWatchTarget)
         {
             //Cleave
-            if (m_uiCleave_Timer < uiDiff)
+            if (m_uiCleave_Timer < diff)
             {
                 DoCastVictim( SPELL_CLEAVE);
                 m_uiCleave_Timer = 7000;
             }
             else
-                m_uiCleave_Timer -= uiDiff;
+                m_uiCleave_Timer -= diff;
 
             //Whirlwind
-            if (m_uiWhirlwind_Timer < uiDiff)
+            if (m_uiWhirlwind_Timer < diff)
             {
                 DoCastMe( SPELL_WHIRLWIND);
                 m_uiWhirlwind_Timer = 18000;
             }
             else
-                m_uiWhirlwind_Timer -= uiDiff;
+                m_uiWhirlwind_Timer -= diff;
 
             //If more then 3 targets in melee range mandokir will cast fear
-            if (m_uiFear_Timer < uiDiff)
+            if (m_uiFear_Timer < diff)
             {
                 uint8 uiTargetInRangeCount = 0;
 
@@ -295,18 +295,18 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
                 m_uiFear_Timer = 4000;
             }
             else
-                m_uiFear_Timer -= uiDiff;
+                m_uiFear_Timer -= diff;
 
             //Mortal Strike if target below 50% hp
             if (me->getVictim()->GetHealth() < me->getVictim()->GetMaxHealth()*0.5)
             {
-                if (m_uiMortalStrike_Timer < uiDiff)
+                if (m_uiMortalStrike_Timer < diff)
                 {
                     DoCastVictim( SPELL_MORTAL_STRIKE);
                     m_uiMortalStrike_Timer = 15000;
                 }
                 else
-                    m_uiMortalStrike_Timer -= uiDiff;
+                    m_uiMortalStrike_Timer -= diff;
             }
         }
 
@@ -358,19 +358,19 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         // SunderArmor
-        if (m_uiSunderArmor_Timer < uiDiff)
+        if (m_uiSunderArmor_Timer < diff)
         {
             DoCastVictim( SPELL_SUNDERARMOR);
             m_uiSunderArmor_Timer = urand(10000, 15000);
         }
         else
-            m_uiSunderArmor_Timer -= uiDiff;
+            m_uiSunderArmor_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

@@ -27,14 +27,14 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public ScriptedAI
     }
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 	
       
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

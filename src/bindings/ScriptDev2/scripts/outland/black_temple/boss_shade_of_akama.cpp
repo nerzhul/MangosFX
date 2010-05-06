@@ -305,7 +305,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
             m_pInstance->SetData(TYPE_SHADE, DONE);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!me->isInCombat())
             return;
@@ -316,7 +316,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
             if (me->getThreatManager().getThreatList().size() < 2)
                 ScriptedAI::EnterEvadeMode();
 
-            if (m_uiDefenderTimer < uiDiff)
+            if (m_uiDefenderTimer < diff)
             {
                 uint32 uiRand = sizeof(m_afSpawnLoc)/sizeof(Location);
 
@@ -331,15 +331,15 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
                 m_uiDefenderTimer = 15000;
             }
             else
-                m_uiDefenderTimer -= uiDiff;
+                m_uiDefenderTimer -= diff;
 
-            if (m_uiSummonTimer < uiDiff)
+            if (m_uiSummonTimer < diff)
             {
                 SummonCreature();
                 m_uiSummonTimer = 35000;
             }
             else
-                m_uiSummonTimer -= uiDiff;
+                m_uiSummonTimer -= diff;
 
             if (m_uiDeathCount >= 6)
             {
@@ -363,7 +363,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
         }
         else                                                // No longer banished, let's fight Akama now
         {
-            if (m_uiReduceHealthTimer < uiDiff)
+            if (m_uiReduceHealthTimer < diff)
             {
                 if (Unit* pAkama = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_AKAMA_SHADE)))
                 {
@@ -382,17 +382,17 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
                 }
             }
             else
-                m_uiReduceHealthTimer -= uiDiff;
+                m_uiReduceHealthTimer -= diff;
 
             if (m_bHasKilledAkama)
             {
-                if (m_uiResetTimer < uiDiff)
+                if (m_uiResetTimer < diff)
                 {
                     EnterEvadeMode();                       // Reset a little while after killing Akama
                     return;
                 }
                 else
-                    m_uiResetTimer -= uiDiff;
+                    m_uiResetTimer -= diff;
             }
 
             DoMeleeAttackIfReady();
@@ -505,7 +505,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_bIsEventBegun || !m_pInstance)
             return;
@@ -524,13 +524,13 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 {
                     if (pShadeAI->m_bIsBanished)
                     {
-                        if (m_uiCastSoulRetrieveTimer < uiDiff)
+                        if (m_uiCastSoulRetrieveTimer < diff)
                         {
                             DoCast(pShade, SPELL_AKAMA_SOUL_CHANNEL);
                             m_uiCastSoulRetrieveTimer = 500;
                         }
                         else
-                            m_uiCastSoulRetrieveTimer -= uiDiff;
+                            m_uiCastSoulRetrieveTimer -= diff;
                     }
                     else
                     {
@@ -549,7 +549,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
         if (!m_bIsShadeDead && m_bCanStartCombat)
         {
-            if (m_uiCheckTimer < uiDiff)
+            if (m_uiCheckTimer < diff)
             {
                 if (Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
                 {
@@ -564,12 +564,12 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 m_uiCheckTimer = 5000;
             }
             else
-                m_uiCheckTimer -= uiDiff;
+                m_uiCheckTimer -= diff;
         }
 
         if (m_uiSummonBrokenTimer && m_uiBrokenSummonIndex < 4)
         {
-            if (m_uiSummonBrokenTimer <= uiDiff)
+            if (m_uiSummonBrokenTimer <= diff)
             {
                 for(uint8 i = 0; i < 4; ++i)
                 {
@@ -595,12 +595,12 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 m_uiSummonBrokenTimer = 1000;
             }
             else
-                m_uiSummonBrokenTimer -= uiDiff;
+                m_uiSummonBrokenTimer -= diff;
         }
 
         if (m_uiSoulRetrieveTimer)
         {
-            if (m_uiSoulRetrieveTimer <= uiDiff)
+            if (m_uiSoulRetrieveTimer <= diff)
             {
                 switch(m_uiEndingTalkCount)
                 {
@@ -663,7 +663,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 }
             }
             else
-                m_uiSoulRetrieveTimer -= uiDiff;
+                m_uiSoulRetrieveTimer -= diff;
         }
 
         if (!me->getVictim() || !me->SelectHostileTarget())
@@ -675,7 +675,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
             m_bHasYelledOnce = true;
         }
 
-        if (m_uiDestructivePoisonTimer < uiDiff)
+        if (m_uiDestructivePoisonTimer < diff)
         {
             if (Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
             {
@@ -686,15 +686,15 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
             m_uiDestructivePoisonTimer = 15000;
         }
         else
-            m_uiDestructivePoisonTimer -= uiDiff;
+            m_uiDestructivePoisonTimer -= diff;
 
-        if (m_uiLightningBoltTimer < uiDiff)
+        if (m_uiLightningBoltTimer < diff)
         {
             DoCastVictim( SPELL_LIGHTNING_BOLT);
             m_uiLightningBoltTimer = 10000;
         }
         else
-            m_uiLightningBoltTimer -= uiDiff;
+            m_uiLightningBoltTimer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -767,7 +767,7 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!me->isAlive())
             return;
@@ -820,12 +820,12 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bStartBanishing || !m_pInstance)
             return;
 
-        if (m_uiCheckTimer < uiDiff)
+        if (m_uiCheckTimer < diff)
         {
             Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA));
 
@@ -844,7 +844,7 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
             m_uiCheckTimer = 2000;
         }
         else
-            m_uiCheckTimer -= uiDiff;
+            m_uiCheckTimer -= diff;
     }
 };
 

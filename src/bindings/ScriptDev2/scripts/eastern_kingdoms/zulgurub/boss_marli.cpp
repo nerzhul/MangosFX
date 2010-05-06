@@ -174,30 +174,30 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (!m_bIsInPhaseTwo)
         {
-            if (m_uiPoisonVolley_Timer < uiDiff)
+            if (m_uiPoisonVolley_Timer < diff)
             {
                 DoCastVictim(SPELL_POISONVOLLEY);
                 m_uiPoisonVolley_Timer = urand(10000, 20000);
             }
             else
-                m_uiPoisonVolley_Timer -= uiDiff;
+                m_uiPoisonVolley_Timer -= diff;
 
-            if (m_uiDrainLife_Timer < uiDiff)
+            if (m_uiDrainLife_Timer < diff)
             {
                 DoCastVictim( SPELL_DRAIN_LIFE);
                 m_uiDrainLife_Timer = urand(20000, 50000);
             }
             else
-                m_uiDrainLife_Timer -= uiDiff;
+                m_uiDrainLife_Timer -= diff;
 
-            if (m_uiSpawnSpider_Timer < uiDiff)
+            if (m_uiSpawnSpider_Timer < diff)
             {
                 if (GameObject *pEgg = SelectNextEgg())
                 {
@@ -207,11 +207,11 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
                 m_uiSpawnSpider_Timer = urand(20000, 30000);
             }
             else
-                m_uiSpawnSpider_Timer -= uiDiff;
+                m_uiSpawnSpider_Timer -= diff;
         }
         else
         {
-            if (!m_bHasWebbed && m_uiWebs_Timer < uiDiff)
+            if (!m_bHasWebbed && m_uiWebs_Timer < diff)
             {
                 DoCastVictim(SPELL_ENVELOPINGWEBS);
                 m_uiWebs_Timer = urand(10000, 15000);
@@ -219,9 +219,9 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
                 m_bHasWebbed = true;
             }
             else
-                m_uiWebs_Timer -= uiDiff;
+                m_uiWebs_Timer -= diff;
 
-            if (m_bHasWebbed && m_uiCharge_Timer < uiDiff)
+            if (m_bHasWebbed && m_uiCharge_Timer < diff)
             {   
                 //Shouldn't be random target but highestaggro not Webbed player
                 if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
@@ -246,18 +246,18 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
                 m_uiWebs_Timer = urand(10000, 20000);
             }
             else
-                m_uiCharge_Timer -= uiDiff;
+                m_uiCharge_Timer -= diff;
 
-            if (m_uiCorrosivePoison_Timer < uiDiff)
+            if (m_uiCorrosivePoison_Timer < diff)
             {
                 DoCastVictim( SPELL_CORROSIVE_POISON);
                 m_uiCorrosivePoison_Timer = urand(25000, 35000);
             }
             else
-                m_uiCorrosivePoison_Timer -= uiDiff;
+                m_uiCorrosivePoison_Timer -= diff;
         }
 
-        if (m_uiTransformBack_Timer < uiDiff)
+        if (m_uiTransformBack_Timer < diff)
         {
             if (!m_bIsInPhaseTwo)
             {
@@ -297,15 +297,15 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
             m_uiTransformBack_Timer = urand(55000, 70000);
         }
         else
-            m_uiTransformBack_Timer -= uiDiff;
+            m_uiTransformBack_Timer -= diff;
 
-        if (m_uiTrash_Timer < uiDiff)
+        if (m_uiTrash_Timer < diff)
         {
             DoCastVictim( SPELL_TRASH);
             m_uiTrash_Timer = urand(10000, 20000);
         }
         else
-            m_uiTrash_Timer -= uiDiff;
+            m_uiTrash_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -328,12 +328,12 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
         m_uiLevelUp_Timer = 3000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiLevelUp_Timer < uiDiff)
+        if (m_uiLevelUp_Timer < diff)
         {
             if (m_pInstance && m_pInstance->GetData(TYPE_MARLI) != DONE)
             {
@@ -343,7 +343,7 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
             m_uiLevelUp_Timer = 3000;
         }
         else
-            m_uiLevelUp_Timer -= uiDiff;
+            m_uiLevelUp_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
         }
     }
 
-   void UpdateAI(const uint32 uiDiff)
+   void UpdateAI(const uint32 diff)
    {
       if(Motion == 0)
       {
@@ -90,18 +90,18 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
 	  else
 		  return;
 
- 	   if (Steptim <= uiDiff)
+ 	   if (Steptim <= diff)
 	   {
 		   ++Step;
 		   Steptim = 330000;
 	   }
 	   else
-			Steptim -= uiDiff;
+			Steptim -= diff;
 
         if (!CanDoSomething())
             return;
 
-		if (ShadowBolt_Timer < uiDiff)
+		if (ShadowBolt_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target, m_bIsHeroic ? SPELL_SB_H : SPELL_SB_N);
@@ -109,9 +109,9 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
             ShadowBolt_Timer = 5300;
         }
 		else 
-			ShadowBolt_Timer -= uiDiff;
+			ShadowBolt_Timer -= diff;
 
-		if (Flesh_Timer <= uiDiff)
+		if (Flesh_Timer <= diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target,SPELL_FLESH);
@@ -119,9 +119,9 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
             Flesh_Timer = 7300;
         }
 		else 
-			Flesh_Timer -= uiDiff;
+			Flesh_Timer -= diff;
 
-		if (Steal_Timer < uiDiff)
+		if (Steal_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(target,SPELL_STEAL);
@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL boss_salrammAI : public ScriptedAI
             Steal_Timer = 17300;
         }
 		else
-			Steal_Timer -= uiDiff;
+			Steal_Timer -= diff;
 
 		DoMeleeAttackIfReady();
 

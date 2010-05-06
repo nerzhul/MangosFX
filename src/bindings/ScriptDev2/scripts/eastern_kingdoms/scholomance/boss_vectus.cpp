@@ -48,40 +48,40 @@ struct MANGOS_DLL_DECL boss_vectusAI : public ScriptedAI
         m_uiFrenzy_Timer = 0;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         //m_uiFlameStrike_Timer
-        if (m_uiFlameStrike_Timer < uiDiff)
+        if (m_uiFlameStrike_Timer < diff)
         {
             DoCastMe( SPELL_FLAMESTRIKE);
             m_uiFlameStrike_Timer = 30000;
         }
         else
-            m_uiFlameStrike_Timer -= uiDiff;
+            m_uiFlameStrike_Timer -= diff;
 
         //BlastWave_Timer
-        if (m_uiBlastWave_Timer < uiDiff)
+        if (m_uiBlastWave_Timer < diff)
         {
             DoCastVictim( SPELL_BLAST_WAVE);
             m_uiBlastWave_Timer = 12000;
         }
         else
-            m_uiBlastWave_Timer -= uiDiff;
+            m_uiBlastWave_Timer -= diff;
 
         //Frenzy_Timer
         /*if (me->GetHealth()*100 / me->GetMaxHealth() < 25)
         {
-            if (m_uiFrenzy_Timer < uiDiff)
+            if (m_uiFrenzy_Timer < diff)
             {
                 DoCastMe( SPELL_FRENZY);
                 DoScriptText(EMOTE_GENERIC_FRENZY_KILL, me);
                 m_uiFrenzy_Timer = 24000;
             }
             else
-                m_uiFrenzy_Timer -= uiDiff;
+                m_uiFrenzy_Timer -= diff;
         }*/
 
         DoMeleeAttackIfReady();

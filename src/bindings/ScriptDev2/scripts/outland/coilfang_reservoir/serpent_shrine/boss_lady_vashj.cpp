@@ -279,7 +279,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             DoScriptText(urand(0,1) ? SAY_BOWSHOT1 : SAY_BOWSHOT2, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -288,16 +288,16 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         if (m_uiPhase == PHASE_1 || m_uiPhase == PHASE_3)
         {
             //m_uiShockBlast_Timer
-            if (m_uiShockBlast_Timer < uiDiff)
+            if (m_uiShockBlast_Timer < diff)
             {
                 //Randomly used in m_uiPhases 1 and 3 on Vashj's target, it's a Shock spell doing 8325-9675 nature damage and stunning the target for 5 seconds, during which she will not attack her target but switch to the next person on the aggro list.
                 DoCastVictim( SPELL_SHOCK_BLAST);
 
                 m_uiShockBlast_Timer = urand(1000, 15000);  //random cooldown
-            }else m_uiShockBlast_Timer -= uiDiff;
+            }else m_uiShockBlast_Timer -= diff;
 
             //m_uiStaticCharge_Timer
-            if (m_uiStaticCharge_Timer < uiDiff)
+            if (m_uiStaticCharge_Timer < diff)
             {
                 //Used on random people (only 1 person at any given time) in m_uiPhases 1 and 3, it's a debuff doing 2775 to 3225 Nature damage to the target and everybody in about 5 yards around it, every 1 seconds for 30 seconds. It can be removed by Cloak of Shadows, Iceblock, Divine Shield, etc, but not by Cleanse or Dispel Magic.
                 Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
@@ -307,10 +307,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     DoCast(pTarget, SPELL_STATIC_CHARGE_TRIGGER);
 
                 m_uiStaticCharge_Timer = urand(10000, 30000);
-            }else m_uiStaticCharge_Timer -= uiDiff;
+            }else m_uiStaticCharge_Timer -= diff;
 
             //m_uiEntangle_Timer
-            if (m_uiEntangle_Timer < uiDiff)
+            if (m_uiEntangle_Timer < diff)
             {
                 if (!m_bEntangle)
                 {
@@ -325,7 +325,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     m_bEntangle = false;
                     m_uiEntangle_Timer = urand(20000, 25000);
                 }
-            }else m_uiEntangle_Timer -= uiDiff;
+            }else m_uiEntangle_Timer -= diff;
 
             //m_uiPhase 1
             if (m_uiPhase == PHASE_1)
@@ -352,7 +352,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             else
             {
                 //m_uiSummonSporebat_Timer
-                if (m_uiSummonSporebat_Timer < uiDiff)
+                if (m_uiSummonSporebat_Timer < diff)
                 {
                     me->SummonCreature(NPC_TOXIC_SPOREBAT,
                         afSporebatPos[0], afSporebatPos[1], afSporebatPos[2], afSporebatPos[3],
@@ -363,14 +363,14 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                         m_uiSummonSporebat_StaticTimer -= 1000;
 
                     m_uiSummonSporebat_Timer = m_uiSummonSporebat_StaticTimer;
-                }else m_uiSummonSporebat_Timer -= uiDiff;
+                }else m_uiSummonSporebat_Timer -= diff;
             }
 
             //Melee attack
             DoMeleeAttackIfReady();
 
             //m_uiCheck_Timer - used to check if somebody is in melee range
-            if (m_uiCheck_Timer < uiDiff)
+            if (m_uiCheck_Timer < diff)
             {
                 bool bInMeleeRange = false;
                 std::list<HostileReference *> t_list = me->getThreatManager().getThreatList();
@@ -391,13 +391,13 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     CastShootOrMultishot();
 
                 m_uiCheck_Timer = 1500;
-            }else m_uiCheck_Timer -= uiDiff;
+            }else m_uiCheck_Timer -= diff;
         }
         //m_uiPhase PHASE_2
         else
         {
             //m_uiForkedLightning_Timer
-            if (m_uiForkedLightning_Timer < uiDiff)
+            if (m_uiForkedLightning_Timer < diff)
             {
                 //Used constantly in m_uiPhase 2, it shoots out completely randomly targeted bolts of lightning which hit everybody in a roughtly 60 degree cone in front of Vashj for 2313-2687 nature damage.
                 Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
@@ -408,10 +408,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                 DoCast(pTarget, SPELL_FORKED_LIGHTNING);
 
                 m_uiForkedLightning_Timer = urand(3000, 9000);
-            }else m_uiForkedLightning_Timer -= uiDiff;
+            }else m_uiForkedLightning_Timer -= diff;
 
             //NPC_ENCHANTED_ELEMENTAL
-            if (m_uiEnchantedElemental_Timer < uiDiff)
+            if (m_uiEnchantedElemental_Timer < diff)
             {
                 if (Creature* pElemental = me->SummonCreature(NPC_ENCHANTED_ELEMENTAL, afElementPos[m_uiEnchantedElemental_Pos][0], afElementPos[m_uiEnchantedElemental_Pos][1], afElementPos[m_uiEnchantedElemental_Pos][2], afElementPos[m_uiEnchantedElemental_Pos][3], TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 60000))
                     pElemental->GetMotionMaster()->MoveFollow(me, 0.0f, 0.0f);
@@ -422,10 +422,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     ++m_uiEnchantedElemental_Pos;
 
                 m_uiEnchantedElemental_Timer = urand(10000, 15000);
-            }else m_uiEnchantedElemental_Timer -= uiDiff;
+            }else m_uiEnchantedElemental_Timer -= diff;
 
             //NPC_TAINTED_ELEMENTAL
-            if (m_uiTaintedElemental_Timer < uiDiff)
+            if (m_uiTaintedElemental_Timer < diff)
             {
                 uint32 uiPos = urand(0,7);
 
@@ -434,10 +434,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 15000);
 
                 m_uiTaintedElemental_Timer = 120000;
-            }else m_uiTaintedElemental_Timer -= uiDiff;
+            }else m_uiTaintedElemental_Timer -= diff;
 
             //NPC_COILFANG_ELITE
-            if (m_uiCoilfangElite_Timer < uiDiff)
+            if (m_uiCoilfangElite_Timer < diff)
             {
                 uint32 uiPos = urand(0,2);
 
@@ -447,10 +447,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 //wowwiki says 50 seconds, bosskillers says 45
                 m_uiCoilfangElite_Timer = urand(45000, 50000);
-            }else m_uiCoilfangElite_Timer -= uiDiff;
+            }else m_uiCoilfangElite_Timer -= diff;
 
             //NPC_COILFANG_STRIDER
-            if (m_uiCoilfangStrider_Timer < uiDiff)
+            if (m_uiCoilfangStrider_Timer < diff)
             {
                 uint32 uiPos = urand(0,2);
 
@@ -460,10 +460,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
                 //wowwiki says 60 seconds, bosskillers says 60-70
                 m_uiCoilfangStrider_Timer = urand(60000, 70000);
-            }else m_uiCoilfangStrider_Timer -= uiDiff;
+            }else m_uiCoilfangStrider_Timer -= diff;
 
             //m_uiCheck_Timer
-            if (m_uiCheck_Timer < uiDiff)
+            if (m_uiCheck_Timer < diff)
             {
                 //Start m_uiPhase 3
                 if (m_pInstance && m_pInstance->GetData(TYPE_VASHJ_PHASE3_CHECK) == DONE)
@@ -484,7 +484,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
                     m_uiPhase = PHASE_3;
                 }
                 m_uiCheck_Timer = 1000;
-            }else m_uiCheck_Timer -= uiDiff;
+            }else m_uiCheck_Timer -= diff;
         }
     }
 };
@@ -522,7 +522,7 @@ struct MANGOS_DLL_DECL mob_enchanted_elementalAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff) { }
+    void UpdateAI(const uint32 diff) { }
 };
 
 //Tainted Elemental
@@ -546,13 +546,13 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
         m_uiPoisonBolt_Timer = urand(5000, 10000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         //m_uiPoisonBolt_Timer
-        if (m_uiPoisonBolt_Timer < uiDiff)
+        if (m_uiPoisonBolt_Timer < diff)
         {
             Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
 
@@ -560,7 +560,7 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
                 DoCast(pTarget, SPELL_POISON_BOLT);
 
             m_uiPoisonBolt_Timer = urand(5000, 10000);
-        }else m_uiPoisonBolt_Timer -= uiDiff;
+        }else m_uiPoisonBolt_Timer -= diff;
     }
 };
 
@@ -586,24 +586,24 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
         m_uiCheck_Timer = 1000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         //m_uiToxicSpore_Timer
-        if (m_uiToxicSpore_Timer < uiDiff)
+        if (m_uiToxicSpore_Timer < diff)
         {
             //The Spores will hit you anywhere in the instance: underwater, at the elevator, at the entrance, wherever.
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_TOXIC_SPORES);
 
             m_uiToxicSpore_Timer = urand(20000, 25000);
-        }else m_uiToxicSpore_Timer -= uiDiff;
+        }else m_uiToxicSpore_Timer -= diff;
 
         //m_uiCheck_Timer
-        if (m_uiCheck_Timer < uiDiff)
+        if (m_uiCheck_Timer < diff)
         {
             if (m_pInstance)
             {
@@ -619,7 +619,7 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
             }
 
             m_uiCheck_Timer = 1000;
-        }else m_uiCheck_Timer -= uiDiff;
+        }else m_uiCheck_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

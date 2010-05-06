@@ -150,40 +150,40 @@ struct MANGOS_DLL_DECL mob_abyssalAI : public ScriptedAI
         ScriptedAI::MoveInLineOfSight(pWho);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiTriggerId)
         {
             if (m_uiTriggerId == 1)
             {
-                if (m_uiFireBlast_Timer < uiDiff)
+                if (m_uiFireBlast_Timer < diff)
                 {
                     me->CastSpell(me, SPELL_DEBRIS_DAMAGE, true);
                     m_uiTriggerId = 3;
                 }
                 else
-                    m_uiFireBlast_Timer -= uiDiff;
+                    m_uiFireBlast_Timer -= diff;
             }
         }
 
-        if (m_uiDespawn_Timer < uiDiff)
+        if (m_uiDespawn_Timer < diff)
         {
             me->ForcedDespawn();
             return;
         }
         else
-            m_uiDespawn_Timer -= uiDiff;
+            m_uiDespawn_Timer -= diff;
 
         if (!CanDoSomething())
             return;
 
-        if (m_uiFireBlast_Timer < uiDiff)
+        if (m_uiFireBlast_Timer < diff)
         {
             DoCastVictim( SPELL_FIRE_BLAST);
             m_uiFireBlast_Timer = urand(5000, 15000);
         }
         else
-            m_uiFireBlast_Timer -= uiDiff;
+            m_uiFireBlast_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -356,7 +356,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
@@ -366,13 +366,13 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
                 return;
             }
 
-            if (m_uiRandChat_Timer < uiDiff)
+            if (m_uiRandChat_Timer < diff)
             {
                 DoScriptText(RandomTaunt[rand()%6].id, me);
                 m_uiRandChat_Timer = 90000;
             }
             else
-                m_uiRandChat_Timer -= uiDiff;
+                m_uiRandChat_Timer -= diff;
 
             return;
         }
@@ -380,25 +380,25 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
         if (m_bNeedCheckCube)
             NeedCheckCubeStatus();
 
-        if (m_uiBerserk_Timer < uiDiff)
+        if (m_uiBerserk_Timer < diff)
         {
             DoScriptText(EMOTE_BERSERK, me);
             me->CastSpell(me, SPELL_BERSERK, true);
             m_uiBerserk_Timer = 60000;
         }
         else
-            m_uiBerserk_Timer -= uiDiff;
+            m_uiBerserk_Timer -= diff;
 
         //Cleave_Timer
-        if (m_uiCleave_Timer < uiDiff)
+        if (m_uiCleave_Timer < diff)
         {
             DoCastVictim( SPELL_CLEAVE);
             m_uiCleave_Timer = 10000;
         }
         else
-            m_uiCleave_Timer -= uiDiff;
+            m_uiCleave_Timer -= diff;
 
-        if (m_uiQuake_Timer < uiDiff)
+        if (m_uiQuake_Timer < diff)
         {
             // to avoid blastnova interruption
             if (!me->IsNonMeleeSpellCasted(false))
@@ -409,9 +409,9 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
             }
         }
         else
-            m_uiQuake_Timer -= uiDiff;
+            m_uiQuake_Timer -= diff;
 
-        if (m_uiBlastNova_Timer < uiDiff)
+        if (m_uiBlastNova_Timer < diff)
         {
             // to avoid earthquake interruption
             if (!me->hasUnitState(UNIT_STAT_STUNNED))
@@ -422,9 +422,9 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
             }
         }
         else
-            m_uiBlastNova_Timer -= uiDiff;
+            m_uiBlastNova_Timer -= diff;
 
-        if (m_uiBlaze_Timer < uiDiff)
+        if (m_uiBlaze_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
             {
@@ -442,7 +442,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
             m_uiBlaze_Timer = urand(20000, 40000);
         }
         else
-            m_uiBlaze_Timer -= uiDiff;
+            m_uiBlaze_Timer -= diff;
 
         if (!m_bIsPhase3 && me->GetHealth()*10 < me->GetMaxHealth()*3
             && !me->IsNonMeleeSpellCasted(false)    // blast nova
@@ -454,7 +454,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 
         if (m_bIsPhase3)
         {
-            if (m_uiPhase3_Timer < uiDiff)
+            if (m_uiPhase3_Timer < diff)
             {
                 switch(m_uiPhase3_Count)
                 {
@@ -488,7 +488,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
                 }
             }
             else
-                m_uiPhase3_Timer -= uiDiff;
+                m_uiPhase3_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -567,7 +567,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
             m_pInstance->SetData(TYPE_CHANNELER_EVENT, NOT_STARTED);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
@@ -578,16 +578,16 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
         }
 
         //Shadow bolt volley
-        if (m_uiShadowBoltVolley_Timer < uiDiff)
+        if (m_uiShadowBoltVolley_Timer < diff)
         {
             DoCastMe( SPELL_SHADOW_BOLT_VOLLEY);
             m_uiShadowBoltVolley_Timer = urand(10000, 20000);
         }
         else
-            m_uiShadowBoltVolley_Timer -= uiDiff;
+            m_uiShadowBoltVolley_Timer -= diff;
 
         //Dark Mending
-        if (m_uiDarkMending_Timer < uiDiff)
+        if (m_uiDarkMending_Timer < diff)
         {
             if ((me->GetHealth()*100 / me->GetMaxHealth()) < 50)
             {
@@ -601,10 +601,10 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
             m_uiDarkMending_Timer = urand(10000, 20000);
         }
         else
-            m_uiDarkMending_Timer -= uiDiff;
+            m_uiDarkMending_Timer -= diff;
 
         //Fear
-        if (m_uiFear_Timer < uiDiff)
+        if (m_uiFear_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1))
                 DoCast(pTarget, SPELL_FEAR);
@@ -612,10 +612,10 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
             m_uiFear_Timer = urand(25000, 40000);
         }
         else
-            m_uiFear_Timer -= uiDiff;
+            m_uiFear_Timer -= diff;
 
         //Infernal spawning
-        if (!m_bIsInfernalSpawned && m_uiInfernal_Timer < uiDiff)
+        if (!m_bIsInfernalSpawned && m_uiInfernal_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 me->CastSpell(pTarget, SPELL_BURNING_ABYSSAL, true);
@@ -623,7 +623,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
             m_bIsInfernalSpawned = true;
         }
         else
-            m_uiInfernal_Timer -= uiDiff;
+            m_uiInfernal_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

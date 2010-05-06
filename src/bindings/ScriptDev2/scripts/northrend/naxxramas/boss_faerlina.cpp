@@ -178,29 +178,29 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiDeathDelay_Timer != 0)
-            if (m_uiDeathDelay_Timer <= uiDiff)
+            if (m_uiDeathDelay_Timer <= diff)
             {
 				m_pInstance->SetData(TYPE_ENR_FAERLINA,0);
                 me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                 m_uiDeathDelay_Timer = 0;
             }
             else 
-				m_uiDeathDelay_Timer -= uiDiff;
+				m_uiDeathDelay_Timer -= diff;
 
         if (CanDoSomething() || m_bIsDead)
             return;
 
 
-        if (m_uiFireball_Timer < uiDiff)
+        if (m_uiFireball_Timer < diff)
         {
 			m_pInstance->SetData(TYPE_FAERLINA,IN_PROGRESS);
             DoCastVictim( m_bIsHeroic ? SPELL_FIREBALL_H : SPELL_FIREBALL);
             m_uiFireball_Timer = 7000 + rand()%4000;
         }
-        else m_uiFireball_Timer -= uiDiff;
+        else m_uiFireball_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

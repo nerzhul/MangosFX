@@ -236,7 +236,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
         me->GetMap()->CreatureRelocation(me, fX, fY, fZ + 5.0f, me->GetOrientation());
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
@@ -248,7 +248,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
             if (pArthas && pArthas->isAlive())
             {
-                if (m_uiIntroTimer < uiDiff)
+                if (m_uiIntroTimer < diff)
                 {
                     m_uiIntroTimer = 10000;
 
@@ -283,7 +283,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                     ++m_uiIntroCount;
                 }
                 else
-                    m_uiIntroTimer -= uiDiff;
+                    m_uiIntroTimer -= diff;
             }
 
             return;
@@ -291,7 +291,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
 		if(!InRitual)
 		{
-			if(Ritual_Timer <= uiDiff)
+			if(Ritual_Timer <= diff)
 			{
 				InRitual = true;
 				target = SelectUnit(SELECT_TARGET_RANDOM, 0);
@@ -325,12 +325,12 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 				Ritual_Timer = urand(18000,22000);
 			}
 			else
-				Ritual_Timer -= uiDiff;
+				Ritual_Timer -= diff;
 		}
 		else
 		{
             // check if Ritual Channeler dies
-            if(m_uiRitualChanneler_Timer <= uiDiff && InRitual)
+            if(m_uiRitualChanneler_Timer <= diff && InRitual)
             {
             	RitualChannelerAlive = false;
                 for(uint8 i=0; i<3; ++i)
@@ -357,9 +357,9 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                 m_uiRitualChanneler_Timer = 500;
             }
 			else 
-				m_uiRitualChanneler_Timer -= uiDiff;
+				m_uiRitualChanneler_Timer -= diff;
 
-            if(m_uiSacrifice_Timer <= uiDiff && InRitual)
+            if(m_uiSacrifice_Timer <= diff && InRitual)
             {
                	me->InterruptNonMeleeSpells(false);
                	me->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 0, uint32(EQUIP_ARMAGEDDON));
@@ -377,12 +377,12 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                 m_uiSacrifice_Timer = 25000;
             }
 			else
-				m_uiSacrifice_Timer -= uiDiff;
+				m_uiSacrifice_Timer -= diff;
 		}
 
 		if(!InRitual)
 		{
-			Tasks.UpdateEvent(uiDiff);
+			Tasks.UpdateEvent(diff);
 
 			DoMeleeAttackIfReady();
 		}

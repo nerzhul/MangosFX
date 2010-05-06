@@ -195,12 +195,12 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 		}
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}
@@ -253,12 +253,12 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public ScriptedAI
 		SetAuraStack(SPELL_PACK_STR,1,me,me);	
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 		
 		DoMeleeAttackIfReady();
 	}

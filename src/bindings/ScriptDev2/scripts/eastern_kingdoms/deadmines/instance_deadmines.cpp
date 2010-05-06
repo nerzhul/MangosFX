@@ -96,11 +96,11 @@ struct MANGOS_DLL_DECL instance_deadmines : public ScriptedInstance
         return 0;
     }
 
-    void Update(uint32 uiDiff)
+    void Update(uint32 diff)
     {
         if (m_uiIronDoor_Timer)
         {
-            if (m_uiIronDoor_Timer <= uiDiff)
+            if (m_uiIronDoor_Timer <= diff)
             {
                 if (Creature* pMrSmite = instance->GetCreature(m_uiSmiteGUID))
                 {
@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL instance_deadmines : public ScriptedInstance
                     m_uiIronDoor_Timer = 0;
             }
             else
-                m_uiIronDoor_Timer -= uiDiff;
+                m_uiIronDoor_Timer -= diff;
         }
     }
 };

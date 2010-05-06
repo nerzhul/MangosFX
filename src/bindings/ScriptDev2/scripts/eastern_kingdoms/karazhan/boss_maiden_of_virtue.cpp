@@ -76,20 +76,20 @@ struct MANGOS_DLL_DECL boss_maiden_of_virtueAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiHolyground_Timer < uiDiff)
+        if (m_uiHolyground_Timer < diff)
         {
             DoCastMe( SPELL_HOLYGROUND, true);     //Triggered so it doesn't interrupt her at all
             m_uiHolyground_Timer = 3000;
         }
         else
-            m_uiHolyground_Timer -= uiDiff;
+            m_uiHolyground_Timer -= diff;
 
-        if (m_uiRepentance_Timer < uiDiff)
+        if (m_uiRepentance_Timer < diff)
         {
             DoCastVictim(SPELL_REPENTANCE);
             DoScriptText(urand(0, 1) ? SAY_REPENTANCE1 : SAY_REPENTANCE2, me);
@@ -97,9 +97,9 @@ struct MANGOS_DLL_DECL boss_maiden_of_virtueAI : public ScriptedAI
             m_uiRepentance_Timer = urand(25000, 35000);     //A little randomness on that spell
         }
         else
-            m_uiRepentance_Timer -= uiDiff;
+            m_uiRepentance_Timer -= diff;
 
-        if (m_uiHolyfire_Timer < uiDiff)
+        if (m_uiHolyfire_Timer < diff)
         {
             //Time for an omgwtfpwn code to make maiden cast holy fire only on units outside the holy ground's 18 yard range
             Unit* pTarget = NULL;
@@ -120,9 +120,9 @@ struct MANGOS_DLL_DECL boss_maiden_of_virtueAI : public ScriptedAI
             m_uiHolyfire_Timer = urand(8000, 23000);        //Anywhere from 8 to 23 seconds, good luck having several of those in a row!
         }
         else
-            m_uiHolyfire_Timer -= uiDiff;
+            m_uiHolyfire_Timer -= diff;
 
-        if (m_uiHolywrath_Timer < uiDiff)
+        if (m_uiHolywrath_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCast(pTarget, SPELL_HOLYWRATH);
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_maiden_of_virtueAI : public ScriptedAI
             m_uiHolywrath_Timer = urand(20000, 25000);      //20-25 secs sounds nice
         }
         else
-            m_uiHolywrath_Timer -= uiDiff;
+            m_uiHolywrath_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

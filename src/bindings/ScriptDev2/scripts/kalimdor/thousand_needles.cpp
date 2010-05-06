@@ -318,11 +318,11 @@ struct MANGOS_DLL_DECL npc_plucky_johnsonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (me->HasFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
         {
-            if (m_uiResetTimer < uiDiff)
+            if (m_uiResetTimer < diff)
             {
                 if (!me->getVictim())
                     EnterEvadeMode();
@@ -332,7 +332,7 @@ struct MANGOS_DLL_DECL npc_plucky_johnsonAI : public ScriptedAI
                 return;
             }
             else
-                m_uiResetTimer -= uiDiff;
+                m_uiResetTimer -= diff;
         }
 
         if (!CanDoSomething())

@@ -137,31 +137,31 @@ struct MANGOS_DLL_DECL boss_nadoxAI : public ScriptedAI
 		Tasks.CallCreature(id_add2_normal,8000,PREC_COORDS,AGGRESSIVE_RANDOM,add_position[i].x ,add_position[i].y, add_position[i].z);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-		if (invoc_add_timer <= uiDiff)
+		if (invoc_add_timer <= diff)
 		{	
 			DoScriptText(SAY_SUMMON_EGG_1 , me);
 			invoc_add();
 			invoc_add_timer = urand(5000,6000);
 		}
 		else
-			invoc_add_timer -= uiDiff;
+			invoc_add_timer -= diff;
 
-		if (invoc_add2_timer <= uiDiff)
+		if (invoc_add2_timer <= diff)
 		{	
 			DoScriptText(SAY_SUMMON_EGG_2 , me);
 			invoc_add_2();
 			invoc_add2_timer = urand(44000,46000);
 		}
 		else
-			invoc_add2_timer -= uiDiff;
+			invoc_add2_timer -= diff;
 	
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		if(Add2 != NULL && Add2->isAlive() && !me->HasAura(SPELL_INSENSIBLE))
 			DoCastMe(SPELL_INSENSIBLE, true);
@@ -191,13 +191,13 @@ struct MANGOS_DLL_DECL add_nadox : public ScriptedAI // Add
     
 	ScriptedInstance* m_pInstance;
 		
-	void UpdateAI(const uint32 uiDiff) // Début Script add
+	void UpdateAI(const uint32 diff) // Début Script add
 
 	{
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 		
 		DoMeleeAttackIfReady();
 

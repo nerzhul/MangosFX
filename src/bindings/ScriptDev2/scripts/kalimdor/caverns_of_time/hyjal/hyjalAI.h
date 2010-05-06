@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL hyjalAI : public ScriptedAI
     void Aggro(Unit* pWho);
 
     // Called to summon waves, check for boss deaths and to cast our spells.
-    void UpdateAI(const uint32 uiDiff);
+    void UpdateAI(const uint32 diff);
 
     // Called on death, informs the raid that they have failed.
     void JustDied(Unit* pKiller);

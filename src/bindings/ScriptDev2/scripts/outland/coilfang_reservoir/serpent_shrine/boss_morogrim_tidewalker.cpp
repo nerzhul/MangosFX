@@ -143,14 +143,14 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
         //m_uiEarthquake_Timer
-        if (m_uiEarthquake_Timer < uiDiff)
+        if (m_uiEarthquake_Timer < diff)
         {
             if (!m_bEarthquake)
             {
@@ -181,19 +181,19 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
                 m_bEarthquake = false;
                 m_uiEarthquake_Timer = urand(40000, 45000);
             }
-        }else m_uiEarthquake_Timer -= uiDiff;
+        }else m_uiEarthquake_Timer -= diff;
 
         //m_uiTidalWave_Timer
-        if (m_uiTidalWave_Timer < uiDiff)
+        if (m_uiTidalWave_Timer < diff)
         {
             DoCastVictim( SPELL_TIDAL_WAVE);
             m_uiTidalWave_Timer = 20000;
-        }else m_uiTidalWave_Timer -= uiDiff;
+        }else m_uiTidalWave_Timer -= diff;
 
         if (!m_bPhase2)
         {
             //m_uiWateryGrave_Timer
-            if (m_uiWateryGrave_Timer < uiDiff)
+            if (m_uiWateryGrave_Timer < diff)
             {
                 //Teleport 4 players under the waterfalls
                 for(uint8 i = 0; i < 4; ++i)
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
                 DoScriptText(EMOTE_WATERY_GRAVE, me);
 
                 m_uiWateryGrave_Timer = 30000;
-            }else m_uiWateryGrave_Timer -= uiDiff;
+            }else m_uiWateryGrave_Timer -= diff;
 
             //Start Phase2
             if ((me->GetHealth()*100 / me->GetMaxHealth()) < 25)
@@ -225,7 +225,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         else
         {
             //m_uiWateryGlobules_Timer
-            if (m_uiWateryGlobules_Timer < uiDiff)
+            if (m_uiWateryGlobules_Timer < diff)
             {
                 DoScriptText(EMOTE_WATERY_GLOBULES, me);
 
@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
                 me->CastSpell(me,SPELL_SUMMON_GLOBULE_4,false);
 
                 m_uiWateryGlobules_Timer = 25000;
-            }else m_uiWateryGlobules_Timer -= uiDiff;
+            }else m_uiWateryGlobules_Timer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -269,13 +269,13 @@ struct MANGOS_DLL_DECL mob_water_globuleAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-        if (m_uiCheck_Timer < uiDiff)
+        if (m_uiCheck_Timer < diff)
         {
             if (me->IsWithinDistInMap(me->getVictim(), ATTACK_DISTANCE))
             {
@@ -286,7 +286,7 @@ struct MANGOS_DLL_DECL mob_water_globuleAI : public ScriptedAI
                 return;
             }
             m_uiCheck_Timer = 500;
-        }else m_uiCheck_Timer -= uiDiff;
+        }else m_uiCheck_Timer -= diff;
 
         //do NOT deal any melee damage to the target.
     }

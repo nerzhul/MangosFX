@@ -233,14 +233,14 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
         m_uiMovePoint = iTemp;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (m_uiPhase == PHASE_START || m_uiPhase == PHASE_END)
         {
-			Tasks.UpdateEvent(uiDiff,m_uiPhase);
+			Tasks.UpdateEvent(diff,m_uiPhase);
 
             if (m_uiPhase != PHASE_END)
             {
@@ -280,7 +280,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
                 return;
             }
 
-            if (m_uiMovementTimer < uiDiff)
+            if (m_uiMovementTimer < diff)
             {
                 m_pPointData = GetMoveData();
 
@@ -303,9 +303,9 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
                     me->GetMotionMaster()->MovePoint(m_pPointData->uiLocId, m_pPointData->fX, m_pPointData->fY, m_pPointData->fZ);
             }
             else
-                m_uiMovementTimer -= uiDiff;
+                m_uiMovementTimer -= diff;
 
-            if (m_uiEngulfingFlamesTimer < uiDiff)
+            if (m_uiEngulfingFlamesTimer < diff)
             {
                 if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != POINT_MOTION_TYPE)
                 {
@@ -316,13 +316,13 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
                 }
             }
             else
-                m_uiEngulfingFlamesTimer -= uiDiff;           //engulfingflames is supposed to be activated by a fireball but haven't come by
+                m_uiEngulfingFlamesTimer -= diff;           //engulfingflames is supposed to be activated by a fireball but haven't come by
 
             if (m_bIsSummoningWhelps)
             {
 				if (m_uiSummonCount < (m_bIsHeroic ? 35 : 20))
                 {
-                    if (m_uiWhelpTimer < uiDiff)
+                    if (m_uiWhelpTimer < diff)
                     {
                         me->SummonCreature(NPC_WHELP, afSpawnLocations[0][0], afSpawnLocations[0][1], afSpawnLocations[0][2], 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000);
                         me->SummonCreature(NPC_WHELP, afSpawnLocations[1][0], afSpawnLocations[1][1], afSpawnLocations[1][2], 0.0f, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 30000);
@@ -337,7 +337,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
                         m_uiWhelpTimer = 1000;
                     }
                     else
-                        m_uiWhelpTimer -= uiDiff;
+                        m_uiWhelpTimer -= diff;
                 }
                 else
                 {
@@ -348,10 +348,10 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
             }
             else
             {
-                if (m_uiSummonWhelpsTimer < uiDiff)
+                if (m_uiSummonWhelpsTimer < diff)
                     m_bIsSummoningWhelps = true;
                 else
-                    m_uiSummonWhelpsTimer -= uiDiff;
+                    m_uiSummonWhelpsTimer -= diff;
             }
         }
     }

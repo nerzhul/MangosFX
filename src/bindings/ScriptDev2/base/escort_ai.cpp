@@ -236,12 +236,12 @@ bool npc_escortAI::IsPlayerOrGroupInRange()
     return false;
 }
 
-void npc_escortAI::UpdateAI(const uint32 uiDiff)
+void npc_escortAI::UpdateAI(const uint32 diff)
 {
     //Waypoint Updating
     if (HasEscortState(STATE_ESCORT_ESCORTING) && !me->getVictim() && m_uiWPWaitTimer && !HasEscortState(STATE_ESCORT_RETURNING))
     {
-        if (m_uiWPWaitTimer <= uiDiff)
+        if (m_uiWPWaitTimer <= diff)
         {
             //End of the line
             if (CurrentWP == WaypointList.end())
@@ -283,13 +283,13 @@ void npc_escortAI::UpdateAI(const uint32 uiDiff)
             }
         }
         else
-            m_uiWPWaitTimer -= uiDiff;
+            m_uiWPWaitTimer -= diff;
     }
 
     //Check if player or any member of his group is within range
     if (HasEscortState(STATE_ESCORT_ESCORTING) && m_uiPlayerGUID && !me->getVictim() && !HasEscortState(STATE_ESCORT_RETURNING))
     {
-        if (m_uiPlayerCheckTimer < uiDiff)
+        if (m_uiPlayerCheckTimer < diff)
         {
             if (!IsPlayerOrGroupInRange())
             {
@@ -309,13 +309,13 @@ void npc_escortAI::UpdateAI(const uint32 uiDiff)
             m_uiPlayerCheckTimer = 1000;
         }
         else
-            m_uiPlayerCheckTimer -= uiDiff;
+            m_uiPlayerCheckTimer -= diff;
     }
 
-    UpdateEscortAI(uiDiff);
+    UpdateEscortAI(diff);
 }
 
-void npc_escortAI::UpdateEscortAI(const uint32 uiDiff)
+void npc_escortAI::UpdateEscortAI(const uint32 diff)
 {
     //Check if we have a current target
     if (!CanDoSomething())

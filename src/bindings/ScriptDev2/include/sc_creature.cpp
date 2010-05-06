@@ -81,7 +81,7 @@ void ScriptedAI::Aggro(Unit* pEnemy)
 {
 }
 
-void ScriptedAI::UpdateAI(const uint32 uiDiff)
+void ScriptedAI::UpdateAI(const uint32 diff)
 {
     //Check if we have a current target
     if (!CanDoSomething())
@@ -698,13 +698,13 @@ enum
     NPC_SARTHARION  = 28860
 };
 
-bool ScriptedAI::EnterEvadeIfOutOfCombatArea(const uint32 uiDiff)
+bool ScriptedAI::EnterEvadeIfOutOfCombatArea(const uint32 diff)
 {
-    if (m_uiEvadeCheckCooldown < uiDiff)
+    if (m_uiEvadeCheckCooldown < diff)
         m_uiEvadeCheckCooldown = 2500;
     else
     {
-        m_uiEvadeCheckCooldown -= uiDiff;
+        m_uiEvadeCheckCooldown -= diff;
         return false;
     }
 
@@ -947,6 +947,7 @@ void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32
 	tmpEvent.MaxPriority = MaxPriority;
 	tmpEvent.RequireFront = front;
 	EventShVect.push_back(tmpEvent);
+	SavedEventSh.push_back(tmpEvent);
 }
 void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 			SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
@@ -964,13 +965,13 @@ void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uin
 	tmpEvent.RequireFront = front;
 	EventShVect.push_back(tmpEvent);
 }
-void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase)
+void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+	for(SpellEvents::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
-			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			if((*itr).Timer <= diff || (*itr).Timer > 45000000)
 			{
 				if((*itr).MaxPriority)
 					me->CastStop();
@@ -1020,18 +1021,18 @@ void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase)
 				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
 			}
 			else
-				(*itr).Timer -= uiDiff;	
+				(*itr).Timer -= diff;	
 		}
 	}
 
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+	for(SummonEvents::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
 			if((*itr).TextId != 0)
 				DoScriptText((*itr).TextId,me);
 
-			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			if((*itr).Timer <= diff || (*itr).Timer > 45000000)
 			{
 
 				for(int i=0;i<(*itr).Repeat;i++)
@@ -1041,27 +1042,29 @@ void LibDevFSAI::UpdateEvent(uint32 uiDiff, uint32 phase)
 				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
 			}
 			else
-				(*itr).Timer -= uiDiff;	
+				(*itr).Timer -= diff;	
 		}
 	}
 }
 
 void LibDevFSAI::ResetTimers()
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
-		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
+	EventShVect.clear();
+	EventSummonVect.clear();
+	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
+		EventShVect.push_back(*itr);
 		
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
-		(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
+	for(SummonEvents::iterator itr = SavedEventSummon.begin(); itr!= SavedEventSummon.end(); ++itr)
+		EventSummonVect.push_back(*itr);
 }
 
-void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
+void MobEventTasks::UpdateEvent(uint32 diff, uint32 phase)
 {
-	for(std::vector<EventSh>::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
+	for(SpellEvents::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
-			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			if((*itr).Timer <= diff || (*itr).Timer > 45000000)
 			{
 				if((*itr).MaxPriority)
 					thisCr->CastStop();
@@ -1111,18 +1114,18 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).Diff);
 			}
 			else
-				(*itr).Timer -= uiDiff;	
+				(*itr).Timer -= diff;	
 		}
 	}
 
-	for(std::vector<EventSummon>::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
+	for(SummonEvents::iterator itr = EventSummonVect.begin(); itr!= EventSummonVect.end(); ++itr)
 	{
 		if((*itr).phase == phase)
 		{
 			if((*itr).TextId != 0)
 				DoScriptText((*itr).TextId,thisCr);
 
-			if((*itr).Timer <= uiDiff || (*itr).Timer > 45000000)
+			if((*itr).Timer <= diff || (*itr).Timer > 45000000)
 			{
 
 				for(int i=0;i<(*itr).Repeat;i++)
@@ -1132,7 +1135,7 @@ void MobEventTasks::UpdateEvent(uint32 uiDiff, uint32 phase)
 				(*itr).Timer = (*itr).NormTimer + urand(0,(*itr).diff);
 			}
 			else
-				(*itr).Timer -= uiDiff;	
+				(*itr).Timer -= diff;	
 		}
 	}
 }
@@ -1383,6 +1386,7 @@ void LibDevFSAI::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, ui
 	tmpEvent.WhereS = WhereZone;
 	tmpEvent.TextId = TextId;
 	EventSummonVect.push_back(tmpEvent);
+	SavedEventSummon.push_back(tmpEvent);
 
 }
 void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase, uint32 Diff,

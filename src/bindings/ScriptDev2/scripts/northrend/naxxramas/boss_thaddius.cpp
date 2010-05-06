@@ -148,22 +148,22 @@ struct MANGOS_DLL_DECL mob_stalaggAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (m_bIsHold)
         {
-            if (Hold_Timer < uiDiff)
+            if (Hold_Timer < diff)
             {
                 me->AI()->AttackStart(me->getVictim());
                 DoStartMovement(me->getVictim());
                 m_bIsHold = false;
-            }else Hold_Timer -= uiDiff;
+            }else Hold_Timer -= diff;
         }
 
-        if (DeathCheck_Timer < uiDiff)
+        if (DeathCheck_Timer < diff)
         {
             if (m_pInstance)
                 if (Creature* pFeugen = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_FEUGEN))))
@@ -184,9 +184,9 @@ struct MANGOS_DLL_DECL mob_stalaggAI : public ScriptedAI
                 }
         }
 		else 
-			DeathCheck_Timer -= uiDiff;
+			DeathCheck_Timer -= diff;
 
-        Tasks.UpdateEvent(uiDiff);
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -269,22 +269,22 @@ struct MANGOS_DLL_DECL mob_feugenAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (m_bIsHold)
         {
-            if (Hold_Timer < uiDiff)
+            if (Hold_Timer < diff)
             {
                 me->AI()->AttackStart(me->getVictim());
                 DoStartMovement(me->getVictim());
                 m_bIsHold = false;
-            }else Hold_Timer -= uiDiff;
+            }else Hold_Timer -= diff;
         }
 
-        if (DeathCheck_Timer < uiDiff)
+        if (DeathCheck_Timer < diff)
         {
             if (m_pInstance)
                 if (Creature* pStalagg = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_STALAGG))))
@@ -303,9 +303,9 @@ struct MANGOS_DLL_DECL mob_feugenAI : public ScriptedAI
                     else
                         DeathCheck_Timer = 1000;
                 }
-        }else DeathCheck_Timer -= uiDiff;
+        }else DeathCheck_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -415,19 +415,19 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_bIsActiveCheck)
         {
-            if (!m_bIsActived && Active_Timer < uiDiff)
+            if (!m_bIsActived && Active_Timer < diff)
             {
                 m_bIsActived = true;
                 Active_Timer = 1000;
-            }else Active_Timer -= uiDiff;
+            }else Active_Timer -= diff;
         }
         else
         {
-            if (Active_Timer < uiDiff)
+            if (Active_Timer < diff)
             {
                 if(m_pInstance)
                 {
@@ -450,7 +450,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                     {
                         if (pStalagg->isInCombat() && pFeugen->isInCombat())
                         {
-                            if (SwitchTarget_Timer < uiDiff)
+                            if (SwitchTarget_Timer < diff)
                             {
                                 Unit* pStalaggTarget;
                                 Unit* pFeugenTarget;
@@ -496,7 +496,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                                 }
 
                                 SwitchTarget_Timer = 20000;
-                            }else SwitchTarget_Timer -= uiDiff;
+                            }else SwitchTarget_Timer -= diff;
                         }
                         else if (pStalagg->isInCombat() || pFeugen->isInCombat())
                         {
@@ -514,24 +514,24 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                 }
             }
 			else 
-				Active_Timer -= uiDiff;
+				Active_Timer -= diff;
         }
 
         if (!CanDoSomething())
             return;
 
-        if (ChainLightning_Timer < uiDiff)
+        if (ChainLightning_Timer < diff)
         {
             DoCastMe( m_bIsHeroic ? H_SPELL_CHAIN_LIGHTNING : SPELL_CHAIN_LIGHTNING);
             ChainLightning_Timer = 12000+rand()%5000;
         }
 		else 
-			ChainLightning_Timer -= uiDiff;
+			ChainLightning_Timer -= diff;
 
         if(m_bIsPolarityShift)
         {
             // workaround for POLARITY_SHIFT
-            if (PolarityShift_Timer < uiDiff)
+            if (PolarityShift_Timer < diff)
             {
                 Map *map = me->GetMap();
                 Map::PlayerList const &PlayerList = map->GetPlayers();
@@ -576,21 +576,21 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
 
                 m_bIsPolarityShift = false;
                 PolarityShift_Timer = 27000;
-            }else PolarityShift_Timer -= uiDiff;
+            }else PolarityShift_Timer -= diff;
         }
         else
         {
-            if(PolarityShift_Timer < uiDiff)
+            if(PolarityShift_Timer < diff)
             {
       	        DoCastMe( SPELL_POLARITY_SHIFT); // need core support
                 m_bIsPolarityShift = true;
                 PolarityShift_Timer = 3000;
             }
 			else 
-				PolarityShift_Timer -= uiDiff;
+				PolarityShift_Timer -= diff;
         }
 
-		if(Buff_Timer <= uiDiff)
+		if(Buff_Timer <= diff)
 		{
 			Map *map = me->GetMap();
             Map::PlayerList const &PlayerList = map->GetPlayers();
@@ -669,15 +669,15 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
 			Buff_Timer = 2000;
 		}
 		else
-			Buff_Timer -= uiDiff;
+			Buff_Timer -= diff;
 
-        if (Enrage_Timer < uiDiff)
+        if (Enrage_Timer < diff)
         {
             DoCastMe( SPELL_BESERK);
             Enrage_Timer = 300000;
-        }else Enrage_Timer -= uiDiff;
+        }else Enrage_Timer -= diff;
 
-        if (Scream_Timer < uiDiff)
+        if (Scream_Timer < diff)
         {
             switch(rand()%4)
             {
@@ -689,9 +689,9 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
             Scream_Timer = 60000+rand()%30000;
         }
 		else 
-			Scream_Timer -= uiDiff;
+			Scream_Timer -= diff;
 
-        if (RangeCheck_Timer < uiDiff)
+        if (RangeCheck_Timer < diff)
         {
             m_bInMeleeRange = false;
             std::list<HostileReference *> t_list = me->getThreatManager().getThreatList();
@@ -711,7 +711,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                 DoCast(SelectUnit(SELECT_TARGET_TOPAGGRO,0), SPELL_BALL_LIGHTNING);
 
             RangeCheck_Timer = 2000;
-        }else RangeCheck_Timer -= uiDiff;
+        }else RangeCheck_Timer -= diff;
 
         //if nobody is in melee range
         if (m_bInMeleeRange)

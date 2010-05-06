@@ -206,7 +206,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -214,7 +214,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
 
         if (m_bIsStriking)
         {
-            if (m_uiPause_Timer < uiDiff)
+            if (m_uiPause_Timer < diff)
             {
                 if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() != CHASE_MOTION_TYPE)
                 {
@@ -227,7 +227,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
                 m_uiPause_Timer = 3500;
             }
             else
-                m_uiPause_Timer -= uiDiff;
+                m_uiPause_Timer -= diff;
 
             return;
         }
@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         // When to start shatter? After 60, 40 or 20% hp?
         if (!m_bHasTemper && m_uiHealthAmountModifier >= 3)
         {
-            if (m_uiShatteringStomp_Timer < uiDiff)
+            if (m_uiShatteringStomp_Timer < diff)
             {
                 //should he stomp even if he has no brittle golem to shatter?
 
@@ -249,20 +249,20 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
                 m_bCanShatterGolem = true;
             }
             else
-                m_uiShatteringStomp_Timer -= uiDiff;
+                m_uiShatteringStomp_Timer -= diff;
         }
 
         // Shatter Golems 3 seconds after Shattering Stomp
         if (m_bCanShatterGolem)
         {
-            if (m_uiShatter_Timer < uiDiff)
+            if (m_uiShatter_Timer < diff)
             {
                 ShatterGolem();
 				m_uiShatter_Timer = 3000;
                 m_bCanShatterGolem = false;
             }
             else
-                m_uiShatter_Timer -= uiDiff;
+                m_uiShatter_Timer -= diff;
         }
 
         // Health check
@@ -409,27 +409,27 @@ struct MANGOS_DLL_DECL mob_molten_golemAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target or if we are frozen
         if (CanDoSomething() || m_bIsFrozen)
             return;
 
-        if (m_uiBlast_Timer < uiDiff)
+        if (m_uiBlast_Timer < diff)
         {
             DoCastMe( SPELL_BLAST_WAVE);
             m_uiBlast_Timer = 20000;
         }
         else
-            m_uiBlast_Timer -= uiDiff;
+            m_uiBlast_Timer -= diff;
 
-        if (m_uiImmolation_Timer < uiDiff)
+        if (m_uiImmolation_Timer < diff)
         {
             DoCastVictim( m_bIsHeroic ? SPELL_IMMOLATION_STRIKE_H : SPELL_IMMOLATION_STRIKE_N);
             m_uiImmolation_Timer = 5000;
         }
         else
-            m_uiImmolation_Timer -= uiDiff;
+            m_uiImmolation_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

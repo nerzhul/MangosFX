@@ -124,12 +124,12 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-        if (m_uiEvadeCheckCooldown < uiDiff)
+        if (m_uiEvadeCheckCooldown < diff)
         {
             Creature* pEmalon = (Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_EMALON));
             if ((pEmalon && pEmalon->IsInEvadeMode()) || (me->GetDistance2d(-219.119f, -289.037f) > 80.0f))
@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
             m_uiEvadeCheckCooldown = 2000;
         }
         else
-            m_uiEvadeCheckCooldown -= uiDiff;
+            m_uiEvadeCheckCooldown -= diff;
 
         if (m_bTimeToDie)
         {
@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 
         if (m_bDead)
         {
-            if (m_uiRespawnTimer < uiDiff)
+            if (m_uiRespawnTimer < diff)
             {
                 me->SetHealth(me->GetMaxHealth());
                 me->SetVisibility(VISIBILITY_OFF);
@@ -163,12 +163,12 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 
             }
             else
-                m_uiRespawnTimer -= uiDiff;
+                m_uiRespawnTimer -= diff;
 
             return;
         }
 
-        if (m_uiOverchargedStacksCheckTimer < uiDiff)
+        if (m_uiOverchargedStacksCheckTimer < diff)
         {
             m_uiOverchargedStacksCheckTimer = 2000;
             Aura* pAuraOvercharged = me->GetAura(SPELL_OVERCHARGED, 0);
@@ -180,9 +180,9 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
             }
         }
         else
-            m_uiOverchargedStacksCheckTimer -= uiDiff;
+            m_uiOverchargedStacksCheckTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -308,12 +308,12 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 		}
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiEvadeCheckCooldown < uiDiff)
+        if (m_uiEvadeCheckCooldown < diff)
         {
             if (me->GetDistance2d(-219.119f, -289.037f) > 80.0f)
                 EnterEvadeMode();
@@ -321,9 +321,9 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
             m_uiEvadeCheckCooldown = 2000;
         }
         else
-            m_uiEvadeCheckCooldown -= uiDiff;
+            m_uiEvadeCheckCooldown -= diff;
 
-        if (m_uiOverchargeTimer < uiDiff)
+        if (m_uiOverchargeTimer < diff)
         {
             Creature* pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[rand()%4]);
             if(pMinion && pMinion->isAlive())
@@ -335,9 +335,9 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
             m_uiOverchargeTimer = 45000;
         }
         else
-            m_uiOverchargeTimer -= uiDiff;
+            m_uiOverchargeTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -369,7 +369,7 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 
     void Aggro(Unit* pWho) {}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {  
         if (!CanDoSomething())
             return;
@@ -388,7 +388,7 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 
         if (m_bOvercharged)
         {
-            if (m_uiOverchargedStacksCheckTimer < uiDiff)
+            if (m_uiOverchargedStacksCheckTimer < diff)
             {
                 m_uiOverchargedStacksCheckTimer = 2000;
                 Aura* pAuraOvercharged = me->GetAura(SPELL_OVERCHARGED, 0);
@@ -400,10 +400,10 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
                 }
             }
             else
-                m_uiOverchargedStacksCheckTimer -= uiDiff;
+                m_uiOverchargedStacksCheckTimer -= diff;
         }
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

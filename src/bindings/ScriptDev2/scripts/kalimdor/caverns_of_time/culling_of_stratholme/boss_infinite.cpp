@@ -57,27 +57,27 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public ScriptedAI
 
     void AttackStart(Unit* who) {}
     void MoveInLineOfSight(Unit* who) {}
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-		if(strike_Timer <= uiDiff)
+		if(strike_Timer <= diff)
 		{
 			DoCast(SelectUnit(SELECT_TARGET_TOPAGGRO,0),SPELL_VOID_STRIKE);
 			strike_Timer = urand(6500,10000);
 		}
 		else
-			strike_Timer -= uiDiff;
+			strike_Timer -= diff;
 
-		if(blight_Timer <= uiDiff)
+		if(blight_Timer <= diff)
 		{
 			DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_CORRUPTING_BLIGHT);
 			blight_Timer = urand(5000,7000);
 		}
 		else
-			blight_Timer -= uiDiff;
+			blight_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

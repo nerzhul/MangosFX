@@ -43,7 +43,7 @@ struct MANGOS_DLL_DECL mobs_bladespire_ogreAI : public ScriptedAI
 
     void Reset() { }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;

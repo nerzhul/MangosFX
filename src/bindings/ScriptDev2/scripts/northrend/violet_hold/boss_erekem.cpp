@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_erekemAI : public ScriptedAI
 		}
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething() || me->HasAura(66830,0))
             return;
@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_erekemAI : public ScriptedAI
 			bloodlustcasted = true;
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}

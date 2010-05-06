@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public ScriptedAI
             m_pInstance->SetData(TYPE_SAURFANG, FAIL);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -97,35 +97,35 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public ScriptedAI
         }
         */
 
-        if (BloodBeast_Timer < uiDiff)
+        if (BloodBeast_Timer < diff)
         {
             DoCastSpellIfCan(me, BLOOD_BEAST);
             BloodBeast_Timer = 40000;
         }
-        else BloodBeast_Timer -= uiDiff;
+        else BloodBeast_Timer -= diff;
 
-        if (RuneOfBlood_Timer < uiDiff)
+        if (RuneOfBlood_Timer < diff)
         {
             DoCastSpellIfCan(me->getVictim(), RUNE_OF_BLOOD);
             RuneOfBlood_Timer = 30000;
         }
-        else RuneOfBlood_Timer -= uiDiff;
+        else RuneOfBlood_Timer -= diff;
 
-        if (BoilingBlood_Timer < uiDiff)
+        if (BoilingBlood_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCastSpellIfCan(target, BOILING_BLOOD);
             BoilingBlood_Timer = 60000;
         }
-        else BoilingBlood_Timer -= uiDiff;
+        else BoilingBlood_Timer -= diff;
 
-        if (BloodNova_Timer < uiDiff)
+        if (BloodNova_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
                 DoCastSpellIfCan(target, BLOOD_NOVA);
             BloodNova_Timer = 15000;
         }
-        else BloodNova_Timer -= uiDiff;
+        else BloodNova_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

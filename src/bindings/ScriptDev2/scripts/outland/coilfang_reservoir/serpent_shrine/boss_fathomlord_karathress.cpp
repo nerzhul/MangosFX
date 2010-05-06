@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         me->SummonCreature(NPC_SEER_OLUM, afCoords_Olum[0], afCoords_Olum[1], afCoords_Olum[2], afCoords_Olum[3], TEMPSUMMON_TIMED_DESPAWN, 3600000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         }
 
         //m_uiCataclysmicBolt_Timer
-        if (m_uiCataclysmicBolt_Timer < uiDiff)
+        if (m_uiCataclysmicBolt_Timer < diff)
         {
             //select a random unit other than the main tank
             Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 1);
@@ -228,7 +228,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
             me->CastSpell(pTarget, SPELL_CATACLYSMIC_BOLT, false);
 
             m_uiCataclysmicBolt_Timer = 10000;
-        }else m_uiCataclysmicBolt_Timer -= uiDiff;
+        }else m_uiCataclysmicBolt_Timer -= diff;
 
         //hp under 75%
         if (!m_bBlessingOfTides_MobsChecked && ((me->GetHealth()*100 / me->GetMaxHealth())  <= 75))
@@ -254,11 +254,11 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         }
 
         //m_uiEnrage_Timer
-        if (m_uiEnrage_Timer < uiDiff)
+        if (m_uiEnrage_Timer < diff)
         {
             DoCastMe( SPELL_ENRAGE);
             m_uiEnrage_Timer = 90000;
-        }else m_uiEnrage_Timer -= uiDiff;
+        }else m_uiEnrage_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -362,7 +362,7 @@ struct MANGOS_DLL_DECL boss_fathomguard_sharkkisAI : public Advisor_Base_AI
             m_bIsPetCheckNeeded = true;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -386,17 +386,17 @@ struct MANGOS_DLL_DECL boss_fathomguard_sharkkisAI : public Advisor_Base_AI
         //after 10 seconds: spawn pet if not exist
         if (m_bIsPetCheckNeeded)
         {
-            if (m_uiPet_Timer < uiDiff)
+            if (m_uiPet_Timer < diff)
             {
                 if (!me->GetPet())
                     DoCastMe( urand(0,1) ? SPELL_SUMMON_FATHOM_LURKER : SPELL_SUMMON_FATHOM_SPOREBAT);
             }
             else
-                m_uiPet_Timer -= uiDiff;
+                m_uiPet_Timer -= diff;
         }
 
         //m_uiHurlTrident_Timer
-        if (m_uiHurlTrident_Timer < uiDiff)
+        if (m_uiHurlTrident_Timer < diff)
         {
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM,0))
             {
@@ -405,21 +405,21 @@ struct MANGOS_DLL_DECL boss_fathomguard_sharkkisAI : public Advisor_Base_AI
             }
 
             m_uiHurlTrident_Timer = 5000;
-        }else m_uiHurlTrident_Timer -= uiDiff;
+        }else m_uiHurlTrident_Timer -= diff;
 
         //m_uiLeechingThrow_Timer
-        if (m_uiLeechingThrow_Timer < uiDiff)
+        if (m_uiLeechingThrow_Timer < diff)
         {
             DoCastVictim( SPELL_LEECHING_THROW);
             m_uiLeechingThrow_Timer = 20000;
-        }else m_uiLeechingThrow_Timer -= uiDiff;
+        }else m_uiLeechingThrow_Timer -= diff;
 
         //m_uiTheBeastWithin_Timer
-        if (m_uiTheBeastWithin_Timer < uiDiff)
+        if (m_uiTheBeastWithin_Timer < diff)
         {
             DoCastMe( SPELL_THE_BEAST_WITHIN);
             m_uiTheBeastWithin_Timer = 30000;
-        }else m_uiTheBeastWithin_Timer -= uiDiff;
+        }else m_uiTheBeastWithin_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -442,7 +442,7 @@ struct MANGOS_DLL_DECL boss_fathomguard_tidalvessAI : public Advisor_Base_AI
         m_uiFrostShock_Timer = 25000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -464,11 +464,11 @@ struct MANGOS_DLL_DECL boss_fathomguard_tidalvessAI : public Advisor_Base_AI
         }
 
         //m_uiFrostShock_Timer
-        if (m_uiFrostShock_Timer < uiDiff)
+        if (m_uiFrostShock_Timer < diff)
         {
             DoCastVictim( SPELL_FROST_SHOCK);
             m_uiFrostShock_Timer = urand(25000, 30000);
-        }else m_uiFrostShock_Timer -= uiDiff;
+        }else m_uiFrostShock_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }
@@ -495,7 +495,7 @@ struct MANGOS_DLL_DECL boss_fathomguard_caribdisAI : public Advisor_Base_AI
         m_uiHeal_Timer            = 55000;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
@@ -517,22 +517,22 @@ struct MANGOS_DLL_DECL boss_fathomguard_caribdisAI : public Advisor_Base_AI
         }
 
         //m_uiWaterBoltVolley_Timer
-        if (m_uiWaterBoltVolley_Timer < uiDiff)
+        if (m_uiWaterBoltVolley_Timer < diff)
         {
             DoCastVictim( SPELL_WATER_BOLT_VOLLEY);
             m_uiWaterBoltVolley_Timer = 30000;
-        }else m_uiWaterBoltVolley_Timer -= uiDiff;
+        }else m_uiWaterBoltVolley_Timer -= diff;
 
         //m_uiTidalSurge_Timer
-        if (m_uiTidalSurge_Timer < uiDiff)
+        if (m_uiTidalSurge_Timer < diff)
         {
             // the victim has to cast it on himself because in the spell.dbc the EffectImplicitTargetA1 is 1 (TARGET_SELF)
             me->getVictim()->CastSpell(me->getVictim(), SPELL_TIDAL_SURGE, true);
             m_uiTidalSurge_Timer = urand(15000, 20000);
-        }else m_uiTidalSurge_Timer -= uiDiff;
+        }else m_uiTidalSurge_Timer -= diff;
 
         //m_uiHeal_Timer
-        if (m_uiHeal_Timer < uiDiff)
+        if (m_uiHeal_Timer < diff)
         {
             // It can be cast on any of the mobs
             Unit* pUnit = NULL;
@@ -554,7 +554,7 @@ struct MANGOS_DLL_DECL boss_fathomguard_caribdisAI : public Advisor_Base_AI
                 DoCast(pUnit, SPELL_HEAL);
 
             m_uiHeal_Timer = 60000;
-        }else m_uiHeal_Timer -= uiDiff;
+        }else m_uiHeal_Timer -= diff;
 
         DoMeleeAttackIfReady();
     }

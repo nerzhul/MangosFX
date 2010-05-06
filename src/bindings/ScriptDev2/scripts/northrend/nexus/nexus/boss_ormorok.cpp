@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
             DoScriptText(SAY_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 				DoCastMe(SPELL_FRENZY_H);
 		}
 
-		if(crystalspikes_Timer <= uiDiff)
+		if(crystalspikes_Timer <= diff)
 		{
 			if(m_bIsHeroic == true)
 				DoCastMe(SPELL_CRYSTAL_SPIKES);
@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

@@ -456,7 +456,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 		pCyanigosa->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 	}
 
-	void Update(uint32 uiDiff)
+	void Update(uint32 diff)
     {
 		if (!CanProgressEvent())
         {
@@ -473,7 +473,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			return;
 		}
 
-        if (m_uiNextPortal_Timer <= uiDiff)
+        if (m_uiNextPortal_Timer <= diff)
 		{
 			++m_uiRiftPortalCount;
 			DoUpdateWorldState(WSTATE_PORTAL,m_uiRiftPortalCount);
@@ -496,9 +496,9 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			}
 		}
 		else
-			m_uiNextPortal_Timer -= uiDiff;
+			m_uiNextPortal_Timer -= diff;
 
-		if(SpawnPortal_Timer <= uiDiff)
+		if(SpawnPortal_Timer <= diff)
 		{
 			switch(lastportal)
 			{
@@ -521,9 +521,9 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			SpawnPortal_Timer = 120000000;
 		}
 		else
-			SpawnPortal_Timer -= uiDiff;
+			SpawnPortal_Timer -= diff;
 
-	if(CheckClose_Timer <= uiDiff)
+	if(CheckClose_Timer <= diff)
 	{
 		for(uint32 i = 0; i < 7;i++)
 		{
@@ -559,7 +559,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 		CheckClose_Timer = 2000;
 	}
 	else
-		CheckClose_Timer -= uiDiff;
+		CheckClose_Timer -= diff;
 	}
 };
 
@@ -622,9 +622,9 @@ struct MANGOS_DLL_DECL portal_AddAI : public ScriptedAI
 		tmp2 = NULL;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-		if(spawn_Timer <= uiDiff)
+		if(spawn_Timer <= diff)
 		{
 			int rand = urand(0,3);
 			switch(rand)
@@ -665,7 +665,7 @@ struct MANGOS_DLL_DECL portal_AddAI : public ScriptedAI
 
 			spawn_Timer = 30000;
 		}
-		else spawn_Timer -= uiDiff;
+		else spawn_Timer -= diff;
 	}
 
 };

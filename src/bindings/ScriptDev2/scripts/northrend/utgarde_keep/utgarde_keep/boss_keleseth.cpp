@@ -87,12 +87,12 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
         DoScriptText(SAY_KILL, me);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
-		if(frost_tomb_Timer <= uiDiff)
+		if(frost_tomb_Timer <= diff)
 		{
 			frost_tomb_Timer = 30000;
 			DoScriptText(SAY_FROSTTOMB, me);
@@ -108,9 +108,9 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			}
 		}
 		else
-			frost_tomb_Timer -= uiDiff;
+			frost_tomb_Timer -= diff;
 
-		/*if(frost_tomb_verif_Timer <= uiDiff)
+		/*if(frost_tomb_verif_Timer <= diff)
 		{
 			if(tomb && !tomb->isAlive())
 			{
@@ -129,9 +129,9 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			frost_tomb_verif_Timer = 1000;
 		}
 		else
-			frost_tomb_verif_Timer -= uiDiff;*/
+			frost_tomb_verif_Timer -= diff;*/
 
-		if(m_bIsHeroic && skeleton_Timer <= uiDiff)
+		if(m_bIsHeroic && skeleton_Timer <= diff)
 		{
 			if(!skeleton_pop)
 			{
@@ -160,9 +160,9 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			}
 		}
 		else
-			skeleton_Timer -= uiDiff;
+			skeleton_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 

@@ -354,11 +354,11 @@ struct MANGOS_DLL_DECL mob_dragonmaw_peonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiPoisonTimer)
         {
-            if (m_uiPoisonTimer <= uiDiff)
+            if (m_uiPoisonTimer <= diff)
             {
                 if (Player* pPlayer = (Player*)Unit::GetUnit(*me, m_uiPlayerGUID))
                 {
@@ -370,7 +370,7 @@ struct MANGOS_DLL_DECL mob_dragonmaw_peonAI : public ScriptedAI
                 me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
             }
             else
-                m_uiPoisonTimer -= uiDiff;
+                m_uiPoisonTimer -= diff;
         }
     }
 };
@@ -761,7 +761,7 @@ struct MANGOS_DLL_DECL npc_wildaAI : public npc_escortAI
         }
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -769,13 +769,13 @@ struct MANGOS_DLL_DECL npc_wildaAI : public npc_escortAI
         //TODO: add more abilities
         if (me->GetHealth()*100 / me->GetMaxHealth() <= 30)
         {
-            if (m_uiHealingTimer < uiDiff)
+            if (m_uiHealingTimer < diff)
             {
                 DoCastMe( SPELL_HEALING_WAVE);
                 m_uiHealingTimer = 15000;
             }
             else
-                m_uiHealingTimer -= uiDiff;
+                m_uiHealingTimer -= diff;
         }
 
         DoMeleeAttackIfReady();
@@ -1017,43 +1017,43 @@ struct MANGOS_DLL_DECL mob_torlothAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiAnimationCount < 7)
         {
-            if (m_uiAnimationTimer < uiDiff)
+            if (m_uiAnimationTimer < diff)
                 HandleAnimation();
             else
-                m_uiAnimationTimer -= uiDiff;
+                m_uiAnimationTimer -= diff;
         }
         else
         {
             if (!CanDoSomething())
                 return;
 
-            if (m_uiCleaveTimer < uiDiff)
+            if (m_uiCleaveTimer < diff)
             {
                 DoCastVictim( SPELL_CLEAVE);
                 m_uiCleaveTimer = 15000;
             }
             else
-                m_uiCleaveTimer -= uiDiff;
+                m_uiCleaveTimer -= diff;
 
-            if (m_uiShadowfuryTimer < uiDiff)
+            if (m_uiShadowfuryTimer < diff)
             {
                 DoCastVictim( SPELL_SHADOWFURY);
                 m_uiShadowfuryTimer = 20000;
             }
             else
-                m_uiShadowfuryTimer -= uiDiff;
+                m_uiShadowfuryTimer -= diff;
 
-            if (m_uiSpellReflectionTimer < uiDiff)
+            if (m_uiSpellReflectionTimer < diff)
             {
                 DoCastMe( SPELL_SPELL_REFLECTION);
                 m_uiSpellReflectionTimer = 30000;
             }
             else
-                m_uiSpellReflectionTimer -= uiDiff;
+                m_uiSpellReflectionTimer -= diff;
 
             DoMeleeAttackIfReady();
         }
@@ -1248,34 +1248,34 @@ struct MANGOS_DLL_DECL npc_lord_illidan_stormrageAI : public Scripted_NoMovement
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_uiPlayerGUID || !m_bEventStarted)
             return;
 
         if (!m_uiMobCount && m_uiWaveCount < 4)
         {
-            if (!m_bWaveAnnounced && m_uiAnnounceTimer < uiDiff)
+            if (!m_bWaveAnnounced && m_uiAnnounceTimer < diff)
             {
                 DoScriptText(WavesInfo[m_uiWaveCount].iTextId, me);
                 m_bWaveAnnounced = true;
             }
             else
-                m_uiAnnounceTimer -= uiDiff;
+                m_uiAnnounceTimer -= diff;
 
-            if (m_uiWaveTimer < uiDiff)
+            if (m_uiWaveTimer < diff)
                 SummonWave();
             else
-                m_uiWaveTimer -= uiDiff;
+                m_uiWaveTimer -= diff;
         }
 
-        if (m_uiCheckTimer < uiDiff)
+        if (m_uiCheckTimer < diff)
         {
             CheckEventFail();
             m_uiCheckTimer = 2000;
         }
         else
-            m_uiCheckTimer -= uiDiff;
+            m_uiCheckTimer -= diff;
 
         if (m_bEventFailed)
             Reset();

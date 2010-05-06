@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL mob_grobbulusnueeAI : public ScriptedAI
 	void Reset()
 	{}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if(!me->HasAura(28156))
 			DoCastMe(28156);

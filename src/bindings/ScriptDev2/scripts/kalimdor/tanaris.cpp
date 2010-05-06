@@ -506,14 +506,14 @@ struct MANGOS_DLL_DECL npc_toogaAI : public FollowerAI
             SetFollowComplete();
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             //we are doing the post-event, or...
             if (HasFollowState(STATE_FOLLOW_POSTEVENT))
             {
-                if (m_uiPostEventTimer < uiDiff)
+                if (m_uiPostEventTimer < diff)
                 {
                     m_uiPostEventTimer = 5000;
 
@@ -550,12 +550,12 @@ struct MANGOS_DLL_DECL npc_toogaAI : public FollowerAI
                     ++m_uiPhasePostEvent;
                 }
                 else
-                    m_uiPostEventTimer -= uiDiff;
+                    m_uiPostEventTimer -= diff;
             }
             //...we are doing regular speech check
             else if (HasFollowState(STATE_FOLLOW_INPROGRESS))
             {
-                if (m_uiCheckSpeechTimer < uiDiff)
+                if (m_uiCheckSpeechTimer < diff)
                 {
                     m_uiCheckSpeechTimer = 5000;
 
@@ -566,7 +566,7 @@ struct MANGOS_DLL_DECL npc_toogaAI : public FollowerAI
                     }
                 }
                 else
-                    m_uiCheckSpeechTimer -= uiDiff;
+                    m_uiCheckSpeechTimer -= diff;
             }
 
             return;

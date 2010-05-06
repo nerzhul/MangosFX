@@ -73,7 +73,7 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
         }
     }
 
-   void UpdateAI(const uint32 uiDiff)
+   void UpdateAI(const uint32 diff)
    {
        if(Intro == 0)
        {
@@ -94,19 +94,19 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 		else 
 			return;
 
-	   if (Steptim <= uiDiff)
+	   if (Steptim <= diff)
 	   {
 		   ++Step;
 		   Steptim = 330000;
 	   } 
 	   else
-			Steptim -= uiDiff;
+			Steptim -= diff;
 
         if (!CanDoSomething())
             return;
 
 
-		if (Course_Timer <= uiDiff)
+		if (Course_Timer <= diff)
         {
 			target = SelectUnit(SELECT_TARGET_RANDOM,0);
             DoCast(target, SPELL_COURSE);
@@ -114,19 +114,19 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
             Course_Timer = urand(8900,9600);
         }
 		else 
-			Course_Timer -= uiDiff;
+			Course_Timer -= diff;
 
-		if (Spike_Timer <= uiDiff)
+		if (Spike_Timer <= diff)
         {
             DoCastVictim(m_bIsHeroic ? SPELL_SPIKE_H : SPELL_SPIKE_N);
             Spike_Timer = urand(4800,5500);
         }
 		else 
-			Spike_Timer -= uiDiff;
+			Spike_Timer -= diff;
 
 		if (m_bIsHeroic == true)
 		{
-			if (Stop_Timer <= uiDiff)
+			if (Stop_Timer <= diff)
 			{
 				target = SelectUnit(SELECT_TARGET_RANDOM,0);
 				DoCast(target, SPELL_TIME_STOP);
@@ -134,10 +134,10 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 				Stop_Timer = urand(21000,22000);
 			}
 			else 
-				Stop_Timer -= uiDiff;
+				Stop_Timer -= diff;
 		}
 
-		if (Warp_Timer <= uiDiff)
+		if (Warp_Timer <= diff)
         {
 			target = SelectUnit(SELECT_TARGET_RANDOM,0);
             DoCast(target, SPELL_TIME_WARP);
@@ -151,7 +151,7 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
             Warp_Timer = urand(24500,25500);
         }
 		else 
-			Warp_Timer -= uiDiff;
+			Warp_Timer -= diff;
 
 		
 		DoMeleeAttackIfReady();

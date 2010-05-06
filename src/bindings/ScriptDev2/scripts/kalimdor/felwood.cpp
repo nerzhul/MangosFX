@@ -81,19 +81,19 @@ struct MANGOS_DLL_DECL npc_kittenAI : public FollowerAI
         }
     }
 
-    void UpdateFollowerAI(const uint32 uiDiff)
+    void UpdateFollowerAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (HasFollowState(STATE_FOLLOW_PAUSED))
             {
-                if (m_uiMoonwellCooldown < uiDiff)
+                if (m_uiMoonwellCooldown < diff)
                 {
                     me->CastSpell(me, SPELL_CORRUPT_SABER_VISUAL, false);
                     SetFollowPaused(false);
                 }
                 else
-                    m_uiMoonwellCooldown -= uiDiff;
+                    m_uiMoonwellCooldown -= diff;
             }
 
             return;

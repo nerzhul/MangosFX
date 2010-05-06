@@ -38,7 +38,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_CORRUPT_SOUL,25000,30000,2000);
 		Tasks.AddEvent(SPELL_FEAR,10000,12000,1000);
-		Tasks.AddEvent((m_bIsHeroic ? SPELL_MAGIC_BANE_H : SPELL_MAGIC_BANE),5000,7000,5000,TARGET_MAIN);
+		Tasks.AddEvent(SPELL_MAGIC_BANE,5000,7000,5000,TARGET_MAIN);
 		Tasks.AddEvent(SPELL_SHADOW_BOLT,3000,3000,3000,TARGET_MAIN);
 		CorruptedSoulFrag_Timer = 29000;
 		CheckDist_Timer = 20000;
@@ -48,13 +48,13 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
     }
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 	
-		if(CorruptedSoulFrag_Timer <= uiDiff)
+		if(CorruptedSoulFrag_Timer <= diff)
 		{
 			if(Creature* tmp_add = me->SummonCreature(36535,me->GetPositionX() + urand(3,6),
 				me->GetPositionY() + urand(3,6), me->GetPositionZ() + 0.5f,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
@@ -68,9 +68,9 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 			CorruptedSoulFrag_Timer = 32000;
 		}
 		else
-			CorruptedSoulFrag_Timer -= uiDiff;
+			CorruptedSoulFrag_Timer -= diff;
 
-		if(CheckDist_Timer <= uiDiff)
+		if(CheckDist_Timer <= diff)
 		{	
 			if(frag)
 				if(frag->isAlive())
@@ -84,11 +84,11 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 			CheckDist_Timer = 1000;
 		}
 		else
-			CheckDist_Timer -= uiDiff;
+			CheckDist_Timer -= diff;
 
 		if(!HasTeleported && me->GetHealth() * 100 / me->GetMaxHealth() < 30)
 		{
-			if(Teleport_Timer <= uiDiff)
+			if(Teleport_Timer <= diff)
 			{
 				if(subphase == 0)
 				{
@@ -104,10 +104,10 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 				}
 			}
 			else
-				Teleport_Timer -= uiDiff;
+				Teleport_Timer -= diff;
 		}
        
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

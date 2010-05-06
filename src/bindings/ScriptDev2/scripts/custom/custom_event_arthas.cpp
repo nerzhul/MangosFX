@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL event_lich_king_AI : public ScriptedAI
 		FrostDirect_Timer = 4000;
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
             return;
@@ -91,61 +91,61 @@ struct MANGOS_DLL_DECL event_lich_king_AI : public ScriptedAI
 			case 1: // Frost Phase
 				phase_Timer = 1200000;
 
-				if(Vrille_Timer <= uiDiff)
+				if(Vrille_Timer <= diff)
 				{
 					DoCastVictim(SPELL_FROST_VRILLE);
 					Vrille_Timer = urand(17000,22000);
 				}
 				else
-					Vrille_Timer -= uiDiff;
+					Vrille_Timer -= diff;
 
-				if(AuraFrost_Timer <= uiDiff)
+				if(AuraFrost_Timer <= diff)
 				{
 					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
 					AuraFrost_Timer = urand(27000,35000);
 				}
 				else
-					AuraFrost_Timer -= uiDiff;
+					AuraFrost_Timer -= diff;
 
-				if(Blizzard_Timer <= uiDiff)
+				if(Blizzard_Timer <= diff)
 				{
 					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
 					Blizzard_Timer = urand(12000,25000);
 				}
 				else
-					Blizzard_Timer -= uiDiff;
+					Blizzard_Timer -= diff;
 
-				if(Glacon_Timer <= uiDiff)
+				if(Glacon_Timer <= diff)
 				{
 					// todo : 6 cibles dans le raid
 					Glacon_Timer = urand(18000,22000);
 				}
 				else
-					Glacon_Timer -= uiDiff;
+					Glacon_Timer -= diff;
 
-				if(FrostExplode_Timer <= uiDiff)
+				if(FrostExplode_Timer <= diff)
 				{
 					DoCastVictim(SPELL_AURA_BLIZZARD);
 					FrostExplode_Timer = urand(40000,50000);
 				}
 				else
-					FrostExplode_Timer -= uiDiff;
+					FrostExplode_Timer -= diff;
 
-				if(FrostZone_Timer <= uiDiff)
+				if(FrostZone_Timer <= diff)
 				{
 					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
 					FrostZone_Timer = urand(17000,22000);
 				}
 				else
-					FrostZone_Timer -= uiDiff;
+					FrostZone_Timer -= diff;
 
-				if(FrostDirect_Timer <= uiDiff)
+				if(FrostDirect_Timer <= diff)
 				{
 					// todo : 10 cibles dans le raid
 					FrostDirect_Timer = urand(6000,8000);
 				}
 				else
-					FrostDirect_Timer -= uiDiff;
+					FrostDirect_Timer -= diff;
 
 				break;
 			case 2: // Shadow Phase

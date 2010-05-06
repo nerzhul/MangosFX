@@ -86,13 +86,13 @@ struct MANGOS_DLL_DECL boss_taerarAI : public LibDevFSAI
             return;
 
         //MarkOfNature_Timer
-        //if (m_uiMarkOfNature_Timer < uiDiff)
+        //if (m_uiMarkOfNature_Timer < diff)
         //{
         //    DoCastVictim( SPELL_MARKOFNATURE);
         //    m_uiMarkOfNature_Timer = 45000;
         //}
         //else
-            //m_uiMarkOfNature_Timer -= uiDiff;
+            //m_uiMarkOfNature_Timer -= diff;
 
         //Summon 3 Shades at 75%, 50% and 25% (if bShades is true we already left in line 117, no need to check here again)
         if (!m_bShades && CheckPercentLife(100-(25*m_uiShadesSummoned)))

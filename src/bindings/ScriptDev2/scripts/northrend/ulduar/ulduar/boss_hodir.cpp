@@ -313,18 +313,18 @@ struct MANGOS_DLL_DECL add_hodirAI : public ScriptedAI
 		me->ForcedDespawn(5000);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 	
-		if(Shatter_Timer <= uiDiff)
+		if(Shatter_Timer <= diff)
 		{
 			Shatter();
 			Shatter_Timer = DAY;
 		}
 		else
-			Shatter_Timer -= uiDiff;
+			Shatter_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -359,7 +359,7 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public Scripted_NoMovementAI
 		me->SetHealth(m_bIsHeroic ? 180000:60000);
     }
 	
-    void UpdateAI(const uint32 uiDiff){}
+    void UpdateAI(const uint32 diff){}
 
 	void FreePlayer()
 	{

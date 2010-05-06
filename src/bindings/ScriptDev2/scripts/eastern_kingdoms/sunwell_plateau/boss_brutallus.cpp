@@ -116,12 +116,12 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
             pCaster->CastSpell(pCaster, SPELL_BURN_AURA_EFFECT, true, NULL, NULL, me->GetGUID());
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
-        if (m_uiLoveTimer < uiDiff)
+        if (m_uiLoveTimer < diff)
         {
             switch(urand(0, 2))
             {
@@ -132,17 +132,17 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
             m_uiLoveTimer = urand(15000, 23000);
         }
         else
-            m_uiLoveTimer -= uiDiff;
+            m_uiLoveTimer -= diff;
 
-        if (m_uiSlashTimer < uiDiff)
+        if (m_uiSlashTimer < diff)
         {
             DoCastVictim(SPELL_METEOR_SLASH);
             m_uiSlashTimer = 11000;
         }
         else
-            m_uiSlashTimer -= uiDiff;
+            m_uiSlashTimer -= diff;
 
-        if (m_uiStompTimer < uiDiff)
+        if (m_uiStompTimer < diff)
         {
             if (Unit* pTarget = me->getVictim())
             {
@@ -155,9 +155,9 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
             m_uiStompTimer = 30000;
         }
         else
-            m_uiStompTimer -= uiDiff;
+            m_uiStompTimer -= diff;
 
-        if (m_uiBurnTimer < uiDiff)
+        if (m_uiBurnTimer < diff)
         {
             //returns any unit
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
@@ -170,16 +170,16 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
             m_uiBurnTimer = 60000;
         }
         else
-            m_uiBurnTimer -= uiDiff;
+            m_uiBurnTimer -= diff;
 
-        if (m_uiBerserkTimer < uiDiff)
+        if (m_uiBerserkTimer < diff)
         {
             DoScriptText(YELL_BERSERK, me);
             DoCastMe(SPELL_BERSERK);
             m_uiBerserkTimer = 20000;
         }
         else
-            m_uiBerserkTimer -= uiDiff;
+            m_uiBerserkTimer -= diff;
 
         DoMeleeAttackIfReady();
     }

@@ -106,22 +106,22 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 			return;
 
-		if (spell_tourbi_timer < uiDiff && phase_morph == 0)
+		if (spell_tourbi_timer < diff && phase_morph == 0)
 		{
 			DoCastVictim(spell_tourbi);
 			spell_tourbi_timer = 5000000; // Valeur Fausse mais elle est reset en fin de P2
 		}
 		else
-			spell_tourbi_timer -= uiDiff;
+			spell_tourbi_timer -= diff;
 
 		// Script Phase 2
 
-		if ((morph_timer <= uiDiff) )
+		if ((morph_timer <= diff) )
 		{			
 			DoScriptText(SAY_TRANSFORM_1, me);
 			me->SetDisplayId(morph);
@@ -130,11 +130,11 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 			morph_timer = 40000;
 		}
 		else
-			morph_timer -= uiDiff;
+			morph_timer -= diff;
 
 		if (phase_morph == 1)
 		{
-			if (morph_timer <= uiDiff)
+			if (morph_timer <= diff)
 			{			
 				DoScriptText(SAY_TRANSFORM_2, me);
 				me->SetDisplayId(me->GetNativeDisplayId());
@@ -143,13 +143,13 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 				phase_end = 1;
 			}
 
-			if (spell_enrage_timer <= uiDiff)
+			if (spell_enrage_timer <= diff)
 			{
 				DoCastMe(m_bIsHeroic ? spell_enrage_hero : spell_enrage_normal);
 				spell_enrage_timer = morph_timer - 8000;
 			}
 			else
-				spell_enrage_timer -= uiDiff;
+				spell_enrage_timer -= diff;
 
 		}
 
@@ -162,8 +162,8 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 		if (phase_morph == 1 && phase_end == 0)
 			spell_tourbi_timer = 15000;
 
-		Tasks.UpdateEvent(uiDiff);
-		Tasks.UpdateEvent(uiDiff,phase_morph);
+		Tasks.UpdateEvent(diff);
+		Tasks.UpdateEvent(diff,phase_morph);
 		DoMeleeAttackIfReady();
 	}
 };

@@ -131,15 +131,15 @@ struct MANGOS_DLL_DECL npc_calvin_montagueAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiPhase)
         {
-            if (m_uiPhaseTimer < uiDiff)
+            if (m_uiPhaseTimer < diff)
                 m_uiPhaseTimer = 7500;
             else
             {
-                m_uiPhaseTimer -= uiDiff;
+                m_uiPhaseTimer -= diff;
                 return;
             }
 

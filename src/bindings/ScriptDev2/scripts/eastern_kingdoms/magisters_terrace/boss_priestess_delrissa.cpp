@@ -453,7 +453,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!m_bUsedPotion && ((me->GetHealth()*100 / me->GetMaxHealth()) < 25))
         {
@@ -461,11 +461,11 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
             m_bUsedPotion = true;
         }
 
-        if (m_uiResetThreatTimer < uiDiff)
+        if (m_uiResetThreatTimer < diff)
         {
             DoResetThreat();
             m_uiResetThreatTimer = urand(5000, 15000);
-        }else m_uiResetThreatTimer -= uiDiff;
+        }else m_uiResetThreatTimer -= diff;
     }
 };
 

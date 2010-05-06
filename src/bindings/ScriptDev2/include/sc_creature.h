@@ -192,7 +192,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
 	void DoCompleteQuest(uint32 entry, Player* player);
 
-    bool EnterEvadeIfOutOfCombatArea(const uint32 uiDiff);
+    bool EnterEvadeIfOutOfCombatArea(const uint32 diff);
 
 	// LibDevFS Implementation
 	void AggroAllPlayers(float maxdist);
@@ -301,6 +301,9 @@ enum MobConstantes
 	TEN_MINS	=	600000,
 };
 
+typedef std::vector<EventSh> SpellEvents;
+typedef std::vector<EventSummon> SummonEvents;
+
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -325,7 +328,7 @@ class MANGOS_DLL_SPEC MobEventTasks
 			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
 			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
 
-		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
+		void UpdateEvent(uint32 diff, uint32 phase = 0);
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
 			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
@@ -338,8 +341,8 @@ class MANGOS_DLL_SPEC MobEventTasks
 	private:
 		ScriptedAI* thisAI;
 		Creature* thisCr;
-		std::vector<EventSh> EventShVect;
-		std::vector<EventSummon> EventSummonVect;
+		SpellEvents EventShVect;
+		SummonEvents EventSummonVect;
 		std::vector<uint64> MyAdds;
 
 };
@@ -376,7 +379,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
 			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
 
-		void UpdateEvent(uint32 uiDiff, uint32 phase = 0);
+		void UpdateEvent(uint32 diff, uint32 phase = 0);
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
 			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
@@ -409,8 +412,11 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:
-		std::vector<EventSh> EventShVect;
-		std::vector<EventSummon> EventSummonVect;
+		SpellEvents EventShVect;
+		SummonEvents EventSummonVect;
+		SpellEvents SavedEventSh;
+		SummonEvents SavedEventSummon;
 		std::vector<uint64> MyAdds;
+		
 };
 #endif

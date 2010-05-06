@@ -190,11 +190,11 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
             m_uiPlayerGUID = pWho->GetGUID();
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiPlayerGUID && !me->getVictim() && me->isAlive())
         {
-            if (m_uiExecuteSpeech_Timer < uiDiff)
+            if (m_uiExecuteSpeech_Timer < diff)
             {
                 Player* pPlayer = (Player*)Unit::GetUnit(*me, m_uiPlayerGUID);
 
@@ -498,7 +498,7 @@ struct MANGOS_DLL_DECL npc_a_special_surpriseAI : public ScriptedAI
                 ++m_uiExecuteSpeech_Counter;
             }
             else
-                m_uiExecuteSpeech_Timer -= uiDiff;
+                m_uiExecuteSpeech_Timer -= diff;
         }
     }
 };
@@ -594,13 +594,13 @@ struct MANGOS_DLL_DECL npc_death_knight_initiateAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
         {
             if (m_bIsDuelInProgress)
             {
-                if (m_uiDuelTimer < uiDiff)
+                if (m_uiDuelTimer < diff)
                 {
                     me->setFaction(FACTION_HOSTILE);
 
@@ -608,7 +608,7 @@ struct MANGOS_DLL_DECL npc_death_knight_initiateAI : public ScriptedAI
                         AttackStart(pUnit);
                 }
                 else
-                    m_uiDuelTimer -= uiDiff;
+                    m_uiDuelTimer -= diff;
             }
             return;
         }
@@ -758,11 +758,11 @@ struct MANGOS_DLL_DECL npc_koltira_deathweaverAI : public npc_escortAI
             me->SummonCreature(NPC_CRIMSON_ACOLYTE, 1642.329, -6045.818, 127.583, 0.0f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
     }
 
-    void UpdateEscortAI(const uint32 uiDiff)
+    void UpdateEscortAI(const uint32 diff)
     {
         if (HasEscortState(STATE_ESCORT_PAUSED))
         {
-            if (m_uiWave_Timer < uiDiff)
+            if (m_uiWave_Timer < diff)
             {
                 switch(m_uiWave)
                 {
@@ -816,7 +816,7 @@ struct MANGOS_DLL_DECL npc_koltira_deathweaverAI : public npc_escortAI
                 ++m_uiWave;
             }
             else
-                m_uiWave_Timer -= uiDiff;
+                m_uiWave_Timer -= diff;
         }
 
         if (!CanDoSomething())
@@ -1029,47 +1029,47 @@ struct MANGOS_DLL_DECL npc_unworthy_initiateAI : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
-        if (m_uiAnchorCheckTimer && m_uiAnchorCheckTimer < uiDiff)
+        if (m_uiAnchorCheckTimer && m_uiAnchorCheckTimer < diff)
             SetAnchor();
         else
-            m_uiAnchorCheckTimer -= uiDiff;
+            m_uiAnchorCheckTimer -= diff;
 
         if (m_uiPhase == PHASE_INACTIVE_OR_COMBAT)
         {
             if (!CanDoSomething())
                 return;
 
-            if (m_uiBloodStrike_Timer < uiDiff)
+            if (m_uiBloodStrike_Timer < diff)
             {
                 DoCastVictim(SPELL_BLOOD_STRIKE);
                 m_uiBloodStrike_Timer = 9000;
-            }else m_uiBloodStrike_Timer -= uiDiff;
+            }else m_uiBloodStrike_Timer -= diff;
 
-            if (m_uiDeathCoil_Timer < uiDiff)
+            if (m_uiDeathCoil_Timer < diff)
             {
                 DoCastVictim(SPELL_DEATH_COIL);
                 m_uiDeathCoil_Timer = 8000;
-            }else m_uiDeathCoil_Timer -= uiDiff;
+            }else m_uiDeathCoil_Timer -= diff;
 
-            if (m_uiIcyTouch_Timer < uiDiff)
+            if (m_uiIcyTouch_Timer < diff)
             {
                 DoCastVictim(SPELL_ICY_TOUCH);
                 m_uiIcyTouch_Timer = 8000;
-            }else m_uiIcyTouch_Timer -= uiDiff;
+            }else m_uiIcyTouch_Timer -= diff;
 
-            if (m_uiPlagueStrike_Timer < uiDiff)
+            if (m_uiPlagueStrike_Timer < diff)
             {
                 DoCastVictim(SPELL_PLAGUE_STRIKE);
                 m_uiPlagueStrike_Timer = 8000;
-            }else m_uiPlagueStrike_Timer -= uiDiff;
+            }else m_uiPlagueStrike_Timer -= diff;
 
             DoMeleeAttackIfReady();
         }
         else
         {
-            if (m_uiPhaseTimer < uiDiff)
+            if (m_uiPhaseTimer < diff)
             {
                 if (m_uiPhase == PHASE_DRESSUP)
                 {
@@ -1099,7 +1099,7 @@ struct MANGOS_DLL_DECL npc_unworthy_initiateAI : public ScriptedAI
                 m_uiPhaseTimer = 5000;
             }
             else
-                m_uiPhaseTimer -= uiDiff;
+                m_uiPhaseTimer -= diff;
         }
     }
 };

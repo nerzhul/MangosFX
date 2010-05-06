@@ -144,22 +144,22 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         ++m_uiSummonCount;
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
         if (!m_bIsPhaseTwo)
         {
-            if (m_uiShadowWordPain_Timer < uiDiff)
+            if (m_uiShadowWordPain_Timer < diff)
             {
                 DoCastVictim(SPELL_SHADOWWORDPAIN);
                 m_uiShadowWordPain_Timer = 15000;
             }
             else
-                m_uiShadowWordPain_Timer -= uiDiff;
+                m_uiShadowWordPain_Timer -= diff;
 
-            if (m_uiMark_Timer < uiDiff)
+            if (m_uiMark_Timer < diff)
             {
                 m_pMarkedTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
 
@@ -171,21 +171,21 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_uiMark_Timer = 15000;
             }
             else
-                m_uiMark_Timer -= uiDiff;
+                m_uiMark_Timer -= diff;
         }
         else
         {
             //Cleave_Timer
-            if (m_uiCleave_Timer < uiDiff)
+            if (m_uiCleave_Timer < diff)
             {
                 DoCastVictim( SPELL_CLEAVE);
                 m_uiCleave_Timer = 16000;
             }
             else
-                m_uiCleave_Timer -= uiDiff;
+                m_uiCleave_Timer -= diff;
 
             //Gouge_Timer
-            if (m_uiGouge_Timer < uiDiff)
+            if (m_uiGouge_Timer < diff)
             {
                 DoCastVictim( SPELL_GOUGE);
 
@@ -195,21 +195,21 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_uiGouge_Timer = urand(17000, 27000);
             }
             else
-                m_uiGouge_Timer -= uiDiff;
+                m_uiGouge_Timer -= diff;
         }
 
         if (m_uiSummonCount <= 30)
         {
-            if (m_uiSummon_Timer < uiDiff)
+            if (m_uiSummon_Timer < diff)
             {
                 DoSummonPhanters();
                 m_uiSummon_Timer = 5000;
             }
             else
-                m_uiSummon_Timer -= uiDiff;
+                m_uiSummon_Timer -= diff;
         }
 
-        if (m_uiVanish_Timer < uiDiff)
+        if (m_uiVanish_Timer < diff)
         {
             //Invisble Model
             me->SetDisplayId(MODEL_ID_BLANK);
@@ -224,11 +224,11 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
             m_uiVisible_Timer = 6000;
         }
         else
-            m_uiVanish_Timer -= uiDiff;
+            m_uiVanish_Timer -= diff;
 
         if (m_bIsVanished)
         {
-            if (m_uiVisible_Timer < uiDiff)
+            if (m_uiVisible_Timer < diff)
             {
                 //The Panther Model
                 me->SetDisplayId(MODEL_ID_PANTHER);
@@ -246,7 +246,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
                 m_bIsVanished = false;
             }
             else
-                m_uiVisible_Timer -= uiDiff;
+                m_uiVisible_Timer -= diff;
         }
         else
             DoMeleeAttackIfReady();

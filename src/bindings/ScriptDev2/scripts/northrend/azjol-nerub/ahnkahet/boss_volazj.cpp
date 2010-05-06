@@ -107,13 +107,13 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 
 
-		if(phasing_Timer <= uiDiff)
+		if(phasing_Timer <= diff)
 		{
 			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 			if (!lPlayers.isEmpty())
@@ -163,9 +163,9 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
 			phasing_Timer = 60000;
 		}
 		else
-			phasing_Timer -= uiDiff;
+			phasing_Timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

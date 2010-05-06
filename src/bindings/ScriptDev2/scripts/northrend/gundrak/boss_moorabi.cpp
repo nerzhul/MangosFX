@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_moorabiAI : public ScriptedAI
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_moorabiAI : public ScriptedAI
 		if (transfo != 1 && me->HasAura(spell_transformation, 0))
 			transfo = 1;
 		
-		if (spell_transformation_timer < uiDiff && transfo == 0)
+		if (spell_transformation_timer < diff && transfo == 0)
 		{		
 			DoScriptText(SAY_TRANSFORM, me);
 			DoScriptText(EMOTE_TRANSFORM, me);
@@ -105,9 +105,9 @@ struct MANGOS_DLL_DECL boss_moorabiAI : public ScriptedAI
 			DoCastMe(spell_transformation);
 		}
 		else
-			spell_transformation_timer -= uiDiff;
+			spell_transformation_timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

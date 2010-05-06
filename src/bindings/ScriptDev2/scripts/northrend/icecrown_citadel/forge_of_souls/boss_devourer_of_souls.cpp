@@ -32,13 +32,13 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public ScriptedAI
     }
 
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
 	
       
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

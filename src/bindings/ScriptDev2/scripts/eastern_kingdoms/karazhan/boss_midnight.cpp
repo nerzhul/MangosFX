@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_midnightAI : public ScriptedAI
 
     void SetMidnight(Creature *, uint64);                   //Below ..
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_midnightAI : public ScriptedAI
             case 3:
                 if (m_uiMount_Timer)
                 {
-                    if (m_uiMount_Timer <= uiDiff)
+                    if (m_uiMount_Timer <= diff)
                     {
                         m_uiMount_Timer = 0;
                         me->SetVisibility(VISIBILITY_OFF);
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_midnightAI : public ScriptedAI
                         }
                     }
                     else
-                        m_uiMount_Timer -= uiDiff;
+                        m_uiMount_Timer -= diff;
                 }
                 break;
         }
@@ -223,11 +223,11 @@ struct MANGOS_DLL_DECL boss_attumenAI : public ScriptedAI
             pMidnight->DealDamage(pMidnight, pMidnight->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         if (m_uiResetTimer)
         {
-            if (m_uiResetTimer <= uiDiff)
+            if (m_uiResetTimer <= diff)
             {
                 m_uiResetTimer = 0;
 
@@ -242,7 +242,7 @@ struct MANGOS_DLL_DECL boss_attumenAI : public ScriptedAI
                 me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
             }
             else
-                m_uiResetTimer -= uiDiff;
+                m_uiResetTimer -= diff;
         }
 
         //Return since we have no target
@@ -252,33 +252,33 @@ struct MANGOS_DLL_DECL boss_attumenAI : public ScriptedAI
         if (me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))
             return;
 
-        if (m_uiCleaveTimer < uiDiff)
+        if (m_uiCleaveTimer < diff)
         {
             DoCastVictim( SPELL_SHADOWCLEAVE);
             m_uiCleaveTimer = urand(10000, 16000);
         }
         else
-            m_uiCleaveTimer -= uiDiff;
+            m_uiCleaveTimer -= diff;
 
-        if (m_uiCurseTimer < uiDiff)
+        if (m_uiCurseTimer < diff)
         {
             DoCastVictim( SPELL_INTANGIBLE_PRESENCE);
             m_uiCurseTimer = 30000;
         }
         else
-            m_uiCurseTimer -= uiDiff;
+            m_uiCurseTimer -= diff;
 
-        if (m_uiRandomYellTimer < uiDiff)
+        if (m_uiRandomYellTimer < diff)
         {
             DoScriptText(urand(0, 1) ? SAY_RANDOM1 : SAY_RANDOM2, me);
             m_uiRandomYellTimer = urand(30000, 60000);
         }
         else
-            m_uiRandomYellTimer -= uiDiff;
+            m_uiRandomYellTimer -= diff;
 
         if (me->GetDisplayId() == MOUNTED_DISPLAYID)
         {
-            if (m_uiChargeTimer < uiDiff)
+            if (m_uiChargeTimer < diff)
             {
                 Unit *target;
                 std::list<HostileReference *> t_list = me->getThreatManager().getThreatList();
@@ -297,7 +297,7 @@ struct MANGOS_DLL_DECL boss_attumenAI : public ScriptedAI
                 m_uiChargeTimer = 20000;
             }
             else
-                m_uiChargeTimer -= uiDiff;
+                m_uiChargeTimer -= diff;
         }
         else
         {

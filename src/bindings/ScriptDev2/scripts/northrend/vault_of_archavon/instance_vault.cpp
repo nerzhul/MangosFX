@@ -65,9 +65,6 @@ struct MANGOS_DLL_DECL instance_vault_of_archavon : public ScriptedInstance
                 break;
             case NPC_KORALON:
                 m_uiKoralonGUID = pCreature->GetGUID();
-				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-				pCreature->CastSpell(pCreature,66830,false);
                 break;
             case NPC_TEMPEST_MINION:
                 ++m_uiMinion;

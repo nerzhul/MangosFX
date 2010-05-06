@@ -62,13 +62,13 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
     ScriptedInstance* m_pInstance;
 	bool m_bIsHeroic;
 	    
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
 
         if (!CanDoSomething() || me->HasAura(66830,0))
             return;
 
-		if (spell_teleport_timer < uiDiff)  
+		if (spell_teleport_timer < diff)  
 		{  
 				DoScriptText(-2000020,me);
 				if(m_bIsHeroic)
@@ -81,18 +81,18 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
 				spell_teleport_timer = 30000;
 		}
 		else
-				spell_teleport_timer -= uiDiff;
+				spell_teleport_timer -= diff;
 
-		if (spell_blizzard_timer < uiDiff)
+		if (spell_blizzard_timer < diff)
 		{   
 				DoScriptText(urand(0,1) ? -2000022 : -2000023,me);
 				DoCastRandom(m_bIsHeroic ? SPELL_BLIZZARD_HERO : SPELL_BLIZZARD_NORMAL);
 				spell_blizzard_timer = 15000; //Boucle du Blizzard toutes les 15 sec
 		}
 		else
-			spell_blizzard_timer -= uiDiff;
+			spell_blizzard_timer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}             

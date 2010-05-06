@@ -237,22 +237,22 @@ struct MANGOS_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
         pCreature->AI()->AttackStart(target);
     }
 
-    void Update(uint32 uiDiff)
+    void Update(uint32 diff)
     {
         if (m_uiCageTimer)
         {
-            if (m_uiCageTimer <= uiDiff)
+            if (m_uiCageTimer <= diff)
             {
                 SetData(TYPE_MAGTHERIDON_EVENT, IN_PROGRESS);
                 m_uiCageTimer = 0;
             }
             else
-                m_uiCageTimer -= uiDiff;
+                m_uiCageTimer -= diff;
         }
 
         if (m_uiRespawnTimer)
         {
-            if (m_uiRespawnTimer <= uiDiff)
+            if (m_uiRespawnTimer <= diff)
             {
                 for(std::set<uint64>::iterator i = ChannelerGUID.begin(); i != ChannelerGUID.end(); ++i)
                 {
@@ -268,7 +268,7 @@ struct MANGOS_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
                 m_uiRespawnTimer = 0;
             }
             else
-                m_uiRespawnTimer -= uiDiff;
+                m_uiRespawnTimer -= diff;
         }
     }
 };

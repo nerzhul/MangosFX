@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
         m_pInstance->SetData(2,1);
 	}
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething())
             return;
@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
 			DoCastMe(m_bIsHeroic ? SPELL_ADD3_H : SPELL_ADD3);
 		}
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}
@@ -154,9 +154,9 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 		DoCastMe(54164);
 	}
 
-	void UpdateAI(const uint32 uiDiff)
+	void UpdateAI(const uint32 diff)
 	{
-		if(explode_Timer <= uiDiff)
+		if(explode_Timer <= diff)
 		{
 			me->StopMoving();
 			DoCastMe(m_bIsHeroic ? 59474 : 54160);
@@ -164,9 +164,9 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 			explode_Timer = 1000;
 		}
 		else
-			explode_Timer -= uiDiff;
+			explode_Timer -= diff;
 
-		if(move_Timer <= uiDiff)
+		if(move_Timer <= diff)
 		{
 			
 			urand(0,1) ? x = me->GetPositionX() - urand(2,4) : x = me->GetPositionX() + urand(2,4);
@@ -177,7 +177,7 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 			move_Timer = 3000;
 		}
 		else
-			move_Timer -= uiDiff;
+			move_Timer -= diff;
 	}
 };
 

@@ -70,13 +70,13 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
             pInstance->SetData(DATA_DRED_EVENT,IN_PROGRESS);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
 		if (!CanDoSomething())
             return;
 
-        if (RaptorCallTimer < uiDiff)
+        if (RaptorCallTimer < diff)
         {
             DoCastMe(SPELL_RAPTOR_CALL);
 
@@ -87,9 +87,9 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
             RaptorCallTimer = urand(20000,25000);
         } 
 		else 
-			RaptorCallTimer -= uiDiff;
+			RaptorCallTimer -= diff;
 
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -131,13 +131,13 @@ struct MANGOS_DLL_DECL npc_drakkari_gutripperAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_GUT_RIP,urand(10000,15000),10000,5000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(uiDiff);
+		Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -176,13 +176,13 @@ struct MANGOS_DLL_DECL npc_drakkari_scytheclawAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_REND,5000,10000,5000);
     }
 
-    void UpdateAI(const uint32 uiDiff)
+    void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
 
-        Tasks.UpdateEvent(uiDiff);
+        Tasks.UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

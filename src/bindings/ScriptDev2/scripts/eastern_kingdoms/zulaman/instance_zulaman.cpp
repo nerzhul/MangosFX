@@ -324,11 +324,11 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
         return 0;
     }
 
-    void Update(uint32 uiDiff)
+    void Update(uint32 diff)
     {
         if (GetData(TYPE_EVENT_RUN) == IN_PROGRESS)
         {
-            if (m_uiEventTimer <= uiDiff)
+            if (m_uiEventTimer <= diff)
             {
                 if (m_uiEventMinuteStep == 0)
                 {
@@ -344,7 +344,7 @@ struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
                 m_uiEventTimer = MINUTE*IN_MILISECONDS;
             }
             else
-                m_uiEventTimer -= uiDiff;
+                m_uiEventTimer -= diff;
         }
     }
 };

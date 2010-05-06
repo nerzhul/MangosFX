@@ -179,7 +179,7 @@ MotionMaster::DirectExpire(bool reset)
     while (!empty() && (top()->GetMovementGeneratorType() == CHASE_MOTION_TYPE || top()->GetMovementGeneratorType() == FOLLOW_MOTION_TYPE))
     {
 		i++;
-		if(i>2500)
+		if(i>3000)
 			sLog.outError("DirectExpire Boucle");
         MovementGenerator *temp = top();
         pop();
