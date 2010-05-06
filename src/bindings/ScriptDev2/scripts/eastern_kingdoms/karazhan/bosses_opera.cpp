@@ -100,20 +100,17 @@ void SummonCroneIfReady(ScriptedInstance* pInstance, Creature* pCreature)
     }
 };
 
-struct MANGOS_DLL_DECL boss_dorotheeAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_dorotheeAI : public LibDevFSAI
 {
-    boss_dorotheeAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_dorotheeAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+        AddEventOnTank(SPELL_SCREAM,15000,30000);
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 AggroTimer;
 
     uint32 WaterBoltTimer;
-    uint32 FearTimer;
     uint32 SummonTitoTimer;
 
     bool SummonedTito;
@@ -121,10 +118,10 @@ struct MANGOS_DLL_DECL boss_dorotheeAI : public ScriptedAI
 
     void Reset()
     {
+		ResetTimers();
         AggroTimer = 500;
 
         WaterBoltTimer = 5000;
-        FearTimer = 15000;
         SummonTitoTimer = 47500;
 
         SummonedTito = false;
@@ -147,8 +144,8 @@ struct MANGOS_DLL_DECL boss_dorotheeAI : public ScriptedAI
     {
         DoScriptText(SAY_DOROTHEE_DEATH, me);
 
-        if (m_pInstance)
-            SummonCroneIfReady(m_pInstance, me);
+        if (pInstance)
+            SummonCroneIfReady(pInstance, me);
     }
 
     void AttackStart(Unit* who)
@@ -187,38 +184,34 @@ struct MANGOS_DLL_DECL boss_dorotheeAI : public ScriptedAI
             WaterBoltTimer = TitoDied ? 1500 : 5000;
         }else WaterBoltTimer -= diff;
 
-        if (FearTimer < diff)
-        {
-            DoCastVictim( SPELL_SCREAM);
-            FearTimer = 30000;
-        }else FearTimer -= diff;
-
         if (!SummonedTito)
         {
             if (SummonTitoTimer < diff)
                 SummonTito();
             else SummonTitoTimer -= diff;
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 };
 
-struct MANGOS_DLL_DECL mob_titoAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_titoAI : public LibDevFSAI
 {
-    mob_titoAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_titoAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
+        InitIA();
+        AddEventOnTank(SPELL_YIPPING,10000,10000);
     }
 
     uint64 DorotheeGUID;
-    uint32 YipTimer;
 
     void Reset()
     {
+		ResetTimers();
         DorotheeGUID = 0;
-        YipTimer = 10000;
-    }
+     }
 
     void JustDied(Unit* killer)
     {
@@ -238,11 +231,7 @@ struct MANGOS_DLL_DECL mob_titoAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        if (YipTimer < diff)
-        {
-            DoCastVictim( SPELL_YIPPING);
-            YipTimer = 10000;
-        }else YipTimer -= diff;
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -262,25 +251,21 @@ void boss_dorotheeAI::SummonTito()
     }
 }
 
-struct MANGOS_DLL_DECL boss_strawmanAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_strawmanAI : public LibDevFSAI
 {
-    boss_strawmanAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_strawmanAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+        AddEventOnTank(SPELL_BRAIN_BASH,5000,15000);
+        AddEvent(SPELL_BRAIN_WIPE,7000,20000);
     }
 
-    ScriptedInstance* m_pInstance;
-
     uint32 AggroTimer;
-    uint32 BrainBashTimer;
-    uint32 BrainWipeTimer;
 
     void Reset()
     {
+		ResetTimers();
         AggroTimer = 13000;
-        BrainBashTimer = 5000;
-        BrainWipeTimer = 7000;
     }
 
     void AttackStart(Unit* who)
@@ -326,8 +311,8 @@ struct MANGOS_DLL_DECL boss_strawmanAI : public ScriptedAI
     {
         DoScriptText(SAY_STRAWMAN_DEATH, me);
 
-        if (m_pInstance)
-            SummonCroneIfReady(m_pInstance, me);
+        if (pInstance)
+            SummonCroneIfReady(pInstance, me);
     }
 
     void KilledUnit(Unit* victim)
@@ -348,35 +333,22 @@ struct MANGOS_DLL_DECL boss_strawmanAI : public ScriptedAI
 
         if (!CanDoSomething())
             return;
-
-        if (BrainBashTimer < diff)
-        {
-            DoCastVictim( SPELL_BRAIN_BASH);
-            BrainBashTimer = 15000;
-        }else BrainBashTimer -= diff;
-
-        if (BrainWipeTimer < diff)
-        {
-            DoCast(SelectUnit(SELECT_TARGET_RANDOM, 0), SPELL_BRAIN_WIPE);
-            BrainWipeTimer = 20000;
-        }else BrainWipeTimer -= diff;
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 };
 
-struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_tinheadAI : public LibDevFSAI
 {
-    boss_tinheadAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_tinheadAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+        AddEventOnTank(SPELL_CLEAVE,5000,5000);
     }
 
-    ScriptedInstance* m_pInstance;
-
     uint32 AggroTimer;
-    uint32 CleaveTimer;
     uint32 RustTimer;
 
     uint8 RustCount;
@@ -384,7 +356,6 @@ struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
     void Reset()
     {
         AggroTimer = 15000;
-        CleaveTimer = 5000;
         RustTimer   = 30000;
 
         RustCount   = 0;
@@ -420,8 +391,8 @@ struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
     {
         DoScriptText(SAY_TINHEAD_DEATH, me);
 
-        if (m_pInstance)
-            SummonCroneIfReady(m_pInstance, me);
+        if (pInstance)
+            SummonCroneIfReady(pInstance, me);
     }
 
     void KilledUnit(Unit* victim)
@@ -443,12 +414,6 @@ struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        if (CleaveTimer < diff)
-        {
-            DoCastVictim( SPELL_CLEAVE);
-            CleaveTimer = 5000;
-        }else CleaveTimer -= diff;
-
         if (RustCount < 8)
         {
             if (RustTimer < diff)
@@ -459,6 +424,8 @@ struct MANGOS_DLL_DECL boss_tinheadAI : public ScriptedAI
                 RustTimer = 6000;
             }else RustTimer -= diff;
         }
+        
+        UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
