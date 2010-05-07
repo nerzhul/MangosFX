@@ -52,6 +52,7 @@ enum AuthResult
 
 #define EXPECTED_REALMD_CLIENT_BUILD    \
 {										\
+	11927,	/* 4.0.0			*/		\
 	11723,  /* 3.3.3 and higher */      \
 	11403,  /* 3.3.2 and higher */      \
     10505,  /* 3.2.2a */                \

@@ -38,7 +38,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
 			bool offTank_here = false;
 			if(Unit* offTank = SelectUnit(SELECT_TARGET_TOPAGGRO,1))
 			{
-				if(offTank->isAlive() && me->HasInArc(offTank))
+				if(offTank->isAlive() && me->HasInArc(15.0f,offTank))
 				{
 					me->DealDamage(offTank,fireDmg, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
 					offTank_here = true;
