@@ -17,34 +17,29 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
 {
     boss_koralonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-		InitIA();
+		InitInstance();
 		AddEventMaxPrioOnMe(SPELL_METEOR_FISTS,25000,45000);
-		AddEvent(SPELL_CINDER,15000,45000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
+		AddEvent(SPELL_CINDER,5000,10000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
     }
 
     uint32 BurningBreathTimer;
-    uint32 FlamesTimer;
-
     uint32 BBTickTimer;
     uint32 BBTicks;
     bool BB;
 
 	void DamageDeal(Unit* pDoneTo, uint32& dmg)
 	{
-		uint32 fireDmg = dmg;
-		dmg = 0;
 		if(me->getVictim() && pDoneTo == me->getVictim() && dmg > 9000 && me->HasAura(SPELL_METEOR_FISTS))
 		{
-			bool offTank_here = false;
+			uint32 fireDmg = dmg;
 			if(Unit* offTank = SelectUnit(SELECT_TARGET_TOPAGGRO,1))
 			{
 				if(offTank->isAlive() && me->HasInArc(15.0f,offTank))
 				{
-					me->DealDamage(offTank,fireDmg, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
-					offTank_here = true;
+					me->DealDamage(offTank,fireDmg, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, NULL, false);
+					dmg /= 2;
 				}
 			}
-			me->DealDamage(me->getVictim(),offTank_here ? fireDmg : fireDmg * 2, NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, GetSpellStore()->LookupEntry(SPELL_METEOR_FISTS), false);
 		}
 	}
 
@@ -52,11 +47,10 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     {
 		me->RemoveAurasDueToSpell(SPELL_BURNING_FURY_AURA);
         BurningBreathTimer = 25000;
-        FlamesTimer = 15000;
 
         BB = false;
 
-        if(pInstance) 
+        if(pInstance)
 			pInstance->SetData(TYPE_KORALON, NOT_STARTED);
     }
 
@@ -93,7 +87,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
         {
             if(BBTickTimer < diff)
             {
-                DoCast(NULL, SPELL_BB_EFFECT, true);
+                DoCastVictim(SPELL_BB_EFFECT, true);
                 BBTickTimer = 1000;
                 ++BBTicks;
                 if(BBTicks > 2) BB = false;

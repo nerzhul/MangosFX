@@ -759,6 +759,16 @@ class MovementInfo
             t_time = time;
             t_seat = seat;
         }
+		void ClearTransportData()
+        {
+            t_guid = 0;
+            t_pos.x = 0.0f;
+            t_pos.y = 0.0f;
+            t_pos.z = 0.0f;
+            t_pos.o = 0.0f;
+            t_time = 0;
+            t_seat = -1;
+        }
 		void SetGuid(uint64 guid){ t_guid = guid; }
         uint64 GetTransportGuid() const { return t_guid; }
         Position const *GetTransportPos() const { return &t_pos; }

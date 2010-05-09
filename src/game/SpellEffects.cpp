@@ -590,7 +590,7 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 								if (doses > combo)
 									doses = combo;
 								for (int i=0; i< doses; i++)
-									unitTarget->RemoveSingleSpellAurasFromStack(spellId);
+									unitTarget->RemoveSingleSpellAurasByCasterSpell(spellId, m_caster->GetGUID());
 
 								if(doses == 5 && combo == 5)
 								{
