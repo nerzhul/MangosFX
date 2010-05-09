@@ -1487,6 +1487,22 @@ void Spell::EffectDummy(uint32 i)
 
                     return;
                 }
+				case 50546:                                 // Ley Line Focus Control Ring Effect
+				case 50547:                                 // Ley Line Focus Control Amulet Effect
+				case 50548:                                 // Ley Line Focus Control Talisman Effect
+				{
+					if (!m_originalCaster || !unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+						return;
+					
+					switch(m_spellInfo->Id)
+					{
+						case 50546: unitTarget->CastSpell(m_originalCaster, 47390, true); break;
+						case 50547: unitTarget->CastSpell(m_originalCaster, 47472, true); break;
+						case 50548: unitTarget->CastSpell(m_originalCaster, 47635, true); break;
+					}
+					
+					return;
+				}
 				case 51276:                                 // Incinerate Corpse
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
@@ -5861,6 +5877,33 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
                     break;
                 }
+				case 47393:                                 // The Focus on the Beach: Quest Completion Script
+				{
+					if (!unitTarget)
+						return;
+					
+					if (unitTarget->HasAura(47391, 0))
+						unitTarget->RemoveAurasDueToSpell(47391);
+					return;
+				}
+				case 47615:                                 // Atop the Woodlands: Quest Completion Script
+				{
+					if (!unitTarget)
+						return;
+					
+					if (unitTarget->HasAura(47473, 0))
+						unitTarget->RemoveAurasDueToSpell(47473);
+					return;
+				}
+				case 47638:                                 // The End of the Line: Quest Completion Script
+				{
+					if (!unitTarget)
+						return;
+					
+					if (unitTarget->HasAura(47636, 0))
+						unitTarget->RemoveAurasDueToSpell(47636);
+					return;
+				}
                 // High Executor's Branding Iron
                 case 48603:
                     // Torture the Torturer: High Executor's Branding Iron Impact

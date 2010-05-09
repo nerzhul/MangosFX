@@ -74,7 +74,6 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         Unit *GetBase() const { return me; }
         VehicleEntry const *GetVehicleInfo() { return m_vehicleInfo; }
 		Vehicle* FindFreeSeat(int8 *seatid, bool force = true);
-		int8 FindFreeSeat();
 		Vehicle* GetFirstEmptySeat(int8 *seatId, bool force = true);
 		Vehicle* GetNextEmptySeat(int8 *seatId, bool next = true, bool force = true);
 		uint32 GetVehicleFlags() { return /*m_VehicleData ? m_VehicleData->v_flags : NULL*/0; }

@@ -312,26 +312,11 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
 bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 {
     SeatMap::iterator seat;
-    if(seatId < 0) // no specific seat requirement
-    {
-        for (seat = m_Seats.begin(); seat != m_Seats.end(); ++seat)
-            if(!seat->second.passenger && seat->second.seatInfo->IsUsable())
-                break;
+    seat = m_Seats.find(seatId);
 
-        if(seat == m_Seats.end()) // no available seat
-            return false;
-    }
-    else
-    {
-        seat = m_Seats.find(seatId);
-        if(seat == m_Seats.end())
-            return false;
-
-        if(seat->second.passenger)
-		{
-            seat->second.passenger->ExitVehicle();
-		}
-    }
+    // this should never happen
+    if(seat == m_Seats.end())
+        return false;
 
     sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
@@ -375,7 +360,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->SetClientControl(me, 1);
 				((Player*)unit)->SetMover(me);
 				((Player*)unit)->SetMoverInQueve(me);
-				BuildVehicleActionBar((Player*)unit);
+				
 			}
 			if(/*me->canFly() ||*/ me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
@@ -409,6 +394,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         
 		if (((Player*)unit)->isAFK())
 			((Player*)unit)->ToggleAFK();
+		BuildVehicleActionBar((Player*)unit);
 	}
 
 	if(!((Creature*)me)->isHostileVehicle())
@@ -707,21 +693,17 @@ Vehicle* Vehicle::FindFreeSeat(int8 *seatid, bool force)
     if(i_seat == m_Seats.end())
         return GetFirstEmptySeat(seatid, force);
     if((i_seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FULL)) || (!force && (i_seat->second.vs_flags & SF_UNACCESSIBLE)))
-        return GetNextEmptySeat(seatid, true);
+        return GetNextEmptySeat(seatid, true, force);
     if(i_seat->second.flags & SEAT_VEHICLE_FREE)
     {
         // this should never be NULL
-        if(Vehicle *v = (i_seat->second.passenger)->GetVehicleKit())
+        if(Vehicle *v = (Vehicle*)i_seat->second.passenger)
             return v->FindFreeSeat(seatid, force);
         return NULL;
     }
     return this;
 }
 
-int8 Vehicle::FindFreeSeat()
-{
-	return -1;
-}
 Vehicle* Vehicle::GetNextEmptySeat(int8 *seatId, bool next, bool force)
 {
     SeatMap::const_iterator i_seat = m_Seats.find(*seatId);

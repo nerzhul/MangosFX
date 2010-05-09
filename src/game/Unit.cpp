@@ -4320,7 +4320,9 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
     {
         if (Aura* dotAura = GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_WARLOCK,UI64LIT(0x010000000000),0x00000000,casterGUID))
         {
-            int32 damage = dotAura->GetModifier()->m_amount*9;
+            // use clean value for initial damage
+			int32 damage = dotAura->GetSpellProto()->CalculateSimpleValue(0);
+			damage *= 9;
 
             // Remove spell auras from stack
             RemoveSingleSpellAurasByCasterSpell(spellId, casterGUID, AURA_REMOVE_BY_DISPEL);
@@ -5903,6 +5905,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 58567;
                     break;
                 }
+				case 12311: // Gag Order rank 1 
+				case 12958: // Gag Order rank 2 
+				{ 
+					triggered_spell_id = 18498; 
+					break; 
+				}
             }
             break;
         }
@@ -14666,11 +14674,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     m_vehicle = vehicle;
 	sLog.outError("SEAT ID : %d",seatId);
 	if(seatId < 0)
-		m_vehicle->FindFreeSeat(&seatId,false);
-
-	/*sLog.outError("SEAT ID : %u",seatId);
-	if(seatId == -1)
-		return;*/
+		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleInfo()->m_ID);
     if(!ve)
@@ -14728,12 +14732,13 @@ void Unit::ChangeSeat(int8 seatId, bool next)
 
     if (seatId < 0)
     {
-		seatId = m_vehicle->FindFreeSeat();
+        seatId = m_vehicle->GetNextEmptySeat(m_movementInfo.GetTransportSeat(), next);
         if (seatId < 0)
             return;
     }
-    else if (seatId == GetTransSeat() || !m_vehicle->HasEmptySeat(seatId))
+    else if (seatId == m_movementInfo.GetTransportSeat() || !m_vehicle->HasEmptySeat(seatId))
         return;
+
 
     m_vehicle->RemovePassenger(this);
 	EnterVehicle(m_vehicle,seatId);
