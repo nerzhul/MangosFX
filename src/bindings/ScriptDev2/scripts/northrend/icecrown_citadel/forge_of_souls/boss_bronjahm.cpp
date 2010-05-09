@@ -12,6 +12,7 @@ enum spells
 	SPELL_SOULSTORM				= 68872,
 	SPELL_TELEPORT				= 68988,
 	SPELL_CONSUME				= 68858,
+	SPELL_SOULSTORM_AURA        = 68921,
 };
 
 
@@ -22,8 +23,8 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
         InitInstance();
 		AddEvent(SPELL_CORRUPT_SOUL,25000,30000,2000);
 		AddEvent(SPELL_FEAR,10000,12000,1000);
-		AddEventOnTank(SPELL_MAGIC_BANE,5000,7000,5000);
-		AddEventOnTank(SPELL_SHADOW_BOLT,3000,3000,3000);
+		AddEventOnTank(SPELL_MAGIC_BANE,urand(8000,15000),8000,7000);
+		AddEventOnTank(SPELL_SHADOW_BOLT,2000,2000);
     }
 
 	bool HasTeleported;
@@ -31,81 +32,97 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 	Creature* frag;
 	uint32 CheckDist_Timer;
 	uint32 Teleport_Timer;
-	uint8 subphase;
+	uint32 CheckAura_Timer;
+	uint8 subphase,phase;
 
     void Reset()
     {
 		ResetTimers();
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
 		CorruptedSoulFrag_Timer = 29000;
 		CheckDist_Timer = 20000;
 		frag = NULL;
 		Teleport_Timer = 1500;
 		subphase = 0;
+		phase = 0;
+		CheckAura_Timer = 1500;
     }
-
 
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
-	
-		if(CorruptedSoulFrag_Timer <= diff)
+
+		if(phase == 1)
 		{
-			if(Creature* tmp_add = me->SummonCreature(36535,me->GetPositionX() + urand(3,6),
-				me->GetPositionY() + urand(3,6), me->GetPositionZ() + 0.5f,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+			if(CheckAura_Timer <= diff)
 			{
-				tmp_add->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),
-					me->GetPositionZ());
-
-				frag = tmp_add;
-
-			}
-			CorruptedSoulFrag_Timer = 32000;
-		}
-		else
-			CorruptedSoulFrag_Timer -= diff;
-
-		if(CheckDist_Timer <= diff)
-		{	
-			if(frag)
-				if(frag->isAlive())
-					if(frag->GetDistance2d(me) < 1.0f)
-					{
-						me->CastStop();
-						DoCastMe(SPELL_CONSUME);
-						frag->ForcedDespawn(500);
-					}
-
-			CheckDist_Timer = 1000;
-		}
-		else
-			CheckDist_Timer -= diff;
-
-		if(!HasTeleported && me->GetHealth() * 100 / me->GetMaxHealth() < 30)
-		{
-			if(Teleport_Timer <= diff)
-			{
-				if(subphase == 0)
-				{
-					DoCastMe(SPELL_TELEPORT);
-					Teleport_Timer = 2000;
-					subphase++;
-				}
-				else if(subphase == 1)
-				{
-					Relocate(5297.3f,2506.6f,686.1f);
-					DoCastMe(SPELL_SOULSTORM);
-					Teleport_Timer = DAY;
-				}
+				Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+				if (!lPlayers.isEmpty())
+					for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+						if (Player* pPlayer = itr->getSource())
+							if(pPlayer->isAlive())
+								DoCast(pPlayer,SPELL_SOULSTORM_AURA);
+				CheckAura_Timer = 1500;
 			}
 			else
-				Teleport_Timer -= diff;
+				CheckAura_Timer -= diff;
+		}
+		else
+		{
+			if(CorruptedSoulFrag_Timer <= diff)
+			{
+				if(Creature* tmp_add = CallCreature(36535,TEN_MINS,NEAR_7M,GO_TO_CREATOR))
+					frag = tmp_add;
+				CorruptedSoulFrag_Timer = 32000;
+			}
+			else
+				CorruptedSoulFrag_Timer -= diff;
+
+			if(CheckDist_Timer <= diff)
+			{	
+				if(frag)
+					if(frag->isAlive())
+						if(frag->GetDistance2d(me) < 4.0f)
+						{
+							me->CastStop();
+							DoCastMe(SPELL_CONSUME);
+							frag->ForcedDespawn(500);
+						}
+
+				CheckDist_Timer = 1000;
+			}
+			else
+				CheckDist_Timer -= diff;
+
+			if(!HasTeleported && CheckPercentLife(30))
+			{
+				if(Teleport_Timer <= diff)
+				{
+					if(subphase == 0)
+					{
+						DoCastMe(SPELL_TELEPORT);
+						Teleport_Timer = 2000;
+						subphase++;
+					}
+					else if(subphase == 1)
+					{
+						Relocate(5297.3f,2506.6f,686.1f);
+						DoCastMe(SPELL_SOULSTORM);
+						me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+						phase = 1;
+						Teleport_Timer = DAY;
+					}
+				}
+				else
+					Teleport_Timer -= diff;
+			}
+			UpdateEvent(diff);
+			DoMeleeAttackIfReady();
 		}
        
-		UpdateEvent(diff);
-
-        DoMeleeAttackIfReady();
+		
     }
 
     void JustDied(Unit* killer)
