@@ -14641,14 +14641,11 @@ void Unit::ExitVehicle()
 					}
 				}
 				v_size = vehicle->GetBase()->GetObjectSize();
-				vehicle->RemovePassenger(this);
 			}
 
         if(GetTypeId() == TYPEID_PLAYER)
         {
             ((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
-            ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
-            ((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
         }
 
         float x = GetPositionX();
@@ -14696,10 +14693,10 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if(!veSeat)
         return;
 
-	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetX
-    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetY
-    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ + m_vehicle->GetBase()->GetObjectSize()) * GetFloatValue(OBJECT_FIELD_SCALE_X);      // transport offsetZ
-    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs confirmation
+	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX/* + m_vehicle->GetBase()->GetObjectSize()*/) /** GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetX
+    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY/* + m_vehicle->GetBase()->GetObjectSize()*/)/* * GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetY
+    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ/* + m_vehicle->GetBase()->GetObjectSize()*/) /** GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetZ
+    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs cnfirmation
     m_SeatData.c_time = 0/*v->GetCreationTime()*/;
     m_SeatData.dbc_seat = veSeat->m_ID;
     m_SeatData.seat = seatId;
@@ -14711,29 +14708,16 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(Pet *pet = GetPet())
         pet->Remove(PET_SAVE_AS_CURRENT);
 
-	WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
-    data.append(GetPackGUID());
-    data.append(m_vehicle->GetBase()->GetPackGUID());
-    data << uint8(m_SeatData.seat);
-    data << uint8(0);                                       // new in 3.1
-    data << m_vehicle->GetBase()->GetPositionX();
-    data << m_vehicle->GetBase()->GetPositionY();
-    data << m_vehicle->GetBase()->GetPositionZ();
-    data << uint32(getMSTime());
-    data << uint8(4);                                       // unknown
-    data << float(0);                                       // facing angle
-    data << uint32(0x00800000);
-    data << uint32(0);                                      // Time in between points
-    data << uint32(1);                                      // 1 single waypoint
-    data << m_SeatData.OffsetX;
-    data << m_SeatData.OffsetY;
-    data << m_SeatData.OffsetZ;
-    SendMessageToSet(&data, true);
-
     if (!m_vehicle->AddPassenger(this, seatId))
     {
         m_vehicle = NULL;
         return;
+    }
+
+	if (GetTypeId() == TYPEID_PLAYER)
+    {
+        WorldPacket data(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
+        ((Player*)this)->GetSession()->SendPacket(&data);
     }
 }
 
@@ -14784,14 +14768,14 @@ bool Unit::CreateVehicleKit(uint32 id)
 
 void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
 {
-    WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, GetPackGUID().size()+vehicleOwner->GetPackGUID().size());
+    WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
     data.append(GetPackGUID());
-    data.append(vehicleOwner->GetPackGUID());
+    data.append(m_vehicle->GetBase()->GetPackGUID());
     data << uint8(m_SeatData.seat);
     data << uint8(0);
-    data << vehicleOwner->GetPositionX();
-    data << vehicleOwner->GetPositionY();
-    data << vehicleOwner->GetPositionZ();
+    data << m_vehicle->GetBase()->GetPositionX();
+    data << m_vehicle->GetBase()->GetPositionY();
+    data << m_vehicle->GetBase()->GetPositionZ();
     data << uint32(getMSTime());
     data << uint8(4);
     data << GetTransOffsetO();
@@ -14833,7 +14817,7 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
         SetOrientation(orientation);
 
     if ((relocated || turn) && IsVehicle())
-        GetVehicleKit()->RelocatePassengers(x,y,z,orientation);
+        GetVehicleKit()->RelocatePassengers(x,y,z,orientation,GetMap());
 
     return (relocated || turn);
 }

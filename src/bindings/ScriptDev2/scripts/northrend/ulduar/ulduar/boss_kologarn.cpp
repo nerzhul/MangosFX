@@ -256,7 +256,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 			{
 				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
 				pGripTarget = target;
-				target->EnterVehicle(me->GetVehicleKit(),0);
+				target->EnterVehicle(me->GetVehicleKit());
 				grip = true;
 				gripdmg = 0;
 			}
@@ -349,6 +349,8 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 					pTemp->SetInCombatWithZone();
 		}
 		Speak(CHAT_TYPE_YELL,15586,"On ne passe pas !");
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }
 
 	void JustReachedHome()

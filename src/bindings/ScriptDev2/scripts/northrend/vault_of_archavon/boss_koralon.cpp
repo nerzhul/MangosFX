@@ -19,7 +19,9 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     {
 		InitInstance();
 		AddEventMaxPrioOnMe(SPELL_METEOR_FISTS,25000,45000);
-		AddEvent(SPELL_CINDER,5000,10000,0,TARGET_RANDOM,0,0,false,m_difficulty ? 5 : 3);
+		AddEvent(SPELL_CINDER,5000,10000,2000);
+		if(m_difficulty)
+			AddEvent(SPELL_CINDER,7000,10000,2000);
     }
 
     uint32 BurningBreathTimer;
@@ -45,8 +47,9 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		me->RemoveAurasDueToSpell(SPELL_BURNING_FURY_AURA);
-        BurningBreathTimer = 25000;
+        BurningBreathTimer = 10000;
 
         BB = false;
 

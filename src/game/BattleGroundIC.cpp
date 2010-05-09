@@ -100,3 +100,25 @@ bool BattleGroundIC::SetupBattleGround()
 
 	return true;
 }
+
+void BattleGroundIC::Reset()
+{
+}
+
+void BattleGroundIC::FillInitialWorldStates(WorldPacket &data)
+{
+}
+
+void BattleGroundIC::EventPlayerClickedOnFlag(Player *source, GameObject *target_obj)
+{
+
+}
+
+WorldSafeLocsEntry const* BattleGroundIC::GetClosestGraveYard(Player* player)
+{
+	return NULL;
+}
+
+void BattleGroundIC::EndBattleGround(uint32 winner)
+{
+}

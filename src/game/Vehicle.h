@@ -69,7 +69,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void Die();
         void InstallAllAccessories();
         void Update(uint32 diff);
-		void RelocatePassengers(float x, float y, float z, float ang);
+		void RelocatePassengers(float x, float y, float z, float ang, Map* map);
 
         Unit *GetBase() const { return me; }
         VehicleEntry const *GetVehicleInfo() { return m_vehicleInfo; }
