@@ -85,6 +85,11 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
         me->SetReactState(REACT_AGGRESSIVE);
 		if (pInstance)
             pInstance->SetData(DATA_DEVOURER_EVENT, NOT_STARTED);
+		Mirror_Timer = 8000;
+		Unleashed_Timer = 20000;
+		Face_Timer = DAY*100;
+		Wailing_Timer = urand(60000,70000);
+		WailingTick_Timer = DAY*100;
 
     }
 
@@ -131,6 +136,8 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
             me->SetDisplayId(DISPLAY_SORROW);
 //            DoScriptText(RAND(SAY_FACE_ANGER_UNLEASH_SOUL,SAY_FACE_SORROW_UNLEASH_SOUL,SAY_FACE_DESIRE_UNLEASH_SOUL), me);
 //            DoScriptText(EMOTE_UNLEASH_SOUL, me);
+			Unleashed_Timer = 30000;
+			Face_Timer = 5000;
 		}
 		else
 			Unleashed_Timer -= diff;
