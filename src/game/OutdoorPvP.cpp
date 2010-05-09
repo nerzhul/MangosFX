@@ -395,7 +395,8 @@ void OutdoorPvP::SendUpdateWorldState(uint32 field, uint32 value)
     if(m_sendUpdate)
         for (int i = 0; i < 2; ++i)
             for (PlayerSet::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-                (*itr)->SendUpdateWorldState(field, value);
+				if((*itr)->GetSession())
+					(*itr)->SendUpdateWorldState(field, value);
 }
 
 void OPvPCapturePoint::SendUpdateWorldState(uint32 field, uint32 value)
@@ -405,7 +406,8 @@ void OPvPCapturePoint::SendUpdateWorldState(uint32 field, uint32 value)
         // send to all players present in the area
         for (PlayerSet::iterator itr = m_activePlayers[team].begin(); itr != m_activePlayers[team].end(); ++itr)
         {
-            (*itr)->SendUpdateWorldState(field,value);
+			if((*itr)->GetSession())
+				(*itr)->SendUpdateWorldState(field,value);
         }
     }
 }

@@ -1,6 +1,7 @@
 /* LibDevFS by Frost Sapphire Studios */
 
 #include "precompiled.h"
+#include "forge_of_souls.h"
 
 enum spells
 {
@@ -13,19 +14,18 @@ enum spells
 	SPELL_CONSUME				= 68858,
 };
 
-struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
+
+struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 {
-    boss_bronjahmAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_bronjahmAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+		AddEvent(SPELL_CORRUPT_SOUL,25000,30000,2000);
+		AddEvent(SPELL_FEAR,10000,12000,1000);
+		AddEventOnTank(SPELL_MAGIC_BANE,5000,7000,5000);
+		AddEventOnTank(SPELL_SHADOW_BOLT,3000,3000,3000);
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	bool HasTeleported;
 	uint32 CorruptedSoulFrag_Timer;
 	Creature* frag;
@@ -35,11 +35,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_CORRUPT_SOUL,25000,30000,2000);
-		Tasks.AddEvent(SPELL_FEAR,10000,12000,1000);
-		Tasks.AddEvent(SPELL_MAGIC_BANE,5000,7000,5000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_SHADOW_BOLT,3000,3000,3000,TARGET_MAIN);
+		ResetTimers();
 		CorruptedSoulFrag_Timer = 29000;
 		CheckDist_Timer = 20000;
 		frag = NULL;
@@ -107,14 +103,14 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public ScriptedAI
 				Teleport_Timer -= diff;
 		}
        
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
     }
 };
 

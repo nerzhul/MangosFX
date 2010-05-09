@@ -348,6 +348,24 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	//unit->m_movementInfo.SetTransportData(unit->GetGUID(),
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
 
+	VehicleEntry const *ve = sVehicleStore.LookupEntry(unit->GetVehicle()->GetVehicleInfo()->m_ID);
+    if(!ve)
+        return false;
+
+	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
+    if(!veSeat)
+        return false;
+
+	m_SeatData.OffsetX = veSeat->m_attachmentOffsetX;      // transport offsetX
+    m_SeatData.OffsetY = veSeat->m_attachmentOffsetY;      // transport offsetY
+    m_SeatData.OffsetZ = veSeat->m_attachmentOffsetZ;      // transport offsetZ
+    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs cnfirmation
+    m_SeatData.c_time = 0/*v->GetCreationTime()*/;
+    m_SeatData.dbc_seat = veSeat->m_ID;
+    m_SeatData.seat = seatId;
+    m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
+	m_SeatData.v_flags = unit->GetVehicle()->GetVehicleFlags();
+
 	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
         if(!(GetVehicleFlags() & VF_MOVEMENT))

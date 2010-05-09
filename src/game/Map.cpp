@@ -923,26 +923,6 @@ Map::CreatureRelocation(Creature *creature, float x, float y, float z, float ang
         CreatureRelocationNotify(creature, new_cell, new_val);
     }
 
-	if (creature->IsVehicle())
-    {
-        for (SeatMap::iterator itr = creature->GetVehicleKit()->m_Seats.begin(); itr != creature->GetVehicleKit()->m_Seats.end(); ++itr)
-            if (Unit *passenger = itr->second.passenger)
-            {
-                if (passenger->GetTypeId() == TYPEID_PLAYER)
-                    PlayerRelocation((Player*)passenger,
-					x + passenger->m_movementInfo.GetPos()->x,
-                    y + passenger->m_movementInfo.GetPos()->y,
-                    z + passenger->m_movementInfo.GetPos()->z,
-                    ang + passenger->m_movementInfo.GetPos()->o);
-                else
-                    CreatureRelocation((Creature*)passenger,
-                    x + passenger->m_movementInfo.GetPos()->x,
-                    y + passenger->m_movementInfo.GetPos()->y,
-                    z + passenger->m_movementInfo.GetPos()->z,
-                    ang + passenger->m_movementInfo.GetPos()->o);
-            }
-    }
-
     ASSERT(CheckGridIntegrity(creature,true));
 }
 

@@ -14685,24 +14685,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(seatId < 0)
 		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
 
-	VehicleEntry const *ve = sVehicleStore.LookupEntry(m_vehicle->GetVehicleInfo()->m_ID);
-    if(!ve)
-        return;
-
-	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
-    if(!veSeat)
-        return;
-
-	m_SeatData.OffsetX = (veSeat->m_attachmentOffsetX/* + m_vehicle->GetBase()->GetObjectSize()*/) /** GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetX
-    m_SeatData.OffsetY = (veSeat->m_attachmentOffsetY/* + m_vehicle->GetBase()->GetObjectSize()*/)/* * GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetY
-    m_SeatData.OffsetZ = (veSeat->m_attachmentOffsetZ/* + m_vehicle->GetBase()->GetObjectSize()*/) /** GetFloatValue(OBJECT_FIELD_SCALE_X)*/;      // transport offsetZ
-    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs cnfirmation
-    m_SeatData.c_time = 0/*v->GetCreationTime()*/;
-    m_SeatData.dbc_seat = veSeat->m_ID;
-    m_SeatData.seat = seatId;
-    m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
-    m_SeatData.v_flags = m_vehicle->GetVehicleFlags();
-
 	InterruptNonMeleeSpells(false);
 
 	if(Pet *pet = GetPet())

@@ -1,8 +1,6 @@
 #include "precompiled.h"
-#include "Vehicle.h"
 #include "ulduar.h"
 
-class Vehicle;
 enum
 {
 	//yells
@@ -233,15 +231,23 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 						pGripTarget->RemoveAurasDueToSpell(SPELL_STONE_GRIP);
 
 					pGripTarget->ExitVehicle();
+					pGripTarget->Relocate(1781.764f,-24.704f,449.0f,6.27f);
 				}
 				grip = false;
 				gripdmg = 0;
 			}
 		}
 		if(uiDamage >= me->GetHealth())
+		{
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KOLOGARN))))
 				if (pTemp->isAlive())
 					pTemp->DealDamage(pTemp, pTemp->GetMaxHealth() / 100 * 15, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+			if(pGripTarget)
+			{
+				pGripTarget->ExitVehicle();
+				pGripTarget->Relocate(1781.764f,-24.704f,449.0f,6.27f);
+			}
+		}
     }
 
 	void UpdateAI(const uint32 diff)
@@ -255,6 +261,8 @@ struct MANGOS_DLL_DECL boss_right_armAI : public ScriptedAI
 			if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 			{
 				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
+				if(pGripTarget)
+					Kill(pGripTarget);
 				pGripTarget = target;
 				target->EnterVehicle(me->GetVehicleKit());
 				grip = true;
@@ -388,10 +396,10 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 
 		if (respawnleft < diff && !left)
         {
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LEFT_ARM))))
+			/*if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LEFT_ARM))))
 				if (!pTemp->isAlive())
-					pTemp->Respawn();
-			//me->GetVehicleKit()->InstallAccessory(32933);
+					pTemp->Respawn();*/
+			//me->GetVehicleKit()->InstallAccessory(32933,0);
             left = true;
         }
 		else 
@@ -399,10 +407,10 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 
 		if (respawnright < diff && !right)
         {
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_RIGHT_ARM))))
+			/*if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_RIGHT_ARM))))
 				if (!pTemp->isAlive())
-					pTemp->Respawn();
-			//me->GetVehicleKit()->InstallAccessory(32934);
+					pTemp->Respawn();*/
+			//me->GetVehicleKit()->InstallAccessory(32934,1);
             right = true;
         }
 		else 

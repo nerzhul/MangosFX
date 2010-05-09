@@ -444,6 +444,7 @@ extern void AddSC_instance_icecrown_citadel();
 extern void AddSC_boss_marrowgar();
 extern void AddSC_boss_deathwhisper();
 extern void AddSC_boss_bronjahm();
+extern void AddSC_boss_devourer_of_souls();
 extern void AddSC_boss_yoggsaron();
 extern void AddSC_boss_emalon();
 extern void AddSC_boss_argent_challenge();
@@ -458,6 +459,7 @@ extern void AddSC_boss_AA_toc10();
 extern void AddSC_boss_twin_valkyr();
 extern void AddSC_crystalsong_forest();
 extern void AddSC_boss_koralon();
+extern void AddSC_instance_forge_of_souls();
 
 void AddScripts()
 {
@@ -901,6 +903,7 @@ void AddScripts()
 	AddSC_boss_marrowgar();
 	AddSC_boss_deathwhisper();
 	AddSC_boss_bronjahm();
+	AddSC_boss_devourer_of_souls();
 	AddSC_boss_yoggsaron();
 	AddSC_boss_emalon();
 	AddSC_boss_argent_challenge();
@@ -915,4 +918,5 @@ void AddScripts()
 	AddSC_boss_AA_toc10();
 	AddSC_crystalsong_forest();
 	AddSC_boss_koralon();
+	AddSC_instance_forge_of_souls();
 }

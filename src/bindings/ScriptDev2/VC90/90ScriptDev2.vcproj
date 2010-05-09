@@ -2214,6 +2214,14 @@
 							RelativePath="..\scripts\northrend\icecrown_citadel\forge_of_souls\boss_devourer_of_souls.cpp"
 							>
 						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\forge_of_souls\forge_of_souls.h"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\forge_of_souls\instance_forge_of_souls.cpp"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="pit_of_saron"
