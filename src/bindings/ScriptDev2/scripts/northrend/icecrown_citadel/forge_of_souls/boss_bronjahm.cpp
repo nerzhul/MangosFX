@@ -118,10 +118,9 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 				else
 					Teleport_Timer -= diff;
 			}
-			UpdateEvent(diff);
 			
 		}
-       
+		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
     }
 

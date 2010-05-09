@@ -584,7 +584,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 				return false;
 			else
 			{
-				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),60);
+				HandleCharacterLevel(plr,plr->GetGUID(),plr->getLevel(),70);
 				
 				// monte
 				plr->learnSpell(34093, 0,false);

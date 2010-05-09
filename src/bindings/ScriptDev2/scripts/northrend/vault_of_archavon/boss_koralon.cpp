@@ -68,6 +68,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     void JustDied(Unit *killer)
     {
         if(pInstance) pInstance->SetData(TYPE_KORALON, DONE);
+		GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : CONQUETE);
     }
 
     void UpdateAI(const uint32 diff)
