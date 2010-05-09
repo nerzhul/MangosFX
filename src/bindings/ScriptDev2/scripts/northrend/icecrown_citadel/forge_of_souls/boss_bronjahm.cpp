@@ -119,10 +119,10 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 					Teleport_Timer -= diff;
 			}
 			UpdateEvent(diff);
-			DoMeleeAttackIfReady();
+			
 		}
        
-		
+		DoMeleeAttackIfReady();
     }
 
     void JustDied(Unit* killer)
