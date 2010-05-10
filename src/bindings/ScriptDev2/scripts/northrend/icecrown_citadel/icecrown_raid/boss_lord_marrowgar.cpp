@@ -27,13 +27,9 @@ EndScriptData */
 enum
 {
     SPELL_SABER_LASH     = 69055,
-    H_SPELL_SABER_LASH   = 70814,
     SPELL_COLDFLAME      = 69146,
-    H_SPELL_COLDFLAME    = 70824,
     SPELL_BONE_SPIKE     = 69057,
-    H_SPELL_BONE_SPIKE   = 72088,
     SPELL_BONE_STORM     = 69076,
-    H_SPELL_BONE_STORM   = 70835
 };
 
 enum
@@ -45,12 +41,10 @@ enum
         NPC_BONE_SPIKE                          = 38711,
         NPC_COLDFLAME                           = 36672,
         //Abilities
-        SPELL_SABER_LASH                        = 71021,
         SPELL_CALL_COLD_FLAME                   = 69138,
         SPELL_COLD_FLAME                        = 69146,
         SPELL_COLD_FLAME_0                      = 69145,
         SPELL_BONE_STRIKE                       = 69057,
-        SPELL_BONE_STORM                        = 69076,
         SPELL_BONE_STRIKE_IMPALE                = 69065,
         SPELL_BONE_STORM_STRIKE                 = 69075,
 };
@@ -105,7 +99,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
 
         if (BoneStorm_Timer < diff)
         {
-            DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_BONE_STORM : H_SPELL_BONE_STORM);
+            DoCastSpellIfCan(me->getVictim(), SPELL_BONE_STORM);
             BoneStorm_Timer = 90000;
         }
         else BoneStorm_Timer -= diff;
@@ -113,7 +107,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
         if (BoneSpike_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_BONE_SPIKE : H_SPELL_BONE_SPIKE);
+                DoCastSpellIfCan(target, SPELL_BONE_SPIKE);
             SaberLash_Timer = 4000;
             BoneSpike_Timer = 30000;
         }
@@ -121,14 +115,14 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
 
         if (ColdFlame_Timer < diff)
         {
-            DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_COLDFLAME : H_SPELL_COLDFLAME);
+            DoCastSpellIfCan(me->getVictim(), SPELL_COLDFLAME);
             ColdFlame_Timer = 15000;
         }
         else ColdFlame_Timer -= diff;
 
         if (SaberLash_Timer < diff)
         {
-            DoCastSpellIfCan(me->getVictim(), m_bIsRegularMode ? SPELL_SABER_LASH : H_SPELL_SABER_LASH);
+            DoCastSpellIfCan(me->getVictim(), SPELL_SABER_LASH);
             SaberLash_Timer = 1000;
         }
         else SaberLash_Timer -= diff;

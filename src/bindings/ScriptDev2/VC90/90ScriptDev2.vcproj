@@ -2306,6 +2306,10 @@
 							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_raid\instance_icecrown_citadel.cpp"
 							>
 						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_raid\mobs_icecrown_citadel.cpp"
+							>
+						</File>
 					</Filter>
 				</Filter>
 			</Filter>
@@ -2820,6 +2824,14 @@
 						</File>
 					</Filter>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="special events"
+				>
+				<File
+					RelativePath="..\scripts\special_events\crazy_ias.cpp"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

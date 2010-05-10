@@ -52,15 +52,11 @@ enum
 {
     SPELL_MANA_BARRIER         = 70842,
     SPELL_SHADOW_BOLT          = 71254,
-    H_SPELL_SHADOW_BOLT        = 72008,
     SPELL_DEATH_AND_DECAY      = 71001,
-    H_SPELL_DEATH_AND_DECAY    = 72108,
-    //SPELL_DARK_EMPOWERMENT     = 70901,
+    SPELL_DARK_EMPOWERMENT     = 70901,
     SPELL_FROSTBOLT            = 71420,
-    H_SPELL_FROSTBOLT          = 72007,
     SPELL_INSIGNIFICANCE       = 71204,
     SPELL_FROSTBOLT_VOLLEY     = 72905,
-    H_SPELL_FROSTBOLT_VOLLEY   = 72906,
     SPELL_VENGEFUL_SHADE       = 71426,
 
     NPC_CULT_ADHERENT          = 37949,
@@ -74,26 +70,18 @@ enum BossSpells
         SPELL_BERSERK                           = 47008,
         //yells
         //summons
-        NPC_VENGEFUL_SHADE                      = 38222,
         NPC_FANATIC                             = 37890,
         NPC_REANIMATED_FANATIC                  = 38009,
         NPC_ADHERENT                            = 37949,
         NPC_REANIMATED_ADHERENT                 = 38010,
         //Abilities
-        SPELL_MANA_BARRIER                      = 70842,
-        SPELL_SHADOW_BOLT                       = 71254,
-        SPELL_DEATH_AND_DECAY                   = 71001,
-        SPELL_DARK_EMPOWERMENT                  = 70901,
-        SPELL_FROSTBOLT                         = 71420,
-        SPELL_INSIGNIFICANCE                    = 71204,
-
         SPELL_DOMINATE_MIND                     = 71289,
 
         SPELL_VENGEFUL_BLAST                    = 71494,
         SPELL_VENGEFUL_BLAST_0                  = 71544,
 };
 
-static Locations SpawnLoc[]=
+const static float SpawnLoc[11][3]=
 {
     {-623.055481f, 2211.326660f, 51.764259f},  // 0 Lady's stay point
     {-620.197449f, 2272.062256f, 50.848679f},  // 1 Right Door 1
@@ -221,7 +209,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
             if (ShadowBolt_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_SHADOW_BOLT : H_SPELL_SHADOW_BOLT);
+                     DoCastSpellIfCan(target, SPELL_SHADOW_BOLT);
                 ShadowBolt_Timer = 5000;
             }
             else ShadowBolt_Timer -= diff;
@@ -244,7 +232,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
             if (FrostboltVolley_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_FROSTBOLT_VOLLEY : H_SPELL_FROSTBOLT_VOLLEY);
+                     DoCastSpellIfCan(target, SPELL_FROSTBOLT_VOLLEY);
                 FrostboltVolley_Timer = 40000;
             }
             else FrostboltVolley_Timer -= diff;
@@ -263,7 +251,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
             if (Frostbolt_Timer < diff)
             {
                 if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_FROSTBOLT : H_SPELL_FROSTBOLT);
+                     DoCastSpellIfCan(target, SPELL_FROSTBOLT);
                 Frostbolt_Timer = 15000;
             }
             else Frostbolt_Timer -= diff;
@@ -274,7 +262,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
         if (DeathAndDecay_Timer < diff)
         {
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                 DoCastSpellIfCan(target, m_bIsRegularMode ? SPELL_DEATH_AND_DECAY : H_SPELL_DEATH_AND_DECAY);
+                 DoCastSpellIfCan(target, SPELL_DEATH_AND_DECAY);
             DeathAndDecay_Timer = 30000;
         }
         else DeathAndDecay_Timer -= diff;
