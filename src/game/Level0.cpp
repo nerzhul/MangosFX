@@ -386,24 +386,54 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	}
 	else if(argstr == "rename")
     {
-        if(diamant >= 2)
+        if(diamant >= 1)
         {
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_RENAME);
             PSendSysMessage("Demande de rename pour %s en cours. Veuillez vous reconnecter pour changer de nom", m_session->GetPlayer()->GetName());
             CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '1' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
-			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 2 WHERE id = '%u'", m_session->GetAccountId());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 1 WHERE id = '%u'", m_session->GetAccountId());
         }
+		else
+			SendSysMessage("Vous n'avez pas assez de diamants !");
     }
     else if(argstr == "relook")
     {
-        if(diamant >= 4)
+        if(diamant >= 2)
         {
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CUSTOMIZE);
             PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de skin", m_session->GetPlayer()->GetName());
             CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '8' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
-			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 4 WHERE id = '%u'", m_session->GetAccountId());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 2 WHERE id = '%u'", m_session->GetAccountId());
         }
+		else
+			SendSysMessage("Vous n'avez pas assez de diamants !");
     }
+	else if(argstr == "changerace")
+	{
+		return false;
+		if(diamant >= 3)
+		{
+			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_RACE);
+			PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de race", m_session->GetPlayer()->GetName());
+            CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '128' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 3 WHERE id = '%u'", m_session->GetAccountId());
+		}
+		else
+			SendSysMessage("Vous n'avez pas assez de diamants !");
+	}
+	else if(argstr == "changefaction")
+	{
+		return false;
+		if(diamant >= 4)
+		{
+			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
+			PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de faction", m_session->GetPlayer()->GetName());
+            CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '64' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 4 WHERE id = '%u'", m_session->GetAccountId());
+		}
+		else
+			SendSysMessage("Vous n'avez pas assez de diamants !");
+	}
 	else if(argstr == "lev60")
 	{
 		if(m_session->GetPlayer()->getLevel() > 60)
