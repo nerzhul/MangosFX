@@ -15475,7 +15475,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
             RelocateToHomebind();
 
-            m_movementInfo.SetTransportData(0, 0.0f, 0.0f, 0.0f, 0.0f, 0, -1);
+            m_movementInfo.ClearTransportData();
 
             transGUID = 0;
         }
@@ -15509,7 +15509,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
             RelocateToHomebind();
 
-            m_movementInfo.SetTransportData(0, 0.0f, 0.0f, 0.0f, 0.0f, 0, -1);
+            m_movementInfo.ClearTransportData();
 
             transGUID = 0;
         }

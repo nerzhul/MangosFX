@@ -355,6 +355,16 @@ scripts/northrend/icecrown_citadel/icecrown_raid/instance_icecrown_citadel.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/icecrown_citadel.h \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lord_marrowgar.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lady_deathwhisper.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_deathbringer_saurfang.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_lich_king.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_prince_council.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_professor_putricid.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_quenn_lanathel.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_rotface.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_festergut.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_dreamwalker.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_sindragosa.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/mobs_icecrown_citadel.cpp \
 scripts/northrend/naxxramas/boss_anubrekhan.cpp \
 scripts/northrend/naxxramas/boss_faerlina.cpp \
 scripts/northrend/naxxramas/boss_four_horsemen.cpp \
@@ -529,6 +539,7 @@ scripts/outland/tempest_keep/the_mechanar/boss_nethermancer_sepethrea.cpp \
 scripts/outland/tempest_keep/the_mechanar/boss_pathaleon_the_calculator.cpp \
 scripts/outland/tempest_keep/the_mechanar/instance_mechanar.cpp \
 scripts/outland/tempest_keep/the_mechanar/mechanar.h \
+scripts/special_events/crazy_ias.cpp \
 scripts/world/areatrigger_scripts.cpp \
 scripts/world/boss_emeriss.cpp \
 scripts/world/boss_lethon.cpp \

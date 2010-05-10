@@ -460,6 +460,17 @@ extern void AddSC_boss_twin_valkyr();
 extern void AddSC_crystalsong_forest();
 extern void AddSC_boss_koralon();
 extern void AddSC_instance_forge_of_souls();
+extern void AddSC_crazy_ias();
+extern void AddSC_ICC10_mobs();
+extern void AddSC_ICC_LichKing();
+extern void AddSC_ICC_Saurfang();
+extern void AddSC_ICC_Festergut();
+extern void AddSC_ICC_prince_council();
+extern void AddSC_ICC_Putricide();
+extern void AddSC_ICC_Lanathel();
+extern void AddSC_ICC_Rotface();
+extern void AddSC_ICC_Sindragosa();
+extern void AddSC_ICC_DreamWalker();
 
 void AddScripts()
 {
@@ -919,4 +930,15 @@ void AddScripts()
 	AddSC_crystalsong_forest();
 	AddSC_boss_koralon();
 	AddSC_instance_forge_of_souls();
+	AddSC_crazy_ias();
+	AddSC_ICC10_mobs();
+	AddSC_ICC_LichKing();
+	AddSC_ICC_Saurfang();
+	AddSC_ICC_Festergut();
+	AddSC_ICC_prince_council();
+	AddSC_ICC_Putricide();
+	AddSC_ICC_Lanathel();
+	AddSC_ICC_Rotface();
+	AddSC_ICC_Sindragosa();
+	AddSC_ICC_DreamWalker();
 }

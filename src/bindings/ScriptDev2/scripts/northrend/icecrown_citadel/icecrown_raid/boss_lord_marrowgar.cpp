@@ -36,6 +36,25 @@ enum
     H_SPELL_BONE_STORM   = 70835
 };
 
+enum
+{
+        //common
+        SPELL_BERSERK                           = 47008,
+        //yells
+        //summons
+        NPC_BONE_SPIKE                          = 38711,
+        NPC_COLDFLAME                           = 36672,
+        //Abilities
+        SPELL_SABER_LASH                        = 71021,
+        SPELL_CALL_COLD_FLAME                   = 69138,
+        SPELL_COLD_FLAME                        = 69146,
+        SPELL_COLD_FLAME_0                      = 69145,
+        SPELL_BONE_STRIKE                       = 69057,
+        SPELL_BONE_STORM                        = 69076,
+        SPELL_BONE_STRIKE_IMPALE                = 69065,
+        SPELL_BONE_STORM_STRIKE                 = 69075,
+};
+
 struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
 {
     boss_marrowgarAI(Creature* pCreature) : ScriptedAI(pCreature)
