@@ -1170,9 +1170,10 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 
 	Field *fields = result->Fetch();
     uint32 at_loginFlags = fields[0].GetUInt32();
+	uint32 used_loginFlag = recv_data.GetOpcode() == CMSG_CHAR_RACE_CHANGE ? AT_LOGIN_CHANGE_RACE : AT_LOGIN_CHANGE_FACTION;
     delete result;
 
-	if (!(at_loginFlags & (AT_LOGIN_CHANGE_FACTION | AT_LOGIN_CHANGE_RACE)))
+	if (!(at_loginFlags & used_loginFlag))
     {
         WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1);
         data << uint8(CHAR_CREATE_ERROR);
@@ -1219,6 +1220,19 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
         }
     }
 	
+	CharacterDatabase.escape_string(newname);
+    Player::Customize(guid, gender, skin, face, hairStyle, hairColor, facialHair);
+    CharacterDatabase.PExecute("UPDATE characters set name = '%s', race = '%u', at_login = at_login & ~ %u WHERE guid ='%u'", newname.c_str(), race, uint32(used_loginFlag), GUID_LOPART(guid));
+    CharacterDatabase.PExecute("DELETE FROM character_declinedname WHERE guid ='%u'", GUID_LOPART(guid));
+
+	if(recv_data.GetOpcode() == CMSG_CHAR_FACTION_CHANGE)
+	{
+		// TODO : add some stuff for faction change here
+	}
+
+    std::string IP_str = GetRemoteAddress();
+    sLog.outChar("Account: %d (IP: %s), Character guid: %u Change Race/Faction to: %s", GetAccountId(), IP_str.c_str(), GUID_LOPART(guid), newname.c_str());
+
 	WorldPacket data(SMSG_CHAR_FACTION_CHANGE, 1+8+(newname.size()+1)+7);
     data << uint8(RESPONSE_SUCCESS);
     data << uint64(guid);
