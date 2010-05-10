@@ -830,6 +830,8 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
                 SendAreaTriggerMessage("%s", at->requiredFailedText.c_str());
             else if(missingLevel)
                 SendAreaTriggerMessage(GetMangosString(LANG_LEVEL_MINREQUIRED), missingLevel);
+                
+            // transfer aborted here !
             return;
         }
     }
