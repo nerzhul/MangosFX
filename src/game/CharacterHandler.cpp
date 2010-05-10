@@ -1228,6 +1228,8 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 
 	if(recv_data.GetOpcode() == CMSG_CHAR_FACTION_CHANGE)
 	{
+		// Delete all Flypaths
+		CharacterDatabase.PExecute("UPDATE characters set taxi_path = '' WHERE guid ='%u'",GUID_LOPART(guid));
 		// Delete all current quests
 		CharacterDatabase.PExecute("DELETE FROM `character_queststatus` WHERE `status` = 3 AND guid ='%u'",GUID_LOPART(guid));
 		// Reset guild
