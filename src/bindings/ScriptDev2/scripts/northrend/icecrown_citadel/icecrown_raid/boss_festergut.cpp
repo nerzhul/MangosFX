@@ -16,3 +16,7 @@ enum BossSpells
     SPELL_GASTRIC_EXPLOSION  = 72227,
     SPELL_VILE_GAS           = 72272,
 };
+
+void AddSC_ICC_Festergut()
+{
+}

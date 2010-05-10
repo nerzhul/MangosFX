@@ -24,3 +24,7 @@ enum
         SPELL_BEAST_3                           = 21150,
 
 };
+
+void AddSC_ICC_Saurfang()
+{
+}

@@ -26,3 +26,7 @@ enum Spells
 	// others
 	SPELL_ENRAGE			=	26662,
 };
+
+void AddSC_ICC_Sindragosa()
+{
+}

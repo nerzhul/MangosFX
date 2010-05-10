@@ -30,3 +30,7 @@ enum BossSpells
     SPELL_MUTATED_SLASH           = 70542,
     SPELL_MUTATED_AURA            = 70405,
 };
+
+void AddSC_ICC_Putricide()
+{
+}

@@ -14,3 +14,7 @@ enum BossSpells
     SPELL_UNSTABLE_OOZE      = 69558,
     SPELL_OOZE_EXPLODE       = 69839,
 };
+
+void AddSC_ICC_Rotface()
+{
+}

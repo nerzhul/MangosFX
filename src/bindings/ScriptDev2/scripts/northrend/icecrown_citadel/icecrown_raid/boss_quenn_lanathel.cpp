@@ -15,5 +15,8 @@ enum BossSpells
         SPELL_TWILIGHT_BLOODBOLT                = 71446,
         SPELL_BLOODBOLT_WHIRL                   = 71772,
         SPELL_PRESENCE_OF_DARKFALLEN            = 71952,
-
 };
+
+void AddSC_ICC_Lanathel()
+{
+}

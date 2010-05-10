@@ -37,3 +37,7 @@ static Locations SpawnLoc[]=
     {4166.216797f, 2564.197266f, 364.873047f},  // 3 Valithria Room 3
     {4239.579102f, 2566.753418f, 364.868439f},  // 4 Valithria Room 4
 };
+
+void AddSC_ICC_DreamWalker()
+{
+}

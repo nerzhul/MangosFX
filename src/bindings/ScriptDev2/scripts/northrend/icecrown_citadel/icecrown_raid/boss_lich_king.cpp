@@ -59,3 +59,7 @@ enum Spells
 	// Raging Spirit
 	SPELL_SOUl_SHRIEK					=	69242
 };
+
+void AddSC_ICC_LichKing()
+{
+}

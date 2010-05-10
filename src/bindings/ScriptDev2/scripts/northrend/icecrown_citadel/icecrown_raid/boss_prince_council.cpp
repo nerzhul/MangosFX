@@ -29,3 +29,7 @@ enum BossSpells
         NPC_DARK_NUCLEUS                        = 38369,
 
 };
+
+void AddSC_ICC_prince_council()
+{
+}
