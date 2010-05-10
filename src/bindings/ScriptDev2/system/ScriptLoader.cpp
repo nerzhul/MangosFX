@@ -460,6 +460,7 @@ extern void AddSC_boss_twin_valkyr();
 extern void AddSC_crystalsong_forest();
 extern void AddSC_boss_koralon();
 extern void AddSC_instance_forge_of_souls();
+extern void AddSC_crazy_ias();
 
 void AddScripts()
 {
@@ -919,4 +920,5 @@ void AddScripts()
 	AddSC_crystalsong_forest();
 	AddSC_boss_koralon();
 	AddSC_instance_forge_of_souls();
+	AddSC_crazy_ias();
 }
