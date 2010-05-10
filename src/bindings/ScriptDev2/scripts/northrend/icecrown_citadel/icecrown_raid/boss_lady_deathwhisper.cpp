@@ -68,6 +68,45 @@ enum
     NPC_VENGEFUL_SHADE         = 38222,
 };
 
+enum BossSpells
+{
+        //common
+        SPELL_BERSERK                           = 47008,
+        //yells
+        //summons
+        NPC_VENGEFUL_SHADE                      = 38222,
+        NPC_FANATIC                             = 37890,
+        NPC_REANIMATED_FANATIC                  = 38009,
+        NPC_ADHERENT                            = 37949,
+        NPC_REANIMATED_ADHERENT                 = 38010,
+        //Abilities
+        SPELL_MANA_BARRIER                      = 70842,
+        SPELL_SHADOW_BOLT                       = 71254,
+        SPELL_DEATH_AND_DECAY                   = 71001,
+        SPELL_DARK_EMPOWERMENT                  = 70901,
+        SPELL_FROSTBOLT                         = 71420,
+        SPELL_INSIGNIFICANCE                    = 71204,
+
+        SPELL_DOMINATE_MIND                     = 71289,
+
+        SPELL_VENGEFUL_BLAST                    = 71494,
+        SPELL_VENGEFUL_BLAST_0                  = 71544,
+};
+
+static Locations SpawnLoc[]=
+{
+    {-623.055481f, 2211.326660f, 51.764259f},  // 0 Lady's stay point
+    {-620.197449f, 2272.062256f, 50.848679f},  // 1 Right Door 1
+    {-598.636353f, 2272.062256f, 50.848679f},  // 2 Right Door 2
+    {-578.495728f, 2272.062256f, 50.848679f},  // 3 Right Door 3
+    {-578.495728f, 2149.211182f, 50.848679f},  // 4 Left Door 1
+    {-598.636353f, 2149.211182f, 50.848679f},  // 5 Left Door 2
+    {-620.197449f, 2149.211182f, 50.848679f},  // 6 Left Door 3
+    {-517.652466f, 2216.611328f, 62.823681f},  // 7 Upper marsh 1
+    {-517.652466f, 2211.611328f, 62.823681f},  // 8 Upper marsh 2
+    {-517.652466f, 2206.611328f, 62.823681f},  // 9 Upper marsh 3
+};
+
 struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
 {
     boss_deathwhisperAI(Creature* pCreature) : ScriptedAI(pCreature)
