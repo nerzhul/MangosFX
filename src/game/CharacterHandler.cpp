@@ -1219,7 +1219,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
             return;
         }
     }
-	
+
 	CharacterDatabase.escape_string(newname);
     Player::Customize(guid, gender, skin, face, hairStyle, hairColor, facialHair);
     CharacterDatabase.PExecute("UPDATE characters set name = '%s', race = '%u', at_login = at_login & ~ %u WHERE guid ='%u'", newname.c_str(), race, uint32(used_loginFlag), GUID_LOPART(guid));
