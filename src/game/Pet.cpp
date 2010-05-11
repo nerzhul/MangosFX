@@ -934,6 +934,14 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 						SetCreateHealth(3840 + owner->GetHealth() * 0.4);
 						break;
 					}
+					case CLASS_DRUID:
+					{
+						uint32 spellpower = int32(owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE));
+						int32 bonusmelee = int32(spellpower * 0.08f);
+						SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
+						SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
+						break;
+					}
 					case CLASS_DEATH_KNIGHT:
 					{
 						break;
