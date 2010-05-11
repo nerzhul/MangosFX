@@ -7508,7 +7508,7 @@ void Spell::EffectBreakPlayerTargeting (uint32 /* eff_idx */)
 		return;
 		
 	WorldPacket data(SMSG_CLEAR_TARGET, 8);
-	data << unitTarget->GetObjectGuid();
+	data << unitTarget->GetGUID();
 	unitTarget->SendMessageToSet(&data, false);
 }
 
