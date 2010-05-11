@@ -1262,7 +1262,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 			CharacterDatabase.PExecute("INSERT INTO `character_homebind` VALUES ('%u','1', '1637', '1633.33', '-4439.11', '15.7588'",GUID_LOPART(guid));
 
 		// Achievement conversion
-		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_achievements"))
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_factionchange_achievements"))
 		{
 			do
 			{
@@ -1276,7 +1276,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 		}
 
 		// Item conversion
-		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_items"))
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_factionchange_items"))
 		{
 			do
 			{
@@ -1293,7 +1293,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 		}
 
 		// Spell conversion
-		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_spells"))
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_factionchange_spells"))
 		{
 			do
 			{
@@ -1307,7 +1307,7 @@ void WorldSession::HandleCharFactionOrRaceChange(WorldPacket& recv_data)
 		}
 
 		// Reputation conversion
-		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_changefaction_spells"))
+		if(QueryResult *result2 = WorldDatabase.Query("SELECT alliance_id, horde_id FROM player_factionchange_spells"))
 		{
 			do
 			{
