@@ -152,8 +152,8 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
             for (int i=0;i<count;i++)
             {
                 recv_data.readPackGUID(guid);
-                recv_data >> (uint8)status;
-                recv_data >> (uint8)rank;
+                recv_data >> status;
+                recv_data >> rank;
            }
         }
     }
