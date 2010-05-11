@@ -157,8 +157,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
            }
         }
     }
-	
-	
+		
 	uint8 unk1 = 0;
 	uint32 maxInvites = 1;
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);

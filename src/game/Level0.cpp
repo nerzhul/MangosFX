@@ -410,7 +410,6 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
     }
 	else if(argstr == "changerace")
 	{
-		return false;
 		if(diamant >= 3)
 		{
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_RACE);
@@ -423,7 +422,6 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	}
 	else if(argstr == "changefaction")
 	{
-		return false;
 		if(diamant >= 4)
 		{
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
