@@ -18292,7 +18292,7 @@ void Player::HandleStealthedUnitsDetection()
                 if((*i)!=this && (*i)->isType(TYPEMASK_UNIT))
                 {
                     SendAurasForTarget(*i);
-                    BuildVehicleInfo(*i);
+                    //BuildVehicleInfo(*i);
 				}
             }
         }
