@@ -165,11 +165,12 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	data << maxInvites;
 	for(int i = 0; i < maxInvites; i++)
 	{
-		uint64 guid2 = 0,inviteId = 1;
+		uint64 guid2 = _player->GetGUID(),inviteId = 1;
 		uint8 unk10 = 0,unk11 = 0,unk12 = 0 ,unk13 = 0;
 		uint32 unk14 = 0;
 		std::string text = "Salut";
-		data << guid2 << unk10 << unk11 << unk12 << unk13 << inviteId << unk14 << text;
+		data << guid2;
+		data << unk10 << unk11 << unk12 << unk13 << inviteId << unk14 << text;
 	}
 }
 
@@ -237,28 +238,39 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
     recv_data.hexlike();
 
 	uint64 guid,eventId;
-	std::string text;
+	std::string playername;
 	uint8 unk1,unk2;
     recv_data >> guid;
     recv_data >> eventId;
-    recv_data >> text;
-    recv_data >> unk1; // Maybe 1 guid 64
-    recv_data >> unk2; //
+    recv_data >> playername;
+    recv_data >> unk1;
+    recv_data >> unk2;
+	normalizePlayerName(playername);
+	debug_log("Guid : %u Event Id : %u unk1 : %u unk2 : %u",guid,eventId,unk1,unk2);
 	
-	WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
-	data << guid;
-	uint64 inviteId = 0;
-	data << inviteId << eventId << unk1 << unk2;
-	bool unk3 = false;
-	data << unk3;
-	if(unk3)
+	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
+	//if(Player* pl = sObjectMgr.GetPlayer(invitedPlayerGuid))
 	{
+		uint64 inviteId = 0;
+		bool unk3 = false;
 		uint32 unk4 = 0;
-		data << uint32(unk4);
+
+		WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
+		data << _player->GetGUID();
+		data << inviteId;
+		data << eventId;
+		data << unk1;
+		data << unk2;
+		data << unk3;
+		if(unk3)
+		{
+			data << uint32(unk4);
+		}
+		uint8 unk5 = 0;
+		data << unk5;
+		//pl->GetSession()->SendPacket(&data);
+		SendPacket(&data);
 	}
-	uint8 unk5 = 0;
-	data << unk5;
-	
 }
 
 void WorldSession::HandleCalendarEventRsvp(WorldPacket &recv_data)

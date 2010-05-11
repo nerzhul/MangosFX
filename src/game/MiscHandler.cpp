@@ -1564,7 +1564,7 @@ void WorldSession::HandleQueryInspectAchievements( WorldPacket & recv_data )
 void WorldSession::HandleWorldStateUITimerUpdate(WorldPacket& recv_data)
 {
     // empty opcode
-    sLog.outDebug("WORLD: CMSG_WORLD_STATE_UI_TIMER_UPDATE");
+    //sLog.outDebug("WORLD: CMSG_WORLD_STATE_UI_TIMER_UPDATE");
 
     WorldPacket data(SMSG_WORLD_STATE_UI_TIMER_UPDATE, 4);
     data << uint32(time(NULL));

@@ -625,7 +625,6 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
     {		
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(26662,180000,10000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_TRAMPLE,35000,30000,5000,TARGET_ME,1);
 		Tasks.AddEvent(SPELL_ARCTIC_BREATH,15000,25000,2500,TARGET_MAIN,1);
 		Tasks.AddEvent(SPELL_FEROCIOUS_BUTT,25000,30000,5000,TARGET_MAIN,1);
 		Tasks.AddEvent(SPELL_WHIRL,urand(4000,8000),15000,15000,TARGET_ME,1);
@@ -731,6 +730,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 					phase_Timer = 2500;
 					break;
 				case 4:
+					DoCastMe(SPELL_TRAMPLE);
 					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 					bool PlayerHit = false;
 					if (!lPlayers.isEmpty())

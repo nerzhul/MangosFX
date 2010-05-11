@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
     boss_devourer_of_soulsAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_PHANTOM_BLAST,5000,5000);
+		AddEventOnTank(SPELL_PHANTOM_BLAST,5000,5000,1000);
 		AddEvent(SPELL_WELL_OF_SOULS,30000,20000);
     }
 

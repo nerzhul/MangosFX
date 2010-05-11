@@ -121,7 +121,6 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 			
 		}
 		UpdateEvent(diff);
-		DoMeleeAttackIfReady();
     }
 
     void JustDied(Unit* killer)
