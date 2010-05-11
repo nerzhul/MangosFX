@@ -5076,6 +5076,30 @@ void Spell::EffectWeaponDmg(uint32 i)
     int32 spell_bonus = 0;                                  // bonus specific for spell
     switch(m_spellInfo->SpellFamilyName)
     {
+		case SPELLFAMILY_GENERIC:
+		{
+			switch(m_spellInfo->Id)                         // for spells with divided damage to targets
+			{
+				// for spells with divided damage to targets
+				case 66765: case 66809: case 67331:         // Meteor Fists
+				case 67333:                                 // Meteor Fists
+				case 69055:                                 // Bone Slice
+				case 71021:                                 // Saber Lash
+				{
+					uint32 count = 0;
+					for(std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit) 
+						if(ihit->effectMask & (1<<i))
+							++count;
+							
+					// For all this spells damages could be divided by 2 only
+					if(count > 2)
+						count = 2;
+					totalDamagePercentMod /= float(count);  // divide to all targets
+					break;
+				}
+			}
+			break;
+		}
         case SPELLFAMILY_WARRIOR:
         {
             // Whirlwind, single only spell with 2 weapon white damage apply if have

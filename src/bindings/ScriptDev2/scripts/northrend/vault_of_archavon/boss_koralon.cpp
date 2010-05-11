@@ -29,22 +29,6 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
     uint32 BBTicks;
     bool BB;
 
-	void DamageDeal(Unit* pDoneTo, uint32& dmg)
-	{
-		if(me->getVictim() && pDoneTo == me->getVictim() && dmg > 9000 && me->HasAura(SPELL_METEOR_FISTS))
-		{
-			uint32 fireDmg = dmg;
-			if(Unit* offTank = SelectUnit(SELECT_TARGET_TOPAGGRO,1))
-			{
-				if(offTank->isAlive() && me->HasInArc(15.0f,offTank))
-				{
-					me->DealDamage(offTank,fireDmg, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, NULL, false);
-					dmg /= 2;
-				}
-			}
-		}
-	}
-
     void Reset()
     {
 		ResetTimers();

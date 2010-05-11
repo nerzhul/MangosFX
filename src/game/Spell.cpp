@@ -2001,8 +2001,11 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 Unit* target = m_targets.getUnitTarget();
                 if(!target)
                     target = m_caster;
-                uint32 count = CalculateDamage(2,m_caster); // stored in dummy effect, affected by mods
-
+                // prevent center adding to heal list
+                else if (!m_caster->IsFriendlyTo(target))
+                    targetUnitMap.remove(target);
+ 
+                uint32 count = CalculateDamage(EFFECT_INDEX_2,m_caster); // stored in dummy effect, affected by mods
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, target, radius, count, true, false, true);
             }
             else
