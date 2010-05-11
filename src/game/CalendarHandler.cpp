@@ -37,7 +37,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 	uint32 event_count = 0;
 	uint32 raid_reset_count = 0;
 	uint32 holiday_count = 0;
-    data << (uint32) invite_count                           //invite node count
+    data << (uint32) invite_count;                           //invite node count
     for (int i = 0; i < invite_count; i++)
     {
 		uint64 inviteId,eventId;
@@ -46,7 +46,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-    data << (uint32) event_count                            //event count
+    data << (uint32) event_count;                            //event count
     
     for (int i = 0; i < event_count; i++)
     {
@@ -87,12 +87,12 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 		uint32 mapId,resetTime,unkTime;
 		data << mapId,resetTime,unkTime;
 	}
-    data << (uint32) holiday_reset_count;                   // unk counter 5
-    for (int i = 0; i < holiday_reset_count; i++)
+    data << (uint32) holiday_count;                   // unk counter 5
+    for (int i = 0; i < holiday_count; i++)
     {
 		uint32 unk1,unk2,unk3,unk4,unk5;
 		std::string holidayName;
-		data << unk1 << unk3 << unk3 << unk4 << unk5;
+		data << unk1 << unk2 << unk3 << unk4 << unk5;
 		for (int j = 0; j < 26; j++)
 			data << uint32(0);
 		for (int j = 0; j < 10; j++)
@@ -138,10 +138,11 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_ADD_EVENT");
     recv_data.hexlike();
     
-    uint32 flags = ReadCalendarEventCreationValues(recv_data);
+	uint32 flags = Calendar::ReadCalendarEventCreationValues(recv_data);
 
     if (!((flags >> 6) & 1))
     {
+		uint32 count = 0;
         recv_data >> (uint32)count;
         if (count > 0)
         {
@@ -162,7 +163,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
 	data << unk1;
 	data << maxInvites;
-	for(int i = 0; i < maxinvites; i++)
+	for(int i = 0; i < maxInvites; i++)
 	{
 		uint64 guid2 = 0,inviteId = 1;
 		uint8 unk10 = 0,unk11 = 0,unk12 = 0 ,unk13 = 0;
@@ -172,7 +173,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	}
 }
 
-uint32 Calendar::ReadCalendarEventCreationValues(Worldpacket& data)
+uint32 Calendar::ReadCalendarEventCreationValues(WorldPacket& data)
 {
 	if(data.GetOpcode() != CMSG_CALENDAR_ADD_EVENT)
 	{
@@ -181,7 +182,7 @@ uint32 Calendar::ReadCalendarEventCreationValues(Worldpacket& data)
 		data >> creatorGuid;		
 	}
 	
-	str::string title,description;
+	std::string title,description;
 	data >> title;
 	data >> description;
 	uint8 type,unk1;
@@ -201,7 +202,7 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_UPDATE_EVENT");
     recv_data.hexlike();
 
-	ReadCalendarEventCreationValues(Worldpacket& data)
+	Calendar::ReadCalendarEventCreationValues(recv_data);
 }
 
 void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
@@ -308,7 +309,7 @@ void WorldSession::HandleCalendarEventStatus(WorldPacket &recv_data)
     uint32 unk4,flags,unk7;
     data << unk4 << flags;
     uint8 unk5,unk6;
-    data << unk6 << unk6 << unk7;
+    data << unk5 << unk6 << unk7;
 }
 
 void WorldSession::HandleCalendarEventModeratorStatus(WorldPacket &recv_data)

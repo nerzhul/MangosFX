@@ -21,6 +21,7 @@
 
 class Calendar
 {
-	public static uint32 ReadCalendarEventCreationValues(Worldpacket& data);
+	public:
+		static uint32 ReadCalendarEventCreationValues(WorldPacket& data);
 };
 #endif
