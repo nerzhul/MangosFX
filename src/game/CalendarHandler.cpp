@@ -20,6 +20,7 @@
 #include "Calendar.h"
 #include "Log.h"
 #include "Player.h"
+#include "ObjectMgr.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Opcodes.h"
@@ -143,7 +144,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
     if (!((flags >> 6) & 1))
     {
 		uint32 count = 0;
-        recv_data >> (uint32)count;
+        recv_data >> count;
         if (count > 0)
         {
             uint8 status,rank;
