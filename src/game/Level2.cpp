@@ -4902,6 +4902,41 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 					break;
 			}
 		}
+		else if(argstr == "recupcp")
+		{
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT recupstate FROM characterprofiler_recupstate where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				if(fields[0].GetUInt32() =! 2)
+					return false;
+			}
+			else
+				return false;
+				
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT item FROM characterprofiler_items where guid = '%u'",player->GetGUID()))
+			{
+				do
+				{
+					Field *fields = result->Fetch();
+					uint32 itemId = fields[0].GetUInt32();
+					player->AddItem(itemId);
+				}
+				while( result->NextRow() );
+			}
+			
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT spell FROM characterprofiler_spells where guid = '%u'",player->GetGUID()))
+			{
+				do
+				{
+					Field *fields = result->Fetch();
+					uint32 spellId = fields[0].GetUInt32();
+					player->learnSpell(spellId, 0,false);
+				}
+				while( result->NextRow() );
+			}
+			
+			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 3 WHERE guid = '%u'",player->GetGUID());
+		}
 	}
 
 	// monte
@@ -5114,6 +5149,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(1011),24000);
 	
 	player->UpdateSkillsToMaxSkillsForLevel();
+	player->SaveToDB();
 	return true;
 }
 
