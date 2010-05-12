@@ -72,7 +72,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
         sLog.outError("OutdoorPvP : TF successfully initiated.");
     }
 	
-    pOP = new OutdoorPvPZM;
+    /*pOP = new OutdoorPvPZM;
     // respawn, init variables
     if(!pOP->SetupOutdoorPvP())
     {
@@ -83,7 +83,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     {
         m_OutdoorPvPSet.push_back(pOP);
         sLog.outError("OutdoorPvP : ZM successfully initiated.");
-    }
+    }*/
 	
     pOP = new OutdoorPvPSI;
     // respawn, init variables
