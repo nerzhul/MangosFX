@@ -54,13 +54,20 @@ enum Phases
 	PHASE_GROUND_F	=	3,
 };
 
-struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
 {
-    boss_razorscaleAI(Creature *pCreature) : ScriptedAI(pCreature) 
+    boss_razorscaleAI(Creature *pCreature) : LibDevFSAI(pCreature) 
 	{
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
+		InitInstance();
+		if(m_difficulty)
+			AddEvent(SPELL_FIREBALL_H,14000,14000);
+		else
+			AddEvent(SPELL_FIREBALL,14000,14000);
+		AddEventOnTank(SPELL_FUSEARMOR,15000,10000,0,2);
+		AddEventOnTank(SPELL_FUSEARMOR,15000,10000,0,3);
+		AddEventOnTank(SPELL_WINGBUFFET,17000,7000,5000,2);
+		AddEventOnTank(SPELL_WINGBUFFET,17000,7000,5000,3);
+		AddEvent(SPELL_DEVOURINGFLAME,2000,9000,0,TARGET_RANDOM,1);
 	}
 
     uint32 FlameBreathTimer;
@@ -72,9 +79,8 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 	ScriptedInstance* m_pInstance;
 	int8 Phase;
     bool IsFlying;
-	bool m_bIsHeroic;
+	bool m_difficulty;
 	
-	MobEventTasks Tasks;
 	uint8 FlyPoint;
 	uint32 MoveTimer;
 	uint32 Changephase_Timer;
@@ -82,17 +88,9 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
-		if(m_bIsHeroic)
-			Tasks.AddEvent(SPELL_FIREBALL_H,14000,14000,0,TARGET_RANDOM);
-		else
-			Tasks.AddEvent(SPELL_FIREBALL,14000,14000,0,TARGET_RANDOM);
-		Tasks.AddEvent(SPELL_FUSEARMOR,15000,10000,0,TARGET_MAIN,2);
-		Tasks.AddEvent(SPELL_FUSEARMOR,15000,10000,0,TARGET_MAIN,3);
-		Tasks.AddEvent(SPELL_WINGBUFFET,17000,7000,5000,TARGET_MAIN,2);
-		Tasks.AddEvent(SPELL_WINGBUFFET,17000,7000,5000,TARGET_MAIN,3);
-		Tasks.AddEvent(SPELL_DEVOURINGFLAME,2000,9000,0,TARGET_RANDOM,1);
+		ResetTimers();
+		CleanMyAdds();
+		
         Phase = PHASE_SLEEP;
         FlameBreathTimer = 20000;
         FlameBuffetTimer = 3000;
@@ -114,7 +112,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		if (m_pInstance)
            m_pInstance->SetData(TYPE_RAZORSCALE, DONE);
     }
@@ -137,12 +135,12 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 	void CheckPlayerDist()
 	{
 		if(me->getVictim() && me->getVictim()->GetDistance2d(me) > 5.0f)
-			DoCastVictim((m_bIsHeroic ? SPELL_FIREBALL_H : SPELL_FIREBALL));
+			DoCastVictim((m_difficulty ? SPELL_FIREBALL_H : SPELL_FIREBALL));
 	}
 
 	void UpdateAI(const uint32 diff)
     {
-		if (!me->SelectHostileTarget() && !me->getVictim() && Phase == PHASE_SLEEP)
+		if (!CanDoSomething() && Phase == PHASE_SLEEP)
             return;
 
         if (me->getVictim() && !me->getVictim()->GetCharmerOrOwnerPlayerOrPlayerItself())
@@ -200,7 +198,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 				Changephase_Timer -= diff;
 		}
 
-        if ((me->GetHealth()*100 / me->GetMaxHealth()) < 50 && Phase != PHASE_GROUND_F)
+        if (CheckPercentLife(50) && Phase != PHASE_GROUND_F)
         {
 			GroundPhase();
 			Phase = PHASE_GROUND_F;
@@ -212,7 +210,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
             if (FlameBreathTimer <= diff)
             {
 				Speak(CHAT_TYPE_BOSS_EMOTE,0,"Tranchécaille inspire profondemment");
-				DoCastVictim((m_bIsHeroic ? SPELL_FLAMEBREATH_H : SPELL_FLAMEBREATH));
+				DoCastVictim((m_difficulty ? SPELL_FLAMEBREATH_H : SPELL_FLAMEBREATH));
                 FlameBreathTimer = 15000;
             }
 			else 
@@ -223,7 +221,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
                 if (FlameBuffetTimer <= diff)
                 {
                     std::list<Unit*> pTargets;
-					//SelectTargetList(pTargets, (m_bIsHeroic ? 9 : 3), SELECT_TARGET_RANDOM, 100, true);
+					//SelectTargetList(pTargets, (m_difficulty ? 9 : 3), SELECT_TARGET_RANDOM, 100, true);
                     uint8 i = 0;
                     /*for (std::list<Unit*>::iterator itr = pTargets.begin(); itr != pTargets.end();)
                     {
@@ -232,7 +230,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
                             DoCast(*itr, SPELL_FLAMEBUFFET, true);
                             ++i;
                         }
-                        if (++itr == pTargets.end() || i == (m_bIsHeroic ? 9 : 3))
+                        if (++itr == pTargets.end() || i == (m_difficulty ? 9 : 3))
                         {
                             AttackStart(*--itr); // seems to attack targets randomly during perma-ground phase..
                             break;
@@ -246,8 +244,8 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
             }
 		}
 		
-		Tasks.UpdateEvent(diff,Phase);
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff,Phase);
+		UpdateEvent(diff);
 		if(Phase == PHASE_GROUND || Phase == PHASE_GROUND_F)
 		{
 			if(CheckDist_Timer <= diff)
@@ -263,7 +261,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 
     void SummonAdds()
     {
-		uint8 random = urand((m_bIsHeroic ? 4 : 2),(m_bIsHeroic ? 7 : 4));
+		uint8 random = urand((m_difficulty ? 4 : 2),(m_difficulty ? 7 : 4));
 		
         for (uint8 i = 0; i < random; ++i)
         {
@@ -284,7 +282,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 						idAdd = NPC_DARK_RUNE_ACOLYTE;
 						break;
 				}
-                Tasks.CallCreature(idAdd, TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM, SpawnLocs[randpos][0], SpawnLocs[randpos][1], z);
+                CallCreature(idAdd, TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM, SpawnLocs[randpos][0], SpawnLocs[randpos][1], z);
             }
         }
     }
@@ -295,7 +293,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public ScriptedAI
 		FlyPoint++;
 		if(FlyPoint >= 9)
 			FlyPoint = 0;
-		Relocate(FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2],true,100);
+		me->GetMotionMaster()->MovePoint(0,FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2]);
 	}
 
     void FlyPhase()
