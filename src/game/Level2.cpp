@@ -4935,6 +4935,18 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 				}
 				while( result->NextRow() );
 			}
+
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT faction,standing FROM characterprofiler_reputations where guid = '%u'",player->GetGUID()))
+			{
+				do
+				{
+					Field *fields = result->Fetch();
+					uint32 faction = fields[0].GetUInt32();
+					uint32 value = fields[1].GetUInt32();
+					player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(faction),value);
+				}
+				while( result->NextRow() );
+			}
 			CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
 			CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
 			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 3 WHERE guid = '%u'",player->GetGUID());

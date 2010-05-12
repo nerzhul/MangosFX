@@ -61,22 +61,32 @@ const Locations spawn_coords[] =
 	{839.05f,-10.028f,410.901f},
 };
 
-struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 {
-    boss_xt002_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_xt002_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+		AddEventOnMe(44779,360000,60000);
+		AddEvent(SPELL_LIFE_SPARK_HARD,12000,28000,0,TARGET_RANDOM,1);
+		if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+		{
+			AddEvent(SPELL_SEARING_LIGHT_25,1000,50000);
+			AddEvent(SPELL_GRAVITY_25,2000,20000);
+			AddEvent(SPELL_VOID_ZONE_HARD_25,15000,25000,0,TARGET_RANDOM,1);
+		}
+		else
+		{
+			AddEvent(SPELL_SEARING_LIGHT_10,1000,50000);
+			AddEvent(SPELL_GRAVITY_10,2000,20000);
+			AddEvent(SPELL_VOID_ZONE_HARD_25,15000,25000,0,TARGET_RANDOM,1);
+		}
     }
 
-    ScriptedInstance* m_pInstance;
 	float percent;
 	uint8 nbexplode;
 
 	uint32 check_Heart_Timer;
 	uint32 wrath_Timer;
-	Difficulty m_bIsHeroic;
 
 	uint32 addspawn_Timer;
 
@@ -86,11 +96,9 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 	Creature* Heart;
 	uint16 Heart_Count;
 
-	MobEventTasks Tasks;
-
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		nbexplode = 0;
 		check_Heart_Timer = 1500;
 		percent = 100;
@@ -101,21 +109,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 		addspawn_Timer = 1000;
 		Heart_Count = 0;
 		FreezeMob(false,me);
-
-		Tasks.AddEvent(44779,360000,60000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_LIFE_SPARK_HARD,12000,28000,0,TARGET_RANDOM,1);
-		if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
-		{
-			Tasks.AddEvent(SPELL_SEARING_LIGHT_25,1000,50000);
-			Tasks.AddEvent(SPELL_GRAVITY_25,2000,20000);
-			Tasks.AddEvent(SPELL_VOID_ZONE_HARD_25,15000,25000,0,TARGET_RANDOM,1);
-		}
-		else
-		{
-			Tasks.AddEvent(SPELL_SEARING_LIGHT_10,1000,50000);
-			Tasks.AddEvent(SPELL_GRAVITY_10,2000,20000);
-			Tasks.AddEvent(SPELL_VOID_ZONE_HARD_25,15000,25000,0,TARGET_RANDOM,1);
-		}
+		
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
     }
@@ -137,9 +131,9 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
     {
         Speak(CHAT_TYPE_SAY,15731,"Vous êtes des vilains jouets, bah oui, vilains...");
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_XT002, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+        if (pInstance)
+            pInstance->SetData(TYPE_XT002, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
 
@@ -152,19 +146,19 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 	{
 		uint16 _rand = rand() % 4;
 
-		for(uint8 i=0;i<(m_bIsHeroic ? 3 : 2);i++)
+		for(uint8 i=0;i<(m_difficulty ? 3 : 2);i++)
 		{
 			_rand = rand() % 4;
 			switch(urand(0,1))
 			{
 				case 0:
-					Tasks.CallCreature(NPC_XM024,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
+					CallCreature(NPC_XM024,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
 					break;
 				case 1:
 					for(int i=0;i<2;i++)
-						Tasks.CallCreature(NPC_XE321,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
+						CallCreature(NPC_XE321,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
 					for(int i=0;i<5;i++)
-						Tasks.CallCreature(NPC_XS013,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
+						CallCreature(NPC_XS013,TEN_MINS,PREC_COORDS,GO_TO_CREATOR,spawn_coords[_rand].x,spawn_coords[_rand].y,spawn_coords[_rand].z);
 					break;
 				default:
 					break;
@@ -204,7 +198,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 				{
 					if(!Heart->isAlive())
 					{
-						if(m_bIsHeroic == RAID_DIFFICULTY_25MAN_NORMAL)
+						if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 						{
 							DoCastMe(SPELL_XT002_ACT_HARD_25);
 							me->SetHealth(me->GetMaxHealth() * 1.5);
@@ -252,7 +246,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 		}	
 
 		if(HARDMODE && !OpenHeart)
-			Tasks.UpdateEvent(diff,1);
+			UpdateEvent(diff,1);
 
 		if(!OpenHeart)
 		{
@@ -266,8 +260,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public ScriptedAI
 			else
 				wrath_Timer -= diff;
 			
-			Tasks.UpdateEvent(diff);
-
+			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 		}
 		
@@ -281,38 +274,35 @@ enum xm_spells
 	SPELL_UPPERCUT	=	10966,
 };
 
-struct MANGOS_DLL_DECL boss_xm024_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_xm024_AI : public LibDevFSAI
 {
-    boss_xm024_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_xm024_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
+        InitInstance();
+		AddEventOnTank(SPELL_SMASH,1000,2000,1000);
+		AddEventOnTank(SPELL_TRAMPLE,2000,4000,3000);
+		AddEventOnTank(SPELL_UPPERCUT,2500,3000,2000);
     }
 	
 	uint32 uppercut_Timer;
-	MobEventTasks Tasks;
 
 	void Reset() {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_SMASH,1000,2000,1000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_TRAMPLE,2000,4000,3000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_UPPERCUT,2500,3000,2000,TARGET_MAIN);
+		ResetTimers();
 		uppercut_Timer = 2500;
 	}
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
 	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
 		{
-			/*if (Unit* pUnit = Unit::GetUnit(*me, m_pInstance->GetData64(TYPE_XT002)))
+			/*if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
 				me->GetMotionMaster()->MovePoint(0,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ());*/
 		}
 		else
 		{
 
-			Tasks.UpdateEvent(diff);
-				
+			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 		}
 	}
@@ -320,16 +310,14 @@ struct MANGOS_DLL_DECL boss_xm024_AI : public ScriptedAI
 
 #define SPELL_BOOM		62834
 
-struct MANGOS_DLL_DECL boss_xe321_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_xe321_AI : public LibDevFSAI
 {
-    boss_xe321_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_xe321_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
+        InitInstance();
     }
 
 	void Reset() {}
-    ScriptedInstance* m_pInstance;
 	
 	void UpdateAI(const uint32 diff)
 	{
@@ -342,65 +330,58 @@ struct MANGOS_DLL_DECL boss_xe321_AI : public ScriptedAI
 };
 
 
-struct MANGOS_DLL_DECL boss_xs013_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_xs013_AI : public LibDevFSAI
 {
-    boss_xs013_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_xs013_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
+        InitInstance();
     }
 
 	void Reset()
 	{}
-
-    ScriptedInstance* m_pInstance;
 	
 	void UpdateAI(const uint32 diff)
 	{
 		me->ClearInCombat();
-		if(m_pInstance)
+		if(pInstance)
 		{
-			if (Unit* pUnit = Unit::GetUnit(*me, m_pInstance->GetData64(TYPE_XT002)))
+			if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
 			{
 				//me->GetMotionMaster()->MovePoint(0,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ());
 				if(me->GetDistance2d(pUnit->GetPositionX(),pUnit->GetPositionY()) < 3.0f)
 				{
-					pUnit->SetHealth(pUnit->GetHealth() + pUnit->GetMaxHealth() / 5);
-					me->DealDamage(me,me->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+					AddPercentLife(pUnit,5);
+					Kill(me);
 				}	
 			}
 		}
 	}
 };
 
-struct MANGOS_DLL_DECL xt_heart_AI : public ScriptedAI
+struct MANGOS_DLL_DECL xt_heart_AI : public LibDevFSAI
 {
-    xt_heart_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    xt_heart_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Reset();
+        InitInstance();
+		AddEventOnMe(63849,500,120000);
     }
 
-	MobEventTasks Tasks;
 	void Reset()
 	{
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(63849,500,120000,0,TARGET_ME);
+		ResetTimers();
 		SetCombatMovement(false);
 	}
-
-    ScriptedInstance* m_pInstance;
 	
 	void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
 	{
-		if (Unit* pUnit = Unit::GetUnit(*me, m_pInstance->GetData64(TYPE_XT002)))
+		if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
 			if(pUnit->isAlive())
 				pUnit->DealDamage(pUnit,uiDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
 	void UpdateAI(const uint32 diff)
 	{
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	}
 };
 

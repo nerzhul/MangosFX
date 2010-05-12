@@ -1467,3 +1467,11 @@ void MobEventTasks::GetNewTargetForMyAdds(Unit* target)
 	}
 }
 
+void LibDevFSAI::AddPercentLife(Unit* u,uint8 percent)
+{
+	if(!u || !u->isAlive())
+		return;
+
+	u->SetHealth(u->GetHealth() + u->GetMaxHealth() * percent / 100);
+}
+

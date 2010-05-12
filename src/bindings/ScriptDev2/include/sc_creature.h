@@ -408,6 +408,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		}
 		
 		void ResetTimers();
+
+		void AddPercentLife(Unit* u,uint8 percent);
 		
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
