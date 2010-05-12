@@ -4940,6 +4940,10 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 		}
 	}
 
+	// double spe
+	player->UpdateSpecCount(2);
+	player->learnSpell(63645, 0,false);
+	player->learnSpell(63644, 0,false);
 	// monte
 	player->learnSpell(34093, 0,false);
 	// secou
