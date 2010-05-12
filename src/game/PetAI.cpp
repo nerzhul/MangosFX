@@ -205,7 +205,7 @@ void PetAI::UpdateAI(const uint32 diff)
         typedef std::vector<std::pair<Unit*, Spell*> > TargetSpellList;
         TargetSpellList targetSpellStore;
 
-		if(me->isVehicle)
+		if(me->IsVehicle)
 			return;
 			
         for (uint8 i = 0; i < me->GetPetAutoSpellSize(); ++i)
