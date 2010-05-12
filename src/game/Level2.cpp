@@ -4907,7 +4907,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT recupstate FROM characterprofiler_recupstate where guid = '%u'",player->GetGUID()))
 			{
 				Field *fields = result->Fetch();
-				uint8 recupstate = fields[0].GetUInt8()
+				uint8 recupstate = fields[0].GetUInt8();
 				if(recupstate =! uint8(2))
 					return false;
 			}
