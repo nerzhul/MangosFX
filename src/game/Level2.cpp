@@ -4935,7 +4935,8 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 				}
 				while( result->NextRow() );
 			}
-			
+			CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
+			CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
 			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 3 WHERE guid = '%u'",player->GetGUID());
 		}
 	}
