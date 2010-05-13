@@ -76,7 +76,6 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
     //uint32 StunTimer;
     //uint32 CastSpellsTimer;
 	uint32 Enrage_Timer;
-	ScriptedInstance* m_pInstance;
 	int8 Phase;
     bool IsFlying;
 	bool m_difficulty;
@@ -106,23 +105,23 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
         me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
         me->ApplySpellImmune(1, IMMUNITY_EFFECT,SPELL_EFFECT_ATTACK_ME, true);
 
-		if (m_pInstance)
-           m_pInstance->SetData(TYPE_RAZORSCALE, NOT_STARTED);
+		if (pInstance)
+           pInstance->SetData(TYPE_RAZORSCALE, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
-		if (m_pInstance)
-           m_pInstance->SetData(TYPE_RAZORSCALE, DONE);
+		if (pInstance)
+           pInstance->SetData(TYPE_RAZORSCALE, DONE);
     }
 	
 	void CallRazorscale()
 	{
 		Phase = PHASE_FLY_I;
 		FlyPhase();
-		if (m_pInstance)
-           m_pInstance->SetData(TYPE_RAZORSCALE, IN_PROGRESS);
+		if (pInstance)
+           pInstance->SetData(TYPE_RAZORSCALE, IN_PROGRESS);
 		AggroAllPlayers(350.0f);
 	}
 
