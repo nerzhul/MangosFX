@@ -2419,7 +2419,7 @@ bool InstanceMap::CanEnter(Player *player)
 
     // cannot enter while players in the instance are in combat
     Group *pGroup = player->GetGroup();
-    if(pGroup && pGroup->InCombatToInstance(GetInstanceId(),true))
+	if(pGroup && pGroup->InCombatToInstance(GetInstanceId(),true) && !player->isGameMaster())
     {
         player->SendTransferAborted(GetId(), TRANSFER_ABORT_ZONE_IN_COMBAT);
 		if(!player->isAlive())
