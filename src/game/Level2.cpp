@@ -4908,7 +4908,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			{
 				Field *fields = result->Fetch();
 				uint8 recupstate = fields[0].GetUInt8();
-				if(recupstate =! uint8(2))
+				if(recupstate != uint8(2))
 					return false;
 			}
 			else
