@@ -248,7 +248,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 
 				min_Timer--;
 				DoUpdateWorldState(WS_TIMER,min_Timer);
-				Instance_Timer = 60000;
+				Instance_Timer = (min_Timer == 0) ? DAY*MINUTE : 60000;
 			}
 			else
 				Instance_Timer -= diff;
