@@ -351,6 +351,9 @@ scripts/northrend/icecrown_citadel/forge_of_souls/boss_bronjahm.cpp \
 scripts/northrend/icecrown_citadel/forge_of_souls/instance_forge_of_souls.cpp \
 scripts/northrend/icecrown_citadel/forge_of_souls/boss_devourer_of_souls.cpp \
 scripts/northrend/icecrown_citadel/forge_of_souls/forge_of_souls.h \
+scripts/northrend/icecrown_citadel/pit_of_saron/boss_sourcelord_tyrannus.cpp \
+scripts/northrend/icecrown_citadel/pit_of_saron/boss_forgemaster_garfrost.cpp \
+scripts/northrend/icecrown_citadel/pit_of_saron/boss_ick_krick.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/instance_icecrown_citadel.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/icecrown_citadel.h \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lord_marrowgar.cpp \
