@@ -7,23 +7,16 @@ enum spells
 
 };
 
-struct MANGOS_DLL_DECL boss_garfrostAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 {
-    boss_garfrostAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_garfrostAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
     }
-
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
     }
 
 
@@ -34,14 +27,14 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public ScriptedAI
             return;
 	
       
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
     }
 };
 

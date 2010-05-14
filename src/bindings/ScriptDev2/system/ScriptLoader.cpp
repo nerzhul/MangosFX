@@ -471,6 +471,7 @@ extern void AddSC_ICC_Lanathel();
 extern void AddSC_ICC_Rotface();
 extern void AddSC_ICC_Sindragosa();
 extern void AddSC_ICC_DreamWalker();
+extern void AddSC_boss_Tyrannus();
 
 void AddScripts()
 {
@@ -941,4 +942,5 @@ void AddScripts()
 	AddSC_ICC_Rotface();
 	AddSC_ICC_Sindragosa();
 	AddSC_ICC_DreamWalker();
+	AddSC_boss_Tyrannus();
 }

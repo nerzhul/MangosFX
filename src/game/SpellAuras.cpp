@@ -6640,6 +6640,24 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                 else
                     m_target->RemoveAurasDueToSpell(66530);
             }
+
+			// Survival of the Fittest (Armor part)
+            if (form == FORM_BEAR || form == FORM_DIREBEAR)
+            {
+                Unit::AuraList const& modAuras = m_target->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
+                for (Unit::AuraList::const_iterator i = modAuras.begin(); i != modAuras.end(); ++i)
+                {
+                    if ((*i)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_DRUID &&
+                        (*i)->GetSpellProto()->SpellIconID == 961)
+                    {
+                        int32 bp = (*i)->GetSpellProto()->CalculateSimpleValue(2);
+                        if (bp)
+                            m_target->CastCustomSpell(m_target, 62069, &bp, NULL, NULL, true, NULL, this);
+                        break;
+                    }
+                }
+            }
+
 			 // Heart of the Wild
             if (form == FORM_CAT || form == FORM_BEAR || form == FORM_DIREBEAR)
             {
@@ -6687,6 +6705,22 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 				}
 			}
 		}
+
+		// Survival of the Fittest (Armor part)
+        if (form == FORM_BEAR || form == FORM_DIREBEAR)
+        {
+            Unit::AuraList const& modAuras = m_target->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
+            for (Unit::AuraList::const_iterator i = modAuras.begin(); i != modAuras.end(); ++i)
+            {
+                if ((*i)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_DRUID &&
+                    (*i)->GetSpellProto()->SpellIconID == 961)
+                {
+                    m_target->RemoveAurasDueToSpell(62069);
+                    break;
+                }
+            }
+        }
+
         if(spellId1)
             m_target->RemoveAurasDueToSpell(spellId1);
         if(spellId2)

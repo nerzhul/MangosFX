@@ -17238,7 +17238,7 @@ void Player::_SaveInventory()
 
     // do not save if the update queue is corrupt
     bool error = false;
-	for(std::vector<Item*>::const_iterator itr = m_itemUpdateQueue.begin(); itr != m_itemUpdateQueue.end(); ++itr)
+	for(std::vector<Item*>::iterator itr = m_itemUpdateQueue.begin(); itr != m_itemUpdateQueue.end(); ++itr)
     //for(size_t i = 0; i < m_itemUpdateQueue.size(); ++i)
     {
         Item *item = *itr;

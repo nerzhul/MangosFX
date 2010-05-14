@@ -395,7 +395,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                        phasetim = 9000;
                        break;
              case 9:
-                       Jaina->SetUInt64Value(UNIT_FIELD_TARGET, Arthas->GetGUID());
+                       //Jaina->SetUInt64Value(UNIT_FIELD_TARGET, Arthas->GetGUID());
                        DoScriptText(SAY_INTRO04, Arthas);
                        ++phase;
                        phasetim = 10000;
@@ -462,7 +462,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                        phasetim = 1000;
                        break;
              case 35:
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Jaina->GetGUID());
+                       //Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Jaina->GetGUID());
                        Jaina->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
                        ++phase;
                        phasetim = 1000;
