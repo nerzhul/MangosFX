@@ -361,7 +361,7 @@ scripts/northrend/icecrown_citadel/icecrown_raid/boss_lady_deathwhisper.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_deathbringer_saurfang.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lich_king.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_prince_council.cpp \
-scripts/northrend/icecrown_citadel/icecrown_raid/boss_professor_putricid.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_professor_putricide.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_quenn_lanathel.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_rotface.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_festergut.cpp \
