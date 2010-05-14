@@ -49,5 +49,7 @@ class BattleGroundDS : public BattleGround
         bool SetupBattleGround();
         void HandleKillPlayer(Player* player, Player *killer);
 		bool HandlePlayerUnderMap(Player * plr);
+	private:
+		uint32 m_uiKnockback;
 };
 #endif

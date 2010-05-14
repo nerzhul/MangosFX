@@ -2421,9 +2421,9 @@ bool InstanceMap::CanEnter(Player *player)
     Group *pGroup = player->GetGroup();
 	if(pGroup && pGroup->InCombatToInstance(GetInstanceId(),true) && !player->isGameMaster())
     {
-        player->SendTransferAborted(GetId(), TRANSFER_ABORT_ZONE_IN_COMBAT);
 		if(!player->isAlive())
 			player->ResurrectPlayer(0.5f);
+		player->SendTransferAborted(GetId(), TRANSFER_ABORT_ZONE_IN_COMBAT);
         return false;
     }
 

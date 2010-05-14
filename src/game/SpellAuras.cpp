@@ -2496,6 +2496,9 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             // not use ammo and not allow use
                             ((Player*)m_target)->RemoveAmmo();
                         return;
+					case 47977:                             // Magic Broom
+						Spell::SelectMountByAreaAndSkill(m_target, 42680, 42683, 42667, 42668, 0);
+						return;
                     case 48025:                             // Headless Horseman's Mount
 						Spell::SelectMountByAreaAndSkill(m_target, 51621, 48024, 51617, 48023, NULL);
 						return;
@@ -2533,7 +2536,10 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         return;
                     case 58591:                                 // Stoneclaw Totem X
                         m_target->CastSpell( m_target, 58585, true );
-                        return;                
+                        return;  
+					case 71342:                             // Big Love Rocket
+						Spell::SelectMountByAreaAndSkill(m_target, 71344, 71345, 71346, 71347, 0);
+						return; 
                     case 72286:                             // Invincible
 						Spell::SelectMountByAreaAndSkill(m_target, 72281, 72282, 72283, 72284, NULL);
 						return;

@@ -8670,7 +8670,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
                 data << uint32(0xbba) << uint32(0x0);           // 9 show
             }
             break;
-			case 4378:                                          // Dalaran Sewers
+		case 4378:                                          // Dalaran Sewers
             if (bg && bg->GetTypeID() == BATTLEGROUND_DS)
                 bg->FillInitialWorldStates(data);
             else

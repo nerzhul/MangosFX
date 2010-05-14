@@ -592,8 +592,8 @@ struct BattlemasterListEntry
     //uint32 nameFlags                                      // 27 string flag, unused
     uint32 maxGroupSize;                                     // 28 maxGroupSize, used for checking if queue as group
     uint32 HolidayWorldStateId;                           // 29 new 3.1
-    //uint32 MinLevel;                                      // 30
-    //uint32 SomeLevel;                                     // 31, may be max level
+    uint32 minLevel;                                      // 30
+    uint32 maxLevel;                                     // 31, may be max level
 };
 
 /*struct Cfg_CategoriesEntry
