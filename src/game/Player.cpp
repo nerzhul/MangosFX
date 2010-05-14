@@ -1426,7 +1426,7 @@ void Player::Update( uint32 p_time )
 
         if (GetMapId() == 571 && IsInWorld())
         {
-            if (GetPositionZ() > 640.0 && GetPositionZ() < 700.0 && GetZoneId() == 4395 && GetAreaId() != 4564 && CanFly() && !isGameMaster())
+            if (GetPositionZ() > 640.0 && GetPositionZ() < 700.0 && GetZoneId() == 4395 && GetAreaId() != 4564 && GetAreaId() != 4598 && CanFly() && !isGameMaster())
             {
                 if (!HasAura(58600) && !HasAura(61243)) // Check for Restricted Flight Area and Parachute Visual
                 {
