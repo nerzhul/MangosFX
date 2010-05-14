@@ -17238,9 +17238,10 @@ void Player::_SaveInventory()
 
     // do not save if the update queue is corrupt
     bool error = false;
-    for(size_t i = 0; i < m_itemUpdateQueue.size(); ++i)
+	for(std::vector<Item*>::const_iterator itr = m_itemUpdateQueue.begin(); itr != m_itemUpdateQueue.end(); ++itr)
+    //for(size_t i = 0; i < m_itemUpdateQueue.size(); ++i)
     {
-        Item *item = m_itemUpdateQueue[i];
+        Item *item = *itr;
         if (!item || item->GetState() == ITEM_REMOVED)
             continue;
 
@@ -17254,7 +17255,10 @@ void Player::_SaveInventory()
         else if (test != item)
         {
             sLog.outError("Player(GUID: %u Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the item with guid %d is there instead!", GetGUIDLow(), GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow(), test->GetGUIDLow());
-            error = true;
+			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
+			DestroyItem(test->GetBagSlot(),test->GetSlot(),true);
+			m_itemUpdateQueue.erase(itr);
+			error = true;
         }
     }
 

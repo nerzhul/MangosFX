@@ -629,6 +629,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 		Tasks.AddEvent(SPELL_FEROCIOUS_BUTT,25000,30000,5000,TARGET_MAIN,1);
 		Tasks.AddEvent(SPELL_WHIRL,urand(4000,8000),15000,15000,TARGET_ME,1);
 		phase = 1;
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
 		phase_Timer = 45000;
 		CheckDistanceTimer = 1000;
 		AggroAllPlayers(150.0f);
@@ -746,9 +747,9 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 						}
 					}
 					if(PlayerHit)
-						DoCastMe(SPELL_FROTHING_RAGE);
+						SetAuraStack(SPELL_FROTHING_RAGE,1,me,me,1);
 					else
-						DoCastMe(SPELL_STAGGERED_DAZE);
+						SetAuraStack(SPELL_STAGGERED_DAZE,1,me,me,1);
 					phase_Timer = 60000;
 					phase = 1;
 					break;

@@ -212,7 +212,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 						HARDMODE = true;
 						OpenHeart = false;
 						Heart = NULL;
-						FreezeMob(true,me);
+						FreezeMob(false,me);
 						Heart_Count = 0;
 					}
 					else
