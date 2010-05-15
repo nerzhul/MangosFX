@@ -511,7 +511,7 @@ void Pet::Update(uint32 diff)
                 Remove(PET_SAVE_NOT_IN_SLOT, true);
                 return;
             }
-
+			
             if(isControlled())
             {
                 if( owner->GetPetGUID() != GetGUID() )
@@ -520,6 +520,8 @@ void Pet::Update(uint32 diff)
                     return;
                 }
             }
+
+			error_log("%f %f",this->GetPositionX(),this->GetPositionY());
 
             if(m_duration > 0)
             {

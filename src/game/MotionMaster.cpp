@@ -320,14 +320,14 @@ MotionMaster::MoveFollow(Unit* target, float dist, float angle)
 
     if(i_owner->GetTypeId()==TYPEID_PLAYER)
     {
-        DEBUG_LOG("Player (GUID: %u) follow to %s (GUID: %u)", i_owner->GetGUIDLow(),
+        debug_log("Player (GUID: %u) follow to %s (GUID: %u)", i_owner->GetGUIDLow(),
             target->GetTypeId()==TYPEID_PLAYER ? "player" : "creature",
             target->GetTypeId()==TYPEID_PLAYER ? i_owner->GetGUIDLow() : ((Creature*)i_owner)->GetDBTableGUIDLow() );
         Mutate(new FollowMovementGenerator<Player>(*target,dist,angle));
     }
     else
     {
-        DEBUG_LOG("Creature (Entry: %u GUID: %u) follow to %s (GUID: %u)",
+        debug_log("Creature (Entry: %u GUID: %u) follow to %s (GUID: %u)",
             i_owner->GetEntry(), i_owner->GetGUIDLow(),
             target->GetTypeId()==TYPEID_PLAYER ? "player" : "creature",
             target->GetTypeId()==TYPEID_PLAYER ? target->GetGUIDLow() : ((Creature*)target)->GetDBTableGUIDLow() );
