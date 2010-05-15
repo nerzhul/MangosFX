@@ -4,7 +4,18 @@
 
 enum spells
 {
+	SPELL_CHILLING_WAVE			=	68778,
+	SPELL_DEEP_FREEZE			=	70381,
+	SPELL_FROST_MACE			=	68785,
+	SPELL_FROST_BLADE			=	68774,
+	SPELL_PERMAFROST			=	70326,
+	SPELL_SARONITE				=	68788,
+	SPELL_STOMP					=	68771
+};
 
+static const float Weapon_Locations[2][3] = {
+	{722.994f,	-233.293f,	527.111f },
+	{642.430f,	-204.899f,	528.931f }
 };
 
 struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
@@ -12,6 +23,10 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
     boss_garfrostAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		AddEvent(SPELL_CHILLING_WAVE,16000,14000,2000);
+		AddEvent(SPELL_DEEP_FREEZE,13000,13000,3500);
+		AddEvent(SPELL_SARONITE,25000,30000);
+		AddEventOnTank(SPELL_STOMP,10000,10000,2500);
     }
 
     void Reset()
@@ -19,13 +34,18 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		ResetTimers();
     }
 
+	void EnterCombat(Unit* who)
+	{
+		DoCastMe(SPELL_PERMAFROST);
+	}
+
 
     void UpdateAI(const uint32 diff)
     {
         //Return since we have no target
         if (!CanDoSomething())
             return;
-	
+		//me->GetMotionMaster()->move
       
 		UpdateEvent(diff);
 
