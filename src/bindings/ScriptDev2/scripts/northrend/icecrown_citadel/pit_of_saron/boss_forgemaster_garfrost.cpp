@@ -29,9 +29,12 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		AddEventOnTank(SPELL_STOMP,10000,10000,2500);
     }
 
+	uint8 phase;
+
     void Reset()
     {
 		ResetTimers();
+		phase = 0;
     }
 
 	void EnterCombat(Unit* who)
@@ -45,7 +48,19 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
         //Return since we have no target
         if (!CanDoSomething())
             return;
-		//me->GetMotionMaster()->move
+
+		if(CheckPercentLife(66) && phase == 0)
+		{
+			phase++;
+			Jump(Weapon_Locations[0][0],Weapon_Locations[0][1],Weapon_Locations[0][2],2.0f,2.0f);
+			DoCastMe(SPELL_FROST_BLADE);
+		}
+		else if(CheckPercentLife(33) && phase == 1)
+		{
+			phase++;
+			Jump(Weapon_Locations[1][0],Weapon_Locations[1][1],Weapon_Locations[1][2],2.0f,2.0f);
+			DoCastMe(SPELL_FROST_MACE);
+		}
       
 		UpdateEvent(diff);
 
@@ -71,5 +86,4 @@ void AddSC_boss_garfrost()
     newscript->Name = "boss_garfrost";
     newscript->GetAI = &GetAI_boss_garfrost;
     newscript->RegisterSelf();
-
 }

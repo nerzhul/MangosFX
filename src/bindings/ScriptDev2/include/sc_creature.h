@@ -393,6 +393,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void GetNewTargetForMyAdds(Unit* target);
 
+		void Jump(float x, float y, float z, float speedXY, float speedZ) { me->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ); }
+
 		void InitInstance()
 		{
 			pInstance = (ScriptedInstance*)me->GetInstanceData();

@@ -472,6 +472,8 @@ extern void AddSC_ICC_Rotface();
 extern void AddSC_ICC_Sindragosa();
 extern void AddSC_ICC_DreamWalker();
 extern void AddSC_boss_Tyrannus();
+extern void AddSC_boss_garfrost();
+extern void AddSC_boss_ick_and_krick();
 
 void AddScripts()
 {
@@ -943,4 +945,6 @@ void AddScripts()
 	AddSC_ICC_Sindragosa();
 	AddSC_ICC_DreamWalker();
 	AddSC_boss_Tyrannus();
+	AddSC_boss_garfrost();
+	AddSC_boss_ick_and_krick();
 }

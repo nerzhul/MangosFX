@@ -268,6 +268,27 @@ MotionMaster::MoveTargetedHome()
     }
 }
 
+void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float speedZ)
+{
+    MonsterMovementFlags moveFlag = MonsterMovementFlags(0x00000800 | 0x00001000);
+    uint32 time = speedZ * 100;
+
+    i_owner->addUnitState(UNIT_STAT_JUMPING);
+    if (i_owner->GetTypeId() == TYPEID_PLAYER)
+    {
+        DEBUG_LOG("Player (GUID: %u) jump to point (X: %f Y: %f Z: %f)", i_owner->GetGUIDLow(), x, y, z);
+        Mutate(new PointMovementGenerator<Player>(0,x,y,z));
+    }
+    else
+    {
+        DEBUG_LOG("Creature (Entry: %u GUID: %u) jump to point (X: %f Y: %f Z: %f)",
+            i_owner->GetEntry(), i_owner->GetGUIDLow(), x, y, z);
+        Mutate(new PointMovementGenerator<Creature>(0,x,y,z));
+    }
+
+    i_owner->SendMonsterMove(x, y, z, 0, moveFlag, time);
+}
+
 void
 MotionMaster::MoveConfused()
 {

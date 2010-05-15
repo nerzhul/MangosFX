@@ -521,8 +521,6 @@ void Pet::Update(uint32 diff)
                 }
             }
 
-			error_log("%f %f",this->GetPositionX(),this->GetPositionY());
-
             if(m_duration > 0)
             {
                 if(m_duration > diff)

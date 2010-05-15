@@ -434,7 +434,8 @@ enum UnitState
     UNIT_STAT_FOLLOW_MOVE     = 0x00008000,
     UNIT_STAT_FLEEING         = 0x00010000,                     // FleeMovementGenerator/TimedFleeingMovementGenerator active/onstack
     UNIT_STAT_FLEEING_MOVE    = 0x00020000,
-	UNIT_STAT_ON_VEHICLE      = 0x8000,
+	UNIT_STAT_JUMPING         = 0x00040000,
+	UNIT_STAT_ON_VEHICLE      = 0x00080000,
 
     // masks (only for check)
 
