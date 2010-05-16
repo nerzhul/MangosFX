@@ -1435,9 +1435,9 @@ void Player::Update( uint32 p_time )
                        (GetPositionX()-5816.89f)*(GetPositionX()-5816.89f)+(GetPositionY()-745.91f)*(GetPositionY()-745.91f) < 548.24  ||  // The grass by The Violet Citadel
                        GetAreaId() == 4619))                                                                                               // The Violet Citadel
                     {
-                        CastSpell(this, 58600, true);
+                        /*CastSpell(this, 58600, true);
                         PlayDirectSound(9417,this);
-                        MonsterWhisper("Attention: vous entrez dans une zone interdite de survol ! Vous serez dismount si vous ne vous posez pas !", GetGUID(), true);
+                        MonsterWhisper("Attention: vous entrez dans une zone interdite de survol ! Vous serez dismount si vous ne vous posez pas !", GetGUID(), true);*/
                     }
                 }
             }

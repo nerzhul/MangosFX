@@ -68,14 +68,20 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		AddEvent(SPELL_TOXIC_WASTE,18000,12000);
 		AddSummonEvent(NPC_EXPLODING_ORB,5000,5000,0,0,m_difficulty ? 2 : 1,THREE_MINS,NEAR_15M,NOTHING);
 		event_phase = 0;
+		event_Timer = 0;
+		FactionChief = NULL;
     }
 
 	bool Event;
 	uint8 event_phase;
+	uint32 event_Timer;
+	BattleGroundTeamId bg_Team;
+	Creature* FactionChief;
 
     void Reset()
     {
 		ResetTimers();
+		bg_Team = BG_TEAM_ALLIANCE;
 		Event = false;
 		me->SetRespawnTime(DAY*7);
     }
@@ -87,12 +93,21 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pDoneby, uint32 &dmg)
 	{
+		if(pDoneby->GetTypeId() == TYPEID_PLAYER)
+			bg_Team = BattleGroundTeamId(((Player*)pDoneby)->GetBGTeam());
+
 		if(dmg >= me->GetHealth())
 		{
 			me->setFaction(35);
 			DoResetThreat();
-			Speak(CHAT_TYPE_SAY,16934,
+			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
 			Event = true;
+			event_phase = 1;
+			event_Timer = 4000;
+			if(bg_Team == BG_TEAM_ALLIANCE)
+				FactionChief = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING);
+			else
+				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING);
 		}
 	}
 
@@ -118,7 +133,39 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		}
 		else
 		{
-
+			if(event_Timer <= diff)
+			{
+				switch(event_phase)
+				{
+					case 1:
+						if(bg_Team == BG_TEAM_ALLIANCE)
+							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi ",FactionChief);
+						else
+							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi la reine banshee épargnerai elle ta misérable vie",FactionChief);
+						break;
+					case 2:
+						break;
+					case 3:
+						if(bg_Team == BG_TEAM_ALLIANCE)
+							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						else
+							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						break;
+					case 4:
+						break;
+					case 5:
+						if(bg_Team == BG_TEAM_ALLIANCE)
+							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						else
+							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						break;
+					case 6:
+						break;
+				}
+				event_phase++;
+			}
+			else
+				event_Timer -= diff;
 		}
     }
 

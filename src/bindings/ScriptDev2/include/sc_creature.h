@@ -204,6 +204,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	uint32 GetPercentLife() { return (me->GetHealth() * 100 / me->GetMaxHealth()); }
 	void FreezeMob(bool freeze, Creature* tmpCr, bool OOC = false);
 	void Speak(uint8 type, uint32 soundid, std::string text, Creature* spkCr = NULL);
+	void DoSpeakEmote(Unit* who = NULL);
 	void SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module = 0);
 	void SetFlying(bool fly, Creature* who = NULL);
 	void Relocate(float x, float y, float z, bool fly = false, float Time = 0);
@@ -414,6 +415,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void AddPercentLife(Unit* u,uint8 percent);
 
 		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
+		
 		
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;

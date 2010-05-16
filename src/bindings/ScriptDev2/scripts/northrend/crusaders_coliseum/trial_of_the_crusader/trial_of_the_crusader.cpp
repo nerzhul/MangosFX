@@ -557,7 +557,6 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						{
 							LichKing->GetMotionMaster()->MovePoint(0, 563.734f,139.577,394.0f);
 							LichKing->setFaction(35);
-							LichKing->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_TALK);
 							Speak(CHAT_TYPE_YELL,16321,"Vous allez l'avoir votre défi, Fordring !",LichKing);
 						}
 						Event_Timer = 5000;

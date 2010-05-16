@@ -881,9 +881,11 @@ void ScriptedAI::Speak(uint8 type, uint32 soundid, std::string text, Creature* s
     {
         case CHAT_TYPE_SAY:
 			spkCr->MonsterSay(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
+			DoSpeakEmote(spkCr);
             break;
         case CHAT_TYPE_YELL:
             spkCr->MonsterYell(text.c_str(), 0, spkCr ? spkCr->GetGUID() : 0);
+			DoSpeakEmote(spkCr);
             break;
         case CHAT_TYPE_TEXT_EMOTE:
             spkCr->MonsterTextEmote(text.c_str(), spkCr ? spkCr->GetGUID() : 0);
@@ -1473,5 +1475,14 @@ void LibDevFSAI::AddPercentLife(Unit* u,uint8 percent)
 		return;
 
 	u->SetHealth(u->GetHealth() + u->GetMaxHealth() * percent / 100);
+}
+
+void ScriptedAI::DoSpeakEmote(Unit* who)
+{
+	if(!who)
+		who = me;
+
+	if(who->isAlive())
+		who->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_TALK);
 }
 
