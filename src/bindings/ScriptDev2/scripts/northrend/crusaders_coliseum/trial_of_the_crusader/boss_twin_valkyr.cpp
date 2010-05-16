@@ -24,46 +24,42 @@ enum
 	SPELL_TWINS_PACT = 65875,
 };
 
-struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 {
-    boss_Eydis_DarkbaneAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_Eydis_DarkbaneAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		difficulty = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnMe(SPELL_POWER_OF_THE_TWINS,120000,8000,20000);
+		AddEvent(SPELL_TOUCH_OF_DARKNESS,20000,20000);
+		AddEventOnTank(SPELL_TWIN_SPIKE2,18000,21000,1000);
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_10,360000,10000);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_25,360000,10000);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_10,360000,10000);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_25,360000,10000);
+				break;
+		}
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty difficulty;
 	bool HealEvent;
 	uint32 HealCast_Timer;
+	uint32 Ball_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(66107,8000,2000,500,TARGET_RANDOM);
+		ResetTimers();
 		HealEvent = false;
 		HealCast_Timer = 1000;
-		Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS,120000,8000,20000,TARGET_ME);
+		Ball_Timer = 8000;
 		DoCastMe(SPELL_SURGE_OF_DARKNESS);
-		Tasks.AddEvent(SPELL_TOUCH_OF_DARKNESS,20000,20000);
-		Tasks.AddEvent(SPELL_TWIN_SPIKE2,18000,21000,1000,TARGET_MAIN);
-		switch(difficulty)
-		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-		}
 		SetEquipmentSlots(false, 45990, 47470, 47267);
     }
 
@@ -76,28 +72,28 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
 			if(Fjola->isAlive())
 				pDoneBy->DealDamage(Fjola,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
 	void HealBy(Unit* pHealer,uint32 heal)
 	{
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
 			if(Fjola->isAlive())
-				me->DealHeal(Fjola,heal, /* TODO : spell proto */ NULL);
+				Fjola->SetHealth(Fjola->GetHealth() + heal);
 	}
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Eydis_Darkbane, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_Eydis_Darkbane, DONE);
             
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
 			if(!Fjola->isAlive())
 			{
-				m_pInstance->SetData(TYPE_VALKYRS,DONE);
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				pInstance->SetData(TYPE_VALKYRS,DONE);
+				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 
 				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
@@ -106,7 +102,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 			else
 				me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-		switch(difficulty)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 				GiveEmblemsToGroup(CONQUETE,2);
@@ -127,8 +123,8 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Eydis_Darkbane, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_Eydis_Darkbane, IN_PROGRESS);
     }
 
 	void DoEvent()
@@ -160,7 +156,17 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public ScriptedAI
 				HealCast_Timer -= diff;
 		}
 
-		Tasks.UpdateEvent(diff);
+		if(Ball_Timer <= diff)
+		{
+			if(Creature* ball = CallCreature(34628,THREE_MINS*3,NEAR_30M))
+				if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+					ball->GetMotionMaster()->MoveChase(target);
+			Ball_Timer = urand(3000,5000);
+		}
+		else
+			Ball_Timer -= diff;
+
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -172,35 +178,44 @@ CreatureAI* GetAI_boss_Eydis_Darkbane(Creature* pCreature)
     return new boss_Eydis_DarkbaneAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 {
-    boss_Fjola_LightbaneAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_Fjola_LightbaneAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		difficulty = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_10,360000,10000);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_25,360000,10000);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_10,360000,10000);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				AddEventMaxPrioOnMe(SPELL_BERSERK_25,360000,10000);
+				break;
+		}
+		AddEventOnMe(SPELL_POWER_OF_THE_TWINS,120000,8000,20000);
+		AddEvent(SPELL_TOUCH_OF_LIGHT,20000,20000);
+		AddEventOnTank(SPELL_TWIN_SPIKE,18000,21000,1000,TARGET_MAIN);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty difficulty;
 	bool HealEvent;
+	uint32 Ball_Timer;
 	uint32 HealCast_Timer;
-
 	uint32 Event_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(66078,8000,2000,500,TARGET_RANDOM);
+		ResetTimers();
 		HealEvent = false;
 		HealCast_Timer = 1000;
-		Tasks.AddEvent(SPELL_BERSERK,360000,10000,0,TARGET_ME,0,0,true);
-		Tasks.AddEvent(SPELL_POWER_OF_THE_TWINS,120000,8000,20000,TARGET_ME);
-		Tasks.AddEvent(SPELL_TOUCH_OF_LIGHT,20000,20000);
+		Ball_Timer = 8000;
 		DoCastMe(SPELL_SURGE_OF_LIGHT);
-		Tasks.AddEvent(SPELL_TWIN_SPIKE,18000,21000,1000,TARGET_MAIN);
-		switch(difficulty)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:
@@ -211,41 +226,27 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 				Event_Timer = 30000;
 				break;
 		}
-		switch(difficulty)
-		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.AddEvent(SPELL_BERSERK_10,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.AddEvent(SPELL_BERSERK_25,360000,10000,0,TARGET_ME,0,0,true);
-				break;
-		}
+		
 		SetEquipmentSlots(false, 49303, 47146, 47267);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
 			if(Eydis->isAlive())
 				pDoneBy->DealDamage(Eydis,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Fjola_Lightbane, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_Fjola_Lightbane, DONE);
             
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
 			if(!Eydis->isAlive())
 			{
-				m_pInstance->SetData(TYPE_VALKYRS,DONE);
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				pInstance->SetData(TYPE_VALKYRS,DONE);
+				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 					
 				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
@@ -259,8 +260,8 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Fjola_Lightbane, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_Fjola_Lightbane, IN_PROGRESS);
     }
 
 	void DamageDeal(Unit *pDoneTo, uint32 &uiDamage)
@@ -272,9 +273,9 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 
 	void HealBy(Unit* pHealer,uint32 heal)
 	{
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
-			if(Eydis->isAlive())		
-				me->DealHeal(Eydis,heal, /* TODO : spell proto */ NULL);
+		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+			if(Eydis->isAlive())
+				Eydis->SetHealth(Eydis->GetHealth() + heal);
 	}
 
 	void DoEvent()
@@ -310,7 +311,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 		{
 			if(urand(0,1))
 			{
-				if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+				if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
 					if(Eydis->isAlive())
 						((boss_Eydis_DarkbaneAI*)Eydis->AI())->DoEvent();
 			}
@@ -322,7 +323,17 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public ScriptedAI
 		else
 			Event_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		if(Ball_Timer <= diff)
+		{
+			if(Creature* ball = CallCreature(34628,THREE_MINS*3,NEAR_30M))
+				if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+					ball->GetMotionMaster()->MoveChase(target);
+			Ball_Timer = urand(3000,5000);
+		}
+		else
+			Ball_Timer -= diff;
+
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
@@ -341,14 +352,14 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
     {
         Reset();
 		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		difficulty = me->GetMap()->GetDifficulty();
+		m_difficulty = me->GetMap()->GetDifficulty();
     }
 
 	MobEventTasks Tasks;
 	uint32 move_Timer;
 	uint32 checkpDist_Timer;
 	ScriptedInstance* pInstance;
-	Difficulty difficulty;
+	Difficulty m_difficulty;
 
     void Reset()
     {

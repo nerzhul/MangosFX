@@ -164,6 +164,7 @@ void Vehicle::InstallAllAccessories()
             me->SetMaxPower(POWER_ENERGY, 100);
             me->ModifyPower(POWER_ENERGY, 100);
 			break;
+		case 36476:InstallAccessory(36477,0);break;
     }
 }
 

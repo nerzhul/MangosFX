@@ -42,6 +42,19 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		DoCastMe(SPELL_PERMAFROST);
 	}
 
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Speak(CHAT_TYPE_SAY,16913,"Vais garder mon casse-croûte hahahah heuheu !");
+		else
+			Speak(CHAT_TYPE_SAY,16914,"Celui la peut-être plus très bon pour manger, ha, Gargivre idiot. Pas bien ! Pas bien !");
+	}
+
+	void Aggro(Unit* who)
+	{
+		Speak(CHAT_TYPE_YELL,16912,"Petite créature qui court par terre, Vous apportez du bon manger à Gargivre hahaha");
+	}
+
 
     void UpdateAI(const uint32 diff)
     {
@@ -52,13 +65,17 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		if(CheckPercentLife(66) && phase == 0)
 		{
 			phase++;
-			Jump(Weapon_Locations[0][0],Weapon_Locations[0][1],Weapon_Locations[0][2],2.0f,2.0f);
+			Speak(CHAT_TYPE_YELL,16916,"Hache pas assez bien ! Gargivre va faire une meilleure et ensuite, massacrer !");
+			//Jump(Weapon_Locations[0][0],Weapon_Locations[0][1],Weapon_Locations[0][2],2.0f,2.0f);
+			me->CastStop();
 			DoCastMe(SPELL_FROST_BLADE);
 		}
 		else if(CheckPercentLife(33) && phase == 1)
 		{
 			phase++;
-			Jump(Weapon_Locations[1][0],Weapon_Locations[1][1],Weapon_Locations[1][2],2.0f,2.0f);
+			Speak(CHAT_TYPE_YELL,16917,"Gargivre fatigué par les petits mortels. Maintenant les eaux gêlent");
+			//Jump(Weapon_Locations[1][0],Weapon_Locations[1][1],Weapon_Locations[1][2],2.0f,2.0f);
+			me->CastStop();
 			DoCastMe(SPELL_FROST_MACE);
 		}
       
@@ -70,6 +87,7 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
     void JustDied(Unit* killer)
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
+	   Speak(CHAT_TYPE_SAY,16915,"Gargivre espère que slip géant resté est propre pour que le chef le porte... plus tard");
     }
 };
 

@@ -1326,7 +1326,9 @@ void Aura::SetStackAmount(uint8 stackAmount)
         if (amount!=m_modifier.m_amount)
         {
             ApplyModifier(false, true);
-            m_modifier.m_amount = amount;
+            // Lifebloom has special amount calculation in final bloom
+			if(m_spellProto->SpellFamilyName != SPELLFAMILY_DRUID && !(m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000)))
+				m_modifier.m_amount = amount;
             ApplyModifier(true, true);
         }
     }
@@ -3007,7 +3009,14 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     if (Unit* caster = GetCaster())
                         // prevent double apply bonuses
                         if(m_target->GetTypeId()!=TYPEID_PLAYER || !((Player*)m_target)->GetSession()->PlayerLoading())
-                            m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, SPELL_DIRECT_DAMAGE);
+						{
+							if(m_stackAmount <= 1)
+							{
+								const SpellEntry* finalBloomEntry = sSpellStore.LookupEntry(33778);
+								m_modifier.m_amount = caster->SpellHealingBonus(m_target, finalBloomEntry, m_modifier.m_amount, HEAL);
+							}else
+								m_modifier.m_amount += (m_stackAmount == 2) ? m_modifier.m_amount : (m_modifier.m_amount / 2);
+						} 
                 }
                 else
                 {
@@ -3025,8 +3034,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     // final heal
                     if(m_target->IsInWorld() && m_stackAmount > 0)
                     {
-                        int32 amount = m_modifier.m_amount / m_stackAmount;
-                        m_target->CastCustomSpell(m_target, 33778, &amount, NULL, NULL, true, NULL, this, GetCasterGUID());
+                         m_target->CastCustomSpell(m_target, 33778, &m_modifier.m_amount, NULL, NULL, true, NULL, this, GetCasterGUID());
 
                         if (Unit* caster = GetCaster())
                         {
@@ -5352,6 +5360,17 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
 			   + caster->SpellBaseDamageBonusForVictim(GetSpellSchoolMask(m_spellProto), m_target);
 		holy = int32(holy * 377 / 1000);
 		m_modifier.m_amount += ap > holy ? ap : holy;
+	}
+	//Lifebloom special stacking
+	if(m_spellProto->SpellFamilyName == SPELLFAMILY_DRUID && (m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000)) && GetStackAmount() > 1)
+		m_modifier.m_amount += (GetStackAmount() == 2) ? m_modifier.m_amount : (m_modifier.m_amount / 2);
+	else
+	{
+		Unit *caster = GetCaster();
+		if (!caster)
+		  return;
+
+		m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
 	}
 }
 

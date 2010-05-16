@@ -474,6 +474,7 @@ extern void AddSC_ICC_DreamWalker();
 extern void AddSC_boss_Tyrannus();
 extern void AddSC_boss_garfrost();
 extern void AddSC_boss_ick_and_krick();
+extern void AddSC_instance_pit_of_saron();
 
 void AddScripts()
 {
@@ -947,4 +948,5 @@ void AddScripts()
 	AddSC_boss_Tyrannus();
 	AddSC_boss_garfrost();
 	AddSC_boss_ick_and_krick();
+	AddSC_instance_pit_of_saron();
 }

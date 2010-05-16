@@ -2154,6 +2154,7 @@ bool Creature::isHostileVehicle()
 		case 32930:
 		case 33118:
 		case 32934:
+		case 36476:
 			return true;
 		default:
 			return false;		

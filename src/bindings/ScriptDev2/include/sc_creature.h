@@ -412,6 +412,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void ResetTimers();
 
 		void AddPercentLife(Unit* u,uint8 percent);
+
+		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
 		
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;

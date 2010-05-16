@@ -292,7 +292,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
 		FlyPoint++;
 		if(FlyPoint >= 9)
 			FlyPoint = 0;
-		me->GetMotionMaster()->MovePoint(0,FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2]);
+		Relocate(FlyCoords[FlyPoint][0],FlyCoords[FlyPoint][1],FlyCoords[FlyPoint][2],true);
 	}
 
     void FlyPhase()
