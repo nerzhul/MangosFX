@@ -184,8 +184,6 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				FactionChief->SetFacingToObject(me);
 				me->SetFacingToObject(FactionChief);
 			}
-
-			EnterEvadeMode();
 		}
 		if(Event)
 			dmg = 0;
@@ -277,12 +275,14 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 							Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",FactionChief);
 							event_Timer = 7000;
 						}
-
+						break;
 					case 7:
 						if(FactionChief)
 							FactionChief->CastSpell(me,31008,false);
 						Speak(CHAT_TYPE_YELL,16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
+						if(Tyrannus)
+							Tyrannus->ForcedDespawn();
 						break;
 				}
 				event_phase++;

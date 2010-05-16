@@ -1482,7 +1482,7 @@ void ScriptedAI::DoSpeakEmote(Unit* who)
 	if(!who)
 		who = me;
 
-	if(who->isAlive())
-		who->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_TALK);
+	/*if(who->isAlive())
+		who->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_TALK);*/
 }
 

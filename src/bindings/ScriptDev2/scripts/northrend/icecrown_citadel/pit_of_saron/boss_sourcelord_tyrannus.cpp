@@ -28,14 +28,33 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 	uint32 brand_Timer;
 	Unit* brandTarget;
 	uint32 Mark_Timer;
+	bool prefightEvent;
+	uint32 EventTimer;
+	uint8 EventPhase;
+	BattleGroundTeamId bgTeam;
 
     void Reset()
     {
 		ResetTimers();
+		//me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		EventPhase = 0;
+		prefightEvent = false;
+		EventTimer = 1000;
 		brand_Timer = 10000;
 		Mark_Timer = 8000;
 		brandTarget = NULL;
     }
+
+	void Aggro(Unit* who)
+	{
+		/*if(!prefightEvent)
+		{
+			prefightEvent = true;
+			if(who->GetTypeId() == TYPEID_PLAYER)
+				bgTeam = BattleGroundTeamId(((Player*)who)->GetBGTeam());
+		}*/
+		Speak(CHAT_TYPE_YELL,16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
+	}
 
 	void DamageDeal(Unit* who, uint32 dmg)
 	{
@@ -45,6 +64,35 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		/*if(prefightEvent)
+		{
+			if(EventTimer <= diff)
+			{
+				switch(EventPhase)
+				{
+					case 0:
+						Speak(CHAT_TYPE_SAY,16758,"Hélas mes très, très braves aventuriers, votre intrusion touche à sa fin. Entendez vous le son du claquement des os dans le tunnel derrière vous ? C'est le son d'une mort imminente");
+						EventTimer = 14000;
+						break;
+					case 1:
+						Speak(CHAT_TYPE_SAY,16759,"Hahahaha ! La vermine s'agite, comme c'est amusant. Quand j'en aurai fini avec vous l'épée de mon maître dévorera vos âmes. Mourrez !");
+						EventTimer = 10000;
+						break;
+					case 2:
+						Speak(CHAT_TYPE_YELL,16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
+						me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+						EventTimer = DAY*HOUR;
+						prefightEvent = false;
+						break;
+				}
+				EventPhase++;
+			}
+			else
+				EventTimer -= diff;
+			
+
+			return;
+		}*/
         //Return since we have no target
         if (!CanDoSomething())
             return;
@@ -59,11 +107,12 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 			brand_Timer = 30000;
 		}
 		else
-			brand_Timer = diff;
+			brand_Timer -= diff;
 
 		if(Mark_Timer <= diff)
 		{
 			DoCastRandom(SPELL_MARK_OF_RIMEFANG);
+			Speak(CHAT_TYPE_YELL,16764,"Frigecroc ! Anéantis cet imbécile");
 			Mark_Timer = 30000;
 		}
 		else
@@ -77,7 +126,16 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
     void JustDied(Unit* killer)
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
+	   Speak(CHAT_TYPE_SAY,16763,"Impossible... Frigecroc... avertis...");
     }
+
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Speak(CHAT_TYPE_YELL,16761,"Quelle prestation embarassante ! La mort vous va bien mieux.");
+		else
+			Speak(CHAT_TYPE_YELL,16762,"Vous auriez peut être du rester... dans les montagnes !");
+	}
 };
 
 CreatureAI* GetAI_boss_tyrannus(Creature* pCreature)
@@ -97,17 +155,24 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 		AddEventOnTank(SPELL_HOARFROST,20000,30000,0,1);
 		AddEventOnTank(SPELL_ICY_BLAST,15000,15000,2000,0,1);
 		AddEventOnTank(SPELL_ICY_BLAST_AOE,17000,15000,2000,0,1);
+		Relocate(986.452,186.452f,649.188f);
     }
 
 	Unit* TyrannusTarget;
 	uint8 phase;
 	uint32 checkTarget_Timer;
+	uint8 FlyPoint;
+	uint32 MoveTimer;
 
     void Reset()
     {
 		ResetTimers();
 		phase = 0;
+		MoveTimer = 1000;
+		FlyPoint = 0;
 		SetFlying(true);
+		SetCombatMovement(false);
+		Relocate(986.452,186.452f,649.188f);
 		checkTarget_Timer = 1000;
     }
 
@@ -177,7 +242,7 @@ void AddSC_boss_Tyrannus()
     newscript->RegisterSelf();
 
 	newscript = new Script;
-    newscript->Name = "boss_rimefang";
+    newscript->Name = "boss_rimefang_icc5";
     newscript->GetAI = &GetAI_boss_rimefang;
     newscript->RegisterSelf();
 
