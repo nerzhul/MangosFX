@@ -149,7 +149,13 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			else
 				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING);
 			if(FactionChief)
+			{
 				FactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
+				FactionChief->SetFacingToObject(me);
+				me->SetFacingToObject(FactionChief);
+			}
+
+			EnterEvadeMode();
 		}
 		if(Event)
 			dmg = 0;
@@ -157,6 +163,9 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 
 	void KilledUnit(Unit* who)
 	{
+		if(who == me)
+			return;
+
 		if(urand(0,1))
 			Speak(CHAT_TYPE_YELL,16927,"Ooh, ses membres pourraient nous être utiles");
 		else
