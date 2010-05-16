@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	bool Event;
 	uint8 event_phase;
 	uint32 event_Timer;
-	BattleGroundTeamId bg_Team;
+	uint32 team;
 	uint64 FactionChief;
 	Creature* Tyrannus;
 	uint32 pursuit_Timer;
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				Ick->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 			}
 		pursuit_Timer = 30000;
-		bg_Team = BG_TEAM_ALLIANCE;
+		team = ALLIANCE;
 		Event = false;
 		me->SetRespawnTime(DAY*7);
     }
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	void DamageTaken(Unit* pDoneby, uint32 &dmg)
 	{
 		if(pDoneby->GetTypeId() == TYPEID_PLAYER)
-			bg_Team = BattleGroundTeamId(((Player*)pDoneby)->GetBGTeam());
+			team = ((Player*)pDoneby)->GetTeam();
 
 		if(dmg >= me->GetHealth() && !Event)
 		{
@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			DoResetThreat();
 			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
 			
-			if(bg_Team == BG_TEAM_ALLIANCE)
+			if(team == ALLIANCE)
 			{
 				if(Creature* cr = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING))
 					FactionChief = cr->GetGUID();
@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					case 1:
 						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							if(bg_Team == BG_TEAM_ALLIANCE)
+							if(team == ALLIANCE)
 							{
 								Speak(CHAT_TYPE_SAY,16611,"Je ne suis pas assez naïve pour croire à ces supplications mais j'écouterai ce que tu as à dire.",crFactionChief);
 								event_Timer = 4500;
@@ -257,7 +257,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					case 3:
 						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							if(bg_Team == BG_TEAM_ALLIANCE)
+							if(team == ALLIANCE)
 							{
 								Speak(CHAT_TYPE_SAY,16612,"Deuillegivre laissée sans surveillance ? Impossible.",crFactionChief);
 								event_Timer = 2300;
@@ -281,7 +281,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					case 6:
 						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							if(bg_Team == BG_TEAM_ALLIANCE)
+							if(team == ALLIANCE)
 							{
 								Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",crFactionChief);
 								event_Timer = 9500;
@@ -300,6 +300,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = DAY*7;
 						if(Tyrannus)
 							Tyrannus->ForcedDespawn();
+						Kill(me);
 						break;
 				}
 				event_phase++;

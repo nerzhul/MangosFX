@@ -158,7 +158,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 
 		if(Ball_Timer <= diff)
 		{
-			if(Creature* ball = CallCreature(34628,THREE_MINS*3,NEAR_30M))
+			if(Creature* ball = CallCreature(34630,THREE_MINS*3,NEAR_30M))
 				if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					ball->GetMotionMaster()->MoveChase(target);
 			Ball_Timer = urand(3000,5000);
