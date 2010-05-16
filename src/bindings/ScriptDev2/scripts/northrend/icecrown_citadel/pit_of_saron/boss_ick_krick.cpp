@@ -26,12 +26,34 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
     }
 
 	uint32 PoisonWave_Timer;
+	uint32 pursuit_Timer;
+	Unit* pursuit_target;
     void Reset()
     {
 		ResetTimers();
+		pursuit_target = NULL;
 		PoisonWave_Timer = 30000;
     }
 
+	void SpellHit(Unit* who, const SpellEntry* sp)
+	{
+		if(sp->Id == SPELL_PURSUIT)
+		{
+			pursuit_Timer = 10000;
+			DoSelectPursuitTarget();
+		}
+	}
+
+	void DoSelectPursuitTarget()
+	{
+		if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+			if(target->isAlive())
+			{
+				pursuit_target = target;
+				me->GetMotionMaster()->MoveChase(pursuit_target,0.0f);
+				me->AddThreat(pursuit_target,100000.0f);
+			}
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -39,7 +61,22 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
-		if(PoisonWave_Timer <= diff)
+		if(me->HasAura(SPELL_PURSUIT,0))
+		{
+			if(pursuit_target && !pursuit_target->isAlive())
+				DoSelectPursuitTarget();
+		}
+
+		if(pursuit_Timer <= diff)
+		{
+			DoResetThreat();
+			pursuit_Timer = DAY*7;
+		}
+		else
+			pursuit_Timer -= diff;
+
+
+		if(PoisonWave_Timer <= diff && !me->HasAura(SPELL_PURSUIT,0))
 		{
 			me->CastStop();
 			DoCastVictim(SPELL_POISON_WAVE);
@@ -48,7 +85,7 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
 		}
 		else
 			PoisonWave_Timer -= diff;
-      
+
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
@@ -77,15 +114,17 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	uint32 event_Timer;
 	BattleGroundTeamId bg_Team;
 	Creature* FactionChief;
-
+	uint32 pursuit_Timer;
+	
     void Reset()
     {
 		ResetTimers();
+		pursuit_Timer = 30000;
 		bg_Team = BG_TEAM_ALLIANCE;
 		Event = false;
 		me->SetRespawnTime(DAY*7);
     }
-	
+
 	void Aggro(Unit* who)
 	{
 		Speak(CHAT_TYPE_YELL,16926,"Le travail ne doit pas être interrompu ! Ick sas fois deux");
@@ -96,8 +135,9 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		if(pDoneby->GetTypeId() == TYPEID_PLAYER)
 			bg_Team = BattleGroundTeamId(((Player*)pDoneby)->GetBGTeam());
 
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && !Event)
 		{
+			dmg = 0;
 			me->setFaction(35);
 			DoResetThreat();
 			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
@@ -108,7 +148,11 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				FactionChief = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING);
 			else
 				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING);
+			if(FactionChief)
+				FactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
 		}
+		if(Event)
+			dmg = 0;
 	}
 
 	void KilledUnit(Unit* who)
@@ -126,6 +170,15 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			//Return since we have no target
 			if (!CanDoSomething())
 				return;
+
+			if(pursuit_Timer <= diff)
+			{
+				if(Creature* ick = GetInstanceCreature(DATA_ICK))
+					if(ick->isAlive())
+						DoCast(ick,SPELL_PURSUIT);
+			}
+			else
+				pursuit_Timer -= diff;
 	      
 			UpdateEvent(diff);
 
@@ -139,27 +192,45 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				{
 					case 1:
 						if(bg_Team == BG_TEAM_ALLIANCE)
-							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi ",FactionChief);
+						{
+							Speak(CHAT_TYPE_SAY,16611,"Je ne suis pas assez naïve pour croire à ces supplications mais j'écouterai ce que tu as à dire.",FactionChief);
+							event_Timer = 4500;
+						}
 						else
-							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi la reine banshee épargnerai elle ta misérable vie",FactionChief);
+						{
+							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi la reine banshee épargnerai elle ta misérable vie ?",FactionChief);
+							event_Timer = 3200;
+						}
 						break;
 					case 2:
+						Speak(CHAT_TYPE_SAY,16935,"Ce que vous cherchez est dans l'antre du maître, mais il faut tuer Tyrannus pour y pénétrer. Dans les Salles des Reflets vous trouverez Deuillegivre. Elle, elle détient la vérité !");
+						event_Timer = 14000;
 						break;
 					case 3:
 						if(bg_Team == BG_TEAM_ALLIANCE)
-							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						{
+							Speak(CHAT_TYPE_SAY,16612,"Deuillegivre laissée sans surveillance ? Impossible.",FactionChief);
+							event_Timer = 2300;
+						}
 						else
-							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+						{
+							Speak(CHAT_TYPE_SAY,17034,"Deuillegivre ? Le Roi Liche ne se sépare jamais de son épée. Si tu me mens...",FactionChief);
+							event_Timer = 5500;
+						}
 						break;
 					case 4:
+						Speak(CHAT_TYPE_YELL,16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
+						event_Timer = 3900;
 						break;
 					case 5:
+						if(FactionChief)
+							FactionChief->CastSpell(me,31008,false);
 						if(bg_Team == BG_TEAM_ALLIANCE)
-							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
+							Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",FactionChief);
 						else
-							Speak(CHAT_TYPE_SAY,17033,"",FactionChief);
-						break;
-					case 6:
+							Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",FactionChief);
+						Kill(me);
+						event_Timer = DAY*7;
 						break;
 				}
 				event_phase++;
@@ -241,7 +312,7 @@ void AddSC_boss_ick_and_krick()
 
 	newscript = new Script;
     newscript->Name = "boss_krick";
-    newscript->GetAI = &GetAI_boss_ick;
+    newscript->GetAI = &GetAI_boss_krick;
     newscript->RegisterSelf();
 
 	newscript = new Script;
