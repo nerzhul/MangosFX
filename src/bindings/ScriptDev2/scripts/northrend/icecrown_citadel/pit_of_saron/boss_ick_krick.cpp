@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					FactionChief = cr->GetGUID();
 			}
 
-			if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+			if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 			{
 				crFactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
 				crFactionChief->SetFacingToObject(me);
@@ -236,7 +236,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				switch(event_phase)
 				{
 					case 1:
-						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 						{
 							if(team == ALLIANCE)
 							{
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 14000;
 						break;
 					case 3:
-						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 						{
 							if(team == ALLIANCE)
 							{
@@ -279,7 +279,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 4500;
 						break;
 					case 6:
-						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 						{
 							if(team == ALLIANCE)
 							{
@@ -294,7 +294,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						}
 						break;
 					case 7:
-						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 							crFactionChief->CastSpell(me,31008,false);
 						Speak(CHAT_TYPE_YELL,16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
