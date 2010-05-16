@@ -14656,6 +14656,7 @@ void Unit::ExitVehicle()
     {
         float v_size = 0.0f;
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
+		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
 			{
 				if(m_SeatData.s_flags & SF_MAIN_RIDER)
@@ -14669,20 +14670,21 @@ void Unit::ExitVehicle()
 				v_size = vehicle->GetBase()->GetObjectSize();
 			}
 
-        if(GetTypeId() == TYPEID_PLAYER)
-        {
-            ((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
-        }
+			float x = vehUnit->GetPositionX();
+			float y = vehUnit->GetPositionY();
+			float z = vehUnit->GetPositionZ() + 2.0f;
+			GetClosePoint(x, y, z, 2.0f + v_size);
+			SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
+			if(m_vehicle)
+				m_vehicle->RemovePassenger(this);
 
-        float x = GetPositionX();
-        float y = GetPositionY();
-        float z = GetPositionZ() + 2.0f;
-        GetClosePoint(x, y, z, 2.0f + v_size);
-        SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
-		if(m_vehicle)
-			m_vehicle->RemovePassenger(this);
+			m_vehicle = NULL;
 
-		m_vehicle = NULL;
+			if(GetTypeId() == TYPEID_PLAYER)
+			{
+				((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+			}
+		}
     }
 }
 

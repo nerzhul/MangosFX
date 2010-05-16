@@ -44,6 +44,19 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
 		}
 	}
 
+	void Aggro(Unit* who)
+	{
+		if(Creature* Krick = GetInstanceCreature(DATA_KRICK))
+			if(Krick->isAlive())
+				if(who->isAlive())
+					Krick->AddThreat(who,2.0f);
+	}
+
+	void JustDied(Unit* who)
+	{
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+	}
+
 	void DoSelectPursuitTarget()
 	{
 		if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
@@ -107,6 +120,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		event_phase = 0;
 		event_Timer = 0;
 		FactionChief = NULL;
+		Tyrannus = NULL;
     }
 
 	bool Event;
@@ -114,11 +128,18 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	uint32 event_Timer;
 	BattleGroundTeamId bg_Team;
 	Creature* FactionChief;
+	Creature* Tyrannus;
 	uint32 pursuit_Timer;
 	
     void Reset()
     {
 		ResetTimers();
+		if(Creature* Ick = GetInstanceCreature(DATA_ICK))
+			if(!Ick->isAlive())
+			{
+				Ick->Respawn();
+				Ick->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+			}
 		pursuit_Timer = 30000;
 		bg_Team = BG_TEAM_ALLIANCE;
 		Event = false;
@@ -128,6 +149,9 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	void Aggro(Unit* who)
 	{
 		Speak(CHAT_TYPE_YELL,16926,"Le travail ne doit pas être interrompu ! Ick sas fois deux");
+		if(Creature* Ick = GetInstanceCreature(DATA_ICK))
+			if(Ick->isAlive())
+				Ick->AddThreat(who,2.0f);
 	}
 
 	void DamageTaken(Unit* pDoneby, uint32 &dmg)
@@ -138,6 +162,12 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		if(dmg >= me->GetHealth() && !Event)
 		{
 			dmg = 0;
+			if(Creature* Ick = GetInstanceCreature(DATA_ICK))
+				if(Ick->isAlive())
+					return;
+				else
+					Ick->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+			
 			me->setFaction(35);
 			DoResetThreat();
 			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
@@ -228,17 +258,30 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						}
 						break;
 					case 4:
+						Tyrannus = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f);
 						Speak(CHAT_TYPE_YELL,16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
 						event_Timer = 3900;
 						break;
 					case 5:
+						Speak(CHAT_TYPE_YELL,16753,"Minable insecte, la mort est tout ce que tu auras",Tyrannus);
+						event_Timer = 4500;
+						break;
+					case 6:
+						if(bg_Team == BG_TEAM_ALLIANCE)
+						{
+							Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",FactionChief);
+							event_Timer = 9500;
+						}
+						else
+						{
+							Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",FactionChief);
+							event_Timer = 7000;
+						}
+
+					case 7:
 						if(FactionChief)
 							FactionChief->CastSpell(me,31008,false);
-						if(bg_Team == BG_TEAM_ALLIANCE)
-							Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",FactionChief);
-						else
-							Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",FactionChief);
-						Kill(me);
+						Speak(CHAT_TYPE_YELL,16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
 						break;
 				}

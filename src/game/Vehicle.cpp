@@ -164,7 +164,7 @@ void Vehicle::InstallAllAccessories()
             me->SetMaxPower(POWER_ENERGY, 100);
             me->ModifyPower(POWER_ENERGY, 100);
 			break;
-		case 36476:InstallAccessory(36477,0);break;
+		//case 36476:InstallAccessory(36477,0);break; Ick & Krick desactivated
     }
 }
 
@@ -551,8 +551,10 @@ void Vehicle::RemovePassenger(Unit *unit)
             }
             unit->SetCharm(NULL);
             me->SetCharmerGUID(NULL);
-            me->setFaction(((Creature*)me)->GetCreatureInfo()->faction_A);
+			
         }
+		if(unit->GetTypeId() == TYPEID_UNIT)
+			me->setFaction(((Creature*)me)->GetCreatureInfo()->faction_A);
         /*if(GetVehicleFlags() & VF_NON_SELECTABLE)
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         if(seat->second.vs_flags & SF_UNATTACKABLE)
