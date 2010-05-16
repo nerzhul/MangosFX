@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	uint8 event_phase;
 	uint32 event_Timer;
 	BattleGroundTeamId bg_Team;
-	Creature* FactionChief;
+	uint64 FactionChief;
 	Creature* Tyrannus;
 	uint32 pursuit_Timer;
 	
@@ -171,20 +171,22 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			me->setFaction(35);
 			DoResetThreat();
 			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
+			
+			if(bg_Team == BG_TEAM_ALLIANCE)
+				FactionChief = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING)->GetGUID();
+			else
+				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING)->GetGUID();
+			if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+			{
+				crFactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
+				crFactionChief->SetFacingToObject(me);
+				me->SetFacingToObject(crFactionChief);
+			}
 			Event = true;
 			event_phase = 1;
 			event_Timer = 4000;
-			if(bg_Team == BG_TEAM_ALLIANCE)
-				FactionChief = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING);
-			else
-				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING);
-			if(FactionChief)
-			{
-				FactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
-				FactionChief->SetFacingToObject(me);
-				me->SetFacingToObject(FactionChief);
-			}
 		}
+
 		if(Event)
 			dmg = 0;
 	}
@@ -228,15 +230,18 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				switch(event_phase)
 				{
 					case 1:
-						if(bg_Team == BG_TEAM_ALLIANCE)
+						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							Speak(CHAT_TYPE_SAY,16611,"Je ne suis pas assez naïve pour croire à ces supplications mais j'écouterai ce que tu as à dire.",FactionChief);
-							event_Timer = 4500;
-						}
-						else
-						{
-							Speak(CHAT_TYPE_SAY,17033,"Et pourquoi la reine banshee épargnerai elle ta misérable vie ?",FactionChief);
-							event_Timer = 3200;
+							if(bg_Team == BG_TEAM_ALLIANCE)
+							{
+								Speak(CHAT_TYPE_SAY,16611,"Je ne suis pas assez naïve pour croire à ces supplications mais j'écouterai ce que tu as à dire.",crFactionChief);
+								event_Timer = 4500;
+							}
+							else
+							{
+								Speak(CHAT_TYPE_SAY,17033,"Et pourquoi la reine banshee épargnerai elle ta misérable vie ?",crFactionChief);
+								event_Timer = 3200;
+							}
 						}
 						break;
 					case 2:
@@ -244,15 +249,18 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 14000;
 						break;
 					case 3:
-						if(bg_Team == BG_TEAM_ALLIANCE)
+						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							Speak(CHAT_TYPE_SAY,16612,"Deuillegivre laissée sans surveillance ? Impossible.",FactionChief);
-							event_Timer = 2300;
-						}
-						else
-						{
-							Speak(CHAT_TYPE_SAY,17034,"Deuillegivre ? Le Roi Liche ne se sépare jamais de son épée. Si tu me mens...",FactionChief);
-							event_Timer = 5500;
+							if(bg_Team == BG_TEAM_ALLIANCE)
+							{
+								Speak(CHAT_TYPE_SAY,16612,"Deuillegivre laissée sans surveillance ? Impossible.",crFactionChief);
+								event_Timer = 2300;
+							}
+							else
+							{
+								Speak(CHAT_TYPE_SAY,17034,"Deuillegivre ? Le Roi Liche ne se sépare jamais de son épée. Si tu me mens...",crFactionChief);
+								event_Timer = 5500;
+							}
 						}
 						break;
 					case 4:
@@ -265,20 +273,23 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 4500;
 						break;
 					case 6:
-						if(bg_Team == BG_TEAM_ALLIANCE)
+						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 						{
-							Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",FactionChief);
-							event_Timer = 9500;
-						}
-						else
-						{
-							Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",FactionChief);
-							event_Timer = 7000;
+							if(bg_Team == BG_TEAM_ALLIANCE)
+							{
+								Speak(CHAT_TYPE_SAY,17033,"Quelle fin cruelle... Venez héros nous devons vérifier si ce que disait ce gnome était vrai. Si nous pouvons séparer Arthas de Deuillegivre nous aurons peut être une chance de l'arrêter",crFactionChief);
+								event_Timer = 9500;
+							}
+							else
+							{
+								Speak(CHAT_TYPE_SAY,17035,"Une fin parfaite pour un traître. Venez nous devons libérer les esclaves et voir par nous même ce que renferme le sanctuaire du Roi Liche !",crFactionChief);
+								event_Timer = 7000;
+							}
 						}
 						break;
 					case 7:
-						if(FactionChief)
-							FactionChief->CastSpell(me,31008,false);
+						if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
+							crFactionChief->CastSpell(me,31008,false);
 						Speak(CHAT_TYPE_YELL,16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
 						if(Tyrannus)
