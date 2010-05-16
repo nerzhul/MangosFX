@@ -1,6 +1,7 @@
 /* LibDevFS by Frost Sapphire Studios */
 
 #include "precompiled.h"
+#include "pit_of_saron.h"
 
 enum spells
 {
@@ -54,6 +55,9 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 				bgTeam = BattleGroundTeamId(((Player*)who)->GetBGTeam());
 		}*/
 		Speak(CHAT_TYPE_YELL,16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
+		if(Creature* rimefang = GetInstanceCreature(DATA_RIMEFANG))
+			if(rimefang->isAlive())
+				rimefang->AddThreat(who,2.0f);
 	}
 
 	void DamageDeal(Unit* who, uint32 dmg)
@@ -149,12 +153,13 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
     {
         InitInstance();
 		TyrannusTarget = NULL;
-		AddEvent(SPELL_HOARFROST,20000,30000);
-		AddEvent(SPELL_ICY_BLAST,15000,15000,2000);
-		AddEvent(SPELL_ICY_BLAST_AOE,17000,15000,2000);
-		AddEventOnTank(SPELL_HOARFROST,20000,30000,0,1);
-		AddEventOnTank(SPELL_ICY_BLAST,15000,15000,2000,0,1);
-		AddEventOnTank(SPELL_ICY_BLAST_AOE,17000,15000,2000,0,1);
+		AddEvent(SPELL_HOARFROST,18000,25000);
+		AddEvent(SPELL_ICY_BLAST,10000,12000,2000);
+		AddEvent(SPELL_ICY_BLAST_AOE,13000,16000,2000);
+		AddEventOnTank(SPELL_HOARFROST,18000,25000,0,1);
+		AddEventOnTank(SPELL_ICY_BLAST,10000,12000,2000,0,1);
+		AddEventOnTank(SPELL_ICY_BLAST_AOE,13000,16000,2000,0,1);
+		me->GetMotionMaster()->MovePoint(0,986.452,186.452f,649.188f);
 		Relocate(986.452,186.452f,649.188f);
     }
 
@@ -163,11 +168,13 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 	uint32 checkTarget_Timer;
 	uint8 FlyPoint;
 	uint32 MoveTimer;
+	uint8 nb_target;
 
     void Reset()
     {
 		ResetTimers();
 		phase = 0;
+		nb_target = 0;
 		MoveTimer = 1000;
 		FlyPoint = 0;
 		SetFlying(true);
@@ -188,7 +195,8 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 				if(pPlayer->isAlive() && pPlayer->HasAura(SPELL_MARK_OF_RIMEFANG))
 				{
 					TyrannusTarget = pPlayer;
-					me->AddThreat(TyrannusTarget,100000.0f);
+					nb_target++;
+					me->AddThreat(TyrannusTarget,nb_target*100000.0f);
 					phase = 1;
 					return;
 				}
@@ -197,7 +205,6 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 		if(!TyrannusTarget)
 		{
 			phase = 0;
-			DoResetThreat();
 		}
 	}
 
