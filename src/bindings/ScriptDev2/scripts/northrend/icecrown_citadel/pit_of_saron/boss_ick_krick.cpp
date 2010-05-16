@@ -173,9 +173,15 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			Speak(CHAT_TYPE_SAY,16934,"Attendez ! Non ! Ne me tuez pas ! je vais tout vous dire !");
 			
 			if(bg_Team == BG_TEAM_ALLIANCE)
-				FactionChief = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING)->GetGUID();
+			{
+				if(Creature* cr = CallCreature(36993,THREE_MINS,NEAR_7M,NOTHING))
+					FactionChief = cr->GetGUID();
+			}
 			else
-				FactionChief = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING)->GetGUID();
+			{	if(Creature* cr = CallCreature(36990,THREE_MINS,NEAR_7M,NOTHING))
+					FactionChief = cr->GetGUID();
+			}
+
 			if(Creature* crFactionChief = GetInstanceCreature(FactionChief))
 			{
 				crFactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
