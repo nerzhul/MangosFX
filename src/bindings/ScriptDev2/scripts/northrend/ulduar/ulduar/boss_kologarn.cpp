@@ -328,7 +328,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 
 	void JustDied(Unit* pKiller)
     {
-		Speak(CHAT_TYPE_YELL,15593,"Maître... ils arrivent...");
+		Yell(15593,"Maître... ils arrivent...");
 		Tasks.CleanMyAdds();
         if (m_pInstance)
 		{
@@ -356,7 +356,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public Scripted_NoMovementAI
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
 		}
-		Speak(CHAT_TYPE_YELL,15586,"On ne passe pas !");
+		Yell(15586,"On ne passe pas !");
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }

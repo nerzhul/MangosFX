@@ -218,14 +218,14 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,15757,"Hahahahaha ! hahahahaha !");
+			Yell(15757,"Hahahahaha ! hahahahaha !");
 		else
-			Speak(CHAT_TYPE_YELL,15758,"Une souffrance Ã©ternelle vous attend.");
+			Yell(15758,"Une souffrance Ã©ternelle vous attend.");
     }
 
     void JustDied(Unit *victim)
     {
-		Speak(CHAT_TYPE_YELL,15761,"Votre destin est scellÃ©, la fin des temps est enfin arrivÃ©e pour vous et pour tous les habitants de ces petits bourgeons !");
+		Yell(15761,"Votre destin est scellÃ©, la fin des temps est enfin arrivÃ©e pour vous et pour tous les habitants de ces petits bourgeons !");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,3);
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, DONE);
@@ -248,24 +248,24 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				switch(urand(0,2))
 				{
 					case 0:
-						Speak(CHAT_TYPE_YELL,15762,"Un milliers de morts...");
+						Yell(15762,"Un milliers de morts...");
 						break;
 					case 1:
-						Speak(CHAT_TYPE_YELL,15763,"Ou un unique meurtre");
+						Yell(15763,"Ou un unique meurtre");
 						break;
 					case 2:
-						Speak(CHAT_TYPE_YELL,15764,"Vos querelles mesquines ne font que me renforcer");
+						Yell(15764,"Vos querelles mesquines ne font que me renforcer");
 						break;
 				}
 				break;
 			case 1:
-				Speak(CHAT_TYPE_YELL,15765,"Sa progÃ©niture a vite appris ses leçons. Vous allez vite apprendre la vôtre.");
+				Yell(15765,"Sa progÃ©niture a vite appris ses leçons. Vous allez vite apprendre la vôtre.");
 				break;
 			case 2:
 				if(urand(0,1))
-					Speak(CHAT_TYPE_YELL,15766,"Il'Rilne Shol Anal");
+					Yell(15766,"Il'Rilne Shol Anal");
 				else
-					Speak(CHAT_TYPE_YELL,15767,"Il apprendra... aucun règne n'est Ã©ternel, sauf celui de la mort");
+					Yell(15767,"Il apprendra... aucun règne n'est Ã©ternel, sauf celui de la mort");
 				break;
 			default:
 				break;
@@ -341,7 +341,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 	void GoPhase3()
 	{
 		Event = EVENT_PHASE3;
-		Speak(CHAT_TYPE_YELL,15755,"Contemplez le vrai visage de la mort et sachez que votre fin approche");
+		Yell(15755,"Contemplez le vrai visage de la mort et sachez que votre fin approche");
 		me->RemoveAurasDueToSpell(AURA_SHADOWY_BARRIER_1);
 	}
 
@@ -377,7 +377,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 				if(TentacleText_Timer <= diff)
 				{
-					Speak(CHAT_TYPE_YELL,15756,"La folie vous emportera !");
+					Yell(15756,"La folie vous emportera !");
 
 					TentacleText_Timer = urand(60000,75000);
 				}
@@ -854,20 +854,20 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
     void KilledUnit(Unit *victim)
     {
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,15778,"Incapables !");
+			Yell(15778,"Incapables !");
 		else
-			Speak(CHAT_TYPE_YELL,15779,"Aurait-il pu être sauvÃ© ?");
+			Yell(15779,"Aurait-il pu être sauvÃ© ?");
     }
 
 	void JustDied(Unit *victim)
     {
-		Speak(CHAT_TYPE_YELL,15754,"Je suis le rêve Ã©veillÃ©, le monstre de vos cauchemars, le dÃ©mon aux milliers de visages, tremblez devant mon vÃ©ritable aspect, à genoux devant le dieu de la mort !");
+		Yell(15754,"Je suis le rêve Ã©veillÃ©, le monstre de vos cauchemars, le dÃ©mon aux milliers de visages, tremblez devant mon vÃ©ritable aspect, à genoux devant le dieu de la mort !");
 		Tasks.CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
 	}
 
     void Aggro(Unit* pWho)
     {
-		Speak(CHAT_TYPE_YELL,15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais");
+		Yell(15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais");
     }
 
 	void StartEvent()
@@ -878,9 +878,9 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 		EventStarted = true;
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,15771,"Aaaaaaaaaaaaaaaaah ! Au secours ! Je vous en prie, arrêtez les !");
+			Yell(15771,"Aaaaaaaaaaaaaaaaah ! Au secours ! Je vous en prie, arrêtez les !");
 		else
-			Speak(CHAT_TYPE_YELL,15772,"Qu'est ce que vous me voulez ? Laissez moi tranquille !");
+			Yell(15772,"Qu'est ce que vous me voulez ? Laissez moi tranquille !");
 
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())

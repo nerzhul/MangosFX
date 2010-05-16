@@ -128,7 +128,7 @@ void boss_steelbreakerAI::Reset()
 
 void boss_steelbreakerAI::EnterCombat(Unit *who)
 {
-	Speak(CHAT_TYPE_YELL,15674,"Vous ne vainquerez pas si facilement l'assemblÃ©e de fer, envahisseur !");
+	Yell(15674,"Vous ne vainquerez pas si facilement l'assemblÃ©e de fer, envahisseur !");
 	DoCastMe( (m_bIsHeroic)? SPELL_HIGH_VOLTAGE : SPELL_HIGH_VOLTAGE_H);
     UpdatePhase();
 	if(Unit* Brundir = Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_BRUNDIR) : 0))
@@ -248,7 +248,7 @@ void boss_runemaster_molgeimAI::EnterCombat(Unit* who)
         Steelbreaker->AddThreat(me->getVictim());
 	if(Unit* Brundir = Unit::GetUnit((*me), pInstance ? pInstance->GetData64(DATA_BRUNDIR) : 0))
         Brundir->AddThreat(me->getVictim());
-    Speak(CHAT_TYPE_YELL,15657,"Seule votre extermination complète me conviendra !");
+    Yell(15657,"Seule votre extermination complète me conviendra !");
     UpdatePhase();
 }
 
@@ -295,7 +295,7 @@ void boss_runemaster_molgeimAI::JustDied(Unit* Killer)
     if(IsEncounterComplete(pInstance, me) && pInstance)
         pInstance->SetData(TYPE_ASSEMBLY, DONE);
 	if(urand(0,1))
-		Speak(CHAT_TYPE_YELL,15662,"L'hÃ©ritage des tempêtes ne sera pas anÃ©anti...");
+		Yell(15662,"L'hÃ©ritage des tempêtes ne sera pas anÃ©anti...");
 	else
 		Speak(CHAT_TYPE_SAY,15663,"Que vous apporte ma chute ? Votre destin n'en est pas moins scellÃ©, mortel.");
 }
@@ -403,7 +403,7 @@ void boss_stormcaller_brundirAI::Reset()
 
 void boss_stormcaller_brundirAI::EnterCombat(Unit* who)
 {
-	Speak(CHAT_TYPE_YELL,15684,"Que vous soyez les plus grandes punaises ou les plus grands hÃ©ros de ce monde, vous n'êtes jamais que des mortels");
+	Yell(15684,"Que vous soyez les plus grandes punaises ou les plus grands hÃ©ros de ce monde, vous n'êtes jamais que des mortels");
     UpdatePhase();
 	if(Unit* Steelbreaker = Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_STEELBREAKER) : 0))
         Steelbreaker->AddThreat(me->getVictim());

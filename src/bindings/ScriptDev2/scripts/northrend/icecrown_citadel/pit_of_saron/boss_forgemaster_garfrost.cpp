@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 
 	void Aggro(Unit* who)
 	{
-		Speak(CHAT_TYPE_YELL,16912,"Petite créature qui court par terre, Vous apportez du bon manger à Gargivre hahaha");
+		Yell(16912,"Petite créature qui court par terre, Vous apportez du bon manger à Gargivre hahaha");
 	}
 
 
@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		if(CheckPercentLife(66) && phase == 0)
 		{
 			phase++;
-			Speak(CHAT_TYPE_YELL,16916,"Hache pas assez bien ! Gargivre va faire une meilleure et ensuite, massacrer !");
+			Yell(16916,"Hache pas assez bien ! Gargivre va faire une meilleure et ensuite, massacrer !");
 			//Jump(Weapon_Locations[0][0],Weapon_Locations[0][1],Weapon_Locations[0][2],2.0f,2.0f);
 			me->CastStop();
 			DoCastMe(SPELL_FROST_BLADE);
@@ -73,7 +73,7 @@ struct MANGOS_DLL_DECL boss_garfrostAI : public LibDevFSAI
 		else if(CheckPercentLife(33) && phase == 1)
 		{
 			phase++;
-			Speak(CHAT_TYPE_YELL,16917,"Gargivre fatigué par les petits mortels. Maintenant les eaux gêlent");
+			Yell(16917,"Gargivre fatigué par les petits mortels. Maintenant les eaux gêlent");
 			//Jump(Weapon_Locations[1][0],Weapon_Locations[1][1],Weapon_Locations[1][2],2.0f,2.0f);
 			me->CastStop();
 			DoCastMe(SPELL_FROST_MACE);

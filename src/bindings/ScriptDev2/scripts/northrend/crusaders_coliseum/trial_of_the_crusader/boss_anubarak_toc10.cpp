@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				GiveEmblemsToGroup(TRIOMPHE,4);
 				break;
 		}
-		Speak(CHAT_TYPE_YELL,16238,"J'ai échoué... maître...");
+		Yell(16238,"J'ai échoué... maître...");
     }
 
     void Aggro(Unit* pWho)
@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				{
 					phase = 2;
 					me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-					Speak(CHAT_TYPE_YELL,16240,"Aoum Na'akish ! DÃ©vorez mes serviteurs !");
+					Yell(16240,"Aoum Na'akish ! DÃ©vorez mes serviteurs !");
 					if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
 						follow_Target = target;
@@ -155,7 +155,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 
 		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30.0f && phase == 1)
 		{
-			Speak(CHAT_TYPE_YELL,16241,"L'essaim va vous submerger !");
+			Yell(16241,"L'essaim va vous submerger !");
 			phase = 3;
 		}
 

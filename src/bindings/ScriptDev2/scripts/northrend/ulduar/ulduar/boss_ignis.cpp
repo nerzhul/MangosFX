@@ -95,20 +95,20 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 
     void EnterCombat(Unit* who)
     {
-        Speak(CHAT_TYPE_YELL,15564,"Jeunes insolents ! Les lames qui serviront � reconquérir ce monde seront trempées dans votre sang !");
+        Yell(15564,"Jeunes insolents ! Les lames qui serviront � reconquérir ce monde seront trempées dans votre sang !");
     }
     
     void KilledUnit(Unit* victim)
     {
         if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,15569,"Encore des déchets pour la décharge !");
+			Yell(15569,"Encore des déchets pour la décharge !");
 		else
-			Speak(CHAT_TYPE_YELL,15570,"Vos ossements serviront de petit bois !");
+			Yell(15570,"Vos ossements serviront de petit bois !");
     }
 
     void JustDied(Unit *victim)
     {
-        Speak(CHAT_TYPE_YELL,15572,"J'ai... échoué...");
+        Yell(15572,"J'ai... échoué...");
 		for (std::vector<Unit*>::iterator itr = IgnisAdds.begin(); itr != IgnisAdds.end();++itr)
         {
 				Kill((*itr));
@@ -132,7 +132,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		{
 			if(Unit* tmpcr = Unit::GetUnit(*me, pInstance->GetData64(DATA_IGNIS_ADDS)))
 			{
-				Speak(CHAT_TYPE_YELL,15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
+				Yell(15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
 				IgnisAdds.push_back(tmpcr);
 				DoCast(tmpcr,SPELL_ACTIVATE);
 				FreezeMob(false,(Creature*)tmpcr);
@@ -156,9 +156,9 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 					pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
 
 			if(urand(0,1))
-				Speak(CHAT_TYPE_YELL,15567,"Que la fournaise vous consume !");
+				Yell(15567,"Que la fournaise vous consume !");
 			else
-				Speak(CHAT_TYPE_YELL,15568,"Br�leeeeeeeeeeeez !");
+				Yell(15568,"Br�leeeeeeeeeeeez !");
 
 			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 				Fire_Timer = 20000;

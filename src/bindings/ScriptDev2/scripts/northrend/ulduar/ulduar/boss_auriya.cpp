@@ -87,14 +87,14 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
     {
         DoScriptText(SAY_SLAY_1, me);
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,15474,"Le secret meurt avec vous !");
+			Yell(15474,"Le secret meurt avec vous !");
 		else 
-			Speak(CHAT_TYPE_YELL,15475,"Vous n'en rÃ©chapperez pas !");
+			Yell(15475,"Vous n'en rÃ©chapperez pas !");
     }
 
     void JustDied(Unit *victim)
     {
-		Speak(CHAT_TYPE_YELL,15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
+		Yell(15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_AURIAYA, DONE);
@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
 		if(enrage_Timer <= diff)
 		{
 			DoCastMe(SPELL_ENRAGE);
-			Speak(CHAT_TYPE_YELL,15477,"Vous me faîtes perdre mon temps.");
+			Yell(15477,"Vous me faîtes perdre mon temps.");
 			enrage_Timer = 60000;
 		}
 		else

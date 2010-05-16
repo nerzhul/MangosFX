@@ -54,7 +54,7 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 			if(who->GetTypeId() == TYPEID_PLAYER)
 				bgTeam = BattleGroundTeamId(((Player*)who)->GetBGTeam());
 		}*/
-		Speak(CHAT_TYPE_YELL,16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
+		Yell(16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
 		if(Creature* rimefang = GetInstanceCreature(DATA_RIMEFANG))
 			if(rimefang->isAlive())
 				rimefang->AddThreat(who,2.0f);
@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 						EventTimer = 10000;
 						break;
 					case 2:
-						Speak(CHAT_TYPE_YELL,16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
+						Yell(16760,"Je ne décevrai pas le Roi Liche ! Venez trouver votre fin !");
 						me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 						EventTimer = DAY*HOUR;
 						prefightEvent = false;
@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 		if(Mark_Timer <= diff)
 		{
 			DoCastRandom(SPELL_MARK_OF_RIMEFANG);
-			Speak(CHAT_TYPE_YELL,16764,"Frigecroc ! Anéantis cet imbécile");
+			Yell(16764,"Frigecroc ! Anéantis cet imbécile");
 			Mark_Timer = 30000;
 		}
 		else
@@ -136,9 +136,9 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 	void KilledUnit(Unit* who)
 	{
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,16761,"Quelle prestation embarassante ! La mort vous va bien mieux.");
+			Yell(16761,"Quelle prestation embarassante ! La mort vous va bien mieux.");
 		else
-			Speak(CHAT_TYPE_YELL,16762,"Vous auriez peut être du rester... dans les montagnes !");
+			Yell(16762,"Vous auriez peut être du rester... dans les montagnes !");
 	}
 };
 

@@ -93,7 +93,7 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
 		{
 			me->CastStop();
 			DoCastVictim(SPELL_POISON_WAVE);
-			Speak(CHAT_TYPE_YELL,16930,"Vite, empoisonne les tous, avant qu'ils ne s'éloignent !",GetInstanceCreature(DATA_KRICK));
+			Yell(16930,"Vite, empoisonne les tous, avant qu'ils ne s'éloignent !",GetInstanceCreature(DATA_KRICK));
 			PoisonWave_Timer = 30000;
 		}
 		else
@@ -148,7 +148,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 
 	void Aggro(Unit* who)
 	{
-		Speak(CHAT_TYPE_YELL,16926,"Le travail ne doit pas être interrompu ! Ick sas fois deux");
+		Yell(16926,"Le travail ne doit pas être interrompu ! Ick sas fois deux");
 		if(Creature* Ick = GetInstanceCreature(DATA_ICK))
 			if(Ick->isAlive())
 				Ick->AddThreat(who,2.0f);
@@ -203,9 +203,9 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			return;
 
 		if(urand(0,1))
-			Speak(CHAT_TYPE_YELL,16927,"Ooh, ses membres pourraient nous être utiles");
+			Yell(16927,"Ooh, ses membres pourraient nous être utiles");
 		else
-			Speak(CHAT_TYPE_YELL,16928,"On manquait de bras et de jambes, merci pour cette aimable contribution !");
+			Yell(16928,"On manquait de bras et de jambes, merci pour cette aimable contribution !");
 	}
 
     void UpdateAI(const uint32 diff)
@@ -271,11 +271,11 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						break;
 					case 4:
 						Tyrannus = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f);
-						Speak(CHAT_TYPE_YELL,16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
+						Yell(16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
 						event_Timer = 3900;
 						break;
 					case 5:
-						Speak(CHAT_TYPE_YELL,16753,"Minable insecte, la mort est tout ce que tu auras",Tyrannus);
+						Yell(16753,"Minable insecte, la mort est tout ce que tu auras",Tyrannus);
 						event_Timer = 4500;
 						break;
 					case 6:
@@ -296,7 +296,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					case 7:
 						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
 							crFactionChief->CastSpell(me,31008,false);
-						Speak(CHAT_TYPE_YELL,16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
+						Yell(16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
 						if(Tyrannus)
 							Tyrannus->ForcedDespawn();

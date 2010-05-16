@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_JARAXXUS, IN_PROGRESS);
 
-		Speak(CHAT_TYPE_YELL,16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
+		Yell(16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
     }
 
     void UpdateAI(const uint32 diff)
@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
 		if(incinerate_Timer <= diff)
 		{
-			Speak(CHAT_TYPE_YELL,16149,"Que brûle la chair !");
+			Yell(16149,"Que brûle la chair !");
 			DoCastRandom(SPELL_INCINERATE_FLESH);
 			incinerate_Timer = 20000;
 		}

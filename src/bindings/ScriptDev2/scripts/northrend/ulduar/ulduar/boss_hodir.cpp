@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-		Speak(CHAT_TYPE_YELL,15552,"Vous allez souffrir pour cet entretien");
+		Yell(15552,"Vous allez souffrir pour cet entretien");
         me->SetInCombatWithZone();
 
         if (m_pInstance)
