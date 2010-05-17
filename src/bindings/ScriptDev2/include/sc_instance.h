@@ -38,5 +38,12 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 
         //sends world state update to all players in instance
         void DoUpdateWorldState(uint32 uiStateId, uint32 uiStateData);
+        
+        Unit* GetUnitInMap(uint64 guid) 
+        {
+			if(!pMap) return NULL;
+			return pMap->GetCreatureOrPetOrVehicle(guid);
+		}
+			
 };
 #endif

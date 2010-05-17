@@ -239,7 +239,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 		{
 			for(std::vector<uint64>::iterator itr = XevozzAdds.begin(); itr!= XevozzAdds.end(); ++itr)
 			{
-				Unit *pAdd = Unit::GetUnit(*boss[3], *itr);
+				Unit *pAdd = GetUnitInMap(*itr);
 				if (pAdd && pAdd->isAlive())
 				{
 					pAdd->SetVisibility(VISIBILITY_OFF);
@@ -252,7 +252,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 		{
 			for(std::vector<uint64>::iterator itr = IchoronAdds.begin(); itr!= IchoronAdds.end(); ++itr)
 			{
-				Unit *pAdd = Unit::GetUnit(*boss[4], *itr);
+				Unit *pAdd = GetUnitInMap(*itr);
 				if (pAdd && pAdd->isAlive())
 				{
 					pAdd->SetVisibility(VISIBILITY_OFF);
@@ -455,7 +455,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 
 	void ClosePortal(uint32 id_portal)
 	{
-		if(Creature* cr = ((Creature*)Unit::GetUnit(NULL, portals[id_portal])))
+		if(Creature* cr = ((Creature*)GetUnitInMap(portals[id_portal])))
 			cr->RemoveFromWorld();
 		portals[id_portal] = 0;
 		portal_opened[id_portal] = false;
@@ -552,7 +552,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					case 1:
 					case 5:
 					case 6:
-						if(Creature* cr = ((Creature*)Unit::GetUnit(NULL, crPortals[i][0])))
+						if(Creature* cr = ((Creature*)GetUnitInMap(crPortals[i][0])))
 							if(cr->isAlive() == false)
 							{
 								ClosePortal(i);
@@ -563,10 +563,10 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					case 3:
 					case 4:
 					{
-						Creature* cr = ((Creature*)Unit::GetUnit(NULL, crPortals[i][0]));
-						Creature* cr2 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][1]));
-						Creature* cr3 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][2]));
-						Creature* cr4 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][3]));
+						Creature* cr = ((Creature*)GetUnitInMap(crPortals[i][0]));
+						Creature* cr2 = ((Creature*)GetUnitInMap(crPortals[i][1]));
+						Creature* cr3 = ((Creature*)GetUnitInMap(crPortals[i][2]));
+						Creature* cr4 = ((Creature*)GetUnitInMap(crPortals[i][3]));
 						if(cr && cr2 && cr3 && cr4)
 							if(!cr->isAlive() && !cr2->isAlive() && !cr3->isAlive() && !cr4->isAlive())
 							{
@@ -624,25 +624,18 @@ bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSe
     return true;
 }
 
-struct MANGOS_DLL_DECL portal_AddAI : public ScriptedAI
+struct MANGOS_DLL_DECL portal_AddAI : public LibDevFSAI
 {	
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
 	uint32 spawn_Timer;
-	Creature *tmp, *tmp2;
 
 	portal_AddAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
-		Reset();
+		InitInstance();
 	}
 
     void Reset()
     {
 		spawn_Timer = 30000;
-		tmp = NULL;
-		tmp2 = NULL;
     }
 
     void UpdateAI(const uint32 diff)
@@ -650,38 +643,38 @@ struct MANGOS_DLL_DECL portal_AddAI : public ScriptedAI
 		if(spawn_Timer <= diff)
 		{
 			int rand = urand(0,3);
+			Creature* tmp,tmp2;
 			switch(rand)
 			{
-			case 0:
-				tmp = me->SummonCreature(30662,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				tmp2 = me->SummonCreature(30662,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				break;
-			case 1:
-				tmp = me->SummonCreature(30665,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				tmp2 = me->SummonCreature(30665,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				break;
-			case 2:
-				tmp = me->SummonCreature(30661,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				tmp2 = me->SummonCreature(30661,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				break;
-			case 3:
-				tmp = me->SummonCreature(30664,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				tmp2 = me->SummonCreature(30664,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ(),me->GetAngle(me),TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				break;
-			default:
-				break;
+				case 0:
+					tmp = CallCreature(30662,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					tmp2 = CallCreature(30662,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					break;
+				case 1:
+					tmp = CallCreature(30665,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					tmp2 = CallCreature(30665,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					break;
+				case 2:
+					tmp = CallCreature(30661,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					tmp2 = CallCreature(30661,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					break;
+				case 3:
+					tmp = CallCreature(30664,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					tmp2 = CallCreature(30664,THREE_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+					break;
 			}
-			if(tmp)
+			
+			if(tmp && tmp->isAlive())
 			{
 				tmp->GetMotionMaster()->MovePoint(0, 1817.122f, 804.02f, 45.01f);
-				if (Creature* sceau = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(2))))
+				if (Creature* sceau = GetInstanceCreature(2))
 					if(sceau->isAlive())
 						tmp->AddThreat(sceau);
 			}
-			if(tmp2)
+			if(tmp2 && tmp->isAlive())
 			{
 				tmp2->GetMotionMaster()->MovePoint(0, 1817.122f, 804.02f, 45.01f);
-				if (Creature* sceau = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(2))))
+				if (Creature* sceau = GetInstanceCreature(2))
 					if(sceau->isAlive())
 						tmp->AddThreat(sceau);
 			}
