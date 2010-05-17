@@ -86,7 +86,6 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	bool late;
 	GameObject* jail[8];
 	Creature* boss[8];
-	Creature* ActiveBoss;
 	Creature* pLieutenant;
 	uint8 add;
 	std::vector<uint64> XevozzAdds;
@@ -382,7 +381,6 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			boss[rand_boss]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			boss[rand_boss]->RemoveAllAuras();
 			boss[rand_boss]->RemoveAurasDueToSpell(66830);
-			ActiveBoss = boss[rand_boss];
 			ClosePortal(7);
 			            
 			switch(rand_boss)

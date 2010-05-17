@@ -5361,6 +5361,7 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
 		holy = int32(holy * 377 / 1000);
 		m_modifier.m_amount += ap > holy ? ap : holy;
 	}
+
 	//Lifebloom special stacking
 	if(m_spellProto->SpellFamilyName == SPELLFAMILY_DRUID && (m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000)) && GetStackAmount() > 1)
 		m_modifier.m_amount += (GetStackAmount() == 2) ? m_modifier.m_amount : (m_modifier.m_amount / 2);
@@ -5369,8 +5370,8 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
 		Unit *caster = GetCaster();
 		if (!caster)
 		  return;
-
-		m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
+		if(apply)
+			m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
 	}
 }
 

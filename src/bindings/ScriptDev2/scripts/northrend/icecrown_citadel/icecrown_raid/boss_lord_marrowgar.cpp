@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				me->CastStop();
 				DoCastMe(SPELL_BONE_STORM);
 				BossEmote(0,"Gargamoelle commence a incanter une tempete d'os");
-				Storm_Timer = 60000;
+				Storm_Timer = 63000;
 				StormTarget_Timer = 15000;
 			}
 			else
@@ -125,7 +125,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 		}
-		else
+		else if(phase == 1)
 		{
 			if(StormTarget_Timer <= diff)
 			{
