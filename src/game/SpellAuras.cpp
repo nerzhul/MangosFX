@@ -3483,7 +3483,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
     }
 
 	// fss mod
-	modelid = (m_target->GetModelForForm(form) != 0) ? m_target->GetModelForForm(form) : modelid;
+	modelid = (m_target->GetModelForForm(form)) ? m_target->GetModelForForm(form) : modelid;
 	// fin FSS mods
 
     // remove polymorph before changing display id to keep new display id
