@@ -211,6 +211,8 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void Relocate(Unit* unitpos) { Relocate(unitpos->GetPositionX(),unitpos->GetPositionY(), unitpos->GetPositionZ()); } ;
 
 	void Yell(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_YELL, soundid, text, spkCr); }
+	void Say(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_SAY, soundid, text, spkCr); }
+	void BossEmote(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_BOSS_EMOTE, soundid, text, spkCr); }
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;
