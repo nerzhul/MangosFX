@@ -58,13 +58,13 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
             pInstance->SetData(TYPE_MARROWGAR, FAIL);
     }
 
-	void CallColdFlames()
+	void CallColdFlames(Unit* victim)
 	{
-		if(!me->GetVictim())
+		if(!victim)
 			return;
 		
-		float x_vect = me->GetVictim()->GetPositionX() - me->GetPositionX();
-		flaot y_vect = me->GetVictim()->GetPositionY() - me->GetPositionY();
+		float x_vect = victim->GetPositionX() - me->GetPositionX();
+		float y_vect = victim->GetPositionY() - me->GetPositionY();
 		for(uint8 i=0;i<5;i++)
 			CallCreature(NPC_COLDFLAME,30000,PREC_COORDS,NOTHING,me->GetPositionX() + x_vect*(3*i),me->GetPositionY() + x_vect*(3*i),me->GetPositionZ() + 1.0f,true);
 	}
