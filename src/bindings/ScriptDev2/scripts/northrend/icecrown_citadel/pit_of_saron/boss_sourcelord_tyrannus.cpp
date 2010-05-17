@@ -129,8 +129,10 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
-	   Speak(CHAT_TYPE_SAY,16763,"Impossible... Frigecroc... avertis...");
+		if(Creature* Rimefang = GetInstanceCreature(DATA_RIMEFANG))
+			Rimefang->ForcedDespawn();
+		GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
+		Speak(CHAT_TYPE_SAY,16763,"Impossible... Frigecroc... avertis...");
     }
 
 	void KilledUnit(Unit* who)

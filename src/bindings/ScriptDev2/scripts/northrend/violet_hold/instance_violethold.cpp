@@ -77,8 +77,8 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 
 	Creature* pCyanigosa;
 	uint32 ShieldScore;
-	Creature* portals[8];
-	Creature* crPortals[8][4];
+	uint64 portals[8];
+	uint64 crPortals[8][4];
 	Creature *sceau;
 	bool portal_opened[8];
 	bool boss_down[6];
@@ -109,18 +109,16 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 		for(int i = 0; i < 8; i++)
 		{
 			portal_opened[i] = false;
-			portals[i] = NULL;
+			portals[i] = 0;
 		}
 
 		for(int i = 0; i < 6; i++)
 			boss_down[i] = false;
 
-		for(int i = 0; i < 8; i++)
-			portals[i] = NULL;
 
 		for(int i = 0; i < 8; i++)
 			for(int j = 0; j < 4; j++)
-				crPortals[i][j] = NULL;
+				crPortals[i][j] = 0;
 
 		SpawnPortal_Timer = 32000;
 		CheckClose_Timer = 34000;
@@ -334,15 +332,19 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			if(!(portal_opened[0] == true && portal_opened[1] == true && portal_opened[2] == true && portal_opened[3] == true && portal_opened[4] == true && portal_opened[5] == true && portal_opened[6] == true))				
 			{
 				lastportal = random;
-				portals[random] = pCyanigosa->SummonCreature(NPC_PORTAL,portal_coords[random].x,portal_coords[random].y,portal_coords[random].z,portal_coords[random].o,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
-				portals[random]->SetRespawnDelay(RESPAWN_ONE_DAY);
+				if(Creature* cr = pCyanigosa->SummonCreature(NPC_PORTAL,portal_coords[random].x,portal_coords[random].y,portal_coords[random].z,portal_coords[random].o,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000))
+				{
+					portals[random] = cr->GetGuid();
+					cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+				}
 				portal_opened[random] = true;
 			}
 		}
 		else
 		{
 			int random = 7;
-			portals[7] = pCyanigosa->SummonCreature(NPC_PORTAL,portal_coords[7].x,portal_coords[7].y,portal_coords[7].z,portal_coords[7].o,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000);
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_PORTAL,portal_coords[7].x,portal_coords[7].y,portal_coords[7].z,portal_coords[7].o,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,600000))
+				portals[7] = cr->GetGuid();
 			portal_opened[7] = true;
 			int rand_boss = urand(0,5);
 			while(boss_down[rand_boss] == true)
@@ -416,20 +418,35 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	{
 		if(IsGuardian == true)
 		{
-			crPortals[lstportal][0] = pCyanigosa->SummonCreature(NPC_GUARDIAN,portal_coords[lastportal].x,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000);
-			crPortals[lstportal][0]->SetRespawnDelay(RESPAWN_ONE_DAY);
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_GUARDIAN,portal_coords[lastportal].x,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000))
+			{
+				crPortals[lstportal][0] = cr->GetGuid();
+				cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+			}
 			DoScriptText(EMOTE_GUARDIAN,pLieutenant);
 		}
 		else
 		{
-			crPortals[lstportal][0] = pCyanigosa->SummonCreature(NPC_CASTER,portal_coords[lastportal].x+2,portal_coords[lastportal].y+2,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000);
-			crPortals[lstportal][1] = pCyanigosa->SummonCreature(NPC_ECUMEUR,portal_coords[lastportal].x+2,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000);
-			crPortals[lstportal][2] = pCyanigosa->SummonCreature(NPC_CAPTAIN,portal_coords[lastportal].x,portal_coords[lastportal].y+2,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000);
-			crPortals[lstportal][3] = pCyanigosa->SummonCreature(NPC_TRAQUEUR,portal_coords[lastportal].x,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000);
-			crPortals[lstportal][0]->SetRespawnDelay(RESPAWN_ONE_DAY);
-			crPortals[lstportal][1]->SetRespawnDelay(RESPAWN_ONE_DAY);
-			crPortals[lstportal][2]->SetRespawnDelay(RESPAWN_ONE_DAY);
-			crPortals[lstportal][3]->SetRespawnDelay(RESPAWN_ONE_DAY);
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_CASTER,portal_coords[lastportal].x+2,portal_coords[lastportal].y+2,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000))
+			{
+				crPortals[lstportal][0] = cr->GetGuid();
+				cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+			}
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_ECUMEUR,portal_coords[lastportal].x+2,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000))
+			{
+				crPortals[lstportal][1] = cr->GetGuid();
+				cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+			}
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_CAPTAIN,portal_coords[lastportal].x,portal_coords[lastportal].y+2,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000))
+			{
+				crPortals[lstportal][2] = cr->GetGuid();
+				cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+			}
+			if(Creature* cr = pCyanigosa->SummonCreature(NPC_TRAQUEUR,portal_coords[lastportal].x,portal_coords[lastportal].y,portal_coords[lastportal].z,portal_coords[lastportal].o,TEMPSUMMON_TIMED_DESPAWN,600000))
+			{
+				crPortals[lstportal][3] = cr->GetGuid();
+				cr->SetRespawnDelay(RESPAWN_ONE_DAY);
+			}
 
 			DoScriptText(EMOTE_ESCADRILLE,pLieutenant);
 		}
@@ -438,9 +455,9 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 
 	void ClosePortal(uint32 id_portal)
 	{
-		if(portals[id_portal])
-			portals[id_portal]->RemoveFromWorld();
-		portals[id_portal] = NULL;
+		if(Creature* cr = ((Creature*)Unit::GetUnit(NULL, portals[id_portal])))
+			cr->RemoveFromWorld();
+		portals[id_portal] = 0;
 		portal_opened[id_portal] = false;
 	}
 
@@ -527,7 +544,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	{
 		for(uint32 i = 0; i < 7;i++)
 		{
-			if(portals[i] != NULL)
+			if(portals[i])
 			{
 				switch(i)
 				{
@@ -535,24 +552,30 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					case 1:
 					case 5:
 					case 6:
-						if(crPortals[i][0])
-							if(crPortals[i][0]->isAlive() == false)
+						if(Creature* cr = ((Creature*)Unit::GetUnit(NULL, crPortals[i][0])))
+							if(cr->isAlive() == false)
 							{
 								ClosePortal(i);
-								crPortals[i][0] = NULL;
+								crPortals[i][0] = 0;
 							}
 						break;
 					case 2:
 					case 3:
 					case 4:
-						if(crPortals[i][0] != NULL && crPortals[i][1] != NULL && crPortals[i][2] != NULL && crPortals[i][3] != NULL)
-							if(crPortals[i][0]->isAlive() == false && crPortals[i][1]->isAlive() == false && crPortals[i][2]->isAlive() == false && crPortals[i][3]->isAlive() == false)
+					{
+						Creature* cr = ((Creature*)Unit::GetUnit(NULL, crPortals[i][0]));
+						Creature* cr2 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][1]));
+						Creature* cr3 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][2]));
+						Creature* cr4 = ((Creature*)Unit::GetUnit(NULL, crPortals[i][3]));
+						if(cr && cr2 && cr3 && cr4)
+							if(!cr->isAlive() && !cr2->isAlive() && !cr3->isAlive() && !cr4->isAlive())
 							{
 								ClosePortal(i);
 								for(int j = 0; j < 4; j++)
-									crPortals[i][j] = NULL;
+									crPortals[i][j] = 0;
 							}
 						break;
+					}
 				}
 			}
 		}

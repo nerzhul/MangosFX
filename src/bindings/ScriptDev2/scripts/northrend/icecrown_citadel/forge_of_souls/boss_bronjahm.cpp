@@ -39,6 +39,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
     {
 		ResetTimers();
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+		SetCombatMovement(true);
 		CorruptedSoulFrag_Timer = 29000;
 		CheckDist_Timer = 20000;
 		frag = 0;
@@ -115,6 +116,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 						Relocate(5297.3f,2506.6f,686.1f);
 						me->CastStop();
 						DoCastMe(SPELL_SOULSTORM);
+						SetCombatMovement(false);
 						me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
 						phase = 1;
 						Teleport_Timer = DAY;
