@@ -62,7 +62,7 @@ ObjectAccessor::GetUnit(WorldObject const &u, uint64 guid)
     if(IS_PLAYER_GUID(guid))
         return FindPlayer(guid);
 
-    if (!u || !u.IsInWorld())
+    if (!u.IsInWorld())
         return NULL;
 
     return u.GetMap()->GetCreatureOrPetOrVehicle(guid);

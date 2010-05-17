@@ -272,13 +272,14 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						}
 						break;
 					case 4:
-					i	if(Creature* cr = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f))
-							Tyrannus = cr->GetGuid();
+						if(Creature* cr = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f))
+							Tyrannus = cr->GetGUID();
 						Yell(16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
 						event_Timer = 3900;
 						break;
 					case 5:
-						Yell(16753,"Minable insecte, la mort est tout ce que tu auras",Tyrannus);
+						if(Creature* crTyrannus = GetGuidCreature(Tyrannus))
+							Yell(16753,"Minable insecte, la mort est tout ce que tu auras",crTyrannus);
 						event_Timer = 4500;
 						break;
 					case 6:
@@ -299,10 +300,13 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					case 7:
 						if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 							crFactionChief->CastSpell(me,31008,false);
-						Yell(16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
-						event_Timer = DAY*7;
 						if(Creature* crTyrannus = GetGuidCreature(Tyrannus))
+						{
+							Yell(16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",crTyrannus);
 							crTyrannus->ForcedDespawn();
+						}
+						event_Timer = DAY*7;
+						
 						Kill(me);
 						break;
 				}

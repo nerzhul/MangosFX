@@ -51,6 +51,7 @@ CreatureAI* GetAI_crazyIA_nerzhulAI(Creature* pCreature)
 
 void AddSC_crazy_ias()
 {
+	Script *newscript;
 	newscript = new Script;
     newscript->Name = "crazyIA_nerzhul";
     newscript->GetAI = &GetAI_crazyIA_nerzhulAI;

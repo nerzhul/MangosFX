@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 			{
 				if(Creature* tmp_add = CallCreature(36535,TEN_MINS,NEAR_7M,GO_TO_CREATOR))
 				{
-					frag = tmp_add->GetGuid();
+					frag = tmp_add->GetGUID();
 					tmp_add->SetReactState(REACT_PASSIVE);
 					tmp_add->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
 				}

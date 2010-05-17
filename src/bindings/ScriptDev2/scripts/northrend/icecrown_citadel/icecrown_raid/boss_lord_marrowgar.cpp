@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     {
 		ResetTimers();
 		SetCombatMovement(false);
-		AggroAllPlayers();
+		AggroAllPlayers(150.0f);
     }
 
     void UpdateAI(const uint32 diff)
@@ -192,7 +192,7 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
     {
 		ResetTimers();
 		SetCombatMovement(false);
-		AggroAllPlayers();
+		AggroAllPlayers(150.0f);
     }
 
     void UpdateAI(const uint32 diff)
