@@ -1,26 +1,3 @@
-/* Copyright (C) 2006 - 2010 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
-
-/* ScriptData
-SDName: Boss_Marrowgar
-SD%Complete: 0
-SDComment: Written by K
-SDCategory: Icecrown Citadel
-EndScriptData */
-
 #include "precompiled.h"
 #include "icecrown_citadel.h"
 
@@ -34,62 +11,49 @@ enum
 
 enum
 {
-        //common
-        SPELL_BERSERK                           = 47008,
-        //yells
-        //summons
-        NPC_BONE_SPIKE                          = 38711,
-        NPC_COLDFLAME                           = 36672,
-        //Abilities
-        SPELL_CALL_COLD_FLAME                   = 69138,
-        SPELL_COLD_FLAME                        = 69146,
-        SPELL_COLD_FLAME_0                      = 69145,
-        SPELL_BONE_STRIKE                       = 69057,
-        SPELL_BONE_STRIKE_IMPALE                = 69065,
-        SPELL_BONE_STORM_STRIKE                 = 69075,
+	//common
+	SPELL_BERSERK               = 47008,
+	//yells
+	//summons
+	NPC_BONE_SPIKE              = 38711,
+	NPC_COLDFLAME               = 36672,
+	//Abilities
+	SPELL_CALL_COLD_FLAME       = 69138,
+	SPELL_COLD_FLAME            = 69146,
+	SPELL_COLD_FLAME_0          = 69145,
+	SPELL_BONE_STRIKE           = 69057,
+	SPELL_BONE_STRIKE_IMPALE	= 69065,
+	SPELL_BONE_STORM_STRIKE     = 69075,
 };
 
-struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 {
-    boss_marrowgarAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
+        InitInstance();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
-
-    uint32 SaberLash_Timer;
-    uint32 ColdFlame_Timer;
-    uint32 BoneSpike_Timer;
-    uint32 BoneStorm_Timer;
 
     void Reset()
     {
-        SaberLash_Timer = 1000;
-        ColdFlame_Timer = 15000;
-        BoneSpike_Timer = 30000;
-        BoneStorm_Timer = 45000;
     }
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MARROWGAR, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_MARROWGAR, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MARROWGAR, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_MARROWGAR, DONE);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MARROWGAR, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_MARROWGAR, FAIL);
     }
 
     void UpdateAI(const uint32 diff)
@@ -97,35 +61,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        if (BoneStorm_Timer < diff)
-        {
-            DoCastSpellIfCan(me->getVictim(), SPELL_BONE_STORM);
-            BoneStorm_Timer = 90000;
-        }
-        else BoneStorm_Timer -= diff;
-
-        if (BoneSpike_Timer < diff)
-        {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                DoCastSpellIfCan(target, SPELL_BONE_SPIKE);
-            SaberLash_Timer = 4000;
-            BoneSpike_Timer = 30000;
-        }
-        else BoneSpike_Timer -= diff;
-
-        if (ColdFlame_Timer < diff)
-        {
-            DoCastSpellIfCan(me->getVictim(), SPELL_COLDFLAME);
-            ColdFlame_Timer = 15000;
-        }
-        else ColdFlame_Timer -= diff;
-
-        if (SaberLash_Timer < diff)
-        {
-            DoCastSpellIfCan(me->getVictim(), SPELL_SABER_LASH);
-            SaberLash_Timer = 1000;
-        }
-        else SaberLash_Timer -= diff;
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
