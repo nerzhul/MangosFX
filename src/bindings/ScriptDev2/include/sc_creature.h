@@ -416,8 +416,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void AddPercentLife(Unit* u,uint8 percent);
 
 		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
-		
-		
+		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)Unit::GetUnit(*me, guid)); }
+		Unit* GetRandomUnit() { return SelectUnit(SELECT_TARGET_RANDOM,0); }
+
+		// Attributes
 		ScriptedInstance* pInstance;
 		Difficulty m_difficulty;
 	private:

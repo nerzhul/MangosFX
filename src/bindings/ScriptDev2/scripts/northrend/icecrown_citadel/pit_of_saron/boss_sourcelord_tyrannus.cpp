@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 	
 		if(brand_Timer <= diff)
 		{
-			if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+			if(Unit* target = GetRandomUnit())
 			{
 				DoCast(target,SPELL_OVERLORD_BRAND);
 				brandTarget = target;
@@ -156,9 +156,9 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 		AddEvent(SPELL_HOARFROST,18000,25000);
 		AddEvent(SPELL_ICY_BLAST,10000,12000,2000);
 		AddEvent(SPELL_ICY_BLAST_AOE,13000,16000,2000);
-		AddEventOnTank(SPELL_HOARFROST,18000,25000,0,1);
-		AddEventOnTank(SPELL_ICY_BLAST,10000,12000,2000,0,1);
-		AddEventOnTank(SPELL_ICY_BLAST_AOE,13000,16000,2000,0,1);
+		AddEventOnTank(SPELL_HOARFROST,12000,20000,0,1);
+		AddEventOnTank(SPELL_ICY_BLAST,8000,9000,2000,0,1);
+		AddEventOnTank(SPELL_ICY_BLAST_AOE,10000,13000,2000,0,1);
 		me->GetMotionMaster()->MovePoint(0,986.452,186.452f,649.188f);
 		Relocate(986.452,186.452f,649.188f);
     }

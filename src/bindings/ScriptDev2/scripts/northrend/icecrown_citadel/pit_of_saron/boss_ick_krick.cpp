@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_ickAI : public LibDevFSAI
 
 	void DoSelectPursuitTarget()
 	{
-		if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+		if(Unit* target = GetRandomUnit())
 			if(target->isAlive())
 			{
 				pursuit_target = target;
@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 	uint32 event_Timer;
 	uint32 team;
 	uint64 FactionChief;
-	Creature* Tyrannus;
+	uint64 Tyrannus;
 	uint32 pursuit_Timer;
 	
     void Reset()
@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 					FactionChief = cr->GetGUID();
 			}
 
-			if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
+			if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 			{
 				crFactionChief->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
 				crFactionChief->SetFacingToObject(me);
@@ -236,7 +236,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 				switch(event_phase)
 				{
 					case 1:
-						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
+						if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 						{
 							if(team == ALLIANCE)
 							{
@@ -255,7 +255,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 14000;
 						break;
 					case 3:
-						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
+						if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 						{
 							if(team == ALLIANCE)
 							{
@@ -270,7 +270,8 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						}
 						break;
 					case 4:
-						Tyrannus = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f);
+					i	if(Creature* cr = CallCreature(36794,30000,PREC_COORDS,NOTHING,877.520f,173.945f,557.0f))
+							Tyrannus = cr->GetGuid();
 						Yell(16936,"Je vous jure, je vous jure que c'est vrai ! S'il vous plait, épargnez moi !");
 						event_Timer = 3900;
 						break;
@@ -279,7 +280,7 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						event_Timer = 4500;
 						break;
 					case 6:
-						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
+						if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 						{
 							if(team == ALLIANCE)
 							{
@@ -294,12 +295,12 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 						}
 						break;
 					case 7:
-						if(Creature* crFactionChief = ((Creature*)Unit::GetUnit(*me, FactionChief)))
+						if(Creature* crFactionChief = GetGuidCreature(FactionChief))
 							crFactionChief->CastSpell(me,31008,false);
 						Yell(16754,"Ne pensez pas que je vais vous laisser pénétrer dans le sanctuaire de mon maître si facilement. Suivez moi si vous l'osez",Tyrannus);
 						event_Timer = DAY*7;
-						if(Tyrannus)
-							Tyrannus->ForcedDespawn();
+						if(Creature* crTyrannus = GetGuidCreature(Tyrannus))
+							crTyrannus->ForcedDespawn();
 						Kill(me);
 						break;
 				}
