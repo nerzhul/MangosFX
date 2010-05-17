@@ -119,8 +119,8 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 		AddSummonEvent(NPC_EXPLODING_ORB,5000,5000,0,0,m_difficulty ? 2 : 1,THREE_MINS,NEAR_15M,NOTHING);
 		event_phase = 0;
 		event_Timer = 0;
-		FactionChief = NULL;
-		Tyrannus = NULL;
+		FactionChief = 0;
+		Tyrannus = 0;
     }
 
 	bool Event;
@@ -139,6 +139,8 @@ struct MANGOS_DLL_DECL boss_krickAI : public LibDevFSAI
 			{
 				Ick->Respawn();
 				Ick->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				FactionChief = 0;
+				Tyrannus = 0;
 			}
 		pursuit_Timer = 30000;
 		team = ALLIANCE;

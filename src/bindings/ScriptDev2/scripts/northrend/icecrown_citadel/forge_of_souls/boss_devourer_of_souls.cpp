@@ -17,10 +17,10 @@ enum spells
 
 enum eEnum
 {
-    ACHIEV_THREE_FACED                            = 4523,
-    DISPLAY_ANGER                                 = 30148,
-    DISPLAY_SORROW                                = 30149,
-    DISPLAY_DESIRE                                = 30150,
+    ACHIEV_THREE_FACED          = 4523,
+    DISPLAY_ANGER               = 30148,
+    DISPLAY_SORROW              = 30149,
+    DISPLAY_DESIRE              = 30150,
 };
 
 struct
@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
 		if(Mirror_Timer <= diff)
 		{
 
-			if (Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
+			if (Unit *pTarget = GetRandomUnit())
             {
                 uiMirroredSoulTarget = pTarget->GetGUID();
                 DoCast(pTarget, SPELL_MIRRORED_SOUL);

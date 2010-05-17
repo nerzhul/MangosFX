@@ -29,7 +29,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 
 	bool HasTeleported;
 	uint32 CorruptedSoulFrag_Timer;
-	Creature* frag;
+	uint64 frag;
 	uint32 CheckDist_Timer;
 	uint32 Teleport_Timer;
 	uint32 CheckAura_Timer;
@@ -41,7 +41,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
 		CorruptedSoulFrag_Timer = 29000;
 		CheckDist_Timer = 20000;
-		frag = NULL;
+		frag = 0;
 		Teleport_Timer = 1500;
 		subphase = 0;
 		phase = 0;
@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 					for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 						if (Player* pPlayer = itr->getSource())
 							if(pPlayer->isAlive())
-								DoCast(pPlayer,SPELL_SOULSTORM_AURA);
+								SetAuraStack(SPELL_SOULSTORM_AURA,1,pPlayer,me,1);
 				CheckAura_Timer = 1500;
 			}
 			else
@@ -74,7 +74,11 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 			if(CorruptedSoulFrag_Timer <= diff)
 			{
 				if(Creature* tmp_add = CallCreature(36535,TEN_MINS,NEAR_7M,GO_TO_CREATOR))
-					frag = tmp_add;
+				{
+					frag = tmp_add->GetGuid();
+					tmp_add->SetReactState(REACT_PASSIVE);
+					tmp_add->GetMotionMaster()->MoveFollow(me,2.0f,0.0f);
+				}
 				CorruptedSoulFrag_Timer = 32000;
 			}
 			else
@@ -82,13 +86,13 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 
 			if(CheckDist_Timer <= diff)
 			{	
-				if(frag)
-					if(frag->isAlive())
-						if(frag->GetDistance2d(me) < 4.0f)
+				if(Creature* crfrag = GetGuidCreature(frag))
+					if(crfrag->isAlive())
+						if(crfrag->GetDistance2d(me) < 4.0f)
 						{
 							me->CastStop();
 							DoCastMe(SPELL_CONSUME);
-							frag->ForcedDespawn(500);
+							crfrag->ForcedDespawn(500);
 						}
 
 				CheckDist_Timer = 1000;
@@ -109,6 +113,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 					else if(subphase == 1)
 					{
 						Relocate(5297.3f,2506.6f,686.1f);
+						me->CastStop();
 						DoCastMe(SPELL_SOULSTORM);
 						me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
 						phase = 1;
