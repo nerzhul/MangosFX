@@ -3,26 +3,27 @@
 
 enum Spells
 {
-    SPELL_SABER_LASH     = 69055,
-    SPELL_COLDFLAME      = 69146,
-    SPELL_BONE_SPIKE     = 69057,
-    SPELL_BONE_STORM     = 69076,
+    SPELL_SABER_LASH     		= 69055,
+    SPELL_COLDFLAME      		= 69146,
+    SPELL_BONE_SPIKE     		= 69057,
+    SPELL_BONE_STRIKE_IMPALE	= 69065,
+    SPELL_BONE_STORM     		= 69076,
     
-    NPC_COLDFLAME        = 36672,
+    SPELL_BERSERK               = 47008,
+    
+    NPC_COLDFLAME        		= 36672, // 3 sec of spawn in normal but 8 in heroic
+    NPC_BONE_SPIKE              = 38711,
 };
 
 enum
 {
 	//common
-	SPELL_BERSERK               = 47008,
+	
 	//yells
 	//summons
-	NPC_BONE_SPIKE              = 38711,
+	
 	//Abilities
 	SPELL_COLD_FLAME_0          = 69145,
-	SPELL_BONE_STRIKE           = 69057,
-	SPELL_BONE_STRIKE_IMPALE	= 69065,
-	SPELL_BONE_STORM_STRIKE     = 69075,
 };
 
 struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
@@ -111,6 +112,31 @@ CreatureAI* GetAI_flame_marrowgar(Creature* pCreature)
     return new flame_marrowgarAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
+{
+    bonespike_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+	
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+		AggroAllPlayers();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_bonespike_marrowgar(Creature* pCreature)
+{
+    return new bonespike_marrowgarAI(pCreature);
+}
+
 void AddSC_boss_marrowgar()
 {
     Script* NewScript;
@@ -122,5 +148,10 @@ void AddSC_boss_marrowgar()
     NewScript = new Script;
     NewScript->Name = "flame_marrowgar";
     NewScript->GetAI = &GetAI_flame_marrowgar;
+    NewScript->RegisterSelf();
+    
+    NewScript = new Script;
+    NewScript->Name = "bonespike_marrowgar";
+    NewScript->GetAI = &GetAI_bonespike_marrowgar;
     NewScript->RegisterSelf();
 }
