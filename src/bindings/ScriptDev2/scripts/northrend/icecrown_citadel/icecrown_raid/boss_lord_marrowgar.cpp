@@ -31,13 +31,26 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     boss_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+        switch(m_difficulty)
+        {
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				FlameDespawn = 8000;
+				break;
+			default:
+				FlameDespawn = 3000;
+				break;
+		}
     }
 	
 	uint8 phase;
+	uint32 FlameDespawn;
+	uint32 Flame_Timer;
 
     void Reset()
     {
 		ResetTimers();
+		Flame_Timer = 12000;
 		phase = 0;
     }
 
@@ -59,21 +72,30 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
             pInstance->SetData(TYPE_MARROWGAR, FAIL);
     }
 
-	void CallColdFlames(Unit* victim)
+	void CallColdFlames()
 	{
-		if(!victim)
+		Unit* flameTarget = GetRandomUnit();
+		if(!flameTarget)
 			return;
 		
-		float x_vect = victim->GetPositionX() - me->GetPositionX();
-		float y_vect = victim->GetPositionY() - me->GetPositionY();
+		float x_vect = flameTarget->GetPositionX() - me->GetPositionX();
+		float y_vect = flameTarget->GetPositionY() - me->GetPositionY();
 		for(uint8 i=0;i<5;i++)
-			CallCreature(NPC_COLDFLAME,30000,PREC_COORDS,NOTHING,me->GetPositionX() + x_vect*(3*i),me->GetPositionY() + x_vect*(3*i),me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + x_vect*(3*i),me->GetPositionY() + x_vect*(3*i),me->GetPositionZ() + 1.0f,true);
 	}
 	
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+            
+        if(Flame_Timer <= diff)
+        {
+			CallColdFlames();
+			Flame_Timer = 3000;
+		}
+		else
+			Flame_Timer -= diff;
 
 		UpdateEvent(diff);
 
