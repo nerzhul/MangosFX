@@ -344,7 +344,7 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
 	}
 	
 	DBUpdate_Timer = 60020;
-    m_timer = savedTimer * MINUTE * IN_MILISECONDS;
+    m_timer = savedTimer * MINUTE * IN_MILLISECONDS;
 
     m_towerDamagedCount[BG_TEAM_ALLIANCE] = 0;
     m_towerDestroyedCount[BG_TEAM_ALLIANCE] = 0;
@@ -1405,7 +1405,7 @@ void OutdoorPvPWG::forceChangeTeam()
 void OutdoorPvPWG::StartBattle()
 {
     m_wartime = true;
-    m_timer = 30 * MINUTE * IN_MILISECONDS;
+    m_timer = 30 * MINUTE * IN_MILLISECONDS;
 
 
     // Remove Essence of Wintergrasp to all players
@@ -1560,7 +1560,7 @@ void OutdoorPvPWG::EndBattle()
 
     m_wartime = false;
 	CharacterDatabase.Execute("UPDATE needed_variables set value = '150' where needed_variables.key = '0'");
-    m_timer = 150 * MINUTE * IN_MILISECONDS;
+    m_timer = 150 * MINUTE * IN_MILLISECONDS;
     //3.2.0: TeamCastSpell(getAttackerTeam(), SPELL_TELEPORT_DALARAN);
     RemoveOfflinePlayerWGAuras();
 	SendInitWorldStatesTo();

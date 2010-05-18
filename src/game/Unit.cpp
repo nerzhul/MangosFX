@@ -4413,7 +4413,7 @@ void Unit::RemoveAurasDueToSpellBySteal(uint32 spellId, uint64 casterGUID, Unit 
             // set its duration and maximum duration
             // max duration 2 minutes (in msecs)
             int32 dur = aur->GetAuraDuration();
-            int32 max_dur = 2*MINUTE*IN_MILISECONDS;
+            int32 max_dur = 2*MINUTE*IN_MILLISECONDS;
             int32 new_max_dur = max_dur > dur ? dur : max_dur;
             new_aur->SetAuraMaxDuration( new_max_dur );
             new_aur->SetAuraDuration( new_max_dur );
@@ -6355,8 +6355,23 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 	            // Glyph of Shred
 	            case 54815:
 	            {
-	                triggered_spell_id = 63974;
-	                break;
+                    if (Aura* aurEff = unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_DRUID,0x00800000,0,m_caster->GetGUID()))
+                    {
+                        uint32 countMin = aurEff->GetAuraMaxDuration();
+						uint32 countMax = GetSpellMaxDuration(aurEff->GetSpellProto());
+						countMax += 3 * triggerAmount * 1000;       // Glyph of Shred               -> +6 seconds
+                        countMax += m_caster->HasAura(54818) ? 4000 : 0;
+                        countMax += m_caster->HasAura(60141) ? 4000 : 0;
+
+                        if (countMin < countMax)
+                        {
+                            aurEff->SetAuraDuration(uint32(aurEff->GetAuraDuration()+3000));
+                            aurEff->SetAuraMaxDuration(countMin+2000);
+							return true;
+                        }
+
+                    }
+                    return false;
 	            }
 				// Glyph of Rake
 	            case 54821:
@@ -12229,7 +12244,7 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
                     {
                         // Glyph of Thorns
                         if (Aura * aur = GetAura(57862, 0))
-                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILISECONDS;
+                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
                     }
                     break;
                 case SPELLFAMILY_PALADIN:
@@ -12237,13 +12252,13 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
                     {
                         // Glyph of Blessing of Might
                         if (Aura * aur = GetAura(57958, 0))
-                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILISECONDS;
+                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
                     }
                     else if (spellProto->SpellFamilyFlags & UI64LIT(0x00010000))
                     {
                         // Glyph of Blessing of Wisdom
                         if (Aura * aur = GetAura(57979, 0))
-                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILISECONDS;
+                            duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
                     }
 					break;
 				case SPELLFAMILY_MAGE:

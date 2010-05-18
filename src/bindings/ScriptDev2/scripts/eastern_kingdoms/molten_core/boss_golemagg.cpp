@@ -54,9 +54,9 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
 
     void Reset()
     {
-        m_uiPyroblastTimer = 7*IN_MILISECONDS;              // These timers are probably wrong
-        m_uiEarthquakeTimer = 3*IN_MILISECONDS;
-        m_uiBuffTimer = 2.5*IN_MILISECONDS;
+        m_uiPyroblastTimer = 7*IN_MILLISECONDS;              // These timers are probably wrong
+        m_uiEarthquakeTimer = 3*IN_MILLISECONDS;
+        m_uiBuffTimer = 2.5*IN_MILLISECONDS;
         m_bEnraged = false;
 
         me->CastSpell(me, SPELL_MAGMASPLASH, true);
@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
             if (Unit* pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0))
                 DoCast(pTarget, SPELL_PYROBLAST);
 
-            m_uiPyroblastTimer = 7*IN_MILISECONDS;
+            m_uiPyroblastTimer = 7*IN_MILLISECONDS;
         }
         else
             m_uiPyroblastTimer -= diff;
@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
             if (m_uiEarthquakeTimer < diff)
             {
                 DoCastVictim( SPELL_EARTHQUAKE);
-                m_uiEarthquakeTimer = 3*IN_MILISECONDS;
+                m_uiEarthquakeTimer = 3*IN_MILLISECONDS;
             }
             else
                 m_uiEarthquakeTimer -= diff;
@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
         if (m_uiBuffTimer < diff)
         {
             DoCastMe( SPELL_GOLEMAGG_TRUST);
-            m_uiBuffTimer = 2.5*IN_MILISECONDS;
+            m_uiBuffTimer = 2.5*IN_MILLISECONDS;
         }
         else
             m_uiBuffTimer -= diff;
@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
 
     void Reset()
     {
-        m_uiMangleTimer = 7*IN_MILISECONDS;                 // These times are probably wrong
+        m_uiMangleTimer = 7*IN_MILLISECONDS;                 // These times are probably wrong
     }
 
     void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
         if (m_uiMangleTimer < diff)
         {
             DoCastVictim( SPELL_MANGLE);
-            m_uiMangleTimer = 10*IN_MILISECONDS;
+            m_uiMangleTimer = 10*IN_MILLISECONDS;
         }
         else
             m_uiMangleTimer -= diff;

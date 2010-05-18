@@ -492,7 +492,7 @@ void Vehicle::BuildVehicleActionBar(Player *plr) const
 
     for(CreatureSpellCooldowns::const_iterator itr = ((Creature*)me)->m_CreatureSpellCooldowns.begin(); itr != ((Creature*)me)->m_CreatureSpellCooldowns.end(); ++itr)
     {
-        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILISECONDS : 0;
+        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILLISECONDS : 0;
 
         data << uint32(itr->first);                         // spellid
         data << uint16(0);                                  // spell category?
@@ -502,7 +502,7 @@ void Vehicle::BuildVehicleActionBar(Player *plr) const
 
     for(CreatureSpellCooldowns::const_iterator itr = ((Creature*)me)->m_CreatureCategoryCooldowns.begin(); itr != ((Creature*)me)->m_CreatureCategoryCooldowns.end(); ++itr)
     {
-        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILISECONDS : 0;
+        time_t cooldown = (itr->second > curTime) ? (itr->second - curTime) * IN_MILLISECONDS : 0;
 
         data << uint32(itr->first);                         // spellid
         data << uint16(0);                                  // spell category?

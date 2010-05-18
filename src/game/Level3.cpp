@@ -6482,7 +6482,7 @@ bool ChatHandler::HandleWintergraspTimerCommand(const char* args)
     else
         if (1440 < time)
             return false;
-    time *= MINUTE * IN_MILISECONDS;
+    time *= MINUTE * IN_MILLISECONDS;
 
     pvpWG->setTimer((uint32)time);
 
