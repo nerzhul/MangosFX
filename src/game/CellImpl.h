@@ -326,7 +326,8 @@ Cell::VisitCircle(const CellPair &standing_cell, TypeContainerVisitor<T, CONTAIN
 }
 
 template<class T>
-inline void Cell::VisitGridObjects(const WorldObject *center_obj, T &visitor, float radius, bool dont_load)
+inline void 
+Cell::VisitGridObjects(const WorldObject *center_obj, T &visitor, float radius, bool dont_load)
 {
     CellPair p(MaNGOS::ComputeCellPair(center_obj->GetPositionX(), center_obj->GetPositionY()));
     Cell cell(p);

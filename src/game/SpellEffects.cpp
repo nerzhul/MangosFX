@@ -1567,7 +1567,7 @@ void Spell::EffectDummy(uint32 i)
                     MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck u_check(*m_caster, 28523, true, fRange*2);
                     MaNGOS::CreatureLastSearcher<MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(m_caster, pTargetDummy, u_check);
 
-                    Cell::VisitGridObjects(m_caster, searcher, fRange*2);
+                    //Cell::VisitGridObjects(m_caster, searcher, fRange*2);
 
                     if (pTargetDummy)
                     {
