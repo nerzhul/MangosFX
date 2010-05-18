@@ -2048,7 +2048,7 @@ void Spell::EffectDummy(uint32 i)
                     {
                         SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
 
-							// FSS mod glyphe of preparation
+							// glyph of preparation
                         if (spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && (spellInfo->SpellFamilyFlags & UI64LIT(0x0000024000000860))
 							|| ((Player*)m_caster)->HasAura(56819) && (spellInfo->Id == 13877 || spellInfo->Id == 51722 || spellInfo->Id == 1766))
                             ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
