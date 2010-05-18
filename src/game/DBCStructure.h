@@ -1367,6 +1367,10 @@ struct SoundEntriesEntry
                                                             // 29       new in 3.1
 };
 
+#define MAX_SPELL_REAGENTS 8
+#define MAX_SPELL_TOTEMS 2
+#define MAX_SPELL_TOTEM_CATEGORIES 2
+
 struct SpellEntry
 {
     uint32    Id;                                           // 0        m_ID
@@ -1419,9 +1423,9 @@ struct SpellEntry
     float     speed;                                        // 47       m_speed
     //uint32    modalNextSpell;                             // 48       m_modalNextSpell not used
     uint32    StackAmount;                                  // 49       m_cumulativeAura
-    uint32    Totem[2];                                     // 50-51    m_totem
-    int32     Reagent[8];                                   // 52-59    m_reagent
-    uint32    ReagentCount[8];                              // 60-67    m_reagentCount
+    uint32    Totem[MAX_SPELL_TOTEMS];                      // 50-51    m_totem
+    int32     Reagent[MAX_SPELL_REAGENTS];                  // 52-59    m_reagent
+    uint32    ReagentCount[MAX_SPELL_REAGENTS];             // 60-67    m_reagentCount
     int32     EquippedItemClass;                            // 68       m_equippedItemClass (value)
     int32     EquippedItemSubClassMask;                     // 69       m_equippedItemSubclass (mask)
     int32     EquippedItemInventoryTypeMask;                // 70       m_equippedItemInvTypes (mask)
@@ -1474,7 +1478,7 @@ struct SpellEntry
     //uint32    MinFactionId;                               // 225      m_minFactionID not used
     //uint32    MinReputation;                              // 226      m_minReputation not used
     //uint32    RequiredAuraVision;                         // 227      m_requiredAuraVision not used
-    uint32    TotemCategory[2];                             // 228-229  m_requiredTotemCategoryID
+    uint32    TotemCategory[MAX_SPELL_TOTEM_CATEGORIES];    // 228-229  m_requiredTotemCategoryID
     int32     AreaGroupId;                                  // 230      m_requiredAreaGroupId
     uint32    SchoolMask;                                   // 231      m_schoolMask
     uint32    runeCostID;                                   // 232      m_runeCostID
