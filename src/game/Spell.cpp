@@ -2897,7 +2897,7 @@ void Spell::cast(bool skipCheck)
                     AddPrecastSpell(67485);                 // Hand of Rekoning (no typos in name ;) )
             }
             // Divine Shield, Divine Protection or Hand of Protection
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000400080))
+            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000408080))
             {
                 AddPrecastSpell(25771);                     // Forbearance
                 AddPrecastSpell(61987);                     // Avenging Wrath Marker
