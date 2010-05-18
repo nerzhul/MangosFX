@@ -6355,13 +6355,13 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 	            // Glyph of Shred
 	            case 54815:
 	            {
-                    if (Aura* aurEff = unitTarget->GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_DRUID,0x00800000,0,m_caster->GetGUID()))
+                    if (Aura* aurEff = target->GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_DRUID,0x00800000,0,GetGUID()))
                     {
                         uint32 countMin = aurEff->GetAuraMaxDuration();
 						uint32 countMax = GetSpellMaxDuration(aurEff->GetSpellProto());
 						countMax += 3 * triggerAmount * 1000;       // Glyph of Shred               -> +6 seconds
-                        countMax += m_caster->HasAura(54818) ? 4000 : 0;
-                        countMax += m_caster->HasAura(60141) ? 4000 : 0;
+                        countMax += HasAura(54818) ? 4000 : 0;
+                        countMax += HasAura(60141) ? 4000 : 0;
 
                         if (countMin < countMax)
                         {
@@ -14318,6 +14318,29 @@ void Unit::NearTeleportTo( float x, float y, float z, float orientation, bool ca
         WorldPacket data;
         BuildHeartBeatMsg(&data);
         SendMessageToSet(&data, false);
+    }
+}
+
+void Unit::MonsterMove(float x, float y, float z, uint32 transitTime)
+{
+    SplineFlags flags = /*GetTypeId() == TYPEID_PLAYER ?*/ SPLINEFLAG_WALKMODE /*: ((Creature*)this)->GetSplineFlags()*/;
+    SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, MonsterMovementFlags(flags), transitTime);
+
+    if (GetTypeId() != TYPEID_PLAYER)
+    {
+        /*Creature* c = (Creature*)this;
+        // Creature relocation acts like instant movement generator, so current generator expects interrupt/reset calls to react properly
+        if (!c->GetMotionMaster()->empty())
+            if (MovementGenerator *movgen = c->GetMotionMaster()->top())
+                movgen->Interrupt(*c);
+
+        GetMap()->CreatureRelocation((Creature*)this, x, y, z, 0.0f);
+
+        // finished relocation, movegen can different from top before creature relocation,
+        // but apply Reset expected to be safe in any case
+        if (!c->GetMotionMaster()->empty())
+            if (MovementGenerator *movgen = c->GetMotionMaster()->top())
+                movgen->Reset(*c);*/
     }
 }
 
