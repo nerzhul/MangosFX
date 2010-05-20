@@ -1326,9 +1326,7 @@ void Aura::SetStackAmount(uint8 stackAmount)
         if (amount!=m_modifier.m_amount)
         {
             ApplyModifier(false, true);
-            // Lifebloom has special amount calculation in final bloom
-			if(m_spellProto->SpellFamilyName != SPELLFAMILY_DRUID && !(m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000)))
-				m_modifier.m_amount = amount;
+			m_modifier.m_amount = amount;
             ApplyModifier(true, true);
         }
     }
@@ -3018,14 +3016,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     if (Unit* caster = GetCaster())
                         // prevent double apply bonuses
                         if(m_target->GetTypeId()!=TYPEID_PLAYER || !((Player*)m_target)->GetSession()->PlayerLoading())
-						{
-							if(m_stackAmount <= 1)
-							{
-								const SpellEntry* finalBloomEntry = sSpellStore.LookupEntry(33778);
-								m_modifier.m_amount = caster->SpellHealingBonus(m_target, finalBloomEntry, m_modifier.m_amount, HEAL);
-							}else
-								m_modifier.m_amount += (m_stackAmount == 2) ? m_modifier.m_amount : (m_modifier.m_amount / 2);
-						} 
+							m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, SPELL_DIRECT_DAMAGE);
                 }
                 else
                 {
@@ -3115,11 +3106,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 			break;
         case SPELLFAMILY_DEATHKNIGHT:
 			// Hysteria
-			if (spell->SpellFamilyFlags & UI64LIT(0x0000000020000000))
+			if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000020000000))
 			{
 				uint32 deal = m_modifier.m_amount * m_target->GetMaxHealth() / 100;
 				m_target->DealDamage(m_target, deal, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-				m_target->SendSpellNonMeleeDamageLog(m_target, spell->Id, deal, SPELL_SCHOOL_MASK_NORMAL, 0, 0, false, 0, false);
+				m_target->SendSpellNonMeleeDamageLog(m_target, m_spellProto->Id, deal, SPELL_SCHOOL_MASK_NORMAL, 0, 0, false, 0, false);
 				return;
 			}
 			// Summon Gargoyle ( will start feeding gargoyle )
@@ -5365,30 +5356,29 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
 {
     m_isPeriodic = apply;
 
-	// Gift of the Naaru
-	if ((m_spellProto->SpellFamilyFlags2 & UI64LIT(0x80000000)) && m_spellProto->SpellVisual[0] == 7625)
-	{
+	// For prevent double apply bonuses
+    bool loading = (m_target->GetTypeId() == TYPEID_PLAYER && ((Player*)m_target)->GetSession()->PlayerLoading());
+
+	if(apply)
+	{	
+		if(loading)
+			return;
+
 		Unit *caster = GetCaster();
 		if (!caster)
 		  return;
 
-		int32 ap = int32 (0.22f * caster->GetTotalAttackPowerValue(BASE_ATTACK));
-		int32 holy = caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto))
-			   + caster->SpellBaseDamageBonusForVictim(GetSpellSchoolMask(m_spellProto), m_target);
-		holy = int32(holy * 377 / 1000);
-		m_modifier.m_amount += ap > holy ? ap : holy;
-	}
+		// Gift of the Naaru
+		if ((m_spellProto->SpellFamilyFlags2 & UI64LIT(0x80000000)) && m_spellProto->SpellVisual[0] == 7625)
+		{
+			int32 ap = int32 (0.22f * caster->GetTotalAttackPowerValue(BASE_ATTACK));
+			int32 holy = caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto))
+				   + caster->SpellBaseDamageBonusForVictim(GetSpellSchoolMask(m_spellProto), m_target);
+			holy = int32(holy * 377 / 1000);
+			m_modifier.m_amount += ap > holy ? ap : holy;
+		}
 
-	//Lifebloom special stacking
-	if(m_spellProto->SpellFamilyName == SPELLFAMILY_DRUID && (m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000)) && GetStackAmount() > 1)
-		m_modifier.m_amount += (GetStackAmount() == 2) ? m_modifier.m_amount : (m_modifier.m_amount / 2);
-	else
-	{
-		Unit *caster = GetCaster();
-		if (!caster)
-		  return;
-		if(apply)
-			m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
+		m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
 	}
 }
 
