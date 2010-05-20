@@ -3114,6 +3114,14 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 				m_target->SetReducedThreatPercent(0, 0);
 			break;
         case SPELLFAMILY_DEATHKNIGHT:
+			// Hysteria
+			if (spell->SpellFamilyFlags & UI64LIT(0x0000000020000000))
+			{
+				uint32 deal = m_modifier.m_amount * m_target->GetMaxHealth() / 100;
+				m_target->DealDamage(m_target, deal, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+				m_target->SendSpellNonMeleeDamageLog(m_target, spell->Id, deal, SPELL_SCHOOL_MASK_NORMAL, 0, 0, false, 0, false);
+				return;
+			}
 			// Summon Gargoyle ( will start feeding gargoyle )
 			if(GetId()==61777)
 				m_target->CastSpell(m_target,m_spellProto->EffectTriggerSpell[m_effIndex],true);
@@ -8768,14 +8776,6 @@ void Aura::PeriodicDummyTick()
             // Blood of the North
 //            if (spell->SpellIconID == 30412)
 //                return;
-			// Hysteria
-
-			if (spell->SpellFamilyFlags & UI64LIT(0x0000000020000000))
-			{
-				uint32 deal = m_modifier.m_amount * m_target->GetMaxHealth() / 100;
-				m_target->DealDamage(m_target, deal, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-				return;
-			}
             break;
         }
         default:
