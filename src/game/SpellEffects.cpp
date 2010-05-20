@@ -3214,6 +3214,8 @@ void Spell::EffectHeal( uint32 /*i*/ )
             float ap = caster->GetTotalAttackPowerValue(BASE_ATTACK);
             int32 holy = caster->SpellBaseHealingBonus(GetSpellSchoolMask(m_spellInfo)) +
                          caster->SpellBaseHealingBonusForVictim(GetSpellSchoolMask(m_spellInfo), unitTarget);
+			if (holy < 0)
+				holy = 0;
             addhealth += int32(ap * 0.15) + int32(holy * 15 / 100);
         }
         // Vessel of the Naaru (Vial of the Sunwell trinket)
