@@ -25,35 +25,18 @@
 
 #include "Common.h"
 #include "Auth/BigNumber.h"
-#include "sockets/TcpSocket.h"
-#include "sockets/SocketHandler.h"
-#include "sockets/ListenSocket.h"
-#include "sockets/Utility.h"
-#include "sockets/Parse.h"
-#include "sockets/Socket.h"
 #include "Auth/Sha1.h"
 #include "ByteBuffer.h"
 
-enum RealmFlags
-{
-	REALM_FLAG_NONE         = 0x00,
-	REALM_FLAG_INVALID      = 0x01,
-	REALM_FLAG_OFFLINE      = 0x02,
-	REALM_FLAG_SPECIFYBUILD = 0x04,                         // client will show realm version in RealmList screen in form "RealmName (major.minor.revision.build)"
-	REALM_FLAG_UNK1         = 0x08,
-	REALM_FLAG_UNK2         = 0x10,
-	REALM_FLAG_NEW_PLAYERS  = 0x20,
-	REALM_FLAG_RECOMMENDED  = 0x40,
-	REALM_FLAG_FULL         = 0x80
-};
+#include "BufferedSocket.h"
 
 /// Handle login commands
-class AuthSocket: public TcpSocket
+class AuthSocket: public BufferedSocket
 {
     public:
         const static int s_BYTE_SIZE = 32;
 
-        AuthSocket(ISocketHandler& h);
+        AuthSocket();
         ~AuthSocket();
 
         void OnAccept();
@@ -74,10 +57,6 @@ class AuthSocket: public TcpSocket
 
         void _SetVSFields(const std::string& rI);
 
-        FILE *pPatch;
-        ACE_Thread_Mutex patcherLock;
-        bool IsLag();
-
     private:
 
         BigNumber N, s, g, v;
@@ -95,6 +74,10 @@ class AuthSocket: public TcpSocket
         std::string _localizationName;
         uint16 _build;
         AccountTypes _accountSecurityLevel;
+
+        ACE_HANDLE patch_;
+
+        void InitPatch();
 };
 #endif
 /// @}

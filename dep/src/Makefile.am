@@ -17,6 +17,6 @@
 ## Process this file with automake to produce Makefile.in
 
 ## Sub-directories to parse
-SUBDIRS = g3dlite sockets zlib
+SUBDIRS = g3dlite zlib
 ## Additional files to include when running 'make dist'
 #  Nothing yet.

@@ -270,7 +270,6 @@ AC_CONFIG_FILES([
    dep/lib/Makefile
    dep/src/Makefile
    dep/src/g3dlite/Makefile
-   dep/src/sockets/Makefile
    dep/src/zlib/Makefile
    dep/Makefile
    dep/tbb/Makefile
