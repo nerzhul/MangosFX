@@ -562,11 +562,14 @@ class ChatHandler
 class CliHandler : public ChatHandler
 {
     public:
-        typedef void Print(char const*);
-        explicit CliHandler(Print* zprint) : m_print(zprint) {}
+        typedef void Print(void*, char const*);
+        explicit CliHandler(uint32 accountId, AccountTypes accessLevel, void* callbackArg, Print* zprint)
+            : m_accountId(accountId), m_loginAccessLevel(accessLevel), m_callbackArg(callbackArg), m_print(zprint) {}
 
         // overwrite functions
         const char *GetMangosString(int32 entry) const;
+        uint32 GetAccountId() const;
+        AccountTypes GetAccessLevel() const;
         bool isAvailable(ChatCommand const& cmd) const;
         void SendSysMessage(const char *str);
         std::string GetNameLink() const;
@@ -575,6 +578,9 @@ class CliHandler : public ChatHandler
         int GetSessionDbLocaleIndex() const;
 
     private:
+        uint32 m_accountId;
+        AccountTypes m_loginAccessLevel;
+        void* m_callbackArg;
         Print* m_print;
 };
 
