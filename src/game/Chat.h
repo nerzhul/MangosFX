@@ -71,6 +71,7 @@ class ChatHandler
         int ParseCommands(const char* text);
 
         bool isValidChatMessage(const char* msg);
+		bool HasSentErrorMessage() { return sentErrorMessage;}
     protected:
         explicit ChatHandler() : m_session(NULL) {}      // for CLI subclass
 
@@ -124,7 +125,7 @@ class ChatHandler
         bool HandleCharacterCustomizeCommand(const char * args);
 		bool HandleCharacterChangeFactionCommand(const char* args);
 		bool HandleCharacterChangeRaceCommand(const char* args);
-        bool HandleCharacterDeleteCommand(const char* args);
+        bool HandleCharacterEraseCommand(const char* args);
         bool HandleCharacterLevelCommand(const char* args);
         bool HandleCharacterRenameCommand(const char * args);
         bool HandleCharacterReputationCommand(const char* args);

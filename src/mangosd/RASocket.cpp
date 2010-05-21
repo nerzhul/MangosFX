@@ -202,7 +202,7 @@ int RASocket::handle_input(ACE_HANDLE)
                     break;
                 }
 
-                accAccessLevel = sAccountMgr.GetSecurity(accId);
+                accAccessLevel = (AccountTypes)sAccountMgr.GetSecurity(accId);
 
                 ///- if gmlevel is too low, deny access
                 if (accAccessLevel < iMinLevel)

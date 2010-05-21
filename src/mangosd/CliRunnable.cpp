@@ -105,7 +105,7 @@ bool ChatHandler::HandleAccountDeleteCommand(const char* args)
  * @param searchString the search string which either contains a player GUID or a part fo the character-name
  * @return             returns false if there was a problem while selecting the characters (e.g. player name not normalizeable)
  */
-bool ChatHandler::GetDeletedCharacterInfoList(DeletedInfoList& foundList, std::string searchString)
+/*bool ChatHandler::GetDeletedCharacterInfoList(DeletedInfoList& foundList, std::string searchString)
 {
     QueryResult* resultChar;
     if (!searchString.empty())
@@ -149,7 +149,7 @@ bool ChatHandler::GetDeletedCharacterInfoList(DeletedInfoList& foundList, std::s
     }
 
     return true;
-}
+}*/
 
 /**
  * Generate WHERE guids list by deleted info in way preventing return too long where list for existed query string length limit.
@@ -415,7 +415,7 @@ bool ChatHandler::GetDeletedCharacterInfoList(DeletedInfoList& foundList, std::s
     return true;
 }*/
 
-/*bool ChatHandler::HandleCharacterEraseCommand(const char* args)
+bool ChatHandler::HandleCharacterEraseCommand(const char* args)
 {
     if(!*args)
         return false;
@@ -454,10 +454,10 @@ bool ChatHandler::GetDeletedCharacterInfoList(DeletedInfoList& foundList, std::s
     std::string account_name;
     sAccountMgr.GetName (account_id,account_name);
 
-    Player::DeleteFromDB(character_guid, account_id, true, true);
+    Player::DeleteFromDB(character_guid, account_id, true/*, true*/);
     PSendSysMessage(LANG_CHARACTER_DELETED,character_name.c_str(),GUID_LOPART(character_guid),account_name.c_str(), account_id);
     return true;
-}*/
+}
 
 /// Close RA connection
 bool ChatHandler::HandleQuitCommand(const char* /*args*/)
@@ -485,7 +485,7 @@ bool ChatHandler::HandleAccountOnlineListCommand(const char* args)
     //                                                 0   1         2        3        4
     QueryResult *result = loginDatabase.PQuery("SELECT id, username, last_ip, gmlevel, expansion FROM account WHERE active_realm_id = %u", realmID);
 
-    return ShowAccountListHelper(result,&limit);
+    return true /*ShowAccountListHelper(result,&limit)*/;
 }
 
 /// Create an account
@@ -585,7 +585,7 @@ bool ChatHandler::HandleAccountCreateCommand(const char* args)
 }*/
 
 /// Set the level of logging
-/*bool ChatHandler::HandleServerLogLevelCommand(const char *args)
+bool ChatHandler::HandleServerSetLogLevelCommand(const char *args)
 {
     if(!*args)
     {
@@ -595,7 +595,7 @@ bool ChatHandler::HandleAccountCreateCommand(const char* args)
 
     sLog.SetLogLevel((char*)args);
     return true;
-}*/
+}
 
 /// @}
 

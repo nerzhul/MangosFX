@@ -121,7 +121,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "customize",      SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleCharacterCustomizeCommand,		"", NULL },
 		{ "changefaction",  SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleCharacterChangeFactionCommand,	"", NULL },
 		{ "changerace",     SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleCharacterChangeRaceCommand,		"", NULL },
-        { "delete",         SEC_CONSOLE,        true,  &ChatHandler::HandleCharacterDeleteCommand,			"", NULL },
+        { "delete",         SEC_CONSOLE,        true,  &ChatHandler::HandleCharacterEraseCommand,			"", NULL },
         { "level",          SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleCharacterLevelCommand,			"", NULL },
         { "rename",         SEC_GAMEMASTER,     true,  &ChatHandler::HandleCharacterRenameCommand,			"", NULL },
         { "reputation",     SEC_GAMEMASTER,     true,  &ChatHandler::HandleCharacterReputationCommand,		"", NULL },
@@ -2265,8 +2265,8 @@ bool CliHandler::isAvailable(ChatCommand const& cmd) const
 
 void CliHandler::SendSysMessage(const char *str)
 {
-    m_print(str);
-    m_print("\r\n");
+    m_print(m_callbackArg, str);
+    m_print(m_callbackArg, "\r\n");
 }
 
 std::string CliHandler::GetNameLink() const
