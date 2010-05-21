@@ -271,6 +271,7 @@ AC_CONFIG_FILES([
    dep/src/Makefile
    dep/src/g3dlite/Makefile
    dep/src/zlib/Makefile
+   dep/src/gsoap/Makefile
    dep/Makefile
    dep/tbb/Makefile
    doc/Makefile
