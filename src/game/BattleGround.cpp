@@ -208,6 +208,7 @@ void BattleGround::BroadcastWorker(Do& _do)
 BattleGround::BattleGround()
 {
     m_TypeID            = BattleGroundTypeId(0);
+    m_RandomTypeID      = BattleGroundTypeId(0);
     m_InstanceID        = 0;
     m_Status            = STATUS_NONE;
     m_ClientInstanceID  = 0;
