@@ -1624,6 +1624,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
     bg->SetBracket(bracketEntry);
     bg->SetArenaType(arenaType);
     bg->SetRated(isRated);
+    bg->SetRandomTypeID(bgTypeId);
 
     return bg;
 }
