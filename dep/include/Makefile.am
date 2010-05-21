@@ -1,4 +1,4 @@
-# Copyright (C) 2005-2008 MaNGOS <http://getmangos.com/>
+# Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -179,3 +179,8 @@ EXTRA_DIST += \
 	utf8cpp/utf8/checked.h \
 	utf8cpp/utf8/core.h \
 	utf8cpp/utf8/unchecked.h
+
+# gsoap header file
+EXTRA_DIST += \
+	gsoap/stdsoap2.h
+

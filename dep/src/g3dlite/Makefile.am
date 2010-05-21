@@ -34,3 +34,8 @@ libg3dlite_a_SOURCES = \
 	Triangle.cpp \
 	Vector3.cpp \
 	Vector4.cpp
+
+EXTRA_DIST = \
+	license.html
+
+

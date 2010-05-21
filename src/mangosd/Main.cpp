@@ -108,6 +108,7 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: -s option requires an input argument");
                 usage(argv[0]);
+                Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
             if( strcmp(argv[c],"install") == 0)
@@ -126,6 +127,7 @@ extern int main(int argc, char **argv)
             {
                 sLog.outError("Runtime-Error: unsupported option %s",argv[c]);
                 usage(argv[0]);
+                Log::WaitBeforeContinueIfNeed();
                 return 1;
             }
         }
@@ -141,6 +143,7 @@ extern int main(int argc, char **argv)
     if (!sConfig.SetSource(cfg_file))
     {
         sLog.outError("Could not find configuration file %s.", cfg_file);
+        Log::WaitBeforeContinueIfNeed();
         return 1;
     }
 
@@ -161,13 +164,14 @@ extern int main(int argc, char **argv)
 
     sLog.outString("Using configuration file %s.", cfg_file);
 
-    sLog.outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+    DETAIL_LOG("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
     if (SSLeay() < 0x009080bfL )
     {
-        sLog.outDetail("WARNING: Outdated version of OpenSSL lib. Logins to server may not work!");
-        sLog.outDetail("WARNING: Minimal required version [OpenSSL 0.9.8k]");
+        DETAIL_LOG("WARNING: Outdated version of OpenSSL lib. Logins to server may not work!");
+        DETAIL_LOG("WARNING: Minimal required version [OpenSSL 0.9.8k]");
     }
-    sLog.outDetail("Using ACE: %s", ACE_VERSION);
+
+    DETAIL_LOG("Using ACE: %s", ACE_VERSION);
 
     ///- and run the 'Master'
     /// \todo Why do we need this 'Master'? Can't all of this be in the Main as for Realmd?
