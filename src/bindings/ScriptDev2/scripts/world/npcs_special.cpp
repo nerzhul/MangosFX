@@ -1357,6 +1357,9 @@ struct MANGOS_DLL_DECL npc_mirror_image : public ScriptedAI
 
 	void UpdateAI(const uint32 diff)
 	{
+		if(!CanDoSomething())
+			return;
+
 		if(Depop_Timer <= diff)
 		{
 			me->ForcedDespawn(1000);
@@ -1440,6 +1443,9 @@ struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public LibDevFSAI
 	    
     void UpdateAI(const uint32 diff)
 	{	
+		if(!CanDoSomething())
+			return;
+
 		UpdateEvent(diff);
 	
 		DoMeleeAttackIfReady();
@@ -1456,21 +1462,23 @@ struct MANGOS_DLL_DECL gargoyle_DK_AI : public LibDevFSAI
 	gargoyle_DK_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {	
         InitIA();
-		
+		AddEventOnTank(31664,500,1600);
     }
 
+	int32 power;
     void Reset()
 	{
-		ResetTimers();
+		if(Unit* owner = me->GetCharmerOrOwner())
+			if(owner->GetTypeId() == TYPEID_PLAYER)
+				power = int32(((Player*)owner)->GetUInt32Value(UNIT_FIELD_ATTACK_POWER) * 0.4);
 	}
-	
-	MobEventTasks Tasks;
 	    
     void UpdateAI(const uint32 diff)
 	{	
+		if(!CanDoSomething())
+			return;
+
 		UpdateEvent(diff);
-	
-		DoMeleeAttackIfReady();
 	}
 };
 
