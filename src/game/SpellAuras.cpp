@@ -8908,7 +8908,7 @@ void Aura::HandleAuraConvertRune(bool apply, bool Real)
     {
         for(uint32 i = 0; i < MAX_RUNES; ++i)
         {
-            if (plr->GetCurrentRune(i) == runeFrom && !plr->GetRuneCooldown(i))
+			if (plr->GetCurrentRune(i) == runeFrom && (!plr->GetRuneCooldown(i) || GetSpellProto()->Id == 45529))
             {
                 plr->ConvertRune(i, runeTo);
                 break;

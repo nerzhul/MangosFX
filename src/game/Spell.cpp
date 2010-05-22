@@ -2902,7 +2902,15 @@ void Spell::cast(bool skipCheck)
                 AddPrecastSpell(25771);                     // Forbearance
                 AddPrecastSpell(61987);                     // Avenging Wrath Marker
             }
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x200000000000))
+            // Lay on Hands
+			else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
+			{
+				// only for self cast
+				if (m_caster == m_targets.getUnitTarget())
+					AddPrecastSpell(25771);                     // Forbearance
+			}
+			// Avenging Wrath
+			else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000200000000000))
                 AddPrecastSpell(61987);                     // Avenging Wrath Marker
 			else if(m_spellInfo->Id == 48788 || m_spellInfo->Id == 27154 || m_spellInfo->Id == 10310 ||
 				m_spellInfo->Id == 2800 || m_spellInfo->Id == 633)
@@ -4470,6 +4478,16 @@ SpellCastResult Spell::CheckCast(bool strict)
             // Focus Magic (main spell)
             if (m_spellInfo->Id == 54646)
                 return SPELL_FAILED_BAD_TARGETS;
+
+			// Lay on Hands (self cast)
+			if (m_spellInfo->SpellFamilyName == SPELLFAMILY_PALADIN &&
+				m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
+			{
+				if (target->HasAura(25771))                 // Forbearance
+					return SPELL_FAILED_CASTER_AURASTATE;
+				if (target->HasAura(61987))                 // Avenging Wrath Marker
+					return SPELL_FAILED_CASTER_AURASTATE;
+			}
         }
 
         // check pet presents

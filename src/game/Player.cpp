@@ -21124,6 +21124,8 @@ void Player::SetTitle(CharTitlesEntry const* title, bool lost)
 void Player::ConvertRune(uint8 index, RuneType newType)
 {
     SetCurrentRune(index, newType);
+	SetRuneCooldown(index, 0);
+	SetRuneCooldown(newType, 0);
 
     WorldPacket data(SMSG_CONVERT_RUNE, 2);
     data << uint8(index);

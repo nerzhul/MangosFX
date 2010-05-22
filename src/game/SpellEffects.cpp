@@ -1545,7 +1545,7 @@ void Spell::EffectDummy(uint32 i)
 							case 2: unitTarget->CastSpell(m_caster, 51839, true); break;
 						}
 					}
-					((Creature*)unitTarget)->ForcedDespawn();
+					((Creature*)unitTarget)->ForcedDespawn(5000);
 					return;
 				}
 				case 51866:                                 // Kick Nass

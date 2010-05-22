@@ -1421,26 +1421,26 @@ bool GossipSelect_npc_nerzoule(Player* pPlayer, Creature* pCreature, uint32 uiSe
     return true;
 }
 
-struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public ScriptedAI
+struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public LibDevFSAI
 {	
-	ghoul_army_of_the_deadAI(Creature* pCreature) : ScriptedAI(pCreature)
+	ghoul_army_of_the_deadAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {	
-        Reset();
+        InitIA();
+		AddEventOnTank(70266,urand(1000,3000),1000,500);
+		AddEventOnTank(47468,2500,2500,1000);
+		AddEventOnTank(47481,4000,15000,2000);
     }
 
     void Reset()
 	{
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(70266,urand(1000,3000),1000,500,TARGET_MAIN);
-		Tasks.AddEvent(47468,2500,2500,1000,TARGET_MAIN);
-		Tasks.AddEvent(47481,4000,15000,2000,TARGET_MAIN);
+		ResetTimers();
 	}
 	
 	MobEventTasks Tasks;
 	    
     void UpdateAI(const uint32 diff)
 	{	
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	
 		DoMeleeAttackIfReady();
 	}
@@ -1451,6 +1451,33 @@ CreatureAI* GetAI_ghoul_army_of_the_dead(Creature* pCreature)
     return new ghoul_army_of_the_deadAI(pCreature);
 } 
 
+struct MANGOS_DLL_DECL gargoyle_DK_AI : public LibDevFSAI
+{	
+	gargoyle_DK_AI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {	
+        InitIA();
+		
+    }
+
+    void Reset()
+	{
+		ResetTimers();
+	}
+	
+	MobEventTasks Tasks;
+	    
+    void UpdateAI(const uint32 diff)
+	{	
+		UpdateEvent(diff);
+	
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_gargoyle_DK(Creature* pCreature)
+{
+    return new gargoyle_DK_AI(pCreature);
+} 
 
 void AddSC_npcs_special()
 {
@@ -1538,5 +1565,10 @@ void AddSC_npcs_special()
 	newscript = new Script;
     newscript->Name = "npc_ghoul_army_of_the_dead";
     newscript->GetAI = &GetAI_ghoul_army_of_the_dead;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "dk_gargoyle";
+    newscript->GetAI = &GetAI_gargoyle_DK;
     newscript->RegisterSelf();
 }
