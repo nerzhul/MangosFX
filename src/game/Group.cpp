@@ -1491,7 +1491,7 @@ GroupJoinBattlegroundResult Group::CanJoinBattleGroundQueue(BattleGround const* 
     // only check for MinPlayerCount since MinPlayerCount == MaxPlayerCount for arenas...
 	if(bgOrTemplate->isArena() && memberscount != MinPlayerCount)
 		return ERR_ARENA_TEAM_PARTY_SIZE;
-	if(memberscount > bgEntry->MAX_GROUP_SIZE)                // no MinPlayerCount for battlegrounds
+	if(memberscount > bgEntry->maxGroupSize)                // no MinPlayerCount for battlegrounds
 		return ERR_BATTLEGROUND_NONE;                       // ERR_GROUP_JOIN_BATTLEGROUND_TOO_MANY handled on client side
 
     // get a player as reference, to compare other players' stats to (arena team id, queue id based on level, etc.)

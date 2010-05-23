@@ -25,6 +25,7 @@
 #include "Config/ConfigEnv.h"
 #include "Log.h"
 #include "Master.h"
+#include "SystemConfig.h"
 #include "revision.h"
 #include "revision_nr.h"
 #include <openssl/opensslv.h>

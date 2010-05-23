@@ -25,6 +25,7 @@
 #include "RealmList.h"
 
 #include "Config/ConfigEnv.h"
+#include "SystemConfig.h"
 #include "Log.h"
 #include "AuthSocket.h"
 #include "revision.h"
