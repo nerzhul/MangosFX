@@ -22688,7 +22688,7 @@ bool Player::IsWintergraspDefender()
 void Player::AddItem(uint32 entry,uint16 count)
 {
 	ItemPosCountVec dest;
-	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, count, false);
+	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, 1, false);
 	if (msg == EQUIP_ERR_OK)
 	{
 		uint16 i=0;
