@@ -169,6 +169,8 @@ libmangosgame_a_SOURCES = \
 	Level2.cpp \
 	Level3.cpp \
 	LFGHandler.cpp \
+	LFGMgr.cpp \
+	LFGMgr.h \
 	LootHandler.cpp \
 	LootMgr.cpp \
 	LootMgr.h \
