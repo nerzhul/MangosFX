@@ -428,6 +428,8 @@ void Group::Disband(bool hideDestroy)
                 player->SetOriginalGroup(NULL);
             else
                 player->SetGroup(NULL);
+			 player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_GROUP_DISBAND);
+			 player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
         }
 
         // quest related GO state dependent from raid membership
@@ -1182,6 +1184,7 @@ bool Group::_removeMember(const uint64 &guid)
                 player->SetOriginalGroup(NULL);
             else
                 player->SetGroup(NULL);
+			player->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_LEADER);
         }
     }
 

@@ -264,7 +264,7 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 	else
 	{
 		if(!(CharacterDatabase.PQuery("SELECT bank FROM characterprofiler_states where guid = '%u'",player->GetGUID())))
-			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states VALUES ('%u',0,0)",player->GetGUID());
+			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states(guid,bank,bags) VALUES ('%u',0,0)",player->GetGUID());
 
 		std::string argstr = (char*)args;
 		if(argstr == "sacs")

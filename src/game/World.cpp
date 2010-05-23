@@ -62,6 +62,7 @@
 #include "WaypointManager.h"
 #include "GMTicketMgr.h"
 #include "Util.h"
+#include "LFGMgr.h"
 #include "AuctionHouseBot.h"
 #include "OutdoorPvPMgr.h"
 
@@ -1515,6 +1516,10 @@ void World::SetInitialWorldSettings()
     ///- Initialize MapManager
     sLog.outString( "Starting Map System" );
     sMapMgr.Initialize();
+
+	///- Initialize Looking For Group
+ 	sLog.outString("Starting Looking For Group System");
+	sLFGMgr.InitLFG();
 
     ///- Initialize Battlegrounds
     sLog.outString( "Starting BattleGround System" );

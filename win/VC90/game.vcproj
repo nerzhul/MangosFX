@@ -551,14 +551,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\Cell.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\CellImpl.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Channel.cpp"
 				>
 			</File>
@@ -623,30 +615,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\GridDefines.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GridNotifiers.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GridNotifiers.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GridNotifiersImpl.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GridStates.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\GridStates.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Group.cpp"
 				>
 			</File>
@@ -704,30 +672,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\Mail.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Map.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Map.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MapInstanced.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MapInstanced.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MapManager.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MapManager.h"
 				>
 			</File>
 			<File
@@ -1099,6 +1043,66 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\BattleGroundWS.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Maps&amp;Grid"
+				>
+				<File
+					RelativePath="..\..\src\game\Cell.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\CellImpl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridDefines.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridNotifiers.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridNotifiers.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridNotifiersImpl.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridStates.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\GridStates.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Map.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Map.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MapInstanced.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MapInstanced.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MapManager.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MapManager.h"
 					>
 				</File>
 			</Filter>

@@ -26,6 +26,7 @@
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Group.h"
+#include "LFGMgr.h"
 #include "SocialMgr.h"
 #include "Util.h"
 
@@ -161,6 +162,9 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
 	data << uint32(0);                                      // unk
     player->GetSession()->SendPacket(&data);
 
+	SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+	SendLfgUpdateParty(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+
     SendPartyResult(PARTY_OP_INVITE, membername, ERR_PARTY_RESULT_OK);
 }
 
@@ -206,6 +210,13 @@ void WorldSession::HandleGroupAcceptOpcode( WorldPacket & recv_data )
     if(!group->AddMember(GetPlayer()->GetGUID(), GetPlayer()->GetName()))
         return;
 
+	SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+	for (GroupReference *itr = group->GetFirstMember(); itr != NULL; itr = itr->next())
+		if (Player *plrg = itr->getSource())
+		{
+ 			plrg->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_CLEAR_LOCK_LIST);
+			plrg->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_CLEAR_LOCK_LIST);
+		}
 }
 
 void WorldSession::HandleGroupDeclineOpcode( WorldPacket & /*recv_data*/ )

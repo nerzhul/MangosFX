@@ -672,25 +672,25 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleMinimapPingOpcode(WorldPacket& recv_data);
         void HandleRandomRollOpcode(WorldPacket& recv_data);
         void HandleFarSightOpcode(WorldPacket& recv_data);
-        void HandleSetLfgOpcode(WorldPacket& recv_data);
         void HandleSetDungeonDifficultyOpcode(WorldPacket& recv_data);
 		void HandleResetInstancesOpcode( WorldPacket & recv_data );
         void HandleSetRaidDifficultyOpcode(WorldPacket& recv_data);
         void HandleMoveSetCanFlyAckOpcode(WorldPacket& recv_data);
-        void HandleLfgSetAutoJoinOpcode(WorldPacket& recv_data);
-        void HandleLfgClearAutoJoinOpcode(WorldPacket& recv_data);
-        void HandleLfmSetAutoFillOpcode(WorldPacket& recv_data);
-        void HandleLfmClearAutoFillOpcode(WorldPacket& recv_data);
-        void HandleLfgClearOpcode(WorldPacket& recv_data);
-        void HandleLfmClearOpcode(WorldPacket& recv_data);
-        void HandleSetLfmOpcode(WorldPacket& recv_data);
-        void HandleSetLfgCommentOpcode(WorldPacket& recv_data);
         void HandleLfgSetRoles(WorldPacket& recv_data);
         void HandleSetTitleOpcode(WorldPacket& recv_data);
         void HandleRealmSplitOpcode(WorldPacket& recv_data);
         void HandleTimeSyncResp(WorldPacket& recv_data);
         void HandleWhoisOpcode(WorldPacket& recv_data);
         void HandleHearthandResurrect(WorldPacket & recv_data);
+
+		// Looking for Dungeon/Raid
+		void HandleSetLfgCommentOpcode(WorldPacket & recv_data);
+		void HandleLfgPlayerLockInfoRequestOpcode(WorldPacket& recv_data);
+		void HandleLfgPartyLockInfoRequestOpcode(WorldPacket& recv_data);
+		void SendLfgUpdatePlayer(uint8 updateType, uint32 dungeonEntry = 0);
+		void SendLfgUpdateParty(uint8 updateType, uint32 dungeonEntry = 0);
+		void HandleLfgJoin(WorldPacket &recv_data);
+		void HandleLfgLeave(WorldPacket &recv_data);
 
         // Arena Team
         void HandleInspectArenaTeamsOpcode(WorldPacket& recv_data);
