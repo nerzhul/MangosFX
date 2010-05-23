@@ -299,8 +299,8 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 				Field *fields = result->Fetch();
 				uint32 count = fields[0].GetUInt32();
 				PSendSysMessage("Il vous reste %u objets a recuperer de votre sac",count);
-				/*if(count == 0)
-					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bags = '1' WHERE guid = '%u'",player->GetGUID());*/
+				if(count == 0)
+					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bags = '1' WHERE guid = '%u'",player->GetGUID());
 			}
 			return true;
 		}
@@ -336,8 +336,8 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 				Field *fields = result->Fetch();
 				uint32 count = fields[0].GetUInt32();
 				PSendSysMessage("Il vous reste %u objets a recuperer de votre banque",count);
-				/*if(count == 0)
-					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bank = '1' WHERE guid = '%u'",player->GetGUID());*/
+				if(count == 0)
+					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bank = '1' WHERE guid = '%u'",player->GetGUID());
 			}
 			return true;
 		}
