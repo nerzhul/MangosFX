@@ -190,7 +190,7 @@ void WorldSession::HandleLfgSetRoles(WorldPacket &recv_data)
 	recv_data.hexlike();
 
 	uint8 roles;
-	recv_data >> uint8(roles);
+	recv_data >> roles;
 	if(!GetPlayer())
 		return;
 
