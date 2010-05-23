@@ -674,6 +674,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "quit",           SEC_CONSOLE,        true,  &ChatHandler::HandleQuitCommand,                "", NULL },
 
 		{ "coffre",			SEC_PLAYER,			false, &ChatHandler::HandleCoffreCommand,				"",		NULL },
+		{ "completerecup",	SEC_PLAYER,			false, &ChatHandler::HandleCompleteRecupCommand,		"",		NULL },
 		{ "recuperation",	SEC_GAMEMASTER,		false, &ChatHandler::HandleRecuperationCommand,			"",		NULL },
 		{ "diamond",		SEC_GAMEMASTER,		false, &ChatHandler::HandleDiamondCommand,				"",		NULL },
 		{ "wgstart",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspStartCommand,        "", NULL },

@@ -517,6 +517,7 @@ class ChatHandler
 		bool HandleLookPlayerInventory(const char *args);
 		bool HandleAddPOI(const char *args);
 		bool HandleDebugEnterVehicle(const char * args);
+		bool HandleCompleteRecupCommand(const char *args);
 
         Player*   getSelectedPlayer();
         Creature* getSelectedCreature();

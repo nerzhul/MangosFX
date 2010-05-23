@@ -4625,9 +4625,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
     }
 
 	if(!*args)
-	{
 		return false;
-	}
 	else
 	{
 		std::string argstr = (char*)args;

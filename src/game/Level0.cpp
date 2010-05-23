@@ -256,6 +256,90 @@ bool ChatHandler::HandleServerMotdCommand(const char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleCompleteRecupCommand(const char *args)
+{
+	Player* player = m_session->GetPlayer();
+	if(!*args)
+		return false;
+	else
+	{
+		if(!(CharacterDatabase.PQuery("SELECT bank FROM characterprofiler_states where guid = '%u'",player->GetGUID())))
+			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states VALUES ('%u',0,0)",player->GetGUID());
+
+		std::string argstr = (char*)args;
+		if(argstr == "sacs")
+		{
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT bags FROM characterprofiler_states where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint8 state = fields[0].GetUInt8();
+				if(state == 1)
+					return true;
+			}
+
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT item,quantite FROM characterprofiler_item_bags where guid = '%u'",player->GetGUID()))
+			{
+				uint8 i = 0;
+				do
+				{
+					Field *fields = result->Fetch();
+					uint32 itemId = fields[0].GetUInt32();
+					uint32 count = fields[1].GetUInt32();
+					player->AddItem(itemId,count);
+					i++;
+					CharacterDatabase.PQuery("DELETE FROM characterprofiler_item_bags where guid = '%u' and item = '%u' and quantite = '%u'",player->GetGUID(),itemId,count);
+				}
+				while( result->NextRow() && i < 10);
+			}
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT count(item) FROM characterprofiler_item_bags where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint32 count = fields[0].GetUInt32();
+				PSendSysMessage("Il vous reste %u objets a recuperer de votre sac",count);
+				if(count == 0)
+					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bags = '1' WHERE guid = '%u'",player->GetGUID());
+			}
+			return true;
+		}
+		else if(argstr == "bank")
+		{
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT bank FROM characterprofiler_states where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint8 state = fields[0].GetUInt8();
+				if(state == 1)
+					return true;
+			}
+
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT item,quantite FROM characterprofiler_items_bank where guid = '%u'",player->GetGUID()))
+			{
+				uint8 i = 0;
+				do
+				{
+					Field *fields = result->Fetch();
+					uint32 itemId = fields[0].GetUInt32();
+					uint32 count = fields[1].GetUInt32();
+					player->AddItem(itemId,count);
+					i++;
+					CharacterDatabase.PQuery("DELETE FROM characterprofiler_items_bank where guid = '%u' and item = '%u' and quantite = '%u'",player->GetGUID(),itemId,count);
+				}
+				while( result->NextRow() && i < 10);
+			}
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT count(item) FROM characterprofiler_item_bags where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint32 count = fields[0].GetUInt32();
+				PSendSysMessage("Il vous reste %u objets a recuperer de votre banque",count);
+				if(count == 0)
+					CharacterDatabase.PQuery("UPDATE characterprofiler_states set bank = '1' WHERE guid = '%u'",player->GetGUID());
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+
+}
 bool ChatHandler::HandleCoffreCommand(const char *args)
 {
 	int diamant = 0,saphir = 0;
