@@ -676,7 +676,6 @@ class MANGOS_DLL_SPEC WorldSession
 		void HandleResetInstancesOpcode( WorldPacket & recv_data );
         void HandleSetRaidDifficultyOpcode(WorldPacket& recv_data);
         void HandleMoveSetCanFlyAckOpcode(WorldPacket& recv_data);
-        void HandleLfgSetRoles(WorldPacket& recv_data);
         void HandleSetTitleOpcode(WorldPacket& recv_data);
         void HandleRealmSplitOpcode(WorldPacket& recv_data);
         void HandleTimeSyncResp(WorldPacket& recv_data);
@@ -691,6 +690,7 @@ class MANGOS_DLL_SPEC WorldSession
 		void SendLfgUpdateParty(uint8 updateType, uint32 dungeonEntry = 0);
 		void HandleLfgJoin(WorldPacket &recv_data);
 		void HandleLfgLeave(WorldPacket &recv_data);
+		void HandleLfgSetRoles(WorldPacket &recv_data);
 
         // Arena Team
         void HandleInspectArenaTeamsOpcode(WorldPacket& recv_data);

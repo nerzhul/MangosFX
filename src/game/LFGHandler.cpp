@@ -146,9 +146,26 @@ void WorldSession::SendLfgUpdateParty(uint8 updateType, uint32 dungeonEntry /* =
 void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 {
 	sLog.outDebug("CMSG_LFG_JOIN");
+
+	uint8 roles;
+	uint8 max_instances, instance_mask;
+	
+	recv_data >> uint8(roles);
+	recv_data.read_skip<uint8>();
+	recv_data.read_skip<uint32>();
+	recv_data >> uint8(max_instances);
+	recv_data >> uint8(instance_mask);
+	for(uint8 i=0;i<max_instances;i++)
+		recv_data.read_skip<uint32>(); // 3 bytes per instance
+	
+	recv_data.read_skip<uint32>(); // only zeros, end of packets
 	recv_data.hexlike();
+	
 	if(!GetPlayer())
 		return;
+
+	// todo : join player to queue
+	GetPlayer()->m_lookingForGroup.roles = roles;
 	SendLfgUpdatePlayer(LFG_UPDATETYPE_ADDED_TO_QUEUE);
 }
 
@@ -160,5 +177,21 @@ void WorldSession::HandleLfgLeave(WorldPacket &recv_data)
 	if(!GetPlayer())
 		return;
 
+	// todo : remove player from queue
+	sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());
 	SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+}
+
+void WorldSession::HandleLfgSetRoles(WorldPacket &recv_data)
+{
+	sLog.outDebug("CMSG_LFG_SET_ROLES");
+	recv_data.hexlike();
+
+	uint8 roles;
+	recv_data >> uint8(roles);
+	if(!GetPlayer())
+		return;
+
+	GetPlayer()->m_lookingForGroup.roles = roles;
+	sLFGMgr.AddPlayerToRandomQueue(GetPlayer());
 }
