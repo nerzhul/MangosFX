@@ -79,14 +79,14 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	uint32 ShieldScore;
 	uint64 portals[8];
 	uint64 crPortals[8][4];
-	Creature *sceau;
+	uint64 sceau;
 	bool portal_opened[8];
 	bool boss_down[6];
 	bool stopEvent;
 	bool late;
 	GameObject* jail[8];
-	Creature* boss[8];
-	Creature* pLieutenant;
+	uint64 boss[8];
+	uint64 pLieutenant;
 	uint8 add;
 	std::vector<uint64> XevozzAdds;
 	std::vector<uint64> IchoronAdds;
@@ -151,37 +151,37 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 				pCreature->SetVisibility(VISIBILITY_OFF);
 				break;
 			case NPC_ICHORON:
-				boss[4] = pCreature;
+				boss[4] = pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->CastSpell(boss[4],66830,false);
+				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case NPC_XEVOZZ:
-				boss[3] = pCreature;
+				boss[3] = pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->CastSpell(boss[3],66830,false);
+				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case NPC_ZURAMAT:
-				boss[2] = pCreature;
+				boss[2] = pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->CastSpell(boss[2],66830,false);
+				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case NPC_MORAGG:
-				boss[1]	= pCreature;
+				boss[1]	= pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->CastSpell(boss[1],66830,false);
+				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case NPC_LAVANTHOR:
-				boss[0] = pCreature;
+				boss[0] = pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->CastSpell(boss[0],66830,false);
+				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case NPC_EREKEM:
-				boss[5] = pCreature;
+				boss[5] = pCreature->GetGUID();
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				pCreature->CastSpell(pCreature,66830,false);
@@ -190,11 +190,11 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				pCreature->CastSpell(pCreature,66830,false);
-				boss[6+add] = pCreature;
+				boss[6+add] = pCreature->GetGUID();
 				add++;
 				break;
 			case 30658:
-				pLieutenant = pCreature;
+				pLieutenant = pCreature->GetGUID();
 				break;
 			case 29271:
 			case 32582:
@@ -204,7 +204,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 				IchoronAdds.push_back(pCreature->GetGUID());
 				break;
 			case NPC_SCEAU:
-				sceau = pCreature;
+				sceau = pCreature->GetGUID();
 				pCreature->SetVisibility(VISIBILITY_OFF);
 				break;
 			default:
@@ -274,7 +274,8 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	{
 		DoUpdateWorldState(WSTATE_SCEAU,100);
 		DoUpdateWorldState(WSTATE_PRINCIPAL,1);
-		pLieutenant->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		if(Creature* pLieutenantCr = (Creature*)GetUnitInMap(pLieutenant))
+			pLieutenantCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		stopEvent = false;
 	}
 
@@ -315,9 +316,9 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 	uint64 GetData64(uint32 dataN)
 	{
 		if(dataN == 1)
-			return (uint64)boss[3];
+			return boss[3];
 		else if(dataN == 2 && sceau)
-			return sceau->GetGUID();
+			return sceau;
 		return 0;
 	}
 
@@ -366,53 +367,83 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					jail[7]->Use(cyanigosa);
 					jail[5]->Use(cyanigosa);
 				}
-				boss[7]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-				boss[7]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				boss[7]->RemoveAllAuras();
-				boss[7]->RemoveAurasDueToSpell(66830);
-				boss[6]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-				boss[6]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				boss[6]->RemoveAllAuras();
-				boss[6]->RemoveAurasDueToSpell(66830);
+				if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[7]))
+				{
+					pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+					pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+					pBossCr->RemoveAllAuras();
+					pBossCr->RemoveAurasDueToSpell(66830);
+				}
+				if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[6]))
+				{
+					pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+					pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+					pBossCr->RemoveAllAuras();
+					pBossCr->RemoveAurasDueToSpell(66830);
+				}
 			}
 
 			// On rend le boss vulnérable et opérationnel
-			boss[rand_boss]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-			boss[rand_boss]->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-			boss[rand_boss]->RemoveAllAuras();
-			boss[rand_boss]->RemoveAurasDueToSpell(66830);
+			if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+			{
+				pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+				pBossCr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+				pBossCr->RemoveAllAuras();
+				pBossCr->RemoveAurasDueToSpell(66830);
+			}
 			ClosePortal(7);
 			            
 			switch(rand_boss)
 			{
 				case 4:
-					DoScriptText(-2000005,boss[rand_boss]);
-					boss[rand_boss]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+					{
+						DoScriptText(-2000005,pBossCr);
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
 					break;
 				case 2:
-					DoScriptText(-2000025,boss[rand_boss]);
-					boss[rand_boss]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+					{
+						DoScriptText(-2000025,pBossCr);
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
 					break;
 				case 5:
-					DoScriptText(-2000032,boss[rand_boss]);
-					boss[rand_boss]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
-					boss[rand_boss+1]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss+1]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
-					boss[rand_boss+2]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss+2]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+					{
+						DoScriptText(-2000032,pBossCr);
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss+1]))
+					{
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss+2]))
+					{
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
 					break;
 				case 3:
-					DoScriptText(-2000039,boss[rand_boss]);
-					boss[rand_boss]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+					{
+						DoScriptText(-2000039,pBossCr);
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
 					break;
             	case 0:
 				case 1:
-					boss[rand_boss]->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-					boss[rand_boss]->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
+					{
+						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
+					}
             		break;
 			}
 		}
@@ -428,7 +459,8 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					crPortals[lstportal][0] = cr->GetGUID();
 					cr->SetRespawnDelay(RESPAWN_ONE_DAY);
 				}
-			DoScriptText(EMOTE_GUARDIAN,pLieutenant);
+			if(Creature* pLieutenantCr = (Creature*)GetUnitInMap(pLieutenant))
+				DoScriptText(EMOTE_GUARDIAN,pLieutenantCr);
 		}
 		else
 		{
@@ -455,8 +487,8 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					cr->SetRespawnDelay(RESPAWN_ONE_DAY);
 				}
 			}
-
-			DoScriptText(EMOTE_ESCADRILLE,pLieutenant);
+			if(Creature* pLieutenantCr = (Creature*)GetUnitInMap(pLieutenant))
+				DoScriptText(EMOTE_ESCADRILLE,pLieutenantCr);
 		}
 		
 	}
