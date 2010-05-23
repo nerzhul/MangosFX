@@ -20,6 +20,8 @@
 #include "LFGMgr.h"
 #include "WorldSession.h"
 #include "WorldPacket.h"
+#include "Player.h"
+#include "Opcodes.h"
 
 void WorldSession::HandleSetLfgCommentOpcode(WorldPacket & recv_data)
 {
@@ -150,11 +152,11 @@ void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 	uint8 roles;
 	uint8 max_instances, instance_mask;
 	
-	recv_data >> uint8(roles);
+	recv_data >> roles;
 	recv_data.read_skip<uint8>();
 	recv_data.read_skip<uint32>();
-	recv_data >> uint8(max_instances);
-	recv_data >> uint8(instance_mask);
+	recv_data >> max_instances;
+	recv_data >> instance_mask;
 	for(uint8 i=0;i<max_instances;i++)
 		recv_data.read_skip<uint32>(); // 3 bytes per instance
 	
