@@ -14,6 +14,8 @@ enum LFG_Role
 	ROLE_DPS	=	0x08,
 };
 
+#define MAX_DPS	3
+
 enum LfgType
 {
  	LFG_TYPE_DUNGEON = 1,
@@ -147,6 +149,7 @@ struct LookingForGroup
     }
     std::string comment;
     int8 roles;
+	uint32 waited;
 
     bool isDungeonDone(const uint32 entry)
     {
@@ -166,7 +169,8 @@ class LFGMgr
 		void InitLFG();
 		void SendLfgPlayerInfo(Player *plr);
 		void SendLfgPartyInfo(Player *plr);
-
+		void Update(uint32 diff);
+		void TeleportPlayerToInstance(Player* plr);
 		void RemovePlayerFromRandomQueue(Player* plr);
 		void AddPlayerToRandomQueue(Player* plr);
 	private:
@@ -174,6 +178,7 @@ class LFGMgr
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);
 		void BuildPlayerLockDungeonBlock(WorldPacket &data, LfgLockStatusSet *lockSet);
 		void BuildPartyLockDungeonBlock(WorldPacket &data, LfgLockStatusMap *lockMap);
+		void SendLfgQueueStatusUpdate(Player *plr);
 		LfgLockStatusMap* GetPartyLockStatusDungeons(Player *plr, LfgDungeonSet *dungeons);
 		LfgLockStatusSet* GetPlayerLockStatusDungeons(Player *plr, LfgDungeonSet *dungeons);
 		LfgDungeonSet* GetRandomDungeons(uint8 level, uint8 expansion);
@@ -182,6 +187,8 @@ class LFGMgr
 		LfgReward* GetRandomDungeonReward(uint32 dungeon, bool done, uint8 level);
 
 		bool PlayerJoinRandomQueue(Player* plr);
+		bool TryToFormGroup(Player* plr);
+		uint32 GenerateRandomDungeon();
 
 		LfgRewardList m_RewardList;
 		LfgRewardList m_RewardDoneList;
@@ -190,6 +197,7 @@ class LFGMgr
 		PlayerSet m_DpsSet;
 		PlayerSet m_HealSet;
 		PlayerSet m_MasterSet;
+		uint32 middleTime; // seconds
 
 };
 

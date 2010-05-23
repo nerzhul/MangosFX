@@ -168,6 +168,7 @@ void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 
 	// todo : join player to queue
 	GetPlayer()->m_lookingForGroup.roles = roles;
+	sLFGMgr.AddPlayerToRandomQueue(GetPlayer());
 	SendLfgUpdatePlayer(LFG_UPDATETYPE_ADDED_TO_QUEUE);
 }
 
@@ -195,5 +196,28 @@ void WorldSession::HandleLfgSetRoles(WorldPacket &recv_data)
 		return;
 
 	GetPlayer()->m_lookingForGroup.roles = roles;
-	sLFGMgr.AddPlayerToRandomQueue(GetPlayer());
+}
+
+void WorldSession::HandleLfgSetBootVote(WorldPacket &recv_data)
+{
+	sLog.outDebug("CMSG_LFG_SET_BOOT_VOTE");
+	recv_data.hexlike();
+
+	bool agree;
+	recv_data >> agree;
+
+	// TODO : handle this
+}
+
+void WorldSession::HandleLfgTeleport(WorldPacket &recv_data)
+{
+	sLog.outDebug("CMSG_LFG_TELEPORT");
+	recv_data.hexlike();
+
+	bool teleport;
+	recv_data >> teleport;
+	if(!teleport && !GetPlayer())
+		return;
+
+	sLFGMgr.TeleportPlayerToInstance(GetPlayer());
 }

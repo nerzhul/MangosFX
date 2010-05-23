@@ -29,6 +29,10 @@ LFGMgr::~LFGMgr()
         delete it->second;
     }
     m_DungeonsMap.clear();
+	m_TankSet.clear();
+	m_HealSet.clear();
+	m_DpsSet.clear();
+	m_MasterSet.clear();
 }
 
 void LFGMgr::InitLFG()
@@ -69,7 +73,8 @@ void LFGMgr::InitLFG()
     m_DungeonsMap[LFG_RANDOM_BC_HEROIC] = GetDungeonsByRandom(LFG_RANDOM_BC_HEROIC);
     m_DungeonsMap[LFG_RANDOM_LK_NORMAL] = GetDungeonsByRandom(LFG_RANDOM_LK_NORMAL);
     m_DungeonsMap[LFG_RANDOM_LK_HEROIC] = GetDungeonsByRandom(LFG_RANDOM_LK_HEROIC);*/
-  
+
+	middleTime = 600;  
 }
 
 void LFGMgr::SendLfgPartyInfo(Player *plr)
@@ -362,9 +367,120 @@ void LFGMgr::RemovePlayerFromRandomQueue(Player* plr)
 
 void LFGMgr::AddPlayerToRandomQueue(Player* plr)
 {
+	int8 plrRole = plr->m_lookingForGroup.roles;
+	plr->m_lookingForGroup.waited = 0;
+	if(plrRole & ROLE_MASTER) 
+		m_MasterSet.insert(plr);
+	if(plrRole & ROLE_TANK) 
+		m_TankSet.insert(plr);
+	if(plrRole & ROLE_HEAL) 
+		m_HealSet.insert(plr);
+	if(plrRole & ROLE_DPS) 
+		m_DpsSet.insert(plr);
+	TryToFormGroup(plr);
+}
+
+uint32 LFGMgr::GenerateRandomDungeon()
+{
+	LfgDungeonSet* dungeonList = GetRandomDungeons(80,2);
+	uint32 _rand = urand(0,dungeonList->size());
+	uint32 pos = 0;
+	for(LfgDungeonSet::const_iterator itr = dungeonList->begin(); itr != dungeonList->end(); ++itr)
+	{
+		if(pos == _rand)
+			return *itr;
+		pos++;
+	}
+	return 0;
+}
+
+bool LFGMgr::TryToFormGroup(Player* plr)
+{
+	Player* Tank,*Heal,*dps[MAX_DPS];
+
 	uint32 plrRole = plr->m_lookingForGroup.roles;
-	if(plrRole & ROLE_MASTER) m_MasterSet.insert(plr);
-	if(plrRole & ROLE_TANK) m_TankSet.insert(plr);
-	if(plrRole & ROLE_HEAL) m_HealSet.insert(plr);
-	if(plrRole & ROLE_DPS) m_DpsSet.insert(plr);
+	if(plrRole & ROLE_TANK) 
+		Tank = plr;
+	else if(plrRole & ROLE_HEAL) 
+		Heal = plr;
+	else 
+		dps[0] = plr;
+
+	if(!Tank && !m_TankSet.empty())
+	{
+		PlayerSet::const_iterator itr = m_TankSet.begin();
+		Tank = *itr;
+	}
+
+	if(!Heal && !m_HealSet.empty())
+	{
+		PlayerSet::const_iterator itr = m_HealSet.begin();
+		Heal = *itr;
+	}
+
+	if(!m_DpsSet.empty())
+	{
+		uint8 slot = 0;
+		if(dps[0])
+			slot = 1;
+		PlayerSet::const_iterator itr = m_DpsSet.begin();
+		while(itr != m_DpsSet.end() && slot < MAX_DPS)
+		{
+			dps[slot] = *itr;
+			slot++;
+			++itr;
+		}
+	}
+
+	if(Tank && Heal && dps[0] && dps[1] && dps[2])
+	{
+		uint32 dungeon = GenerateRandomDungeon();
+		if(!dungeon)
+			return false;
+		// TODO: group ready
+	}
+
+	return true;
+}
+
+void LFGMgr::Update(uint32 diff)
+{
+	for(PlayerSet::iterator itr = m_DpsSet.begin(); itr != m_DpsSet.end(); ++itr)
+	{
+		(*itr)->m_lookingForGroup.waited += diff;
+		SendLfgQueueStatusUpdate(*itr);
+	}
+
+	for(PlayerSet::iterator itr = m_TankSet.begin();itr != m_TankSet.end();++itr)
+	{
+		(*itr)->m_lookingForGroup.waited += diff;
+		SendLfgQueueStatusUpdate(*itr);
+	}
+
+	for(PlayerSet::iterator itr = m_HealSet.begin();itr != m_HealSet.end();++itr)
+	{
+		(*itr)->m_lookingForGroup.waited += diff;
+		SendLfgQueueStatusUpdate(*itr);
+	}
+}
+
+void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
+{
+	sLog.outDebug("SMSG_LFG_QUEUE_STATUS");
+	WorldPacket data(SMSG_LFG_QUEUE_STATUS,4+4+4+4+4+4+1+1+1);
+	data << uint32(1);
+	data << uint32(middleTime); // temps d'attente moyen
+	data << uint32(plr->m_lookingForGroup.waited);
+	data << uint32(2);
+	data << uint32(3);
+	data << uint32(4);
+	data << uint8(0); // needed tanks
+	data << uint8(0); // needed heals
+	data << uint8(1); // needed dps
+	plr->GetSession()->SendPacket(&data);
+}
+
+void LFGMgr::TeleportPlayerToInstance(Player* plr)
+{
+	// TODO : some stuff for teleport
 }

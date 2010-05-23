@@ -1717,6 +1717,8 @@ void World::Update(uint32 diff)
 	
 	sOutdoorPvPMgr.Update(diff);
 
+	sLFGMgr.Update(diff);
+
     // execute callbacks from sql queries that were queued recently
     UpdateResultQueue();
 
