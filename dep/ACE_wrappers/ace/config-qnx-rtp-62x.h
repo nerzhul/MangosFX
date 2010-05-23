@@ -124,6 +124,6 @@
 #if defined( FD_SETSIZE )
 #undef FD_SETSIZE
 #endif
-#define FD_SETSIZE 1000
+#define FD_SETSIZE 4096
 #include /**/ "ace/post.h"
 #endif /* ACE_CONFIG_QNX_RTP_62x_H*/
