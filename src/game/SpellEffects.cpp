@@ -2738,7 +2738,9 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
             {
                 // remove all harmful spells on you...
                 if( // ignore positive and passive auras
-                    !iter->second->IsPositive() && !iter->second->IsPassive() &&
+                    !iter->second->IsPositive() && 
+					!iter->second->IsPassive() &&
+					!iter->second->IsDeathPersistent() && 
                     // ignore physical auras
                     (GetSpellSchoolMask(iter->second->GetSpellProto()) & SPELL_SCHOOL_MASK_NORMAL)==0 )
                 {
@@ -3083,6 +3085,10 @@ void Spell::EffectApplyAura(uint32 i)
     Unit* caster = m_originalCaster ? m_originalCaster : m_caster;
     if(!caster)
         return;
+
+	//Molten fury, buff from Flame tsunami, should affect only sartarions adds...
+	if(m_spellInfo->Id == 60430 && (unitTarget->GetTypeId() != TYPEID_UNIT || unitTarget->GetEntry() != 30643))
+		return;
 
     sLog.outDebug("Spell: Aura is: %u", m_spellInfo->EffectApplyAuraName[i]);
 
