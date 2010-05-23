@@ -309,11 +309,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         }
 
         if (bCanUseWill && !me->HasAura(SPELL_WILL_OF_SARTHARION,0))
-		{
 			SetAuraStack(SPELL_WILL_OF_SARTHARION,1,me,me,1);
-			me->SetHealth(me->GetMaxHealth());
-			
-		}
     }
 
     void CallDragon(uint32 uiDataId)

@@ -1699,6 +1699,31 @@ void Spell::EffectDummy(uint32 i)
                                 bg->EventPlayerDroppedFlag(pPlayer);
                     }
                     return;
+				case 57337:                                 // Great Feast
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 58067, true);
+                    break;
+                }
+                case 57397:                                 // Fish Feast
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 57292, true);
+                    break;
+                }
+                case 58466:                                 // Gigantic Feast
+                case 58475:                                 // Small Feast
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 57085, true);
+                    break;
+                }
                 case 58418:                                 // Portal to Orgrimmar
                 case 58420:                                 // Portal to Stormwind
                     return;                                 // implemented in EffectScript[0]
@@ -6185,6 +6210,16 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         ((Player*)m_caster)->learnSpell(discoveredSpell, 0, false);
                     return;
                 }
+				case 66477:                                 // Bountiful Feast
+                {
+                    if (!unitTarget)
+                        return;
+
+                    unitTarget->CastSpell(unitTarget, 65422, true);
+                    unitTarget->CastSpell(unitTarget, 66622, true);
+                    break;
+                }
+
                 case 69377: //Fortitude
                 {
                     if(!unitTarget)

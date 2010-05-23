@@ -35,8 +35,8 @@ enum spells
 	SPELL_VOID_ZONE_HARD_25		=	64235,
 	SPELL_LIFE_SPARK_HARD		=	64210,
 
-	SPELL_XT002_ACT_HARD_25		=	64193,
-	SPELL_XT002_ACT_HARD_10		=	65737,
+	SPELL_XT002_ACT_HARD_10		=	64193,
+	SPELL_XT002_ACT_HARD_25		=	65737,
 };
 
 enum mobs
@@ -199,15 +199,9 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 					if(!Heart->isAlive())
 					{
 						if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
-						{
 							DoCastMe(SPELL_XT002_ACT_HARD_25);
-							me->SetHealth(me->GetMaxHealth() * 1.5);
-						}
 						else
-						{
 							DoCastMe(SPELL_XT002_ACT_HARD_10);
-							me->SetHealth(me->GetMaxHealth() * 1.6);
-						}
 						
 						HARDMODE = true;
 						OpenHeart = false;
