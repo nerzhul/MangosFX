@@ -27,7 +27,6 @@
 #include "Config/ConfigEnv.h"
 #include "Log.h"
 #include "AuthSocket.h"
-#include "SystemConfig.h"
 #include "revision.h"
 #include "revision_nr.h"
 #include "revision_sql.h"

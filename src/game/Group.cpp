@@ -1291,7 +1291,7 @@ void Group::_removeRolls(const uint64 &guid)
     }
 }
 
-bool Group::_setMembersGroup(const uint64 &guid, uint8 &group)
+bool Group::_setMembersGroup(const uint64 &guid, uint8 group)
 {
     member_witerator slot = _getMemberWSlot(guid);
     if(slot == m_memberSlots.end())
@@ -1358,7 +1358,7 @@ bool Group::SameSubGroup(Player const* member1, Player const* member2) const
 }
 
 // allows setting subgroup for offline members
-void Group::ChangeMembersGroup(const uint64 &guid, uint8 &group)
+void Group::ChangeMembersGroup(const uint64 &guid, uint8 group)
 {
     if(!isRaidGroup())
         return;
@@ -1382,7 +1382,7 @@ void Group::ChangeMembersGroup(const uint64 &guid, uint8 &group)
 }
 
 // only for online members
-void Group::ChangeMembersGroup(Player *player, uint8 &group)
+void Group::ChangeMembersGroup(Player *player, uint8 group)
 {
     if(!player || !isRaidGroup())
         return;
@@ -1495,7 +1495,7 @@ GroupJoinBattlegroundResult Group::CanJoinBattleGroundQueue(BattleGround const* 
 		return ERR_BATTLEGROUND_NONE;                       // ERR_GROUP_JOIN_BATTLEGROUND_TOO_MANY handled on client side
 
     // get a player as reference, to compare other players' stats to (arena team id, queue id based on level, etc.)
-    Player * reference = GetFirstMember()->getSource();
+    Player* reference = GetFirstMember()->getSource();
     // no reference found, can't join this way
     if(!reference)
         return ERR_BATTLEGROUND_JOIN_FAILED;

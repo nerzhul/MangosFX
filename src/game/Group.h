@@ -261,10 +261,10 @@ class MANGOS_DLL_SPEC Group
         void SetBattlegroundGroup(BattleGround *bg) { m_bgGroup = bg; }
         GroupJoinBattlegroundResult  CanJoinBattleGroundQueue(BattleGround const* bgOrTemplate, BattleGroundQueueTypeId bgQueueTypeId, uint32 MinPlayerCount, uint32 MaxPlayerCount, bool isRated, uint32 arenaSlot);
 
-        void ChangeMembersGroup(const uint64 &guid, uint8 &group);
-        void ChangeMembersGroup(Player *player, uint8 &group);
+        void ChangeMembersGroup(const uint64 &guid, uint8 group);
+        void ChangeMembersGroup(Player *player, uint8 group);
 
-        void SetAssistant(uint64 guid, bool &state)
+        void SetAssistant(uint64 guid, bool state)
         {
             if(!isRaidGroup())
                 return;
@@ -353,7 +353,7 @@ class MANGOS_DLL_SPEC Group
 
         void _removeRolls(const uint64 &guid);
 
-        bool _setMembersGroup(const uint64 &guid, uint8 &group);
+        bool _setMembersGroup(const uint64 &guid, uint8 group);
         bool _setAssistantFlag(const uint64 &guid, const bool &state);
         bool _setMainTank(const uint64 &guid);
         bool _setMainAssistant(const uint64 &guid);

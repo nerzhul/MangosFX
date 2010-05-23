@@ -29,7 +29,6 @@
 #include "Log.h"
 #include "Timer.h"
 #include "Policies/SingletonImp.h"
-#include "SystemConfig.h"
 #include "Config/ConfigEnv.h"
 #include "Database/DatabaseEnv.h"
 #include "CliRunnable.h"
