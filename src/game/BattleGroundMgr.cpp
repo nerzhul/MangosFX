@@ -1606,6 +1606,13 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 					break;
 			}
 			bg->SetRandomBG(true);
+			if(bg_template)
+			{
+				bg->SetMinPlayers(bg_template->GetMinPlayers());
+				bg->SetMaxPlayers(bg_template->GetMaxPlayers());
+				bg->SetMinPlayersPerTeam(bg_template->GetMinPlayersPerTeam());
+				bg->SetMaxPlayersPerTeam(bg_template->GetMaxPlayersPerTeam());
+			}
             break;
         default:
             //error, but it is handled few lines above
