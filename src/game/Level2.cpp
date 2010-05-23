@@ -5169,6 +5169,24 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 	return true;
 }
 
+bool ChatHandler::HandleDebugDualSpecCommand(const char *args)
+{
+	Player* player = getSelectedPlayer();
+
+	if(player->GetMoney() < 10000000)
+	{
+		SendSysMessage("Ce joueur n'a pas assez d'argent");
+		return true;
+	}
+	// double spe
+	player->UpdateSpecCount(2);
+	player->learnSpell(63645, 0,false);
+	player->learnSpell(63644, 0,false);
+	player->ModifyMoney(-10000000);
+	return true;
+
+}
+
 bool ChatHandler::HandleDiamondCommand(const char* args)
 {
 	Player *player = getSelectedPlayer();

@@ -35,6 +35,7 @@
 #include "BattleGroundMgr.h"
 #include "MapManager.h"
 #include "SocialMgr.h"
+#include "GMTicketMgr.h"
 #include "OutdoorPvPMgr.h"
 #include "zlib/zlib.h"
 #include "Auth/AuthCrypt.h"
@@ -295,8 +296,7 @@ void WorldSession::LogoutPlayer(bool Save)
 
     if (_player)
     {
-		if(_player->GetVehicleGUID())
-			_player->ExitVehicle();
+		sTicketMgr.Delete(_player->GetGUID());
 			
         if (uint64 lguid = GetPlayer()->GetLootGUID())
             DoLootRelease(lguid);
