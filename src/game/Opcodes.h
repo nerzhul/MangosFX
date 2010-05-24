@@ -546,7 +546,7 @@ enum Opcodes
     CMSG_PLAYER_DIFFICULTY_CHANGE                   = 0x1FD,
     SMSG_RWHOIS                                     = 0x1FE,
     SMSG_LFG_PLAYER_REWARD		                    = 0x1FF, // uint32, uint8, uint32, uint32, uint32, uint32, uint32, uint8, for(uint8) {uint32,uint32,uint32}
-    SMSG_LFG_TELEPORT_DENIED                                  = 0x200, // uint32 (1,2,4,6;0,5,7)
+    SMSG_LFG_TELEPORT_DENIED                        = 0x200, // uint32 (1,2,4,6;0,5,7)
     CMSG_UNLEARN_SPELL                              = 0x201,
     CMSG_UNLEARN_SKILL                              = 0x202,
     SMSG_REMOVED_SPELL                              = 0x203,

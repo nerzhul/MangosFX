@@ -448,16 +448,16 @@ void LFGMgr::Update(uint32 diff)
 	for(PlayerSet::iterator itr = m_DpsSet.begin(); itr != m_DpsSet.end(); ++itr)
 	{
 		(*itr)->m_lookingForGroup.waited += diff;
-		if((*itr)->m_lookingForGroup.waited >= 9000000)
-			(*itr)->m_lookingForGroup.waited = 9000000;
+		if((*itr)->m_lookingForGroup.waited >= 3000000)
+			(*itr)->m_lookingForGroup.waited = 3000000;
 		SendLfgQueueStatusUpdate(*itr);
 	}
 
 	for(PlayerSet::iterator itr = m_TankSet.begin();itr != m_TankSet.end();++itr)
 	{
 		(*itr)->m_lookingForGroup.waited += diff;
-		if((*itr)->m_lookingForGroup.waited >= 9000000)
-			(*itr)->m_lookingForGroup.waited = 9000000;
+		if((*itr)->m_lookingForGroup.waited >= 3000000)
+			(*itr)->m_lookingForGroup.waited = 3000000;
 		SendLfgQueueStatusUpdate(*itr);
 	}
 
@@ -472,7 +472,7 @@ void LFGMgr::Update(uint32 diff)
 
 void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
 {
-	WorldPacket data(SMSG_LFG_QUEUE_STATUS,4+4+4+4+4+4+1+1+1);
+	WorldPacket data(SMSG_LFG_QUEUE_STATUS,4+4+4+4+4+4+1+1+1+4);
 	data << uint32(1);
 	data << uint32(middleTime); // temps d'attente moyen
 	data << uint32(plr->m_lookingForGroup.waited); // temps d'attente
@@ -488,7 +488,11 @@ void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
 
 void LFGMgr::TeleportPlayerToInstance(Player* plr)
 {
-	// TODO : some stuff for teleport
+	error_log("TeleportPlayerToInstance non implante");
+	/*
+	if player in instance => teleport to instance
+	else teleport to last save outdoor
+	*/
 }
 
 void LFGMgr::SendLfgRoleCheckResult(Player* plr, bool accept)
@@ -500,4 +504,49 @@ void LFGMgr::SendLfgRoleCheckResult(Player* plr, bool accept)
 	data << plr->m_lookingForGroup.roles;
 	plr->GetSession()->SendPacket(&data);
 	// Party send packet
+}
+
+void LFGMgr::SendLfgProposalUpdate(Player* plr)
+{
+	WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1));
+	data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
+	data << uint8(1); // state
+	data << uint32(1); //
+	data << uint32(2);
+	data << uint8(0);
+	data << uint8(1);
+	for(uint8 i=0;i<1;i++)
+	{
+		data << uint32(ROLE_TANK); // role
+		data << uint8(0); // if its self
+		data << uint8(0); // if in dungeon
+		data << uint8(0);
+		data << uint8(0);
+		data << uint8(0);
+	}
+	data << uint32(ROLE_DPS);
+	data << uint8(1);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint32(ROLE_DPS);
+	data << uint8(0);
+	data << uint8(1);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint32(ROLE_DPS);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(1);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint32(ROLE_HEAL);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(0);
+	data << uint8(1);
+	data << uint8(0);
+	plr->GetSession()->SendPacket(&data);
 }

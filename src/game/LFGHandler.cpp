@@ -225,11 +225,18 @@ void WorldSession::HandleLfgTeleport(WorldPacket &recv_data)
 void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 {
 	sLog.outDebug("CMSG_LFG_PROPOSAL_RESULT");
-	recv_data.hexlike();
 
 	uint32 groupId;
 	bool accept;
 
 	recv_data >> groupId;
 	recv_data >> accept;
-}
+
+	if(accept)
+		sLFGMgr.TeleportPlayerToInstance(GetPlayer());
+	else
+	{
+		sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());
+		SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+	}
+}	

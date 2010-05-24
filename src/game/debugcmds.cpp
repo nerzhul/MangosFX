@@ -960,3 +960,54 @@ bool ChatHandler::HandleDebugUpdateCommand(const char* args)
 
     return true;
 }
+
+
+bool ChatHandler::HandleTestPacketCommand(const char *args)
+{
+	char* arg1 = strtok((char*)args, " ");
+    char* arg2 = strtok(NULL, " ");
+    char* arg3 = strtok(NULL, " ");
+    char* arg4 = strtok(NULL, " ");
+
+	if(!*args)
+		return false;
+	else
+	{
+		std::string argstr = (char*)arg1;
+		if(argstr == "lfg1")
+		{
+			WorldPacket data(SMSG_LFG_UPDATE_SEARCH,1);
+			data << uint8(1);
+			m_session->SendPacket(&data);
+		}
+		else if(argstr == "lfg2")
+		{
+			WorldPacket data(SMSG_LFG_TELEPORT_DENIED,4);
+			uint32 val = (uint32)atoi(arg2);
+			data << uint32(arg2);
+			m_session->SendPacket(&data);
+		}
+		else if(argstr == "lfg3")
+		{
+			WorldPacket data(SMSG_LFG_BOOT_PLAYER,27+8*0);
+			data << uint8(1);
+			data << uint8(1);
+			uint8 val = (uint8)atoi(arg2);
+			data << uint8(val);
+			data << uint64(m_session->GetPlayer()->GetGUID());
+			data << uint32(2);
+			data << uint32(1);
+			data << uint32(3600);
+			data << uint32(3);
+			data << std::string("bla bla");
+			m_session->SendPacket(&data);
+		}
+		else if(argstr == "lfg4")
+		{
+			error_log("packet 4");
+			sLFGMgr.SendLfgProposalUpdate(m_session->GetPlayer());
+		}
+	}
+	return true;
+}
+

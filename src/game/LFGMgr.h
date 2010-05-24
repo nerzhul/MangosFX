@@ -160,6 +160,13 @@ struct LookingForGroup
     LfgDungeonSet donerandomDungeons;                       // Finished random Dungeons (to calculate the bonus);
 };
 
+struct LFGGroup
+{
+	Player* Tank;
+	Player* Heal;
+	Player* Dps[3];
+};
+
 class LFGMgr
 {
 	public:
@@ -174,6 +181,7 @@ class LFGMgr
 		void RemovePlayerFromRandomQueue(Player* plr);
 		void AddPlayerToRandomQueue(Player* plr);
 		void SendLfgRoleCheckResult(Player* plr, bool accept);
+		void SendLfgProposalUpdate(Player* plr);
 	private:
 		void BuildAvailableRandomDungeonList(WorldPacket &data, Player *plr);
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);

@@ -519,6 +519,7 @@ class ChatHandler
 		bool HandleDebugEnterVehicle(const char * args);
 		bool HandleCompleteRecupCommand(const char *args);
 		bool HandleDebugDualSpecCommand(const char *args);
+		bool HandleTestPacketCommand(const char *args);
 
         Player*   getSelectedPlayer();
         Creature* getSelectedCreature();
