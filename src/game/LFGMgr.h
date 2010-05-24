@@ -133,12 +133,26 @@ enum LfgUpdateType
     LFG_UPDATETYPE_GROUP_DISBAND        = 16,
 };
 
+struct LFGGroup
+{
+	LFGGroup(Player* t,Player* h, Player** d)
+	{
+		Tank = t;
+		Heal = h;
+		Dps = d;
+	}
+	Player* Tank;
+	Player* Heal;
+	Player** Dps;
+};
+
 typedef std::set<uint32> LfgDungeonSet;
 typedef std::set<LfgLockStatus*> LfgLockStatusSet;
 typedef std::vector<LfgReward*> LfgRewardList;
 typedef std::map<uint64, LfgLockStatusSet*> LfgLockStatusMap;
 typedef std::map<uint32, LfgDungeonSet*> LfgDungeonMap;
 typedef std::set<Player*> PlayerSet;
+typedef std::set<LFGGroup*> LFGGroupSet;
 
 struct LookingForGroup
 {
@@ -158,13 +172,7 @@ struct LookingForGroup
 
     LfgDungeonSet applyDungeons;                            // Dungeons the player have applied for
     LfgDungeonSet donerandomDungeons;                       // Finished random Dungeons (to calculate the bonus);
-};
-
-struct LFGGroup
-{
-	Player* Tank;
-	Player* Heal;
-	Player* Dps[3];
+	LFGGroup* group;
 };
 
 class LFGMgr
@@ -196,16 +204,18 @@ class LFGMgr
 		LfgReward* GetRandomDungeonReward(uint32 dungeon, bool done, uint8 level);
 
 		bool PlayerJoinRandomQueue(Player* plr);
-		bool TryToFormGroup(Player* plr);
 		uint32 GenerateRandomDungeon();
+		void TryToFormGroups();
+		void RegisterGroup(LFGGroup* grp) { m_LFGGroupSet.insert(grp); }
 
 		LfgRewardList m_RewardList;
 		LfgRewardList m_RewardDoneList;
 		LfgDungeonMap m_DungeonsMap;
-		PlayerSet m_TankSet;
-		PlayerSet m_DpsSet;
-		PlayerSet m_HealSet;
-		PlayerSet m_MasterSet;
+		PlayerSet m_TankSet[BG_TEAMS_COUNT];
+		PlayerSet m_DpsSet[BG_TEAMS_COUNT];
+		PlayerSet m_HealSet[BG_TEAMS_COUNT];
+		PlayerSet m_MasterSet[BG_TEAMS_COUNT];
+		LFGGroupSet m_LFGGroupSet;
 		uint32 middleTime; // seconds
 
 };
