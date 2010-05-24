@@ -693,6 +693,7 @@ class MANGOS_DLL_SPEC WorldSession
 		void HandleLfgSetRoles(WorldPacket &recv_data);
 		void HandleLfgSetBootVote(WorldPacket &recv_data);
 		void HandleLfgTeleport(WorldPacket &recv_data);
+		void HandleLfgProposalResult(WorldPacket &recv_data);
 
         // Arena Team
         void HandleInspectArenaTeamsOpcode(WorldPacket& recv_data);

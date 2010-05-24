@@ -8544,6 +8544,16 @@ void Aura::PeriodicDummyTick()
                         case 2: m_target->CastSpell(m_target, 55739, true); break;
                     }
                     return;
+				case 63276:
+				{
+					Unit* caster = GetCaster();
+					if(!caster)
+						return;
+					// probably im blind but damage is not in dbc files ...
+					int32 bp1 = 5000;
+					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
+					return;
+				}
                 case 66118:                                 // Leeching Swarm 10 man
                 case 68646:
                 {

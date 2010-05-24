@@ -448,39 +448,56 @@ void LFGMgr::Update(uint32 diff)
 	for(PlayerSet::iterator itr = m_DpsSet.begin(); itr != m_DpsSet.end(); ++itr)
 	{
 		(*itr)->m_lookingForGroup.waited += diff;
+		if((*itr)->m_lookingForGroup.waited >= 9000000)
+			(*itr)->m_lookingForGroup.waited = 9000000;
 		SendLfgQueueStatusUpdate(*itr);
 	}
 
 	for(PlayerSet::iterator itr = m_TankSet.begin();itr != m_TankSet.end();++itr)
 	{
 		(*itr)->m_lookingForGroup.waited += diff;
+		if((*itr)->m_lookingForGroup.waited >= 9000000)
+			(*itr)->m_lookingForGroup.waited = 9000000;
 		SendLfgQueueStatusUpdate(*itr);
 	}
 
 	for(PlayerSet::iterator itr = m_HealSet.begin();itr != m_HealSet.end();++itr)
 	{
 		(*itr)->m_lookingForGroup.waited += diff;
+		if((*itr)->m_lookingForGroup.waited >= 9000000)
+			(*itr)->m_lookingForGroup.waited = 9000000;
 		SendLfgQueueStatusUpdate(*itr);
 	}
 }
 
 void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
 {
-	sLog.outDebug("SMSG_LFG_QUEUE_STATUS");
 	WorldPacket data(SMSG_LFG_QUEUE_STATUS,4+4+4+4+4+4+1+1+1);
 	data << uint32(1);
 	data << uint32(middleTime); // temps d'attente moyen
-	data << uint32(plr->m_lookingForGroup.waited);
-	data << uint32(2);
-	data << uint32(3);
-	data << uint32(4);
+	data << uint32(plr->m_lookingForGroup.waited); // temps d'attente
+	data << uint32(0);
+	data << uint32(0);
+	data << uint32(0);
 	data << uint8(0); // needed tanks
 	data << uint8(0); // needed heals
-	data << uint8(1); // needed dps
+	data << uint8(0); // needed dps
+	data << uint32(plr->m_lookingForGroup.waited); // repet temps d'attente
 	plr->GetSession()->SendPacket(&data);
 }
 
 void LFGMgr::TeleportPlayerToInstance(Player* plr)
 {
 	// TODO : some stuff for teleport
+}
+
+void LFGMgr::SendLfgRoleCheckResult(Player* plr, bool accept)
+{
+	sLog.outDebug("SMSG_LFG_QUEUE_STATUS");
+	WorldPacket data(SMSG_LFG_ROLE_CHOSEN,8+1+4);
+	data << uint64(plr->GetGUID());
+	data << uint8(accept);
+	data << plr->m_lookingForGroup.roles;
+	plr->GetSession()->SendPacket(&data);
+	// Party send packet
 }

@@ -269,6 +269,12 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 		std::string argstr = (char*)args;
 		if(argstr == "sacs")
 		{
+			if(player->getLevel() < 70)
+			{
+				SendSysMessage("Vous n'avez pas le niveau minimum de recuperation sacs");
+				return true;
+			}
+
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT bags FROM characterprofiler_states where guid = '%u'",player->GetGUID()))
 			{
 				Field *fields = result->Fetch();
@@ -306,6 +312,12 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 		}
 		else if(argstr == "bank")
 		{
+			if(player->getLevel() < 70)
+			{
+				SendSysMessage("Vous n'avez pas le niveau minimum de recuperation banque");
+				return true;
+			}
+
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT bank FROM characterprofiler_states where guid = '%u'",player->GetGUID()))
 			{
 				Field *fields = result->Fetch();

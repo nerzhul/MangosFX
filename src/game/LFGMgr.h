@@ -173,6 +173,7 @@ class LFGMgr
 		void TeleportPlayerToInstance(Player* plr);
 		void RemovePlayerFromRandomQueue(Player* plr);
 		void AddPlayerToRandomQueue(Player* plr);
+		void SendLfgRoleCheckResult(Player* plr, bool accept);
 	private:
 		void BuildAvailableRandomDungeonList(WorldPacket &data, Player *plr);
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);
