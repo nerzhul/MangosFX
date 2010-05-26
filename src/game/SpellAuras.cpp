@@ -2507,6 +2507,15 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             // Reindeer Transformation
                             m_target->CastSpell(m_target, 25860, true, NULL, this);
                         return;
+                    case 63322:
+                    {
+						int32 multiplier = pow(2.0f,  GetStackAmount());
+						int32 damage = 50 * multiplier;
+						int32 energize = 100 * multiplier;
+						m_target->CastCustomSpell(m_target, 63338, &damage, 0, 0 ,true);
+						m_target->CastCustomSpell(m_target, 63337, &energize, 0, 0, true);
+						return;
+					}
                     case 55328:                                 // Stoneclaw Totem I
                         m_target->CastSpell( m_target, 5728, true );
                         return;
@@ -8577,6 +8586,17 @@ void Aura::PeriodicDummyTick()
 					m_target->CastCustomSpell(m_target, 66240, &damage, NULL, NULL, true, NULL, this);
 					if (Unit* caster = GetCaster())
 						m_target->CastCustomSpell(caster, 66125, &heal, NULL, NULL, true, NULL, this);
+					return;
+				}
+				case 63276:
+				{
+					Unit* caster = GetCaster();
+					if(!caster)
+						return;
+						
+					// probably im blind but damage is not in dbc files ...
+					int32 bp1 = 5000;
+					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
 					return;
 				}
 				// Exist more after, need add later

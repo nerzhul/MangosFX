@@ -21,31 +21,27 @@ enum MiscIds
 	SPELL_SARONITE_VAPOR		=	63322,
 };
 
-struct MANGOS_DLL_DECL boss_vezaxAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 {
-    boss_vezaxAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_vezaxAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        AddEventOnMe(SPELL_ENRAGE,600000,60000);
+		AddEvent(SPELL_MARK_OF_FACELESS,75000,60000);
+		AddEventOnTank(SPELL_SEARING_FLAME,15000,12000,2000);
+		AddEventMaxPrioOnMe(SPELL_SURGE_OF_DARKNESS,70000,60000,10000);
+		AddEvent(SPELL_SHADOW_CRASH,8000,12000,2000);
+		AddSummonEvent(NPC_VAPOR_SARONITE,45000,45000,0,0,1,TEN_MINS,NEAR_30M,NOTHING);
     }
 
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
 	uint32 saronite_timer;
 	uint8 nbsaro;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
-		Tasks.AddEvent(SPELL_ENRAGE,600000,60000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_MARK_OF_FACELESS,75000,60000);
-		Tasks.AddEvent(SPELL_SEARING_FLAME,15000,12000,2000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_SURGE_OF_DARKNESS,70000,60000,10000,TARGET_ME,0,0,true);
-		Tasks.AddEvent(SPELL_SHADOW_CRASH,8000,12000,2000);
-		Tasks.AddSummonEvent(NPC_VAPOR_SARONITE,45000,45000,0,0,1,TEN_MINS,NEAR_30M,NOTHING);
+		ResetTimers();
+		CleanMyAdds();
+		
 		nbsaro = 0;
 		saronite_timer = 45000;
     }
@@ -56,8 +52,8 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VEZAX, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_VEZAX, DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,2);
     }
 
@@ -66,8 +62,8 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public ScriptedAI
 //        DoScriptText(SAY_AGGRO, me);
         //me->SetInCombatWithZone();
 		DoCastMe(SPELL_AURA_OF_DESPAIR);
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VEZAX, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_VEZAX, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -104,21 +100,17 @@ CreatureAI* GetAI_boss_vezax(Creature* pCreature)
     return new boss_vezaxAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL add_vezaxAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_vezaxAI : public LibDevFSAI
 {
-    add_vezaxAI(Creature* pCreature) : ScriptedAI(pCreature)
+    add_vezaxAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+        AddEventOnMe(63323,200,8000);
     }
-
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(63323,200,8000,0,TARGET_ME);
+		ResetTimers();
     }
 
 	void UpdateAI(const uint32 diff)
@@ -126,7 +118,7 @@ struct MANGOS_DLL_DECL add_vezaxAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
@@ -139,26 +131,22 @@ CreatureAI* GetAI_add_vezax(Creature* pCreature)
     return new add_vezaxAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL add2_vezaxAI : public ScriptedAI
+struct MANGOS_DLL_DECL add2_vezaxAI : public LibDevFSAI
 {
-    add2_vezaxAI(Creature* pCreature) : ScriptedAI(pCreature)
+    add2_vezaxAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+        AddEventOnTank(63420,7000,7000,1000);
     }
-
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(63420,7000,7000,1000,TARGET_MAIN);
+		ResetTimers();
     }
 
 	void JustDied(Unit* pWho)
 	{
-		if (Creature* Vezax = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_VEZAX) : 0)))
+		if (Creature* Vezax = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_VEZAX) : 0)))
 		{
 			Vezax->RemoveAurasDueToSpell(SPELL_VOID_BARRER);
 		}
@@ -169,7 +157,7 @@ struct MANGOS_DLL_DECL add2_vezaxAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
