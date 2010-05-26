@@ -5505,7 +5505,7 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     return;
                 }
                 // Rip
-                if (m_spellProto->SpellFamilyFlags & UI64LIT(0x000000000000800000))
+                else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x000000000000800000))
                 {
                     // 0.01*$AP*cp
                     if (caster->GetTypeId() != TYPEID_PLAYER)
@@ -5527,7 +5527,7 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     return;
                 }
                 // Lock Jaw
-                if (m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000000000))
+                else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x1000000000000000))
                 {
                     // 0.15*$AP
                     m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * 15 / 100);
@@ -5554,14 +5554,14 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     return;
                 }
                 // Garrote
-                if (m_spellProto->SpellFamilyFlags & UI64LIT(0x000000000000000100))
+                else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x000000000000000100))
                 {
                     // $AP*0.07 bonus per tick
                     m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * 7 / 100);
                     return;
                 }
                 // Deadly Poison
-                if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000010000))
+                else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000010000))
                 {
                     // 0.12*$AP / 4 * amount of stack
                     m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * 3 * GetStackAmount() / 100);
@@ -5579,7 +5579,7 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     return;
                 }
                 // Immolation Trap
-                if ((m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004)) && m_spellProto->SpellIconID == 678)
+                else if ((m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004)) && m_spellProto->SpellIconID == 678)
                 {
                     // $RAP*0.1/5 bonus per tick
                     m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 10 / 500);
