@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "Common.h"
 #include "Policies/Singleton.h"
+#include "BattleGround.h"
 
 enum LFG_Role
 {
@@ -13,8 +14,6 @@ enum LFG_Role
 	ROLE_HEAL	=	0x04,
 	ROLE_DPS	=	0x08,
 };
-
-#define MAX_DPS	3
 
 enum LfgType
 {
@@ -211,10 +210,10 @@ class LFGMgr
 		LfgRewardList m_RewardList;
 		LfgRewardList m_RewardDoneList;
 		LfgDungeonMap m_DungeonsMap;
-		PlayerSet m_TankSet[BG_TEAMS_COUNT];
-		PlayerSet m_DpsSet[BG_TEAMS_COUNT];
-		PlayerSet m_HealSet[BG_TEAMS_COUNT];
-		PlayerSet m_MasterSet[BG_TEAMS_COUNT];
+		PlayerSet m_TankSet[2];
+		PlayerSet m_DpsSet[2];
+		PlayerSet m_HealSet[2];
+		PlayerSet m_MasterSet[2];
 		LFGGroupSet m_LFGGroupSet;
 		uint32 middleTime; // seconds
 
