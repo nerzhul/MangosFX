@@ -21,6 +21,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Player.h"
+#include "LFGMgr.h"
 #include "World.h"
 #include "ObjectMgr.h"
 #include "ObjectDefines.h"
@@ -115,10 +116,10 @@ bool Group::Create(const uint64 &guid, const char * name)
         CharacterDatabase.BeginTransaction();
         CharacterDatabase.PExecute("DELETE FROM groups WHERE leaderGuid ='%u'", GUID_LOPART(m_leaderGuid));
         CharacterDatabase.PExecute("DELETE FROM group_member WHERE leaderGuid ='%u'", GUID_LOPART(m_leaderGuid));
-        CharacterDatabase.PExecute("INSERT INTO groups (leaderGuid,mainTank,mainAssistant,lootMethod,looterGuid,lootThreshold,icon1,icon2,icon3,icon4,icon5,icon6,icon7,icon8,isRaid,difficulty,raiddifficulty) "
+        CharacterDatabase.PExecute("INSERT INTO groups (leaderGuid,mainTank,mainAssistant,lootMethod,looterGuid,lootThreshold,icon1,icon2,icon3,icon4,icon5,icon6,icon7,icon8,groupType,difficulty,raiddifficulty) "
             "VALUES ('%u','%u','%u','%u','%u','%u','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','" UI64FMTD "','%u','%u','%u')",
             GUID_LOPART(m_leaderGuid), GUID_LOPART(m_mainTank), GUID_LOPART(m_mainAssistant), uint32(m_lootMethod),
-            GUID_LOPART(m_looterGuid), uint32(m_lootThreshold), m_targetIcons[0], m_targetIcons[1], m_targetIcons[2], m_targetIcons[3], m_targetIcons[4], m_targetIcons[5], m_targetIcons[6], m_targetIcons[7], uint8(m_groupType), uint32(m_dungeonDifficulty), m_raidDifficulty);
+            GUID_LOPART(m_looterGuid), uint32(m_lootThreshold), m_targetIcons[0], m_targetIcons[1], m_targetIcons[2], m_targetIcons[3], m_targetIcons[4], m_targetIcons[5], m_targetIcons[6], m_targetIcons[7], uint8(m_groupType), uint32(m_dungeonDifficulty), uint32(m_raidDifficulty));
     }
 
     if(!AddMember(guid, name))
@@ -224,7 +225,7 @@ void Group::ConvertToRaid()
     _initRaidSubGroupsCounter();
 
     if(!isBGGroup())
-        CharacterDatabase.PExecute("UPDATE groups SET isRaid = 1 WHERE leaderGuid='%u'", GUID_LOPART(m_leaderGuid));
+        CharacterDatabase.PExecute("UPDATE groups SET groupType = %u WHERE leaderGuid='%u'", uint8(m_groupType), GUID_LOPART(m_leaderGuid));
     SendUpdate();
 
     // update quest related GO states (quest activity dependent from raid membership)
@@ -997,8 +998,8 @@ void Group::SendUpdate()
         WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+8+4+GetMembersCount()*20));
         data << uint8(m_groupType);                         // group type (flags in 3.3)
         data << uint8(citr->group);                         // groupid
-        data << uint8(citr->assistant ? 0x01 : 0x00);       // 0x2 main assist, 0x4 main tank
         data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
+        data << uint8(GetFlags(*citr));                     // group flags
         if(m_groupType & GROUPTYPE_LFD)
         {
             data << uint8(0);
@@ -1020,8 +1021,8 @@ void Group::SendUpdate()
                                                             // online-state
             data << uint8(onlineState);
             data << uint8(citr2->group);                    // groupid
-            data << uint8(citr2->assistant?0x01:0);         // 0x2 main assist, 0x4 main tank
-            data << uint8(0);                               // 3.3, role?
+            data << uint8(GetFlags(*citr2));                // group flags
+            data << uint8(citr2->m_lookingForGroup.roles);  // 3.3, role? 
         }
 
         data << uint64(m_leaderGuid);                       // leader guid
