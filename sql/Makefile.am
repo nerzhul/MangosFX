@@ -17,7 +17,6 @@
 ## Process this file with automake to produce Makefile.in
 
 ## Sub-directories to parse
-SUBDIRS = updates tools
 
 ## Change installation location
 #  datadir = mangos/sql
@@ -26,17 +25,4 @@ pkgdatadir = $(datadir)/mangos/sql
 ## Files to be installed
 #  Install basic SQL files to datadir
 pkgdata_DATA = \
-	mangos.sql \
-	realmd.sql \
-	characters.sql \
-	create_mysql.sql \
-	drop_mysql.sql
 
-## Additional files to include when running 'make dist'
-#  SQL files for MaNGOS database
-EXTRA_DIST = \
-	create_mysql.sql \
-	drop_mysql.sql \
-	characters.sql \
-	mangos.sql \
-	realmd.sql
