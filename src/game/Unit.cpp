@@ -10339,7 +10339,7 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     if(Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellProto->Id, damagetype == DOT ? SPELLMOD_DOT : SPELLMOD_DAMAGE, heal);
 
-	// FSS Nourish cast bonus
+	// Nourish cast bonus
     if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x2000000)
     {
         // Rejuvenation, Regrowth, Lifebloom, or Wild Growth
@@ -10363,20 +10363,6 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     for(AuraList::const_iterator i = mHealingGet.begin(); i != mHealingGet.end(); ++i)
         if ((*i)->isAffectedOnSpell(spellProto))
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
-
-   //Nourish 20% of heal increase if target is afected by Druids HOTs
-    if(spellProto->SpellFamilyFlags & UI64LIT(0x0200000000000000))
-    {
-        Unit::AuraList const& RejorRegr = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_HEAL);
-        for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
-        {
-            if((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID)
-            {
-                TakenTotalMod *= 1.2f;
-                break;
-            }
-        }
-    }
 
     heal = (heal + TakenTotal) * TakenTotalMod;
 
