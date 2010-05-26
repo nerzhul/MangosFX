@@ -8559,7 +8559,7 @@ void Aura::PeriodicDummyTick()
 					if(!caster)
 						return;
 					// probably im blind but damage is not in dbc files ...
-					int32 bp1 = 5000;
+					int32 bp1 = m_spellProto->CalculateSimpleValue(EFFECT_INDEX_0);
 					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
 					return;
 				}
@@ -8586,17 +8586,6 @@ void Aura::PeriodicDummyTick()
 					m_target->CastCustomSpell(m_target, 66240, &damage, NULL, NULL, true, NULL, this);
 					if (Unit* caster = GetCaster())
 						m_target->CastCustomSpell(caster, 66125, &heal, NULL, NULL, true, NULL, this);
-					return;
-				}
-				case 63276:
-				{
-					Unit* caster = GetCaster();
-					if(!caster)
-						return;
-						
-					// probably im blind but damage is not in dbc files ...
-					int32 bp1 = 5000;
-					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
 					return;
 				}
 				// Exist more after, need add later
