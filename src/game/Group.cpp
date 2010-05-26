@@ -1022,7 +1022,7 @@ void Group::SendUpdate()
             data << uint8(onlineState);
             data << uint8(citr2->group);                    // groupid
             data << uint8(GetFlags(*citr2));                // group flags
-            data << uint8(citr2->m_lookingForGroup.roles);  // 3.3, role? 
+            data << uint8(0/*citr2->m_lookingForGroup.roles*/);  // 3.3, role? 
         }
 
         data << uint64(m_leaderGuid);                       // leader guid

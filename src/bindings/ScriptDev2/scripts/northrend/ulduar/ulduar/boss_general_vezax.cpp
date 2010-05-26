@@ -54,7 +54,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
     {
         if (pInstance)
             pInstance->SetData(TYPE_VEZAX, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,2);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,2);
     }
 
     void Aggro(Unit* pWho)
@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 			nbsaro++;
 			if(nbsaro == 6)
 			{
-				Tasks.CallCreature(NPC_SARONITE_ANIMUS,TEN_MINS,NEAR_30M);
+				CallCreature(NPC_SARONITE_ANIMUS,TEN_MINS,NEAR_30M);
 				DoCastMe(SPELL_VOID_BARRER);
 				nbsaro = 0;
 			}
@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 		else
 			saronite_timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
