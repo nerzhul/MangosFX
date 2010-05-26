@@ -1332,7 +1332,6 @@ bool SpellMgr::canStackSpellRanks(SpellEntry const *spellInfo)
 
 bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) const
 {
-	// FSS : cumuler 2 sorts !
     SpellEntry const *spellInfo_1 = sSpellStore.LookupEntry(spellId_1);
     SpellEntry const *spellInfo_2 = sSpellStore.LookupEntry(spellId_2);
 
@@ -1359,6 +1358,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 		return false;
 
 	if(spellInfo_1->Id == 66823 && spellInfo_2->Id == 66823)
+		return false;
+		
+	//Renewed hope and gift of the naaru(have diff spell families)
+	if (spellInfo_2->SpellIconID == 329 && spellInfo_2->SpellFamilyName == SPELLFAMILY_PRIEST &&
+		spellInfo_1->SpellIconID == 329 && spellInfo_1->SpellVisual[0] == 7625)
 		return false;
 
     // Specific spell family spells
@@ -1682,6 +1686,10 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if ((spellInfo_1->SpellIconID == 566 && spellInfo_2->SpellIconID == 2820) ||
                     (spellInfo_2->SpellIconID == 566 && spellInfo_1->SpellIconID == 2820))
                     return false;
+                    
+                //Renewed hope and gift of the naaru(have diff spell families)
+                if (spellInfo_1->SpellIconID == 329 && spellInfo_2->SpellIconID == 329 && spellInfo_2->SpellVisual[0] == 7625)
+					return false;
             }
             break;
         case SPELLFAMILY_DRUID:
