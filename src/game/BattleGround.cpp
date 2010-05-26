@@ -1924,49 +1924,6 @@ void BattleGround::SetBracket( PvPDifficultyEntry const* bracketEntry )
     SetLevelRange(bracketEntry->minLevel,bracketEntry->maxLevel);
 }
 
-void BattleGround::RewardXPToTeam(uint32 xp,uint32 TeamID)
-{
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-    {
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
-
-        if (!plr)
-        {
-            sLog.outError("BattleGround: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
-            continue;
-        }
-        uint32 team = itr->second.Team;
-        if(!team) team = plr->GetTeam();
-
-        if (team == TeamID)
-		{
-			uint32 xpAmount = xp;
-			switch(plr->getLevel() % 10)
-			{
-				case 1:
-				case 2:
-				case 3:
-					xpAmount = uint32(xp * plr->getLevel() / 12);
-					break;
-				case 4:
-				case 5:
-					xpAmount = uint32(xp * plr->getLevel() / 24);
-					break;
-				case 6:
-					xpAmount = uint32(xp * plr->getLevel() / 21);
-					break;
-				case 7:
-					xpAmount = uint32(xp * plr->getLevel() / 7);
-					break;
-				default:
-					xpAmount = 0;
-					break;
-			}
-            plr->GiveXP(xpAmount,plr);
-		}
-    }
-}
-
 void BattleGround::UpdateArenaWorldState()
 {
     UpdateWorldState(0xe10, GetAlivePlayersCountByTeam(HORDE));

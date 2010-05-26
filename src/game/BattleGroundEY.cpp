@@ -116,12 +116,17 @@ void BattleGroundEY::AddPoints(uint32 Team, uint32 Points)
     BattleGroundTeamId team_index = GetTeamIndexByTeamId(Team);
     m_TeamScores[team_index] += Points;
     m_HonorScoreTics[team_index] += Points;
+    m_ExperienceTics[team_index] += Points;
     if (m_HonorScoreTics[team_index] >= m_HonorTics )
     {
         RewardHonorToTeam(GetBonusHonorFromKill(1), Team);
         m_HonorScoreTics[team_index] -= m_HonorTics;
-		RewardXPToTeam(GetBonusHonorFromKill(1), Team);
     }
+    if (m_ExperienceTics[team_index] >= BG_EY_ExperienceTicks )
+    {
+		RewardXpToTeam(0, 0.8, Team);
+		m_ExperienceTics[team_index] -= m_HonorTics;
+	}
     UpdateTeamScore(Team);
 }
 
@@ -266,10 +271,14 @@ void BattleGroundEY::EndBattleGround(uint32 winner)
 	{
 		RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
+		RewardXpToTeam(0, 0.8, winner);
 	}
     //complete map reward
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+    
+    RewardXpToTeam(0, 0.8, ALLIANCE);
+    RewardXpToTeam(0, 0.8, HORDE);
 
     BattleGround::EndBattleGround(winner);
 }
@@ -418,6 +427,8 @@ void BattleGroundEY::Reset()
     m_TeamPointsCount[BG_TEAM_HORDE] = 0;
     m_HonorScoreTics[BG_TEAM_ALLIANCE] = 0;
     m_HonorScoreTics[BG_TEAM_HORDE] = 0;
+    m_ExperienceTics[BG_TEAM_ALLIANCE] = 0;
+    m_ExperienceTics[BG_TEAM_HORDE] = 0;
     m_FlagState = BG_EY_FLAG_STATE_ON_BASE;
     m_FlagKeeper = 0;
     m_DroppedFlagGUID = 0;
@@ -642,6 +653,8 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
     if (m_TeamPointsCount[team_id] > 0)
         AddPoints(Source->GetTeam(), BG_EY_FlagPoints[m_TeamPointsCount[team_id] - 1]);
 
+	RewardXpToTeam(0, 0.6, Source->GetTeam());
+	
     UpdatePlayerScore(Source, SCORE_FLAG_CAPTURES, 1);
 }
 

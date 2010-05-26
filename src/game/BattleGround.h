@@ -559,7 +559,6 @@ class BattleGround
         // door-events are automaticly added - but _ALL_ other must be in this vector
         std::map<uint8, uint8> m_ActiveEvents;
 
-		void RewardXPToTeam(uint32 xp, uint32 TeamID);
 		void UpdateArenaWorldState();
 		GameObject* GetBGObject(uint32 type);
 		bool DelCreature(uint32 type);
