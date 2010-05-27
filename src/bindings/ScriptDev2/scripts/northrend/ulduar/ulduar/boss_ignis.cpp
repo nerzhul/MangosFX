@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		me->RemoveAurasDueToSpell(SPELL_CHALEUR);
 		if(Assemblage_Timer <= diff)
 		{
-			if(Unit* tmpcr = Unit::GetUnit(*me, pInstance->GetData64(DATA_IGNIS_ADDS)))
+			if(Unit* tmpcr = GetInstanceCreature(DATA_IGNIS_ADDS))
 			{
 				Yell(15565,"Levez vous soldats du Creuset de fer ! Que la volonté du faiseur s'accomplisse !");
 				IgnisAdds.push_back(tmpcr);
@@ -133,9 +133,8 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 
 		if(Fire_Timer <= diff)
 		{
-			if(Creature* fire = me->SummonCreature(NPC_FIRE,me->getVictim()->GetPositionX(),
-					me->getVictim()->GetPositionY(),me->getVictim()->GetPositionZ(),0.0f,TEMPSUMMON_TIMED_DESPAWN,25000))
-					pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
+			if(Creature* fire = CallCreature(NPC_FIRE,25000,ON_ME,NOTHING))
+				pInstance->SetData64(DATA_IGNIS_FIRE,fire->GetGUID());
 
 			if(urand(0,1))
 				Yell(15567,"Que la fournaise vous consume !");
