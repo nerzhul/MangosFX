@@ -124,7 +124,6 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 			AddEvent(SPELL_FERAL_RUSH_10,2000,15000,2000);
 			AddEventOnTank(SPELL_FERAL_POUNCE_10,10000,10000,2000);
 		}
-		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
     }
 
 	uint8 numb_lives;
@@ -132,6 +131,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 	void Reset()
 	{
 		numb_lives = 8;
+		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
 		SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me);
 	}
 
