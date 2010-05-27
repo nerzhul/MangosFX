@@ -1,36 +1,126 @@
-/*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
-struct MANGOS_DLL_DECL boss_mimironAI : public ScriptedAI
+enum spells
 {
-    boss_mimironAI(Creature* pCreature) : ScriptedAI(pCreature)
+
+};
+
+struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
+{
+    boss_leviMKIIAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
     }
 
-    ScriptedInstance* m_pInstance;
+	uint8 phase;
+    void Reset()
+    {
+		ResetTimers();
+		phase = 0;
+    }
+
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+
+    void JustDied(Unit* killer)
+    {
+    }
+};
+
+CreatureAI* GetAI_boss_leviMKII(Creature* pCreature)
+{
+    return new boss_leviMKIIAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
+{
+    boss_VX001AI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+	uint8 phase;
+    void Reset()
+    {
+		ResetTimers();
+		phase = 0;
+    }
+
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+
+    void JustDied(Unit* killer)
+    {
+    }
+};
+
+CreatureAI* GetAI_boss_VX001(Creature* pCreature)
+{
+    return new boss_VX001AI (pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
+{
+    boss_aerialCommandUnitAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+	uint8 phase;
+    void Reset()
+    {
+		ResetTimers();
+		phase = 0;
+    }
+
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+
+    void JustDied(Unit* killer)
+    {
+    }
+};
+
+CreatureAI* GetAI_boss_aerialCommandUnit(Creature* pCreature)
+{
+    return new boss_aerialCommandUnitAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_mimironAI : public LibDevFSAI
+{
+    boss_mimironAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
 
     void Reset()
     {
+		ResetTimers();
     }
 
     void KilledUnit(Unit *victim)
@@ -41,13 +131,11 @@ struct MANGOS_DLL_DECL boss_mimironAI : public ScriptedAI
     {
         if (m_pInstance)
             m_pInstance->SetData(TYPE_MIMIRON, DONE);
-		//GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)
     {
-//        DoScriptText(SAY_AGGRO, me);
-        me->SetInCombatWithZone();
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_MIMIRON, IN_PROGRESS);
@@ -57,12 +145,10 @@ struct MANGOS_DLL_DECL boss_mimironAI : public ScriptedAI
     {
         if (!CanDoSomething())
             return;
-//SPELLS TODO:
 
-//
+		UpdateEvent(diff);
+		
         DoMeleeAttackIfReady();
-
-        EnterEvadeIfOutOfCombatArea(diff);
 
     }
 
@@ -76,9 +162,24 @@ CreatureAI* GetAI_boss_mimiron(Creature* pCreature)
 void AddSC_boss_mimiron()
 {
     Script *newscript;
+    
     newscript = new Script;
     newscript->Name = "boss_mimiron";
     newscript->GetAI = &GetAI_boss_mimiron;
     newscript->RegisterSelf();
-
+    
+    newscript = new Script;
+    newscript->Name = "boss_leviMKII";
+    newscript->GetAI = &GetAI_boss_leviMKII;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name = "boss_aerialCommandUnit";
+    newscript->GetAI = &GetAI_boss_aerialCommandUnit;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name = "boss_VX001";
+    newscript->GetAI = &GetAI_boss_VX001;
+    newscript->RegisterSelf();
 }

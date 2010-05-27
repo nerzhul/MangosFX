@@ -36,7 +36,6 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		CheckMyLife_Timer = 1000;
 		phase = 0;
     }
 
