@@ -90,7 +90,6 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
 		Face_Timer = DAY*100;
 		Wailing_Timer = urand(60000,70000);
 		WailingTick_Timer = DAY*100;
-
     }
 
 	void DamageTaken(Unit * /*pDoneBy*/, uint32 &uiDamage)

@@ -74,6 +74,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		Aura_Timer = 1000;
 		AuraCheck_Timer = 500;
 		Flash_Timer = 35000;
@@ -269,6 +270,7 @@ struct MANGOS_DLL_DECL add_hodirAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		Shatter_Timer = 4000;
     }
 	
@@ -314,6 +316,7 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		SetAuraStack(62297,1,me,me,1);
 		me->setFaction(14);
 		me->SetMaxHealth(m_difficulty ? 180000:60000);

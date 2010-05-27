@@ -167,6 +167,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 
 	void Reset()
 	{
+		ResetTimers();
 		nb_stack = 0;
 		FreezeMob(true,me,true);
 		Check_Timer = 1000;
@@ -265,6 +266,7 @@ struct MANGOS_DLL_DECL add_scorchAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		SetCombatMovement(false);
 		CheckTimer = 10;

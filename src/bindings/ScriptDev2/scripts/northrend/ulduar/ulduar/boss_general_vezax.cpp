@@ -88,9 +88,6 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
-
-        //EnterEvadeIfOutOfCombatArea(diff);
-
     }
 
 };
@@ -121,7 +118,6 @@ struct MANGOS_DLL_DECL add_vezaxAI : public LibDevFSAI
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
-
     }
 
 };

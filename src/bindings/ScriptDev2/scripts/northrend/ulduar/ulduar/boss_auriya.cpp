@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
@@ -33,53 +15,43 @@ enum AuriayaSpell
 	SPELL_ENRAGE						= 47008,
 
 	NPC_SUMMON_FERAL					= 34035,
+	NPC_SUMMON_GUARD					= 34034,
 };
 
-#define SAY_AGGRO                   -2615016
-#define SAY_SLAY_1                  -2615017
-
-struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 {
-    boss_auriaya_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_auriaya_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+        if(m_difficulty)
+		{
+			AddSummonEvent(NPC_SUMMON_FERAL,60000,RESPAWN_ONE_DAY,0,0,2);
+			AddSummonEvent(NPC_SUMMON_GUARD,35000,RESPAWN_ONE_DAY,0,0,8);
+			AddEventOnTank(SPELL_SENTINEL_BLAST_H,12000,30000);
+			AddEventOnTank(SPELL_SONIC_SCREECH_H,18000,18000);
+		}
+		else
+		{
+			AddSummonEvent(NPC_SUMMON_FERAL,60000,RESPAWN_ONE_DAY);
+			AddSummonEvent(NPC_SUMMON_GUARD,35000,RESPAWN_ONE_DAY,0,0,6);
+			AddEventOnTank(SPELL_SENTINEL_BLAST,12000,30000);
+			AddEventOnTank(SPELL_SONIC_SCREECH,30000,28000);
+		}
+		AddEventMaxPrioOnTank(SPELL_TERRIFYING_SCREECH,9500,30000);
     }
 
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
-	uint16 first_add_Timer;
 	uint32 enrage_Timer;
 
     void Reset()
     {
-		first_add_Timer = 1000;
-		Tasks.SetObjects(this,me);
-
-		Tasks.CleanMyAdds();
-		Tasks.AddEvent(SPELL_TERRIFYING_SCREECH,9500,30000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_SUMMON_GUARDS,35000,60000);
-		if(m_bIsHeroic)
-		{
-			Tasks.AddSummonEvent(NPC_SUMMON_FERAL,60000,RESPAWN_ONE_DAY,0,0,2);
-			Tasks.AddEvent(SPELL_SENTINEL_BLAST_H,12000,30000,0,TARGET_MAIN);
-			Tasks.AddEvent(SPELL_SONIC_SCREECH_H,18000,18000,0,TARGET_MAIN);
-		}
-		else
-		{
-			Tasks.AddSummonEvent(NPC_SUMMON_FERAL,60000,RESPAWN_ONE_DAY,0,0,1);
-			Tasks.AddEvent(SPELL_SENTINEL_BLAST,12000,15000,0,TARGET_MAIN);
-			Tasks.AddEvent(SPELL_SONIC_SCREECH,30000,28000,0,TARGET_MAIN);
-		}
+		CleanMyAdds();
 		enrage_Timer = TEN_MINS;
     }
 
-    void EnterCombat(Unit* who)
+    void Aggro(Unit* who)
     {
-        Tasks.CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
-		Tasks.CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
+        CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
+		CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
 		Speak(CHAT_TYPE_SAY,15473,"Certaines choses ne doivent pas êtres dérangÃ©es !");
     }
 
@@ -96,9 +68,9 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
     {
 		Yell(15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_AURIAYA, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+        if (pInstance)
+            pInstance->SetData(TYPE_AURIAYA, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -115,7 +87,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public ScriptedAI
 		else
 			enrage_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -137,35 +109,29 @@ enum FeralSpells
 	SPELL_SEEPING_25		=	64675,
 };
 
-struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
+struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 {
-    add_feral_defender_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_feral_defender_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		Reset();
+		InitInstance();
+		if(m_difficulty)
+		{
+			AddEvent(SPELL_FERAL_RUSH_25,2000,15000,2000);
+			AddEventOnTank(SPELL_FERAL_POUNCE_25,10000,10000,2000);
+		}
+		else
+		{
+			AddEvent(SPELL_FERAL_RUSH_10,2000,15000,2000);
+			AddEventOnTank(SPELL_FERAL_POUNCE_10,10000,10000,2000);
+		}
+		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
     }
 
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
 	uint8 numb_lives;
 
 	void Reset()
 	{
-		Tasks.SetObjects(this,me);
 		numb_lives = 8;
-		if(m_bIsHeroic)
-		{
-			Tasks.AddEvent(SPELL_FERAL_RUSH_25,2000,15000,2000);
-			Tasks.AddEvent(SPELL_FERAL_POUNCE_25,10000,10000,2000,TARGET_MAIN);
-		}
-		else
-		{
-			Tasks.AddEvent(SPELL_FERAL_RUSH_25,2000,15000,2000);
-			Tasks.AddEvent(SPELL_FERAL_POUNCE_25,10000,10000,2000,TARGET_MAIN);
-		}
-		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
 		SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me);
 	}
 
@@ -173,9 +139,9 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 	{
 		if(damage >= me->GetHealth())
 		{
-			damage = 0;
 			if(numb_lives > 0)
 			{
+				damage = 0;
 				numb_lives--;
 				me->SetHealth(me->GetMaxHealth());
 				if(me->HasAura(SPELL_FERAL_ESSENCE))
@@ -186,7 +152,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 			}
 			else
 			{
-				if(m_bIsHeroic)
+				if(m_difficulty)
 					DoCastVictim(SPELL_SEEPING_25);
 				else
 					DoCastVictim(SPELL_SEEPING_10);
@@ -200,7 +166,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}
@@ -220,32 +186,26 @@ enum SentrySpells
 	SPELL_PACK_STR		=	64381,
 };
 
-struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public ScriptedAI
+struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public LibDevFSAI
 {
-    add_sanctum_sentry_AI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_sanctum_sentry_AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-	void Reset()
-	{
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+		InitInstance();
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_RIPFLESH_25,6000,25000,2000,TARGET_MAIN);
-			Tasks.AddEvent(SPELL_POUNCE_25,6000,5000,2000,TARGET_MAIN);
+			AddEventOnTank(SPELL_RIPFLESH_25,6000,25000,2000);
+			AddEventOnTank(SPELL_POUNCE_25,6000,5000,2000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_RIPFLESH_10,6000,25000,2000,TARGET_MAIN);
-			Tasks.AddEvent(SPELL_POUNCE_10,6000,5000,2000,TARGET_MAIN);
+			AddEventOnTank(SPELL_RIPFLESH_10,6000,25000,2000);
+			AddEventOnTank(SPELL_POUNCE_10,6000,5000,2000);
 		}
+    }
+
+	void Reset()
+	{
+		ResetTimers();
 	}
 
 	void MoveInLineOfSight(Unit* tar)
@@ -258,7 +218,7 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 		
 		DoMeleeAttackIfReady();
 	}

@@ -46,6 +46,7 @@ struct MANGOS_DLL_DECL mob_ulduar_rubbleAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		AggroAllPlayers(150.0f);
 		die = false;
     }
@@ -96,6 +97,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		CleanMyAdds();
 		Addcount = 0;
 		DoCastMe(SPELL_ARM_VISUAL);
@@ -169,6 +171,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		Stone_Grip_Timer = 20000;
 		Addcount = 0;
 		pGripTarget = NULL;
@@ -291,6 +294,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
     void Reset()
     {
+		ResetTimers();
 		CleanMyAdds();
 		FreezeMob(false);
 		Spell_Timer = 10000;
