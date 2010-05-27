@@ -1,28 +1,3 @@
-/*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
-/* ScriptData
-SDName: Assembly of Iron encounter
-SD%Complete: 60%
-SDComment: Runes need DB support, chain lightning won't cast, supercharge won't cast (pTarget error?) - it worked before during debugging.
-SDCategory: Ulduar - Ulduar
-EndScriptData */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
@@ -96,8 +71,6 @@ bool IsEncounterComplete(ScriptedInstance* pInstance, Creature* me)
 	}
     return true;
 }
-
-
 
 void boss_steelbreakerAI::Reset()
 {
@@ -322,24 +295,30 @@ void boss_runemaster_molgeimAI::UpdateAI(const uint32 diff)
     DoMeleeAttackIfReady();
 }
 
-struct MANGOS_DLL_DECL mob_lightning_elementalAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_lightning_elementalAI : public LibDevFSAI
 {
-    mob_lightning_elementalAI(Creature *c) : ScriptedAI(c)
+    mob_lightning_elementalAI(Creature *c) : LibDevFSAI(c)
     {
         Charge();
-		m_bIsHeroic = c->GetMap()->IsRegularDifficulty();
-		Reset();
+		InitInstance();
     }
 
-	void Reset(){}
-    Unit* Target;
-	bool m_bIsHeroic;
-
+	uint64 Target;
+	
+	void Reset()
+	{
+		Target = 0;
+	}
+    
     void Charge()
     {
-		Target = me->SelectNearbyTarget();
-        me->AddThreat(Target, 5000000.0f);
-        AttackStart(Target);
+		Unit* target = me->SelectNearbyTarget();
+		if(target)
+		{
+			me->AddThreat(Target, 5000000.0f);
+			AttackStart(Target);
+			Target = target->GetGUID();
+        }
     }
 
     void UpdateAI(const uint32 diff)
@@ -347,30 +326,32 @@ struct MANGOS_DLL_DECL mob_lightning_elementalAI : public ScriptedAI
         if(!me->isInCombat())
             return;
 
-		if(me->GetDistance2d(Target) < 8.0f)
-        {
-			DoCast(Target, (!m_bIsHeroic) ? SPELL_LIGHTNING_BLAST_H : SPELL_LIGHTNING_BLAST);
-            me->DealDamage(me,me->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-        }
-
-        me->GetMotionMaster()->MoveChase(Target); // needed at every update?
+		if(Unit* target = GetGuidUnit(Target))
+		{
+			if(me->GetDistance2d(target) < 8.0f)
+			{
+				DoCast(target, (m_difficulty) ? SPELL_LIGHTNING_BLAST_H : SPELL_LIGHTNING_BLAST);
+				Kill(me);
+			}
+			me->GetMotionMaster()->MoveChase(Target);
+		}
     }
 
 };
 
-struct MANGOS_DLL_DECL mob_rune_of_summoningAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_rune_of_summoningAI : public LibDevFSAI
 {
-    mob_rune_of_summoningAI(Creature *c) : ScriptedAI(c)
+    mob_rune_of_summoningAI(Creature *c) : LibDevFSAI(c)
     {
-		Reset();
+		InitInstance();
         SummonLightningElemental();
     }
 
 	void Reset(){}
     void SummonLightningElemental()
     {
-        me->SummonCreature(CREATURE_RUNE_OF_SUMMONING, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 600000);
-        me->DealDamage(me,me->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+		CallCreature(CREATURE_RUNE_OF_SUMMONING,TEN_MINS,ON_ME,NOTHING);
+        Kill(me);
     }
 };
 

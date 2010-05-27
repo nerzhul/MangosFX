@@ -428,7 +428,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void DealPercentDamage(Unit* target, float percent);
 
 		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
-		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)Unit::GetUnit(*me, guid)); }
+		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
+		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 		Unit* GetRandomUnit() { return SelectUnit(SELECT_TARGET_RANDOM,0); }
 
 		// Attributes
