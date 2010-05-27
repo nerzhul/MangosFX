@@ -9,6 +9,9 @@ enum spells
 	SPELL_PLASMA_BLAST			=	62997,
 	SPELL_PLASMA_BLAST_H		=	64529,
 	SPELL_SHOCK_BLAST			=	63631,
+	// HM
+	SPELL_EMERGENCY				=	64582,
+	SPELL_FLAME_SUPPRESSANT		=	64570,
 	// VX001
 	SPELL_RAPID_BURST			=	63387,
 	SPELL_RAPID_BURST_H			=	64531, 
@@ -25,6 +28,8 @@ enum spells
 	SPELL_MINE_EXPLOSION		=	66351,
 	SPELL_MINE_EXPLOSION_H		=	63009,
 	SPELL_AB_MAGNETIC			=	64668,
+	// p4 all
+	SPELL_SELF_REPAIR			=	64383,
 };
 
 enum Npcs
@@ -55,9 +60,11 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
         AddEventMaxPrioOnTank(SPELL_SHOCK_BLAST,25000,30000);
     }
 
+	bool phase4;
     void Reset()
     {
 		ResetTimers();
+		phase4 = false;
     }
 
 
@@ -75,6 +82,11 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
     {
 		// start next event
     }
+    
+    void ActivateP4()
+    {
+		phase4 = true;
+	}
 };
 
 CreatureAI* GetAI_boss_leviMKII(Creature* pCreature)
@@ -218,7 +230,8 @@ struct MANGOS_DLL_DECL boss_MimironassaultBotAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
-		// additem on player
+		if(killer->GetTypeId() == TYPEID_PLAYER)
+			((Player*)killer)->AddItem(ITEM_MAGNETIC_CORE);
     }
 };
 

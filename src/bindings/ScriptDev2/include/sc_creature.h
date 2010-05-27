@@ -414,6 +414,14 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		}
 		
 		void ResetTimers();
+		
+		void ClearTimers() 
+		{
+			EventShVect.clear();
+			EventSummonVect.clear();
+			SavedEventSh.clear();
+			SavedEventSummon.clear();
+		}
 
 		void AddPercentLife(Unit* u,uint8 percent);
 
