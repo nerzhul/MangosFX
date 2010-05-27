@@ -274,7 +274,6 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 				SendSysMessage("Vous n'avez pas le niveau minimum de recuperation sacs");
 				return true;
 			}
-
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT bags FROM characterprofiler_states where guid = '%u'",player->GetGUID()))
 			{
 				Field *fields = result->Fetch();
@@ -282,6 +281,17 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 				if(state == 1)
 				{
 					SendSysMessage("Vous ne pouvez plus recuperer d'item de votre sac");
+					return true;
+				}
+			}
+
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT count(item) FROM characterprofiler_item_bags where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint32 count = fields[0].GetUInt32();
+				if(count == 0)
+				{
+					SendSysMessage("Il semblerait que vous n'ayez rien a recuperer. Verifiez que l'upload de votre LUA est correct");
 					return true;
 				}
 			}
