@@ -48,6 +48,9 @@ enum
 	DATA_SENTRY_4				= 35,
 	DATA_FERAL_DEFENDER			= 36,
 	DATA_YOGG_SARA				= 37,
+	DATA_LEVIMKII				= 38,
+	DATA_VX001					= 39,
+	DATA_MIMIRONHEAD			= 40,
 
 	DATA_IGNIS_ADDS				= 50,
 	DATA_THORIM_BIGADD			= 51,
@@ -198,6 +201,9 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 m_uiThorimLootGUID;
 	uint64 m_uiIgnisFireGUID;
 	uint64 m_uiYoggSaronSaraGUID;
+	uint64 m_uiLeviMKIIGUID;
+	uint64 m_uiVX001GUID;
+	uint64 m_uiMimironHeadGUID;
 
 	std::vector<Creature*> IgnisIronAdds;
 	std::vector<Creature*> ThorimThunderOrbs;
@@ -325,6 +331,12 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 				return m_uiIgnisFireGUID;
 			case DATA_YOGG_SARA:
 				return m_uiYoggSaronSaraGUID;
+			case DATA_LEVIMKII:
+				return m_uiLeviMKIIGUID;
+			case DATA_VX001:
+				return m_uiVX001GUID;
+			case DATA_MIMIRONHEAD:
+				return m_uiMimironHeadGUID;
         }
 
         return 0;

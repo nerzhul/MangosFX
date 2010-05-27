@@ -39,7 +39,6 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 		phase = 0;
     }
 
-
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())

@@ -21,6 +21,9 @@ enum spells
 	SPELL_ROCKET_STRIKE			=	63041,
 	SPELL_HEAT_WAVE				=	63677,
 	SPELL_HEAT_WAVE_H			=	64533,
+	// phase4
+	SPELL_HAND_PULSE			=	64348,
+	SPELL_HAND_PULSE_H			=	64536,
 	// aerial unit
 	SPELL_PLASMA_BALL			=	63689,
 	SPELL_PLASMA_BALL_H			=	64535,
@@ -40,12 +43,22 @@ enum Npcs
 	NPC_JUNK_BOT		=	33855
 };
 
+const static float bot[3] = {34057,33836,33855};
+
 enum Misc
 {
 	ITEM_MAGNETIC_CORE	=	46029 // disable air for aerial unit
 };
 
-const static float Bot_Coords[3][1] = {
+const static float Bot_Coords[3][9] = {
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
+	{0.0f,0.0f,0.0f},
 	{0.0f,0.0f,0.0f}
 };
 
@@ -60,19 +73,25 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
         AddEventMaxPrioOnTank(SPELL_SHOCK_BLAST,25000,30000);
     }
 
-	bool phase4;
+	uint32 mine_Timer;
     void Reset()
     {
 		ResetTimers();
-		phase4 = false;
+		mine_Timer = 5000;
     }
-
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
-
+		
+		if(mine_Timer <= diff)
+		{
+			SpawnMines();
+			mine_Timer = 15000;
+		}
+		else
+			mine_Timer -= diff;
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
@@ -80,12 +99,18 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
-		// start next event
+		// TODO: start next event
     }
+    
+    void SpawnTimes() 
+    {
+		// TODO: spawn mines
+	}
     
     void ActivateP4()
     {
-		phase4 = true;
+		ClearTimers();
+		AddEventMaxPrioOnTank(SPELL_SHOCK_BLAST,25000,30000);
 	}
 };
 
@@ -162,6 +187,14 @@ struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
     {
 		// TODO : start next event
     }
+    
+    void ActivateP4()
+    {
+		ClearTimers();
+		AddEvent(m_difficulty ? SPELL_HAND_PULSE_H : SPELL_HAND_PULSE,5000,7000,2000);
+		if(Unit* veh = GetInstanceCreature(DATA_LEVIMKII))
+			EnterVehicle(veh);
+	}
 };
 
 CreatureAI* GetAI_boss_VX001(Creature* pCreature)
@@ -178,16 +211,30 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
         AddEvent(m_difficulty ? SPELL_PLASMA_BALL_H : SPELL_PLASMA_BALL,5000,10000,2000);
     }
 
+	uint32 bots_Timer;
+	bool phase4;
     void Reset()
     {
 		ResetTimers();
+		phase4 = false;
+		bots_Timer = 6000;
     }
-
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+           
+        if(!phase4)
+        {
+			if(bots_Timer <= diff)
+			{
+				SpawnBots();
+				bots_Timer = 15000;
+			}
+			else
+				bots_Timer -= diff;
+		}
 
 		UpdateEvent(diff);
 
@@ -198,6 +245,25 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
     {
 		// TODO : launch event 4
     }
+    
+    void SpawnBots()
+    {
+		uint8 maxbots = urand(1,3);
+		for(uint8 i=0;i<maxbots;i++)
+		{
+			uint8 botType = urand(0,2);
+			uint8 botSpawn = urand(0,8);
+			CallCreature(botType,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,bot[botSpawn][0],
+				bot[botSpawn][1],bot[botSpawn][2]);
+		}
+	}
+    
+    void ActivateP4()
+    {
+		phase4 = false;
+		if(Unit* veh = GetInstanceCreature(DATA_VX001))
+			EnterVehicle(veh);
+	}
 };
 
 CreatureAI* GetAI_boss_aerialCommandUnit(Creature* pCreature)

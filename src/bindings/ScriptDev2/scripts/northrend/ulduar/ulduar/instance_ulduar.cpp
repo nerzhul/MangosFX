@@ -1,26 +1,3 @@
-/* Copyright (C) 2006 - 2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or
-* (at your option) any later version.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with this program; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
-/* ScriptData
-SDName: Instance_Ulduar
-SD%Complete: 
-SDComment: 
-SDCategory: Ulduar
-EndScriptData */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
@@ -58,6 +35,9 @@ void instance_ulduar::Initialize()
 	m_uiThorimLootGUID		= 0;
 	m_uiIgnisFireGUID		= 0;
 	m_uiYoggSaronSaraGUID	= 0;
+	m_uiLeviMKIIGUID		= 0;
+	m_uiVX001GUID			= 0;
+	m_uiMimironHeadGUID		= 0;
 	
     memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
     memset(&m_auiAssemblyGUIDs, 0, sizeof(m_auiAssemblyGUIDs));
@@ -231,6 +211,15 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			break;
 		case 33174:
 			pCreature->SetVisibility(VISIBILITY_OFF);
+			break;
+		case 33432:
+			m_uiLeviMKIIGUID = pCreature->GetGUID();
+			break;
+		case 33651:
+			m_uiVX001GUID = pCreature->GetGUID();
+			break;
+		case 33670:
+			m_uiMimironHeadGUID = pCreature->GetGUID();
 			break;
     }
 }
