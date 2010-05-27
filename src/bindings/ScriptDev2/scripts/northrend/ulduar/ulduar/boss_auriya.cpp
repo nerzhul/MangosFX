@@ -57,7 +57,6 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 
     void KilledUnit(Unit* victim)
     {
-        DoScriptText(SAY_SLAY_1, me);
 		if(urand(0,1))
 			Yell(15474,"Le secret meurt avec vous !");
 		else 

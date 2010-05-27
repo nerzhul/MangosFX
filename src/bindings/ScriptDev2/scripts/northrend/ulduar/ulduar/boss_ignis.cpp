@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 
 		if(Check_Timer <= diff)
 		{
-			if(Unit* fire = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_IGNIS_FIRE) : 0))
+			if(Unit* fire = GetInstanceCreature(DATA_IGNIS_FIRE))
 			{
 				if(fire->isAlive() && !me->HasAura(SPELL_FUSION,0) && !me->HasAura(SPELL_FRAGILE,0))
 				{

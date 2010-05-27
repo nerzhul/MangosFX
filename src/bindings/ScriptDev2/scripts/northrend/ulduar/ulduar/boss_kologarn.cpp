@@ -107,10 +107,10 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
     {
         if (pInstance)
 		{
-			if (Creature* pTemp = GetinstanceCreature(DATA_RIGHT_ARM))
+			if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = GetinstanceCreature(DATA_KOLOGARN))
+			if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
 		}
@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
-			if (Creature* pTemp = GetinstanceCreature(DATA_KOLOGARN))
+			if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
 				if (pTemp->isAlive())
 					DealPercentDamage(pTemp,15);
 			FreezeMob();
@@ -241,7 +241,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
 				if(pGripTarget)
 					Kill(pGripTarget);
-				if(target->getTypeId == TYPEID_PLAYER)
+				if(target->GetTypeId() == TYPEID_PLAYER)
 				{	
 					pGripTarget = target;
 					target->EnterVehicle(me->GetVehicleKit());
@@ -422,7 +422,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 		else 
 			Check_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 	}

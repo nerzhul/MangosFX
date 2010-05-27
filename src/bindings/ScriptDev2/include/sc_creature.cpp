@@ -1483,7 +1483,7 @@ void LibDevFSAI::AddPercentLife(Unit* u,uint8 percent)
 
 void LibDevFSAI::DealDamage(Unit* target,uint32 damage)
 {
-	if(!u || !u->isAlive())
+	if(!target || !target->isAlive())
 		return;
 		
 	me->DealDamage(target, damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);

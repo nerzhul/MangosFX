@@ -47,23 +47,23 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 		switch(phase)
 		{
 			case 0:
-				if(CheckPercentLife(75)
+				if(CheckPercentLife(75))
 				{
-					DoCastVictim((m_difficulty) SPELL_HOPELESSNESS_1_H : SPELL_HOPELESSNESS_1);
+					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_1_H : SPELL_HOPELESSNESS_1);
 					phase++;
 				}
 				break;
 			case 1:
-				if(CheckPercentLife(50)
+				if(CheckPercentLife(50))
 				{
-					DoCastVictim((m_difficulty) SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
+					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
 					phase++;
 				}
 				break;
 			case 2:
-				if(CheckPercentLife(25)
+				if(CheckPercentLife(25))
 				{
-					DoCastVictim((m_difficulty) SPELL_HOPELESSNESS_3_H : SPELL_HOPELESSNESS_3);
+					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_3_H : SPELL_HOPELESSNESS_3);
 					phase++;
 				}
 				break;
@@ -75,7 +75,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_bIsHeroic ? TRIOMPHE : 0,1,true);
+       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
     }
 };
 
@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_marwinAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
-       GiveEmblemsToGroup(m_bIsHeroic ? TRIOMPHE : 0,1,true);
+       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
     }
 };
 

@@ -50,7 +50,7 @@ enum Misc
 	ITEM_MAGNETIC_CORE	=	46029 // disable air for aerial unit
 };
 
-const static float Bot_Coords[3][9] = {
+const static float Bot_Coords[9][3] = {
 	{0.0f,0.0f,0.0f},
 	{0.0f,0.0f,0.0f},
 	{0.0f,0.0f,0.0f},
@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
 		// TODO: start next event
     }
     
-    void SpawnTimes() 
+    void SpawnMines() 
     {
 		// TODO: spawn mines
 	}
@@ -193,7 +193,7 @@ struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
 		ClearTimers();
 		AddEvent(m_difficulty ? SPELL_HAND_PULSE_H : SPELL_HAND_PULSE,5000,7000,2000);
 		if(Unit* veh = GetInstanceCreature(DATA_LEVIMKII))
-			EnterVehicle(veh);
+			me->EnterVehicle(veh);
 	}
 };
 
@@ -253,8 +253,7 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
 		{
 			uint8 botType = urand(0,2);
 			uint8 botSpawn = urand(0,8);
-			CallCreature(botType,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,bot[botSpawn][0],
-				bot[botSpawn][1],bot[botSpawn][2]);
+			CallCreature(bot[botType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,Bot_Coords[botSpawn][0],Bot_Coords[botSpawn][1],Bot_Coords[botSpawn][2]);
 		}
 	}
     
@@ -262,7 +261,7 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
     {
 		phase4 = false;
 		if(Unit* veh = GetInstanceCreature(DATA_VX001))
-			EnterVehicle(veh);
+			me->EnterVehicle(veh);
 	}
 };
 
@@ -324,16 +323,16 @@ struct MANGOS_DLL_DECL boss_mimironAI : public LibDevFSAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MIMIRON, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+        if (pInstance)
+            pInstance->SetData(TYPE_MIMIRON, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)
     {
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MIMIRON, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_MIMIRON, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

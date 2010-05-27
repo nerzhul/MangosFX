@@ -315,8 +315,8 @@ struct MANGOS_DLL_DECL mob_lightning_elementalAI : public LibDevFSAI
 		Unit* target = me->SelectNearbyTarget();
 		if(target)
 		{
-			me->AddThreat(Target, 5000000.0f);
-			AttackStart(Target);
+			me->AddThreat(target, 5000000.0f);
+			AttackStart(target);
 			Target = target->GetGUID();
         }
     }
@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL mob_lightning_elementalAI : public LibDevFSAI
 				DoCast(target, (m_difficulty) ? SPELL_LIGHTNING_BLAST_H : SPELL_LIGHTNING_BLAST);
 				Kill(me);
 			}
-			me->GetMotionMaster()->MoveChase(Target);
+			me->GetMotionMaster()->MoveChase(target);
 		}
     }
 

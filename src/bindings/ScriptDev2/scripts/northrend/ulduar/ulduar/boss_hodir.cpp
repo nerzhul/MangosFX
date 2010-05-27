@@ -55,7 +55,7 @@ struct Player_Position
 };
 struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 {
-    boss_hodirAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_hodirAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
         AddEventOnMe(SPELL_BERSERK,540000,60000);
@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 						if((*itr)->plr)
 						{
 							SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
-							Tasks.CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
+							CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
 								(*itr)->plr->GetPositionY(),(*itr)->plr->GetPositionZ());
 						}
 					}
