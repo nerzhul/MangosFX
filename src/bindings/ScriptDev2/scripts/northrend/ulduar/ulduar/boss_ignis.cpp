@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
@@ -174,24 +156,18 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
     }
 };
 
-struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
+struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 {
-    add_ignis_AI(Creature *pCreature) : ScriptedAI(pCreature) {
-		Reset();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+    add_ignis_AI(Creature *pCreature) : LibDevFSAI(pCreature) {
+		InitInstance();
 	}
 
-	bool m_bIsHeroic;
 	uint32 Check_Timer;
-	ScriptedInstance* m_pInstance;
 	uint16 nb_stack;
 	uint32 CheckReset_Timer;
-	MobEventTasks Tasks;
 
 	void Reset()
 	{
-		Tasks.SetObjects(this,me);
 		nb_stack = 0;
 		FreezeMob(true,me,true);
 		Check_Timer = 1000;
@@ -200,28 +176,26 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 
 	void DamageTaken(Unit* pDoneBy, uint32 &damage)
 	{
-		
+		bool KillMe = false;
 		if(me->HasAura(SPELL_FRAGILE) && damage > 3000)
 		{
 			damage = 0;
-			if(Unit* Ignis = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_IGNIS) : 0))
+			KillMe = true;
+		}
+		else if(me->HasAura(SPELL_FRAGILE) && damage > 5000)
+		{
+			damage = 0;
+			KillMe = true;
+		}
+		if(KillMe)
+		{
+			if(Unit* Ignis = GetInstanceCreature(TYPE_IGNIS))
 				if(Ignis->isAlive())
 				{
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
 					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
 
-			Kill(me);
-		}
-		else if(me->HasAura(SPELL_FRAGILE) && damage > 5000)
-		{
-			damage = 0;
-			if(Unit* Ignis = Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_IGNIS) : 0))
-				if(Ignis->isAlive())
-				{
-					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
-					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
-				}
 			Kill(me);
 		}
 	}
@@ -259,6 +233,8 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 			{
 				if(fire->isAlive() && !me->HasAura(SPELL_FUSION,0) && !me->HasAura(SPELL_FRAGILE,0))
 				{
+					if(!me->HasAura(SPELL_CHALEUR))
+						nb_stack = 0;
 					if(me->GetDistance(fire) < 25.0f)
 					{
 						me->getVictim()->CastSpell(me,SPELL_CHALEUR,true);
@@ -266,7 +242,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public ScriptedAI
 						if(nb_stack > 19)
 						{
 							me->RemoveAurasDueToSpell(SPELL_CHALEUR);
-							me->CastSpell(me,SPELL_FUSION,true);
+							DoCastMe(SPELL_FUSION,true);
 						}
 					}
 				}
