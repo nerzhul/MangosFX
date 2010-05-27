@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     //Cast spell by Id
     void DoCast(Unit* pVictim, uint32 uiSpellId, bool bTriggered = false);
 	void DoCastVictim(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastRandom(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
+	Unit* DoCastRandom(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
 	void DoCastMe(uint32 uiSpellId, bool bTriggered = false);
 	void DoCastLowHP(uint32 uiSpellId, bool bTriggered = false);
 	void DoCastNear(uint32 uiSpellId, bool bTriggered = false);

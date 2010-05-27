@@ -9,14 +9,39 @@ enum spells
 	SPELL_PLASMA_BLAST			=	62997,
 	SPELL_PLASMA_BLAST_H		=	64529,
 	SPELL_SHOCK_BLAST			=	63631,
+	// VX001
+	SPELL_RAPID_BURST			=	63387,
+	SPELL_RAPID_BURST_H			=	64531, 
+	SPELL_LASER_BARAGE_INIT		=	63414,
+	SPELL_LASER_BARAGE_PACIFY	=	66490,
+	SPELL_LASER_BARAGE			=	63274,
+	SPELL_ROCKET_STRIKE			=	63041,
+	SPELL_HEAT_WAVE				=	63677,
+	SPELL_HEAT_WAVE_H			=	64533,
+	// aerial unit
+	SPELL_PLASMA_BALL			=	63689,
+	SPELL_PLASMA_BALL_H			=	64535,
 	// others
 	SPELL_MINE_EXPLOSION		=	66351,
 	SPELL_MINE_EXPLOSION_H		=	63009,
+	SPELL_AB_MAGNETIC			=	64668,
 };
 
 enum Npcs
 {
 	NPC_PROXIM_MINE		=	34362,
+	NPC_ASSAULT_BOT		=	34057,
+	NPC_BOMB_BOT		=	33836,
+	NPC_JUNK_BOT		=	33855
+};
+
+enum Misc
+{
+	ITEM_MAGNETIC_CORE	=	46029 // disable air for aerial unit
+};
+
+const static float Bot_Coords[3][1] = {
+	{0.0f,0.0f,0.0f}
 };
 
 struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
@@ -48,6 +73,7 @@ struct MANGOS_DLL_DECL boss_leviMKIIAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
+		// start next event
     }
 };
 
@@ -87,11 +113,16 @@ struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
     boss_VX001AI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+        AddEventOnTank(m_difficulty ? SPELL_HEAT_WAVE_H : SPELL_HEAT_WAVE,5000,10000,5000);
+        // TODO : verify this spell, add rocketbarrage event, add ground target for rocketstrike
+        AddEvent(m_difficulty ? SPELL_RAPID_BURST_H : SPELL_RAPID_BURST,3000,5000,3000);
     }
 
+	uint32 rocketStrike_Timer;
     void Reset()
     {
 		ResetTimers();
+		rocketStrike_Timer = 12000;
     }
 
 
@@ -100,6 +131,16 @@ struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(rocketStrike_Timer <= diff)
+		{
+			if(Unit* rockTarget = DoCastRandom(SPELL_ROCKET_STRIKE))
+			{
+				// TODO: marker for rocket
+			}
+			rocketStrike_Timer = urand(12000,15000);
+		}
+		else
+			rocketStrike_Timer -= diff;
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
@@ -107,6 +148,7 @@ struct MANGOS_DLL_DECL boss_VX001AI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
+		// TODO : start next event
     }
 };
 
@@ -120,6 +162,8 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
     boss_aerialCommandUnitAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+        // TODO: spawn bots
+        AddEvent(m_difficulty ? SPELL_PLASMA_BALL_H : SPELL_PLASMA_BALL,5000,10000,2000);
     }
 
     void Reset()
@@ -140,12 +184,47 @@ struct MANGOS_DLL_DECL boss_aerialCommandUnitAI : public LibDevFSAI
 
     void JustDied(Unit* killer)
     {
+		// TODO : launch event 4
     }
 };
 
 CreatureAI* GetAI_boss_aerialCommandUnit(Creature* pCreature)
 {
     return new boss_aerialCommandUnitAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_MimironassaultBotAI : public LibDevFSAI
+{
+    boss_MimironassaultBotAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+        AddEvent(SPELL_AB_MAGNETIC,2000,15000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+
+    void JustDied(Unit* killer)
+    {
+		// additem on player
+    }
+};
+
+CreatureAI* GetAI_boss_MimironassaultBot(Creature* pCreature)
+{
+    return new boss_MimironassaultBotAI (pCreature);
 }
 
 struct MANGOS_DLL_DECL boss_mimironAI : public LibDevFSAI
@@ -223,5 +302,10 @@ void AddSC_boss_mimiron()
     newscript = new Script;
     newscript->Name = "boss_VX001";
     newscript->GetAI = &GetAI_boss_VX001;
+    newscript->RegisterSelf();
+    
+    newscript = new Script;
+    newscript->Name = "mimiron_assault_bot";
+    newscript->GetAI = &GetAI_boss_MimironassaultBot;
     newscript->RegisterSelf();
 }

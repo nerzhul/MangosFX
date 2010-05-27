@@ -180,17 +180,18 @@ void ScriptedAI::DoCastVictim(uint32 uiSpellId, bool bTriggered)
     me->CastSpell(me->getVictim(), uiSpellId, bTriggered);
 }
 
-void ScriptedAI::DoCastRandom(uint32 uiSpellId, bool bTriggered, bool InFront)
+Unit* ScriptedAI::DoCastRandom(uint32 uiSpellId, bool bTriggered, bool InFront)
 {
     Unit *pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
 
     if (!pTarget || me->IsNonMeleeSpellCasted(false) || !pTarget->isAlive())
-        return;
+        return NULL;
 
     me->StopMoving();
 	if(InFront)
 		me->SetInFront(pTarget);
     me->CastSpell(pTarget, uiSpellId, bTriggered);
+    return pTarget;
 }
 
 void ScriptedAI::DoCastHasMana(uint32 uiSpellId, bool bTriggered, bool InFront)
