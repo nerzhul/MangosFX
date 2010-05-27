@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2008 - 2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
 #include "precompiled.h"
 #include "ulduar.h"
 
@@ -71,18 +53,16 @@ struct Player_Position
 	float x,y;
 	Player* plr;
 };
-struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 {
     boss_hodirAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        AddEventOnMe(SPELL_BERSERK,540000,60000);
+		AddEvent(SPELL_FREEZE,15000,45000,5000);
+		AddEvent(m_difficulty ? SPELL_BLOW_H : SPELL_BLOW,50000,60000);
     }
 
-    ScriptedInstance* m_pInstance;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
 	uint32 Aura_Timer;
 	uint32 Flash_Timer;
 	uint32 FlashCast_Timer;
@@ -94,30 +74,23 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_BERSERK,540000,60000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_FREEZE,15000,45000,5000);
-		if(m_bIsHeroic)
-			Tasks.AddEvent(SPELL_BLOW_H,50000,60000);
-		else
-			Tasks.AddEvent(SPELL_BLOW,50000,60000);
-
 		Aura_Timer = 1000;
 		AuraCheck_Timer = 500;
 		Flash_Timer = 35000;
 		FlashCast_Timer = DAY;
+		pPos.clear();
 		roc_pos.clear();
-		if (m_pInstance)
-            m_pInstance->SetData(TYPE_HODIR, NOT_STARTED);
+		if (pInstance)
+            pInstance->SetData(TYPE_HODIR, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim){}
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HODIR, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+        if (pInstance)
+            pInstance->SetData(TYPE_HODIR, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)
@@ -125,15 +98,15 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 		Yell(15552,"Vous allez souffrir pour cet entretien");
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HODIR, IN_PROGRESS);
-
+        if (pInstance)
+            pInstance->SetData(TYPE_HODIR, IN_PROGRESS);
 		InitPlayers();
-		((instance_ulduar*)m_pInstance)->FreezeAllHodirAdds();
+		((instance_ulduar*)pInstance)->FreezeAllHodirAdds();
     }
 
 	void InitPlayers()
 	{
+		pPos.clear();
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
 		{
@@ -184,8 +157,9 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 				
 				for(std::vector<Player_Position*>::const_iterator itr2 = roc_pos.begin(); itr2 != roc_pos.end(); ++itr2)
 				{
-					if((*itr)->plr->GetDistance2d((*itr2)->x,(*itr2)->y) < 7.0f)
-						isNear = true;
+					if((*itr)->plr)
+						if((*itr)->plr->GetDistance2d((*itr2)->x,(*itr2)->y) < 7.0f)
+							isNear = true;
 				}
 
 				if(!isNear)
@@ -194,9 +168,12 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 						Kill((*itr)->plr);
 					else
 					{
-						SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
-						Tasks.CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
-							(*itr)->plr->GetPositionY(),(*itr)->plr->GetPositionZ());
+						if((*itr)->plr)
+						{
+							SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
+							Tasks.CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
+								(*itr)->plr->GetPositionY(),(*itr)->plr->GetPositionZ());
+						}
 					}
 				}
 			}
@@ -216,7 +193,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 	void DoAvalancheEvent()
 	{
 		for(int i=0;i<3;i++)
-			Tasks.CallCreature(33169,THREE_MINS,NEAR_30M,NOTHING);
+			CallCreature(33169,THREE_MINS,NEAR_30M,NOTHING);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -269,7 +246,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public ScriptedAI
 		else
 			Aura_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -281,30 +258,23 @@ CreatureAI* GetAI_boss_hodir(Creature* pCreature)
     return new boss_hodirAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL add_hodirAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_hodirAI : public LibDevFSAI
 {
-    add_hodirAI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_hodirAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 Shatter_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		Shatter_Timer = 4000;
     }
 	
 	void Shatter()
 	{
-		if(Unit* Hodir = Unit::GetUnit((*me), pInstance->GetData64(TYPE_HODIR)))
+		if(Unit* Hodir = GetInstanceCreature(TYPE_HODIR))
 			if(Hodir->isAlive())
 				((boss_hodirAI*)((Creature*)Hodir)->AI())->SpawnZone(me->GetPositionX(),me->GetPositionY());
 
@@ -315,7 +285,6 @@ struct MANGOS_DLL_DECL add_hodirAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-	
 		if(Shatter_Timer <= diff)
 		{
 			Shatter();
@@ -324,9 +293,8 @@ struct MANGOS_DLL_DECL add_hodirAI : public ScriptedAI
 		else
 			Shatter_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
-        DoMeleeAttackIfReady();
     }
 };
 
@@ -335,28 +303,21 @@ CreatureAI* GetAI_add_hodir(Creature* pCreature)
     return new add_hodirAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL freeze_hodirAI : public Scripted_NoMovementAI
+struct MANGOS_DLL_DECL freeze_hodirAI : public LibDevFSAI
 {
-    freeze_hodirAI(Creature *pCreature) : Scripted_NoMovementAI(pCreature)
+    freeze_hodirAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+		InitInstance();
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 Shatter_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		SetAuraStack(62297,1,me,me,1);
 		me->setFaction(14);
-		me->SetMaxHealth(m_bIsHeroic ? 180000:60000);
-		me->SetHealth(m_bIsHeroic ? 180000:60000);
+		me->SetMaxHealth(m_difficulty ? 180000:60000);
+		me->SetHealth(m_difficulty ? 180000:60000);
     }
 	
     void UpdateAI(const uint32 diff){}
@@ -367,7 +328,7 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public Scripted_NoMovementAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive() && pPlayer->HasAura(62297) && pPlayer->GetDistance2d(me->GetPositionX(),me->GetPositionY()) < 1.5f)
+					if(pPlayer->isAlive() && pPlayer->HasAura(62297) && pPlayer->GetDistance2d(me->GetPositionX(),me->GetPositionY()) < 2.5f)
 					{
 						pPlayer->RemoveAurasDueToSpell(62297);
 						return;
@@ -379,7 +340,6 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public Scripted_NoMovementAI
 	{
 		FreePlayer();
 		((instance_ulduar*)pInstance)->FreeHodirAdd(me->GetPositionX(),me->GetPositionY());
-
 	}
 };
 
