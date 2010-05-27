@@ -808,6 +808,9 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 
 void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
 {
+	if(!tmpCr)
+		tmpCr = me;
+		
 	if(tmpCr->isAlive())
 	{
 		tmpCr->CastStop();
@@ -1476,6 +1479,23 @@ void LibDevFSAI::AddPercentLife(Unit* u,uint8 percent)
 		return;
 
 	u->SetHealth(u->GetHealth() + u->GetMaxHealth() * percent / 100);
+}
+
+void LibDevFSAI::DealDamage(Unit* target,uint32 damage)
+{
+	if(!u || !u->isAlive())
+		return;
+		
+	me->DealDamage(target, damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+}
+
+void LibDevFSAI::DealPercentDamage(Unit* target,float percent)
+{
+	if(percent <= 0)
+		return;
+		
+	uint32 dmg = target->GetMaxHealth() / 100 * percent;
+	DealDamage(target,dmg);	
 }
 
 void ScriptedAI::DoSpeakEmote(Unit* who)
