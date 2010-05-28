@@ -59,20 +59,20 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
 
     boss_skadiAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance* pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset()
     {
 		Tasks.SetObjects(this,me);
 		Tasks.CleanMyAdds();
-		if(m_bIsHeroic)
+		if(m_difficulty)
 		{
 			Tasks.AddEvent(SPELL_TOURBILLON_H,11000,10000,3000,TARGET_MAIN,2);
 			Tasks.AddEvent(SPELL_ECRASER_H,7000,7000,5000,TARGET_MAIN,2);
@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
 	void AttackStart(Unit* pWho)
@@ -138,8 +138,8 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
         if (pWho->isTargetableForAttack() && pWho->isInAccessablePlaceFor(me) && me->IsHostileTo(pWho) &&
         	!m_uiphase && pWho->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(pWho, 20))
         {
-            if(m_pInstance)
-                m_pInstance->SetData(TYPE_SKADI, IN_PROGRESS);
+            if(pInstance)
+                pInstance->SetData(TYPE_SKADI, IN_PROGRESS);
 
             DoScriptText(SAY_AGGRO, me);
 
@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
         if(uiType != POINT_MOTION_TYPE)
                 return;
 
-        if ((m_uiSpawn_counter >= 4 && !m_bIsHeroic) || (m_uiSpawn_counter >= 5 && m_bIsHeroic))
+        if ((m_uiSpawn_counter >= 4 && !m_difficulty) || (m_uiSpawn_counter >= 5 && m_difficulty))
         {
             m_uiWaypointId = 200;
             m_uiMoveNext_Timer = 3000;
@@ -187,7 +187,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
 
     void SpawnMobs(uint32 uiSpot)
     {
-        uint8 maxSpawn = (m_bIsHeroic ? 6 : 4);
+        uint8 maxSpawn = (m_difficulty ? 6 : 4);
         for(uint8 i = 0; i < maxSpawn; ++i)
         {
             switch (rand()%3)
@@ -215,7 +215,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
             if (m_uiPlayerCheck_Timer < diff)
             {
                 Map *map = me->GetMap();
-                if (map->IsDungeon() && m_pInstance->GetData(TYPE_SKADI) == IN_PROGRESS)
+                if (map->IsDungeon() && pInstance->GetData(TYPE_SKADI) == IN_PROGRESS)
                 {
                     Map::PlayerList const &PlayerList = map->GetPlayers();
  

@@ -68,7 +68,7 @@ static ActiveBoatStruct ActiveBot[4] =
 ## boss_ymiron
 ######*/
 
-struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
 {
 	uint8 m_uiActiveOrder[4];
 	bool m_bIsWalking;
@@ -97,22 +97,22 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
     uint64 m_uiActivedCreatureGUID;
     uint64 m_uiOrbGUID;
 
-    boss_ymironAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_ymironAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance* pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset()
     {
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_ANCESTORS_VENGEANCE,40000,45000,5000,TARGET_ME);
-		if(m_bIsHeroic)
+		if(m_difficulty)
 		{
 			Tasks.AddEvent(SPELL_BANE_H,5000,20000,5000,TARGET_ME);
 			Tasks.AddEvent(SPELL_FETID_ROT_H,10000,10000,5000,TARGET_MAIN);
@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 
         m_uiFetidRot_Timer            = 8000+rand()%5000;
         m_uiDarkSlash_Timer           = 28000+rand()%5000;
-        m_uiAncestors_Vengeance_Timer = (m_bIsHeroic ? 60000 : 45000);
+        m_uiAncestors_Vengeance_Timer = (m_difficulty ? 60000 : 45000);
         m_uiPause_Timer               = 0;
 
         m_uiAbility_BJORN_Timer  = 0;
@@ -160,20 +160,20 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 
         m_uiActivedNumber        = 0;
         m_uiHealthAmountModifier = 1;
-        m_uiHealthAmountMultipler = (m_bIsHeroic ? 20 : 25);
+        m_uiHealthAmountMultipler = (m_difficulty ? 20 : 25);
 
         DespawnBoatGhosts(m_uiActivedCreatureGUID);
         DespawnBoatGhosts(m_uiOrbGUID);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_YMIRON, NOT_STARTED);
+        if(pInstance)
+            pInstance->SetData(TYPE_YMIRON, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
-		if(m_pInstance)
-            m_pInstance->SetData(TYPE_YMIRON, IN_PROGRESS);
+		if(pInstance)
+            pInstance->SetData(TYPE_YMIRON, IN_PROGRESS);
     }
 
 	void AttackStart(Unit* pWho)
@@ -220,10 +220,10 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 		DespawnBoatGhosts(m_uiActivedCreatureGUID);
         DespawnBoatGhosts(m_uiOrbGUID);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_YMIRON, DONE);
+        if(pInstance)
+            pInstance->SetData(TYPE_YMIRON, DONE);
 
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)
@@ -298,7 +298,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
                 if (Creature* pTemp = me->SummonCreature(NPC_SPIRIT_FOUNT, 385+rand()%10, -330+rand()%10, 104.756, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 180000))
                 {
                     pTemp->SetSpeedRate(MOVE_RUN, 0.4f);
-                    pTemp->CastSpell(pTemp, m_bIsHeroic ? SPELL_SPIRIT_FOUNT_H : SPELL_SPIRIT_FOUNT_N, true);
+                    pTemp->CastSpell(pTemp, m_difficulty ? SPELL_SPIRIT_FOUNT_H : SPELL_SPIRIT_FOUNT_N, true);
                     pTemp->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     pTemp->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     pTemp->SetDisplayId(11686);
@@ -312,7 +312,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 
             if (m_bIsActiveWithHALDOR && m_uiAbility_HALDOR_Timer < diff)
             {
-                DoCastVictim( m_bIsHeroic ? SPELL_SPIRIT_STRIKE_H : SPELL_SPIRIT_STRIKE_N);
+                DoCastVictim( m_difficulty ? SPELL_SPIRIT_STRIKE_H : SPELL_SPIRIT_STRIKE_N);
                 m_uiAbility_HALDOR_Timer = 5000; // overtime
             } 
 			else 
@@ -320,7 +320,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public ScriptedAI
 
             if (m_bIsActiveWithRANULF && m_uiAbility_RANULF_Timer < diff)
             {
-                DoCastMe( m_bIsHeroic ? SPELL_SPIRIT_BURST_H : SPELL_SPIRIT_BURST_N);
+                DoCastMe( m_difficulty ? SPELL_SPIRIT_BURST_H : SPELL_SPIRIT_BURST_N);
                 m_uiAbility_RANULF_Timer = 10000; // overtime
             } 
 			else 

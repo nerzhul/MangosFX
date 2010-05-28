@@ -56,20 +56,20 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 	uint32 m_uiAnimalCheck_Timer;
     boss_gortokAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance* pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset()
     {
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_ARCING_SMASH,15000,13000,4000);
-		if(m_bIsHeroic)
+		if(m_difficulty)
 		{
 			Tasks.AddEvent(SPELL_WITHERING_ROAR_H,10000,8000,4000,TARGET_ME);
 			Tasks.AddEvent(SPELL_IMPALE_H,12000,8000,4000);
@@ -83,37 +83,37 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 		m_uiAnimalCheck_Timer = 500;
         DoCastMe(SPELL_FREEZE_ANIM);
 
-        if (m_pInstance)
+        if (pInstance)
         {
             if(me->isAlive())
             {
-        	    m_pInstance->SetData(TYPE_GORTOK, NOT_STARTED);
+        	    pInstance->SetData(TYPE_GORTOK, NOT_STARTED);
         	    FreezeMob(true,me);
         	}
 
             Unit* pTemp = NULL;
-            if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_FRENZIED_WORGEN)))
+            if (pTemp = Unit::GetUnit((*me),pInstance->GetData64(DATA_MOB_FRENZIED_WORGEN)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
         	    FreezeMob(true,(Creature*)pTemp);
             }
 
-            if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_RAVENOUS_FURBOLG)))
+            if (pTemp = Unit::GetUnit((*me),pInstance->GetData64(DATA_MOB_RAVENOUS_FURBOLG)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
         	    FreezeMob(true,(Creature*)pTemp);
             }
 
-            if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_MASSIVE_JORMUNGAR)))
+            if (pTemp = Unit::GetUnit((*me),pInstance->GetData64(DATA_MOB_MASSIVE_JORMUNGAR)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
         	    FreezeMob(true,(Creature*)pTemp);
             }
 
-            if (pTemp = Unit::GetUnit((*me),m_pInstance->GetData64(DATA_MOB_FEROCIOUS_RHINO)))
+            if (pTemp = Unit::GetUnit((*me),pInstance->GetData64(DATA_MOB_FEROCIOUS_RHINO)))
             {
                 if (pTemp->isDead())
                     ((Creature*)pTemp)->Respawn();
@@ -152,8 +152,8 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
         if (pWho->isTargetableForAttack() && pWho->isInAccessablePlaceFor(me) && me->IsHostileTo(pWho) &&
         	!m_uiAnimalCounter && pWho->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(pWho, 25))
         {
-            if(m_pInstance)
-                m_pInstance->SetData(TYPE_GORTOK, IN_PROGRESS);
+            if(pInstance)
+                pInstance->SetData(TYPE_GORTOK, IN_PROGRESS);
 
         	++m_uiAnimalCounter;
         }
@@ -167,10 +167,10 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		if(m_pInstance)
-            m_pInstance->SetData(TYPE_GORTOK, DONE);
+		if(pInstance)
+            pInstance->SetData(TYPE_GORTOK, DONE);
 
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)
@@ -184,16 +184,16 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 				switch(m_uiAnimalCounter)
 				{
 					case 1:
-                		pTemp = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MOB_FRENZIED_WORGEN));
+                		pTemp = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_MOB_FRENZIED_WORGEN));
 						break;
 					case 2:
-                       	pTemp = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MOB_RAVENOUS_FURBOLG));
+                       	pTemp = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_MOB_RAVENOUS_FURBOLG));
 						break;
 					case 3:
-                		pTemp = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MOB_MASSIVE_JORMUNGAR));
+                		pTemp = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_MOB_MASSIVE_JORMUNGAR));
 						break;
 					case 4:
-						pTemp = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MOB_FEROCIOUS_RHINO));
+						pTemp = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_MOB_FEROCIOUS_RHINO));
 						break;
 				}
 
@@ -245,13 +245,13 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
 {
     mob_massive_jormungarAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-    	m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
-    	m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance *pInstance;
+    bool m_difficulty;
 
     uint32 AcidSplatter_timer;
 	MobEventTasks Tasks;
@@ -260,10 +260,10 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
 		Tasks.SetObjects(this,me);
 		Tasks.CleanMyAdds();
 		Tasks.AddEvent(SPELL_ACID_SPIT,3000,2000,2000);
-		Tasks.AddEvent(m_bIsHeroic ? SPELL_POISON_BREATH_H : SPELL_POISON_BREATH_N,10000,10000,4000);
+		Tasks.AddEvent(m_difficulty ? SPELL_POISON_BREATH_H : SPELL_POISON_BREATH_N,10000,10000,4000);
     	AcidSplatter_timer = 12000;
-        if (m_pInstance)
-            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
+        if (pInstance)
+            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 
 		FreezeMob(true,me);
@@ -295,7 +295,7 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
         // Acid Splatter
         if(AcidSplatter_timer <= diff)
         {
-            DoCastMe( m_bIsHeroic ? SPELL_ACID_SPLATTER_H : SPELL_ACID_SPLATTER_N);
+            DoCastMe( m_difficulty ? SPELL_ACID_SPLATTER_H : SPELL_ACID_SPLATTER_N);
 
             for(uint8 i = 0; i<6; ++i)
 				Tasks.CallCreature(NPC_JORMUNGAR_WORM);
@@ -318,20 +318,20 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
 {
     mob_ferocious_rhinoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-    	m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
-    	m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance *pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset() 
 	{
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_STOMP,10000,8000,4000,TARGET_MAIN);
-		if(m_bIsHeroic)
+		if(m_difficulty)
 		{
 			Tasks.AddEvent(SPELL_GORE_H,15000,13000,4000,TARGET_MAIN);
 			Tasks.AddEvent(SPELL_GRIEVOUS_WOUND_H,20000,18000,4000);
@@ -342,8 +342,8 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_GRIEVOUS_WOUND_N,20000,18000,4000);
 		}
 
-        if (m_pInstance)
-            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
+        if (pInstance)
+            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 		FreezeMob(true,me);
 
@@ -384,23 +384,23 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
 struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
 {
     mob_ravenous_furbolgAI(Creature* pCreature) : ScriptedAI(pCreature) {
-    	m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
-    	m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 	float percent;
-    ScriptedInstance *m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance *pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset() 
 	{
 		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(m_bIsHeroic ? SPELL_CHAIN_LIGHTING_H : SPELL_CHAIN_LIGHTING_N,10000,9000,6000);
+		Tasks.AddEvent(m_difficulty ? SPELL_CHAIN_LIGHTING_H : SPELL_CHAIN_LIGHTING_N,10000,9000,6000);
 		Tasks.AddEvent(SPELL_TERRIFYING_ROAD,9000,10000,10000,TARGET_MAIN);
 
-        if (m_pInstance)
-            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
+        if (pInstance)
+            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 		FreezeMob(true,me);
     }
@@ -444,23 +444,23 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
 struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
 {
     mob_frenzied_worgenAI(Creature* pCreature) : ScriptedAI(pCreature) {
-    	m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
-    	m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance *pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     void Reset() 
 	{
 		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(m_bIsHeroic ? SPELL_MORTAL_WOUND_H : SPELL_MORTAL_WOUND_N,5000,4000,5000,TARGET_MAIN);
+		Tasks.AddEvent(m_difficulty ? SPELL_MORTAL_WOUND_H : SPELL_MORTAL_WOUND_N,5000,4000,5000,TARGET_MAIN);
 		Tasks.AddEvent(SPELL_ENRAGE_2,10000,10000,0,TARGET_ME);
 
-        if (m_pInstance)
-            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
+        if (pInstance)
+            if (Creature* pPalehoof = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_GORTOK_PALEHOOF)))
                 ((boss_gortokAI*)pPalehoof->AI())->EnterEvadeMode();
 
 		FreezeMob(true,me);

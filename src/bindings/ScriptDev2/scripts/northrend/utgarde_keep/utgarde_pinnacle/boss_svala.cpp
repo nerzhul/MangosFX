@@ -82,14 +82,14 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
     boss_svalaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        m_difficulty = pCreature->GetMap()->GetDifficulty();
         m_bIsIntroDone = false;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
+    ScriptedInstance* pInstance;
+    bool m_difficulty;
 	MobEventTasks Tasks;
 
     Creature* pArthas;
@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     {
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(SPELL_CALL_FLAMES,20000,18000);
-		if(m_bIsHeroic)
+		if(m_difficulty)
 			Tasks.AddEvent(SPELL_SINISTER_STRIKE_H,2500,2000,3000,TARGET_MAIN);
 		else
 			Tasks.AddEvent(SPELL_SINISTER_STRIKE,2500,2000,3000,TARGET_MAIN);
@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 		for(uint8 i=0;i<3;i++)
 			pRitualChanneler[i] = NULL;
 
-        if (me->isAlive() && m_pInstance && m_pInstance->GetData(TYPE_SVALA) > IN_PROGRESS)
+        if (me->isAlive() && pInstance && pInstance->GetData(TYPE_SVALA) > IN_PROGRESS)
         {
             if (me->GetEntry() != NPC_SVALA_SORROW)
                 me->UpdateEntry(NPC_SVALA_SORROW);
@@ -151,9 +151,9 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     {
         if (!m_bIsIntroDone)
         {
-            if (m_pInstance && m_pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
+            if (pInstance && pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
             {
-                m_pInstance->SetData(TYPE_SVALA, SPECIAL);
+                pInstance->SetData(TYPE_SVALA, SPECIAL);
 
                 float fX, fY, fZ;
                 me->GetClosePoint(fX, fY, fZ, me->GetObjectSize(), 16.0f, 0.0f);
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void DoMoveToPosition()
@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     {
         if (!CanDoSomething())
         {
-			if(m_pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
+			if(pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
 				m_bIsIntroDone = false;
 
             if (m_bIsIntroDone)
@@ -275,7 +275,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                         case 5:
                             DoScriptText(SAY_INTRO_5, me);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-							m_pInstance->SetData(TYPE_SVALA, DONE);
+							pInstance->SetData(TYPE_SVALA, DONE);
                             m_bIsIntroDone = true;
                             break;
                     }
