@@ -46,27 +46,22 @@ Yell m_aYell[] =
     {SAY_DAL_DEATH, SAY_SKA_DAL_DIES_REPLY}
 };
 
-struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public LibDevFSAI
 {
     boss_s_and_d_dummyAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
+        InitInstance();
         m_uiGhostGUID = 0;
-        Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
     uint64 m_uiGhostGUID;
-	Creature* m_BossGhost;
 
     Creature* GetBuddy()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return NULL;
 
-        return m_pInstance->instance->GetCreature(m_pInstance->GetData64(me->GetEntry() == NPC_DALRONN ? NPC_SKARVALD : NPC_DALRONN));
+        return pInstance->instance->GetCreature(pInstance->GetData64(me->GetEntry() == NPC_DALRONN ? NPC_SKARVALD : NPC_DALRONN));
     }
 
     void Reset() { }
@@ -90,11 +85,11 @@ struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public ScriptedAI
         // EventAI can probably handle ghosts
         if (pSummoned->GetEntry() == NPC_DAL_GHOST || pSummoned->GetEntry() == NPC_SKA_GHOST)
         {
-            m_BossGhost = pSummoned;
+            m_uiGhostGUID = pSummoned->GetGUID();
 
             Unit* pTarget = SelectUnit(SELECT_TARGET_TOPAGGRO,1);
 			
-            if (me->getVictim())
+            if (me->getVictim() && pTarget)
 			{
 				pSummoned->CastSpell(pSummoned,SPELL_IMMUNE,false);
                 pSummoned->AI()->AttackStart(pTarget ? pTarget : me->getVictim());
@@ -117,7 +112,7 @@ struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public ScriptedAI
             }
             else
             {
-				if(m_BossGhost)
+				if(Creature* m_BossGhost = GetGuidCreature(m_uiGhostGUID))
 					m_BossGhost->ForcedDespawn();
             }
         }
@@ -131,19 +126,18 @@ struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public ScriptedAI
 struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
 {
     boss_skarvaldAI(Creature* pCreature) : boss_s_and_d_dummyAI(pCreature) { 
-		Reset(); }
+		AddEvent(SPELL_CHARGE,500,12000);
+		AddEventOnTank(SPELL_STONEHIT,5000,10000);
+		if(m_difficulty)
+			AddEventOnMe(SPELL_ENRAGE,10000,30000);
+		Reset(); 
+	}
 
     uint32 m_uiYellDelayTimer;
-	MobEventTasks Tasks;
 
 	void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_CHARGE,500,12000);
-		Tasks.AddEvent(SPELL_STONEHIT,5000,10000,0,TARGET_MAIN);
-		if(m_bIsHeroic)
-			Tasks.AddEvent(SPELL_ENRAGE,10000,30000,0,TARGET_ME);
-
+		ResetTimers();
         m_uiYellDelayTimer = 0;
     }
 
@@ -175,7 +169,7 @@ struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
         }
         else m_uiYellDelayTimer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -192,33 +186,34 @@ CreatureAI* GetAI_boss_skarvald(Creature* pCreature)
 
 struct MANGOS_DLL_DECL boss_dalronnAI : public boss_s_and_d_dummyAI
 {
-    boss_dalronnAI(Creature* pCreature) : boss_s_and_d_dummyAI(pCreature) { Reset(); }
-
-	uint32 Aggro_Text_Timer;
-	bool AggroSaid;
-	MobEventTasks Tasks;
-
-    void Reset() 
-	{
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+    boss_dalronnAI(Creature* pCreature) : boss_s_and_d_dummyAI(pCreature) {
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_SHADOWBOLT_HEROIC,2000,2000);
-			Tasks.AddEvent(SPELL_SKELETON_INVOC,10000,11000,0,TARGET_ME);
-			Tasks.AddEvent(SPELL_DEBILITER_H,12000,20000,0,TARGET_RANDOM,0,0,true);
+			AddEvent(SPELL_SHADOWBOLT_HEROIC,2000,2000);
+			AddEventOnTank(SPELL_SKELETON_INVOC,10000,11000);
+			AddEvent(SPELL_DEBILITER_H,12000,20000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_SHADOWBOLT_HEROIC,2000,2000);
-			Tasks.AddEvent(SPELL_DEBILITER,12000,20000,0,TARGET_RANDOM,0,0,true);
+			AddEvent(SPELL_SHADOWBOLT_HEROIC,2000,2000);
+			AddMaxPrioEvent(SPELL_DEBILITER,12000,20000);
 		}
+		Reset();
+	}
+
+	uint32 Aggro_Text_Timer;
+	bool AggroSaid;
+
+    void Reset() 
+	{
+		ResetTimers();		
 		Aggro_Text_Timer = 5000;
 		AggroSaid = false;
 	}
 
     void KilledUnit(Unit* pVictim)
     {
-			DoScriptText(SAY_DAL_KILL, me);
+		DoScriptText(SAY_DAL_KILL, me);
     }
 
     void UpdateAI(const uint32 diff)
@@ -237,7 +232,7 @@ struct MANGOS_DLL_DECL boss_dalronnAI : public boss_s_and_d_dummyAI
 				Aggro_Text_Timer -= diff;
 		}
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

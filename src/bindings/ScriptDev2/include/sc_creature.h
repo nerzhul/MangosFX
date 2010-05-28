@@ -361,6 +361,11 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			SpellCastTarget targ = TARGET_RANDOM, uint8 phase = 0, uint32 TextId = 0,
 			bool MaxPriority = false, uint16 Repeat = 1, bool front = true);
 
+		void AddMaxPrioEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			SpellCastTarget targ = TARGET_RANDOM, uint8 phase = 0, uint32 TextId = 0,
+			uint16 Repeat = 1, bool front = true)
+			{ AddEvent(SpellId, Timer, NormTimer, Diff, targ, phase, TextId, true, Repeat, front); }
+			
 		void AddNoTankEvent(uint32 SpellId, uint32 Timer) { AddEvent(SpellId,Timer,Timer,0,NO_TANK); }
 
 		void AddEventOnMe(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
