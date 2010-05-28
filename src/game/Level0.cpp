@@ -310,6 +310,7 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 				}
 				while( result->NextRow() && i < 10);
 			}
+
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT count(*) as r FROM characterprofiler_item_bags where guid = '%u'",player->GetGUID()))
 			{
 				Field *fields = result->Fetch();

@@ -137,9 +137,9 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public LibDevFSAI
 
 				Submerge_Timer = Marteler_Timer + 3500;
 				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-				Tasks.CallCreature(29217,TEN_MINS,NEAR_15M);
-				for(short i=0;i<8;i++)
-					Tasks.CallCreature(29209,TEN_MINS,NEAR_15M);
+				CallCreature(29217,TEN_MINS,NEAR_15M);
+				for(uint8 i=0;i<8;i++)
+					CallCreature(29209,TEN_MINS,NEAR_15M);
 					
 				Empaler_Timer = 15000;
 			}

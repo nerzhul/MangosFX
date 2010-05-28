@@ -48,7 +48,7 @@ Yell m_aYell[] =
 
 struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public LibDevFSAI
 {
-    boss_s_and_d_dummyAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_s_and_d_dummyAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
         m_uiGhostGUID = 0;

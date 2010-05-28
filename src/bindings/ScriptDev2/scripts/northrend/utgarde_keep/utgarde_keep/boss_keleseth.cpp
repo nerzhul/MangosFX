@@ -64,7 +64,6 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public LibDevFSAI
 			cr[i] = 0;
 		frost_tomb_Timer = 12000;
 		frost_tomb_verif_Timer = 1000;
-		tomb = NULL;
 		skeleton_Timer = 18000;
 		skeleton_pop = false;
     }
@@ -165,7 +164,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public LibDevFSAI
 						for(uint8 i=0;i<6;i++)
 						{
 							sk[i]->Respawn();
-							Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
+							Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",sk[i]);
 						}
 						DoScriptText(SAY_SKELETONS, me);
 					}
