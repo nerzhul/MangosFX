@@ -6746,6 +6746,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 				if ((*i)->GetSpellProto()->SpellIconID == 240 && (*i)->GetModifier()->m_miscvalue == 3)
 				{
 					int32 HotWMod = (*i)->GetModifier()->m_amount / 2;
+					error_log("%u",HotWMod);
 					switch(HotWMod)
 					{
 						case  2: HotWSpellId = form == FORM_CAT ? 30902 : 19255; break;
@@ -6757,6 +6758,12 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 					}
 					
 					m_target->RemoveAurasDueToSpell(HotWSpellId);
+					// BD Hack for HeartOfTheWild
+					m_target->RemoveAurasDueToSpell(19255);
+					m_target->RemoveAurasDueToSpell(19256);
+					m_target->RemoveAurasDueToSpell(19257);
+					m_target->RemoveAurasDueToSpell(19258);
+					m_target->RemoveAurasDueToSpell(19259);
 				}
 			}
 		}
