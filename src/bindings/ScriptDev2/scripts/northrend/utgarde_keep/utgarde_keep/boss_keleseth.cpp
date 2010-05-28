@@ -5,10 +5,15 @@
 #include "utgarde_keep.h"
 
 
-#define SPELL_FROST_TOMB_INVOC	42714
-#define SPELL_FROST_TOMB_CHAN	48400
+enum Spells
+{
+	SPELL_FROST_TOMB_INVOC	=	42714,
+	SPELL_FROST_TOMB_CHAN	=	48400,
+	SPELL_SHADOW_BOLT		=	43667,
+	SPELL_SHADOW_BOLT_H		=	59389
+};
 
-enum
+enum Emotes
 {
     SAY_AGGRO               = -1574000,
     SAY_FROSTTOMB           = -1574001,
@@ -18,8 +23,7 @@ enum
 	EMOTE_TOMB				= -1616000,
 };
 
-// mobs
-enum
+enum Npcs
 {
 	NPC_FROST_TOMB			= 23965,
 	NPC_SKELETON			= 31635,
@@ -29,38 +33,35 @@ enum
 ## boss_keleseth
 ######*/
 
-struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_kelesethAI : public LibDevFSAI
 {
 	uint32	frost_tomb_Timer;
 	uint32	frost_tomb_verif_Timer;
-	Creature* tomb;
 	uint32	skeleton_Timer;
-	Creature* cr[6];
+	uint64 cr[6];
 	bool skeleton_pop;
-	Unit* target, *targettomb;
+	uint64 tombGUID;
 
-    boss_kelesethAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_kelesethAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-    void Reset()	
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+        if(m_difficulty)
 		{
-			Tasks.AddEvent(59389,1000,6000,1000,TARGET_MAIN);
+			AddEventOnTank(SPELL_SHADOW_BOLT_H,1000,6000,1000);
 		}
 		else
 		{
-			Tasks.AddEvent(43667,1000,6000,1000,TARGET_MAIN);
+			AddEventOnTank(SPELL_SHADOW_BOLT,1000,6000,1000);
 		}
+    }
+
+    void Reset()	
+    {
+		ResetTimers();
+		CleanMyAdds();
+		tombGUID = 0;
+		for(uint8 i=0;i<6;i++)
+			cr[i] = 0;
 		frost_tomb_Timer = 12000;
 		frost_tomb_verif_Timer = 1000;
 		tomb = NULL;
@@ -76,10 +77,10 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
 		DoScriptText(SAY_DEATH, me);
-		if(tomb)
+		if(Creature* tomb = GetGuidCreature(tombGUID))
 			tomb->RemoveFromWorld();
 
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -98,71 +99,83 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public ScriptedAI
 			DoScriptText(SAY_FROSTTOMB, me);
 			me->CastStop();
 
-			targettomb = SelectUnit(SELECT_TARGET_RANDOM,0);			
-			if(tomb = Tasks.CallCreature(NPC_FROST_TOMB,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,targettomb->GetPositionX(),targettomb->GetPositionY(),targettomb->GetPositionZ()))
+			if(Unit* targettomb = SelectUnit(SELECT_TARGET_RANDOM,0))
 			{
-				DoScriptText(EMOTE_TOMB,me);
-				if(targettomb)
-					tomb->CastSpell(targettomb,SPELL_FROST_TOMB_CHAN,false);
-				SetAuraStack(48400,1,targettomb,tomb);
+				if(Creature* tomb = CallCreature(NPC_FROST_TOMB,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,targettomb->GetPositionX(),targettomb->GetPositionY(),targettomb->GetPositionZ()))
+				{
+					tombGUID = tomb->GetGUID();
+					DoScriptText(EMOTE_TOMB,me);
+					if(targettomb)
+						tomb->CastSpell(targettomb,SPELL_FROST_TOMB_CHAN,false);
+					SetAuraStack(48400,1,targettomb,tomb);
+				}
 			}
 		}
 		else
 			frost_tomb_Timer -= diff;
 
-		/*if(frost_tomb_verif_Timer <= diff)
+		if(frost_tomb_verif_Timer <= diff)
 		{
-			if(tomb && !tomb->isAlive())
+			if(Creature* tomb = GetGuidCreature(tombGUID))
 			{
-				Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-
-				if (!lPlayers.isEmpty())
+				if(!tomb->isAlive())
 				{
-					for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+
+					if (!lPlayers.isEmpty())
 					{
-						if (Player* pPlayer = itr->getSource())
-							if(pPlayer->isAlive() && pPlayer->HasAura(48400))
-								pPlayer->RemoveAurasDueToSpell(48400);
+						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+						{
+							if (Player* pPlayer = itr->getSource())
+								if(pPlayer->isAlive() && pPlayer->HasAura(48400))
+									pPlayer->RemoveAurasDueToSpell(48400);
+						}
 					}
 				}
 			}
 			frost_tomb_verif_Timer = 1000;
 		}
 		else
-			frost_tomb_verif_Timer -= diff;*/
+			frost_tomb_verif_Timer -= diff;
 
-		if(m_bIsHeroic && skeleton_Timer <= diff)
+		if(m_difficulty && skeleton_Timer <= diff)
 		{
 			if(!skeleton_pop)
 			{
 				DoScriptText(SAY_SKELETONS, me);
 				
 				for(int i=0;i<6;i++)
-					cr[i] = Tasks.CallCreature(NPC_SKELETON,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,185.209f,206.089f,41.015f);
+				{
+					Creature* pSummon = CallCreature(NPC_SKELETON,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,185.209f,206.089f,41.015f);
+					cr[i] = pSummon->GetGUID();
+				}
 				skeleton_Timer = 2000;
 				skeleton_pop = true;
 			}
 			else
 			{
-				if(cr[0] && !cr[0]->isAlive() && cr[1] && !cr[1]->isAlive() && cr[2] && !cr[2]->isAlive() &&
-					cr[3] && !cr[3]->isAlive() && cr[4] && !cr[4]->isAlive() && cr[5] && !cr[5]->isAlive())
+				Creature* sk[6];
+				for(uint8 i=0;i<6;i++)
+					sk[i] = GetGuidCreature(cr[i]);
+				if(sk[0] && sk[1] && sk[2] && sk[3] && sk[4] && sk[5])
 				{
-					for(short i=0;i<6;i++)
+					if(!sk[0]->isAlive() && !sk[1]->isAlive() && !sk[2]->isAlive() && !sk[3]->isAlive() 
+						&& !sk[4]->isAlive() && !sk[5]->isAlive())
 					{
-						if(cr[i])
+						for(uint8 i=0;i<6;i++)
 						{
-							cr[i]->Respawn();
+							sk[i]->Respawn();
 							Speak(CHAT_TYPE_TEXT_EMOTE,0,"Squelette Vrykul se relève",cr[i]);
 						}
+						DoScriptText(SAY_SKELETONS, me);
 					}
-					DoScriptText(SAY_SKELETONS, me);
 				}
 			}
 		}
 		else
 			skeleton_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
 
