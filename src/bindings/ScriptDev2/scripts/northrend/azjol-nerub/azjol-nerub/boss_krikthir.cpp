@@ -41,32 +41,25 @@ enum
 ## boss_krikthir
 ######*/
 
-struct MANGOS_DLL_DECL boss_krikthirAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_krikthirAI : public LibDevFSAI
 {
-    boss_krikthirAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_krikthirAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-	MobEventTasks Tasks;
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+        if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_FOUET_H,5000,5000,3000);
-			Tasks.AddEvent(SPELL_MALE_H,12000,8000,5000);
+			AddEvent(SPELL_FOUET_H,5000,5000,3000);
+			AddEvent(SPELL_MALE_H,12000,8000,5000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_FOUET_N,5000,5000,3000);
-			Tasks.AddEvent(SPELL_MALE_N,12000,8000,5000);
+			AddEvent(SPELL_FOUET_N,5000,5000,3000);
+			AddEvent(SPELL_MALE_N,12000,8000,5000);
 		}
+    }
+    void Reset()
+    {
+		ResetTimers();
     }
 
     void Aggro(Unit* pWho)
@@ -87,7 +80,7 @@ struct MANGOS_DLL_DECL boss_krikthirAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)
@@ -95,7 +88,7 @@ struct MANGOS_DLL_DECL boss_krikthirAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
 		if(CheckPercentLife(30) && !me->HasAura(SPELL_ENRAGE,0))
 			DoCastMe(SPELL_ENRAGE);
@@ -109,34 +102,27 @@ CreatureAI* GetAI_boss_krikthir(Creature* pCreature)
     return new boss_krikthirAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL boss_silthikAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_silthikAI : public LibDevFSAI
 {
-	MobEventTasks Tasks;
-
-    boss_silthikAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_silthikAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+        if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_SILTHIK_POISON_H,7000,5000,3000);
-			Tasks.AddEvent(SPELL_MORS_H,10000,8000,5000);
+			AddEvent(SPELL_SILTHIK_POISON_H,7000,5000,3000);
+			AddEvent(SPELL_MORS_H,10000,8000,5000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_SILTHIK_POISON_N,7000,5000,3000);
-			Tasks.AddEvent(SPELL_MORS_N,10000,8000,5000);
+			AddEvent(SPELL_SILTHIK_POISON_N,7000,5000,3000);
+			AddEvent(SPELL_MORS_N,10000,8000,5000);
 		}
-		Tasks.AddEvent(SPELL_TOILE,5000,13000,5000);
+		AddEvent(SPELL_TOILE,5000,13000,5000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -144,7 +130,7 @@ struct MANGOS_DLL_DECL boss_silthikAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -155,30 +141,21 @@ CreatureAI* GetAI_boss_silthik(Creature* pCreature)
     return new boss_silthikAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL boss_gashraAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_gashraAI : public LibDevFSAI
 {
-	float percent;
-
-	MobEventTasks Tasks;
-
-    boss_gashraAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_gashraAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        if(m_difficulty)
+			AddEvent(SPELL_MORS_H,10000,8000,3000);
+		else
+			AddEvent(SPELL_MORS_N,10000,8000,3000);
+		AddEvent(SPELL_TOILE,13000,13000,5000);
     }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_TOILE,13000,13000,5000);
-		if(m_bIsHeroic)
-			Tasks.AddEvent(SPELL_MORS_H,10000,8000,3000);
-		else
-			Tasks.AddEvent(SPELL_MORS_N,10000,8000,3000);
+		ResetTimers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -186,10 +163,9 @@ struct MANGOS_DLL_DECL boss_gashraAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 		
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
-		percent = ((float)me->GetHealth() * 100/(float)me->GetMaxHealth());
-		if(percent < 40 && !me->HasAura(SPELL_GASHRA_ENRAGE,0))
+		if(CheckPercentLife(40) && !me->HasAura(SPELL_GASHRA_ENRAGE,0))
 			DoCastMe(SPELL_GASHRA_ENRAGE);
 
         DoMeleeAttackIfReady();
@@ -202,33 +178,27 @@ CreatureAI* GetAI_boss_gashra(Creature* pCreature)
 }
 
 
-struct MANGOS_DLL_DECL boss_narjilAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_narjilAI : public LibDevFSAI
 {
-    boss_narjilAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_narjilAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_TOILE,10000,13000,5000);
-		if(m_bIsHeroic)
+        InitInstance();
+        AddEvent(SPELL_TOILE,10000,13000,5000);
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_NARJIL_RETS_H,10000,5000,5000);
-			Tasks.AddEvent(SPELL_MORS_H,7000,5000,3000);
+			AddEvent(SPELL_NARJIL_RETS_H,10000,5000,5000);
+			AddEvent(SPELL_MORS_H,7000,5000,3000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_NARJIL_RETS_N,10000,5000,5000);
-			Tasks.AddEvent(SPELL_MORS_N,7000,5000,3000);
+			AddEvent(SPELL_NARJIL_RETS_N,10000,5000,5000);
+			AddEvent(SPELL_MORS_N,7000,5000,3000);
 		}
+    }
+
+    void Reset()
+    {
+		ResetTimers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -236,7 +206,7 @@ struct MANGOS_DLL_DECL boss_narjilAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

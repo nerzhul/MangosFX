@@ -32,38 +32,31 @@ enum
 ## boss_anubarak
 ######*/
 
-struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_anubarakAI : public LibDevFSAI
 {
-	Unit* target;
 	uint32 Empaler_Timer;
 	uint32 Marteler_Timer;
 	uint32 Necrophores_Timer;
 	uint32 Submerge_Timer;
 
-    boss_anubarakAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_anubarakAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-	MobEventTasks Tasks;
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+        if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_LOCUST_H,10000,10000,3000);
-			Tasks.AddEvent(SPELL_ESSAIM_H,13000,10000,3000,TARGET_MAIN);
+			AddEvent(SPELL_LOCUST_H,10000,10000,3000);
+			AddEventOnTank(SPELL_ESSAIM_H,13000,10000,3000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_LOCUST_N,13000,10000,3000);
-			Tasks.AddEvent(SPELL_ESSAIM_N,10000,10000,3000,TARGET_MAIN);
+			AddEvent(SPELL_LOCUST_N,13000,10000,3000);
+			AddEventOnTank(SPELL_ESSAIM_N,10000,10000,3000);
 		}
+    }
+
+    void Reset()
+    {
+		ResetTimers();
 		Marteler_Timer = 15000;
 		Necrophores_Timer = 3000;
 		Empaler_Timer = 17000;
@@ -91,7 +84,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)
@@ -104,7 +97,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 			if(Necrophores_Timer <= diff)
 			{
 				DoCastMe(SPELL_NECROPHORES);
-				Necrophores_Timer = -2500;
+				Necrophores_Timer = DAY*HOUR;
 			}
 			else
 				Necrophores_Timer -= diff;
@@ -114,9 +107,9 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 				me->CastStop();
 				me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				me->RemoveAurasDueToSpell(SPELL_SUBMERGE);
-				DoCastRandom(m_bIsHeroic ? SPELL_EMPALER_H : SPELL_EMPALER_N);
+				DoCastRandom(m_difficulty ? SPELL_EMPALER_H : SPELL_EMPALER_N);
 				
-				Empaler_Timer = -2500;
+				Empaler_Timer = DAY*HOUR;
 			}
 			else
 				Empaler_Timer -= diff;
@@ -125,7 +118,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 		{
 			if(Marteler_Timer <= diff)
 			{
-				DoCastVictim(m_bIsHeroic ? SPELL_MARTELER_H : SPELL_MARTELER_N);
+				DoCastVictim(m_difficulty ? SPELL_MARTELER_H : SPELL_MARTELER_N);
 				Marteler_Timer = urand(25000,30000);
 			}
 			else
@@ -153,7 +146,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public ScriptedAI
 			else
 				Submerge_Timer -= diff;
 
-			Tasks.UpdateEvent(diff);
+			UpdateEvent(diff);
 
 			DoMeleeAttackIfReady();
 		}

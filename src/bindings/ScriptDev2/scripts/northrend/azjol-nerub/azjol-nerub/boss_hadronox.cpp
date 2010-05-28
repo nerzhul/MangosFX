@@ -22,56 +22,48 @@ enum
 ## boss_hadronox
 ######*/
 
-struct MANGOS_DLL_DECL boss_hadronoxAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_hadronoxAI : public LibDevFSAI
 {
-    boss_hadronoxAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_hadronoxAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-	MobEventTasks Tasks;
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_REDUCEARMOR,8000,12000,4000,TARGET_MAIN);
-
-		if(m_bIsHeroic)
+        InitInstance();
+        AddEventOnTank(SPELL_REDUCEARMOR,8000,12000,4000);
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_ACID_H,6000,11000,2000);
-			Tasks.AddEvent(SPELL_POISON_H,12000,13000,7000);
-			Tasks.AddEvent(SPELL_SAISIE1_H,20000,40000,20000);
-			//Tasks.AddEvent(SPELL_SAISIE1_H,60000,45000,20000);
+			AddEvent(SPELL_ACID_H,6000,11000,2000);
+			AddEvent(SPELL_POISON_H,12000,13000,7000);
+			AddEvent(SPELL_SAISIE1_H,20000,40000,20000);
+			//AddEvent(SPELL_SAISIE1_H,60000,45000,20000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_ACID_N,6000,11000,2000);
-			Tasks.AddEvent(SPELL_POISON_N,12000,13000,7000);
-			Tasks.AddEvent(SPELL_SAISIE1_N,20000,40000,20000);
+			AddEvent(SPELL_ACID_N,6000,11000,2000);
+			AddEvent(SPELL_POISON_N,12000,13000,7000);
+			AddEvent(SPELL_SAISIE1_N,20000,40000,20000);
 			//Tasks.AddEvent(SPELL_SAISIE1_H,60000,45000,20000);
 		}
+    }
+
+    void Reset()
+    {
+		ResetTimers();
     }
 
 	void JustDied(Unit* pWho)
 	{
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 	}
 
     void KilledUnit(Unit* pVictim)
     {
-        me->SetHealth(me->GetHealth() + (me->GetMaxHealth() * 0.1));
+        AddPercentLife(me,10);
     }
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
-
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
