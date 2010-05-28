@@ -6740,13 +6740,13 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 		// Heart of the Wild (delete aura)
 		if (form == FORM_CAT || form == FORM_BEAR || form == FORM_DIREBEAR)
 		{
+
 			Unit::AuraList const& mModTotalStatPct = m_target->GetAurasByType(SPELL_AURA_MOD_TOTAL_STAT_PERCENTAGE);
 			for(Unit::AuraList::const_iterator i = mModTotalStatPct.begin(); i != mModTotalStatPct.end(); ++i)
 			{
 				if ((*i)->GetSpellProto()->SpellIconID == 240 && (*i)->GetModifier()->m_miscvalue == 3)
 				{
 					int32 HotWMod = (*i)->GetModifier()->m_amount / 2;
-					error_log("%u",HotWMod);
 					switch(HotWMod)
 					{
 						case  2: HotWSpellId = form == FORM_CAT ? 30902 : 19255; break;
@@ -6766,6 +6766,14 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 					m_target->RemoveAurasDueToSpell(19259);
 				}
 			}
+		}
+		
+		// remove celerite
+		if (form == FORM_CAT)
+		{
+			m_target->RemoveAurasDueToSpell(1850);
+			m_target->RemoveAurasDueToSpell(9821);
+			m_target->RemoveAurasDueToSpell(33357);
 		}
 
 		// Survival of the Fittest (Armor part)

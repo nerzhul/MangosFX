@@ -9305,7 +9305,11 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
         for(Unit::AuraList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
             if(Unit* magnet = (*itr)->GetCaster())
                 if(magnet->IsWithinLOSInMap(this) && magnet->isAlive())
+				{
+					if(victim->HasAura(3411))
+						victim->RemoveAurasDueToSpell(3411);
                     return magnet;
+				}
     }
     // Melee && ranged case
     else
@@ -12109,21 +12113,27 @@ int32 Unit::CalculateSpellDamage(SpellEntry const* spellProto, uint8 effect_inde
     level-= (int32)spellProto->spellLevel;
 
     float basePointsPerLevel = spellProto->EffectRealPointsPerLevel[effect_index];
-    int32 basePoints = int32(effBasePoints + level * basePointsPerLevel);
+    int32 basePoints = effBasePoints ? effBasePoints - 1 : spellProto->EffectBasePoints[effect_index];
+    basePoints += int32(level * basePointsPerLevel);
     int32 randomPoints = int32(spellProto->EffectDieSides[effect_index]);
     float comboDamage = spellProto->EffectPointsPerComboPoint[effect_index];
 
-	int32 value = basePoints;
-    if(randomPoints != 0)
-	{
+    switch(randomPoints)
+    {
+        case 0:                                             // not used
+        case 1: basePoints += 1; break;                     // range 1..1
+        default:
+            // range can have positive (1..rand) and negative (rand..1) values, so order its for irand
+            int32 randvalue = (randomPoints >= 1)
+                ? irand(1, randomPoints)
+                : irand(randomPoints, 1);
 
-		// range can have positive and negative values, so order its for irand
-		int32 randvalue = (0 > randomPoints)
-			? irand(randomPoints, 0)
-			: irand(0, randomPoints);
-		
-		basePoints += randvalue;
-	}
+            basePoints += randvalue;
+            break;
+    }
+
+    int32 value = basePoints;
+
 
     // random damage
     if(comboDamage != 0 && unitPlayer && target && (target->GetGUID() == unitPlayer->GetComboTarget()))
@@ -12161,7 +12171,6 @@ int32 Unit::CalculateSpellDamage(SpellEntry const* spellProto, uint8 effect_inde
 			sLog.outDebug("CalculateSpellDamage: saved roll from FoF is: %f", m_lastAuraProcRoll);
 			return value > m_lastAuraProcRoll ? 100 : 0;
 		}
-		sLog.outDebug("CalculateSpellDamage: no saved roll for 12494 (Frostbite)");
 	}
 
     return value;
