@@ -338,6 +338,17 @@ bool ChatHandler::HandleCompleteRecupCommand(const char *args)
 					return true;
 				}
 			}
+			
+			if(QueryResult *result = CharacterDatabase.PQuery("SELECT count(item) FROM characterprofiler_items_bank where guid = '%u'",player->GetGUID()))
+			{
+				Field *fields = result->Fetch();
+				uint32 count = fields[0].GetUInt32();
+				if(count == 0)
+				{
+					SendSysMessage("Il semblerait que vous n'ayez rien a recuperer. Verifiez que l'upload de votre LUA est correct");
+					return true;
+				}
+			}
 
 			if(QueryResult *result = CharacterDatabase.PQuery("SELECT item,quantite FROM characterprofiler_items_bank where guid = '%u'",player->GetGUID()))
 			{

@@ -122,12 +122,8 @@ MotionMaster::UpdateMotion(uint32 diff)
 void
 MotionMaster::DirectClean(bool reset)
 {
-	int i=0;
     while( !empty() && size() > 1 )
     {
-		i++;
-		if(i>2500)
-			sLog.outError("MotionMaster::DirectClean Boucle");
         MovementGenerator *curr = top();
         pop();
         curr->Finalize(*i_owner);
