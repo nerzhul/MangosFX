@@ -117,6 +117,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 		}
+		me->ForcedDespawn(TEN_MINS*1000);
     }
 
 	void Aggro(Unit* pWho)
@@ -254,6 +255,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 			}
 			else
 				me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+		me->ForcedDespawn(TEN_MINS*1000);
     }
 
     void Aggro(Unit* pWho)

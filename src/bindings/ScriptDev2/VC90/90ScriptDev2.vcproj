@@ -2258,6 +2258,14 @@
 							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\boss_falric_marwyn.cpp"
 							>
 						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\halls_of_reflection.h"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\instance_halls_of_reflection.cpp"
+							>
+						</File>
 					</Filter>
 					<Filter
 						Name="icecrown_raid"

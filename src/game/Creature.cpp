@@ -1365,6 +1365,12 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
         return;
     }
 
+	if(isTemporarySummon())
+	{
+
+
+	}
+
     if (isAlive())
         setDeathState(JUST_DIED);
 

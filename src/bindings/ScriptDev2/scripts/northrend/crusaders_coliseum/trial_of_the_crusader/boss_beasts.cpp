@@ -662,6 +662,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 		}
+		me->ForcedDespawn(TEN_MINS*1000);
     }
 
     void Aggro(Unit* pWho)
