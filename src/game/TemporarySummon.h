@@ -33,6 +33,7 @@ class TemporarySummon : public Creature
         void SaveToDB();
         uint64 GetSummonerGUID() const { return m_summoner ; }
         Unit* GetSummoner() const { return m_summoner ? ObjectAccessor::GetUnit(*this, m_summoner) : NULL; }
+		void SetDespawnTime(uint32 dpwn) { m_timer = dpwn; }
     private:
         TempSummonType m_type;
         uint32 m_timer;

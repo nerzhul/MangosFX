@@ -19,6 +19,7 @@
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
 #include "WorldPacket.h"
+#include "TemporarySummon.h"
 #include "World.h"
 #include "ObjectMgr.h"
 #include "ObjectDefines.h"
@@ -1366,10 +1367,7 @@ void Creature::ForcedDespawn(uint32 timeMSToDespawn)
     }
 
 	if(isTemporarySummon())
-	{
-
-
-	}
+		((TemporarySummon*)this)->SetDespawnTime(timeMSToDespawn);
 
     if (isAlive())
         setDeathState(JUST_DIED);
