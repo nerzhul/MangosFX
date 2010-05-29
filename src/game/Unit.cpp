@@ -532,8 +532,11 @@ void Unit::DealDamageMods(Unit *pVictim, uint32 &damage, uint32* absorb)
         const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
 		// correction sur la zone de duel de dalaran
 		uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549)       //sanctuary
-        {
+        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
+			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
+			|| pVictim->HasAura(64373) // EDC
+		)       // sanctuary
+		{
             if(absorb)
                 *absorb += damage;
             damage = 0;
@@ -1100,21 +1103,7 @@ void Unit::CastSpell(Unit* Victim,SpellEntry const *spellInfo, bool triggered, I
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster );
 	
-	if(Victim != this && GetTypeId() == TYPEID_PLAYER && Victim->GetTypeId() == TYPEID_PLAYER)
-    {
-		if(Victim->IsHostileTo(this))
-		{
-			// protect sanctuaries there
-			if(Victim->GetDistance2d(5635.0f,2030.5f) < 50.0f && Victim->GetPositionZ() < 820.0f  // ICC5
-				|| Victim->HasAura(64373)) // EDC
-			{
-				spell->SendCastResult(SPELL_FAILED_INCORRECT_AREA);
-				return;
-			}
-		}
-    }
-
-    SpellCastTargets targets;
+	SpellCastTargets targets;
     targets.setUnitTarget( Victim );
     spell->m_CastItem = castItem;
     spell->prepare(&targets, triggeredByAura);
@@ -1341,7 +1330,10 @@ void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
         const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
 		// correction sur la zone de duel de dalaran
 		uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549)       // sanctuary
+        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
+			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
+			|| pVictim->HasAura(64373) // EDC
+		)       // sanctuary
             return;
     }
 
@@ -1649,7 +1641,10 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
     {
         const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
         uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549)       // sanctuary
+        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
+			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
+			|| pVictim->HasAura(64373) // EDC
+		)       // sanctuary
             return;
     }
 
