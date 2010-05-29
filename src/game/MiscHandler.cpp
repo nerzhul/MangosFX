@@ -282,7 +282,7 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
 
 	if (reason)
 	{
-        WorldPacket data( SMSG_LOGOUT_RESPONSE, (2+4) ) ;
+        WorldPacket data( SMSG_LOGOUT_RESPONSE, (1+4) ) ;
 		data << uint8(reason);
         data << uint32(0);
         SendPacket( &data );
