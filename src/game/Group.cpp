@@ -1344,7 +1344,6 @@ bool Group::_setMainTank(const uint64 &guid)
         CharacterDatabase.PExecute("UPDATE groups SET mainTank='%u' WHERE leaderGuid='%u'", GUID_LOPART(m_mainTank), GUID_LOPART(m_leaderGuid));
 
     return true;
-
 }
 
 bool Group::_setMainAssistant(const uint64 &guid)
