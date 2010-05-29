@@ -2577,6 +2577,25 @@ void Spell::EffectDummy(uint32 i)
 
                 return;
             }
+			// Death Grip
+            else if (m_spellInfo->Id == 49576)
+            {
+                if (!unitTarget)
+                    return;
+
+                m_caster->CastSpell(unitTarget, 49560, true);
+                return;
+            }
+            else if (m_spellInfo->Id == 49560)
+            {
+                if (!unitTarget)
+                    return;
+
+                uint32 spellId = m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_0);
+                unitTarget->CastSpell(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ()+1, spellId, true);
+                return;
+            }
+
             break;
     }
 
