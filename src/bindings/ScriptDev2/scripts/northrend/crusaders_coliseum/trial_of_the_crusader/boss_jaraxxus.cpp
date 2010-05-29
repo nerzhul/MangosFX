@@ -2,7 +2,7 @@
 #include "trial_of_the_crusader.h"
 enum
 {
-	SPELL_BERSERK = 64238,
+	SPELL_BERSERK				= 64238,
 	SPELL_FEL_FIREBALL 			= 66532,
 	SPELL_FEL_LIGHTNING			= 66528,
 	SPELL_INCINERATE_FLESH	 	= 66237,
