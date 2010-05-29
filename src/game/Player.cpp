@@ -3630,7 +3630,7 @@ void Player::removeSpell(uint32 spell_id, bool disabled, bool learn_low_rank, bo
         }
     }
 
-// dual spec
+	// dual spec
 	if(spell_id == 46917 && m_canTitanGrip)
         SetCanTitanGrip(false);
 
@@ -20373,7 +20373,7 @@ void Player::AutoUnequipOffhandIfNeed()
         CharacterDatabase.CommitTransaction();
 
         std::string subject = GetSession()->GetMangosString(LANG_NOT_EQUIPPED_ITEM);
-        MailDraft(subject, "Une erreur est survenue sur cet item.").AddItem(offItem).SendMailTo(this, MailSender(this, MAIL_STATIONERY_GM));
+        MailDraft(subject, "Une erreur est survenue sur cet objet.").AddItem(offItem).SendMailTo(this, MailSender(this, MAIL_STATIONERY_GM));
     }
 }
 

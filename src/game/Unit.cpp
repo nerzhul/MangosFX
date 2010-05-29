@@ -1099,6 +1099,18 @@ void Unit::CastSpell(Unit* Victim,SpellEntry const *spellInfo, bool triggered, I
         originalCaster = triggeredByAura->GetCasterGUID();
 
     Spell *spell = new Spell(this, spellInfo, triggered, originalCaster );
+	
+	if(Victim != this && GetTypeId() == TYPEID_PLAYER && Victim->GetTypeId() == TYPEID_PLAYER)
+    {
+        const AreaTableEntry *area = GetAreaEntryByAreaID(Victim->GetAreaId());
+		// correction sur la zone de duel de dalaran
+		uint32 AreaId = Victim->GetMap()->GetAreaFlag(Victim->GetPositionX(),Victim->GetPositionY(),Victim->GetPositionZ());
+        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaId != 2549)       //sanctuary
+        {
+			spell->SendCastResult(SPELL_FAILED_INCORRECT_AREA);
+			return;
+        }
+    }
 
     SpellCastTargets targets;
     targets.setUnitTarget( Victim );
