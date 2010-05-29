@@ -5874,6 +5874,24 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     unitTarget->RemoveAurasAtMechanicImmunity(IMMUNE_TO_ROOT_AND_SNARE_MASK,30918,true);
                     break;
                 }
+				case 41055:                                 // Copy Weapon
+                {
+                    if (m_caster->GetTypeId() != TYPEID_UNIT || !unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    if (Item* pItem = ((Player*)unitTarget)->GetWeaponForAttack(BASE_ATTACK))
+                    {
+                        if (const ItemEntry *dbcitem = sItemStore.LookupEntry(pItem->GetProto()->ItemId))
+                        {
+                            m_caster->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 0, dbcitem->ID);
+
+                            // Unclear what this spell should do
+                            unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(effIndex), true);
+                        }
+                    }
+
+                    return;
+                }
                 // Flame Crash
                 case 41126:
                 {
@@ -5930,6 +5948,55 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
                     unitTarget->CastSpell(unitTarget, 44870, true);
                     break;
+                }
+				case 45206:                                 // Copy Off-hand Weapon
+                {
+                    if (m_caster->GetTypeId() != TYPEID_UNIT || !unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+                    if (Item* pItem = ((Player*)unitTarget)->GetWeaponForAttack(OFF_ATTACK))
+                    {
+                        if (const ItemEntry *dbcitem = sItemStore.LookupEntry(pItem->GetProto()->ItemId))
+                        {
+                            m_caster->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, dbcitem->ID);
+
+                            // Unclear what this spell should do
+                            unitTarget->CastSpell(m_caster, m_spellInfo->CalculateSimpleValue(effIndex), true);
+                        }
+                    }
+
+                    return;
+                }
+                case 45668:                                 // Ultra-Advanced Proto-Typical Shortening Blaster
+                {
+                    if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+                        return;
+
+                    if (roll_chance_i(25))                  // chance unknown, using 25
+                        return;
+
+                    static uint32 const spellPlayer[5] =
+                    {
+                        45674,                              // Bigger!
+                        45675,                              // Shrunk
+                        45678,                              // Yellow
+                        45682,                              // Ghost
+                        45684                               // Polymorph
+                    };
+
+                    static uint32 const spellTarget[5] =
+                    {
+                        45673,                              // Bigger!
+                        45672,                              // Shrunk
+                        45677,                              // Yellow
+                        45681,                              // Ghost
+                        45683                               // Polymorph
+                    };
+
+                    m_caster->CastSpell(m_caster, spellPlayer[urand(0,4)], true);
+                    unitTarget->CastSpell(unitTarget, spellTarget[urand(0,4)], true);
+
+                    return;
                 }
                 // Goblin Weather Machine
                 case 46203:
