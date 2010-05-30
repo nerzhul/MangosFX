@@ -86,9 +86,9 @@ CreatureAI* GetAI_boss_falric(Creature* pCreature)
     return new boss_falricAI (pCreature);
 }
 
-struct MANGOS_DLL_DECL boss_marwinAI : public LibDevFSAI
+struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
 {
-    boss_marwinAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    boss_marwynAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
         AddEventOnTank(SPELL_OBLITERATE,6000,6000,2000);
@@ -120,9 +120,9 @@ struct MANGOS_DLL_DECL boss_marwinAI : public LibDevFSAI
     }
 };
 
-CreatureAI* GetAI_boss_marwin(Creature* pCreature)
+CreatureAI* GetAI_boss_marwyn(Creature* pCreature)
 {
-    return new boss_marwinAI (pCreature);
+    return new boss_marwynAI (pCreature);
 }
 
 void AddSC_boss_falric_marwyn()
@@ -135,8 +135,8 @@ void AddSC_boss_falric_marwyn()
     newscript->RegisterSelf();
     
     newscript = new Script;
-    newscript->Name = "boss_marwin";
-    newscript->GetAI = &GetAI_boss_marwin;
+    newscript->Name = "boss_marwyn";
+    newscript->GetAI = &GetAI_boss_marwyn;
     newscript->RegisterSelf();
 
 }
