@@ -26,6 +26,32 @@ void ScriptedInstance::DoUseDoorOrButton(uint64 uiGuid, uint32 uiWithRestoreTime
     }
 }
 
+void ScriptedInstance::OpenDoor(uint64 guid)
+{
+	GameObject* pGo = instance->GetGameObject(guid);
+	if(pGo)
+	{
+		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
+		{
+			if (pGo->getLootState() == GO_READY)
+                pGo->UseDoorOrButton();
+		}
+	}
+}
+
+void ScriptedInstance::CloseDoor(uint64 guid)
+{
+	GameObject* pGo = instance->GetGameObject(guid);
+	if(pGo)
+	{
+		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
+		{
+			if (pGo->getLootState() == GO_ACTIVATED)
+                pGo->ResetDoorOrButton();
+		}
+	}
+}
+
 void ScriptedInstance::DoRespawnGameObject(uint64 uiGuid, uint32 uiTimeToDespawn)
 {
     if (GameObject* pGo = instance->GetGameObject(uiGuid))

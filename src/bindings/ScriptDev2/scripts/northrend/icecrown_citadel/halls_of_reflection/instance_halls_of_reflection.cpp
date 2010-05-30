@@ -189,8 +189,12 @@ struct instance_halls_of_reflection : public ScriptedInstance
     {
         switch(type)
         {
-			case TYPE_FALRIC:
 			case TYPE_MARWYN:
+				uiEncounter[type] = data;
+				if(data == DONE)
+					OpenDoor(LichKingDoor);
+				break;
+			case TYPE_FALRIC:
 			case TYPE_LICHKING:
 				uiEncounter[type] = data;
 				break;
@@ -238,6 +242,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return uiFalric;
 			case TYPE_MARWYN:
 				return uiMarwyn;
+			case DATA_DOOR_MAIN:
+				return MainDoor;
+			case DATA_DOOR_LICHKING:
+				return LichKingDoor;
         }
         return 0;
     }
@@ -267,6 +275,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			vague = 5;
 
 		vague_Timer = 2000;
+		CloseDoor(GetData64(DATA_DOOR_LICHKING));
+		CloseDoor(GetData64(DATA_DOOR_MAIN));
 	}
 
 	void Update(uint32 diff)
@@ -278,6 +288,12 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			DoUpdateWorldState(WS_VAGUE,vague);
 			FrostMourneEvent = NOT_STARTED;
 			LichKingEscape = NOT_STARTED;
+			if(FrostMourneEvent == DONE)
+				OpenDoor(GetData64(DATA_DOOR_LICHKING));
+			else
+				CloseDoor(GetData64(DATA_DOOR_LICHKING));
+
+			OpenDoor(GetData64(DATA_DOOR_MAIN));
 			return;
 		}
 
