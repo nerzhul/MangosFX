@@ -951,4 +951,6 @@ void AddScripts()
 	AddSC_boss_garfrost();
 	AddSC_boss_ick_and_krick();
 	AddSC_instance_pit_of_saron();
+	AddSC_instance_halls_of_reflection();
+	AddSC_boss_falric_marwyn();
 }
