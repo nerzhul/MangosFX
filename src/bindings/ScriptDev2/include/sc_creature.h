@@ -216,6 +216,11 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
 	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
+	void InitInstance() 
+	{
+		pInstance = (ScriptedInstance*)me->GetInstanceData();
+		m_difficulty = me->GetMap()->GetDifficulty();
+	}
 
 	protected:
 		ScriptedInstance* pInstance;
@@ -420,8 +425,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void InitInstance()
 		{
-			pInstance = (ScriptedInstance*)me->GetInstanceData();
-			m_difficulty = me->GetMap()->GetDifficulty();
+			ScriptedAI::InitInstance();
 			InitIA();
 		}
 		
