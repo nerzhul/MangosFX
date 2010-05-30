@@ -4657,7 +4657,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 				case CLASS_DEATH_KNIGHT:
 				case CLASS_WARRIOR:
 				case CLASS_PALADIN:
-					player->AddItem(37161);
+					player->AddItem(37162);
 					player->AddItem(41114);
 					player->AddItem(41345);
 					player->AddItem(40669);

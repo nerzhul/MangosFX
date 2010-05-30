@@ -374,8 +374,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                        phasetim = 17000;
                        break;
              case 3:
-				 if(Creature* Arthas = GetGuidCreature(me->GetGUID()))
-                       DoScriptText(SAY_INTRO01, Arthas);
+                   DoScriptText(SAY_INTRO01, me);
                    ++phase;
                    phasetim = 2000;
                    break;
@@ -591,39 +590,39 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 1000;
                    break;
             case 71:
-					if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
-					{
-                       DoScriptText(SAY_ENTER04, Crazyman);
-                       Crazyman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-                       if(Creature* Cityman = GetGuidCreature(CitymanGUID))
-						   Kill(Cityman);
-                      me->SetUInt64Value(UNIT_FIELD_TARGET, CrazymanGUID);
-                      me->GetMotionMaster()->MovePoint(0, 2092.154f,1276.645f,140.52f);
-					}
-                   ++phase;
-                   phasetim = 3000;
-                   break;
-            case 73:
-                   me->HandleEmoteCommand(37);
+				if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
+				{
+                   DoScriptText(SAY_ENTER04, Crazyman);
+                   Crazyman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+                   if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+					   Kill(Cityman);
+                  me->SetUInt64Value(UNIT_FIELD_TARGET, CrazymanGUID);
+                  me->GetMotionMaster()->MovePoint(0, 2092.154f,1276.645f,140.52f);
+				}
 				   ++phase;
-				   phasetim = 1000;
+				   phasetim = 3000;
 				   break;
+            case 73:
+               me->HandleEmoteCommand(37);
+			   ++phase;
+			   phasetim = 1000;
+			   break;
             case 75:
 				if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
                     Kill(Crazyman);
-				   ++phase;
-				   phasetim = 1000;
-				   break;
+			   ++phase;
+			   phasetim = 1000;
+			   break;
            case 77:
 			   if(Creature* Stalker = GetGuidCreature(StalkerGUID))
-                  Stalker =me->SummonCreature(20562,2081.447f,1287.770f,141.3241f,1.37f,TEMPSUMMON_TIMED_DESPAWN,70000);
+                  Stalker = me->SummonCreature(20562,2081.447f,1287.770f,141.3241f,1.37f,TEMPSUMMON_TIMED_DESPAWN,70000);
                me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
                DoScriptText(SAY_ENTER05, me);
 			   ++phase;
 			   phasetim = 3000;
 			   break;
            case 79:
-			   if(Creature* StalkerM =me->SummonCreature(20562,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
+			   if(Creature* StalkerM = me->SummonCreature(20562,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
 			   {
 				   StalkerMGUID = StalkerM->GetGUID();
 				   StalkerM->CastSpell(StalkerM,63793,false);
@@ -802,9 +801,6 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
 
 	ScriptedInstance* pInstance;
 
-	Unit* Target;
-	Creature* Arthas;
-	Creature* Patricia;
 	uint32 Step;
 	uint32 Steptim;
 	bool Event;
@@ -818,66 +814,58 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
        Event2Com = false;
        Step = 1;
        Steptim = 20000;
-       if(Event == true)
-       {}else Event = false;
+       if(!Event)
+			Event = false;
    }
 
 	void MoveInLineOfSight(Unit *who)
     {      
-          if (Event2 == false && me->IsWithinDistInMap(who, 20.0f))
-          {
-            Target = who;
+          if (!Event2 && me->IsWithinDistInMap(who, 20.0f))
             Event2Com = true;
-          }
 
-        if (Event == false && me->IsWithinDistInMap(who, 20.0f))
-        {
+        if (!Event && me->IsWithinDistInMap(who, 20.0f))
             if (pInstance->GetData(TYPE_ARTHAS_EVENT) == IN_PROGRESS)
-            {
                   Event = true;
-            }
-		}
-           ScriptedAI::MoveInLineOfSight(who);
+        ScriptedAI::MoveInLineOfSight(who);
     }
 
-   void UpdateAI(const uint32 diff)
+	void UpdateAI(const uint32 diff)
     {
 		 if(Event == true)
 		 {
            switch(Step)
              {
                  case 1:
-                           Patricia = me;
-                           DoScriptText(SAY_PEOPLE05, Patricia);
+                           DoScriptText(SAY_PEOPLE05, me);
                            ++Step;
                            Steptim = 5000;
                            break;
                  case 3:
-                           Patricia->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
-                           DoScriptText(SAY_PEOPLE06, Patricia);
-                           Patricia->GetMotionMaster()->MovePoint(0, 2395.487f,1203.199f,134.125f); 
+                           me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                           DoScriptText(SAY_PEOPLE06, me);
+                           me->GetMotionMaster()->MovePoint(0, 2395.487f,1203.199f,134.125f); 
                            ++Step;
                            Steptim = 13000;
                            break;
                 case 5:
-                           Patricia->GetMotionMaster()->MovePoint(0, 2431.674f,1211.797f,134.124f);
+                           me->GetMotionMaster()->MovePoint(0, 2431.674f,1211.797f,134.124f);
                            ++Step;
                            Steptim = 7000;
                            break;
                 case 7:
-                           Patricia->GetMotionMaster()->MovePoint(0, 2438.028f,1206.680f,133.935f);
+                           me->GetMotionMaster()->MovePoint(0, 2438.028f,1206.680f,133.935f);
                            ++Step;
                            Steptim = 3000;
                            break;
-               case 9:
-                           Patricia->GetMotionMaster()->MovePoint(0, 2437.524f,1206.971f,133.935f);
+				case 9:
+                           me->GetMotionMaster()->MovePoint(0, 2437.524f,1206.971f,133.935f);
                            Event2 = false;
                            ++Step;
                            Steptim = 3000;
                            break; 
-               case 11:
-                           if(Event2Com == false) return;
-                           Patricia->SetUInt64Value(UNIT_FIELD_TARGET, Target->GetGUID());
+				case 11:
+                           if(!Event2Com)
+							   return;
                            ++Step;
                            Steptim = 1000;
                            break; 
@@ -1021,10 +1009,6 @@ struct MANGOS_DLL_DECL npc_time_riftCSAI : public ScriptedAI
 		Reset();
 	}
 
-	Creature* Drakonian01;
-	Creature* Drakonian02;
-	Creature* Drakonian03;
-	Creature* Arthas;
 	bool Conversion;
 	uint32 Step;
 	uint32 Steptim;
@@ -1039,28 +1023,26 @@ struct MANGOS_DLL_DECL npc_time_riftCSAI : public ScriptedAI
    void UpdateAI(const uint32 diff)
     {
           switch(Step)
-             {
-           case 1:
-                      if (Creature* pArthas = GetClosestCreatureWithEntry(me, NPC_ARTHAS, 180.0f))
-                            Arthas = pArthas;
-                     Drakonian01 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
-                     Drakonian01->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
-                     ++Step;
-                     Steptim = 3000;
-                     break;
-           case 3:
-                     Drakonian02 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
-                     Drakonian02->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
-                     ++Step;
-                     Steptim = 3000;
-                     break; 
-          case 5:   
-                     Drakonian03 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000);
-                     Drakonian03->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
-                     ++Step;
-                     Steptim = 3000;
-                     break;  
-                }
+          {
+			 case 1:
+				 if(Creature* Drakonian01 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+					Drakonian01->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 ++Step;
+				 Steptim = 3000;
+				 break;
+			 case 3:
+				 if(Creature* Drakonian02 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+					Drakonian02->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 ++Step;
+				 Steptim = 3000;
+				 break; 
+			case 5:   
+				 if(Creature*Drakonian03 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+					Drakonian03->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 ++Step;
+				 Steptim = 3000;
+				 break;  
+          }
 
  	   if (Steptim <= diff)
 	   {

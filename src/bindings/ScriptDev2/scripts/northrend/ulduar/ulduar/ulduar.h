@@ -378,10 +378,9 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 
 	uint64 GetIgnisRandomAdd()
 	{
-		bool find_good = false;
 		uint16 rand_add;
 		uint16 force_out = 0;
-		while(!find_good && force_out < 30)
+		while(force_out < 30)
 		{
 			rand_add = rand() % 20;
 			uint16 nb_add = 0;
