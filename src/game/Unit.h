@@ -803,15 +803,18 @@ class MovementInfo
 
         // Position manipulations
         Position const *GetPos() const { return &pos; }
-        void SetTransportData(uint64 guid, float x, float y, float z, float o, uint32 time, int8 seat)
+        void SetTransportData(uint64 guid, float x, float y, float z, float o, uint32 time, int8 seat, uint32 dbc_seat = 0, uint32 seat_flags = 0, uint32 vehicle_flags = 0)
         {
             t_guid = guid;
             t_pos.x = x;
             t_pos.y = y;
             t_pos.z = z;
-            t_pos.o = z;
+            t_pos.o = o;
             t_time = time;
             t_seat = seat;
+			t_dbc_seat = dbc_seat;
+			t_seat_flags = seat_flags;
+			t_vehicle_flags = vehicle_flags;
         }
 		void ClearTransportData()
         {
@@ -822,6 +825,9 @@ class MovementInfo
             t_pos.o = 0.0f;
             t_time = 0;
             t_seat = -1;
+			t_dbc_seat = 0;
+			t_seat_flags = 0;
+			t_vehicle_flags = 0;
         }
 		void SetGuid(uint64 guid){ t_guid = guid; }
         uint64 GetTransportGuid() const { return t_guid; }
@@ -829,6 +835,9 @@ class MovementInfo
         int8 GetTransportSeat() const { return t_seat; }
         uint32 GetTransportTime() const { return t_time; }
         uint32 GetFallTime() const { return fallTime; }
+		uint32 GetTransportDBCSeat() const { return t_dbc_seat; }
+		uint32 GetVehicleSeatFlags() const { return t_seat_flags; }
+		uint32 GetVehicleFlags() const { return t_vehicle_flags; }
         void ChangePosition(float x, float y, float z, float o) { pos.x = x; pos.y = y; pos.z = z; pos.o = o; }
         void UpdateTime(uint32 _time) { time = _time; }
 
@@ -844,6 +853,9 @@ class MovementInfo
         uint32   t_time;
         int8     t_seat;
         uint32   t_time2;
+		uint32   t_dbc_seat;
+		uint32   t_seat_flags;
+		uint32   t_vehicle_flags;
         // swimming and flying
         float    s_pitch;
         // last fall time
@@ -1111,24 +1123,6 @@ typedef std::set<uint64> GuardianPetList;
 #define REGEN_TIME_PRECISE  500                             // Used in Spell::CheckPower for precise regeneration in spell cast time
 
 struct SpellProcEventEntry;                                 // used only privately
-
-// vehicle system
-struct SeatData
-{
-    SeatData() : OffsetX(0.0f), OffsetY(0.0f),  OffsetZ(0.0f), Orientation(0.0f),
-                c_time(0), dbc_seat(0), seat(0), s_flags(0), v_flags(0) {}
-
-    float OffsetX;
-    float OffsetY;
-    float OffsetZ;
-    float Orientation;
-    uint32 c_time;
-    uint32 dbc_seat;
-    uint8 seat;
-    //custom, used as speedup
-    uint32 s_flags;
-    uint32 v_flags;
-};
 
 enum UnitTypeMask
 {
@@ -1921,8 +1915,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		void SendMonsterMoveTransport(Unit *vehicleOwner);
 		bool SetPosition(float x, float y, float z, float orientation, bool teleport = false);
 		Player *m_movedPlayer;
-		SeatData m_SeatData;
-		void BuildVehicleInfo(Unit *target);
 		// fin fss
 
     protected:

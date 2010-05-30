@@ -446,24 +446,14 @@ void Unit::SendMonsterMoveByPath(Path const& path, uint32 start, uint32 end, Mon
 
 void Unit::BuildHeartBeatMsg(WorldPacket *data) const
 {
-    MovementFlags move_flags = GetTypeId()==TYPEID_PLAYER
-        ? ((Player const*)this)->m_movementInfo.GetMovementFlags()
-        : MOVEFLAG_NONE;
-
 	//Hack for flying creatures, but it works!
-    if(GetTypeId()!=TYPEID_PLAYER && ((Creature*)this)->canFly())
-        move_flags = MOVEFLAG_FLYING;
+    if(GetTypeId()!=TYPEID_PLAYER && ((Creature*)this)->canFly() &&
+		!m_movementInfo.HasMovementFlag(MOVEFLAG_FLYING))
+        ((Unit*)this)->m_movementInfo.AddMovementFlag(MOVEFLAG_FLYING);
 
-    data->Initialize(MSG_MOVE_HEARTBEAT, 32);
+    data->Initialize(MSG_MOVE_HEARTBEAT);
     data->append(GetPackGUID());
-    *data << uint32(move_flags);                            // movement flags
-    *data << uint16(0);                                     // 2.3.0
-    *data << uint32(getMSTime());                           // time
-    *data << float(GetPositionX());
-    *data << float(GetPositionY());
-    *data << float(GetPositionZ());
-    *data << float(GetOrientation());
-    *data << uint32(0);
+	((Unit*)this)->m_movementInfo.Write(*data);
 }
 
 void Unit::resetAttackTimer(WeaponAttackType type)
@@ -14904,7 +14894,7 @@ void Unit::ExitVehicle()
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
 			{
-				if(m_SeatData.s_flags & SF_MAIN_RIDER)
+				if(m_movementInfo.GetVehicleSeatFlags() & SF_MAIN_RIDER)
 				{
 					if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
 					{
@@ -14928,6 +14918,7 @@ void Unit::ExitVehicle()
 			if(GetTypeId() == TYPEID_PLAYER)
 			{
 				((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+				((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
 			}
 		}
     }
@@ -15026,7 +15017,7 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
     data.append(GetPackGUID());
     data.append(m_vehicle->GetBase()->GetPackGUID());
-    data << uint8(m_SeatData.seat);
+	data << uint8(m_movementInfo.GetTransportDBCSeat());
     data << uint8(0);
     data << m_vehicle->GetBase()->GetPositionX();
     data << m_vehicle->GetBase()->GetPositionY();
@@ -15037,9 +15028,9 @@ void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
     data << uint32(0x00800000);
     data << uint32(0);// move time
 	data << uint32(1);
-    data << m_SeatData.OffsetX;
-    data << m_SeatData.OffsetY;
-    data << m_SeatData.OffsetZ;
+    data << m_movementInfo.GetTransportPos()->x;
+	data << m_movementInfo.GetTransportPos()->y;
+	data << m_movementInfo.GetTransportPos()->z;
     SendMessageToSet(&data, true);
 }
 
@@ -15076,33 +15067,3 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
 
     return (relocated || turn);
 }
-
-void Unit::BuildVehicleInfo(Unit *target)
-{
-    if(!target)
-        return;
-
-    if(!target->GetVehicle())
-        return;
-
-    uint32 veh_time = getMSTimeDiff(target->m_SeatData.c_time,getMSTime());
-    WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
-    data.append(target->GetPackGUID());
-    data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
-    data << uint16(0);
-    data << uint32(getMSTime());
-    data << float(target->GetPositionX());
-    data << float(target->GetPositionY());
-    data << float(target->GetPositionZ());
-    data << float(target->GetOrientation());
-    data.appendPackGUID(target->GetVehicleGUID());
-    data << float(target->m_SeatData.OffsetX);
-    data << float(target->m_SeatData.OffsetY);
-    data << float(target->m_SeatData.OffsetZ);
-    data << float(target->m_SeatData.Orientation);
-    data << uint32(veh_time);
-    data << uint8 (target->m_SeatData.seat);
-    data << uint32(m_movementInfo.GetFallTime());
-    SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
-}
-

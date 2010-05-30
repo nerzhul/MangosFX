@@ -229,11 +229,6 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 		else
 			UpdateEvent(diff,1);
     }
-
-    void JustDied(Unit* killer)
-    {
-       GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
-    }
 };
 
 CreatureAI* GetAI_boss_rimefang(Creature* pCreature)

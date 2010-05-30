@@ -301,12 +301,9 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
         if(minion)
             accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
         accessory->EnterVehicle(this, seatId);
-        // This is not good, we have to send update twice
 		WorldPacket data;
 		accessory->BuildHeartBeatMsg(&data);
 		accessory->SendMessageToSet(&data, false);
-		if(accessory->isVehicle())
-			accessory->BuildVehicleInfo(accessory);
     }
 }
 
@@ -356,16 +353,15 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
     if(!veSeat)
         return false;
+	error_log("TEST");
+	me->m_movementInfo.SetTransportData(me->GetGUID(),
+		(veSeat->m_attachmentOffsetX + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
+		(veSeat->m_attachmentOffsetY + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
+		(veSeat->m_attachmentOffsetZ + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
+		veSeat->m_passengerYaw, 0/*v->GetCreationTime()*/, seatId, veSeat->m_ID,
+		sObjectMgr.GetSeatFlags(veSeat->m_ID), GetVehicleFlags());
 
-	m_SeatData.OffsetX = veSeat->m_attachmentOffsetX;      // transport offsetX
-    m_SeatData.OffsetY = veSeat->m_attachmentOffsetY;      // transport offsetY
-    m_SeatData.OffsetZ = veSeat->m_attachmentOffsetZ;      // transport offsetZ
-    m_SeatData.Orientation = veSeat->m_passengerYaw;                                                                    // NOTE : needs cnfirmation
-    m_SeatData.c_time = 0/*v->GetCreationTime()*/;
-    m_SeatData.dbc_seat = veSeat->m_ID;
-    m_SeatData.seat = seatId;
-    m_SeatData.s_flags = sObjectMgr.GetSeatFlags(veSeat->m_ID);
-	m_SeatData.v_flags = unit->GetVehicle()->GetVehicleFlags();
+	error_log("test2");
 
 	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
@@ -579,22 +575,14 @@ void Vehicle::RemovePassenger(Unit *unit)
                 unit->SendMessageToSet(&data1,true);
             }
         }
-        unit->m_SeatData.OffsetX = 0.0f;
-        unit->m_SeatData.OffsetY = 0.0f;
-        unit->m_SeatData.OffsetZ = 0.0f;
-        unit->m_SeatData.Orientation = 0.0f;
-        unit->m_SeatData.c_time = 0;
-        unit->m_SeatData.dbc_seat = 0;
-        unit->m_SeatData.seat = 0;
-        unit->m_SeatData.s_flags = 0;
-        unit->m_SeatData.v_flags = 0;
+        unit->m_movementInfo.ClearTransportData();
 
         seat->second.passenger = NULL;
         seat->second.flags = SEAT_FREE;
 
 		unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 		unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
-
+		
         EmptySeatsCountChanged();
     }
 }
@@ -608,10 +596,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang, Map* map)
         {
 			if (Unit *passengers = seat.passenger)
 			{
-				float xx = x + passengers->m_SeatData.OffsetX;
-				float yy = y + passengers->m_SeatData.OffsetY;
-				float zz = z + passengers->m_SeatData.OffsetZ;
-				float oo = ang + passengers->m_SeatData.Orientation;
+				float xx = x + passengers->m_movementInfo.GetTransportPos()->x;
+				float yy = y + passengers->m_movementInfo.GetTransportPos()->y;
+				float zz = z + passengers->m_movementInfo.GetTransportPos()->z;
+				float oo = ang + passengers->m_movementInfo.GetTransportPos()->o;
 
 				if(passengers->GetTypeId() == TYPEID_PLAYER)
 					((Player*)passengers)->SetPosition(xx, yy, zz, oo);
@@ -626,10 +614,10 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang, Map* map)
             if(!passengers)
 				return;
 
-            float xx = x + passengers->m_SeatData.OffsetX;
-			float yy = y + passengers->m_SeatData.OffsetY;
-			float zz = z + passengers->m_SeatData.OffsetZ;
-			float oo = ang + passengers->m_SeatData.Orientation;
+            float xx = x + passengers->m_movementInfo.GetTransportPos()->x;
+			float yy = y + passengers->m_movementInfo.GetTransportPos()->y;
+			float zz = z + passengers->m_movementInfo.GetTransportPos()->z;
+			float oo = ang + passengers->m_movementInfo.GetTransportPos()->o;
 
             map->CreatureRelocation((Creature*)passengers, xx, yy, zz, oo);
 			passengers->GetVehicleKit()->RelocatePassengers(x,y,z,ang,map);
@@ -686,9 +674,9 @@ void Vehicle::EmptySeatsCountChanged()
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
 			{
 				if(u_count > 0)
-					vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FREE);
+					vehicle->ChangeSeatFlag(m_movementInfo.GetTransportSeat(), SEAT_VEHICLE_FREE);
 				else
-					vehicle->ChangeSeatFlag(m_SeatData.seat, SEAT_VEHICLE_FULL);
+					vehicle->ChangeSeatFlag(m_movementInfo.GetTransportSeat(), SEAT_VEHICLE_FULL);
 			}
     }
 }

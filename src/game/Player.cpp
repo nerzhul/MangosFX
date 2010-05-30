@@ -18327,7 +18327,9 @@ void Player::HandleStealthedUnitsDetection()
                 if((*i)!=this && (*i)->isType(TYPEMASK_UNIT))
                 {
                     SendAurasForTarget(*i);
-                    //BuildVehicleInfo(*i);
+                    WorldPacket data;
+					(*i)->BuildHeartBeatMsg(&data);
+					GetSession()->SendPacket(&data);
 				}
             }
         }
@@ -19558,7 +19560,9 @@ void Player::UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* targe
             if(target!=this && target->isType(TYPEMASK_UNIT))
             {
                 SendAurasForTarget((Unit*)target);
-                //BuildVehicleInfo((Unit*)target);
+                WorldPacket data;
+				((Unit*)target)->BuildHeartBeatMsg(&data);
+				GetSession()->SendPacket(&data);
 			}
 
             if(target->GetTypeId()==TYPEID_UNIT && ((Creature*)target)->isAlive())
