@@ -20,36 +20,28 @@ enum
     SAY_EPOCH_WARP03			= -1594125
 };
 
-struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_lord_epochAI : public LibDevFSAI
 {
-   boss_lord_epochAI(Creature *c) : ScriptedAI(c)
+   boss_lord_epochAI(Creature *c) : LibDevFSAI(c)
    {
-        m_bIsHeroic = c->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEvent(SPELL_COURSE,9300,8900,700);
+		AddEventOnTank(m_difficulty ? SPELL_SPIKE_H : SPELL_SPIKE_N,5300,4800,700);
+		if(m_difficulty)
+			AddEvent(SPELL_TIME_STOP,21300,21000,1000);
    }
 
 	uint32 Step;
 	uint32 Steptim;
 	uint32 Intro;
-	bool m_bIsHeroic;
-	uint32 Spike_Timer;
 	uint32 Warp_Timer;
-	uint32 Stop_Timer;
-	uint32 Course_Timer;
-	Unit* target;
-	MobEventTasks Tasks;
 
 	void Reset() 
 	{
-		Tasks.SetObjects(this,me);
-		target = NULL;
 		Intro = 0;
 		Step = 1;
 		Steptim = 26000;
-		Course_Timer = 9300;
-		Stop_Timer = 21300;
 		Warp_Timer = 25300;
-		Spike_Timer = 5300;
 	}
    
 	void Aggro(Unit* who)
@@ -57,10 +49,10 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 		DoScriptText(SAY_EPOCH_AGGRO, me);
 	}
 
-   void JustDied(Unit *killer)
+	void JustDied(Unit *killer)
     {
        DoScriptText(SAY_EPOCH_DEATH, me);
-	   GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+	   GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -73,10 +65,10 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
         }
     }
 
-   void UpdateAI(const uint32 diff)
-   {
-       if(Intro == 0)
-       {
+	void UpdateAI(const uint32 diff)
+	{
+	   if(Intro == 0)
+	   {
 			 switch(Step)
 			 {
 				 case 1:
@@ -90,7 +82,7 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 					  Steptim = 1000;
 					  break;
 			  }
-        }
+		}
 		else 
 			return;
 
@@ -102,66 +94,31 @@ struct MANGOS_DLL_DECL boss_lord_epochAI : public ScriptedAI
 	   else
 			Steptim -= diff;
 
-        if (!CanDoSomething())
-            return;
-
-
-		if (Course_Timer <= diff)
-        {
-			target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            DoCast(target, SPELL_COURSE);
-
-            Course_Timer = urand(8900,9600);
-        }
-		else 
-			Course_Timer -= diff;
-
-		if (Spike_Timer <= diff)
-        {
-            DoCastVictim(m_bIsHeroic ? SPELL_SPIKE_H : SPELL_SPIKE_N);
-            Spike_Timer = urand(4800,5500);
-        }
-		else 
-			Spike_Timer -= diff;
-
-		if (m_bIsHeroic == true)
-		{
-			if (Stop_Timer <= diff)
-			{
-				target = SelectUnit(SELECT_TARGET_RANDOM,0);
-				DoCast(target, SPELL_TIME_STOP);
-
-				Stop_Timer = urand(21000,22000);
-			}
-			else 
-				Stop_Timer -= diff;
-		}
+		if (!CanDoSomething())
+			return;
 
 		if (Warp_Timer <= diff)
-        {
-			target = SelectUnit(SELECT_TARGET_RANDOM,0);
-            DoCast(target, SPELL_TIME_WARP);
+		{
+			DoCastRandom(SPELL_TIME_WARP);
 			switch(urand(0,2))
 			{
 				case 0: DoScriptText(SAY_EPOCH_WARP01, me); break;
 				case 1: DoScriptText(SAY_EPOCH_WARP02, me); break;
 				case 2: DoScriptText(SAY_EPOCH_WARP03, me); break;
 			}
-
-            Warp_Timer = urand(24500,25500);
-        }
+			Warp_Timer = urand(24500,25500);
+		}
 		else 
 			Warp_Timer -= diff;
 
-		
+		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
-  }
+	}
 };
 
 CreatureAI* GetAI_boss_lord_epoch(Creature *_Creature)
 {
-    boss_lord_epochAI* lord_epochAI = new boss_lord_epochAI(_Creature);
-    return (CreatureAI*)lord_epochAI;
+    return new boss_lord_epochAI(_Creature);
 };
 
 void AddSC_boss_lord_epoch()

@@ -25,26 +25,23 @@ enum Spells
     SPELL_VOID_STRIKE                 = 60590
 };
 
-struct MANGOS_DLL_DECL boss_infiniteAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_infiniteAI : public LibDevFSAI
 {
 	uint32 blight_Timer;
 	uint32 strike_Timer;
-	bool m_bIsHeroic;
-	MobEventTasks Tasks;
 
-    boss_infiniteAI(Creature *c) : ScriptedAI(c)
+    boss_infiniteAI(Creature *c) : LibDevFSAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-		m_bIsHeroic = c->GetMap()->GetDifficulty();
+        InitInstance();
+		AddEventOnTank(SPELL_VOID_STRIKE,8000,6500,3500);
+		AddEvent(SPELL_CORRUPTING_BLIGHT,6000,5000,2000);
     }
     
     ScriptedInstance* pInstance;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		strike_Timer = 8000;
-		blight_Timer = 6000;
+		ResetTimers();
         /*if (pInstance)
             pInstance->SetData(DATA_INFINITE_EVENT, NOT_STARTED);*/
     }
@@ -63,21 +60,7 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		if(strike_Timer <= diff)
-		{
-			DoCast(SelectUnit(SELECT_TARGET_TOPAGGRO,0),SPELL_VOID_STRIKE);
-			strike_Timer = urand(6500,10000);
-		}
-		else
-			strike_Timer -= diff;
-
-		if(blight_Timer <= diff)
-		{
-			DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_CORRUPTING_BLIGHT);
-			blight_Timer = urand(5000,7000);
-		}
-		else
-			blight_Timer -= diff;
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

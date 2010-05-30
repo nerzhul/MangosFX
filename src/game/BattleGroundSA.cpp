@@ -69,7 +69,6 @@ void BattleGroundSA::Reset()
 
 bool BattleGroundSA::SetupBattleGround()
 {
-
   return ResetObjs(); 
 }
 
@@ -228,31 +227,31 @@ bool BattleGroundSA::ResetObjs()
 
 void BattleGroundSA::StartShips()
 {
-  if(ShipsStarted)
-    return;
-  sLog.outError("SOTA: Starting boats!");
-  DoorOpen(BG_SA_BOAT_ONE);
-  DoorOpen(BG_SA_BOAT_TWO);
+	if(ShipsStarted)
+		return;
+	sLog.outError("SOTA: Starting boats!");
+	DoorOpen(BG_SA_BOAT_ONE);
+	DoorOpen(BG_SA_BOAT_TWO);
 
-  for(int i = BG_SA_BOAT_ONE; i <= BG_SA_BOAT_TWO; i++)
-    {
-      for( BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();itr++)
+	for(int i = BG_SA_BOAT_ONE; i <= BG_SA_BOAT_TWO; i++)
 	{
-	  if(Player* p = sObjectMgr.GetPlayer(itr->first))
-	    {
-	      if(p->GetBGTeam() != attackers)
-		continue;
+		for( BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();itr++)
+		{
+			if(Player* p = sObjectMgr.GetPlayer(itr->first))
+			{
+				if(p->GetBGTeam() != attackers)
+					continue;
 
-	      UpdateData data;
-	      WorldPacket pkt;
-	      GetBGObject(i)->BuildValuesUpdateBlockForPlayer(&data, p);
-	      data.BuildPacket(&pkt);
-	      p->GetSession()->SendPacket(&pkt);
-	    }
+				UpdateData data;
+				WorldPacket pkt;
+				GetBGObject(i)->BuildValuesUpdateBlockForPlayer(&data, p);
+				data.BuildPacket(&pkt);
+				p->GetSession()->SendPacket(&pkt);
+			}
+		}
 	}
-    }
-  
-  ShipsStarted = true;
+	  
+	ShipsStarted = true;
 }
 
 void BattleGroundSA::Update(uint32 diff)

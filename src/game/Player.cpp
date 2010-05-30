@@ -8265,7 +8265,7 @@ static WorldStatePair AB_world_states[] =
     { 0x6f1, 0x0 },                                         // 16 1777 horde resources
     { 0x6f2, 0x0 },                                         // 17 1778 horde bases
     { 0x6f3, 0x0 },                                         // 18 1779 alliance bases
-    { 0x6f4, 0x7d0 },                                       // 19 1780 max resources (2000)
+    { 0x6f4, 0x640 },                                       // 19 1780 max resources (1600)
     { 0x6f6, 0x0 },                                         // 20 1782 blacksmith color
     { 0x6f7, 0x0 },                                         // 21 1783 blacksmith (show/hide)
     { 0x6f8, 0x0 },                                         // 22 1784 unk, bs?
