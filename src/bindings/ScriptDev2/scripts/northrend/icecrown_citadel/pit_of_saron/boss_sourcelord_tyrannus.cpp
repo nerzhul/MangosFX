@@ -183,6 +183,7 @@ struct MANGOS_DLL_DECL boss_rimefangAI : public LibDevFSAI
 		SetCombatMovement(false);
 		Relocate(986.452,186.452f,649.188f);
 		checkTarget_Timer = 1000;
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
 
 	void UpdateTarget()

@@ -41,9 +41,9 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
     data << (uint32) invite_count;                           //invite node count
     for (int i = 0; i < invite_count; i++)
     {
-		uint64 inviteId,eventId;
-		uint8 unk1,unk2,unk3;
-		uint64 creatorGuid;
+		uint64 inviteId=0,eventId=0;
+		uint8 unk1=0,unk2=0,unk3=0;
+		uint64 creatorGuid=0;
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
@@ -51,9 +51,9 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
     
     for (int i = 0; i < event_count; i++)
     {
-		uint64 eventId,creatorGuid;
-		std::string title;
-		uint32 type,occurrence,flags,unk1;
+		uint64 eventId = 0,creatorGuid = 0;
+		std::string title = "";
+		uint32 type = 0,occurrence = 1,flags = 1,unk1 = 0;
 		data << eventId << title << type << occurrence << flags << unk1 << creatorGuid;
 	}
 
@@ -91,8 +91,8 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
     data << (uint32) holiday_count;                   // unk counter 5
     for (int i = 0; i < holiday_count; i++)
     {
-		uint32 unk1,unk2,unk3,unk4,unk5;
-		std::string holidayName;
+		uint32 unk1=0,unk2=0,unk3=0,unk4=0,unk5=0;
+		std::string holidayName ="";
 		data << unk1 << unk2 << unk3 << unk4 << unk5;
 		for (int j = 0; j < 26; j++)
 			data << uint32(0);
@@ -318,9 +318,9 @@ void WorldSession::HandleCalendarEventStatus(WorldPacket &recv_data)
     
     WorldPacket data(SMSG_CALENDAR_EVENT_STATUS);
     data << guid << eventId;
-    uint32 unk4,flags,unk7;
+    uint32 unk4=0,flags=0,unk7=0;
     data << unk4 << flags;
-    uint8 unk5,unk6;
+    uint8 unk5=0,unk6=0;
     data << unk5 << unk6 << unk7;
 }
 

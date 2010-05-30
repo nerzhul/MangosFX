@@ -14945,7 +14945,6 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		return;
 	
     m_vehicle = vehicle;
-	sLog.outError("SEAT ID : %d",seatId);
 	if(seatId < 0)
 		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
 
@@ -15010,28 +15009,6 @@ bool Unit::CreateVehicleKit(uint32 id)
     m_updateFlag |= UPDATEFLAG_VEHICLE;
     m_unitTypeMask |= UNIT_MASK_VEHICLE;
     return true;
-}
-
-void Unit::SendMonsterMoveTransport(Unit *vehicleOwner)
-{
-    WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
-    data.append(GetPackGUID());
-    data.append(m_vehicle->GetBase()->GetPackGUID());
-	data << uint8(m_movementInfo.GetTransportDBCSeat());
-    data << uint8(0);
-    data << m_vehicle->GetBase()->GetPositionX();
-    data << m_vehicle->GetBase()->GetPositionY();
-    data << m_vehicle->GetBase()->GetPositionZ();
-    data << uint32(getMSTime());
-    data << uint8(4);
-    data << GetTransOffsetO();
-    data << uint32(0x00800000);
-    data << uint32(0);// move time
-	data << uint32(1);
-    data << m_movementInfo.GetTransportPos()->x;
-	data << m_movementInfo.GetTransportPos()->y;
-	data << m_movementInfo.GetTransportPos()->z;
-    SendMessageToSet(&data, true);
 }
 
 bool Unit::SetPosition(float x, float y, float z, float orientation, bool teleport)

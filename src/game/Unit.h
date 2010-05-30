@@ -706,7 +706,7 @@ enum SplineFlags
     SPLINEFLAG_DONE         = 0x00000100,
     SPLINEFLAG_FALLING      = 0x00000200,
     SPLINEFLAG_NO_SPLINE    = 0x00000400,
-    SPLINEFLAG_TRAJECTORY   = 0x00000800,
+    SPLINEFLAG_TRAJECTORY   = 0x00000800, // This will crash client in combination of inhabitType=4 and/or monster move
     SPLINEFLAG_WALKMODE     = 0x00001000,
     SPLINEFLAG_FLYING       = 0x00002000,
     SPLINEFLAG_KNOCKBACK    = 0x00004000,
@@ -718,7 +718,7 @@ enum SplineFlags
     SPLINEFLAG_UNKNOWN2     = 0x00100000,
     SPLINEFLAG_UNKNOWN3     = 0x00200000,
     SPLINEFLAG_UNKNOWN4     = 0x00400000,
-    SPLINEFLAG_UNKNOWN5     = 0x00800000,
+    SPLINEFLAG_UNKNOWN5     = 0x00800000, // Teleport..
     SPLINEFLAG_UNKNOWN6     = 0x01000000,
     SPLINEFLAG_UNKNOWN7     = 0x02000000,
     SPLINEFLAG_UNKNOWN8     = 0x04000000,
@@ -1912,7 +1912,6 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		Unit *GetVehicleBase()  const;
 		bool CreateVehicleKit(uint32 id);
 		Creature *GetVehicleCreatureBase() const;
-		void SendMonsterMoveTransport(Unit *vehicleOwner);
 		bool SetPosition(float x, float y, float z, float orientation, bool teleport = false);
 		Player *m_movedPlayer;
 		// fin fss

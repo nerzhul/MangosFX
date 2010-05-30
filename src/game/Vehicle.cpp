@@ -353,15 +353,12 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
     if(!veSeat)
         return false;
-	error_log("TEST");
 	me->m_movementInfo.SetTransportData(me->GetGUID(),
 		(veSeat->m_attachmentOffsetX + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
 		(veSeat->m_attachmentOffsetY + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
 		(veSeat->m_attachmentOffsetZ + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
 		veSeat->m_passengerYaw, 0/*v->GetCreationTime()*/, seatId, veSeat->m_ID,
 		sObjectMgr.GetSeatFlags(veSeat->m_ID), GetVehicleFlags());
-
-	error_log("test2");
 
 	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
@@ -436,8 +433,24 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/
 
     if(me->IsInWorld())
-    {
-		unit->SendMonsterMoveTransport(me);
+    {WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
+		data.append(unit->GetPackGUID());
+		data.append(me->GetPackGUID());
+		data << uint8(seatId);
+		data << uint8(0);
+		data << me->GetPositionX();
+		data << me->GetPositionY();
+		data << me->GetPositionZ();
+		data << uint32(getMSTime());
+		data << uint8(4);
+		data << unit->GetTransOffsetO();
+		data << uint32(SPLINEFLAG_UNKNOWN5);
+		data << uint32(0);// move time
+		data << uint32(1);
+		data << unit->GetTransOffsetX();
+		data << unit->GetTransOffsetY();
+		data << unit->GetTransOffsetZ();
+		unit->SendMessageToSet(&data, true);
         if(me->GetTypeId() == TYPEID_UNIT)
         {
             /*if(((Creature*)me)->IsAIEnabled)
