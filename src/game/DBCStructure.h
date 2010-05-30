@@ -1391,6 +1391,7 @@ struct SoundEntriesEntry
 };
 
 #define MAX_SPELL_REAGENTS 8
+#define MAX_REAGENTS 8
 #define MAX_SPELL_TOTEMS 2
 #define MAX_SPELL_TOTEM_CATEGORIES 2
 
