@@ -40,6 +40,19 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 		phase = 0;
     }
 
+	void Aggro(Unit* who)
+	{
+		Say(16710,"Hommes, femmes, enfants. Nul n'a echape au courroux du maitre. Vos morts ne seront pas differentes.");
+	}
+
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Yell(16711,"Vermisseau pleurnichard !");
+		else
+			Yell(16712,"Les enfants de Stratholme se battaient mieux que ca.");
+	}
+
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
@@ -50,6 +63,11 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 		
 		switch(phase)
 		{
+			if(urand(0,1))
+				Say(16715,"Le desespoir... si delicieux...");
+			else
+				Say(16716,"La peur... si exaltante...");
+
 			case 0:
 				if(CheckPercentLife(75))
 				{
@@ -81,6 +99,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
 	   pInstance->SetData(TYPE_FALRIC,DONE);
+	   Say(16713,"Marwyn... Charge toi d'eux...");
     }
 };
 
@@ -105,6 +124,19 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
 		ResetTimers();
     }
 
+	void Aggro(Unit* pwho)
+	{
+		Yell(16734,"Et la mort est tout ce que vous trouverez ici !");
+	}
+
+	void KilledUnit(Unit* pwho)
+	{
+		if(urand(0,1))
+			Yell(16735,"J'ai vu le meme regard passer dans ses yeux a sa mort... Terenas... Il n'arrivait pas a y croire. Hahahaha !");
+		else
+			Yell(16736,"Que la souffrange vous etouffe !");
+
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -123,6 +155,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
 	   pInstance->SetData(TYPE_MARWYN,DONE);
+	   Say(16737,"Oui... courrez... courrez vers votre destin. Son etreinte froide et amere... vous attend.");
     }
 };
 

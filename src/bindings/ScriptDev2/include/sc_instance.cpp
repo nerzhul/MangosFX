@@ -83,3 +83,29 @@ void ScriptedInstance::DoUpdateWorldState(uint32 uiStateId, uint32 uiStateData)
     else
         debug_log("SD2: DoUpdateWorldState attempt send data but no players in map.");
 }
+
+void ScriptedInstance::DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type)
+{
+	if(!pwho)
+		return;
+
+	if(soundid > 0 && GetSoundEntriesStore()->LookupEntry(soundid))
+		pwho->PlayDirectSound(soundid);
+
+	switch(type)
+    {
+        case CHAT_TYPE_SAY:
+			pwho->MonsterSay(text.c_str(), 0, pwho ? pwho->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_YELL:
+            pwho->MonsterYell(text.c_str(), 0, pwho ? pwho->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_TEXT_EMOTE:
+            pwho->MonsterTextEmote(text.c_str(), pwho ? pwho->GetGUID() : 0);
+            break;
+        case CHAT_TYPE_BOSS_EMOTE:
+            pwho->MonsterTextEmote(text.c_str(), pwho ? pwho->GetGUID() : 0, true);
+            break;
+	}
+
+}

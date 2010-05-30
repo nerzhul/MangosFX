@@ -32,10 +32,14 @@ struct instance_halls_of_reflection : public ScriptedInstance
     uint32 uiEncounter[MAX_ENCOUNTER];
     uint32 uiTeamInInstance;
 	bool TeamIsSet;
+	bool RPFrostmourneDone;
 
 	uint8 vague;
 	uint32 vague_Timer;
 	uint32 respawn_Timer;
+	
+	uint32 event_Timer;
+	uint8 event_Step;
 
 	uint64 MainDoor;
 	uint64 LichKingDoor;
@@ -65,8 +69,11 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
         uiTeamInInstance = 0;
 		TeamIsSet = false;
+		RPFrostmourneDone = false;
 		vague = 0;
 		vague_Timer = 2000;
+		event_Timer = 1000;
+		event_Step = 0;
 
 		MainDoor = 0;
 		LichKingDoor = 0;
@@ -199,8 +206,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					OpenDoor(LichKingDoor);
 					if(Creature* TheLichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
 						TheLichKing->Relocate(5551.325f,2261.067f,733.5f,3.91f);
-					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
-						fLead->ForcedDespawn();
+					/*if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+						fLead->ForcedDespawn();*/
+					FrostMourneEvent = DONE;
 				}
 				break;
 			case TYPE_FALRIC:
@@ -210,6 +218,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case TYPE_EVENT_FROSTMOURNE:
 				if(FrostMourneEvent == DONE)
 					return;
+
 				FrostMourneEvent = EncounterState(data);
 				if(data == IN_PROGRESS)
 					InitFrostmourneEvent();
@@ -259,6 +268,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return LichKingDoor;
 			case TYPE_LICHKING:
 				return uiLichKing;
+			case TYPE_FACTIONLEADER_EV1:
+				return uiFactionleader;
         }
         return 0;
     }
@@ -287,6 +298,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		if(GetData(TYPE_FALRIC) == DONE)
 			vague = 5;
 
+		FrostMourneEvent = IN_PROGRESS;
 		vague_Timer = 2000;
 		CloseDoor(GetData64(DATA_DOOR_LICHKING));
 		OpenDoor(GetData64(DATA_DOOR_MAIN));
@@ -299,7 +311,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			DoRespawnDeadAdds();
 			LichKingEscape = NOT_STARTED;
 			if(FrostMourneEvent == DONE)
-				/*OpenDoor(GetData64(DATA_DOOR_LICHKING))*/;
+				OpenDoor(GetData64(DATA_DOOR_LICHKING));
 			else
 			{
 				FrostMourneEvent = NOT_STARTED;
@@ -312,24 +324,31 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 		if(FrostMourneEvent == IN_PROGRESS)
 		{
-			if(vague_Timer <= diff)
+			if(!RPFrostmourneDone)
 			{
-				DoSpawnAddsOrBoss();
-				if(vague == 5 || vague == 10)
-					vague_Timer = 300000;
+				DoFrostmourneRP(diff);
+			}
+			else
+			{
+				if(vague_Timer <= diff)
+				{
+					DoSpawnAddsOrBoss();
+					if(vague == 5 || vague == 10)
+						vague_Timer = 300000;
+					else
+						vague_Timer = 90000;
+				}
 				else
-					vague_Timer = 90000;
-			}
-			else
-				vague_Timer -= diff;
+					vague_Timer -= diff;
 
-			if(respawn_Timer <= diff)
-			{
-				DoRespawnDeadAdds();
-				respawn_Timer = 35000;
+				if(respawn_Timer <= diff)
+				{
+					DoRespawnDeadAdds();
+					respawn_Timer = 35000;
+				}
+				else
+					respawn_Timer -= diff;
 			}
-			else
-				respawn_Timer -= diff;
 		}
 		
 		if(LichKingEscape == IN_PROGRESS)
@@ -337,6 +356,24 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		}
 	}
 
+	void DoFrostmourneRP(uint32 diff)
+	{
+		if(event_Timer <= diff)
+		{
+			switch(event_Step)
+			{
+				case 0:
+					
+					break;
+				default:
+					RPFrostmourneDone = true;
+					break;
+			}
+			event_Step++;
+		}
+		else
+			event_Timer -= diff;
+	}
 	void DoRespawnDeadAdds()
 	{
 		for (std::vector<uint64>::iterator itr = WarriorVect.begin(); itr != WarriorVect.end();++itr)
@@ -402,6 +439,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		switch(vague)
 		{
 			case 1:
+				if(Creature* Falric = GetCreatureInMap(GetData64(TYPE_FALRIC)))
+					DoSpeak(Falric,16714,"Soldats de Lordaeron, repondez a l'appel de votre maitre !",CHAT_TYPE_YELL);
 			case 2:
 				nbr = 3;
 				break;
@@ -419,6 +458,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				}
 				break;
 			case 6:
+				if(Creature* Marwyn = GetCreatureInMap(GetData64(TYPE_MARWYN)))
+					DoSpeak(Marwyn,16738,"Le maitre s'est penche sur son royaume, et l'a trouve... imparfait. Sa sentence fut sans pitie. La mort, pour tous !",CHAT_TYPE_YELL);
 			case 7:
 				nbr = 5;
 				break;

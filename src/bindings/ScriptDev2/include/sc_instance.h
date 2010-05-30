@@ -51,5 +51,7 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 		{
 			return (Creature*)GetUnitInMap(guid);
 		}
+
+		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
 };
 #endif
