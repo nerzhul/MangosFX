@@ -35,6 +35,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 	uint8 vague;
 	uint32 vague_Timer;
+	uint32 respawn_Timer;
 
     void Initialize()
     {
@@ -250,10 +251,21 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			if(vague_Timer <= diff)
 			{
 				DoSpawnAddsOrBoss();
-				vague_Timer = 90000;
+				if(vague == 5 || vague == 10)
+					vague_Timer = 300000;
+				else
+					vague_Timer = 90000;
 			}
 			else
 				vague_Timer -= diff;
+
+			if(respawn_Timer <= diff)
+			{
+				DoRespawnDeadAdds();
+				respawn_Timer = 35000;
+			}
+			else
+				respawn_Timer -= diff;
 		}
 		
 		if(LichKingEscape == IN_PROGRESS)
@@ -261,8 +273,61 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		}
 	}
 
+	void DoRespawnDeadAdds()
+	{
+		for (std::vector<uint64>::iterator itr = WarriorVect.begin(); itr != WarriorVect.end();++itr)
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+				if(!tmpCr->isAlive())
+				{
+					tmpCr->Respawn();
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					tmpCr->CastSpell(tmpCr,66830,false);
+				}
+		for (std::vector<uint64>::iterator itr = MageVect.begin(); itr != MageVect.end();++itr)
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+				if(!tmpCr->isAlive())
+				{
+					tmpCr->Respawn();
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					tmpCr->CastSpell(tmpCr,66830,false);
+				}
+
+		for (std::vector<uint64>::iterator itr = HuntVect.begin(); itr != HuntVect.end();++itr)
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+				if(!tmpCr->isAlive())
+				{
+					tmpCr->Respawn();
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					tmpCr->CastSpell(tmpCr,66830,false);
+				}
+
+		for (std::vector<uint64>::iterator itr = RogueVect.begin(); itr != RogueVect.end();++itr)
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+				if(!tmpCr->isAlive())
+				{
+					tmpCr->Respawn();
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					tmpCr->CastSpell(tmpCr,66830,false);
+				}
+
+		for (std::vector<uint64>::iterator itr = PriestVect.begin(); itr != PriestVect.end();++itr)
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+				if(!tmpCr->isAlive())
+				{
+					tmpCr->Respawn();
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					tmpCr->CastSpell(tmpCr,66830,false);
+				}
+	}
+
 	void DoSpawnAddsOrBoss()
 	{
+		vague++;
 		uint8 nbr = 0;
 		switch(vague)
 		{
@@ -301,6 +366,66 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					AggroPlayersInMap(Marwyn);
 				}
 				break;
+		}
+
+		if(nbr > 0)
+		{
+			if(Creature* War = GetCreatureInMap(GetData64(DATA_RANDOM_WARRIOR)))
+			{
+				War->RemoveAurasDueToSpell(66830);
+				War->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				War->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				AggroPlayersInMap(War);
+			}
+
+			if(Creature* Mage = GetCreatureInMap(GetData64(DATA_RANDOM_MAGE)))
+			{
+				Mage->RemoveAurasDueToSpell(66830);
+				Mage->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				Mage->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				AggroPlayersInMap(Mage);
+			}
+
+			if(Creature* Priest = GetCreatureInMap(GetData64(DATA_RANDOM_PRIEST)))
+			{
+				Priest->RemoveAurasDueToSpell(66830);
+				Priest->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				Priest->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				AggroPlayersInMap(Priest);
+			}
+
+			if(nbr >= 3)
+			{
+				if(Creature* Rogue = GetCreatureInMap(GetData64(DATA_RANDOM_HUNT)))
+				{
+					Rogue->RemoveAurasDueToSpell(66830);
+					Rogue->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					Rogue->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					AggroPlayersInMap(Rogue);
+				}
+			}
+
+			if(nbr >= 4)
+			{
+				if(Creature* Hunt = GetCreatureInMap(GetData64(DATA_RANDOM_HUNT)))
+				{
+					Hunt->RemoveAurasDueToSpell(66830);
+					Hunt->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					Hunt->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					AggroPlayersInMap(Hunt);
+				}
+			}
+
+			if(nbr >= 5)
+			{
+				if(Creature* tmpCr = GetCreatureInMap(GetData64(DATA_RANDOM_WARRIOR+urand(0,4))))
+				{
+					tmpCr->RemoveAurasDueToSpell(66830);
+					tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					tmpCr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					AggroPlayersInMap(tmpCr);
+				}
+			}
 		}
 	}
 
