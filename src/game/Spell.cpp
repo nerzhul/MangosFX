@@ -6906,3 +6906,11 @@ void Spell::SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spe
 
     return;
 }
+
+void Spell::ClearCastItem()
+{
+	if (m_CastItem==m_targets.getItemTarget())
+		m_targets.setItemTarget(NULL);
+
+	m_CastItem = NULL;
+}

@@ -470,6 +470,7 @@ class Spell
         void CastTriggerSpells();
 
         void CleanupTargetList();
+		void ClearCastItem();
         static void SelectMountByAreaAndSkill(Unit* target, uint32 spellId75, uint32 spellId150, uint32 spellId225, uint32 spellId300, uint32 spellIdSpecial);
 		bool IsValidSingleTargetEffect(Unit const* target, Targets type) const;
 		bool IsValidSingleTargetSpell(Unit const* target) const;
