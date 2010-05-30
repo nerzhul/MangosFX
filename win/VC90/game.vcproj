@@ -551,39 +551,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\Channel.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Channel.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ChannelHandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ChannelMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ChannelMgr.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\CharacterHandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Chat.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Chat.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ChatHandler.cpp"
 				>
 			</File>
 			<File
@@ -1111,6 +1079,42 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\MapManager.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Chat"
+				>
+				<File
+					RelativePath="..\..\src\game\Channel.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Channel.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ChannelHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ChannelMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ChannelMgr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Chat.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Chat.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ChatHandler.cpp"
 					>
 				</File>
 			</Filter>
