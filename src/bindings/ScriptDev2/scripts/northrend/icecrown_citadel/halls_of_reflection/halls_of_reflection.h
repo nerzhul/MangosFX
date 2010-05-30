@@ -17,5 +17,8 @@ enum Types
 	DATA_RANDOM_PRIEST		=	32,
 	DATA_RANDOM_HUNT		=	33,
 	DATA_RANDOM_ROGUE		=	34,
+
+	WS_MAIN					=	4884,
+	WS_VAGUE				=	4882,
 };
 #endif

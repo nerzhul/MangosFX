@@ -33,6 +33,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
     uint32 uiTeamInInstance;
 	bool TeamIsSet;
 
+	uint8 vague;
+	uint32 vague_Timer;
+
     void Initialize()
     {
         uiFalric = 0;
@@ -57,6 +60,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
         uiTeamInInstance = 0;
 		TeamIsSet = false;
+		vague = 0;
+		vague_Timer = 2000;
 
         for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             uiEncounter[i] = NOT_STARTED;
@@ -154,6 +159,13 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		uiFactionleader = uiTeamInInstance == ALLIANCE ? uiJaina : uiSylvanas;
 		uiEvasionFactionleader = uiTeamInInstance == ALLIANCE ? uiEvasionJaina : uiEvasionSylvanas;
 		TeamIsSet = true;
+		if(FrostMourneEvent == IN_PROGRESS)
+		{
+			DoUpdateWorldState(WS_MAIN,1);
+			DoUpdateWorldState(WS_VAGUE,vague);
+		}
+		else
+			DoUpdateWorldState(WS_MAIN,0);		
 	}
 
     void SetData(uint32 type, uint32 data)
@@ -203,6 +215,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return GetOneTrash(HuntVect);
 			case DATA_RANDOM_ROGUE:
 				return GetOneTrash(RogueVect);
+			case TYPE_FALRIC:
+				return uiFalric;
+			case TYPE_MARWYN:
+				return uiMarwyn;
         }
         return 0;
     }
@@ -231,10 +247,60 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 		if(FrostMourneEvent == IN_PROGRESS)
 		{
+			if(vague_Timer <= diff)
+			{
+				DoSpawnAddsOrBoss();
+				vague_Timer = 90000;
+			}
+			else
+				vague_Timer -= diff;
 		}
 		
 		if(LichKingEscape == IN_PROGRESS)
 		{
+		}
+	}
+
+	void DoSpawnAddsOrBoss()
+	{
+		uint8 nbr = 0;
+		switch(vague)
+		{
+			case 1:
+			case 2:
+				nbr = 3;
+				break;
+			case 3:
+				if(Creature* Falric = GetCreatureInMap(TYPE_FALRIC))
+				{
+					Falric->RemoveAurasDueToSpell(66830);
+					Falric->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					Falric->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					AggroPlayersInMap(Falric);
+				}
+				break;
+			case 4:
+				nbr = 4;
+				break;
+			case 5:
+				break;
+			case 6:
+			case 7:
+				nbr = 5;
+				break;
+			case 8:
+			case 9:
+				nbr = 6;
+				break;
+			case 10:
+				if(Creature* Marwyn = GetCreatureInMap(TYPE_MARWYN))
+				{
+					Marwyn->RemoveAurasDueToSpell(66830);
+					Marwyn->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+					Marwyn->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					AggroPlayersInMap(Marwyn);
+				}
+				break;
 		}
 	}
 
@@ -248,6 +314,17 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					if(pPlayer->isAlive())
 						return true;
 		return false;
+	}
+
+	void AggroPlayersInMap(Creature* who)
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive())
+						who->AddThreat(pPlayer,1.0f);
 	}
 
     std::string GetSaveData()
