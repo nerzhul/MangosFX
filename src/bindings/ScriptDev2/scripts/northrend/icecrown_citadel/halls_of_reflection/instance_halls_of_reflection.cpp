@@ -195,11 +195,13 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case TYPE_MARWYN:
 				uiEncounter[type] = data;
 				if(data == DONE)
+				{
 					OpenDoor(LichKingDoor);
-				if(Creature* TheLichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
-					TheLichKing->Relocate(5551.325f,2261.067f,733.5f,3.91f);
-				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
-					fLead->ForcedDespawn();
+					if(Creature* TheLichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+						TheLichKing->Relocate(5551.325f,2261.067f,733.5f,3.91f);
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+						fLead->ForcedDespawn();
+				}
 				break;
 			case TYPE_FALRIC:
 			case TYPE_LICHKING:
