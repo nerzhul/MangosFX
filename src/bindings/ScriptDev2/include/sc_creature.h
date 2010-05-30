@@ -213,6 +213,13 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void Yell(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_YELL, soundid, text, spkCr); }
 	void Say(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_SAY, soundid, text, spkCr); }
 	void BossEmote(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_BOSS_EMOTE, soundid, text, spkCr); }
+	Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
+	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
+	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
+
+	protected:
+		ScriptedInstance* pInstance;
+		Difficulty m_difficulty;
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;
@@ -404,18 +411,18 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void Jump(float x, float y, float z, float speedXY, float speedZ) { me->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ); }
 
-		void InitInstance()
-		{
-			pInstance = (ScriptedInstance*)me->GetInstanceData();
-			m_difficulty = me->GetMap()->GetDifficulty();
-			InitIA();
-		}
-		
 		void InitIA()
 		{
 			EventShVect.clear();
 			EventSummonVect.clear();
 			Reset();
+		}
+
+		void InitInstance()
+		{
+			pInstance = (ScriptedInstance*)me->GetInstanceData();
+			m_difficulty = me->GetMap()->GetDifficulty();
+			InitIA();
 		}
 		
 		void ResetTimers();
@@ -432,15 +439,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void DealDamage(Unit* target, uint32 damage);
 		void DealPercentDamage(Unit* target, float percent);
 
-		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
-		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
-		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 		Unit* GetRandomUnit() { return SelectUnit(SELECT_TARGET_RANDOM,0); }
-
-		// Attributes
-		ScriptedInstance* pInstance;
-		Difficulty m_difficulty;
+	
 	private:
+		
 		SpellEvents EventShVect;
 		SummonEvents EventSummonVect;
 		SpellEvents SavedEventSh;

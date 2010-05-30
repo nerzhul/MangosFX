@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 	Creature* Epoch;
 	Creature* Malganis;
 	Creature* TempMalganis;
-	Creature* Arthas;
+	uint64 Arthas;
 	Creature* Jaina;
 	Creature* Uther;
 	uint32 phase;
@@ -135,9 +135,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 
    void Reset() 
    {   
-		if(arthas_event == 2)
-		{ }
-		else
+		if(arthas_event != 2)
 			arthas_event = 0;
        FinalFight = 0;
        phase = 1;

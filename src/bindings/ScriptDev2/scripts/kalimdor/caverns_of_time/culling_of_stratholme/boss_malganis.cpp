@@ -33,38 +33,30 @@ enum
     NPC_ARTHAS              = 26499
 };
 
-struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_malganisAI : public LibDevFSAI
 {
-   boss_malganisAI(Creature *c) : ScriptedAI(c)
+   boss_malganisAI(Creature *c) : LibDevFSAI(c)
    {
-        m_pInstance = (ScriptedInstance*)c->GetInstanceData();
-        m_bIsHeroic = c->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEvent(m_difficulty ? SPELL_SWAMP_H : SPELL_SWAMP_N,6300,6700,200);
+		AddEvent(m_difficulty ? SPELL_MIND_BLAST_H : SPELL_MIND_BLAST_N,11300,11300);
    }
 
-	ScriptedInstance* m_pInstance;
-
-	Unit* target;
 	bool Finish;
 	bool Sleep;
 	bool Vampire;
 	uint32 Phase;
-	Creature* Malganis;
-	Creature* Arthas;
+	uint64 MalganisGUID;
+	uint64 ArthasGUID;
 	bool Outro;
-	bool m_bIsHeroic;
 	uint32 Step;
 	uint32 Steptim;
 	uint32 Motion;
-	uint32 Swamp_Timer;
-	uint32 MindBlast_Timer;
 	uint32 Sleep_Timer;
 	uint32 Vampire_Timer;
-	MobEventTasks Tasks;
 
    void Reset() 
    { 
-		Tasks.SetObjects(this,me);
 		Sleep = false;
 		Vampire = false;
 		Phase = 1;
@@ -72,26 +64,21 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 		Step = 1;
 		Steptim = 7000;
 		Motion = 0;
-		Swamp_Timer = 6300;
-		MindBlast_Timer = 11300;
 		Sleep_Timer = 17300;
 		Vampire_Timer = 30000;
-		if(Finish)
-		{  
-		}
-		else
-		 Finish = false;
+		if(!Finish)
+			Finish = false;
    }
    
 	void Aggro(Unit* who)
 	{
 	   DoScriptText(SAY_MALGANIS_AGGRO, me);
 	   if (Creature* pArthas = GetClosestCreatureWithEntry(me, NPC_ARTHAS, 150.0f))
-		  Arthas = pArthas;
+		  ArthasGUID = pArthas->GetGUID();
 
-	   if (m_pInstance)
+	   if (pInstance)
 	   {
-			GameObject* pGate = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_MAL_GATE2));
+			GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MAL_GATE2));
 			if (pGate && !pGate->GetGoState())
 			{
 				pGate->SetGoState(GO_STATE_READY);
@@ -114,35 +101,16 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
         }
     }
 
-   void UpdateAI(const uint32 diff)
-   {
-   
-		if(Outro == false)
+	void UpdateAI(const uint32 diff)
+	{
+   		if(!Outro)
 		{
 			if (!CanDoSomething())
 				return;
 
-			if (Swamp_Timer < diff)
+			if(CheckPercentLife(40))
 			{
-				target = SelectUnit(SELECT_TARGET_RANDOM,0);
-				DoCast(target, m_bIsHeroic ? SPELL_SWAMP_H : SPELL_SWAMP_N);
-				Swamp_Timer = urand(6500,7800);
-			}
-			else 
-				Swamp_Timer -= diff;
-
-			if (MindBlast_Timer < diff)
-			{
-				target = SelectUnit(SELECT_TARGET_RANDOM,0);
-				DoCast(target, m_bIsHeroic ? SPELL_MIND_BLAST_H : SPELL_MIND_BLAST_N);
-				MindBlast_Timer = 11300;
-			}
-			else 
-				MindBlast_Timer -= diff;
-
-			if(me->GetHealth()*100 / me->GetMaxHealth() < 40)
-			{
-				if(Sleep == false)
+				if(!false)
 				{
 					Sleep = true;
 					DoScriptText(SAY_MALGANIS_Sleep, me); 
@@ -150,8 +118,9 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 
 				if (Sleep_Timer <= diff)
 				{
-					target = SelectUnit(SELECT_TARGET_RANDOM,0);
-					DoCast(target, m_bIsHeroic ? SPELL_SLEEP_H : SPELL_SLEEP_N);
+					Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0);
+					if(target)
+						DoCast(target, m_difficulty ? SPELL_SLEEP_H : SPELL_SLEEP_N);
 					switch(rand()%2)
 					{
 					  case 0: DoScriptText(SAY_MALGANIS_SLEEP01, me); break;
@@ -163,18 +132,18 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 					Sleep_Timer -= diff;
 			}
 
-			if(me->GetHealth()*100 / me->GetMaxHealth() < 25)
+			if(CheckPercentLife(25))
 			{
-				if(Vampire == false)
+				if(!Vampire)
 				{
 					 Vampire = true;
 					 DoScriptText(SAY_MALGANIS_15HP, me); 
-					 DoCastMe( SPELL_VAMPIRE);
+					 DoCastMe(SPELL_VAMPIRE);
 				}
 
 				if (Vampire_Timer <= diff)
 				{
-					DoCastMe( SPELL_VAMPIRE);
+					DoCastMe(SPELL_VAMPIRE);
 					Vampire_Timer = 30000;
 				}
 				else 
@@ -182,12 +151,13 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 
 			 }
 
-			 if(me->GetHealth()*100 / me->GetMaxHealth() < 5)
+			 if(CheckPercentLife(5))
 				Finish = true;
 			
+			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 
-			if(Arthas)
+			if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 			{
 				 if(Arthas->isDead())
 				 {
@@ -201,88 +171,105 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 			 }
 		}
 
-		if(Finish == true)
+		if(Finish)
 		{
 				 switch(Step)
 				 {
 					  case 1:
 						   Outro = true;
-						   Malganis = me;
-						   DoScriptText(SAY_MALGANIS_ESCAPE01, Malganis);
-						   if (Creature* pArthas = GetClosestCreatureWithEntry(me, NPC_ARTHAS, 150.0f))
-								Arthas = pArthas;
-						   Arthas->setFaction(35);
-						   Arthas->RemoveAllAuras();
-						   Arthas->DeleteThreatList();
-						   Arthas->CombatStop(true);
-						   Arthas->InterruptNonMeleeSpells(false);
-						   Malganis->setFaction(35);
-						   Malganis->RemoveAllAuras();
-						   Malganis->DeleteThreatList();
-						   Malganis->CombatStop(true);
-						   Malganis->InterruptNonMeleeSpells(false);
-						   Malganis->GetMotionMaster()->MovePoint(0, 2286.963f, 1484.449f, 127.850f);
-						   Arthas->GetMotionMaster()->MovePoint(0, 2299.289f, 1491.944f, 128.362f);
-						   Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Malganis->GetGUID());
-						   Malganis->SetUInt64Value(UNIT_FIELD_TARGET, Arthas->GetGUID());
+						   MalganisGUID = me->GetGUID();
+						   if(Creature* Malganis = GetGuidCreature(MalganisGUID))
+						   {
+							   DoScriptText(SAY_MALGANIS_ESCAPE01, Malganis);
+							   if (Creature* pArthas = GetClosestCreatureWithEntry(me, NPC_ARTHAS, 150.0f))
+									ArthasGUID = pArthas->GetGUID();
+							   if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+							   {
+								   Arthas->setFaction(35);
+								   Arthas->RemoveAllAuras();
+								   Arthas->DeleteThreatList();
+								   Arthas->CombatStop(true);
+								   Arthas->InterruptNonMeleeSpells(false);
+								   Malganis->setFaction(35);
+								   Malganis->RemoveAllAuras();
+								   Malganis->DeleteThreatList();
+								   Malganis->CombatStop(true);
+								   Malganis->InterruptNonMeleeSpells(false);
+								   Malganis->GetMotionMaster()->MovePoint(0, 2286.963f, 1484.449f, 127.850f);
+								   Arthas->GetMotionMaster()->MovePoint(0, 2299.289f, 1491.944f, 128.362f);
+								   Arthas->SetUInt64Value(UNIT_FIELD_TARGET, MalganisGUID);
+								   Malganis->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
+							   }
+						   }
 						   ++Step;
 						   Steptim = 10000;
 						   break;
 					 case 3:
-						   DoScriptText(SAY_MALGANIS_ESCAPE02, Malganis);
-						   ++Step;
-						   Steptim = 10000;
-						   break;
+							if(Creature* Malganis = GetGuidCreature(MalganisGUID))
+								DoScriptText(SAY_MALGANIS_ESCAPE02, Malganis);
+							++Step;
+							Steptim = 10000;
+							break;
 					 case 5:
-						   DoScriptText(SAY_ARTHAS_OUTRO01, Arthas);
-						   ++Step;
-						   Steptim = 5000;
-						   break;
+							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								DoScriptText(SAY_ARTHAS_OUTRO01, Arthas);
+							++Step;
+							Steptim = 5000;
+							break;
 					 case 7:
-						   DoScriptText(SAY_MALGANIS_OUTRO, Malganis);
-						   ++Step;
-						   Steptim = 20000;
-						   break;
+							if(Creature* Malganis = GetGuidCreature(MalganisGUID))
+								DoScriptText(SAY_MALGANIS_OUTRO, Malganis);
+							++Step;
+							Steptim = 20000;
+							break;
 					 case 9:
-						   Malganis->SetVisibility(VISIBILITY_OFF);
-						   Arthas->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-						   Arthas->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
-						   Arthas->GetMotionMaster()->MovePoint(0, Malganis->GetPositionX(), Malganis->GetPositionY(), Malganis->GetPositionZ());
+							if(Creature* Malganis = GetGuidCreature(MalganisGUID))
+								if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								{
+								   Malganis->SetVisibility(VISIBILITY_OFF);
+								   Arthas->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+								   Arthas->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+								   Arthas->GetMotionMaster()->MovePoint(0, Malganis->GetPositionX(), Malganis->GetPositionY(), Malganis->GetPositionZ());
+								}
 						   ++Step;
 						   Steptim = 3000;
 						   break;
 					 case 11:
-						   DoScriptText(SAY_ARTHAS_OUTRO02, Arthas);
-						   ++Step;
-						   Steptim = 6000;
-						   break;
+							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								DoScriptText(SAY_ARTHAS_OUTRO02, Arthas);
+							++Step;
+							Steptim = 6000;
+							break;
 					 case 13:
-						   DoScriptText(SAY_ARTHAS_OUTRO03, Arthas);
-						   if (m_pInstance)
-								{
-								  GameObject* pChest = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_MAL_CHEST));
+							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								DoScriptText(SAY_ARTHAS_OUTRO03, Arthas);
+							if (pInstance)
+							{
+								  GameObject* pChest = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MAL_CHEST));
 								  if (pChest && !pChest->isSpawned())
-									   {
-										 pChest->SetRespawnTime(180000);
-									   }
-								 }
-						   ++Step;
-						   Steptim =11000;
-						   break;
+								   {
+									 pChest->SetRespawnTime(180000);
+								   }
+							 }
+							++Step;
+							Steptim =11000;
+							break;
 					 case 15:
-						   if (m_pInstance)
-							   m_pInstance->SetData(TYPE_ARTHAS_EVENT, DONE);
-						   Arthas->GetMotionMaster()->MovePoint(0, 2243.311f, 1476.025f, 132.352f);
-						   ++Step;
-						   Steptim =11000;
-						   break;
+							if (pInstance)
+							   pInstance->SetData(TYPE_ARTHAS_EVENT, DONE);
+							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								Arthas->GetMotionMaster()->MovePoint(0, 2243.311f, 1476.025f, 132.352f);
+							++Step;
+							Steptim =11000;
+							break;
 					 case 17:
-						   Arthas->SetVisibility(VISIBILITY_OFF);
-						   GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
-						   Outro = false;
-						   ++Step;
-						   Steptim =11000;
-						   break;
+							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
+								Arthas->SetVisibility(VISIBILITY_OFF);
+							GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+							Outro = false;
+							++Step;
+							Steptim =11000;
+							break;
 				 }
 		}
 		else 
@@ -300,8 +287,7 @@ struct MANGOS_DLL_DECL boss_malganisAI : public ScriptedAI
 
 CreatureAI* GetAI_boss_malganis(Creature *_Creature)
 {
-    boss_malganisAI* malganisAI = new boss_malganisAI(_Creature);
-    return (CreatureAI*)malganisAI;
+    return new boss_malganisAI(_Creature);
 };
 
 void AddSC_boss_malganis()
