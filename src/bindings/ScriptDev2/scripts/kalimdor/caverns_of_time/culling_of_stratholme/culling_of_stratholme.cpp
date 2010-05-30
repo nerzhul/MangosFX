@@ -109,17 +109,16 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 	bool PhaseC;
 	uint32 arthas_event;
 	Unit* culling_faction;
-	Creature* Patricia;
-	Creature* StalkerM;
-	Creature* Crazyman;
-	Creature* Cityman;
+	uint64 StalkerMGUID;
+	uint64 CrazymanGUID;
+	uint64 CitymanGUID;
 	Creature* Stalker;
 	Creature* TempZombie;
 	Creature* Epoch;
 	Creature* Malganis;
 	Creature* TempMalganis;
 	uint64 ArthasGUID;
-	Creature* Jaina;
+	uint64 JainaGUID;
 	Creature* Uther;
 	uint32 phase;
 	uint32 phaseAI;
@@ -408,7 +407,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 						   Arthas->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 						   Uther = Arthas->SummonCreature(26528,1794.357f,1272.183f,141.558f,1.37f,TEMPSUMMON_TIMED_DESPAWN,180000);
 						   if (Creature* pJaina = GetClosestCreatureWithEntry(Arthas, NPC_JAINA, 50.0f))
-								Jaina = pJaina;
+								JainaGUID = pJaina->GetGUID();
 						   Uther->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
 						   Arthas->GetMotionMaster()->MovePoint(0, 1903.167f, 1291.573f, 143.32f);
 						   Uther->GetMotionMaster()->MovePoint(0, 1897.018f, 1287.487f, 143.481f);
@@ -440,7 +439,8 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 9000;
                    break;
              case 9:
-                       Jaina->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
+                 if(Creature* Jaina = GetGuidCreature(JainaGUID))
+					Jaina->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
 				 if(Creature* Arthas = GetGuidCreature(ArthasGUID))
                        DoScriptText(SAY_INTRO04, Arthas);
                    ++phase;
@@ -491,6 +491,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 11000;
                    break;
              case 27:
+				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
                        DoScriptText(SAY_INTRO13, Jaina);
                    ++phase;
                    phasetim = 3000;
@@ -514,7 +515,8 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    break;
              case 35:
 				 if(Creature* Arthas = GetGuidCreature(ArthasGUID))
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Jaina->GetGUID());
+                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
+				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
                        Jaina->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
                    ++phase;
                    phasetim = 1000;
@@ -526,6 +528,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 1000;
                    break;
              case 39:
+				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
                        DoScriptText(SAY_INTRO17, Jaina);
                    ++phase;
                    phasetim = 3000;
@@ -549,7 +552,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 				 if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 				 {
                        DoScriptText(SAY_INTRO18, Arthas);
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Jaina->GetGUID());
+                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
 				 }
                    ++phase;
                    phasetim = 10000;
@@ -559,7 +562,8 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 				 {
                        Arthas->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
                        Arthas->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-                       Jaina->SetVisibility(VISIBILITY_OFF);
+					   if(Creature* Jaina = GetGuidCreature(JainaGUID))
+							Jaina->SetVisibility(VISIBILITY_OFF);
                        Uther->SetVisibility(VISIBILITY_OFF);
                        Arthas->GetMotionMaster()->MovePoint(0, 1990.833f,1293.391f,145.467f);
 				 }
@@ -587,8 +591,12 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
              case 55:
 				 if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 				 {
-                       Cityman = Arthas->SummonCreature(NPC_CITY_MAN,2091.977f,1275.021f,140.757f,0.558f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
-                       Crazyman = Arthas->SummonCreature(NPC_CRAZY_MAN,2093.514f,1275.842f,140.408f,3.801f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
+                       Creature* Cityman = Arthas->SummonCreature(NPC_CITY_MAN,2091.977f,1275.021f,140.757f,0.558f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
+					   if(Cityman)
+						   CitymanGUID = Cityman->GetGUID();
+                       Creature* Crazyman = Arthas->SummonCreature(NPC_CRAZY_MAN,2093.514f,1275.842f,140.408f,3.801f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
+					   if(Crazyman)
+						   CrazymanGUID = Crazyman->GetGUID();
                        Arthas->GetMotionMaster()->MovePoint(0, 2050.660f,1287.333f,142.671f);
 				 }
                    ++phase;
@@ -622,16 +630,20 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
              case 63:
 				 if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 				 {
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Cityman->GetGUID());
-                       Cityman->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
-                       Cityman->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
-                       Cityman->GetMotionMaster()->MovePoint(0, 2088.625f,1279.191f,140.743f);
+                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, CitymanGUID);
+					   if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+					   {
+						   Cityman->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
+						   Cityman->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						   Cityman->GetMotionMaster()->MovePoint(0, 2088.625f,1279.191f,140.743f);
+					   }
 				 }
                    ++phase;
                    phasetim = 2000;
                    break;
              case 65:
-                       DoScriptText(SAY_ENTER02, Cityman);
+				 if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+                   DoScriptText(SAY_ENTER02, Cityman);
                    ++phase;
                    phasetim = 4000;
                    break;
@@ -653,11 +665,15 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
             case 71:
 				if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 				{
+					if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
+					{
                        DoScriptText(SAY_ENTER04, Crazyman);
                        Crazyman->SetUInt64Value(UNIT_FIELD_TARGET, ArthasGUID);
-                       Cityman->DealDamage(Cityman, Cityman->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, Crazyman->GetGUID());
+                       if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+						   Kill(Cityman);
+                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, CrazymanGUID);
                        Arthas->GetMotionMaster()->MovePoint(0, 2092.154f,1276.645f,140.52f);
+					}
 				}
                    ++phase;
                    phasetim = 3000;
@@ -669,10 +685,11 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 				   phasetim = 1000;
 				   break;
             case 75:
-                       Crazyman->DealDamage(Crazyman, Crazyman->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-                       ++phase;
-                       phasetim = 1000;
-                       break;
+				if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
+                    Kill(Crazyman);
+				   ++phase;
+				   phasetim = 1000;
+				   break;
            case 77:
 			   if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 			   {
@@ -686,8 +703,12 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
            case 79:
 			   if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 			   {
-                       StalkerM = Arthas->SummonCreature(20562,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000);
-                       StalkerM->CastSpell(StalkerM,63793,false);
+                       Creature* StalkerM = Arthas->SummonCreature(20562,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000);
+					   if(StalkerM)
+					   {
+						   StalkerMGUID = StalkerM->GetGUID();
+						   StalkerM->CastSpell(StalkerM,63793,false);
+					   }
 			   }
                ++phase;
                phasetim = 1000;
@@ -708,11 +729,14 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                        phasetim = 500;
                         if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
                         {
-                            if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CITY_MAN, 100.0f))
-                            {
-                                TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
-                                uiZombie_counter++;
-                            }
+							if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+							{
+								if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CITY_MAN, 100.0f))
+								{
+									TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
+									uiZombie_counter++;
+								}
+							}
                         }
                         else
                         {
@@ -724,11 +748,14 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                        phasetim = 500;
                         if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
                         {
-                            if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CRAZY_MAN, 100.0f))
-                            {
-                                TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
-                                uiZombie_counter++;
-                            }
+							if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+							{
+								if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CRAZY_MAN, 100.0f))
+								{
+									TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
+									uiZombie_counter++;
+								}
+							}
                         }
                         else
                         {
@@ -746,8 +773,8 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
            case 89:
 			   if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 			   {
-                       Arthas->SetUInt64Value(UNIT_FIELD_TARGET, StalkerM->GetGUID());
-                       DoScriptText(SAY_ENTER08, Arthas);
+                   Arthas->SetUInt64Value(UNIT_FIELD_TARGET, StalkerMGUID);
+                   DoScriptText(SAY_ENTER08, Arthas);
 			   }
 			   ++phase;
 			   phasetim = 7000;
