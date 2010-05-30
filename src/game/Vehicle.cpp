@@ -322,6 +322,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	seat->second.passenger = unit;
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
@@ -345,7 +346,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SendMessageToSet(&data0,true);
     }*/
 
-    unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	//unit->m_movementInfo.SetTransportData(unit->GetGUID(),
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
 

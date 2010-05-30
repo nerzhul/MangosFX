@@ -288,8 +288,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                         }
                     }
                 }
-				if(((Unit*)this)->GetVehicle())
-                    moveFlags2 |= (MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
+				if(((Unit*)this)->GetVehicleGUID())
+                    unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
             }
             break;
             case TYPEID_PLAYER:
@@ -304,8 +304,8 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                 // remove unknown, unused etc flags for now
                 player->m_movementInfo.RemoveMovementFlag(MOVEFLAG_SPLINE2);
 				
-				if(((Unit*)this)->GetVehicle())
-                    moveFlags2 |= (MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
+				if(((Unit*)this)->GetVehicleGUID())
+                    player->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
                 if(player->isInFlight())
                 {
@@ -1116,7 +1116,11 @@ void WorldObject::Relocate(float x, float y, float z, float orientation)
     m_orientation = orientation;
 
     if(isType(TYPEMASK_UNIT))
+	{
         ((Unit*)this)->m_movementInfo.ChangePosition(x, y, z, orientation);
+		if(((Creature*)this)->isVehicle())
+			((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
+	}
 }
 
 void WorldObject::Relocate(float x, float y, float z)
@@ -1126,7 +1130,11 @@ void WorldObject::Relocate(float x, float y, float z)
     m_positionZ = z;
 
     if(isType(TYPEMASK_UNIT))
+	{
         ((Unit*)this)->m_movementInfo.ChangePosition(x, y, z, GetOrientation());
+		if(((Creature*)this)->isVehicle())
+			((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
+	}
 }
 
 uint32 WorldObject::GetZoneId() const
