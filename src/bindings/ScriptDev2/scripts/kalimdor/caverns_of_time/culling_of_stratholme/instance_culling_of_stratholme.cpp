@@ -39,7 +39,6 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
     instance_culling_of_stratholme(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
 
     uint32 m_auiEncounter[2];
-	Creature * add[6];
 	uint64 corrupteur_guid;
 	uint16 nbvague;
 	bool ActiveTimer;
@@ -50,7 +49,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 	uint16 min_Timer;
     std::string strInstData;
 
-	Creature* Arthas;
+	uint64 ArthasGUID;
 
     uint64 m_uiShkafGateGUID;
     uint64 m_uiMalGate1GUID;
@@ -59,7 +58,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 
     void Initialize()
     {
-		Arthas = NULL;
+		ArthasGUID = 0;
 		lastspawn = 0;
         m_uiShkafGateGUID = 0;
         m_uiMalGate1GUID = 0;
@@ -69,9 +68,6 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 		m_auiEncounter[2] = m_auiEncounter[1] = NOT_STARTED;
 		nbvague = 0;
 		HeroicMap = ActiveTimer = false;
-
-		for(uint8 i=0;i<6;i++)
-			add[i] = NULL;
 		DoUpdateWorldState(WS_VAGUE,0);
 		Instance_Timer = 60000;
 		StartVague_Timer = 10000;
@@ -103,7 +99,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 		switch(pCr->GetEntry())
 		{
 			case 26499:
-				Arthas = pCr;
+				ArthasGUID = pCr->GetGUID();
 				break;
 			default:
 				break;
@@ -155,11 +151,12 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 
 		if(GetData(TYPE_VAGUE_EVENT) == IN_PROGRESS)
 		{
-			if(ActiveTimer == false && HeroicMap == true)
+			if(!ActiveTimer && HeroicMap)
 			{
 				ActiveTimer = true;
 				DoUpdateWorldState(WS_TIMER,min_Timer);
-				corrupteur_guid = Arthas->SummonCreature(BOSS_CORRUPTEUR,2328.122f,1273.243f,133.1f,2.09f,TEMPSUMMON_TIMED_DESPAWN,1800000)->GetGUID();
+				if(Creature* Arthas = GetCreatureInMap(ArthasGUID))
+					corrupteur_guid = Arthas->SummonCreature(BOSS_CORRUPTEUR,2328.122f,1273.243f,133.1f,2.09f,TEMPSUMMON_TIMED_DESPAWN,1800000)->GetGUID();
 			}
 
 			if(StartVague_Timer <= diff)
@@ -176,57 +173,73 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 					//event de pop des adds
 					if(nbvague == 5)
 					{
-						add[0] = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[0]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[1] = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[1]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[2] = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[2]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[3] = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[3]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[4] = Arthas->SummonCreature(BOSS_SALRAMM,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[4]->SetRespawnDelay(RESPAWN_ONE_DAY);
+						if(Creature* Arthas = GetCreatureInMap(ArthasGUID))
+						{
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(BOSS_SALRAMM,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+						}
 					}
 					else if(nbvague == 10)
 					{
-						add[0] = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[0]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[1] = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[1]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[2] = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[2]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[3] = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[3]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[4] = Arthas->SummonCreature(BOSS_MEATHOOK,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[4]->SetRespawnDelay(RESPAWN_ONE_DAY);
+						if(Creature* Arthas = GetCreatureInMap(ArthasGUID))
+						{
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(BOSS_MEATHOOK,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+						}
 					}
 					else
 					{
-						add[0] = Arthas->SummonCreature(NPC_ABO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[0]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[1] = Arthas->SummonCreature(NPC_ABO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[1]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[2] = Arthas->SummonCreature(NPC_GOULE,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[2]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						add[3] = Arthas->SummonCreature(NPC_GOULE2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[3]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						if(urand(0,1) == 1)
-							add[4] = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						else
-							add[4] = Arthas->SummonCreature(NPC_DEMON_CRYPTES,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[4]->SetRespawnDelay(RESPAWN_ONE_DAY);
-						if(urand(0,1) == 1)
-							add[5] = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						else
-							add[5] = Arthas->SummonCreature(NPC_GOULE,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000);
-						add[5]->SetRespawnDelay(RESPAWN_ONE_DAY);
+						if(Creature* Arthas = GetCreatureInMap(ArthasGUID))
+						{
+							if(Creature* add = Arthas->SummonCreature(NPC_ABO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_ABO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_GOULE,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(Creature* add = Arthas->SummonCreature(NPC_GOULE2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+								add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(urand(0,1) == 1)
+							{
+								if(Creature* add = Arthas->SummonCreature(NPC_NECRO,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+									add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							}
+							else
+								if(Creature* add = Arthas->SummonCreature(NPC_DEMON_CRYPTES,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+							add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							if(urand(0,1) == 1)
+							{
+								if(Creature* add = Arthas->SummonCreature(NPC_NECRO2,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+									add->SetRespawnDelay(RESPAWN_ONE_DAY);
+							}
+							else
+								if(Creature* add = Arthas->SummonCreature(NPC_GOULE,randspawn[lastspawn].x,randspawn[lastspawn].y,randspawn[lastspawn].z,0.0f,TEMPSUMMON_TIMED_DESPAWN,600000))
+									add->SetRespawnDelay(RESPAWN_ONE_DAY);
+						}
 					}
 				}
 				else
 				{
 					m_auiEncounter[1] = DONE;
 					SetData(TYPE_ARTHAS_EVENT, IN_PROGRESS);
-					Arthas->setFaction(1108);
+					if(Creature* Arthas = GetCreatureInMap(ArthasGUID))
+						Arthas->setFaction(1108);
 				}
 
 				StartVague_Timer = 80000;
@@ -240,7 +253,7 @@ struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
 			if(Instance_Timer <= diff)
 			{
 				if(min_Timer < 1)
-					if(Creature* corr = (Creature*)Unit::GetUnit((*Arthas), corrupteur_guid))
+					if(Creature* corr = GetCreatureInMap(corrupteur_guid))
 					{
 						if(corr->isAlive())
 							corr->ForcedDespawn();

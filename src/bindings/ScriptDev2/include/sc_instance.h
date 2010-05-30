@@ -44,6 +44,10 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 			if(!instance) return NULL;
 			return instance->GetCreatureOrPetOrVehicle(guid);
 		}
-			
+
+		Creature* GetCreatureInMap(uint64 guid)
+		{
+			return (Creature*)GetUnitInMap(guid);
+		}
 };
 #endif
