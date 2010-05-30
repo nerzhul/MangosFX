@@ -2251,11 +2251,11 @@
 						Name="halls_of_reflection"
 						>
 						<File
-							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\boss_escape_from_the_lich_king.cpp"
+							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\boss_falric_marwyn.cpp"
 							>
 						</File>
 						<File
-							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\boss_falric_marwyn.cpp"
+							RelativePath="..\scripts\northrend\icecrown_citadel\halls_of_reflection\halls_of_reflection.cpp"
 							>
 						</File>
 						<File
