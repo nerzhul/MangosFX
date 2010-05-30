@@ -327,6 +327,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 	void DoSpawnAddsOrBoss()
 	{
+		if(vague == 10)
+			return;
+
 		vague++;
 		uint8 nbr = 0;
 		switch(vague)
