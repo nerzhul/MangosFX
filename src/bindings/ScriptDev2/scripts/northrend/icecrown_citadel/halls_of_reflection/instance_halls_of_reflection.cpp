@@ -125,6 +125,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				pCreature->CastSpell(pCreature,66830,false);
 				break;
 			case 38567:
+			case 38172:
 				MageVect.push_back(pCreature->GetGUID());
 				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
@@ -262,6 +263,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	void InitFrostmourneEvent()
 	{
 		vague = 0;
+		if(GetData(TYPE_FALRIC) == DONE)
+			vague = 5;
+
 		vague_Timer = 2000;
 	}
 
@@ -272,6 +276,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			DoRespawnDeadAdds();
 			DoUpdateWorldState(WS_MAIN,0);
 			DoUpdateWorldState(WS_VAGUE,vague);
+			FrostMourneEvent = NOT_STARTED;
+			LichKingEscape = NOT_STARTED;
 			return;
 		}
 
@@ -375,7 +381,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				nbr = 4;
 				break;
 			case 5:
-				if(Creature* Falric = GetCreatureInMap(TYPE_FALRIC))
+				if(Creature* Falric = GetCreatureInMap(GetData64(TYPE_FALRIC)))
 				{
 					Falric->RemoveAurasDueToSpell(66830);
 					Falric->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
@@ -392,7 +398,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				nbr = 6;
 				break;
 			case 10:
-				if(Creature* Marwyn = GetCreatureInMap(TYPE_MARWYN))
+				if(Creature* Marwyn = GetCreatureInMap(GetData64(TYPE_MARWYN)))
 				{
 					Marwyn->RemoveAurasDueToSpell(66830);
 					Marwyn->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);

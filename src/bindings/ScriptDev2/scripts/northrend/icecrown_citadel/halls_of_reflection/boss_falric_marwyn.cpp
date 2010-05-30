@@ -42,8 +42,11 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
+        if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 		
 		switch(phase)
 		{
@@ -105,8 +108,11 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
+        if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
 
