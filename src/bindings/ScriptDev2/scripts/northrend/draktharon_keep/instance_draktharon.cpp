@@ -84,7 +84,7 @@ struct MANGOS_DLL_DECL instance_drak_tharon : public ScriptedInstance
         return false;
     }
 
-    void OnGameObjectCreate(GameObject* pGo)
+    void OnObjectCreate(GameObject* pGo)
     {
         switch(pGo->GetEntry())
         {

@@ -154,7 +154,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
         }
     }
 
-	void OnGameObjectCreate(GameObject* obj)
+	void OnObjectCreate(GameObject* obj)
 	{
 		switch(obj->GetEntry())
 		{
