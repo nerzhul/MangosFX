@@ -1438,8 +1438,6 @@ struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public LibDevFSAI
 	{
 		ResetTimers();
 	}
-	
-	MobEventTasks Tasks;
 	    
     void UpdateAI(const uint32 diff)
 	{	

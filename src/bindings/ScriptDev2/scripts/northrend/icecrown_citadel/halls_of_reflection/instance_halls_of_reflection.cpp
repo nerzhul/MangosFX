@@ -151,6 +151,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(TeamIsSet)
 					uiEvasionFactionleader = pCreature->GetGUID();
 				break;
+			case 37226:
+				uiLichKing = pCreature->GetGUID();
+				break;
         }
     }
 
@@ -193,12 +196,18 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				uiEncounter[type] = data;
 				if(data == DONE)
 					OpenDoor(LichKingDoor);
+				if(Creature* TheLichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+					TheLichKing->Relocate(5551.325f,2261.067f,733.5f,3.91f);
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					fLead->ForcedDespawn();
 				break;
 			case TYPE_FALRIC:
 			case TYPE_LICHKING:
 				uiEncounter[type] = data;
 				break;
 			case TYPE_EVENT_FROSTMOURNE:
+				if(FrostMourneEvent == DONE)
+					return;
 				FrostMourneEvent = EncounterState(data);
 				if(data == IN_PROGRESS)
 					InitFrostmourneEvent();
@@ -246,6 +255,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return MainDoor;
 			case DATA_DOOR_LICHKING:
 				return LichKingDoor;
+			case TYPE_LICHKING:
+				return uiLichKing;
         }
         return 0;
     }
@@ -276,7 +287,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 		vague_Timer = 2000;
 		CloseDoor(GetData64(DATA_DOOR_LICHKING));
-		CloseDoor(GetData64(DATA_DOOR_MAIN));
+		OpenDoor(GetData64(DATA_DOOR_MAIN));
 	}
 
 	void Update(uint32 diff)
@@ -284,14 +295,16 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		if(!CheckPlayersInMap())
 		{
 			DoRespawnDeadAdds();
-			FrostMourneEvent = NOT_STARTED;
 			LichKingEscape = NOT_STARTED;
 			if(FrostMourneEvent == DONE)
-				OpenDoor(GetData64(DATA_DOOR_LICHKING));
+				/*OpenDoor(GetData64(DATA_DOOR_LICHKING))*/;
 			else
+			{
+				FrostMourneEvent = NOT_STARTED;
 				CloseDoor(GetData64(DATA_DOOR_LICHKING));
+			}
 
-			OpenDoor(GetData64(DATA_DOOR_MAIN));
+			CloseDoor(GetData64(DATA_DOOR_MAIN));
 			return;
 		}
 
