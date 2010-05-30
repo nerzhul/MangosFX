@@ -84,7 +84,7 @@ struct MANGOS_DLL_DECL instance_drak_tharon : public ScriptedInstance
         return false;
     }
 
-    void OnGameObjectCreate(GameObject* pGo, bool add)
+    void OnGameObjectCreate(GameObject* pGo)
     {
         switch(pGo->GetEntry())
         {
@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL instance_drak_tharon : public ScriptedInstance
         }
     }
 
-    void OnCreatureCreate(Creature* pCreature, bool add)
+    void OnCreatureCreate(Creature* pCreature)
     {
         switch(pCreature->GetEntry())
         {

@@ -47,7 +47,10 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
 
@@ -79,7 +82,10 @@ struct MANGOS_DLL_DECL HoR_RogueAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
 
@@ -121,7 +127,10 @@ struct MANGOS_DLL_DECL HoR_MageAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
     }
@@ -151,7 +160,10 @@ struct MANGOS_DLL_DECL HoR_HuntAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
     }
@@ -181,7 +193,10 @@ struct MANGOS_DLL_DECL HoR_PriestAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething() || me->HasAura(66830))
+		{
+			DoCastMe(66830);
             return;
+		}
 	
 		UpdateEvent(diff);
 

@@ -37,6 +37,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint32 vague_Timer;
 	uint32 respawn_Timer;
 
+	uint64 MainDoor;
+	uint64 LichKingDoor;
+	uint64 Frostmourne;
+
     void Initialize()
     {
         uiFalric = 0;
@@ -64,6 +68,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		vague = 0;
 		vague_Timer = 2000;
 
+		MainDoor = 0;
+		LichKingDoor = 0;
+		Frostmourne = 0;
+
         for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             uiEncounter[i] = NOT_STARTED;
     }
@@ -76,7 +84,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
         return false;
     }
 
-    void OnCreatureCreate(Creature* pCreature, bool /*add*/)
+    void OnCreatureCreate(Creature* pCreature)
     {
         switch(pCreature->GetEntry())
         {
@@ -150,6 +158,13 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		switch(obj->GetEntry())
 		{
 			case 197341:
+				LichKingDoor = obj->GetGUID();
+				break;
+			case 201976:
+				MainDoor = obj->GetGUID();
+				break;
+			case 202302:
+				Frostmourne = obj->GetGUID();
 				break;
 		}
 	}
@@ -180,6 +195,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				break;
 			case TYPE_EVENT_FROSTMOURNE:
 				FrostMourneEvent = EncounterState(data);
+				if(data == IN_PROGRESS)
+					InitFrostmourneEvent();
 				break;
 			case TYPE_EVENT_ESCAPE:
 				LichKingEscape = EncounterState(data);
@@ -241,11 +258,20 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		return 0;
 	}
 
+
+	void InitFrostmourneEvent()
+	{
+		vague = 0;
+		vague_Timer = 2000;
+	}
+
 	void Update(uint32 diff)
 	{
 		if(!CheckPlayersInMap())
 		{
 			DoRespawnDeadAdds();
+			DoUpdateWorldState(WS_MAIN,0);
+			DoUpdateWorldState(WS_VAGUE,vague);
 			return;
 		}
 
@@ -334,6 +360,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			return;
 
 		vague++;
+		DoUpdateWorldState(WS_MAIN,1);
+		DoUpdateWorldState(WS_VAGUE,vague);
+
 		uint8 nbr = 0;
 		switch(vague)
 		{
@@ -342,6 +371,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				nbr = 3;
 				break;
 			case 3:
+			case 4:
+				nbr = 4;
+				break;
+			case 5:
 				if(Creature* Falric = GetCreatureInMap(TYPE_FALRIC))
 				{
 					Falric->RemoveAurasDueToSpell(66830);
@@ -349,11 +382,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Falric->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 					AggroPlayersInMap(Falric);
 				}
-				break;
-			case 4:
-				nbr = 4;
-				break;
-			case 5:
 				break;
 			case 6:
 			case 7:
@@ -442,7 +470,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive())
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						return true;
 		return false;
 	}
@@ -454,7 +482,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive())
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						who->AddThreat(pPlayer,1.0f);
 	}
 
