@@ -244,7 +244,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	void Update(uint32 diff)
 	{
 		if(!CheckPlayersInMap())
+		{
+			DoRespawnDeadAdds();
 			return;
+		}
 
 		if(FrostMourneEvent == IN_PROGRESS)
 		{
