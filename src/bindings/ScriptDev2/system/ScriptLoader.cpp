@@ -475,6 +475,8 @@ extern void AddSC_boss_Tyrannus();
 extern void AddSC_boss_garfrost();
 extern void AddSC_boss_ick_and_krick();
 extern void AddSC_instance_pit_of_saron();
+extern void AddSC_instance_halls_of_reflection();
+extern void AddSC_boss_falric_marwyn();
 
 void AddScripts()
 {
