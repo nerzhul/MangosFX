@@ -8705,12 +8705,13 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             FillInitialWorldState(data,count, 0x915, 0x0);  // 10
             break;
     }
+
+	FillBGWeekendWorldStates(data,count);
+	data.put<uint16>(count_pos,count);                     // set actual world state amount
     GetSession()->SendPacket(&data);
-    
-    SendBGWeekendWorldStates();
 }
 
-void Player::SendBGWeekendWorldStates()
+void Player::FillBGWeekendWorldStates(WorldPacket& data, uint32& count)
 {
 	for(uint32 i = 1; i < sBattlemasterListStore.GetNumRows(); ++i)
 	{
@@ -8718,9 +8719,9 @@ void Player::SendBGWeekendWorldStates()
 		if (bl && bl->HolidayWorldStateId)
 		{
 			if (BattleGroundMgr::IsBGWeekend(BattleGroundTypeId(bl->id)))
-				SendUpdateWorldState(bl->HolidayWorldStateId,1);
+				FillInitialWorldState(data, count, bl->HolidayWorldStateId, 1);
 			else
-				SendUpdateWorldState(bl->HolidayWorldStateId,0);
+				FillInitialWorldState(data, count, bl->HolidayWorldStateId, 0);
 		}
 	}
 }

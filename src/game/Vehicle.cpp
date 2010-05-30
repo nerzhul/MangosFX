@@ -354,9 +354,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     if(!veSeat)
         return false;
 	me->m_movementInfo.SetTransportData(me->GetGUID(),
-		(veSeat->m_attachmentOffsetX + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
-		(veSeat->m_attachmentOffsetY + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
-		(veSeat->m_attachmentOffsetZ + me->GetObjectSize()) * me->GetFloatValue(OBJECT_FIELD_SCALE_X),
+		(veSeat->m_attachmentOffsetX),
+		(veSeat->m_attachmentOffsetY),
+		(veSeat->m_attachmentOffsetZ),
 		veSeat->m_passengerYaw, 0/*v->GetCreationTime()*/, seatId, veSeat->m_ID,
 		sObjectMgr.GetSeatFlags(veSeat->m_ID), GetVehicleFlags());
 
