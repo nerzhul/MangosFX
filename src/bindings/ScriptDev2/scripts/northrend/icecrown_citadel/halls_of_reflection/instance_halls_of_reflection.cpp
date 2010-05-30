@@ -154,7 +154,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
         }
     }
 
-	void OnGameObjectCreature(GameObject* obj)
+	void OnGameObjectCreate(GameObject* obj)
 	{
 		switch(obj->GetEntry())
 		{
@@ -284,8 +284,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		if(!CheckPlayersInMap())
 		{
 			DoRespawnDeadAdds();
-			DoUpdateWorldState(WS_MAIN,0);
-			DoUpdateWorldState(WS_VAGUE,vague);
 			FrostMourneEvent = NOT_STARTED;
 			LichKingEscape = NOT_STARTED;
 			if(FrostMourneEvent == DONE)
