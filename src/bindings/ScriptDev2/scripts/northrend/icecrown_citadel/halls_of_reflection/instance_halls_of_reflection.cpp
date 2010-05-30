@@ -179,10 +179,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				uiEncounter[type] = data;
 				break;
 			case TYPE_EVENT_FROSTMOURNE:
-				FrostMourneEvent = IN_PROGRESS;
+				FrostMourneEvent = EncounterState(data);
 				break;
 			case TYPE_EVENT_ESCAPE:
-				LichKingEscape = IN_PROGRESS;
+				LichKingEscape = EncounterState(data);
 				break;
         }
 

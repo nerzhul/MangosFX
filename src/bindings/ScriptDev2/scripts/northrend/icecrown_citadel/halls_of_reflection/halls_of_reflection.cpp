@@ -193,6 +193,28 @@ CreatureAI* GetAI_HoR_Priest(Creature* pCreature)
 {
     return new HoR_PriestAI (pCreature);
 }
+
+bool GossipHello_hor_frostmourne_event(Player *player, Creature *mCreature)
+{
+     if (mCreature->isQuestGiver())
+        player->PrepareQuestMenu( mCreature->GetGUID());
+
+	player->ADD_GOSSIP_ITEM(0, "Allons chercher Deuillegivre !", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+
+	player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, mCreature->GetGUID());
+    return true;
+}
+
+bool GossipSelect_hor_frostmourne_event(Player *player, Creature *mCreature, uint32 sender, uint32 action )
+{
+    if(action == GOSSIP_ACTION_INFO_DEF)
+    {
+		mCreature->GetInstanceData()->SetData(TYPE_EVENT_FROSTMOURNE,IN_PROGRESS);
+        player->CLOSE_GOSSIP_MENU();
+    }
+    return true;
+}
+
 void AddSC_halls_of_reflection()
 {
 	Script *newscript;
@@ -220,5 +242,11 @@ void AddSC_halls_of_reflection()
 	newscript = new Script;
     newscript->Name = "HoR_Hunt";
     newscript->GetAI = &GetAI_HoR_Hunt;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "hor_frostmourne_event";
+    newscript->pGossipHello = &GossipHello_hor_frostmourne_event;
+    newscript->pGossipSelect = &GossipSelect_hor_frostmourne_event;
     newscript->RegisterSelf();
 }
