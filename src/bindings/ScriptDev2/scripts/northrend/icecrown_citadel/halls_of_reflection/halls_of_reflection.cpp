@@ -33,12 +33,6 @@ enum Spells
 		SPELL_PAIN_SUFFERING	=	74115,
 		SPELL_FROSTMOURNE		=	70063,
 		SPELL_ICEWALL			=	69768,
-		// jaina
-		SPELL_BARRER_CHANNEL	=	76221,
-		SPELL_ICE_BARRER		=	69787,
-		SPELL_ICEBLOCK			=	69708,
-		// sylvanas
-		SPELL_DARK_ARROW		=	70194,
 };
 
 
@@ -281,12 +275,6 @@ struct MANGOS_DLL_DECL HoR_escape_fLeadAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
-            return;
-	
-		UpdateEvent(diff);
-
-        DoMeleeAttackIfReady();
     }
 };
 
@@ -294,24 +282,6 @@ CreatureAI* GetAI_HoR_escape_fLead(Creature* pCreature)
 {
     return new HoR_escape_fLeadAI (pCreature);
 }
-
-struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
-{
-    HoR_LichKing_EscapeAI(Creature *pCreature) : LibDevFSAI(pCreature)
-    {
-        InitInstance();
-
-    }
-
-    void Reset()
-    {
-    }
-
-    void UpdateAI(const uint32 diff)
-    {
-        return;
-    }
-};
 
 CreatureAI* GetAI_HoR_LichKing_Escape(Creature* pCreature)
 {

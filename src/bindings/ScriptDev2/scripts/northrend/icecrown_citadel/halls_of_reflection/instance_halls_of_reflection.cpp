@@ -21,6 +21,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint64 uiSylvanas;
 	uint64 uiEvasionJaina;
 	uint64 uiEvasionSylvanas;
+	uint64 uiLichKingEscape;
 	std::vector<uint64> WarriorVect;
 	std::vector<uint64> MageVect;
 	std::vector<uint64> RogueVect;
@@ -41,6 +42,13 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint32 event_Timer;
 	uint8 event_Step;
 
+	uint32 fLead_Timer;
+	uint32 LichKing_Timer;
+	uint32 checkAdds_Timer;
+	uint8 LichKingStep;
+	std::vector<uint64> EscapeLichKingAdds;
+
+
 	uint64 MainDoor;
 	uint64 LichKingDoor;
 	uint64 Frostmourne;
@@ -57,6 +65,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		uiSylvanas = 0;
 		uiEvasionJaina = 0;
 		uiEvasionSylvanas = 0;
+		uiLichKingEscape = 0;
 
 		FrostMourneEvent = NOT_STARTED;
 		LichKingEscape = NOT_STARTED;
@@ -78,6 +87,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		MainDoor = 0;
 		LichKingDoor = 0;
 		Frostmourne = 0;
+
+		EscapeLichKingAdds.clear();
 
         for (uint8 i = 0; i < MAX_ENCOUNTER; ++i)
             uiEncounter[i] = NOT_STARTED;
@@ -228,6 +239,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				break;
 			case TYPE_EVENT_ESCAPE:
 				LichKingEscape = EncounterState(data);
+				if(data == IN_PROGRESS)
+					InitEscapeEvent();
 				break;
         }
 
@@ -243,6 +256,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case TYPE_MARWYN:
 			case TYPE_LICHKING:
 				return uiEncounter[type];
+			case DATA_FACTION:
+				return uiTeamInInstance;
         }
         return 0;
     }
@@ -273,6 +288,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return uiLichKing;
 			case TYPE_FACTIONLEADER_EV1:
 				return uiFactionleader;
+			case TYPE_LICHKING_EVENT:
+				return uiLichKingEscape;
         }
         return 0;
     }
@@ -305,6 +322,15 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		vague_Timer = 2000;
 		CloseDoor(GetData64(DATA_DOOR_LICHKING));
 		OpenDoor(GetData64(DATA_DOOR_MAIN));
+	}
+
+	void InitEscapeEvent()
+	{
+		fLead_Timer = 500;
+		LichKing_Timer = 500;
+		checkAdds_Timer = 10000;
+		LichKingEscape = IN_PROGRESS;
+		LichKingStep = 0;
 	}
 
 	void Update(uint32 diff)
@@ -356,6 +382,62 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		
 		if(LichKingEscape == IN_PROGRESS)
 		{
+			if(fLead_Timer <= diff)
+			{
+				DoNextActionForFLead();
+			}
+			else
+				fLead_Timer -= diff;
+
+			if(LichKing_Timer <= diff)
+			{
+				DoNextActionForLichKing();
+			}
+			else
+				LichKing_Timer -= diff;
+
+			if(checkAdds_Timer <= diff)
+			{
+				CheckEscapeAdds();
+			}
+			else
+				checkAdds_Timer -= diff;
+		}
+	}
+
+	void DoNextActionForFLead()
+	{
+	}
+
+	void DoNextActionForLichKing()
+	{
+		switch(LichKingStep)
+		{
+			case 0:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+				}
+		}
+		LichKingStep++;
+	}
+
+	void CheckEscapeAdds()
+	{
+		bool CanDoNextPlayerStep = true;
+		for (std::vector<uint64>::iterator itr = EscapeLichKingAdds.begin(); itr != EscapeLichKingAdds.end();++itr)
+		{
+			if(Creature* tmpCr = GetCreatureInMap(*itr))
+			{
+				if(!tmpCr->isAlive())
+					EscapeLichKingAdds.erase(itr);
+				else
+					CanDoNextPlayerStep = false;
+			}
+		}
+
+		if(CanDoNextPlayerStep)
+		{
+			// TODO: next Lich King Cast
 		}
 	}
 
