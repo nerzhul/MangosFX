@@ -49,11 +49,21 @@ enum EscapeSpells
 const static float LichKingEscapePos[7][3] = {
 	{5552.6f,2262.5f,733.1f},		// Initial pos
 	{5607.3f,2203.1f,731.4f},		// First step, cast Barrer
+	{5553.2,2102.653f,731.1f},		
+	{5510.3f,1995.0f,735.3f},
+	{5446.7f,1895.363f,748.8f},
+	{5391.7f,1821.447f,758.8f},	
+	{5282.1f,1705.4f,784.1f}		// Last Step, killed
+};
+
+const static float fLeadEscapePos[7][3] = {
+	{0.0f,0.0f,0.0f},		// initial pos
 	{0.0f,0.0f,0.0f},		
-	{0.0f,0.0f,0.0f},
-	{0.0f,0.0f,0.0f},
-	{0.0f,0.0f,0.0f},	
-	{0.0f,0.0f,0.0f}		// Last Step, killed
+	{0.0f,0.0f,0.0f},		// barrer 1
+	{0.0f,0.0f,0.0f},		// barrer 2
+	{0.0f,0.0f,0.0f},		// barrer 3
+	{0.0f,0.0f,0.0f},		// barrer 4
+	{0.0f,0.0f,0.0f},		// end of the event
 };
 
 // Shared IA
@@ -62,14 +72,16 @@ struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
     HoR_LichKing_EscapeAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		if(pInstance->GetData(DATA_FACTION) == ALLIANCE)
-			DoCastMe(SPELL_ICEBLOCK);
-		else
-			DoCastMe(SPELL_DARK_ARROW);
+		me->SetReactState(REACT_PASSIVE);
     }
 
     void Reset()
     {
+		if(pInstance->GetData(DATA_FACTION) == ALLIANCE)
+			SetAuraStack(SPELL_ICEBLOCK,1,me,me,1);
+		else
+			SetAuraStack(SPELL_DARK_ARROW,1,me,me,1);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     void UpdateAI(const uint32 diff)
