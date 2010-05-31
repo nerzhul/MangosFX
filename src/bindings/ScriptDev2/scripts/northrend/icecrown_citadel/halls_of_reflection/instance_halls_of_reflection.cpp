@@ -362,19 +362,26 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			{
 				FrostMourneEvent = NOT_STARTED;
 				CloseDoor(GetData64(DATA_DOOR_LICHKING));
+				CloseDoor(Frostmourne);
 			}
 
 			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 			{
 				((HoR_LichKing_EscapeAI*)LichKing->AI())->Kill(LichKing);
 				LichKing->Respawn();
-				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
-				{
-					((HoR_LichKing_EscapeAI*)LichKing->AI())->Kill(fLead);
-					fLead->Respawn();
-				}
 			}
 
+			if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+			{
+				fLead->ForcedDespawn();
+				fLead->Respawn();
+			}
+			
+			if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+			{
+				fLead->ForcedDespawn();
+				fLead->Respawn();
+			}
 			CloseDoor(GetData64(DATA_DOOR_MAIN));
 			return;
 		}
@@ -450,6 +457,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[2][0],fLeadEscapePos[2][1],fLeadEscapePos[2][2]);
+					fLeadStep++;
+					fLead_Timer = 15000;
 				}
 				break;
 			case 2:
@@ -579,7 +588,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 						if(uiTeamInInstance == ALLIANCE)
 							DoSpeak(fLead,16631,"Qu'est ce qu'il fait froid ici. Ah, je sens mon sang se glacer.",CHAT_TYPE_SAY);
 
-						event_Timer = 3000;
+						event_Timer = 4000;
 					}					
 					break;
 				case 1:
@@ -590,7 +599,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 							DoSpeak(fLead,16632,"Qu'est ce que c'est... la-bas... est-ce possible ? Heros, venez a moi !",CHAT_TYPE_SAY);
 						else
 							DoSpeak(fLead,17049,"Je ne peux y croire. Deuillegivre est devant nous, comme l'avait annonce le gnome. Venez, Heros !",CHAT_TYPE_SAY);
-						event_Timer = 3000;
+						event_Timer = 6000;
 					}
 					break;
 				case 2:
@@ -601,8 +610,26 @@ struct instance_halls_of_reflection : public ScriptedInstance
 						else
 							DoSpeak(fLead,17050,"Contempler la lame qui m'a ote la vie. La douleur en est... ravivee.",CHAT_TYPE_SAY);
 
-						event_Timer = 3000;
+						event_Timer = 4000;
 					}
+					break;
+				case 3:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+							DoSpeak(fLead,16634,"Reculez ! Touchez seulement cette lame, et votre ame en sera meurtrie pour l'eternite. Il faut que j'essaie d'entrer"
+							"en contact avec les esprits emprisonnes dans Deuillegivre. Faites moi de la place. Reculez s'il vous plait.",CHAT_TYPE_YELL);
+						else
+							DoSpeak(fLead,17051,"Je n'ose pas la toucher. Reculez, reculez. Je vais essayer d'entrer en harmonie avec la lame. Elle pourrait renfermer la clef"
+							" de notre salut.",CHAT_TYPE_SAY);
+
+						event_Timer = 15000;
+					}
+					break;
+				case 4:
+					OpenDoor(Frostmourne);
+					event_Timer = 3000;
+					break;
 				default:
 					RPFrostmourneDone = true;
 					break;

@@ -15,6 +15,7 @@ enum Types
 
 	DATA_DOOR_MAIN			=	20,
 	DATA_DOOR_LICHKING		=	21,
+	DATA_FROSTMOURNE		=	22,
 
 	DATA_RANDOM_WARRIOR		=	30,
 	DATA_RANDOM_MAGE		=	31,
@@ -26,9 +27,6 @@ enum Types
 
 	WS_MAIN					=	4884,
 	WS_VAGUE				=	4882,
-
-	GOBJ_ICEWALL_LARGE		=	201910,
-	GOBJ_ICEWALL_MEDIUM		=	201911,
 };
 
 enum EscapeSpells
