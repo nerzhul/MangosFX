@@ -57,13 +57,13 @@ const static float LichKingEscapePos[7][3] = {
 };
 
 const static float fLeadEscapePos[7][3] = {
-	{0.0f,0.0f,0.0f},		// initial pos
-	{0.0f,0.0f,0.0f},		
-	{0.0f,0.0f,0.0f},		// barrer 1
-	{0.0f,0.0f,0.0f},		// barrer 2
-	{0.0f,0.0f,0.0f},		// barrer 3
-	{0.0f,0.0f,0.0f},		// barrer 4
-	{0.0f,0.0f,0.0f},		// end of the event
+	{5547.27f,2259.95f,733.1f},		// initial pos
+	{5609.66f,2200.48f,731.62f},		
+	{5562.22f,2120.75f,730.8f},		// barrer 1
+	{5512.29f,2008.16f,733.94f},	// barrer 2
+	{5437.53f,1882.67f,751.3f},		// barrer 3
+	{5350.93f,1777.66f,765.7f},		// barrer 4
+	{5276.12f,1696.1f,786.2f},		// end of the event
 };
 
 // Shared IA

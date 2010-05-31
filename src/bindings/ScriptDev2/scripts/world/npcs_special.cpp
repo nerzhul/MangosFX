@@ -1441,9 +1441,6 @@ struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public LibDevFSAI
 	    
     void UpdateAI(const uint32 diff)
 	{	
-		if(!CanDoSomething())
-			return;
-
 		UpdateEvent(diff);
 	
 		DoMeleeAttackIfReady();
