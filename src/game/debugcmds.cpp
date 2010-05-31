@@ -973,7 +973,7 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 		return false;
 	else
 	{
-		/*std::string argstr = (char*)arg1;
+		std::string argstr = (char*)arg1;
 		if(argstr == "lfg1")
 		{
 			WorldPacket data(SMSG_LFG_UPDATE_SEARCH,1);
@@ -984,7 +984,7 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 		{
 			WorldPacket data(SMSG_LFG_TELEPORT_DENIED,4);
 			uint32 val = (uint32)atoi(arg2);
-			data << uint32(arg2);
+			data << uint32(val);
 			m_session->SendPacket(&data);
 		}
 		else if(argstr == "lfg3")
@@ -1006,7 +1006,7 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 		{
 			error_log("packet 4");
 			sLFGMgr.SendLfgProposalUpdate(m_session->GetPlayer());
-		}*/
+		}
 	}
 	return true;
 }
