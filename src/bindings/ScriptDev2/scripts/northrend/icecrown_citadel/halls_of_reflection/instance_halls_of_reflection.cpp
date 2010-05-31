@@ -507,7 +507,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[1][0],LichKingEscapePos[1][1],LichKingEscapePos[1][2]);
-					LichKing_Timer = 25000;
+					LichKing_Timer = 35000;
 				}
 				break;
 			case 2:
