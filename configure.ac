@@ -276,9 +276,6 @@ AC_CONFIG_FILES([
    dep/tbb/Makefile
    doc/Makefile
    Makefile
-   sql/Makefile
-   sql/tools/Makefile
-   sql/updates/Makefile
    src/Makefile
    src/tools/Makefile
    src/tools/genrevision/Makefile
@@ -293,7 +290,6 @@ AC_CONFIG_FILES([
    src/mangosd/Makefile
    src/bindings/Makefile
    src/bindings/ScriptDev2/Makefile
-   src/bindings/ScriptDev2/config.h
 ])
 
 ## Configure ACE, if needed

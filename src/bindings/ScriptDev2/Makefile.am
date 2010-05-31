@@ -15,9 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 ## Process this file with automake to produce Makefile.in
 
-## Sub-directories to parse
-SUBDIRS = sql
-
 BUILT_SOURCES = revision.h
 CLEANFILES = revision.h
 ## CPP flags for includes, defines, etc.
