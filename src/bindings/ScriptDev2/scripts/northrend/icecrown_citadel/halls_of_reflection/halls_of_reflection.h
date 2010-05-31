@@ -23,5 +23,8 @@ enum Types
 
 	WS_MAIN					=	4884,
 	WS_VAGUE				=	4882,
+
+	GOBJ_ICEWALL_LARGE		=	201910,
+	GOBJ_ICEWALL_MEDIUM		=	201911,
 };
 #endif

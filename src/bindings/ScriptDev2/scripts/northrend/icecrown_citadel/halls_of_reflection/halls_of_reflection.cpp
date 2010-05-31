@@ -26,8 +26,22 @@ enum Spells
 		SPELL_FLAME_SHOCK		=	72169,
 		SPELL_FROSTBOLT			=	72166,
 		SPELL_HALLUCINATION		=	72344,
-		SPELL_ICECHAINS			=	72171
+		SPELL_ICECHAINS			=	72171,
+
+		// lich king
+		SPELL_WINTER			=	69780,
+		SPELL_PAIN_SUFFERING	=	74115,
+		SPELL_FROSTMOURNE		=	70063,
+		SPELL_ICEWALL			=	69768,
+		// jaina
+		SPELL_BARRER_CHANNEL	=	76221,
+		SPELL_ICE_BARRER		=	69787,
+		SPELL_ICEBLOCK			=	69708,
+		// sylvanas
+		SPELL_DARK_ARROW		=	70194,
 };
+
+
 struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
 {
     HoR_WarriorAI(Creature *pCreature) : LibDevFSAI(pCreature)
@@ -230,6 +244,80 @@ bool GossipSelect_hor_frostmourne_event(Player *player, Creature *mCreature, uin
     return true;
 }
 
+bool GossipHello_hor_lichking_event(Player *player, Creature *mCreature)
+{
+     if (mCreature->isQuestGiver())
+        player->PrepareQuestMenu( mCreature->GetGUID());
+
+	player->ADD_GOSSIP_ITEM(0, "Fuyons, tant qu'il est encore temps", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+
+	player->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, mCreature->GetGUID());
+    return true;
+}
+
+bool GossipSelect_hor_lichking_event(Player *player, Creature *mCreature, uint32 sender, uint32 action )
+{
+    if(action == GOSSIP_ACTION_INFO_DEF)
+    {
+		mCreature->GetInstanceData()->SetData(TYPE_EVENT_ESCAPE,IN_PROGRESS);
+        player->CLOSE_GOSSIP_MENU();
+    }
+    return true;
+}
+
+struct MANGOS_DLL_DECL HoR_escape_fLeadAI : public LibDevFSAI
+{
+    HoR_escape_fLeadAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		if(me->GetEntry() == 36955)
+			DoCastMe(SPELL_ICE_BARRER);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+	
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_HoR_escape_fLead(Creature* pCreature)
+{
+    return new HoR_escape_fLeadAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
+{
+    HoR_LichKing_EscapeAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+
+    }
+
+    void Reset()
+    {
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        return;
+    }
+};
+
+CreatureAI* GetAI_HoR_LichKing_Escape(Creature* pCreature)
+{
+    return new HoR_LichKing_EscapeAI (pCreature);
+}
+
 void AddSC_halls_of_reflection()
 {
 	Script *newscript;
@@ -263,5 +351,17 @@ void AddSC_halls_of_reflection()
     newscript->Name = "hor_frostmourne_event";
     newscript->pGossipHello = &GossipHello_hor_frostmourne_event;
     newscript->pGossipSelect = &GossipSelect_hor_frostmourne_event;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "hor_lichking_event";
+	newscript->GetAI = &GetAI_HoR_escape_fLead;
+    newscript->pGossipHello = &GossipHello_hor_lichking_event;
+    newscript->pGossipSelect = &GossipSelect_hor_lichking_event;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "HoR_escape_lichking";
+    newscript->GetAI = &GetAI_HoR_LichKing_Escape;
     newscript->RegisterSelf();
 }

@@ -134,7 +134,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
 		if(urand(0,1))
 			Yell(16735,"J'ai vu le meme regard passer dans ses yeux a sa mort... Terenas... Il n'arrivait pas a y croire. Hahahaha !");
 		else
-			Yell(16736,"Que la souffrange vous etouffe !");
+			Yell(16736,"Que la souffrance vous etouffe !");
 
 	}
 

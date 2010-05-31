@@ -161,6 +161,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 37226:
 				uiLichKing = pCreature->GetGUID();
 				break;
+			case 36954:
+				uiLichKingEscape = pCreature->GetGUID();
+				break;
         }
     }
 
@@ -363,8 +366,35 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			switch(event_Step)
 			{
 				case 0:
-					
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+							DoSpeak(fLead,16631,"Qu'est ce qu'il fait froid ici. Ah, je sens mon sang se glacer.",CHAT_TYPE_SAY);
+
+						event_Timer = 3000;
+					}					
 					break;
+				case 1:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						fLead->GetMotionMaster()->MovePoint(0,5304.0f,2000.0f,709.5f);
+						if(uiTeamInInstance == ALLIANCE)
+							DoSpeak(fLead,16632,"Qu'est ce que c'est... la-bas... est-ce possible ? Heros, venez a moi !",CHAT_TYPE_SAY);
+						else
+							DoSpeak(fLead,17049,"Je ne peux y croire. Deuillegivre est devant nous, comme l'avait annonce le gnome. Venez, Heros !",CHAT_TYPE_SAY);
+						event_Timer = 3000;
+					}
+					break;
+				case 2:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+							DoSpeak(fLead,16633,"Deuillegivre. La lame qui a detruit notre royaume.",CHAT_TYPE_SAY);
+						else
+							DoSpeak(fLead,17050,"Contempler la lame qui m'a ote la vie. La douleur en est... ravivee.",CHAT_TYPE_SAY);
+
+						event_Timer = 3000;
+					}
 				default:
 					RPFrostmourneDone = true;
 					break;
