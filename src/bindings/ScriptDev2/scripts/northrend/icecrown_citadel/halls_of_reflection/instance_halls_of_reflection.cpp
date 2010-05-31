@@ -416,7 +416,66 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 0:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[1][0],LichKingEscapePos[1][1],LichKingEscapePos[1][2]);
+					LichKing_Timer = 5000;
 				}
+				break;
+			case 1:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
+					LichKing_Timer = 3000;
+				}
+				break;
+			case 2:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_WINTER);
+					LichKing_Timer = 3000;
+				}
+				break;
+			case 3:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[2][0],LichKingEscapePos[2][1],LichKingEscapePos[2][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
+			case 4:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[3][0],LichKingEscapePos[3][1],LichKingEscapePos[3][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
+			case 5:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[4][0],LichKingEscapePos[4][1],LichKingEscapePos[4][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
+			case 6:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[5][0],LichKingEscapePos[5][1],LichKingEscapePos[5][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
+			case 7:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[6][0],LichKingEscapePos[6][1],LichKingEscapePos[6][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
+			case 8:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[7][0],LichKingEscapePos[7][1],LichKingEscapePos[7][2]);
+					LichKing_Timer = 50000;
+				}
+				break;
 		}
 		LichKingStep++;
 	}
