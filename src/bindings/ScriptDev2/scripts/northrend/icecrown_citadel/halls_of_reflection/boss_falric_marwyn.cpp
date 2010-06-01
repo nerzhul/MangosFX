@@ -57,8 +57,9 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     {
         if (!CanDoSomething() || me->HasAura(66830))
 		{
-			DoCastMe(66830);
-			DoResetThreat();
+			if(!me->HasAura(66830))
+				DoCastMe(66830);
+			EnterEvadeMode();
             return;
 		}
 		
@@ -143,8 +144,9 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
     {
         if (!CanDoSomething() || me->HasAura(66830))
 		{
-			DoCastMe(66830);
-			DoResetThreat();
+			if(!me->HasAura(66830))
+				DoCastMe(66830);
+			EnterEvadeMode();
             return;
 		}
 	
