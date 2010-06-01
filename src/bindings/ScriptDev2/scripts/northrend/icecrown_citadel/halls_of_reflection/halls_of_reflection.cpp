@@ -51,6 +51,7 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			DoCastMe(66830);
+			DoResetThreat();
             return;
 		}
 	
@@ -86,6 +87,7 @@ struct MANGOS_DLL_DECL HoR_RogueAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			DoCastMe(66830);
+			DoResetThreat();
             return;
 		}
 	
@@ -131,6 +133,7 @@ struct MANGOS_DLL_DECL HoR_MageAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			DoCastMe(66830);
+			DoResetThreat();
             return;
 		}
 	
@@ -164,6 +167,7 @@ struct MANGOS_DLL_DECL HoR_HuntAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			DoCastMe(66830);
+			DoResetThreat();
             return;
 		}
 	
@@ -197,6 +201,7 @@ struct MANGOS_DLL_DECL HoR_PriestAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			DoCastMe(66830);
+			DoResetThreat();
             return;
 		}
 	
