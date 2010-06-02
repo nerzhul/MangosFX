@@ -784,14 +784,17 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					target->ForcedDespawn();
 				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,201385,150.0f))
 					OpenDoor(wall->GetGUID());
-				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
+				if(Wall > 4)
+					SetData(TYPE_EVENT_ESCAPE,DONE);
+				else
+				{
+					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+						LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
+				}
 				fLeadStep++;
 				spawn_Timer = 15000;
 				Wall++;
-				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
-					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
-				if(Wall > 4)
-					SetData(TYPE_EVENT_ESCAPE,DONE);
 				LichKing_Timer = 4000;
 				checkAdds_Timer = DAY*HOUR;
 			}
