@@ -377,7 +377,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		EscapeLichKingAdds.clear();
 
 		LichKing_Timer = 500;
-		checkAdds_Timer = 45000;
+		checkAdds_Timer = DAY*HOUR;
 		spawn_Timer = 24000;
 		LichKingEscape = IN_PROGRESS;
 		LichKingStep = 0;
@@ -580,7 +580,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
 							AggroPlayersInMap(Ghoul);
 						}
-				checkAdds_Timer = 10000;
 				spawn_Timer = 15000;
 				break;
 			case 1: // step 1,2
@@ -591,6 +590,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 						EscapeLichKingAdds.push_back(Witcher->GetGUID());
 						AggroPlayersInMap(Witcher);
 					}
+				checkAdds_Timer = 10000;
 				spawn_Timer = DAY*HOUR;
 				break;
 			case 3: // step 2
@@ -625,7 +625,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					}
 				spawn_Timer = 15000;
 				if(TrashStep == 11)
+				{
+					checkAdds_Timer = 10000;
 					spawn_Timer = DAY*HOUR;
+				}
 				break;
 			case 7: // step 3,4
 			case 10:
@@ -638,7 +641,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 						}
 				spawn_Timer = 15000;
 				if(TrashStep == 7)
+				{
+					checkAdds_Timer = 10000;
 					spawn_Timer = DAY*HOUR;
+				}
 				break;
 			case 9: // step 4
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
