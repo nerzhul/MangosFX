@@ -199,10 +199,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 202302:
 				Frostmourne = obj->GetGUID();
 				break;
-			case 0:
+			case 201710:
 				AllianceVault = obj->GetGUID();
 				break;
-			case 1:
+			case 202337:
 				HordeVault = obj->GetGUID();
 				break;
 		}
@@ -466,7 +466,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[1][0],fLeadEscapePos[1][1],fLeadEscapePos[1][2]);
 					fLeadStep++;
-					fLead_Timer = 18000;
+					fLead_Timer = 16000;
 				}
 				break;
 			case 1:
@@ -536,7 +536,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 	void DoNextActionForLichKing()
 	{
-		error_log("LICHKING STEP: %u",LichKingStep);
 		switch(LichKingStep)
 		{
 			case 0:
@@ -552,7 +551,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[1][0],LichKingEscapePos[1][1],LichKingEscapePos[1][2]);
-					LichKing_Timer = 20000;
+					LichKing_Timer = 18000;
 					LichKingStep++;
 				}
 				break;
@@ -759,9 +758,26 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[6][0],LichKingEscapePos[6][1],LichKingEscapePos[6][2]);
-					LichKing_Timer = 50000;
+					LichKing_Timer = 10000;
 					LichKingStep++;
 				}
+				break;
+			case 22:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[6][0],LichKingEscapePos[6][1],LichKingEscapePos[6][2]);
+					LichKing_Timer = 10000;
+					LichKingStep++;
+				}
+				break;
+			case 23:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[6][0],LichKingEscapePos[6][1],LichKingEscapePos[6][2]);
+					LichKing_Timer = 10000;
+					LichKingStep++;
+				}
+				break;
 			}
 	}
 
