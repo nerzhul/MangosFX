@@ -742,7 +742,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		std::vector<uint64>::iterator itr = EscapeLichKingAdds.begin();
 		while(itr != EscapeLichKingAdds.end())
 		{
-			error_log("itr");
 			std::vector<uint64>::iterator itsave = itr;
 			++itsave;
 			if(Creature* tmpCr = GetCreatureInMap(*itr))
@@ -758,6 +757,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		error_log("Try next");
 		if(CanDoNextPlayerStep)
 		{
+			error_log("Cleanup");
+			EscapeLichKingAdds.clear();
 			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 			{
 				LichKing->GetMotionMaster()->Clear();
