@@ -50,7 +50,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint8 Wall;
 	std::vector<uint64> EscapeLichKingAdds;
 	std::vector<uint64> IceWallTargets;
-
+	uint64 AllianceVault;
+	uint64 HordeVault;
 
 	uint64 MainDoor;
 	uint64 LichKingDoor;
@@ -197,6 +198,12 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				break;
 			case 202302:
 				Frostmourne = obj->GetGUID();
+				break;
+			case 0:
+				AllianceVault = obj->GetGUID();
+				break;
+			case 1:
+				HordeVault = obj->GetGUID();
 				break;
 		}
 	}
@@ -442,8 +449,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 			if(checkAdds_Timer <= diff)
 			{
-				CheckEscapeAddsAndfLeadDist();
 				checkAdds_Timer = 1500;
+				CheckEscapeAddsAndfLeadDist();
 			}
 			else
 				checkAdds_Timer -= diff;
