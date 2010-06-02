@@ -487,7 +487,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[1][0],fLeadEscapePos[1][1],fLeadEscapePos[1][2]);
 					fLeadStep++;
-					fLead_Timer = 14000;
+					fLead_Timer = 12000;
 				}
 				break;
 			case 1:
@@ -578,7 +578,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 					if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_7M))
 						EscapeLichKingAdds.push_back(Witcher->GetGUID());
-				spawn_Timer = 10000;
+				spawn_Timer = 30000;
 				break;
 			case 3: // step 2
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
@@ -637,7 +637,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
-					LichKing_Timer = 16000;
+					LichKing_Timer = 14000;
 					LichKingStep++;
 				}
 				break;
@@ -661,7 +661,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
 					Movement = 2;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
-					LichKing_Timer = 4000;
+					LichKing_Timer = 37000;
 					LichKingStep++;
 				}
 				break;
@@ -671,7 +671,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 3;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 10000;
+				LichKing_Timer = 65000;
 				LichKingStep++;
 				break;
 			case 5:
@@ -680,7 +680,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 4;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 10000;
+				LichKing_Timer = 53000;
 				LichKingStep++;
 				break;
 			case 6:
@@ -689,7 +689,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 5;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 15000;
+				LichKing_Timer = 50000;
 				LichKingStep++;
 				break;
 			case 7:
@@ -698,7 +698,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 6;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 15000;
+				LichKing_Timer = 42000;
 				LichKingStep++;
 				break;
 			case 8:
