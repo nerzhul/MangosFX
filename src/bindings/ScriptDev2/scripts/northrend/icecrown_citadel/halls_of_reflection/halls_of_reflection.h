@@ -29,6 +29,11 @@ enum Types
 	WS_VAGUE				=	4882,
 };
 
+enum MiscConst
+{
+	MAX_TRASHSTEP			=	12
+};
+
 enum EscapeSpells
 {
 	// lich king
@@ -51,14 +56,15 @@ enum EscapeNpcs
 	NPC_ABOMINATION			=	37069,
 };
 
-const static float LichKingEscapePos[7][3] = {
+const static float LichKingEscapePos[8][3] = {
 	{5552.6f,2262.5f,733.1f},		// Initial pos
 	{5614.3f,2194.1f,731.99f},		// First step, cast Barrer
-	{5553.2f,2102.653f,731.3f},		
-	{5510.3f,1995.0f,735.3f},
-	{5446.7f,1895.363f,748.8f},
-	{5391.7f,1821.447f,758.8f},	
-	{5282.1f,1705.4f,784.1f}		// Last Step, killed
+	{5566.78f,2130.584f,730.96f},
+	{5515.52f,2017.15f,732.969f},
+	{5472.79f,1935.86f,742.21},
+	{5416.67f,1847.37f,756.22f},
+	{5371.23f,1803.82f,760.63f,},
+	{5292.07f,1719.195f,780.1f}
 };
 
 const static float fLeadEscapePos[7][3] = {
