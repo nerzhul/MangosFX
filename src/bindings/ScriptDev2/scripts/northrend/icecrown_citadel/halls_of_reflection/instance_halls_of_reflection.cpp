@@ -256,6 +256,12 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				LichKingEscape = EncounterState(data);
 				if(data == IN_PROGRESS)
 					InitEscapeEvent();
+				else if(data == DONE)
+				{
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+						LichKing->ForcedDespawn();
+					DoRespawnGameObject(uiTeamInInstance == ALLIANCE ? AllianceVault : HordeVault,MINUTE*10);
+				}
 				break;
         }
 
@@ -804,6 +810,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					OpenDoor(wall->GetGUID());
 				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
 				fLeadStep++;
+				Wall++;
+				if(Wall >= 4)
+					SetData(TYPE_EVENT_ESCAPE,DONE);
 				LichKing_Timer = 4000;
 				checkAdds_Timer = DAY*HOUR;
 			}
