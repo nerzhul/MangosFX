@@ -56,7 +56,7 @@ enum EscapeNpcs
 	NPC_ABOMINATION			=	37069,
 };
 
-const static float LichKingEscapePos[8][3] = {
+const static float LichKingEscapePos[9][3] = {
 	{5552.6f,2262.5f,733.1f},		// Initial pos
 	{5614.3f,2194.1f,731.99f},		// First step, cast Barrer
 	{5566.78f,2130.584f,730.96f},
@@ -64,7 +64,8 @@ const static float LichKingEscapePos[8][3] = {
 	{5472.79f,1935.86f,742.21f},
 	{5416.67f,1847.37f,756.22f},
 	{5371.23f,1803.82f,760.63f},
-	{5292.07f,1719.195f,780.1f}
+	{5292.07f,1719.195f,780.1f},
+	{5279.51f,1699.67f,785.28f}
 };
 
 const static float fLeadEscapePos[7][3] = {
