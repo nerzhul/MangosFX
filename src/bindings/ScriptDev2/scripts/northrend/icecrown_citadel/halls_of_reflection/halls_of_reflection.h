@@ -53,7 +53,7 @@ enum EscapeNpcs
 
 const static float LichKingEscapePos[7][3] = {
 	{5552.6f,2262.5f,733.1f},		// Initial pos
-	{5607.3f,2203.1f,731.6f},		// First step, cast Barrer
+	{5614.3f,2194.1f,731.99f},		// First step, cast Barrer
 	{5553.2,2102.653f,731.3f},		
 	{5510.3f,1995.0f,735.3f},
 	{5446.7f,1895.363f,748.8f},
