@@ -3027,6 +3027,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
             dodgeChance = 0;
 
         roll = urand (0, 10000);
+		// need to add level skill diminuting
         if (roll < dodgeChance)
             return SPELL_MISS_DODGE;
     }
