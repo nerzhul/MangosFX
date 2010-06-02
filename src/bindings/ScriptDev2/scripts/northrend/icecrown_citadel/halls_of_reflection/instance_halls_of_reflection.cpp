@@ -784,7 +784,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				Wall++;
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
-				if(Wall >= 4)
+				if(Wall > 4)
 					SetData(TYPE_EVENT_ESCAPE,DONE);
 				LichKing_Timer = 4000;
 				checkAdds_Timer = DAY*HOUR;
