@@ -784,6 +784,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					target->ForcedDespawn();
 				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,201385,150.0f))
 					OpenDoor(wall->GetGUID());
+
+				Wall++;
 				if(Wall > 4)
 					SetData(TYPE_EVENT_ESCAPE,DONE);
 				else
@@ -794,7 +796,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				}
 				fLeadStep++;
 				spawn_Timer = 15000;
-				Wall++;
 				LichKing_Timer = 4000;
 				checkAdds_Timer = DAY*HOUR;
 			}
