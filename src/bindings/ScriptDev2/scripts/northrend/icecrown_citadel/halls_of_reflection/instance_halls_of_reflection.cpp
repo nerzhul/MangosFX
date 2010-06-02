@@ -47,6 +47,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint32 checkAdds_Timer;
 	uint8 LichKingStep;
 	uint8 fLeadStep;
+	uint8 Wall;
 	std::vector<uint64> EscapeLichKingAdds;
 	std::vector<uint64> IceWallTargets;
 
@@ -344,8 +345,9 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			if(Creature* Target = GetCreatureInMap(*itr))
 				Target->Respawn();
 		fLead_Timer = 500;
+		Wall = 0;
 		LichKing_Timer = 500;
-		checkAdds_Timer = 42000;
+		checkAdds_Timer = 45000;
 		LichKingEscape = IN_PROGRESS;
 		LichKingStep = 0;
 		fLeadStep = 0;
@@ -525,6 +527,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 2:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
+					LichKing->GetMotionMaster()->Clear();
 					LichKing->setFaction(14);
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_WINTER);
 					LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
@@ -538,30 +541,170 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					LichKing->GetMotionMaster()->Clear();
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
+					Wall++;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[2][0],LichKingEscapePos[2][1],LichKingEscapePos[2][2]);
-					LichKing_Timer = 50000;
+					LichKing_Timer = 4000;
 					LichKingStep++;
 				}
 				break;
 			case 4:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
-					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[3][0],LichKingEscapePos[3][1],LichKingEscapePos[3][2]);
-					LichKing_Timer = 50000;
+					for(uint8 i=0;i<8;i++)
+						if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
+					LichKing_Timer = 10000;
+					LichKingStep++;
 				}
 				break;
 			case 5:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
-					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[4][0],LichKingEscapePos[4][1],LichKingEscapePos[4][2]);
-					LichKing_Timer = 50000;
+					if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Witcher->GetGUID());
+
+					LichKing_Timer = 35000;
+					LichKingStep++;
 				}
 				break;
 			case 6:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[3][0],LichKingEscapePos[3][1],LichKingEscapePos[3][2]);
+					LichKing_Timer = 5000;
+				}
+				break;
+			case 7:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<8;i++)
+						if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
+					LichKing_Timer = 7000;
+					LichKingStep++;
+				}
+				break;
+			case 8:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Witcher->GetGUID());
+					if(Creature* Abomination = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_ABOMINATION,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Abomination->GetGUID());
+
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 9:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Witcher->GetGUID());
+
+					LichKing_Timer = 25000;
+					checkAdds_Timer = 1500;
+					LichKingStep++;
+				}
+				break;
+			case 10:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[4][0],LichKingEscapePos[4][1],LichKingEscapePos[4][2]);
+					LichKing_Timer = 5000;
+					LichKingStep++;
+				}
+				break;
+			case 11:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<8;i++)
+						if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
+					LichKing_Timer = 7000;
+					LichKingStep++;
+				}
+				break;
+			case 12:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<2;i++)
+						if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Witcher->GetGUID());
+					if(Creature* Abomination = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_ABOMINATION,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Abomination->GetGUID());
+
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 13:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<2;i++)
+						if(Creature* Abomination = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Abomination->GetGUID());
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 14:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Witcher->GetGUID());
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 15:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[5][0],LichKingEscapePos[5][1],LichKingEscapePos[5][2]);
-					LichKing_Timer = 50000;
+					LichKing_Timer = 5000;
+				}
+				break;
+			case 16:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<8;i++)
+						if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
+					LichKing_Timer = 7000;
+					LichKingStep++;
+				}
+				break;
+			case 17:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<2;i++)
+						if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Witcher->GetGUID());
+					if(Creature* Abomination = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_ABOMINATION,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Abomination->GetGUID());
+
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 18:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<2;i++)
+						if(Creature* Witcher = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_WITCHER,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Witcher->GetGUID());
+					LichKing_Timer = 12000;
+					LichKingStep++;
+				}
+				break;
+			case 19:
+				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
+					for(uint8 i=0;i<2;i++)
+						if(Creature* Abomination = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_ABOMINATION,TEN_MINS,NEAR_15M))
+							EscapeLichKingAdds.push_back(Abomination->GetGUID());
+					LichKing_Timer = 12000;
+					LichKingStep++;
 				}
 				break;
 			case 7:
@@ -593,13 +736,13 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			{
 				LichKing->GetMotionMaster()->Clear();
 				if(Creature* target = GetClosestCreatureWithEntry(LichKing,37014,250.0f))
-					target->ForcedDespawn();
+					((HoR_LichKing_EscapeAI*)LichKing->AI())->Kill(target);
+				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,0,250.0f))
+					OpenDoor(wall->GetGUID());
 				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
-				for(uint8 i=0;i<8;i++)
-					if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
-						EscapeLichKingAdds.push_back(Ghoul->GetGUID());
-				LichKingStep--;
+				Wall++;
 				LichKing_Timer = 4000;
+				checkAdds_Timer = DAY*HOUR;
 			}
 		}
 	}

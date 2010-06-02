@@ -47,6 +47,8 @@ enum EscapeSpells
 enum EscapeNpcs
 {
 	NPC_GHOUL				=	36940,
+	NPC_WITCHER				=	0,
+	NPC_ABOMINATION			=	0,
 };
 
 const static float LichKingEscapePos[7][3] = {
