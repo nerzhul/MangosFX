@@ -580,6 +580,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
 							AggroPlayersInMap(Ghoul);
 						}
+				checkAdds_Timer = 10000;
 				spawn_Timer = 15000;
 				break;
 			case 1: // step 1,2
@@ -776,7 +777,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(Creature* target = GetClosestCreatureWithEntry(LichKing,37014,250.0f))
 					target->ForcedDespawn();
 				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,201385,150.0f))
-					CloseDoor(wall->GetGUID());
+					OpenDoor(wall->GetGUID());
 				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
 				fLeadStep++;
 				spawn_Timer = 15000;
