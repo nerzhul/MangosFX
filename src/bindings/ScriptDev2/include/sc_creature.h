@@ -368,6 +368,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 	public:
 		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
 		~LibDevFSAI() {};
+
+		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
+			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
+			float x = 0,float y = 0, float z = 0, bool force = false);
 	protected:
 		void AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
 			SpellCastTarget targ = TARGET_RANDOM, uint8 phase = 0, uint32 TextId = 0,
@@ -401,10 +405,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
 
 		void UpdateEvent(uint32 diff, uint32 phase = 0);
-
-		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
-			ZoneInvoc WhereZone = ON_ME, Comportement Compo = AGGRESSIVE_RANDOM,
-			float x = 0,float y = 0, float z = 0, bool force = false);
 			
 		Creature* CallAggressiveCreature(uint32 entry, uint32 Despawn = TEN_MINS,
 			ZoneInvoc WhereZone = ON_ME, float x = 0,float y = 0, float z = 0, bool force = false)

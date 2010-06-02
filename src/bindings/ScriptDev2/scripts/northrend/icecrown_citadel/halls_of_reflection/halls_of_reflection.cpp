@@ -44,6 +44,9 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)
@@ -51,7 +54,7 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
@@ -81,6 +84,9 @@ struct MANGOS_DLL_DECL HoR_RogueAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)
@@ -88,7 +94,7 @@ struct MANGOS_DLL_DECL HoR_RogueAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
@@ -118,6 +124,9 @@ struct MANGOS_DLL_DECL HoR_MageAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
 	void DamageTaken(Unit* who,uint32 &dmg)
@@ -135,7 +144,7 @@ struct MANGOS_DLL_DECL HoR_MageAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
@@ -163,6 +172,9 @@ struct MANGOS_DLL_DECL HoR_HuntAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)
@@ -170,7 +182,7 @@ struct MANGOS_DLL_DECL HoR_HuntAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
@@ -198,6 +210,7 @@ struct MANGOS_DLL_DECL HoR_PriestAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SetAuraStack(66830,1,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)
@@ -205,13 +218,12 @@ struct MANGOS_DLL_DECL HoR_PriestAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
-	
-		UpdateEvent(diff);
 
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };

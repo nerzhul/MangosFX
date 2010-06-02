@@ -345,7 +345,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				Target->Respawn();
 		fLead_Timer = 500;
 		LichKing_Timer = 500;
-		checkAdds_Timer = 10000;
+		checkAdds_Timer = 42000;
 		LichKingEscape = IN_PROGRESS;
 		LichKingStep = 0;
 		fLeadStep = 0;
@@ -409,7 +409,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				if(respawn_Timer <= diff)
 				{
 					DoRespawnDeadAdds();
-					respawn_Timer = 35000;
+					respawn_Timer = 8640000;
 				}
 				else
 					respawn_Timer -= diff;
@@ -451,7 +451,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[1][0],fLeadEscapePos[1][1],fLeadEscapePos[1][2]);
 					fLeadStep++;
-					fLead_Timer = 12000;
+					fLead_Timer = 18000;
 				}
 				break;
 			case 1:
@@ -465,22 +465,32 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 2:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
-					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[3][0],fLeadEscapePos[3][1],fLeadEscapePos[3][2]);
-				}
+					if(Creature* target = GetClosestCreatureWithEntry(fLead,37014,250.0f))
+					{
+						fLead->CastSpell(target,SPELL_BARRER_CHANNEL,false);
+						fLead_Timer = 1000;
+					}
+				}				
 				break;
 			case 3:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
-					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[4][0],fLeadEscapePos[4][1],fLeadEscapePos[4][2]);
+					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[3][0],fLeadEscapePos[3][1],fLeadEscapePos[3][2]);
 				}
 				break;
 			case 4:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
-					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[5][0],fLeadEscapePos[5][1],fLeadEscapePos[5][2]);
+					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[4][0],fLeadEscapePos[4][1],fLeadEscapePos[4][2]);
 				}
 				break;
 			case 5:
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+				{
+					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[5][0],fLeadEscapePos[5][1],fLeadEscapePos[5][2]);
+				}
+				break;
+			case 6:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[6][0],fLeadEscapePos[6][1],fLeadEscapePos[6][2]);
@@ -501,13 +511,15 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					LichKing->RemoveAurasDueToSpell(SPELL_ICEBLOCK);
 					LichKing->RemoveAurasDueToSpell(SPELL_DARK_ARROW);
 					LichKing_Timer = 3000;
+					LichKingStep++;
 				}
 				break;
 			case 1:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[1][0],LichKingEscapePos[1][1],LichKingEscapePos[1][2]);
-					LichKing_Timer = 25000;
+					LichKing_Timer = 22000;
+					LichKingStep++;
 				}
 				break;
 			case 2:
@@ -518,6 +530,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 					LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 					LichKing_Timer = 3000;
+					LichKingStep++;
 				}
 				break;
 			case 3:
@@ -525,45 +538,39 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					LichKing->GetMotionMaster()->Clear();
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
-					LichKing_Timer = 3000;
+					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[2][0],LichKingEscapePos[2][1],LichKingEscapePos[2][2]);
+					LichKing_Timer = 50000;
+					LichKingStep++;
 				}
 				break;
 			case 4:
-				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
-				{
-					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[2][0],LichKingEscapePos[2][1],LichKingEscapePos[2][2]);
-					LichKing_Timer = 50000;
-				}
-				break;
-			case 5:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[3][0],LichKingEscapePos[3][1],LichKingEscapePos[3][2]);
 					LichKing_Timer = 50000;
 				}
 				break;
-			case 6:
+			case 5:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[4][0],LichKingEscapePos[4][1],LichKingEscapePos[4][2]);
 					LichKing_Timer = 50000;
 				}
 				break;
-			case 7:
+			case 6:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[5][0],LichKingEscapePos[5][1],LichKingEscapePos[5][2]);
 					LichKing_Timer = 50000;
 				}
 				break;
-			case 8:
+			case 7:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 				{
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[6][0],LichKingEscapePos[6][1],LichKingEscapePos[6][2]);
 					LichKing_Timer = 50000;
 				}
 			}
-		LichKingStep++;
 	}
 
 	void CheckEscapeAddsAndfLeadDist()
@@ -582,7 +589,18 @@ struct instance_halls_of_reflection : public ScriptedInstance
 
 		if(CanDoNextPlayerStep)
 		{
-			// TODO: next Lich King Cast
+			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+			{
+				LichKing->GetMotionMaster()->Clear();
+				if(Creature* target = GetClosestCreatureWithEntry(LichKing,37014,250.0f))
+					target->ForcedDespawn();
+				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
+				for(uint8 i=0;i<8;i++)
+					if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_15M))
+						EscapeLichKingAdds.push_back(Ghoul->GetGUID());
+				LichKingStep--;
+				LichKing_Timer = 4000;
+			}
 		}
 	}
 
@@ -779,7 +797,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				AggroPlayersInMap(Priest);
 			}
 
-			if(nbr >= 3)
+			if(nbr > 3)
 			{
 				if(Creature* Rogue = GetCreatureInMap(GetData64(DATA_RANDOM_HUNT)))
 				{
@@ -790,7 +808,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				}
 			}
 
-			if(nbr >= 4)
+			if(nbr > 4)
 			{
 				if(Creature* Hunt = GetCreatureInMap(GetData64(DATA_RANDOM_HUNT)))
 				{
@@ -801,7 +819,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				}
 			}
 
-			if(nbr >= 5)
+			if(nbr > 5)
 			{
 				if(Creature* tmpCr = GetCreatureInMap(GetData64(DATA_RANDOM_WARRIOR+urand(0,4))))
 				{

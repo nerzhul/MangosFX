@@ -44,10 +44,15 @@ enum EscapeSpells
 	SPELL_DARK_ARROW		=	70194,
 };
 
+enum EscapeNpcs
+{
+	NPC_GHOUL				=	36940,
+};
+
 const static float LichKingEscapePos[7][3] = {
 	{5552.6f,2262.5f,733.1f},		// Initial pos
-	{5607.3f,2203.1f,731.4f},		// First step, cast Barrer
-	{5553.2,2102.653f,731.1f},		
+	{5607.3f,2203.1f,731.6f},		// First step, cast Barrer
+	{5553.2,2102.653f,731.3f},		
 	{5510.3f,1995.0f,735.3f},
 	{5446.7f,1895.363f,748.8f},
 	{5391.7f,1821.447f,758.8f},	
@@ -57,7 +62,7 @@ const static float LichKingEscapePos[7][3] = {
 const static float fLeadEscapePos[7][3] = {
 	{5547.27f,2259.95f,733.1f},		// initial pos
 	{5609.66f,2200.48f,731.62f},		
-	{5562.22f,2120.75f,730.8f},		// barrer 1
+	{5566.12f,2129.15f,730.9f},		// barrer 1
 	{5512.29f,2008.16f,733.94f},	// barrer 2
 	{5437.53f,1882.67f,751.3f},		// barrer 3
 	{5350.93f,1777.66f,765.7f},		// barrer 4

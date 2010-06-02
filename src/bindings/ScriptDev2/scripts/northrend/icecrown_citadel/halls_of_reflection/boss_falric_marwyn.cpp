@@ -38,6 +38,9 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     {
 		ResetTimers();
 		phase = 0;
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
 	void Aggro(Unit* who)
@@ -58,7 +61,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
@@ -81,6 +84,12 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 				if(CheckPercentLife(50))
 				{
 					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
+					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+					if (!lPlayers.isEmpty())
+						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+							if (Player* pPlayer = itr->getSource())
+								if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+									pPlayer->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_1_H : SPELL_HOPELESSNESS_1);
 					phase++;
 				}
 				break;
@@ -88,6 +97,12 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 				if(CheckPercentLife(25))
 				{
 					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_3_H : SPELL_HOPELESSNESS_3);
+					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+					if (!lPlayers.isEmpty())
+						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+							if (Player* pPlayer = itr->getSource())
+								if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+									pPlayer->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
 					phase++;
 				}
 				break;
@@ -124,6 +139,9 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		SetAuraStack(66830,1,me,me,1);
     }
 
 	void Aggro(Unit* pwho)
@@ -145,7 +163,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				DoCastMe(66830);
+				SetAuraStack(66830,1,me,me,1);
 			EnterEvadeMode();
             return;
 		}
