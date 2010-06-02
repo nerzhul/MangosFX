@@ -738,13 +738,16 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	void CheckEscapeAddsAndfLeadDist()
 	{
 		bool CanDoNextPlayerStep = true;
+		error_log("Check");
 		std::vector<uint64>::iterator itr = EscapeLichKingAdds.begin();
 		while(itr != EscapeLichKingAdds.end())
 		{
+			error_log("itr");
 			std::vector<uint64>::iterator itsave = itr;
 			++itsave;
 			if(Creature* tmpCr = GetCreatureInMap(*itr))
 			{
+				error_log("Creature");
 				if(!tmpCr->isAlive())
 					EscapeLichKingAdds.erase(itr);
 				else
@@ -752,7 +755,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			}
 			itr = itsave;
 		}
-
+		error_log("Try next");
 		if(CanDoNextPlayerStep)
 		{
 			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
