@@ -548,7 +548,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					LichKing->GetMotionMaster()->Clear();
 					LichKing->setFaction(14);
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_WINTER);
-					LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 					LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 					LichKing_Timer = 3000;
 					LichKingStep++;
@@ -738,35 +737,32 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	void CheckEscapeAddsAndfLeadDist()
 	{
 		bool CanDoNextPlayerStep = true;
-		error_log("Check");
 		std::vector<uint64>::iterator itr = EscapeLichKingAdds.begin();
 		while(itr != EscapeLichKingAdds.end())
 		{
-			std::vector<uint64>::iterator itsave = itr;
-			++itsave;
+			/*std::vector<uint64>::iterator itsave = itr;
+			++itsave;*/
 			if(Creature* tmpCr = GetCreatureInMap(*itr))
 			{
-				error_log("Creature");
-				if(!tmpCr->isAlive())
+				if(tmpCr->isAlive())
+				/*{
 					EscapeLichKingAdds.erase(itr);
-				else
+				}
+				else*/
 					CanDoNextPlayerStep = false;
 			}
-			itr = itsave;
+			++itr/* = itsave*/;
 		}
-		error_log("Try next");
 		if(CanDoNextPlayerStep)
 		{
-			error_log("Cleanup");
 			EscapeLichKingAdds.clear();
 			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
 			{
 				LichKing->GetMotionMaster()->Clear();
 				if(Creature* target = GetClosestCreatureWithEntry(LichKing,37014,250.0f))
-					((HoR_LichKing_EscapeAI*)LichKing->AI())->Kill(target);
-
-				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,0,250.0f))
-					OpenDoor(wall->GetGUID());
+					target->ForcedDespawn(500);
+				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,0,90.0f))
+					CloseDoor(wall->GetGUID());
 				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
 				Wall++;
 				fLeadStep++;
