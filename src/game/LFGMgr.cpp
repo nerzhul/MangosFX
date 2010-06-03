@@ -558,8 +558,8 @@ void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
 	}
 	data << uint8(dps); // needed dps
 	data << uint32(plr->m_lookingForGroup.waited); // repet temps d'attente
-	if(plr->GetSession())
-		plr->GetSession()->SendPacket(&data);
+	/*if(plr->GetSession())
+		plr->GetSession()->SendPacket(&data);*/
 }
 
 void LFGMgr::TeleportPlayerToInstance(Player* plr)
