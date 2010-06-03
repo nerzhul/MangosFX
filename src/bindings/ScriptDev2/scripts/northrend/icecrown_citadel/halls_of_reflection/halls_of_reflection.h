@@ -103,4 +103,21 @@ struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
     }
 };
 
+struct MANGOS_DLL_DECL HoR_fLead_frostmourneAI : public LibDevFSAI
+{
+    HoR_fLead_frostmourneAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		me->SetReactState(REACT_PASSIVE);
+    }
+
+    void Reset()
+    {
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+    }
+};
+
 #endif

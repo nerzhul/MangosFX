@@ -304,6 +304,11 @@ CreatureAI* GetAI_HoR_LichKing_Escape(Creature* pCreature)
     return new HoR_LichKing_EscapeAI (pCreature);
 }
 
+CreatureAI* GetAI_HoR_fLead_frostmourne(Creature* pCreature)
+{
+    return new HoR_fLead_frostmourneAI (pCreature);
+}
+
 void AddSC_halls_of_reflection()
 {
 	Script *newscript;
@@ -335,6 +340,7 @@ void AddSC_halls_of_reflection()
 
 	newscript = new Script;
     newscript->Name = "hor_frostmourne_event";
+	newscript->GetAI = &GetAI_HoR_fLead_frostmourne;
     newscript->pGossipHello = &GossipHello_hor_frostmourne_event;
     newscript->pGossipSelect = &GossipSelect_hor_frostmourne_event;
     newscript->RegisterSelf();

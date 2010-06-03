@@ -55,6 +55,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	std::vector<uint64> IceWallTargets;
 	uint64 AllianceVault;
 	uint64 HordeVault;
+	uint64 UtherGUID;
 	
 
 	uint64 MainDoor;
@@ -75,6 +76,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		uiEvasionJaina = 0;
 		uiEvasionSylvanas = 0;
 		uiLichKingEscape = 0;
+		UtherGUID = 0;
 
 		FrostMourneEvent = NOT_STARTED;
 		LichKingEscape = NOT_STARTED;
@@ -384,6 +386,15 @@ struct instance_halls_of_reflection : public ScriptedInstance
 		TrashStep = 0;
 		fLeadStep = 0;
 		Movement = 1;
+		if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+		{
+			if(uiTeamInInstance == ALLIANCE)
+				DoSpeak(fLead,16606,"Il ne reste rien d'Arthas. Il n'y a plus que le Roi Liche. Il est trop fort, il faut vite partir d'ici, ma magie ne pourra pas le retenir "
+				"longtemps. Venez vite héros",CHAT_TYPE_SAY);
+			else
+				DoSpeak(fLead,17028,"Il est trop fort. Héros, vite à moi. Il faut quitter cet endroit au plus vite. Je vais faire ce que je peux pour le bloquer pendant "
+				"notre fuite.",CHAT_TYPE_SAY);
+		}
 	}
 
 	void Update(uint32 diff)
@@ -508,34 +519,78 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[2][0],fLeadEscapePos[2][1],fLeadEscapePos[2][2]);
 					fLeadStep++;
-					fLead_Timer = 15000;
+					fLead_Timer = 5000;
 				}
 				break;
-			case 3:
+			case 2:
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+				{
+					if(uiTeamInInstance == ALLIANCE)
+						DoSpeak(fLead,16607,"Je vais détruire cette barrière, tenez les morts-vivants à distance.",CHAT_TYPE_SAY);
+					else
+						DoSpeak(fLead,17029,"Aucun mur ne peut résister à la Reine Banshee. Tenez les morts-vivants à distance, je vais abattre cette barrière.",CHAT_TYPE_SAY);
+					fLeadStep++;
+					fLead_Timer = 10000;
+				}
+				break;
+			case 4:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[3][0],fLeadEscapePos[3][1],fLeadEscapePos[3][2]);
 					fLeadStep++;
-					fLead_Timer = 15000;
+					fLead_Timer = 5000;
 				}
 				break;
 			case 5:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
-					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[4][0],fLeadEscapePos[4][1],fLeadEscapePos[4][2]);
+					if(uiTeamInInstance == ALLIANCE)
+						DoSpeak(fLead,16608,"Un autre mur de glace. Empechez les morts-vivants d'interrompre mon incantation. Je vais le detruire.",CHAT_TYPE_SAY);
+					else
+						DoSpeak(fLead,17030,"Encore une barrière ! Tenez bon champions, je vais la détruire.",CHAT_TYPE_SAY);
 					fLeadStep++;
-					fLead_Timer = 15000;
+					fLead_Timer = 10000;
 				}
 				break;
 			case 7:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
-					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[5][0],fLeadEscapePos[5][1],fLeadEscapePos[5][2]);
+					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[4][0],fLeadEscapePos[4][1],fLeadEscapePos[4][2]);
 					fLeadStep++;
-					fLead_Timer = 15000;
+					fLead_Timer = 5000;
 				}
 				break;
-			case 9:
+			case 8:
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+				{
+					if(uiTeamInInstance == ALLIANCE)
+						DoSpeak(fLead,16609,"Il s'amuse avec nous. Je vais lui montrer ce qui arrive quand la glace rencontre le feu !",CHAT_TYPE_SAY);
+					else
+						DoSpeak(fLead,17031,"Ces petits jeux commencent à me fatiguer Arthas. Tes murs ne pourront pas m'arrêter.",CHAT_TYPE_SAY);
+					fLeadStep++;
+					fLead_Timer = 10000;
+				}
+				break;
+			case 10:
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+				{
+					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[5][0],fLeadEscapePos[5][1],fLeadEscapePos[5][2]);
+					fLeadStep++;
+					fLead_Timer = 5000;
+				}
+				break;
+			case 11:
+				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
+				{
+					if(uiTeamInInstance == ALLIANCE)
+						DoSpeak(fLead,16610,"Tes murs ne tiendront plus très longtemps, monstre. Je vais tous les démolir !",CHAT_TYPE_SAY);
+					else
+						DoSpeak(fLead,17032,"Tu n'empêchera pas notre fuite démon. Empechez les morts vivants de m'atteindre pendant que j'abats ce mur.",CHAT_TYPE_SAY);
+					fLeadStep++;
+					fLead_Timer = 10000;
+				}
+				break;
+			case 13:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
 					fLead->GetMotionMaster()->MovePoint(0,fLeadEscapePos[6][0],fLeadEscapePos[6][1],fLeadEscapePos[6][2]);
@@ -543,10 +598,10 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					fLead_Timer = 15000;
 				}
 				break;
-			case 2:
-			case 4:
+			case 3:
 			case 6:
-			case 8:
+			case 9:
+			case 12:
 				if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV2)))
 				{
 					if(Creature* target = GetClosestCreatureWithEntry(fLead,37014,50.0f))
@@ -574,12 +629,16 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			case 5:
 			case 8:
 				if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				{
 					for(uint8 i=0;i<8;i++)
 						if(Creature* Ghoul = ((HoR_LichKing_EscapeAI*)LichKing->AI())->CallCreature(NPC_GHOUL,TEN_MINS,NEAR_7M))
 						{
 							EscapeLichKingAdds.push_back(Ghoul->GetGUID());
 							AggroPlayersInMap(Ghoul);
 						}
+					if(TrashStep == 0)
+						DoSpeak(LichKing,17216,"Debout, serviteurs ! Ne les laissez pas passer !",CHAT_TYPE_YELL);
+				}
 				spawn_Timer = 15000;
 				break;
 			case 1: // step 1,2
@@ -605,6 +664,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					{
 						EscapeLichKingAdds.push_back(Abomination->GetGUID());
 						AggroPlayersInMap(Abomination);
+						DoSpeak(LichKing,17222,"Rattrapez les, serviteurs. Rapportez moi leurs cadavres !",CHAT_TYPE_YELL);
 					}
 					spawn_Timer = 15000;
 				break;
@@ -722,7 +782,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 4;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 53000;
+				LichKing_Timer = 54000;
 				LichKingStep++;
 				break;
 			case 6:
@@ -731,7 +791,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 5;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 51000;
+				LichKing_Timer = 53000;
 				LichKingStep++;
 				break;
 			case 7:
@@ -740,7 +800,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					Movement = 6;
 					LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
 				}
-				LichKing_Timer = 42000;
+				LichKing_Timer = 43000;
 				LichKingStep++;
 				break;
 			case 8:
@@ -786,13 +846,34 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					OpenDoor(wall->GetGUID());
 
 				Wall++;
+
 				if(Wall > 4)
+				{
 					SetData(TYPE_EVENT_ESCAPE,DONE);
+					DoSpeak(LichKing,17223,"Hahahahaha ! Plus aucune issue, vous êtes à moi, maintenant !",CHAT_TYPE_YELL);
+				}
 				else
 				{
 					((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_ICEWALL);
 					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+					{
 						LichKing->GetMotionMaster()->MovePoint(0,LichKingEscapePos[Movement][0],LichKingEscapePos[Movement][1],LichKingEscapePos[Movement][2]);
+						switch(Wall)
+						{
+							case 1:
+								DoSpeak(LichKing,17217,"Vous ne vous échapperez pas !",CHAT_TYPE_YELL);
+								break;
+							case 2:
+								DoSpeak(LichKing,17218,"Succombez au froid de la tombe !",CHAT_TYPE_YELL);
+								break;
+							case 3:
+								DoSpeak(LichKing,17219,"Encore un cul de sac !",CHAT_TYPE_YELL);
+								break;
+							case 4:
+								DoSpeak(LichKing,17220,"Combien de temps allez vous tenir ?",CHAT_TYPE_YELL);
+								break;
+						}
+					}
 				}
 				fLeadStep++;
 				spawn_Timer = 15000;
@@ -813,7 +894,6 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					{
 						if(uiTeamInInstance == ALLIANCE)
 							DoSpeak(fLead,16631,"Qu'est ce qu'il fait froid ici. Ah, je sens mon sang se glacer.",CHAT_TYPE_SAY);
-
 						event_Timer = 4000;
 					}					
 					break;
@@ -825,37 +905,385 @@ struct instance_halls_of_reflection : public ScriptedInstance
 							DoSpeak(fLead,16632,"Qu'est ce que c'est... la-bas... est-ce possible ? Heros, venez a moi !",CHAT_TYPE_SAY);
 						else
 							DoSpeak(fLead,17049,"Je ne peux y croire. Deuillegivre est devant nous, comme l'avait annonce le gnome. Venez, Heros !",CHAT_TYPE_SAY);
-						event_Timer = 6000;
+						event_Timer = 8000;
 					}
 					break;
 				case 2:
 					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
 					{
 						if(uiTeamInInstance == ALLIANCE)
+						{
 							DoSpeak(fLead,16633,"Deuillegivre. La lame qui a detruit notre royaume.",CHAT_TYPE_SAY);
+							event_Timer = 5000;
+						}
 						else
+						{
 							DoSpeak(fLead,17050,"Contempler la lame qui m'a ote la vie. La douleur en est... ravivee.",CHAT_TYPE_SAY);
-
-						event_Timer = 4000;
+							event_Timer = 6000;
+						}						
 					}
 					break;
 				case 3:
 					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
 					{
 						if(uiTeamInInstance == ALLIANCE)
+						{
 							DoSpeak(fLead,16634,"Reculez ! Touchez seulement cette lame, et votre ame en sera meurtrie pour l'eternite. Il faut que j'essaie d'entrer"
 							"en contact avec les esprits emprisonnes dans Deuillegivre. Faites moi de la place. Reculez s'il vous plait.",CHAT_TYPE_YELL);
+							event_Timer = 12000;
+						}
 						else
+						{
 							DoSpeak(fLead,17051,"Je n'ose pas la toucher. Reculez, reculez. Je vais essayer d'entrer en harmonie avec la lame. Elle pourrait renfermer la clef"
 							" de notre salut.",CHAT_TYPE_SAY);
-
-						event_Timer = 15000;
+							event_Timer = 8000;
+						}
 					}
 					break;
 				case 4:
 					OpenDoor(Frostmourne);
+					event_Timer = 4000;
+					break;
+				case 5:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(Creature* Uther = ((HoR_fLead_frostmourneAI*)fLead->AI())->CallCreature(37225,TEN_MINS,PREC_COORDS,NOTHING,5303.01f,2005.476f,709.342f))
+						{
+							UtherGUID = Uther->GetGUID();
+							Uther->SetFacingToObject(fLead);
+							fLead->SetFacingToObject(Uther);
+							if(uiTeamInInstance == ALLIANCE)
+							{
+								DoSpeak(Uther,16666,"Jaina. Est-ce vraiment toi?",CHAT_TYPE_YELL);
+								event_Timer = 3000;
+							}
+							else
+							{
+								DoSpeak(Uther,16659,"Attention, mon enfant ce n'est pas la premiere fois que j'entend que cette maudite lame va nous sauver. Regardez autour de vous,"
+								"Voyez ce qu'elle a engendré",CHAT_TYPE_SAY);
+								event_Timer = 10500;
+							}
+						}
+					}
+					break;
+				case 6:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16635,"Uther, mon cher Uther, oh, je suis si désolée.",CHAT_TYPE_SAY);
+							event_Timer = 5500;
+						}
+						else
+						{
+							DoSpeak(fLead,17052,"Uther. Uther le Porte-Lumière ! Comment ?",CHAT_TYPE_SAY);
+							event_Timer = 3000;
+						}
+					}
+					break;
+				case 7:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+							DoSpeak(Uther,16667,"Jaina, tu n'as pas beaucoup de temps. Le Roi Liche voit ce que voit l'épée. Il ne va pas tarder.",CHAT_TYPE_SAY);
+						else
+							DoSpeak(Uther,16660,"Vous n'avez pas beaucoup de temps. Le Roi Liche voit ce que voit l'épée. Il ne va pas tarder.",CHAT_TYPE_SAY);
+
+						event_Timer = 6500;
+					}
+					break;
+				case 8:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16636,"Arthas est ici ? Peut être que...",CHAT_TYPE_SAY);
+							event_Timer = 1800;
+						}
+						else
+						{
+							DoSpeak(fLead,17053,"Le Roi Liche est ici ? Alors c'est aujourd'hui que s'accomplit ma destinée.",CHAT_TYPE_SAY);
+							event_Timer = 3800;
+						}
+					}
+					break;
+				case 9:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16668,"Non, ma fille. Arthas n'est pas là. Arthas n'est qu'une présence dans l'esprit du Roi Liche. Une présence qui s'estompe.",CHAT_TYPE_SAY);
+							event_Timer = 9500;
+						}
+						else
+						{
+							DoSpeak(Uther,16661,"Vous ne pouvez pas vaincre le Roi Liche. Pas ici. Essayer serait une folie. Il tuera ceux qui vous suivent et les relèvera "
+							"comme puissants soldats du fléau ! Mais pour vous Sylvanas, sa récompense sera encore pire que la dernière fois.",CHAT_TYPE_YELL);
+							event_Timer = 19000;
+						}
+
+					}
+					break;
+				case 10:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16637,"Mais Uther s'il doit y avoir le moindre moyen d'atteindre je... je dois essayer",CHAT_TYPE_SAY);
+							event_Timer = 4000;
+						}
+						else
+						{
+							DoSpeak(fLead,17054,"Il doit y avoir un moyen !",CHAT_TYPE_YELL);
+							event_Timer = 1500;
+						}
+					}
+					break;
+				case 11:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16669,"Jaina, écoute moi. Il faut détruire le Roi Liche. Il n'est pas possible de discuter avec lui. Il a vous tuer toi et tes alliés "
+							"et vous relever comme puissants soldats du fléau.",CHAT_TYPE_SAY);
+							event_Timer = 11500;
+						}
+						else
+						{
+							DoSpeak(Uther,16662,"Peut être. Mais sachez le bien, il doit toujours y avoir un Roi Liche. Même si vous parvenez à abattre Arthas, il faudrait "
+							"qu'un autre prenne sa place. Car vidé du contrôle de son Roi, le fléau déferlerait sur le monde comme une nuée de sauterelles et anéantirait "
+							"tout sur son passage.",CHAT_TYPE_SAY);
+							event_Timer = 20000;
+						}
+
+					}
+					break;
+				case 12:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16638,"Uther, dites moi comment détruire mon prince.",CHAT_TYPE_SAY);
+							event_Timer = 4000;
+						}
+						else
+						{
+							DoSpeak(fLead,17055,"Qui pourrait porter un tel fardeau ?",CHAT_TYPE_SAY);
+							event_Timer = 2000;
+						}
+					}
+					break;
+				case 13:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16670,"Réveille toi ma petite. Il faut l'anéantir à l'endroit où il a fusionné avec Ner'zhul, en haut de la tour, devant le trône de glace. "
+							"C'est le seul moyen.",CHAT_TYPE_SAY);
+							event_Step = 14;
+							event_Timer = 12000;
+						}
+						else
+						{
+							DoSpeak(Uther,16663,"Je ne sais pas Reine Banshee. Je suspecte le fragment d'Arthas qui reste peut être enfoui dans l'esprit du Roi Liche "
+							"d'être tout ce qui retient le fléau d'anihiler Azeroth.",CHAT_TYPE_SAY);
+							event_Timer = 13000;
+						}
+					}
+					break;
+				case 14:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance != ALLIANCE)
+						{
+							DoSpeak(Uther,16664,"Mais hélas, le seul moyen de le vaincre est de l'abattre, à l'endroit où il fut créé.",CHAT_TYPE_SAY);
+							event_Timer = 8000;
+						}
+					}
+					break;
+				case 15:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16639,"Vous avez raison Uther, pardonnez moi. Je... je ne sais pas ce qui m'a pris. Je vais porter ces informations aux "
+							"Rois et au chevaliers qui combattent le fléau dans la Citadelle de la Couronne de Glace",CHAT_TYPE_SAY);
+							event_Timer = 10500;
+						}
+						else
+						{
+							DoSpeak(fLead,17056,"Le Trône de Glace...",CHAT_TYPE_SAY);
+							event_Step = 20;
+							event_Timer = 2000;
+						}
+
+						event_Timer = 15000;
+					}
+					break;
+				case 16:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16671,"Il y a autre chose à savoir sur le Roi Liche. Il ne faut jamais que le fléau se retrouve sans contrôle. Même si vous "
+							"parvenez à abattre le Roi Liche il faut qu'un autre prenne sa place. Car sans son emprise sur le fléau, il serait lâché sur le monde "
+							"et détruirait toute vie.",CHAT_TYPE_SAY);
+							event_Timer = 23000;
+						}
+					}
+					break;
+				case 17:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16640,"Qui pourrait porter un tel fardeau ?",CHAT_TYPE_SAY);
+							event_Timer = 2000;
+						}
+					}
+					break;
+				case 18:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16672,"Un grand sacrifice, par une âme noble.",CHAT_TYPE_SAY);
+							event_Timer = 4000;
+						}
+					}
+					break;
+				case 19:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16641,"Alors il reste peut être un espoir.",CHAT_TYPE_SAY);
+							event_Timer = 2000;
+						}
+					}
+					break;
+				case 20:
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16673,"Je ne sais pas Jaina. Je suspecte le fragment d'Arthas, qui reste peut être enfoui dans l'esprit du Roi Liche "
+							"d'être tout ce qui le retient d'envahir Azeroth.",CHAT_TYPE_SAY);
+							event_Timer = 11000;
+						}
+					}
+					break;
+				case 21:
+					OpenDoor(GetData64(DATA_DOOR_LICHKING));
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+						LichKing->GetMotionMaster()->MovePoint(0,5320.96f,2017.744f,707.695f);
+					event_Timer = 2000;
+					break;
+				case 22:
+					CloseDoor(GetData64(DATA_DOOR_LICHKING));
+					if(Creature* Uther = GetCreatureInMap(UtherGUID))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(Uther,16674,"Non Jaina. Nooooooooon ! Arrhhhhhhhhhh ! Il arrive... Tu... tu dois...",CHAT_TYPE_YELL);
+							event_Timer = 10000;
+						}
+						else
+						{
+							DoSpeak(Uther,16665,"Oui. Arrrghhh. Il arrive. Il faut...",CHAT_TYPE_SAY);
+							event_Timer = 11000;
+						}
+					}
+					break;
+				case 23:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+					{
+						DoSpeak(LichKing,17225,"Silence, Paladin !",CHAT_TYPE_YELL);
+						if(Creature* Uther = GetCreatureInMap(UtherGUID))
+							LichKing->CastSpell(Uther,31008,true);
+						event_Timer = 4000;
+					}
+					break;
+				case 24:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+					{
+						DoSpeak(LichKing,17226,"Alors comme ca, vous voulez converser avec les morts ? Je vais exaucer votre souhait.",CHAT_TYPE_YELL);
+						event_Timer = 10000;
+					}
+					break;
+				case 25:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+					{
+						DoSpeak(LichKing,17227,"Falric, Marwyn, traînez leurs corps jusqu'à mon trône. Quand vous en aurez fini.",CHAT_TYPE_YELL);
+						event_Timer = 8500;
+					}
+					break;
+				case 26:
+					if(Creature* Falric = GetCreatureInMap(GetData64(TYPE_FALRIC)))
+					{
+						DoSpeak(Falric,16717,"A vos ordres monseigneur !",CHAT_TYPE_YELL);
+						event_Timer = 1500;
+					}
+					break;
+				case 27:
+					if(Creature* Marwyn = GetCreatureInMap(GetData64(TYPE_MARWYN)))
+					{
+						DoSpeak(Marwyn,16741,"A vos ordres, monseigneur !",CHAT_TYPE_YELL);
+						event_Timer = 2500;
+					}
+					break;
+				case 28:
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(fLead,16642,"Tu ne m'en empêchera pas Arthas. Il faut que je sache, je dois savoir !",CHAT_TYPE_YELL);
+							event_Timer = 5000;
+						}
+						else
+						{
+							DoSpeak(fLead,17057,"Tu ne m'échappera pas aussi facilement, Arthas. J'aurais ma vengeance.",CHAT_TYPE_SAY);
+							event_Timer = 4000;
+						}
+					}
+					break;
+				case 29:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+					{
+						if(uiTeamInInstance == ALLIANCE)
+						{
+							DoSpeak(LichKing,17229,"Jeune écervelée. Ce que vous cherchez je l'ai tué, il y a longtemps. Il n'est plus qu'un fantôme, "
+							"un écho lointain, dans mon esprit.",CHAT_TYPE_YELL);
+							event_Timer = 15000;
+						}
+						else
+						{
+							DoSpeak(LichKing,17228,"Je ne ferai pas la même erreur une deuxième fois Sylvanas. Cette fois tu ne m'échapperas pas. "
+							"Tu as échoué à me servir dans la non-mort. Tout ce qui t'attend désormais, est le néant.",CHAT_TYPE_YELL);
+							event_Timer = 20000;
+						}
+					}
+					break;
+				case 30:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+						LichKing->GetMotionMaster()->MovePoint(0,5394.384f,2096.59f,707.7f);
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+						fLead->GetMotionMaster()->MovePoint(0,5394.384f,2096.59f,707.7f);
 					event_Timer = 3000;
 					break;
+				case 31:
+					OpenDoor(GetData64(DATA_DOOR_LICHKING));
+					event_Timer = 2000;
+					break;
+				case 32:
+					CloseDoor(GetData64(DATA_DOOR_LICHKING));
+					event_Timer = 2000;
+					break;
+				case 33:
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING)))
+						LichKing->ForcedDespawn(2000);
+					if(Creature* fLead = GetCreatureInMap(GetData64(TYPE_FACTIONLEADER_EV1)))
+						fLead->ForcedDespawn(2000);
 				default:
 					RPFrostmourneDone = true;
 					break;
