@@ -9842,6 +9842,28 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
     tmpDamage = (tmpDamage + TakenTotal) * TakenTotalMod;
 
+	/*if(GetTypeId() == TYPEID_PLAYER)
+	{
+		Player* plr = ((Player*)this);
+		if(plr->getClass() == CLASS_DEATH_KNIGHT)
+		{
+			uint32 attackPower = GetInt32Value(UNIT_FIELD_ATTACK_POWER);
+			uint32 modifier = 0;
+			if(plr->HasSpell(49220))
+				modifier = 4;
+			else if(plr->HasSpell(49633))
+				modifier = 8;
+			else if(plr->HasSpell(49635))
+				modifier = 12;
+			else if(plr->HasSpell(49636))
+				modifier = 16;
+			else if(plr->HasSpell(49638))
+				modifier = 20;
+			
+			tmpDamage += attackPower * modifier / 100;
+			error_log("%u",modifier);
+		}
+	}*/
     return tmpDamage > 0 ? uint32(tmpDamage) : 0;
 }
 
@@ -12843,9 +12865,6 @@ void Unit::RemoveFromWorld()
         RemoveGuardians();
         RemoveAllGameObjects();
         RemoveAllDynObjects();
-
-		ExitVehicle();
-
         CleanupDeletedAuras();
     }
 
@@ -12856,7 +12875,7 @@ void Unit::CleanupsBeforeDelete()
 {
     if(m_uint32Values)                                      // only for fully created object
     {
-		ExitVehicle();
+		//ExitVehicle();
         InterruptNonMeleeSpells(true);
         m_Events.KillAllEvents(false);                      // non-delatable (currently casted spells) will not deleted now but it will deleted at call in Map::RemoveAllObjectsInRemoveList
         CombatStop();
