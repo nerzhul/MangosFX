@@ -7999,7 +7999,6 @@ void Aura::PeriodicTick()
             else
             {
                 pdamage = amount;
-				error_log("pdamage : %u",pdamage);
 
                 // Wild Growth (1/7 - 6 + 2*ramainTicks) %
                 if (m_spellProto->SpellFamilyName == SPELLFAMILY_DRUID && m_spellProto->SpellIconID == 2864)
