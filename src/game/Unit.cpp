@@ -4311,6 +4311,10 @@ void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except)
         else
             ++iter;
     }
+
+	// Hack for glebe
+	if(spellId == 8178 && effindex == 3 && GetTypeId() == TYPEID_UNIT)
+		((Creature*)this)->ForcedDespawn(200);
 }
 
 void Unit::RemoveAurasByCasterSpell(uint32 spellId, uint64 casterGUID)
@@ -9312,11 +9316,7 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
         for(Unit::AuraList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
             if(Unit* magnet = (*itr)->GetCaster())
                 if(magnet->IsWithinLOSInMap(this) && magnet->isAlive())
-				{
-					if(victim->HasAura(3411))
-						victim->RemoveAurasDueToSpell(3411);
                     return magnet;
-				}
     }
     // Melee && ranged case
     else
@@ -9326,7 +9326,11 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
             if(Unit* magnet = (*i)->GetCaster())
                 if(magnet->isAlive() && magnet->IsWithinLOSInMap(this))
                     if(roll_chance_i((*i)->GetModifier()->m_amount))
+					{
+						if(victim->HasAura(3411))
+							victim->RemoveAurasDueToSpell(3411);
                         return magnet;
+					}
     }
 
     return victim;
@@ -10169,7 +10173,6 @@ uint32 Unit::SpellCriticalHealingBonus(SpellEntry const *spellProto, uint32 dama
 
 uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint32 healamount, DamageEffectType damagetype, uint32 stack)
 {
-	error_log("healamount : %u",healamount);
     // No heal amount for this class spells
     if (spellProto->DmgClass == SPELL_DAMAGE_CLASS_NONE)
         return healamount;
@@ -10272,7 +10275,6 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     int32 DoneAdvertisedBenefit  = SpellBaseHealingBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseHealingBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
 
-	error_log("DoneAdvertisedBenefit: %u",DoneAdvertisedBenefit);
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
 	Player* modOwner = GetSpellModOwner();
@@ -10346,12 +10348,10 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
 
     // use float as more appropriate for negative values and percent applying
     float heal = (healamount + DoneTotal)*DoneTotalMod;
-	error_log("BASE HEAL %f healamount %u,DoneTotal %u,DoneTotalMod %f",heal,healamount,DoneTotal,DoneTotalMod);
     // apply spellmod to Done amount
     if(Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellProto->Id, damagetype == DOT ? SPELLMOD_DOT : SPELLMOD_DAMAGE, heal);
 
-	error_log("AFTER HEAL %f",heal);
 	// Nourish cast bonus
     if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x2000000)
     {
