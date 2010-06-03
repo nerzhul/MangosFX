@@ -27,28 +27,25 @@
 #include "CreatureAI.h"
 #include "SpellAuras.h"
 
-template<class T>
-inline void
-MaNGOS::VisibleNotifier::Visit(GridRefManager<T> &m)
+template<class T> 
+inline void MaNGOS::VisibleNotifier::Visit(GridRefManager<T> &m)
 {
     WorldObject const* viewPoint = i_player.GetViewPoint();
 
     for(typename GridRefManager<T>::iterator iter = m.begin(); iter != m.end(); ++iter)
     {
-        i_player.UpdateVisibilityOf(viewPoint,iter->getSource(),i_data,i_data_updates,i_visibleNow);
+        i_player.UpdateVisibilityOf(viewPoint,iter->getSource(),i_data,i_visibleNow);
         i_clientGUIDs.erase(iter->getSource()->GetGUID());
     }
 }
 
-inline void
-MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
+inline void MaNGOS::ObjectUpdater::Visit(CreatureMapType &m)
 {
     for(CreatureMapType::iterator iter=m.begin(); iter != m.end(); ++iter)
         iter->getSource()->Update(i_timeDiff);
 }
 
-inline void
-MaNGOS::PlayerRelocationNotifier::Visit(PlayerMapType &m)
+inline void MaNGOS::PlayerRelocationNotifier::Visit(PlayerMapType &m)
 {
     for(PlayerMapType::iterator iter=m.begin(); iter != m.end(); ++iter)
     {

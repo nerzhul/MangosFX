@@ -7894,6 +7894,7 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_LEECH:
         case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
         {
+			error_log("SPELL_AURA_PERIODIC_LEECH");
             // don't damage target if not alive, possible death persistent effects
             if (!m_target->isAlive())
                 return;

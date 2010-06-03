@@ -10205,7 +10205,10 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     // Healing done percent
     AuraList const& mHealingDonePct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
     for(AuraList::const_iterator i = mHealingDonePct.begin();i != mHealingDonePct.end(); ++i)
+	{
+		error_log("doneTotal Mod added : %u",(*i)->GetModifier()->m_amount);
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
+	}
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
@@ -10272,6 +10275,8 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     int32 DoneAdvertisedBenefit  = SpellBaseHealingBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseHealingBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
 
+	error_log("DoneAdvertisedBenefit: %u",DoneAdvertisedBenefit);
+	error_log("TakenAdvertisedBenefit: %u",TakenAdvertisedBenefit);
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
 	Player* modOwner = GetSpellModOwner();

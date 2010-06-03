@@ -68,7 +68,7 @@ VisibleNotifier::Visit(PlayerMapType &m)
             continue;
 
         player->UpdateVisibilityOf(player->GetViewPoint(),&i_player);
-        i_player.UpdateVisibilityOf(viewPoint,player,i_data,i_data_updates,i_visibleNow);
+        i_player.UpdateVisibilityOf(viewPoint,player,i_data,i_visibleNow);
         i_clientGUIDs.erase(player->GetGUID());
     }
 }
@@ -86,7 +86,7 @@ VisibleNotifier::Notify()
             {
                 // ignore far sight case
                 (*itr)->UpdateVisibilityOf((*itr),&i_player);
-                i_player.UpdateVisibilityOf(&i_player,(*itr),i_data,i_data_updates,i_visibleNow);
+                i_player.UpdateVisibilityOf(&i_player,(*itr),i_data,i_visibleNow);
                 i_clientGUIDs.erase((*itr)->GetGUID());
             }
         }
@@ -102,17 +102,6 @@ VisibleNotifier::Notify()
         if((sLog.getLogFilter() & LOG_FILTER_VISIBILITY_CHANGES)==0)
             sLog.outDebug("Object %u (Type: %u) is out of range (no in active cells set) now for player %u",GUID_LOPART(*itr),GuidHigh2TypeId(GUID_HIPART(*itr)),i_player.GetGUIDLow());
         #endif
-    }
-
-    // send update to other players (except player updates that already sent using SendUpdateToPlayer)
-    for(UpdateDataMapType::iterator iter = i_data_updates.begin(); iter != i_data_updates.end(); ++iter)
-    {
-        if(iter->first==&i_player)
-            continue;
-
-        WorldPacket packet;
-        iter->second.BuildPacket(&packet);
-        iter->first->GetSession()->SendPacket(&packet);
     }
 
     if( i_data.HasData() )

@@ -49,7 +49,6 @@ namespace MaNGOS
     {
         Player &i_player;
         UpdateData i_data;
-        UpdateDataMapType i_data_updates;
         Player::ClientGUIDs i_clientGUIDs;
         std::set<WorldObject*> i_visibleNow;
 
