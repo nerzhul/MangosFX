@@ -46,6 +46,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 	uint32 LichKing_Timer;
 	uint32 checkAdds_Timer;
 	uint32 spawn_Timer;
+	uint32 bugAbuse_Timer;
+
 	uint8 LichKingStep;
 	uint8 fLeadStep;
 	uint8 TrashStep;
@@ -501,7 +503,31 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			}
 			else
 				checkAdds_Timer -= diff;
+
+			if(bugAbuse_Timer <= diff)
+			{
+				CheckBugAbuseOnLKEvent();
+				bugAbuse_Timer = 1000;
+			}
+			else
+				bugAbuse_Timer -= diff;
 		}
+	}
+
+	void CheckBugAbuseOnLKEvent()
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+		bool foundBugAbuse = false;
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+						if(pPlayer->isAlive() && !pPlayer->isGameMaster() && !LichKing->HasInArc(180.0f,pPlayer))
+							foundBugAbuse = true;
+
+		if(foundBugAbuse)
+			if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
+				((HoR_LichKing_EscapeAI*)LichKing->AI())->DoCastMe(SPELL_FROSTMOURNE);
 	}
 
 	void DoNextActionForFLead()

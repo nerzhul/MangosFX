@@ -84,12 +84,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 				if(CheckPercentLife(50))
 				{
 					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
-					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-					if (!lPlayers.isEmpty())
-						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-							if (Player* pPlayer = itr->getSource())
-								if(pPlayer->isAlive() && !pPlayer->isGameMaster())
-									pPlayer->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_1_H : SPELL_HOPELESSNESS_1);
+					me->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_1_H : SPELL_HOPELESSNESS_1);
 					phase++;
 				}
 				break;
@@ -97,12 +92,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
 				if(CheckPercentLife(25))
 				{
 					DoCastVictim((m_difficulty) ? SPELL_HOPELESSNESS_3_H : SPELL_HOPELESSNESS_3);
-					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-					if (!lPlayers.isEmpty())
-						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-							if (Player* pPlayer = itr->getSource())
-								if(pPlayer->isAlive() && !pPlayer->isGameMaster())
-									pPlayer->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
+					me->RemoveAurasDueToSpell((m_difficulty) ? SPELL_HOPELESSNESS_2_H : SPELL_HOPELESSNESS_2);
 					phase++;
 				}
 				break;
