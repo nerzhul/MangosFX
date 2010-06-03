@@ -357,7 +357,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
 		return;
     ASSERT( info == sSpellStore.LookupEntry( info->Id ) && "`info` must be pointer to sSpellStore element");
 
-    if (Caster->GetTypeId() != TYPEID_PLAYER && Caster->IsInWorld() && Caster->GetMap()->IsDungeon())
+    if (Caster->GetTypeId() != TYPEID_PLAYER && Caster->IsInWorld() && Caster->GetMap()->IsRaidOrHeroicDungeon())
 	{
 		if (SpellEntry const* spellEntry = GetSpellEntryByDifficulty(info->SpellDifficultyId, Caster->GetMap()->GetDifficulty()))
 			m_spellInfo = spellEntry;
