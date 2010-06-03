@@ -522,7 +522,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
 					if(Creature* LichKing = GetCreatureInMap(GetData64(TYPE_LICHKING_EVENT)))
-						if(pPlayer->isAlive() && !pPlayer->isGameMaster() && !LichKing->HasInArc(180.0f,pPlayer))
+						if(pPlayer->isAlive() && !pPlayer->isGameMaster() && !LichKing->HasInArc(M_PI,pPlayer))
 							foundBugAbuse = true;
 
 		if(foundBugAbuse)
