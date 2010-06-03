@@ -1552,29 +1552,6 @@ void Aura::HandleAddModifier(bool apply, bool Real)
     }
 }
 
-void Aura::HandleAddTargetTrigger(bool apply, bool /*Real*/)
-{
-    // Use SpellModifier structure for check
-    // used only fields:
-    //  spellId, mask, mask2
-    if (apply)
-    {
-        SpellModifier *mod = new SpellModifier;
-        mod->spellId = GetId();
-
-        uint32 const *ptr = m_spellProto->GetEffectSpellClassMask(m_effIndex);
-
-        mod->mask = (uint64)ptr[0] | (uint64)ptr[1]<<32;
-        mod->mask2= ptr[2];
-        m_spellmod = mod;
-    }
-    else
-    {
-        delete m_spellmod;
-        m_spellmod = NULL;
-    }
-}
-
 void Aura::TriggerSpell()
 {
     const uint64& casterGUID = GetCasterGUID();
