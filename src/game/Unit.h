@@ -1990,6 +1990,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
         // player or player's pet
         float GetCombatRatingReduction(CombatRating cr) const;
+		float BDSpellDamageHacks();
         uint32 GetCombatRatingDamageReduction(CombatRating cr, float rate, float cap, uint32 damage) const;
 
         Unit* _GetTotem(uint8 slot) const;                  // for templated function without include need

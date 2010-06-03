@@ -2956,6 +2956,16 @@ void Spell::cast(bool skipCheck)
 			// Chains of Ice
 			if (m_spellInfo->Id == 45524)
 				AddTriggeredSpell(55095);                   // Frost Fever
+			else if(m_spellInfo->Id == 47568)
+			{
+				if(m_caster->GetTypeId() == TYPEID_PLAYER)
+				{
+					Player* plr = ((Player*)m_caster);
+					// Empower Rune Weapon
+					for(uint32 j = 0; j < MAX_RUNES; ++j)
+						plr->SetRuneCooldown(j, 0);
+				}
+			}
 			break;
 		}
 		case SPELLFAMILY_WARRIOR:

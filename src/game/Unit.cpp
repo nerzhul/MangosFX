@@ -9842,28 +9842,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
     tmpDamage = (tmpDamage + TakenTotal) * TakenTotalMod;
 
-	/*if(GetTypeId() == TYPEID_PLAYER)
-	{
-		Player* plr = ((Player*)this);
-		if(plr->getClass() == CLASS_DEATH_KNIGHT)
-		{
-			uint32 attackPower = GetInt32Value(UNIT_FIELD_ATTACK_POWER);
-			uint32 modifier = 0;
-			if(plr->HasSpell(49220))
-				modifier = 4;
-			else if(plr->HasSpell(49633))
-				modifier = 8;
-			else if(plr->HasSpell(49635))
-				modifier = 12;
-			else if(plr->HasSpell(49636))
-				modifier = 16;
-			else if(plr->HasSpell(49638))
-				modifier = 20;
-			
-			tmpDamage += attackPower * modifier / 100;
-			error_log("%u",modifier);
-		}
-	}*/
+	tmpDamage += BDSpellDamageHacks();
+	
     return tmpDamage > 0 ? uint32(tmpDamage) : 0;
 }
 
@@ -15064,4 +15044,33 @@ bool Unit::SetPosition(float x, float y, float z, float orientation, bool telepo
         GetVehicleKit()->RelocatePassengers(x,y,z,orientation,GetMap());
 
     return (relocated || turn);
+}
+
+float Unit::BDSpellDamageHacks()
+{
+	float newDamage = 0;
+	if(GetTypeId() == TYPEID_PLAYER)
+	{
+		Player* plr = ((Player*)this);
+		switch(plr->getClass())
+		{
+			case CLASS_DEATH_KNIGHT:
+				uint32 attackPower = GetInt32Value(UNIT_FIELD_ATTACK_POWER);
+				uint32 modifier = 0;
+				if(plr->HasSpell(49220))
+					modifier = 4;
+				else if(plr->HasSpell(49633))
+					modifier = 8;
+				else if(plr->HasSpell(49635))
+					modifier = 12;
+				else if(plr->HasSpell(49636))
+					modifier = 16;
+				else if(plr->HasSpell(49638))
+					modifier = 20;
+				
+				newDamage += attackPower * modifier / 100;
+				break;
+		}
+	}
+	return newDamage;
 }
