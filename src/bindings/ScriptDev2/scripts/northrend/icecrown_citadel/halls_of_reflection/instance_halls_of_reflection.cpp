@@ -292,6 +292,8 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				return uiEncounter[type];
 			case DATA_FACTION:
 				return uiTeamInInstance;
+			case TYPE_DIAL_FROSTMOURNE:
+				return RPFrostmourneDone ? DONE : IN_PROGRESS;
         }
         return 0;
     }
@@ -1029,7 +1031,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					{
 						if(uiTeamInInstance == ALLIANCE)
 						{
-							DoSpeak(fLead,16637,"Mais Uther s'il doit y avoir le moindre moyen d'atteindre je... je dois essayer",CHAT_TYPE_SAY);
+							DoSpeak(fLead,16637,"Mais Uther s'il doit y avoir le moindre moyen d'atteindre Arthas, je... je dois essayer",CHAT_TYPE_SAY);
 							event_Timer = 4000;
 						}
 						else
@@ -1286,6 +1288,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 						fLead->ForcedDespawn(2000);
 				default:
 					RPFrostmourneDone = true;
+					SetData(TYPE_DIAL_FROSTMOURNE,DONE);
 					break;
 			}
 			event_Step++;

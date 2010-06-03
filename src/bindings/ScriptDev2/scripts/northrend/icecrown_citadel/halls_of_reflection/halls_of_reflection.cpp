@@ -309,6 +309,20 @@ CreatureAI* GetAI_HoR_fLead_frostmourne(Creature* pCreature)
     return new HoR_fLead_frostmourneAI (pCreature);
 }
 
+bool AreaTrigger_FrostmourneAltar(Player* pPlayer, AreaTriggerEntry *at)
+{
+    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    {
+        if (pInstance->GetData(TYPE_EVENT_FROSTMOURNE) == IN_PROGRESS || pInstance->GetData(TYPE_DIAL_FROSTMOURNE) == IN_PROGRESS
+			|| pInstance->GetData(TYPE_EVENT_FROSTMOURNE) == DONE)
+            return false;
+
+        pInstance->SetData(TYPE_EVENT_FROSTMOURNE,IN_PROGRESS);
+        return true;
+    }
+    return false;
+}
+
 void AddSC_halls_of_reflection()
 {
 	Script *newscript;
@@ -355,5 +369,10 @@ void AddSC_halls_of_reflection()
 	newscript = new Script;
     newscript->Name = "HoR_escape_lichking";
     newscript->GetAI = &GetAI_HoR_LichKing_Escape;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "at_HOR_Frostmourne";
+    newscript->pAreaTrigger = &AreaTrigger_FrostmourneAltar;
     newscript->RegisterSelf();
 }
