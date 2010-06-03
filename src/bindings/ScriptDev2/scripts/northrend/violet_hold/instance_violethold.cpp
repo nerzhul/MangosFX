@@ -543,7 +543,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 				{
 					++m_BossCount;
 					SpawnPortal(true);
-					m_uiNextPortal_Timer = 70000;
+					m_uiNextPortal_Timer = 120000;
 				}
 				else
 					EventCyanigosa();
@@ -552,7 +552,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 			{
 				SpawnPortal(false);
 				SpawnPortal_Timer = 10000;
-				m_uiNextPortal_Timer = 40000;
+				m_uiNextPortal_Timer = 70000;
 			}
 		}
 		else

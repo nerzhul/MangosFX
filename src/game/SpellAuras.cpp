@@ -5386,8 +5386,6 @@ void Aura::HandlePeriodicHeal(bool apply, bool /*Real*/)
 			holy = int32(holy * 377 / 1000);
 			m_modifier.m_amount += ap > holy ? ap : holy;
 		}
-
-		m_modifier.m_amount = caster->SpellHealingBonus(m_target, GetSpellProto(), m_modifier.m_amount, DOT, GetStackAmount());
 	}
 }
 
@@ -7894,7 +7892,6 @@ void Aura::PeriodicTick()
         case SPELL_AURA_PERIODIC_LEECH:
         case SPELL_AURA_PERIODIC_HEALTH_FUNNEL:
         {
-			error_log("SPELL_AURA_PERIODIC_LEECH");
             // don't damage target if not alive, possible death persistent effects
             if (!m_target->isAlive())
                 return;
@@ -8002,6 +7999,7 @@ void Aura::PeriodicTick()
             else
             {
                 pdamage = amount;
+				error_log("pdamage : %u",pdamage);
 
                 // Wild Growth (1/7 - 6 + 2*ramainTicks) %
                 if (m_spellProto->SpellFamilyName == SPELLFAMILY_DRUID && m_spellProto->SpellIconID == 2864)
@@ -8017,7 +8015,6 @@ void Aura::PeriodicTick()
 					pdamage = int32(pdamage) + addition;
                 }
             }
-
             pdamage = pCaster->SpellHealingBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
 
             // This method can modify pdamage

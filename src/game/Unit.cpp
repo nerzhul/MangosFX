@@ -10169,6 +10169,7 @@ uint32 Unit::SpellCriticalHealingBonus(SpellEntry const *spellProto, uint32 dama
 
 uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint32 healamount, DamageEffectType damagetype, uint32 stack)
 {
+	error_log("healamount : %u",healamount);
     // No heal amount for this class spells
     if (spellProto->DmgClass == SPELL_DAMAGE_CLASS_NONE)
         return healamount;
@@ -10205,10 +10206,7 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     // Healing done percent
     AuraList const& mHealingDonePct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
     for(AuraList::const_iterator i = mHealingDonePct.begin();i != mHealingDonePct.end(); ++i)
-	{
-		error_log("doneTotal Mod added : %u",(*i)->GetModifier()->m_amount);
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
-	}
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
@@ -10270,13 +10268,11 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
                 break;
         }
     }
-
     // Taken/Done fixed damage bonus auras
     int32 DoneAdvertisedBenefit  = SpellBaseHealingBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseHealingBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
 
 	error_log("DoneAdvertisedBenefit: %u",DoneAdvertisedBenefit);
-	error_log("TakenAdvertisedBenefit: %u",TakenAdvertisedBenefit);
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
 	Player* modOwner = GetSpellModOwner();
@@ -10303,7 +10299,6 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
 		}
 
 		DoneTotal  += int32(DoneAdvertisedBenefit * coeff);
-        TakenTotal += int32(TakenAdvertisedBenefit * coeff);
     }
     // Default calculation
     else if (DoneAdvertisedBenefit || TakenAdvertisedBenefit)
@@ -10351,10 +10346,12 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
 
     // use float as more appropriate for negative values and percent applying
     float heal = (healamount + DoneTotal)*DoneTotalMod;
+	error_log("BASE HEAL %f healamount %u,DoneTotal %u,DoneTotalMod %f",heal,healamount,DoneTotal,DoneTotalMod);
     // apply spellmod to Done amount
     if(Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellProto->Id, damagetype == DOT ? SPELLMOD_DOT : SPELLMOD_DAMAGE, heal);
 
+	error_log("AFTER HEAL %f",heal);
 	// Nourish cast bonus
     if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x2000000)
     {
