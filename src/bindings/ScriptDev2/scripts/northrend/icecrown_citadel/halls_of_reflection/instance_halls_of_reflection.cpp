@@ -382,6 +382,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				tmpCr->ForcedDespawn(500);
 		EscapeLichKingAdds.clear();
 
+		bugAbuse_Timer = 120000;
 		LichKing_Timer = 500;
 		checkAdds_Timer = DAY*HOUR;
 		spawn_Timer = 24000;
