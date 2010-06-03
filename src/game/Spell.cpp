@@ -2891,6 +2891,9 @@ void Spell::cast(bool skipCheck)
 				case 50334:
 					AddTriggeredSpell(58923);
 					break;
+				case 22812:
+					if(m_caster->HasAura(63057))
+						AddPrecastSpell(63058);
 			}
             break;
         }
