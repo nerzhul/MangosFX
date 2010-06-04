@@ -1401,7 +1401,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 	if(m_originalCaster && m_originalCaster->GetTypeId() == TYPEID_PLAYER)
     {
 		
-		if(m_spellInfo->Id == 60659) // temp crashfix
+		if(m_spellInfo->Id != 60659) // temp crashfix
 		{
 			if(Player* modOwner = m_originalCaster->GetSpellModOwner())
 			{
