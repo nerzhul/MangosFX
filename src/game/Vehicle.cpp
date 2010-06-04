@@ -542,10 +542,10 @@ void Vehicle::RemovePassenger(Unit *unit)
 
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
+	unit->SetVehicleGUID(0);
+
 	if((seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FREE | SEAT_VEHICLE_FULL)) && seat->second.passenger == unit)
     {
-        unit->SetVehicleGUID(0);
-		
         if(seat->second.vs_flags & SF_MAIN_RIDER)
         {
             if(unit->GetTypeId() == TYPEID_PLAYER)
@@ -559,8 +559,7 @@ void Vehicle::RemovePassenger(Unit *unit)
                     ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
             }
             unit->SetCharm(NULL);
-            me->SetCharmerGUID(NULL);
-			
+            me->SetCharmerGUID(NULL);			
         }
 		if(unit->GetTypeId() == TYPEID_UNIT)
 			me->setFaction(((Creature*)me)->GetCreatureInfo()->faction_A);

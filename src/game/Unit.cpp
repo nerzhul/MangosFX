@@ -7556,7 +7556,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 							{
 								if(player->GetCurrentRune(iter) == RUNE_BLOOD && !player->GetRuneCooldown(iter))
 								{
-									error_log("Convert Blood!");
 									player->ConvertRune(iter, RUNE_DEATH, dummySpell->Id);
 									triggeredByAura->SetAuraPeriodicTimer(0);
 									return true;
@@ -7573,7 +7572,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 			// Death Rune Mastery
 			if (dummySpell->SpellIconID == 2622)
 			{
-				error_log("Convert !");
 				if(GetTypeId()!=TYPEID_PLAYER)
 					return false;
 				
@@ -7583,7 +7581,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 					RuneType currRune = player->GetCurrentRune(i);
 					if (currRune == RUNE_UNHOLY || currRune == RUNE_FROST)
 					{
-						error_log("Convert !");
 						uint16 cd = player->GetRuneCooldown(i);
 						if(!cd)
 							player->ConvertRune(i, RUNE_DEATH, dummySpell->Id);
@@ -12915,7 +12912,6 @@ void Unit::CleanupsBeforeDelete()
 {
     if(m_uint32Values)                                      // only for fully created object
     {
-		ExitVehicle();
         InterruptNonMeleeSpells(true);
         m_Events.KillAllEvents(false);                      // non-delatable (currently casted spells) will not deleted now but it will deleted at call in Map::RemoveAllObjectsInRemoveList
         CombatStop();
@@ -14970,8 +14966,11 @@ void Unit::ExitVehicle()
 			float x = vehUnit->GetPositionX();
 			float y = vehUnit->GetPositionY();
 			float z = vehUnit->GetPositionZ() + 2.0f;
-			GetClosePoint(x, y, z, 2.0f + v_size);
-			SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
+			if(IsInWorld())
+			{
+				GetClosePoint(x, y, z, 2.0f + v_size);
+				SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
+			}
 			if(m_vehicle)
 				m_vehicle->RemovePassenger(this);
 
