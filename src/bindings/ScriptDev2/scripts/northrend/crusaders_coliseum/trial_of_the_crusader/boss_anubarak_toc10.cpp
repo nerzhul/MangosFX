@@ -153,7 +153,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 				Submerge_Timer -= diff;
 		}
 
-		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30.0f && phase == 1)
+		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30.0f && phase != 3)
 		{
 			Yell(16241,"L'essaim va vous submerger !");
 			phase = 3;
