@@ -1398,13 +1398,17 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 
     uint32 EffectChainTarget = m_spellInfo->EffectChainTarget[effIndex];
 
-    if(m_originalCaster)
+	if(m_originalCaster && m_originalCaster->GetTypeId() == TYPEID_PLAYER)
     {
-        if(Player* modOwner = m_originalCaster->GetSpellModOwner())
-        {
-            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RADIUS, radius, this);
-            modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_JUMP_TARGETS, EffectChainTarget, this);
-        }
+		
+		if(m_spellInfo->Id == 60659) // temp crashfix
+		{
+			if(Player* modOwner = m_originalCaster->GetSpellModOwner())
+			{
+				modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_RADIUS, radius, this);
+				modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_JUMP_TARGETS, EffectChainTarget, this);
+			}
+		}
     }
 
     // Get spell max affected targets
