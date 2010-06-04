@@ -2756,16 +2756,22 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
             return;
         }
 		// Empower Rune Weapon
-       case 53258:
-        {
-            m_caster->ModifyPower(POWER_RUNIC_POWER, 25);
-            return;
-        }
-       case 58931:
-       {
+		case 53258:
+		{
+			m_caster->ModifyPower(POWER_RUNIC_POWER, 25);
+			return;
+		}
+		case 58931:
+		{
 		   triggered_spell_id = 57940;
 		   break;		   
-	   }
+		}
+		case 3617:
+		{
+			triggered_spell_id = 58137;
+			break;
+		}
+
     }
 
     // normal case
