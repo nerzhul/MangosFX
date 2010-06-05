@@ -2889,7 +2889,7 @@ float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 
     if(Player *modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spell->Id, SPELLMOD_RESIST_MISS_CHANCE, HitChance);
 
-	if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss() && getLevel() >= pVictim->getLevel())
+	if(GetTypeId() == TYPEID_UNIT && (((Creature*)this)->isWorldBoss() || ((Creature*)this)->isElite()) && getLevel() >= pVictim->getLevel())
 		HitChance = 100.0f;
 
     // Miss = 100 - hit
@@ -3013,6 +3013,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
                 break;
         }
     }
+
+	error_log("%i %i",int32(pVictim->GetUnitDodgeChance()*100.0f),skillDiff);
 
     if (canDodge)
     {

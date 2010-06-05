@@ -35,13 +35,13 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
         {
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				FlameDespawn = 8000;
+				FlameDespawn = 9000;
 				break;
 			default:
-				FlameDespawn = 3000;
+				FlameDespawn = 4000;
 				break;
 		}
-		AddEventOnTank(SPELL_SABER_LASH,1000,1000);
+		AddEventOnTank(SPELL_SABER_LASH,2000,2000);
     }
 	
 	uint8 phase;
@@ -142,6 +142,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			{
 				phase = 0;
 				DoResetThreat();
+				me->RemoveAurasDueToSpell(SPELL_BONE_STORM);
 				Storm_Timer = 40000;
 			}
 			else
