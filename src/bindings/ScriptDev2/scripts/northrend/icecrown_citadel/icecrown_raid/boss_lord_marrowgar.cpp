@@ -35,13 +35,13 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
         {
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				FlameDespawn = 9000;
+				FlameDespawn = 8000;
 				break;
 			default:
-				FlameDespawn = 4000;
+				FlameDespawn = 3000;
 				break;
 		}
-		AddEventOnTank(SPELL_SABER_LASH,2000,2000);
+		AddEventOnTank(SPELL_SABER_LASH,5000,5000);
     }
 	
 	uint8 phase;
@@ -85,12 +85,11 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			return;
 		
 		float dist = me->GetDistance2d(flameTarget);
-		uint8 nbFlame = ceil((double)dist/3.0f) + 1;
 
-		for(uint8 i=0;i<(nbFlame+1);i++)
+		for(uint8 i=0;i<=10;i++)
 		{
-			float x_add = i*3*dist/(flameTarget->GetPositionX() - me->GetPositionX());
-			float y_add = i*3*dist/(flameTarget->GetPositionY() - me->GetPositionY());
+			float x_add = i*2*dist/(flameTarget->GetPositionX() - me->GetPositionX());
+			float y_add = i*2*dist/(flameTarget->GetPositionY() - me->GetPositionY());
 			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + x_add, me->GetPositionY() + y_add, me->GetPositionZ() + 1.0f,true);
 		}
 	}
@@ -161,7 +160,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     flame_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-        AddEventOnMe(SPELL_COLDFLAME,2000,2000);
+        AddEventOnMe(SPELL_COLDFLAME,500,2000);
 		me->setFaction(14);
 		MakeInvisibleStalker();
     }

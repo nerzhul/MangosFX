@@ -312,7 +312,7 @@ enum Emblem_Types
 
 enum MobConstantes
 {
-	MAX_ADDS	=	75,
+	MAX_ADDS	=	1500,
 	THREE_MINS	=	180000,
 	TEN_MINS	=	600000,
 };
