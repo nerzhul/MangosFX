@@ -506,7 +506,11 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
                 data << uint32(0);
         }
 
-        data << uint32(pQuest->GetRewOrReqMoney());
+        if (pSession->GetPlayer()->getLevel() >= sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
+            data << uint32(pQuest->GetRewMoneyMaxLevel());
+        else
+            data << uint32(pQuest->GetRewOrReqMoney());
+
         data << uint32(pQuest->XPValue(pSession->GetPlayer()));
     }
 

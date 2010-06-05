@@ -11,7 +11,6 @@ enum
 	SPELL_SUMMON_BEATLE			    = 66339,
 	SPELL_MARK						= 67574,
 	SPELL_IMPALE					= 65919,
-	SPELL_KNOCKBACK					= 67546,
 
 	// adds
 	SPELL_EXPOSE_WEAKNESS			= 67847,
@@ -43,7 +42,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 	Difficulty difficulty;
 	uint32 Submerge_Timer;
 	uint8 phase;
-	Unit* follow_Target;
 	bool WasAggro;
 
     void Reset()
@@ -52,18 +50,14 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 		Tasks.AddEvent(SPELL_BERSERK,600000,60000,0,TARGET_ME);
 		Tasks.AddEvent(SPELL_FREEZING_SLASH,20000,20000,10000,TARGET_RANDOM,1);
 		Tasks.AddEvent(SPELL_FREEZING_SLASH,20000,20000,10000,TARGET_RANDOM,3);
-		Tasks.AddEvent(SPELL_KNOCKBACK,15000,15000,5000,TARGET_MAIN,1);
-		Tasks.AddEvent(SPELL_KNOCKBACK,15000,15000,5000,TARGET_MAIN,3);
 		Tasks.AddEvent(SPELL_IMPALE,5000,15000,0,TARGET_MAIN,2);
 		Tasks.AddSummonEvent(NPC_SCARAB,20000,15000,2,5000,3,TEN_MINS,NEAR_15M);
 		Tasks.AddSummonEvent(NPC_FROST_SPHERE,15000,15000,2,0,2,TEN_MINS,NEAR_30M);
-		Tasks.AddEvent(SPELL_LEECHING_SWARM,10000,30000,0,TARGET_RANDOM,3);
 		Tasks.AddEvent(SPELL_PENETRATING_COLD,20000,30000,0,TARGET_RANDOM,1);
 		Tasks.AddEvent(SPELL_PENETRATING_COLD,20000,30000,0,TARGET_RANDOM,3);
 		Tasks.AddSummonEvent(NPC_BURROWER,70000,100000,2);
 		Submerge_Timer = 45000;
 		phase = 1;
-		follow_Target = NULL;
 		WasAggro = false;
     }
 	void MoveInLineOfSight(Unit* pWho) 
@@ -129,19 +123,18 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 					Yell(16240,"Aoum Na'akish ! Dévorez mes serviteurs !");
 					if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
-						follow_Target = target;
-						SetAuraStack(SPELL_MARK,1,follow_Target,me);
+						SetAuraStack(SPELL_MARK,1,target,me);
 						if(Creature* spike = Tasks.CallCreature(34660,60000))
 						{
 							spike->GetMotionMaster()->MoveFollow(target,0.5f,0.0f);
 							spike->AddThreat(target,1000000.0f);
 						}
 					}
+					me->CastStop();
 					DoCastMe(SPELL_SUBMERGE_0);					
 				}
 				else
 				{
-					follow_Target = NULL;
 					Speak(CHAT_TYPE_TEXT_EMOTE,0,"Anub'Arak ressort des profondeurs !");
 					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
@@ -156,6 +149,8 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30.0f && phase != 3)
 		{
 			Yell(16241,"L'essaim va vous submerger !");
+			DoCastMe(SPELL_LEECHING_SWARM);
+			SetAuraStack(SPELL_LEECHING_SWARM,1,me,me,1);
 			phase = 3;
 		}
 

@@ -3014,6 +3014,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         }
     }
 
+	error_log("%i %i",int32(pVictim->GetUnitDodgeChance()*100.0f),skillDiff);
+
     if (canDodge)
     {
         // Roll dodge

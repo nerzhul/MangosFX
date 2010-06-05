@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL portal_jaraxxusEdCAI : public ScriptedAI
     portal_jaraxxusEdCAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         Reset();
-	dfc = me->GetMap()->GetDifficulty();
+		dfc = me->GetMap()->GetDifficulty();
     }
 
 	MobEventTasks Tasks;
@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
     mob_fel_infernalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-	Difficulty = me->GetMap()->GetDifficulty();
+		Difficulty = me->GetMap()->GetDifficulty();
         Reset();
     }
  
@@ -211,18 +211,29 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
     uint8 Difficulty;
     MobEventTasks Tasks;
 
+	uint32 resetAggro_Timer;
+
     void Reset()
     {
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(66494,5000,15000,5000,TARGET_MAIN);
 		Tasks.AddEvent(66495,1000,6100,100,TARGET_MAIN);
-    }
-
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+		resetAggro_Timer = 8000;
+	}
  
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+
+		if(resetAggro_Timer <= diff)
+		{
+			DoResetThreat();
+			resetAggro_Timer = 10000;
+		}
+		else
+			resetAggro_Timer -= diff;
  
 		Tasks.UpdateEvent(diff);
         DoMeleeAttackIfReady();
@@ -239,27 +250,38 @@ struct MANGOS_DLL_DECL mob_mistress_of_painAI : public ScriptedAI
     mob_mistress_of_painAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-	dfc = me->GetMap()->GetDifficulty();
+		dfc = me->GetMap()->GetDifficulty();
         Reset();
     }
  
 	ScriptedInstance* m_pInstance;
 	Difficulty dfc;
 	MobEventTasks Tasks;
+	uint32 resetAggro_Timer;
  
     void Reset()
     {
-	Tasks.SetObjects(this,me);
-	Tasks.AddEvent(66378,20000,20000,0,TARGET_MAIN);
-	Tasks.AddEvent(66283,15000,15000,5000);
-	Tasks.AddEvent(66334,10000,10000,2000,TARGET_HAS_MANA);
-	AggroAllPlayers(150.0f);
+		Tasks.SetObjects(this,me);
+		Tasks.AddEvent(66378,20000,20000,0,TARGET_MAIN);
+		Tasks.AddEvent(66283,5000,15000,5000);
+		Tasks.AddEvent(66334,10000,8000,2000,TARGET_HAS_MANA);
+		AggroAllPlayers(150.0f);
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+		resetAggro_Timer = 4000;
     }
  
     void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
+
+		if(resetAggro_Timer <= diff)
+		{
+			DoResetThreat();
+			resetAggro_Timer = 8000;
+		}
+		else
+			resetAggro_Timer -= diff;
 	
 		Tasks.UpdateEvent(diff);
         DoMeleeAttackIfReady();
