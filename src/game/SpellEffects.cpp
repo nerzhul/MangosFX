@@ -456,16 +456,13 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                             (*i)->GetCasterGUID()!=m_caster->GetGUID())
                             continue;
 
-                        // Immolate
-                        if ((*i)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000004))
-                        {
-                            aura = *i;                      // it selected always if exist
-                            break;
-                        }
-
                         // Shadowflame
                         if ((*i)->GetSpellProto()->SpellFamilyFlags2 & 0x00000002)
                             aura = *i;                      // remember but wait possible Immolate as primary priority
+
+						// Immolate
+                        if ((*i)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+                            aura = *i;                      // it selected always if exist
                     }
 
                     // found Immolate or Shadowflame
@@ -475,7 +472,12 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                         int32 damagetick = m_caster->SpellDamageBonus(unitTarget, aura->GetSpellProto(), aura->GetModifier()->m_amount, DOT);
                         // Save value of further damage
                         m_currentBasePoints[1] = damagetick * 2 / 3;
-                        damage += damagetick * 3;
+                        damage += damagetick * 2;
+						
+
+						// Glyph of Conflagrate
+                        if (!m_caster->HasAura(56235))
+                            unitTarget->RemoveAurasByCasterSpell(aura->GetId(), m_caster->GetGUID());
 
                         break;
                     }

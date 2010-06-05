@@ -2872,15 +2872,14 @@ float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 
     // Calculate hit chance (more correct for chance mod)
     int32 HitChance;
 
-    // PvP - PvE melee chances
-    int32 lchance = pVictim->GetTypeId() == TYPEID_PLAYER ? 5 : 7;
-    int32 leveldif = pVictim->getLevelForTarget(this) - getLevelForTarget(pVictim);
-    if(leveldif < 3)
-        HitChance = 95 - leveldif;
+	if ( pVictim->GetTypeId() == TYPEID_PLAYER )
+        HitChance = 95.0f + skillDiff * (skillDiff > 0 ? 0.02f : 0.04f);
+    else if ( skillDiff < -10 )
+        HitChance = 94.0f + (skillDiff + 10) * 0.4f;
     else
-        HitChance = 93 - (leveldif - 2) * lchance;
+        HitChance = 95.0f + skillDiff * 0.1f;
 
-    // Hit chance depends from victim auras
+	// Hit chance depends from victim auras
     if(attType == RANGED_ATTACK)
         HitChance += pVictim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_RANGED_HIT_CHANCE);
     else
@@ -2889,6 +2888,9 @@ float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 
     // Spellmod from SPELLMOD_RESIST_MISS_CHANCE
     if(Player *modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spell->Id, SPELLMOD_RESIST_MISS_CHANCE, HitChance);
+
+	if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss() && getLevel() >= pVictim->getLevel())
+		HitChance = 100.0f;
 
     // Miss = 100 - hit
     float miss_chance= 100.0f - HitChance;
@@ -10414,7 +10416,7 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x2000000)
     {
         // Rejuvenation, Regrowth, Lifebloom, or Wild Growth
-        if (pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_DRUID, 0x50, 0x4000010, 0))
+        if (pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_DRUID, 0x50, 0x4000010, GetGUID()))
             //increase healing by 20%
             TakenTotalMod *= 1.2f;
     }

@@ -5450,19 +5450,6 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                         if ((*i)->GetSpellProto()->SpellFamilyFlags2 & 0x00000002)
                             aura = *i;                      // remember but wait possible Immolate as primary priority
                     }
-
-                    // found Immolate or Shadowflame
-                    if (aura)
-                    {
-                       int32 damagetick = caster->SpellDamageBonus(m_target, aura->GetSpellProto(), aura->GetModifier()->m_amount, DOT);
-                       m_modifier.m_amount += damagetick * 0.3f;
-
-                        // Glyph of Conflagrate
-                        if (!caster->HasAura(56235))
-                            m_target->RemoveAurasByCasterSpell(aura->GetId(), caster->GetGUID());
-
-                        return;
-                    }
                 }
                 break;
             }
@@ -8828,7 +8815,6 @@ void Aura::PeriodicDummyTick()
 						RuneType type = player->GetBaseRune(i);
 						if (player->GetCurrentRune(i) == RUNE_DEATH && (type == RUNE_FROST || type == RUNE_UNHOLY) && player->IsRuneConvertedBy(i, spell->Id))
 						{
-							error_log("Convert 2!");
 							player->ConvertRune(i, type);
 							player->ClearConvertedBy(i);
 						}

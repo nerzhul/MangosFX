@@ -116,8 +116,8 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				me->CastStop();
 				DoCastMe(SPELL_BONE_STORM);
 				BossEmote(0,"Gargamoelle commence a incanter une tempete d'os");
-				Storm_Timer = 63000;
-				StormTarget_Timer = 15000;
+				Storm_Timer = 20000;
+				StormTarget_Timer = 5000;
 			}
 			else
 				Storm_Timer -= diff;
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				Unit* StormTarget = GetRandomUnit();
 				if(StormTarget)
 					me->AddThreat(StormTarget,100000.0f);
-				StormTarget_Timer = 15000;
+				StormTarget_Timer = 5500;
 			}
 			else
 				StormTarget_Timer -= diff;
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			{
 				phase = 0;
 				DoResetThreat();
-				Storm_Timer = 27000;
+				Storm_Timer = 40000;
 			}
 			else
 				Storm_Timer -= diff;
@@ -161,6 +161,8 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     {
         InitInstance();
         AddEventOnMe(SPELL_COLDFLAME,2000,2000);
+		me->setFaction(14);
+		MakeInvisibleStalker();
     }
 	
     void Reset()

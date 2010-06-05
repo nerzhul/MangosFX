@@ -1498,6 +1498,12 @@ void LibDevFSAI::DealPercentDamage(Unit* target,float percent)
 	DealDamage(target,dmg);	
 }
 
+void LibDevFSAI::MakeInvisibleStalker()
+{
+	me->SetDisplayId(16925);
+	me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+}
+
 void ScriptedAI::DoSpeakEmote(Unit* who)
 {
 	if(!who)
