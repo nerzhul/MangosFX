@@ -2840,14 +2840,23 @@ void Spell::cast(bool skipCheck)
         {
             if (m_spellInfo->Mechanic == MECHANIC_BANDAGE)  // Bandages
                 AddPrecastSpell(11196);                     // Recently Bandaged
-            else if(m_spellInfo->Id == 7744)                // Will of the Forsaken
-				AddTriggeredSpell(72757);                   // PvP trinket Cooldown
-            else if(m_spellInfo->Id == 20594)               // Stoneskin
-                AddTriggeredSpell(65116);                   // Stoneskin - armor 10% for 8 sec
-			else if(m_spellInfo->Id == 71904)               // Chaos Bane strength buff
-				AddTriggeredSpell(73422);
-			else if(m_spellInfo->Id == 42292)               // PvP trinket
-				AddTriggeredSpell(72752);                   // Will of the Forsaken Cooldown
+			
+			switch(m_spellInfo->Id)
+			{
+				case 7744:
+					AddTriggeredSpell(72757);                   // PvP trinket Cooldown
+					break;
+				case 20594:
+					AddTriggeredSpell(65116);                   // Stoneskin - armor 10% for 8 sec
+					break;
+				case 42292:
+					AddTriggeredSpell(72752);                   // Will of the Forsaken Cooldown
+					break;
+				case 71904:
+					AddTriggeredSpell(73422);
+					break;
+
+			}
             break;
         }
         case SPELLFAMILY_MAGE:
@@ -2994,10 +3003,25 @@ void Spell::cast(bool skipCheck)
             break;
     }
 
-	if(m_spellInfo->Id == 65684)
-		m_caster->RemoveAurasDueToSpell(65686);
-	else if(m_spellInfo->Id == 65686)
-		m_caster->RemoveAurasDueToSpell(65684);
+	switch(m_spellInfo->Id)
+	{
+		case 65684:
+			m_caster->RemoveAurasDueToSpell(65686);
+			break;
+		case 65686:
+			m_caster->RemoveAurasDueToSpell(65684);
+			break;
+		case 66901:
+		case 67615:
+		case 67616:
+		case 67617:
+		case 66880:
+		case 67608:
+		case 67607:
+		case 67606:
+			AddTriggeredSpell(66823);
+			break;
+	}
 
     // traded items have trade slot instead of guid in m_itemTargetGUID
     // set to real guid to be sent later to the client

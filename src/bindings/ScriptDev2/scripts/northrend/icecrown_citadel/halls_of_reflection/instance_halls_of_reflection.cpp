@@ -459,7 +459,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 					if(vague == 5 || vague == 10)
 						vague_Timer = 300000;
 					else
-						vague_Timer = 60000;
+						vague_Timer = 70000;
 				}
 				else
 					vague_Timer -= diff;

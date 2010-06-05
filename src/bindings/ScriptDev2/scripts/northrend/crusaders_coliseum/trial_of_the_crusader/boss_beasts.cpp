@@ -57,7 +57,6 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 
     void JustDied(Unit *victim)
     {
-		CleanMyAdds();
         if (pInstance)
 		{
 			switch(m_difficulty)
@@ -190,70 +189,73 @@ enum AcidmawSpells
 	SPELL_ENRAGE = 68335
 };
 
-struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 {
-    boss_Acidmaw_AI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_Acidmaw_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-
-        Reset();
+        InitInstance();
+		AddEventOnMe(26662,360000,10000);
+		AddEvent(SPELL_ACID_SPIT,7000,9000,1000,TARGET_RANDOM,2);
+		AddNoTankEvent(SPELL_ACID_SPIT,1500);
+		AddEventOnTank(SPELL_PARALYTIC_BITE,15000,15000,0,1);
+		AddEventOnTank(SPELL_PARALYTIC_SPRAY,17000,15000,1000,2);
+		AddEventOnTank(SPELL_SLIME_POOL,25000,25000,2000,1);
+		AddEventOnTank(SPELL_SWEEP,14000,14000,1000,2);
+		AddEventOnTank(SPELL_ACIDIC_SPEW,6000,9000,0,1); // doit tourner pour toucher tout le monde
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty m_bIsHeroic;
 	uint8 phase;
 	uint32 phase_Timer;
 	uint32 CheckDistanceTimer;
 	bool Spawnable;
 	uint32 Spawn_Timer;
+	uint32 Spew_Timer;
 
     void Reset()
     {		
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(26662,360000,10000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_ACID_SPIT,7000,9000,1000,TARGET_RANDOM,2);
-		Tasks.AddNoTankEvent(SPELL_ACID_SPIT,1500);
-		Tasks.AddEvent(SPELL_PARALYTIC_BITE,15000,15000,0,TARGET_MAIN,1);
-		Tasks.AddEvent(SPELL_PARALYTIC_SPRAY,17000,15000,1000,TARGET_MAIN,2);
-		Tasks.AddEvent(SPELL_SLIME_POOL,25000,25000,2000,TARGET_MAIN,1);
-		Tasks.AddEvent(SPELL_SWEEP,14000,14000,1000,TARGET_MAIN,2);
-		switch(m_bIsHeroic)
+		ResetTimers();
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				Tasks.AddEvent(SPELL_ACIDIC_SPEW,6000,9000,1000,TARGET_MAIN,1);
-				Spawnable = false;
-				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.AddEvent(SPELL_ACIDIC_SPEW,6000,9000,1000,TARGET_MAIN,1);
 				Spawnable = false;
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				Tasks.AddEvent(SPELL_ACIDIC_SPEW,6000,9000,1000,TARGET_MAIN,1);
-				Spawnable = true;
-				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.AddEvent(SPELL_ACIDIC_SPEW,6000,9000,1000,TARGET_MAIN,1);
 				Spawnable = true;
 				break;
 		}
 		phase = 1;
 		phase_Timer = 10000;
 		Spawn_Timer = 180000;
+		Spew_Timer = 15100;
 		CheckDistanceTimer = 1000;
 		AggroAllPlayers(150.0f);
     }
+	
+	void ApplyPoisonInArc()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+		{
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+			{
+				if(pPlayer->isAlive() && !pPlayer->isGameMaster() && me->HasInArc(M_PI/2, pPlayer))
+					SetAuraStack(SPELL_PARALYTIC_TOXIN,1,pPlayer,me,1);
+			}
+		}
+	}
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Acidmaw, DONE);
-		if (Creature* Dreadscale = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Dreadscale) : 0)))
+        if (pInstance)
+            pInstance->SetData(TYPE_Acidmaw, DONE);
+		if (Creature* Dreadscale = GetInstanceCreature(TYPE_Dreadscale))
 		{
 			if(Dreadscale->isAlive())
 			{
-				switch(m_bIsHeroic)
+				switch(m_difficulty)
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
@@ -263,20 +265,20 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 			}
 			else
 			{
-				switch(m_bIsHeroic)
+				switch(m_difficulty)
 				{
 					case RAID_DIFFICULTY_10MAN_NORMAL:
 					case RAID_DIFFICULTY_25MAN_NORMAL:
-						m_pInstance->SetData(TYPE_Acidmaw, DONE);
-						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+						pInstance->SetData(TYPE_Acidmaw, DONE);
+						if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						break;
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
 						if(Spawnable)
 						{
-							m_pInstance->SetData(TYPE_Acidmaw, DONE);
-							if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+							pInstance->SetData(TYPE_Acidmaw, DONE);
+							if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 								((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						}
 						break;
@@ -299,12 +301,12 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 
-		if (Creature* Dreadscale = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Dreadscale) : 0)))
+		if (Creature* Dreadscale = GetInstanceCreature(TYPE_Dreadscale))
 			if(Dreadscale->isAlive())
 				Dreadscale->AddThreat(pWho);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Acidmaw, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_Acidmaw, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -325,7 +327,18 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 		else
 			phase_Timer -= diff;
 
-		Tasks.UpdateEvent(diff,phase);
+		if(phase == 1)
+		{
+			if(Spew_Timer <= diff)
+			{
+				ApplyPoisonInArc();
+				Spew_Timer = 9000;
+			}
+			else
+				Spew_Timer -= diff;
+		}
+
+		UpdateEvent(diff,phase);
 
 		if(CheckDistanceTimer < diff)
 		{
@@ -348,7 +361,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public ScriptedAI
 		{
 			if(Spawn_Timer <= diff)
 			{
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 				Spawn_Timer = 180000;
 				Spawnable = false;
@@ -740,7 +753,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 						{
 							if (Player* pPlayer = itr->getSource())
-								if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) < 14.0f)
+								if(pPlayer->isAlive() && !pPlayer->isGameMaster() && pPlayer->GetDistance2d(me) < 14.0f)
 								{
 									Kill(pPlayer);
 									PlayerHit = true;

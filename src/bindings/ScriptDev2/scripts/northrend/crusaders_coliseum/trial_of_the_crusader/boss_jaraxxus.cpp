@@ -13,33 +13,50 @@ enum
 	SPELL_NETHER_POWER 			= 66228,
 };
 
-struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_jaraxxusAI : public LibDevFSAI
 {
-    boss_jaraxxusAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_jaraxxusAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnMe(SPELL_BERSERK,600000,60000);
+		AddEventOnMe(SPELL_NETHER_POWER,25000,50000);
+		AddMaxPrioEvent(SPELL_INFERNAL_ERUPTION,90000,120000);
+		AddEvent(SPELL_FEL_FIREBALL,5000,12000,2000);
+		AddEvent(SPELL_FEL_LIGHTNING,5000,18000,500);
+		AddEvent(SPELL_LEGION_FLAME,20000,30000);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty m_bIsHeroic;
 	uint32 incinerate_Timer;
 	uint32 portal_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_BERSERK,600000,60000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_NETHER_POWER,25000,50000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_INFERNAL_ERUPTION,90000,120000,0,TARGET_RANDOM,0,0,true);
-		Tasks.AddEvent(SPELL_FEL_FIREBALL,5000,12000,2000);
-		Tasks.AddEvent(SPELL_FEL_LIGHTNING,5000,18000,500);
-		Tasks.AddEvent(SPELL_LEGION_FLAME,20000,30000);
+		ResetTimers();
 		incinerate_Timer = 15000;
 		portal_Timer = 20000;
     }
+
+	void SpellHit(Unit* pWho,const SpellEntry* spell)
+	{
+		if(!spell)
+			return;
+
+		if(spell->Id == 66242 || spell->Id == 67059 ||
+			spell->Id == 67060 || spell->Id == 67061)
+		{
+			me->RemoveAurasDueToSpell(spell->Id);
+			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+			if (!lPlayers.isEmpty())
+			{
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+				{
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						SetAuraStack(spell->Id,1,pPlayer,me,1);
+				}
+			}
+		}
+	}
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
@@ -57,14 +74,14 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
+        if (pInstance)
 		{
-            m_pInstance->SetData(TYPE_JARAXXUS, DONE);
+            pInstance->SetData(TYPE_JARAXXUS, DONE);
 			Speak(CHAT_TYPE_SAY,16147,"Un autre prendra ma place. Votre monde est condamné.");
-			if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+			if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 				((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_JARAXXUS_OUTRO);
 		}
-		switch(m_bIsHeroic)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 				GiveEmblemsToGroup(CONQUETE,2);
@@ -86,8 +103,8 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_JARAXXUS, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_JARAXXUS, IN_PROGRESS);
 
 		Yell(16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
     }
@@ -109,12 +126,12 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public ScriptedAI
 		if(portal_Timer <= diff)
 		{
 			Speak(CHAT_TYPE_SAY,16150,"Viens, ma soeur, ton maître t'appelle.");
-			Tasks.CallCreature(34825,TEN_MINS,NEAR_15M,AGGRESSIVE_MAIN);
+			CallCreature(34825,TEN_MINS,NEAR_15M,AGGRESSIVE_MAIN);
 			portal_Timer = 120000;
 		}
 		else
 			portal_Timer -= diff;
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -126,21 +143,17 @@ CreatureAI* GetAI_boss_jaraxxus(Creature* pCreature)
     return new boss_jaraxxusAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL volcan_jaraxxusEdCAI : public ScriptedAI
+struct MANGOS_DLL_DECL volcan_jaraxxusEdCAI : public LibDevFSAI
 {
-    volcan_jaraxxusEdCAI(Creature* pCreature) : ScriptedAI(pCreature)
+    volcan_jaraxxusEdCAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+		AddEventOnMe(66255,30000,45000);
     }
-
-	ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(66255,30000,45000,0,TARGET_ME);
+		ResetTimers();
 				
 		SetCombatMovement(false);
     }
@@ -148,7 +161,7 @@ struct MANGOS_DLL_DECL volcan_jaraxxusEdCAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 };
 
@@ -205,6 +218,7 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		Difficulty = me->GetMap()->GetDifficulty();
         Reset();
+		me->setFaction(14);
     }
  
     ScriptedInstance* m_pInstance;
@@ -293,22 +307,21 @@ CreatureAI* GetAI_mob_mistress_of_pain(Creature* pCreature)
     return new mob_mistress_of_painAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL mob_legion_flameAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_legion_flameAI : public LibDevFSAI
 {
-    mob_legion_flameAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_legion_flameAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
-    }
-
-	MobEventTasks Tasks;
+        InitInstance();
+		MakeInvisibleStalker();
+	}
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		SetAuraStack(66201,1,me,me,1);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetRespawnDelay(DAY);
+		me->setFaction(14);
 		SetCombatMovement(false);
     }
 
