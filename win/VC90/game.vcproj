@@ -294,6 +294,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP /bigobj /Zm200"
+				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\shared\vmap;..\..\dep\ACE_wrappers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;_SECURE_SCL=0"
