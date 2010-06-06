@@ -72,14 +72,14 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(Fjola->isAlive())
 				pDoneBy->DealDamage(Fjola,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
 	void HealBy(Unit* pHealer,uint32 heal)
 	{
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(Fjola->isAlive())
 				Fjola->SetHealth(Fjola->GetHealth() + heal);
 	}
@@ -89,11 +89,11 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_Eydis_Darkbane, DONE);
             
-		if (Creature* Fjola = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Fjola_Lightbane) : 0)))
+		if (Creature* Fjola = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(!Fjola->isAlive())
 			{
 				pInstance->SetData(TYPE_VALKYRS,DONE);
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 
 				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+		if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(Eydis->isAlive())
 				pDoneBy->DealDamage(Eydis,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
@@ -243,11 +243,11 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_Fjola_Lightbane, DONE);
             
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+		if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(!Eydis->isAlive())
 			{
 				pInstance->SetData(TYPE_VALKYRS,DONE);
-				if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+				if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 					
 				me->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
@@ -275,9 +275,9 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 
 	void HealBy(Unit* pHealer,uint32 heal)
 	{
-		if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+		if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(Eydis->isAlive())
-				Eydis->SetHealth(Eydis->GetHealth() + heal);
+				Eydis->SetHealth(me->GetHealth());
 	}
 
 	void DoEvent()
@@ -313,7 +313,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 		{
 			if(urand(0,1))
 			{
-				if (Creature* Eydis = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_Eydis_Darkbane) : 0)))
+				if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 					if(Eydis->isAlive())
 						((boss_Eydis_DarkbaneAI*)Eydis->AI())->DoEvent();
 			}
@@ -348,24 +348,18 @@ CreatureAI* GetAI_boss_Fjola_Lightbane(Creature* pCreature)
     return new boss_Fjola_LightbaneAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
+struct MANGOS_DLL_DECL Valkyr_BallAI : public LibDevFSAI
 {
-    Valkyr_BallAI(Creature* pCreature) : ScriptedAI(pCreature)
+    Valkyr_BallAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_difficulty = me->GetMap()->GetDifficulty();
+        InitInstance();
     }
 
-	MobEventTasks Tasks;
 	uint32 move_Timer;
 	uint32 checkpDist_Timer;
-	ScriptedInstance* pInstance;
-	Difficulty m_difficulty;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 		SetCombatMovement(false);
@@ -383,10 +377,10 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster() && pPlayer->GetDistance2d(me) < 7.0f)
 						Event = true;
 
-		if (Creature* Darkbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Eydis_Darkbane))))
+		if (Creature* Darkbane = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(Darkbane->isAlive() && Darkbane->GetDistance2d(me) < 7.0f)
 				Event = true;
-		if (Creature* Lightbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Fjola_Lightbane))))
+		if (Creature* Lightbane = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(Lightbane->isAlive() && Lightbane->GetDistance2d(me) < 7.0f)
 				Event = true;
 
@@ -414,12 +408,14 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public ScriptedAI
 						}
 					}
 
-		if (Creature* Darkbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Eydis_Darkbane))))
+		if (Creature* Darkbane = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(Darkbane->isAlive() && Darkbane->GetDistance2d(me) < 7.0f)
-				UpdateStacks(Darkbane);
-		if (Creature* Lightbane = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Fjola_Lightbane))))
+				if(me->GetEntry() == 34628)
+					UpdateStacks(Darkbane);
+		if (Creature* Lightbane = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(Lightbane->isAlive() && Lightbane->GetDistance2d(me) < 7.0f)
-				UpdateStacks(Lightbane);
+				if(me->GetEntry() == 34630)
+					UpdateStacks(Lightbane);
 
 		if(me->GetEntry() == 34630)
 			DoCastMe(65795);

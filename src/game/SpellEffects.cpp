@@ -2773,7 +2773,8 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
 			triggered_spell_id = 58137;
 			break;
 		}
-
+		case 47531:
+			return;
     }
 
     // normal case

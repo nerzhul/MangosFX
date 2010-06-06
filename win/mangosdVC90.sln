@@ -52,6 +52,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ScriptDev2", "..\src\bindin
 		{1DC6C4DA-A028-41F3-877D-D5400C594F88} = {1DC6C4DA-A028-41F3-877D-D5400C594F88}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LootClusterFX", "LootClusterFX\LootClusterFX.vcproj", "{CC9FF5A5-8C8F-40C3-A672-E2556123602D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_NoPCH|Win32 = Debug_NoPCH|Win32
@@ -204,6 +206,15 @@ Global
 		{4295C8A9-79B7-4354-8064-F05FB9CA0C96}.Release|Win32.Build.0 = Release|Win32
 		{4295C8A9-79B7-4354-8064-F05FB9CA0C96}.Release|x64.ActiveCfg = Release|x64
 		{4295C8A9-79B7-4354-8064-F05FB9CA0C96}.Release|x64.Build.0 = Release|x64
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug_NoPCH|Win32.ActiveCfg = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug_NoPCH|Win32.Build.0 = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug_NoPCH|x64.ActiveCfg = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug|Win32.Build.0 = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Debug|x64.ActiveCfg = Debug|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Release|Win32.ActiveCfg = Release|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Release|Win32.Build.0 = Release|Win32
+		{CC9FF5A5-8C8F-40C3-A672-E2556123602D}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
