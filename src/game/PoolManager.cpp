@@ -390,7 +390,7 @@ PoolManager::PoolManager()
 {
 }
 
-void PoolManager::LoadFromDB()
+void PoolManager::LoadFromDB(bool ClusterIgnore)
 {
     QueryResult *result = WorldDatabase.Query("SELECT MAX(entry) FROM pool_template");
     if (!result)
@@ -471,7 +471,8 @@ void PoolManager::LoadFromDB()
             CreatureData const* data = sObjectMgr.GetCreatureData(guid);
             if (!data)
             {
-                sLog.outErrorDb("`pool_creature` has a non existing creature spawn (GUID: %u) defined for pool id (%u), skipped.", guid, pool_id );
+				if(!ClusterIgnore)
+					sLog.outErrorDb("`pool_creature` has a non existing creature spawn (GUID: %u) defined for pool id (%u), skipped.", guid, pool_id );
                 continue;
             }
             if (pool_id > max_pool_id)
@@ -533,7 +534,8 @@ void PoolManager::LoadFromDB()
             GameObjectData const* data = sObjectMgr.GetGOData(guid);
             if (!data)
             {
-                sLog.outErrorDb("`pool_gameobject` has a non existing gameobject spawn (GUID: %u) defined for pool id (%u), skipped.", guid, pool_id );
+				if(!ClusterIgnore)
+					sLog.outErrorDb("`pool_gameobject` has a non existing gameobject spawn (GUID: %u) defined for pool id (%u), skipped.", guid, pool_id );
                 continue;
             }
             GameObjectInfo const* goinfo = ObjectMgr::GetGameObjectInfo(data->id);

@@ -93,7 +93,7 @@ class PoolManager
         PoolManager();
         ~PoolManager() {};
 
-        void LoadFromDB();
+        void LoadFromDB(bool ClusterIgnore = false);
         void Initialize();
 
         template<typename T>

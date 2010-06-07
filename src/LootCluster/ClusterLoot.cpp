@@ -79,7 +79,7 @@ void ClusterLoot::SetInitialSettings()
     sObjectMgr.LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
 
 	sLog.outString( "Loading Objects Pooling Data...");
-    sPoolMgr.LoadFromDB();
+    sPoolMgr.LoadFromDB(true);
 
 	sLog.outString( "Loading Game Event Data...");
     sLog.outString();
