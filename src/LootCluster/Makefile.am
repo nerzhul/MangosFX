@@ -22,7 +22,12 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../
 ## Build world daemon as standalone program
 bin_PROGRAMS = mangosFX-LootCluster
 mangosFX_LootCluster_SOURCES = \
-	
+	CliCommand.cpp \
+	Cluster.cpp \
+	Cluster.h \
+	ClusterLoot.cpp \
+	ClusterLoot.h \
+	Main.cpp
 
 ## Link world daemon against the shared library
 mangosFX_LootCluster_LDADD = \
