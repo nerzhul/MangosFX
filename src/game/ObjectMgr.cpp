@@ -3817,8 +3817,9 @@ void ObjectMgr::LoadQuests(bool ClusterIgnore)
             {
                 if(!qinfo->RewRepValue[j])
                 {
-                    sLog.outErrorDb("Quest %u has `RewRepFaction%d` = %u but `RewRepValue%d` = 0, quest will not reward this reputation.",
-                        qinfo->GetQuestId(),j+1,qinfo->RewRepValue[j],j+1);
+					if(!ClusterIgnore)
+						sLog.outErrorDb("Quest %u has `RewRepFaction%d` = %u but `RewRepValue%d` = 0, quest will not reward this reputation.",
+							qinfo->GetQuestId(),j+1,qinfo->RewRepValue[j],j+1);
                     // no changes
                 }
 

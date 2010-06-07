@@ -17,41 +17,22 @@
 ## Process this file with automake to produce Makefile.in
 
 ## CPP flags for includes, defines, etc.
-AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../dep/include -I$(srcdir)/../../dep/include/gsoap -I$(srcdir)/../framework -I$(srcdir)/../shared  -I$(srcdir)/../game -I$(srcdir) -DSYSCONFDIR=\"$(sysconfdir)/\"
+AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../dep/include -I$(srcdir)/../framework -I$(srcdir)/../shared  -I$(srcdir)/../game -I$(srcdir) -DSYSCONFDIR=\"$(sysconfdir)/\"
 
 ## Build world daemon as standalone program
-bin_PROGRAMS = mangos-worldd
-mangos_worldd_SOURCES = \
-	CliRunnable.cpp \
-	CliRunnable.h \
-	Main.cpp \
-	Master.cpp \
-	Master.h \
-	RASocket.cpp \
-	RASocket.h \
-	MaNGOSsoap.cpp \
-	MaNGOSsoap.h \
-	WorldRunnable.cpp \
-	WorldRunnable.h \
-	soapH.h  \
-	soapStub.h \
-	soapC.cpp \
-	soapServer.cpp
+bin_PROGRAMS = mangosFX-LootCluster
+mangosFX_LootCluster_SOURCES = \
+	
 
 ## Link world daemon against the shared library
-mangos_worldd_LDADD = \
-	../bindings/ScriptDev2/libmangosscript.la \
+mangosFX_LootCluster_LDADD = \
 	../game/libmangosgame.a \
 	../shared/Database/libmangosdatabase.a \
 	../shared/Config/libmangosconfig.a \
-	../shared/Auth/libmangosauth.a \
 	../shared/libmangosshared.a \
-	../shared/vmap/libmangosvmaps.a \
-	../framework/libmangosframework.a \
-	../../dep/src/g3dlite/libg3dlite.a \
-	../../dep/src/gsoap/libgsoap.a
+	../framework/libmangosframework.a 
 
-mangos_worldd_LDFLAGS = -L../../dep/src/g3dlite -L../../dep/src/gsoap -L../bindings/ScriptDev2/ -L$(libdir) $(MANGOS_LIBS) -export-dynamic
+mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
