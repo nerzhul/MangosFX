@@ -5,6 +5,7 @@
 #include <Policies/SingletonImp.h>
 #include <ObjectMgr.h>
 #include <GameEventMgr.h>
+#include <PoolManager.h>
 
 INSTANTIATE_SINGLETON_1( ClusterLoot );
 volatile bool ClusterLoot::m_stopEvent = false;
@@ -60,7 +61,7 @@ void ClusterLoot::SetInitialSettings()
 
 	///- Load the DBC files
     sLog.outString("Initialize data stores...");
-    LoadDBCStores("./");
+	LoadDBCStores("D:/Frost Sapphire/");
     DetectDBCLang();
 
 	// For other clusters, modify loaded tables there
@@ -76,6 +77,9 @@ void ClusterLoot::SetInitialSettings()
 
 	sLog.outString( "Loading Quests..." );
     sObjectMgr.LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
+
+	sLog.outString( "Loading Objects Pooling Data...");
+    sPoolMgr.LoadFromDB();
 
 	sLog.outString( "Loading Game Event Data...");
     sLog.outString();
