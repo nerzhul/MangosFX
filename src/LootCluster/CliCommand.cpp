@@ -1,4 +1,3 @@
-#include "Master.h"
 #include "Cluster.h"
 #include <WorldPacket.h>
 #include <GameObject.h>

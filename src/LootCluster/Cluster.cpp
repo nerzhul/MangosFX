@@ -1,6 +1,5 @@
 #include "Cluster.h"
 #include "ClusterLoot.h"
-#include "Master.h"
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
