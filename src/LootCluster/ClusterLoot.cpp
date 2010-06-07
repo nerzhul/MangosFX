@@ -1,4 +1,5 @@
 #include "ClusterLoot.h"
+#include "cObjectMgr.h"
 #include <Timer.h>
 #include <Config/ConfigEnv.h>
 #include <Database/DatabaseEnv.h>
@@ -67,10 +68,10 @@ void ClusterLoot::SetInitialSettings()
 	// For other clusters, modify loaded tables there
 
 	sLog.outString( "Loading Items..." );                   // must be after LoadRandomEnchantmentsTable and LoadPageTexts
-    sObjectMgr.LoadItemPrototypes(true);
+    sClusterObjectMgr.LoadItemPrototypes();
 
 	sLog.outString( "Loading Creature templates..." );
-    sObjectMgr.LoadCreatureTemplates(true);
+    sClusterObjectMgr.LoadCreatureTemplates();
 
 	sLog.outString( "Loading Game Object Templates..." );   // must be after LoadPageTexts
     sObjectMgr.LoadGameobjectInfo(true);

@@ -639,8 +639,16 @@
 			>
 		</Filter>
 		<Filter
-			Name="Objects"
+			Name="Replicat"
 			>
+			<File
+				RelativePath="..\..\src\LootCluster\cObjectMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\LootCluster\cObjectMgr.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="ClusterLoot"
