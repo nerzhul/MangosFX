@@ -151,6 +151,6 @@ void ClusterLoot::Wait()
 {
 	while(!MustStop())
 	{
-		Sleep(1000);
+		ACE_Based::Thread::Sleep(1000);
 	}
 }
