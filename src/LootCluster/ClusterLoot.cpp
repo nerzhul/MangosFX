@@ -74,7 +74,7 @@ void ClusterLoot::SetInitialSettings()
     sClusterObjectMgr.LoadCreatureTemplates();
 
 	sLog.outString( "Loading Game Object Templates..." );   // must be after LoadPageTexts
-    sObjectMgr.LoadGameobjectInfo(true);
+    sClusterObjectMgr.LoadGameobjectInfo();
 
 	sLog.outString( "Loading Quests..." );
     sObjectMgr.LoadQuests(true);                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
