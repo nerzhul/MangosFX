@@ -61,7 +61,7 @@ void ClusterLoot::SetInitialSettings()
 
 	///- Load the DBC files
     sLog.outString("Initialize data stores...");
-	LoadDBCStores("D:/Frost Sapphire/");
+	LoadDBCStores("./");
     DetectDBCLang();
 
 	// For other clusters, modify loaded tables there
