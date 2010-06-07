@@ -35,7 +35,9 @@ mangosFX_LootCluster_LDADD = \
 	../shared/Database/libmangosdatabase.a \
 	../shared/Config/libmangosconfig.a \
 	../shared/Auth/libmangosauth.a \
+	../shared/vmap/libmangosvmaps.a \
 	../shared/libmangosshared.a \
+	../../dep/src/g3dlite/libg3dlite.a \
 	../framework/libmangosframework.a 
 
 mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
