@@ -70,8 +70,8 @@ void ClusterLoot::SetInitialSettings()
 	sLog.outString( "Loading Creature templates..." );
     sObjectMgr.LoadCreatureTemplates(true);
 
-	sLog.outString( "Loading Gameobject Data..." );
-    sObjectMgr.LoadGameobjects();
+	sLog.outString( "Loading Game Object Templates..." );   // must be after LoadPageTexts
+    sObjectMgr.LoadGameobjectInfo();
 
 	sLog.outString( "Loading Loot Tables..." );
     sLog.outString();

@@ -597,7 +597,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
         // used later for scale
         CreatureDisplayInfoEntry const* displayScaleEntry = NULL;
 
-        if (cInfo->DisplayID_A[0])
+        if (cInfo->DisplayID_A[0] && !ClusterIgnore)
         {
             CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->DisplayID_A[0]);
             if(!displayEntry)
@@ -613,7 +613,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
                 sLog.outErrorDb("Creature (Entry: %u) are using modelid_A (%u), but creature_model_info are missing for this model.", cInfo->Entry, cInfo->DisplayID_A[0]);
         }
 
-        if (cInfo->DisplayID_A[1])
+        if (cInfo->DisplayID_A[1] && !ClusterIgnore)
         {
             CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->DisplayID_A[1]);
             if(!displayEntry)
@@ -629,7 +629,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
                 sLog.outErrorDb("Creature (Entry: %u) are using modelid_A2 (%u), but creature_model_info are missing for this model.", cInfo->Entry, cInfo->DisplayID_A[1]);
         }
 
-        if (cInfo->DisplayID_H[0])
+        if (cInfo->DisplayID_H[0] && !ClusterIgnore)
         {
             CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->DisplayID_H[0]);
             if(!displayEntry)
@@ -645,7 +645,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
                 sLog.outErrorDb("Creature (Entry: %u) are using modelid_H (%u), but creature_model_info are missing for this model.", cInfo->Entry, cInfo->DisplayID_H[0]);
         }
 
-        if (cInfo->DisplayID_H[1])
+        if (cInfo->DisplayID_H[1] && !ClusterIgnore)
         {
             CreatureDisplayInfoEntry const* displayEntry = sCreatureDisplayInfoStore.LookupEntry(cInfo->DisplayID_H[1]);
             if(!displayEntry)
@@ -1994,7 +1994,7 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
         if(proto->Bonding >= MAX_BIND_TYPE)
             sLog.outErrorDb("Item (Entry: %u) has wrong Bonding value (%u)",i,proto->Bonding);
 
-        if(proto->PageText && !sPageTextStore.LookupEntry<PageText>(proto->PageText))
+        if(proto->PageText && !sPageTextStore.LookupEntry<PageText>(proto->PageText) && !ClusterIgnore)
             sLog.outErrorDb("Item (Entry: %u) has non existing first page (Id:%u)", i,proto->PageText);
 
         if(proto->LockID && !sLockStore.LookupEntry(proto->LockID))
@@ -2006,13 +2006,13 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
             const_cast<ItemPrototype*>(proto)->Sheath = SHEATHETYPE_NONE;
         }
 
-        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty,ClusterIgnore)))
+        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty,ClusterIgnore)) && !ClusterIgnore)
         {
             sLog.outErrorDb("Item (Entry: %u) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty (%u)",i,proto->RandomProperty);
             const_cast<ItemPrototype*>(proto)->RandomProperty = 0;
         }
 
-        if(proto->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(proto->RandomSuffix,ClusterIgnore)))
+        if(proto->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(proto->RandomSuffix,ClusterIgnore)) && !ClusterIgnore)
         {
             sLog.outErrorDb("Item (Entry: %u) has wrong RandomSuffix (%u)",i,proto->RandomSuffix);
             const_cast<ItemPrototype*>(proto)->RandomSuffix = 0;
