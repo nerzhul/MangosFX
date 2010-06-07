@@ -612,7 +612,7 @@ class ObjectMgr
         void LoadGameObjectLocales();
         void LoadGameobjects();
         void LoadGameobjectRespawnTimes();
-        void LoadItemPrototypes();
+        void LoadItemPrototypes(bool ClusterIgnore = false);
         void LoadItemRequiredTarget();
         void LoadItemLocales();
         void LoadQuestLocales();

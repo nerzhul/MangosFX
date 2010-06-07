@@ -1671,7 +1671,7 @@ struct SQLItemLoader : public SQLStorageLoaderBase<SQLItemLoader>
     }
 };
 
-void ObjectMgr::LoadItemPrototypes()
+void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
 {
     SQLItemLoader loader;
     loader.Load(sItemStorage);
@@ -2006,13 +2006,13 @@ void ObjectMgr::LoadItemPrototypes()
             const_cast<ItemPrototype*>(proto)->Sheath = SHEATHETYPE_NONE;
         }
 
-        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty)))
+        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty,ClusterIgnore))
         {
             sLog.outErrorDb("Item (Entry: %u) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty (%u)",i,proto->RandomProperty);
             const_cast<ItemPrototype*>(proto)->RandomProperty = 0;
         }
 
-        if(proto->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(proto->RandomSuffix)))
+        if(proto->RandomSuffix && !sItemRandomSuffixStore.LookupEntry(GetItemEnchantMod(proto->RandomSuffix,ClusterIgnore)))
         {
             sLog.outErrorDb("Item (Entry: %u) has wrong RandomSuffix (%u)",i,proto->RandomSuffix);
             const_cast<ItemPrototype*>(proto)->RandomSuffix = 0;

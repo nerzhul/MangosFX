@@ -654,6 +654,14 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Miscellaneous"
+			>
+			<File
+				RelativePath="..\..\src\LootCluster\CliCommand.cpp"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\LootCluster\Cluster.cpp"
 			>

@@ -20,12 +20,17 @@ class ClusterLoot : public ACE_Based::Runnable
 		void run();
 		void SetInitialSettings();
 		static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
-		void Wait();
+		static void Wait();
 
 	private:
+		static bool MustStop() { return m_stopEvent; }
+		static void LoadConfigSettings();
+		void DetectDBCLang();
+
+		LocaleConstant m_defaultDbcLocale;                     // from config for one from loaded DBC locales
+        uint32 m_availableDbcLocaleMask;                       // by loaded DBC
 		static volatile bool m_stopEvent;
 		static uint8 m_ExitCode;
-		bool MustStop() { return m_stopEvent; }
 };
 #define sClusterLoot MaNGOS::Singleton<ClusterLoot>::Instance()
 #endif
