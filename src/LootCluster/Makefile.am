@@ -34,6 +34,7 @@ mangosFX_LootCluster_LDADD = \
 	../game/libmangosgame.a \
 	../shared/Database/libmangosdatabase.a \
 	../shared/Config/libmangosconfig.a \
+	../shared/Auth/libmangosauth.a \
 	../shared/libmangosshared.a \
 	../framework/libmangosframework.a 
 
