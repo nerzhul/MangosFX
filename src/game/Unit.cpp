@@ -6126,7 +6126,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     if (!procSpell)
                         return false;
 
-                    Aura* healingAura = pVictim->GetAura(procSpell->Id,0);
+                    // avoid double triggering from 2 auras
+					if (triggeredByAura->GetEffIndex() != EFFECT_INDEX_1)
+						return false;
+					
+					// Renew
+					Aura* healingAura = pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_PRIEST, UI64LIT(0x40), 0, GetGUID());
                     if (!healingAura)
                         return false;
 
@@ -7407,7 +7412,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
             // Necrosis
             if (dummySpell->SpellIconID == 2709)
             {
-				if (!(procFlag & PROC_FLAG_SUCCESSFUL_MELEE_HIT) && procSpell->Id != 56815)
+				if (procSpell && procSpell->Id != 56815)
 					return false;
 
                 basepoints0 = triggerAmount * damage / 100;
