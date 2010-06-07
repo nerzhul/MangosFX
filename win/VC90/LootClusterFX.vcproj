@@ -642,6 +642,26 @@
 			Name="Objects"
 			>
 		</Filter>
+		<Filter
+			Name="ClusterLoot"
+			>
+			<File
+				RelativePath="..\..\src\LootCluster\ClusterLoot.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\LootCluster\ClusterLoot.h"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath="..\..\src\LootCluster\Cluster.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\LootCluster\Cluster.h"
+			>
+		</File>
 		<File
 			RelativePath="..\..\src\LootCluster\icon1.ico"
 			>

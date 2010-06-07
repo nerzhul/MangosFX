@@ -2,7 +2,7 @@
 #include "Database/DatabaseEnv.h"
 #include "Config/ConfigEnv.h"
 #include "Log.h"
-#include "Master.h"
+#include "Cluster.h"
 #include "SystemConfig.h"
 #include "revision.h"
 #include "revision_nr.h"
@@ -143,7 +143,7 @@ extern int main(int argc, char **argv)
     /// \todo Why do we need this 'Master'? Can't all of this be in the Main as for Realmd?
     
 	
-	 //return sMaster.Run(); // TODO
+	 return sCluster.Run(); // TODO
 
     // at sMaster return function exist with codes
     // 0 - normal shutdown
