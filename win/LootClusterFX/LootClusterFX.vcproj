@@ -182,34 +182,14 @@
 		<Filter
 			Name="Loots"
 			>
-			<File
-				RelativePath="..\..\src\LootCluster\ItemEnchantmentMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\LootCluster\ItemEnchantmentMgr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\LootCluster\LootMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\LootCluster\LootMgr.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Defines"
 			>
-			<File
-				RelativePath="..\..\src\LootCluster\SharedDefines.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\LootCluster\World.h"
-				>
-			</File>
+		</Filter>
+		<Filter
+			Name="Objects"
+			>
 		</Filter>
 	</Files>
 	<Globals>
