@@ -92,7 +92,7 @@ void GameEventMgr::StopEvent( uint16 event_id, bool overwrite )
     }
 }
 
-void GameEventMgr::LoadFromDB()
+void GameEventMgr::LoadFromDB(bool ClusterIgnore)
 {
     {
         QueryResult *result = WorldDatabase.Query("SELECT MAX(entry) FROM game_event");
@@ -310,7 +310,8 @@ void GameEventMgr::LoadFromDB()
             {
                 if(!sObjectMgr.GetEquipmentInfo(newModelEquipSet.equipment_id))
                 {
-                    sLog.outErrorDb("Table `game_event_model_equip` have creature (Guid: %u) with equipment_id %u not found in table `creature_equip_template`, set to no equipment.", guid, newModelEquipSet.equipment_id);
+					if(!ClusterIgnore)
+						sLog.outErrorDb("Table `game_event_model_equip` have creature (Guid: %u) with equipment_id %u not found in table `creature_equip_template`, set to no equipment.", guid, newModelEquipSet.equipment_id);
                     continue;
                 }
             }

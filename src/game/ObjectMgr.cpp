@@ -3304,7 +3304,7 @@ void ObjectMgr::LoadGroups()
     sLog.outString( ">> Loaded %u group members total", count );
 }
 
-void ObjectMgr::LoadQuests()
+void ObjectMgr::LoadQuests(bool ClusterIgnore)
 {
     // For reload case
     for(QuestMap::const_iterator itr=mQuestTemplates.begin(); itr != mQuestTemplates.end(); ++itr)

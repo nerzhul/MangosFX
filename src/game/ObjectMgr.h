@@ -574,7 +574,7 @@ class ObjectMgr
         void LoadGuilds();
         void LoadArenaTeams();
         void LoadGroups();
-        void LoadQuests();
+        void LoadQuests(bool ClusterIgnore = false);
         void LoadQuestRelations()
         {
             LoadGameobjectQuestRelations();

@@ -76,14 +76,14 @@ void ClusterLoot::SetInitialSettings()
     sObjectMgr.LoadGameobjectInfo(true);
 
 	sLog.outString( "Loading Quests..." );
-    sObjectMgr.LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
+    sObjectMgr.LoadQuests(true);                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
 
 	sLog.outString( "Loading Objects Pooling Data...");
     sPoolMgr.LoadFromDB(true);
 
 	sLog.outString( "Loading Game Event Data...");
     sLog.outString();
-    sGameEventMgr.LoadFromDB();
+    sGameEventMgr.LoadFromDB(true);
     sLog.outString( ">>> Game Event Data loaded" );
     sLog.outString();
 
@@ -93,10 +93,10 @@ void ClusterLoot::SetInitialSettings()
     sLog.outString( ">>> Loot Tables loaded" );
     sLog.outString();
 
-	sLog.outString( "WORLD: ClusterLoot initialized" );
+	sLog.outString( "CLUSTER: ClusterLoot initialized" );
 
 	uint32 uStartInterval = getMSTimeDiff(uStartTime, getMSTime());
-	sLog.outError( "CLUSTER STARTUP TIME: %i minutes %i seconds", uStartInterval / 60000, (uStartInterval % 60000) / 1000 );
+	sLog.outBasic( "CLUSTER STARTUP TIME: %i minutes %i seconds", uStartInterval / 60000, (uStartInterval % 60000) / 1000 );
 }
 
 void ClusterLoot::DetectDBCLang()
