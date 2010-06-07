@@ -126,6 +126,8 @@ int Cluster::Run()
         delete freeze_thread;
     }*/
 
+	sClusterLoot.Wait();
+
     ///- Remove signal handling before leaving
     _UnhookSignals();
 

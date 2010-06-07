@@ -659,9 +659,6 @@ class ObjectMgr
         void LoadVendors();
         void LoadTrainerSpell();
 
-		void LoadVehicleData();
-        void LoadVehicleSeatData();
-
         std::string GeneratePetName(uint32 entry);
         uint32 GetBaseXP(uint32 level) const;
         uint32 GetXPForLevel(uint32 level) const;

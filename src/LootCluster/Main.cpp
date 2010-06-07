@@ -125,12 +125,13 @@ extern int main(int argc, char **argv)
 
 	    sLog.outString( "%s [world-daemon]", _FULLVERSION(REVISION_DATE,REVISION_TIME,REVISION_NR,REVISION_ID) );
     sLog.outString( "<Ctrl-C> to stop.\n\n" );
-
-	sLog.outTitle( "    ////// ////// //////   ////// ////// /////// ///////" );
-	sLog.outTitle( "   //     //     //       //     //       //    //   // " );
-	sLog.outTitle( "  ////   ////// //////   //     //////   //    //////   " );
-	sLog.outTitle( " //         //     //   //         //   //    //   //   " );
-	sLog.outTitle( "//     ////// //////   ////// //////   //    //    //   " );
+	sLog.outTitle( "-----------------------------------------------------------------------------" );
+	sLog.outTitle( "    ////// ////// //////   ////// //     //  // /////// ////// ////// ////// " );
+	sLog.outTitle( "   //     //     //       //     //     //  // //        //   //     //   // " );
+	sLog.outTitle( "  ////   ////// //////   //     //     //  // //////    //   ////   //////   " );
+	sLog.outTitle( " //         //     //   //     //     //  //     //    //   //     //   //   " );
+	sLog.outTitle( "//     ////// //////   ////// ////// ////// //////    //   ////// //   //    " );
+	sLog.outTitle( "-----------------------------------------------------------------------------" );
 	sLog.outTitle( "Frost Sapphire Studios Loot Cluster");
     sLog.outString("Using configuration file %s.", cfg_file);
 

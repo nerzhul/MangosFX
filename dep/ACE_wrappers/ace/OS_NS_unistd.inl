@@ -10,6 +10,8 @@
 #include "ace/Default_Constants.h"
 #include "ace/OS_Memory.h"
 #include "ace/Truncate.h"
+#pragma warning(disable:4244)
+#pragma warning(disable:4996)
 
 #if defined (ACE_HAS_CLOCK_GETTIME)
 # include "ace/os_include/os_time.h"
