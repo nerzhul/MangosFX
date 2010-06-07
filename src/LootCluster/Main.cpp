@@ -126,8 +126,12 @@ extern int main(int argc, char **argv)
 	    sLog.outString( "%s [world-daemon]", _FULLVERSION(REVISION_DATE,REVISION_TIME,REVISION_NR,REVISION_ID) );
     sLog.outString( "<Ctrl-C> to stop.\n\n" );
 
-    sLog.outTitle( "Frost Sapphire Studios Loot Cluster");
-
+	sLog.outTitle( "    ////// ////// //////   ////// ////// /////// ///////" );
+	sLog.outTitle( "   //     //     //       //     //       //    //   // " );
+	sLog.outTitle( "  ////   ////// //////   //     //////   //    //////   " );
+	sLog.outTitle( " //         //     //   //         //   //    //   //   " );
+	sLog.outTitle( "//     ////// //////   ////// //////   //    //    //   " );
+	sLog.outTitle( "Frost Sapphire Studios Loot Cluster");
     sLog.outString("Using configuration file %s.", cfg_file);
 
     sLog.outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
@@ -148,5 +152,5 @@ extern int main(int argc, char **argv)
     // at sMaster return function exist with codes
     // 0 - normal shutdown
     // 1 - shutdown at error
-    // 2 - restart command used, this code can be used by restarter for restart mangosd
+    // 2 - restart command used, this code can be used by restarter for restart LootClusterFX
 }

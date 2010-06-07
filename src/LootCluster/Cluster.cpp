@@ -2,8 +2,10 @@
 #include "ClusterLoot.h"
 #include "Master.h"
 #include "Log.h"
+#include "Timer.h"
 #include "revision_sql.h"
 #include "Config/ConfigEnv.h"
+#include "Policies/SingletonImp.h"
 #include "Database/DatabaseEnv.h"
 #include <ace/OS_NS_signal.h>
 #include <ace/TP_Reactor.h>
@@ -37,28 +39,16 @@ int Cluster::Run()
     }
 
     ///- Initialize the World
-    sWorld.SetInitialWorldSettings();
+    sClusterLoot.SetInitialSettings();
 
     ///- Catch termination signals
     _HookSignals();
 
     ///- Launch WorldRunnable thread
-    ACE_Based::Thread world_thread(new WorldRunnable);
-    world_thread.setPriority(ACE_Based::Highest);
+    ACE_Based::Thread cluster_thread(new ClusterLoot);
+    cluster_thread.setPriority(ACE_Based::Highest);
 
-    ACE_Based::Thread* cliThread = NULL;
-
-	#ifdef WIN32
-		if (sConfig.GetBoolDefault("Console.Enable", true) && (m_ServiceStatus == -1)/* need disable console in service mode*/)
-	#else
-		if (sConfig.GetBoolDefault("Console.Enable", true))
-	#endif
-    {
-        ///- Launch CliRunnable thread
-        cliThread = new ACE_Based::Thread(new CliRunnable);
-    }
-
-		///- Handle affinity for multiple processors and process priority on Windows
+	///- Handle affinity for multiple processors and process priority on Windows
     #ifdef WIN32
     {
         HANDLE hProcess = GetCurrentProcess();
@@ -75,7 +65,7 @@ int Cluster::Run()
 
                 if(!curAff )
                 {
-                    sLog.outError("Processors marked in UseProcessors bitmask (hex) %x not accessible for mangosd. Accessible processors bitmask (hex): %x",Aff,appAff);
+                    sLog.outError("Processors marked in UseProcessors bitmask (hex) %x not accessible for LootClusterFX. Accessible processors bitmask (hex): %x",Aff,appAff);
                 }
                 else
                 {
@@ -94,41 +84,29 @@ int Cluster::Run()
         if(Prio)
         {
             if(SetPriorityClass(hProcess,HIGH_PRIORITY_CLASS))
-                sLog.outString("mangosd process priority class set to HIGH");
+                sLog.outString("LootClusterFX process priority class set to HIGH");
             else
-                sLog.outError("ERROR: Can't set mangosd process priority class.");
+                sLog.outError("ERROR: Can't set LootClusterFX process priority class.");
             sLog.outString();
         }
     }
     #endif
 
-    ///- Start soap serving thread
-    ACE_Based::Thread* soap_thread = NULL;
-
-    if(sConfig.GetBoolDefault("SOAP.Enabled", false))
-    {
-        MaNGOSsoapRunnable *runnable = new MaNGOSsoapRunnable();
-
-        runnable->setListenArguments(sConfig.GetStringDefault("SOAP.IP", "127.0.0.1"), sConfig.GetIntDefault("SOAP.Port", 7878));
-        soap_thread = new ACE_Based::Thread(runnable);
-    }
-
-
     uint32 realCurrTime, realPrevTime;
     realCurrTime = realPrevTime = getMSTime();
 
     ///- Start up freeze catcher thread
-    ACE_Based::Thread* freeze_thread = NULL;
+    /*ACE_Based::Thread* freeze_thread = NULL;
     if(uint32 freeze_delay = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
     {
         FreezeDetectorRunnable *fdr = new FreezeDetectorRunnable();
         fdr->SetDelayTime(freeze_delay*1000);
         freeze_thread = new ACE_Based::Thread(fdr);
         freeze_thread->setPriority(ACE_Based::Highest);
-    }
+    }*/
 
     ///- Launch the world listener socket
-    uint16 wsport = sWorld.getConfig (CONFIG_PORT_WORLD);
+    /*uint16 wsport = sWorld.getConfig (CONFIG_PORT_WORLD);
     std::string bind_ip = sConfig.GetStringDefault ("BindIP", "0.0.0.0");
 
     if (sWorldSocketMgr->StartNetwork (wsport, bind_ip) == -1)
@@ -139,29 +117,21 @@ int Cluster::Run()
         // go down and shutdown the server
     }
 
-    sWorldSocketMgr->Wait ();
+    sWorldSocketMgr->Wait ();*/
 
     ///- Stop freeze protection before shutdown tasks
-    if (freeze_thread)
+    /*if (freeze_thread)
     {
         freeze_thread->destroy();
         delete freeze_thread;
-    }
-
-    ///- Stop soap thread
-    if(soap_thread)
-    {
-        soap_thread->wait();
-        soap_thread->destroy();
-        delete soap_thread;
-    }
+    }*/
 
     ///- Remove signal handling before leaving
     _UnhookSignals();
 
     // when the main thread closes the singletons get unloaded
     // since worldrunnable uses them, it will crash if unloaded after master
-    world_thread.wait();
+    cluster_thread.wait();
 
     ///- Wait for DB delay threads to end
     CharacterDatabase.HaltDelayThread();
@@ -170,58 +140,8 @@ int Cluster::Run()
 
     sLog.outString( "Halting process..." );
 
-    if (cliThread)
-    {
-        #ifdef WIN32
-
-        // this only way to terminate CLI thread exist at Win32 (alt. way exist only in Windows Vista API)
-        //_exit(1);
-        // send keyboard input to safely unblock the CLI thread
-        INPUT_RECORD b[5];
-        HANDLE hStdIn = GetStdHandle(STD_INPUT_HANDLE);
-        b[0].EventType = KEY_EVENT;
-        b[0].Event.KeyEvent.bKeyDown = TRUE;
-        b[0].Event.KeyEvent.uChar.AsciiChar = 'X';
-        b[0].Event.KeyEvent.wVirtualKeyCode = 'X';
-        b[0].Event.KeyEvent.wRepeatCount = 1;
-
-        b[1].EventType = KEY_EVENT;
-        b[1].Event.KeyEvent.bKeyDown = FALSE;
-        b[1].Event.KeyEvent.uChar.AsciiChar = 'X';
-        b[1].Event.KeyEvent.wVirtualKeyCode = 'X';
-        b[1].Event.KeyEvent.wRepeatCount = 1;
-
-        b[2].EventType = KEY_EVENT;
-        b[2].Event.KeyEvent.bKeyDown = TRUE;
-        b[2].Event.KeyEvent.dwControlKeyState = 0;
-        b[2].Event.KeyEvent.uChar.AsciiChar = '\r';
-        b[2].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
-        b[2].Event.KeyEvent.wRepeatCount = 1;
-        b[2].Event.KeyEvent.wVirtualScanCode = 0x1c;
-
-        b[3].EventType = KEY_EVENT;
-        b[3].Event.KeyEvent.bKeyDown = FALSE;
-        b[3].Event.KeyEvent.dwControlKeyState = 0;
-        b[3].Event.KeyEvent.uChar.AsciiChar = '\r';
-        b[3].Event.KeyEvent.wVirtualKeyCode = VK_RETURN;
-        b[3].Event.KeyEvent.wVirtualScanCode = 0x1c;
-        b[3].Event.KeyEvent.wRepeatCount = 1;
-        DWORD numb;
-        BOOL ret = WriteConsoleInput(hStdIn, b, 4, &numb);
-
-        cliThread->wait();
-
-        #else
-
-        cliThread->destroy();
-
-        #endif
-
-        delete cliThread;
-    }
-
     ///- Exit the process with specified return value
-    return World::GetExitCode();
+    return 0;
 }
 
 /// Initialize connection to the databases
@@ -303,37 +223,6 @@ bool Cluster::_StartDB()
         return false;
     }
 
-    if(!loginDatabase.CheckRequiredField("realmd_db_version",REVISION_DB_REALMD))
-    {
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        CharacterDatabase.HaltDelayThread();
-        loginDatabase.HaltDelayThread();
-        return false;
-    }
-
-    ///- Get the realm Id from the configuration file
-    realmID = sConfig.GetIntDefault("RealmID", 0);
-    if(!realmID)
-    {
-        sLog.outError("Realm ID not defined in configuration file");
-
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        CharacterDatabase.HaltDelayThread();
-        loginDatabase.HaltDelayThread();
-        return false;
-    }
-
-    sLog.outString("Realm running as realm ID %d", realmID);
-
-    ///- Clean the database before starting
-    clearOnlineAccounts();
-
-    sWorld.LoadDBVersion();
-
-    sLog.outString("Using World DB: %s", sWorld.GetDBVersion());
-    sLog.outString("Using creature EventAI: %s", sWorld.GetCreatureEventAIVersion());
     return true;
 }
 
@@ -343,13 +232,13 @@ void Cluster::_OnSignal(int s)
     switch (s)
     {
         case SIGINT:
-            World::StopNow(RESTART_EXIT_CODE);
+            //World::StopNow(RESTART_EXIT_CODE);
             break;
         case SIGTERM:
         #ifdef _WIN32
         case SIGBREAK:
         #endif
-            World::StopNow(SHUTDOWN_EXIT_CODE);
+            //World::StopNow(SHUTDOWN_EXIT_CODE);
             break;
     }
 

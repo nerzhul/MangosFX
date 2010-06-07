@@ -14,13 +14,10 @@ class Cluster
 
     private:
         bool _StartDB();
-
         void _HookSignals();
         void _UnhookSignals();
         static void _OnSignal(int s);
 };
 
 #define sCluster MaNGOS::Singleton<Cluster>::Instance()
-
-
 #endif
