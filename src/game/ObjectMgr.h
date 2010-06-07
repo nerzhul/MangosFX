@@ -603,7 +603,7 @@ class ObjectMgr
         bool LoadMangosStrings() { return LoadMangosStrings(WorldDatabase,"mangos_string",MIN_MANGOS_STRING_ID,MAX_MANGOS_STRING_ID); }
         void LoadDbScriptStrings();
         void LoadCreatureLocales();
-        void LoadCreatureTemplates();
+        void LoadCreatureTemplates(bool ClusterIgnore = false);
         void LoadCreatures();
         void LoadCreatureRespawnTimes();
         void LoadCreatureAddons();

@@ -468,7 +468,7 @@ struct SQLCreatureLoader : public SQLStorageLoaderBase<SQLCreatureLoader>
     }
 };
 
-void ObjectMgr::LoadCreatureTemplates()
+void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
 {
     SQLCreatureLoader loader;
     loader.Load(sCreatureStorage);
@@ -742,7 +742,7 @@ void ObjectMgr::LoadCreatureTemplates()
             const_cast<CreatureInfo*>(cInfo)->MovementType = IDLE_MOTION_TYPE;
         }
 
-        if(cInfo->equipmentId > 0)                          // 0 no equipment
+        if(cInfo->equipmentId > 0 && !ClusterIgnore)                          // 0 no equipment
         {
             if(!GetEquipmentInfo(cInfo->equipmentId))
             {
@@ -2006,7 +2006,7 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
             const_cast<ItemPrototype*>(proto)->Sheath = SHEATHETYPE_NONE;
         }
 
-        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty,ClusterIgnore))
+        if(proto->RandomProperty && !sItemRandomPropertiesStore.LookupEntry(GetItemEnchantMod(proto->RandomProperty,ClusterIgnore)))
         {
             sLog.outErrorDb("Item (Entry: %u) has unknown (wrong or not listed in `item_enchantment_template`) RandomProperty (%u)",i,proto->RandomProperty);
             const_cast<ItemPrototype*>(proto)->RandomProperty = 0;

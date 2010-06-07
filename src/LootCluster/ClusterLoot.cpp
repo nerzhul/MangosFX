@@ -67,11 +67,8 @@ void ClusterLoot::SetInitialSettings()
 	sLog.outString( "Loading Items..." );                   // must be after LoadRandomEnchantmentsTable and LoadPageTexts
     sObjectMgr.LoadItemPrototypes(true);
 
-	sLog.outString( "Loading Creature Model Based Info Data..." );
-    sObjectMgr.LoadCreatureModelInfo();
-
 	sLog.outString( "Loading Creature templates..." );
-    sObjectMgr.LoadCreatureTemplates();
+    sObjectMgr.LoadCreatureTemplates(true);
 
 	sLog.outString( "Loading Gameobject Data..." );
     sObjectMgr.LoadGameobjects();
