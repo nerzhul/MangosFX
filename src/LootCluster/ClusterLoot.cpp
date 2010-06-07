@@ -4,6 +4,7 @@
 #include <Database/DatabaseEnv.h>
 #include <Policies/SingletonImp.h>
 #include <ObjectMgr.h>
+#include <GameEventMgr.h>
 
 INSTANTIATE_SINGLETON_1( ClusterLoot );
 volatile bool ClusterLoot::m_stopEvent = false;
@@ -75,6 +76,12 @@ void ClusterLoot::SetInitialSettings()
 
 	sLog.outString( "Loading Quests..." );
     sObjectMgr.LoadQuests();                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
+
+	sLog.outString( "Loading Game Event Data...");
+    sLog.outString();
+    sGameEventMgr.LoadFromDB();
+    sLog.outString( ">>> Game Event Data loaded" );
+    sLog.outString();
 
 	sLog.outString( "Loading Loot Tables..." );
     sLog.outString();
