@@ -496,8 +496,9 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
             CreatureInfo const* difficultyInfo = GetCreatureTemplate(cInfo->DifficultyEntry[diff]);
             if (!difficultyInfo)
             {
-                sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u not exist.",
-                    i, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff]);
+				if(!ClusterIgnore)
+					sLog.outErrorDb("Creature (Entry: %u) have `difficulty_entry_%u`=%u but creature entry %u not exist.",
+						i, diff + 1, cInfo->DifficultyEntry[diff], cInfo->DifficultyEntry[diff]);
                 continue;
             }
 
@@ -661,7 +662,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
                 sLog.outErrorDb("Creature (Entry: %u) are using modelid_H2 (%u), but creature_model_info are missing for this model.", cInfo->Entry, cInfo->DisplayID_H[1]);
         }
 
-        if (!displayScaleEntry)
+        if (!displayScaleEntry && !ClusterIgnore)
             sLog.outErrorDb("Creature (Entry: %u) has nonexistent modelid in modelid_A/modelid_A2/modelid_H/modelid_A2", cInfo->Entry);
 
         for(int k = 0; k < MAX_KILL_CREDIT; ++k)
@@ -714,7 +715,7 @@ void ObjectMgr::LoadCreatureTemplates(bool ClusterIgnore)
             const_cast<CreatureInfo*>(cInfo)->family = 0;
         }
 
-        if(cInfo->InhabitType <= 0 || cInfo->InhabitType > INHABIT_ANYWHERE)
+        if((cInfo->InhabitType <= 0 || cInfo->InhabitType > INHABIT_ANYWHERE) && !ClusterIgnore)
         {
             sLog.outErrorDb("Creature (Entry: %u) has wrong value (%u) in `InhabitType`, creature will not correctly walk/swim/fly",cInfo->Entry,cInfo->InhabitType);
             const_cast<CreatureInfo*>(cInfo)->InhabitType = INHABIT_ANYWHERE;
@@ -6000,7 +6001,7 @@ inline void CheckGOConsumable(GameObjectInfo const* goInfo,uint32 dataN,uint32 N
         goInfo->id,goInfo->type,N,dataN);
 }
 
-void ObjectMgr::LoadGameobjectInfo()
+void ObjectMgr::LoadGameobjectInfo(bool ClusterIgnore)
 {
     SQLGameObjectLoader loader;
     loader.Load(sGOStorage);
@@ -6081,7 +6082,7 @@ void ObjectMgr::LoadGameobjectInfo()
 
                 CheckGOConsumable(goInfo,goInfo->goober.consumable,3);
 
-                if (goInfo->goober.pageId)                  // pageId
+                if (goInfo->goober.pageId && !ClusterIgnore)                  // pageId
                 {
                     if (!sPageTextStore.LookupEntry<PageText>(goInfo->goober.pageId))
                         sLog.outErrorDb("Gameobject (Entry: %u GoType: %u) have data7=%u but PageText (Entry %u) not exist.",

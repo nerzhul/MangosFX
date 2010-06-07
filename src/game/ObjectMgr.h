@@ -428,7 +428,7 @@ class ObjectMgr
 
         static GameObjectInfo const *GetGameObjectInfo(uint32 id) { return sGOStorage.LookupEntry<GameObjectInfo>(id); }
 
-        void LoadGameobjectInfo();
+        void LoadGameobjectInfo(bool ClusterIgnore = false);
         void AddGameobjectInfo(GameObjectInfo *goinfo);
 
         Group * GetGroupByLeader(const uint64 &guid) const;
