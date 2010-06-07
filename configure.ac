@@ -288,6 +288,7 @@ AC_CONFIG_FILES([
    src/game/Makefile
    src/realmd/Makefile
    src/mangosd/Makefile
+   src/LootCluster/Makefile
    src/bindings/Makefile
    src/bindings/ScriptDev2/Makefile
 ])
