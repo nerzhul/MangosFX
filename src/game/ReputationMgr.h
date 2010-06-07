@@ -134,6 +134,7 @@ class ReputationMgr
         void SetInactive(FactionState* faction, bool inactive);
         void SendVisible(FactionState const* faction) const;
         void UpdateRankCounters( ReputationRank old_rank, ReputationRank new_rank );
+		typedef MaNGOS::ClassLevelLockable<ReputationMgr, ACE_Thread_Mutex>::Lock Guard;
     private:
         Player* m_player;
         FactionStateList m_factions;

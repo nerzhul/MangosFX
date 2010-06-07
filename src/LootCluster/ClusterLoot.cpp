@@ -1,7 +1,8 @@
 #include "ClusterLoot.h"
-#include "Timer.h"
-#include "Database/DatabaseEnv.h"
-#include "Policies/SingletonImp.h"
+#include <Timer.h>
+#include <Database/DatabaseEnv.h>
+#include <Policies/SingletonImp.h>
+#include <ObjectMgr.h>
 
 INSTANTIATE_SINGLETON_1( ClusterLoot );
 volatile bool ClusterLoot::m_stopEvent = false;

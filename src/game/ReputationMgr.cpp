@@ -447,6 +447,7 @@ void ReputationMgr::LoadFromDB(QueryResult *result)
 
 void ReputationMgr::SaveToDB()
 {
+	Guard guard(*this);
     for(FactionStateList::iterator itr = m_factions.begin(); itr != m_factions.end(); ++itr)
     {
         if (itr->second.Changed)
