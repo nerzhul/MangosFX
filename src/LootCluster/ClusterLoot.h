@@ -19,14 +19,14 @@ class ClusterLoot : public ACE_Based::Runnable
 		~ClusterLoot();
 		void run();
 		void SetInitialSettings();
-		static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
 		static void Wait();
+		static void StopNOW() { m_stopEvent = true; }
 
 	private:
 		static bool MustStop() { return m_stopEvent; }
+		
 		static void LoadConfigSettings();
 		void DetectDBCLang();
-
 		LocaleConstant m_defaultDbcLocale;                     // from config for one from loaded DBC locales
         uint32 m_availableDbcLocaleMask;                       // by loaded DBC
 		static volatile bool m_stopEvent;

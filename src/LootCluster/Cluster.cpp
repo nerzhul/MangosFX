@@ -233,13 +233,13 @@ void Cluster::_OnSignal(int s)
     switch (s)
     {
         case SIGINT:
-            //World::StopNow(RESTART_EXIT_CODE);
+			ClusterLoot::StopNOW();
             break;
         case SIGTERM:
         #ifdef _WIN32
         case SIGBREAK:
         #endif
-            //World::StopNow(SHUTDOWN_EXIT_CODE);
+            ClusterLoot::StopNOW();
             break;
     }
 
