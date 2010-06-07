@@ -53,6 +53,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		Flame_Timer = 12000;
 		Storm_Timer = 27000;
 		StormTarget_Timer = 15000;
@@ -88,9 +89,9 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 		for(uint8 i=0;i<=10;i++)
 		{
-			float x_add = i*2*dist/(flameTarget->GetPositionX() - me->GetPositionX());
-			float y_add = i*2*dist/(flameTarget->GetPositionY() - me->GetPositionY());
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + x_add, me->GetPositionY() + y_add, me->GetPositionZ() + 1.0f,true);
+			float x_add = me->GetPositionX() + (i*2) * (flameTarget->GetPositionY() - me->GetPositionY()) / (flameTarget->GetPositionX() - me->GetPositionX());
+			float y_add = me->GetPositionY() + i*2;
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, y_add, me->GetPositionZ() + 1.0f,true);
 		}
 	}
 	
