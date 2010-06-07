@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="mangosd"
-	ProjectGUID="{A3A04E47-43A2-4C08-90B3-029CEF558594}"
+	Name="LootClusterFX"
+	ProjectGUID="{5C2CCE09-5A68-4A1F-9A9F-88711B7B6609}"
 	RootNamespace="mangosd"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
@@ -122,8 +122,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\mangosd__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\mangosd__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -158,10 +158,10 @@
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="true"
-				PrecompiledHeaderFile=".\mangosd__$(PlatformName)_$(ConfigurationName)\mangosd.pch"
-				AssemblerListingLocation=".\mangosd__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\mangosd__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\mangosd__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\mangosd.pch"
+				AssemblerListingLocation=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
+				ObjectFile=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -183,14 +183,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrt.lib"
-				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\mangosd.exe"
+				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\mangosd.pdb"
+				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.pdb"
 				GenerateMapFile="true"
-				MapFileName="..\..\bin\$(PlatformName)_$(ConfigurationName)\mangosd.map"
+				MapFileName="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.map"
 				SubSystem="1"
 				StackReserveSize="4194304"
 				LinkTimeCodeGeneration="0"
@@ -219,7 +219,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy ..\..\dep\lib\$(PlatformName)_$(ConfigurationName)\*.dll ..\..\bin\$(PlatformName)_$(ConfigurationName)"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -635,123 +635,27 @@
 	</References>
 	<Files>
 		<Filter
-			Name="doc"
+			Name="CORBA"
 			>
-			<File
-				RelativePath="..\..\AUTHORS"
-				>
-			</File>
-			<File
-				RelativePath="..\..\ChangeLog"
-				>
-			</File>
-			<File
-				RelativePath="..\..\COPYING"
-				>
-			</File>
-			<File
-				RelativePath="..\..\INSTALL"
-				>
-			</File>
-			<File
-				RelativePath="..\..\NEWS"
-				>
-			</File>
-			<File
-				RelativePath="..\..\README"
-				>
-			</File>
-			<File
-				RelativePath="..\..\THANKS"
-				>
-			</File>
-			<File
-				RelativePath="..\..\WARNING"
-				>
-			</File>
+		</Filter>
+		<Filter
+			Name="Objects"
+			>
 		</Filter>
 		<File
-			RelativePath="..\..\src\mangosd\CliRunnable.cpp"
+			RelativePath="..\..\src\LootCluster\icon1.ico"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\mangosd\CliRunnable.h"
+			RelativePath="..\..\src\LootCluster\LootClusterFX.rc"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\mangosd\Main.cpp"
+			RelativePath="..\..\src\LootCluster\Main.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\mangosd\mangosd.ico"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\mangosd.rc"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\MaNGOSsoap.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\MaNGOSsoap.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\Master.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\Master.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\RASocket.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\RASocket.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\soapC.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\soapH.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\soapServer.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\soapStub.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\dep\src\gsoap\stdsoap2.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\dep\include\gsoap\stdsoap2.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\WheatyExceptionReport.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\shared\WheatyExceptionReport.h"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\WorldRunnable.cpp"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\mangosd\WorldRunnable.h"
+			RelativePath=".\resource.h"
 			>
 		</File>
 	</Files>
