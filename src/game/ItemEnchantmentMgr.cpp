@@ -92,9 +92,10 @@ uint32 GetItemEnchantMod(uint32 entry, bool IgnoreErrors)
 
     EnchantmentStore::const_iterator tab = RandomItemEnch.find(entry);
 
-    if (tab == RandomItemEnch.end() && !IgnoreErrors)
+    if (tab == RandomItemEnch.end())
     {
-        sLog.outErrorDb("Item RandomProperty / RandomSuffix id #%u used in `item_template` but it doesn't have records in `item_enchantment_template` table.",entry);
+		if(!IgnoreErrors)
+			sLog.outErrorDb("Item RandomProperty / RandomSuffix id #%u used in `item_template` but it doesn't have records in `item_enchantment_template` table.",entry);
         return 0;
     }
 
