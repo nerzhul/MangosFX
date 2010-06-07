@@ -2888,9 +2888,10 @@ float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 
     // Spellmod from SPELLMOD_RESIST_MISS_CHANCE
     if(Player *modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spell->Id, SPELLMOD_RESIST_MISS_CHANCE, HitChance);
-
+	
 	if(GetTypeId() == TYPEID_UNIT && (((Creature*)this)->isWorldBoss() || ((Creature*)this)->isElite()) && getLevel() >= pVictim->getLevel())
 		HitChance = 100.0f;
+
 
     // Miss = 100 - hit
     float miss_chance= 100.0f - HitChance;
@@ -2910,7 +2911,6 @@ float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 
 		if(GetOwner() && GetOwner()->GetTypeId() == TYPEID_PLAYER)
 			miss_chance -= GetOwner()->m_modMeleeHitChance;
 	}
-
     // bonus from skills is 0.04%
     miss_chance -= skillDiff * 0.04f;
 
@@ -3137,8 +3137,8 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit *pVictim, SpellEntry const *spell)
     if (pVictim->HasInArc(M_PI,this))
     {
         int32 deflect_chance = pVictim->GetTotalAuraModifier(SPELL_AURA_DEFLECT_SPELLS)*100;
-        tmp+=deflect_chance;
-        if (rand < tmp)
+		rand = urand(0,10000);
+        if (rand < deflect_chance)
             return SPELL_MISS_DEFLECT;
     }
 

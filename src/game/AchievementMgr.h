@@ -240,6 +240,7 @@ class AchievementMgr
         void UpdateAchievementCriteria(AchievementCriteriaTypes type, uint32 miscvalue1=0, uint32 miscvalue2=0, Unit *unit=NULL, uint32 time=0);
         void CheckAllAchievementCriteria();
         void SendAllAchievementData();
+		bool IsCompletedAchievement(uint32 entry) { return IsCompletedAchievement(sAchievementStore.LookupEntry(entry)); }
         void SendRespondInspectAchievements(Player* player);
         Player* GetPlayer() { return m_player;}
 

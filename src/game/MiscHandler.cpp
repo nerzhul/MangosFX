@@ -839,9 +839,29 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
                 SendAreaTriggerMessage("%s", at->requiredFailedText.c_str());
             else if(missingLevel)
                 SendAreaTriggerMessage(GetMangosString(LANG_LEVEL_MINREQUIRED), missingLevel);
-                
             return;
         }
+
+		if(mapEntry->IsRaid() && mapEntry->MapID == 631)
+		{
+			switch(GetPlayer()->GetDifficulty(mapEntry->IsRaid()))
+			{
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+					if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4530))
+					{
+						SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 10 normal pour acceder a cette zone");
+						return;
+					}
+					break;
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4597))
+					{
+						SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 25 normal pour acceder a cette zone");
+						return;
+					}
+					break;
+			}
+		}
     }
 
     GetPlayer()->TeleportTo(at->target_mapId, at->target_X, at->target_Y, at->target_Z, at->target_Orientation, TELE_TO_NOT_LEAVE_TRANSPORT);

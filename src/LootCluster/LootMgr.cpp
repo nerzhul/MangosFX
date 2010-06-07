@@ -22,7 +22,7 @@
 #include "ProgressBar.h"
 #include "World.h"
 #include "Util.h"
-//#include "SharedDefines.h"
+#include "SharedDefines.h"
 //#include "SpellMgr.h"
 
 static Rates const qualityToRate[MAX_ITEM_QUALITY] = {
