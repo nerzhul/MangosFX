@@ -1569,7 +1569,7 @@ bool Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
     if(atLoginFlags & AT_LOGIN_RENAME)
         char_flags |= CHARACTER_FLAG_RENAME;
 
-	if(sWorld.IsLocked())
+	if(sWorld.IsLocked() || atLoginFlags & AT_LOGIN_BLOCK_PERSO)
 		char_flags |= CHARACTER_LOCKED_FOR_TRANSFER;
 
     if(sWorld.getConfig(CONFIG_DECLINED_NAMES_USED))

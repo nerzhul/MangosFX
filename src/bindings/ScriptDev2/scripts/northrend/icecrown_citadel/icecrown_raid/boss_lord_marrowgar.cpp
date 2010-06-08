@@ -3,27 +3,16 @@
 
 enum Spells
 {
-    SPELL_SABER_LASH     		= 69055, // ok
-    SPELL_COLDFLAME      		= 69146, // ok
+    SPELL_SABER_LASH     		= 69055,
+    SPELL_COLDFLAME      		= 69146,
     SPELL_BONE_SPIKE     		= 69057, 
     SPELL_BONE_SPIKE_IMPALE		= 69065, 
-    SPELL_BONE_STORM     		= 69076, // ok
+    SPELL_BONE_STORM     		= 69076,
     
     SPELL_BERSERK               = 47008,
     
     NPC_COLDFLAME        		= 36672,
     NPC_BONE_SPIKE              = 38711,
-};
-
-enum
-{
-	//common
-	
-	//yells
-	//summons
-	
-	//Abilities
-	SPELL_COLD_FLAME_0          = 69145,
 };
 
 struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
@@ -42,6 +31,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				break;
 		}
 		AddEventOnTank(SPELL_SABER_LASH,5000,5000);
+		AddMaxPrioEvent(SPELL_BONE_SPIKE,15000,60000);
 		AddEnrageTimer(TEN_MINS);
     }
 	
@@ -50,6 +40,8 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 	uint32 Flame_Timer;
 	uint32 Storm_Timer;
 	uint32 StormTarget_Timer;
+	uint32 enrage_Timer;
+	uint32 boneSpike_Timer;
 
     void Reset()
     {
@@ -59,18 +51,32 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		Storm_Timer = 27000;
 		StormTarget_Timer = 15000;
 		phase = 0;
+		enrage_Timer = TEN_MINS;
+		boneSpike_Timer = 18000;
     }
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
             pInstance->SetData(TYPE_MARROWGAR, IN_PROGRESS);
+
+		Yell(16941,"Le fléau va déferler sur ce monde, dans un torrent de mort, et de destruction !");
     }
+
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Say(16942,"Toujours plus d'os pour les offrandes");
+		else
+			Yell(16943,"Morfondez vous, dans la damnation !");
+	}
 
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
             pInstance->SetData(TYPE_MARROWGAR, DONE);
+
+		Yell(16944,"Je ne vois... que les ténèbres...");
     }
 
     void JustReachedHome()
@@ -79,6 +85,46 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
             pInstance->SetData(TYPE_MARROWGAR, FAIL);
     }
 
+	void SpawnBoneSpikes()
+	{
+		switch(urand(0,2))
+		{
+			case 0:
+				Yell(16947,"Liés, par les os !");
+				break;
+			case 1:
+				Yell(16948,"Ne vous sauvez pas !");
+				break;
+			case 2:
+				Yell(16949,"La seule issue est... la mort !");
+				break;
+		}
+		uint8 number = 1;
+		if(m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+			number = 3;
+
+		uint8 security = 0;
+		for(uint8 i=0;i<number;i++)
+		{
+			security++;
+			if(Unit* spTarget = GetRandomUnit())
+			{
+				if(spTarget->HasAura(SPELL_BONE_SPIKE_IMPALE) /* || spTarget == me->getVictim()*/)
+				{
+					i--;
+					if(security > 200)
+						break;
+					else
+						continue;
+				}
+				else
+				{
+					CallCreature(NPC_BONE_SPIKE,TEN_MINS,PREC_COORDS,NOTHING,spTarget->GetPositionX(),spTarget->GetPositionY(),spTarget->GetPositionZ(),true);
+					SetAuraStack(SPELL_BONE_SPIKE_IMPALE,1,spTarget,me,1);
+				}
+			}
+		}
+	}
 
 	void CallColdFlames()
 	{
@@ -91,20 +137,50 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		float dist = me->GetDistance2d(flameTarget);
 		float ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
 		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
+		uint8 MaxDist;
+		if(phase == 1)
+			MaxDist = 30;
+		else
+			MaxDist = 40;
+
 		if(dist < 5)
 		{
-			ecartX *= 8;
-			ecartY *= 8;
+			if(phase == 0)
+			{
+				ecartX *= 8;
+				ecartY *= 8;
+			}
+			else
+			{
+				ecartX *= 6;
+				ecartY *= 6;
+			}
 		}
 		else if(dist < 10)
 		{
-			ecartX *= 4;
-			ecartY *= 4;
+			if(phase == 0)
+			{
+				ecartX *= 4;
+				ecartY *= 4;
+			}
+			else
+			{
+				ecartX *= 3;
+				ecartY *= 3;
+			}
 		}
 		else if(dist < 20)
 		{
-			ecartX *= 2.0f;
-			ecartY *= 2.0f;
+			if(phase == 0)
+			{
+				ecartX *= 2.0f;
+				ecartY *= 2.0f;
+			}
+			else
+			{
+				ecartX *= 1.5f;
+				ecartY *= 1.5f;
+			}
 		}
 		else if(dist < 30)
 		{
@@ -112,14 +188,14 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			ecartY *= 1.3f;
 		}
 
-		for(uint8 i=0;i<=40;i++)
+		for(uint8 i=0;i<=MaxDist;i++)
 		{
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / 40, me->GetPositionY() + ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / MaxDist, me->GetPositionY() + ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
 			if(phase == 1)
 			{
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / 40, me->GetPositionY() + ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / 40, me->GetPositionY() - ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / 40, me->GetPositionY() - ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / MaxDist, me->GetPositionY() + ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / MaxDist, me->GetPositionY() - ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / MaxDist, me->GetPositionY() - ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
 			}
 		}
 	}
@@ -128,6 +204,30 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(enrage_Timer <= diff)
+		{
+			Yell(16945,"La rage du maître coule dans mes veines !");
+			enrage_Timer = DAY*HOUR;
+		}
+		else
+			enrage_Timer -= diff;
+
+		if(boneSpike_Timer <= diff)
+		{
+			SpawnBoneSpikes();
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					boneSpike_Timer = 45000;
+					break;
+				default:
+					boneSpike_Timer = 60000;
+			}
+		}
+		else 
+			boneSpike_Timer -= diff;
         
         if(Flame_Timer <= diff)
 		{
@@ -144,6 +244,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				phase = 1;
 				me->CastStop();
 				DoCastMe(SPELL_BONE_STORM);
+				Yell(16946,"Tempête, dans un verre d'os !");
 				BossEmote(0,"Gargamoelle commence a incanter une tempete d'os");
 				Storm_Timer = 20000;
 				StormTarget_Timer = 5000;
@@ -219,6 +320,7 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
     bonespike_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		me->setFaction(14);
     }
 	
     void Reset()
@@ -232,6 +334,35 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
     {
 		UpdateEvent(diff);
     }
+
+	void Disempale()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+		{
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			{
+				if(Player* pPlayer = itr->getSource())
+				{
+					if(!pPlayer->HasAura(SPELL_BONE_SPIKE_IMPALE))
+						continue;
+
+					// no bug abuse on bumps :)
+					if(pPlayer->GetDistance2d(me) > 3.0f)
+						continue;
+
+					pPlayer->RemoveAurasDueToSpell(SPELL_BONE_SPIKE_IMPALE);
+					// force to dont affect 2 targets on same place
+					break;
+				}
+			}
+		}
+	}
+
+	void JustDied(Unit* killer)
+	{
+		Disempale();
+	}
 };
 
 CreatureAI* GetAI_bonespike_marrowgar(Creature* pCreature)
