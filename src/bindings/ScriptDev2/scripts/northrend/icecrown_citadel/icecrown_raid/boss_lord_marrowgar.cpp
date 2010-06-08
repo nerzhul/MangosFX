@@ -210,7 +210,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		if(ecartY < 2.5f)
 			ecartY = 2.5f;
 
-		for(uint8 i=0;i<=MaxDist;i++)
+		for(uint8 i=0;i<=MaxDist;i+=3)
 		{
 			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / MaxDist, me->GetPositionY() + ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
 			if(phase == 1)
