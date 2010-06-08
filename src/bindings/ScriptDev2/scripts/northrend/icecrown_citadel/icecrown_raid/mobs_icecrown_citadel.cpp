@@ -240,19 +240,14 @@ struct MANGOS_DLL_DECL Nerubar_webkeepAI : public LibDevFSAI
 		SetCombatMovement(false);
     }
 
-	void DamageTaken(Unit* pWho, uint32 &dmg)
-	{
-		if(dmg >= me->GetHealth())
-		{
-			dmg = 0;
-			FreeMan();
-			DoCastMe(7);
-		}
-	}
-
     void UpdateAI(const uint32 diff)
     {
     }
+
+	void JustDied(Unit* pwho)
+	{
+		FreeMan();
+	}
 
 	void FreeMan()
 	{
