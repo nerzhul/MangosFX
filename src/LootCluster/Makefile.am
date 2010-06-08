@@ -27,6 +27,8 @@ mangosFX_LootCluster_SOURCES = \
 	Cluster.h \
 	ClusterLoot.cpp \
 	ClusterLoot.h \
+	cObjectMgr.cpp \
+	cObjectMgr.h \
 	Main.cpp
 
 ## Link world daemon against the shared library
