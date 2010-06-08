@@ -210,6 +210,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 
 	bool CheckPlayersInMap()
 	{
+		bool found = false;
 		Map::PlayerList const& lPlayers = instance->GetPlayers();
 
 		if (!lPlayers.isEmpty())
@@ -220,10 +221,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 						pPlayer->RemoveAurasDueToSpell(69065);
 
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
-						return true;
+						found = true;
 					
 				}
-		return false;
+		return found;
 	}
 
 	void Update(uint32 diff)
