@@ -128,8 +128,6 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 	void CallColdFlames()
 	{
-		CleanMyAdds();
-
 		Unit* flameTarget = GetRandomUnit();
 		if(!flameTarget)
 			return;
@@ -292,7 +290,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     {
         InitInstance();
         AddEventOnMe(SPELL_COLDFLAME,500,2000);
-		me->setFaction(14);
+		me->setFaction(2212);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		MakeInvisibleStalker();
     }
@@ -320,7 +318,7 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
     bonespike_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		me->setFaction(14);
+		me->setFaction(2212);
     }
 	
     void Reset()
@@ -337,6 +335,7 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
 
 	void Disempale()
 	{
+		bool found = false;
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
 		{
@@ -351,9 +350,11 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
 					if(pPlayer->GetDistance2d(me) > 3.0f)
 						continue;
 
-					pPlayer->RemoveAurasDueToSpell(SPELL_BONE_SPIKE_IMPALE);
-					// force to dont affect 2 targets on same place
-					break;
+					if(pPlayer->isAlive() && !found)
+					{
+						pPlayer->RemoveAurasDueToSpell(SPELL_BONE_SPIKE_IMPALE);
+						found = true;
+					}
 				}
 			}
 		}
