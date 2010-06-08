@@ -94,7 +94,7 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
     std::string str = secsToTimeString(sWorld.GetUptime());
 
     PSendSysMessage("MangosFX rev 542 based on Mangos 9313 developped by Ner'zhul");
-    PSendSysMessage(LANG_USING_SCRIPT_LIB,"LibDevFS rev 101, EDC 2.3, ICC 0.4");
+    PSendSysMessage(LANG_USING_SCRIPT_LIB,"LibDevFS rev 103, EDC 2.3, ICC 1.0");
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());
 
