@@ -15811,8 +15811,8 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
         SetPower(Powers(i),savedpower > GetMaxPower(Powers(i)) ? GetMaxPower(Powers(i)) : savedpower);
     }
 
-    sLog.outDebug("The value of player %s after load item and aura is: ", m_name.c_str());
-    outDebugValues();
+    /*sLog.outDebug("The value of player %s after load item and aura is: ", m_name.c_str());
+    outDebugValues();*/
 
     // all fields read
     delete result;
@@ -16918,8 +16918,8 @@ void Player::SaveToDB()
     // first save/honor gain after midnight will also update the player's honor fields
     UpdateHonorFields();
 
-    sLog.outDebug("The value of player %s at save: ", m_name.c_str());
-    outDebugValues();
+    /*sLog.outDebug("The value of player %s at save: ", m_name.c_str());
+    outDebugValues();*/
 
     CharacterDatabase.BeginTransaction();
 
