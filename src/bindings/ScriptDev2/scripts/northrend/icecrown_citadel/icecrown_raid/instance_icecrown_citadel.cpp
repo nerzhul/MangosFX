@@ -42,6 +42,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
     uint64 m_uiDeathwhisperElevatorGUID;
     uint64 m_uiSaurfangDoorGUID;
 
+	uint32 checkPlayer_Timer;
+
     void Initialize()
     {
         memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
@@ -56,6 +58,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         m_uiDeathwhisperGateGUID        = 0;
         m_uiDeathwhisperElevatorGUID    = 0;
         m_uiSaurfangDoorGUID            = 0;
+
+		checkPlayer_Timer = 500;
     }
 
     void OnCreatureCreate(Creature* pCreature)
@@ -118,10 +122,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 {
                     OpenDoor(m_uiMarrowgarIce1GUID);
                     OpenDoor(m_uiMarrowgarIce2GUID);
-					OpenDoor(m_uiMarrowgarDoorGUID);
+					CloseDoor(m_uiMarrowgarDoorGUID);
                 }
 				else if(uiData == IN_PROGRESS)
-					CloseDoor(m_uiMarrowgarDoorGUID);
+					OpenDoor(m_uiMarrowgarDoorGUID);
                 break;
             case TYPE_DEATHWHISPER:
                 m_auiEncounter[1] = uiData;
@@ -211,17 +215,27 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
+				{
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						return true;
+					else
+						pPlayer->RemoveAurasDueToSpell(69065);
+				}
 		return false;
 	}
 
 	void Update(uint32 diff)
 	{
-		if(!CheckPlayersInMap())
+		if(checkPlayer_Timer <= diff)
 		{
-			OpenDoor(m_uiMarrowgarDoorGUID);
+			if(!CheckPlayersInMap())
+			{
+				CloseDoor(m_uiMarrowgarDoorGUID);
+			}
+			checkPlayer_Timer = 500;
 		}
+		else
+			checkPlayer_Timer -= diff;
 	}
 };
 

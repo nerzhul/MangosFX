@@ -42,6 +42,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 	uint32 StormTarget_Timer;
 	uint32 enrage_Timer;
 	uint32 boneSpike_Timer;
+	uint32 StormDmg_Timer;
 
     void Reset()
     {
@@ -50,6 +51,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		Flame_Timer = 8000;
 		Storm_Timer = 27000;
 		StormTarget_Timer = 15000;
+		StormDmg_Timer = 2000;
 		phase = 0;
 		enrage_Timer = TEN_MINS;
 		boneSpike_Timer = 18000;
@@ -75,6 +77,23 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     {
         if (pInstance)
             pInstance->SetData(TYPE_MARROWGAR, DONE);
+
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,1);
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+		}
 
 		Yell(16944,"Je ne vois... que les ténèbres...");
     }
@@ -197,7 +216,32 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			}
 		}
 	}
-	
+	void DoStormDamage()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if(Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive())
+					{
+						uint32 FullDamage = 30000;
+						if(pPlayer->GetDistance2d(me) < 5.0f)
+							FullDamage /= 2;
+						else if(pPlayer->GetDistance2d(me) < 10.0f)
+							FullDamage /= 3;
+						else if(pPlayer->GetDistance2d(me) < 15.0f)
+							FullDamage /= 4;
+						else if(pPlayer->GetDistance2d(me) < 20.0f)
+							FullDamage /= 5;
+						else if(pPlayer->GetDistance2d(me) < 30.0f)
+							FullDamage /= 8;
+						else if(pPlayer->GetDistance2d(me) < 40.0f)
+							FullDamage /= 10;
+						else 
+							FullDamage /= 15;
+						pPlayer->DealDamage(pPlayer, FullDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+					}
+	}
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
@@ -246,6 +290,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				BossEmote(0,"Gargamoelle commence a incanter une tempete d'os");
 				Storm_Timer = 20000;
 				StormTarget_Timer = 5000;
+				StormDmg_Timer = 2000;
 			}
 			else
 				Storm_Timer -= diff;
@@ -265,6 +310,14 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			}
 			else
 				StormTarget_Timer -= diff;
+
+			if(StormDmg_Timer <= diff)
+			{
+				DoStormDamage();
+				StormDmg_Timer = 2000;
+			}
+			else
+				StormDmg_Timer -= diff;
 				
 			if(Storm_Timer <= diff)
 			{
