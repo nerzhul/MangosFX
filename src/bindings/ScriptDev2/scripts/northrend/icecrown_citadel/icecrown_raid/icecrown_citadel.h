@@ -21,7 +21,8 @@ enum
     GO_MARROWGAR_ICE_2          = 201911,
     GO_DEATHWHISPER_GATE        = 201563,
     GO_DEATHWHISPER_ELEVATOR    = 202220,
-    GO_SAURFANG_DOOR            = 201825
+    GO_SAURFANG_DOOR            = 201825,
+	GO_MARROWGAR_DOOR			= 201857,
 };
 
 #endif

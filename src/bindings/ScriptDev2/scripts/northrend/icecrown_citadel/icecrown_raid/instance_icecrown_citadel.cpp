@@ -32,6 +32,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 
     uint64 m_uiMarrowgarGUID;
+	uint64 m_uiMarrowgarDoorGUID;
     uint64 m_uiDeathwhisperGUID;
     uint64 m_uiSaurfangGUID;
 
@@ -46,6 +47,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
 
         m_uiMarrowgarGUID               = 0;
+		m_uiMarrowgarDoorGUID			= 0;
         m_uiDeathwhisperGUID            = 0;
         m_uiSaurfangGUID                = 0;
 
@@ -91,6 +93,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 if (m_auiEncounter[2] == DONE)
                     pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
+			case GO_MARROWGAR_DOOR:
+				m_uiMarrowgarDoorGUID = pGo->GetGUID();
+				break;
         }
     }
 
@@ -111,9 +116,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 m_auiEncounter[0] = uiData;
                 if (uiData == DONE)
                 {
-                    DoUseDoorOrButton(m_uiMarrowgarIce1GUID);
-                    DoUseDoorOrButton(m_uiMarrowgarIce2GUID);
+                    OpenDoor(m_uiMarrowgarIce1GUID);
+                    OpenDoor(m_uiMarrowgarIce2GUID);
+					OpenDoor(m_uiMarrowgarDoorGUID);
                 }
+				else if(uiData == IN_PROGRESS)
+					CloseDoor(m_uiMarrowgarDoorGUID);
                 break;
             case TYPE_DEATHWHISPER:
                 m_auiEncounter[1] = uiData;
@@ -190,9 +198,31 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 return m_uiDeathwhisperGUID;
             case NPC_SAURFANG:
                 return m_uiSaurfangGUID;
+			case GO_MARROWGAR_DOOR:
+				return m_uiMarrowgarDoorGUID;
         }
         return 0;
     }
+
+	bool CheckPlayersInMap()
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						return true;
+		return false;
+	}
+
+	void Update(uint32 diff)
+	{
+		if(!CheckPlayersInMap())
+		{
+			OpenDoor(m_uiMarrowgarDoorGUID);
+		}
+	}
 };
 
 InstanceData* GetInstanceData_instance_icecrown_citadel(Map* pMap)
