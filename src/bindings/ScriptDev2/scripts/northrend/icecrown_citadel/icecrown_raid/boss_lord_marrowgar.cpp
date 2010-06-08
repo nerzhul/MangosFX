@@ -81,6 +81,8 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 	void CallColdFlames()
 	{
+		CleanMyAdds();
+
 		Unit* flameTarget = GetRandomUnit();
 		if(!flameTarget)
 			return;
@@ -90,35 +92,33 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
 		if(dist < 5)
 		{
-			ecartX *= 10;
-			ecartY *= 10;
+			ecartX *= 8;
+			ecartY *= 8;
 		}
 		else if(dist < 10)
 		{
-			ecartX *= 5;
-			ecartY *= 5;
+			ecartX *= 4;
+			ecartY *= 4;
 		}
 		else if(dist < 20)
 		{
-			ecartX *= 2.5f;
-			ecartY *= 2.5f;
+			ecartX *= 2.0f;
+			ecartY *= 2.0f;
 		}
 		else if(dist < 30)
 		{
-			ecartX *= 1.6f;
-			ecartY *= 1.6f;
-		}
-		else if(dist < 40)
-		{
-			ecartX *= 1.25f;
-			ecartY *= 1.25f;
+			ecartX *= 1.3f;
+			ecartY *= 1.3f;
 		}
 
-		for(uint8 i=0;i<=50;i++)
+		for(uint8 i=0;i<=40;i++)
 		{
-			float x_add = me->GetPositionX() + ecartX * i / 50;
-			float y_add = me->GetPositionY() + ecartY * i / 50;
+			float x_add = me->GetPositionX() + ecartX * i / 40;
+			float y_add = me->GetPositionY() + ecartY * i / 40;
 			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, y_add, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,-x_add, y_add, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, -y_add, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,-x_add, -y_add, me->GetPositionZ() + 1.0f,true);
 		}
 	}
 	

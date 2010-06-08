@@ -1151,7 +1151,7 @@ Creature* LibDevFSAI::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc Where
 									  float x, float y, float z, bool force)
 {
 	Creature* tmp = NULL;
-	if((me->isAlive() || force) && MyAdds.size() < MAX_ADDS)
+	if((me->isAlive() && MyAdds.size() < MAX_ADDS) || force)
 	{
 		float randX = x ,randY = y ,randZ = (me) ? me->GetPositionZ() + 1 : 0;
 		switch(WhereZone)
