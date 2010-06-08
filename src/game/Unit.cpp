@@ -575,7 +575,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             ((Player*)pVictim)->RewardRage(cleanDamage->damage, 0, false);
 		
 		// 3.3.3 rage
-		if(this->GetTypeId() == TYPEID_PLAYER)
+		if(this->GetTypeId() == TYPEID_PLAYER && cleanDamage)
 		{
 			switch(cleanDamage->attackType)
 			{

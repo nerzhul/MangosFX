@@ -347,7 +347,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     flame_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-        AddEventOnMe(SPELL_COLDFLAME,1500,3000);
+        AddEventOnMe(SPELL_COLDFLAME,1000,3000);
 		me->setFaction(2212);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		MakeInvisibleStalker();
