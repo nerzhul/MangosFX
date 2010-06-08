@@ -218,7 +218,10 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 	void InitInstance() 
 	{
-		pInstance = (ScriptedInstance*)me->GetInstanceData();
+		if(me->GetInstanceData())
+			pInstance = (ScriptedInstance*)me->GetInstanceData();
+		else
+			pInstance = NULL;
 		m_difficulty = me->GetMap()->GetDifficulty();
 	}
 
