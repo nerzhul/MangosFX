@@ -206,7 +206,11 @@ struct MANGOS_DLL_DECL Nerubar_BroodkeeperAI : public LibDevFSAI
 
 		if(web_Timer <= diff)
 		{
-			
+			if(Unit* target = GetRandomUnit())
+			{
+				CallCreature(38028,THREE_MINS,PREC_COORDS,NOTHING,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+				SetAuraStack(28622,1,target,me,1);
+			}
 			web_Timer = 20000;
 		}
 		else 
@@ -241,16 +245,35 @@ struct MANGOS_DLL_DECL Nerubar_webkeepAI : public LibDevFSAI
 		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
-
+			FreeMan();
 			DoCastMe(7);
 		}
 	}
 
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
-            return;
     }
+
+	void FreeMan()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if(Player* pPlayer = itr->getSource())
+				{
+					if(!pPlayer->HasAura(28622))
+						continue;
+
+					if(pPlayer->GetDistance2d(me) > 4.0f)
+						continue;
+
+					if(pPlayer->isAlive())
+					{
+						pPlayer->RemoveAurasDueToSpell(28622);
+						return;
+					}
+				}
+	}
 };
 
 CreatureAI* GetAI_Nerubar_webkeep(Creature* pCreature)
@@ -264,12 +287,12 @@ void AddSC_ICC10_mobs()
 
     newscript = new Script;
     newscript->Name = "icc_deathbound_ward";
-    newscript->GetAI = &GetAI_icc_the_damned;
-    newscript->RegisterSelf();
+    newscript->GetAI = &GetAI_Deathbound_Ward;
+	newscript->RegisterSelf();
 
 	newscript = new Script;
     newscript->Name = "icc_the_damned";
-    newscript->GetAI = &GetAI_Deathbound_Ward;
+    newscript->GetAI = &GetAI_icc_the_damned;
     newscript->RegisterSelf();
 
 	newscript = new Script;
