@@ -67,17 +67,17 @@ void ClusterLoot::SetInitialSettings()
 
 	// For other clusters, modify loaded tables there
 
-	sLog.outString( "Loading Items..." );                   // must be after LoadRandomEnchantmentsTable and LoadPageTexts
+	sLog.outString( "Loading Items..." );
     sClusterObjectMgr.LoadItemPrototypes();
 
 	sLog.outString( "Loading Creature templates..." );
     sClusterObjectMgr.LoadCreatureTemplates();
 
-	sLog.outString( "Loading Game Object Templates..." );   // must be after LoadPageTexts
+	sLog.outString( "Loading Game Object Templates..." );
     sClusterObjectMgr.LoadGameobjectInfo();
 
 	sLog.outString( "Loading Quests..." );
-    sObjectMgr.LoadQuests(true);                                    // must be loaded after DBCs, creature_template, item_template, gameobject tables
+    sClusterObjectMgr.LoadQuests();
 
 	sLog.outString( "Loading Objects Pooling Data...");
     sPoolMgr.LoadFromDB(true);

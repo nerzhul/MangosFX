@@ -86,11 +86,38 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			return;
 		
 		float dist = me->GetDistance2d(flameTarget);
-
-		for(uint8 i=0;i<=10;i++)
+		float ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
+		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
+		if(dist < 5)
 		{
-			float x_add = me->GetPositionX() + i*2 /** (flameTarget->GetPositionY() - me->GetPositionY()) / (flameTarget->GetPositionX() - me->GetPositionX())*/;
-			float y_add = me->GetPositionY() + i*2 /** (flameTarget->GetPositionY() - me->GetPositionY()) / (flameTarget->GetPositionX() - me->GetPositionX())*/;
+			ecartX *= 10;
+			ecartY *= 10;
+		}
+		else if(dist < 10)
+		{
+			ecartX *= 5;
+			ecartY *= 5;
+		}
+		else if(dist < 20)
+		{
+			ecartX *= 2.5f;
+			ecartY *= 2.5f;
+		}
+		else if(dist < 30)
+		{
+			ecartX *= 1.6f;
+			ecartY *= 1.6f;
+		}
+		else if(dist < 40)
+		{
+			ecartX *= 1.25f;
+			ecartY *= 1.25f;
+		}
+
+		for(uint8 i=0;i<=50;i++)
+		{
+			float x_add = me->GetPositionX() + ecartX * i / 50;
+			float y_add = me->GetPositionY() + ecartY * i / 50;
 			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, y_add, me->GetPositionZ() + 1.0f,true);
 		}
 	}
