@@ -44,7 +44,7 @@ void WorldRunnable::run()
     WorldDatabase.ThreadStart();                                // let thread do safe mySQL requests (one connection call enough)
     sWorld.InitResultQueue();
 
-	sWorld.SetInitialWorldSettings();
+	//sWorld.SetInitialWorldSettings();
 
     uint32 realCurrTime = 0;
     uint32 realPrevTime = getMSTime();

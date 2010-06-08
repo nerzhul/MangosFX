@@ -209,7 +209,7 @@ int Master::Run()
     }
 
     ///- Initialize the World
-    //sWorld.SetInitialWorldSettings();
+    sWorld.SetInitialWorldSettings();
 
     ///- Catch termination signals
     _HookSignals();

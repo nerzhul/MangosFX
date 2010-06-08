@@ -114,12 +114,13 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 		for(uint8 i=0;i<=40;i++)
 		{
-			float x_add = me->GetPositionX() + ecartX * i / 40;
-			float y_add = me->GetPositionY() + ecartY * i / 40;
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, y_add, me->GetPositionZ() + 1.0f,true);
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,-x_add, y_add, me->GetPositionZ() + 1.0f,true);
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,x_add, -y_add, me->GetPositionZ() + 1.0f,true);
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,-x_add, -y_add, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / 40, me->GetPositionY() + ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+			if(phase == 1)
+			{
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / 40, me->GetPositionY() + ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / 40, me->GetPositionY() - ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / 40, me->GetPositionY() - ecartY * i / 40, me->GetPositionZ() + 1.0f,true);
+			}
 		}
 	}
 	
