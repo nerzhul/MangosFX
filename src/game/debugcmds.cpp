@@ -961,6 +961,15 @@ bool ChatHandler::HandleDebugUpdateCommand(const char* args)
     return true;
 }
 
+bool ChatHandler::HandleSetWorldVar(const char *args)
+{
+	if(!*args)
+		return false;
+
+	uint64 var = (uint64)atoi(args);
+	World::setWorldVar(var);
+	return true;
+}
 
 bool ChatHandler::HandleTestPacketCommand(const char *args)
 {

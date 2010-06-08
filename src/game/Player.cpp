@@ -109,7 +109,7 @@ enum CharacterFlags
     CHARACTER_FLAG_UNK22                = 0x00200000,
     CHARACTER_FLAG_UNK23                = 0x00400000,
     CHARACTER_FLAG_UNK24                = 0x00800000,
-    CHARACTER_FLAG_LOCKED_BY_BILLING    = 0x01000000,
+    CHARACTER_FLAG_LOCKED_BY_BILLING    = 0x01000000, // You must buy some credit
     CHARACTER_FLAG_DECLINED             = 0x02000000,
     CHARACTER_FLAG_UNK27                = 0x04000000,
     CHARACTER_FLAG_UNK28                = 0x08000000,
@@ -1568,6 +1568,9 @@ bool Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
         char_flags |= CHARACTER_FLAG_GHOST;
     if(atLoginFlags & AT_LOGIN_RENAME)
         char_flags |= CHARACTER_FLAG_RENAME;
+
+	char_flags |= CHARACTER_FLAG_LOCKED_BY_BILLING;
+
     if(sWorld.getConfig(CONFIG_DECLINED_NAMES_USED))
     {
         if(!fields[20].GetCppString().empty())

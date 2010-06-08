@@ -674,17 +674,18 @@ ChatCommand * ChatHandler::getCommandTable()
         { "waterwalk",      SEC_GAMEMASTER,     false, &ChatHandler::HandleWaterwalkCommand,           "", NULL },
         { "quit",           SEC_CONSOLE,        true,  &ChatHandler::HandleQuitCommand,                "", NULL },
 
-		{ "coffre",			SEC_PLAYER,			false, &ChatHandler::HandleCoffreCommand,				"",		NULL },
-		{ "completerecup",	SEC_PLAYER,			false, &ChatHandler::HandleCompleteRecupCommand,		"",		NULL },
-		{ "recuperation",	SEC_GAMEMASTER,		false, &ChatHandler::HandleRecuperationCommand,			"",		NULL },
-		{ "diamond",		SEC_GAMEMASTER,		false, &ChatHandler::HandleDiamondCommand,				"",		NULL },
-		{ "wgstart",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspStartCommand,        "", NULL },
-		{ "wgtimer",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspTimerCommand,        "", NULL },
-		{ "lpi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleLookPlayerInventory,		   "", NULL },
-		{ "addpoi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleAddPOI,		   "", NULL },
-		{ "entervehicle",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleDebugEnterVehicle,		   "", NULL },
+		{ "coffre",			SEC_PLAYER,			false, &ChatHandler::HandleCoffreCommand,				"",	NULL },
+		{ "completerecup",	SEC_PLAYER,			false, &ChatHandler::HandleCompleteRecupCommand,		"",	NULL },
+		{ "recuperation",	SEC_GAMEMASTER,		false, &ChatHandler::HandleRecuperationCommand,			"",	NULL },
+		{ "diamond",		SEC_GAMEMASTER,		false, &ChatHandler::HandleDiamondCommand,				"",	NULL },
+		{ "wgstart",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspStartCommand,     "", NULL },
+		{ "wgtimer",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspTimerCommand,     "", NULL },
+		{ "lpi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleLookPlayerInventory,		    "", NULL },
+		{ "addpoi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleAddPOI,						"", NULL },
+		{ "entervehicle",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleDebugEnterVehicle,			"", NULL },
 		{ "testpacket",		SEC_ADMINISTRATOR,	false,	&ChatHandler::HandleTestPacketCommand,			"", NULL },
-        { NULL,             0,                  false, NULL,                                           "", NULL }
+		{ "worldvar",		SEC_ADMINISTRATOR,	false,	&ChatHandler::HandleSetWorldVar,				"", NULL },
+        { NULL,             0,                  false, NULL,											"", NULL }
     };
 
     if(load_command_table)

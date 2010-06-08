@@ -520,6 +520,7 @@ class ChatHandler
 		bool HandleCompleteRecupCommand(const char *args);
 		bool HandleDebugDualSpecCommand(const char *args);
 		bool HandleTestPacketCommand(const char *args);
+		bool HandleSetWorldVar(const char *args);
 
         Player*   getSelectedPlayer();
         Creature* getSelectedCreature();
