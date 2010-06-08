@@ -24,10 +24,10 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
         {
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				FlameDespawn = 8000;
+				FlameDespawn = 9000;
 				break;
 			default:
-				FlameDespawn = 3000;
+				FlameDespawn = 4000;
 				break;
 		}
 		AddEventOnTank(SPELL_SABER_LASH,5000,5000);
@@ -347,7 +347,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     flame_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-        AddEventOnMe(SPELL_COLDFLAME,500,2000);
+        AddEventOnMe(SPELL_COLDFLAME,1500,3000);
 		me->setFaction(2212);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		MakeInvisibleStalker();

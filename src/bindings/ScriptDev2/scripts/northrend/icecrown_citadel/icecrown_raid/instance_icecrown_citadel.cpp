@@ -216,10 +216,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
 				{
+					if(!pPlayer->isAlive())
+						pPlayer->RemoveAurasDueToSpell(69065);
+
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						return true;
-					else
-						pPlayer->RemoveAurasDueToSpell(69065);
+					
 				}
 		return false;
 	}
