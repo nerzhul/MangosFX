@@ -75,7 +75,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
     void JustDied(Unit* pKiller)
     {
-        if (pInstance)
+        if(pInstance)
             pInstance->SetData(TYPE_MARROWGAR, DONE);
 
 		switch(m_difficulty)
