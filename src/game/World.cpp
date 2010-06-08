@@ -1248,8 +1248,6 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading Creature templates..." );
     sObjectMgr.LoadCreatureTemplates();
 
-	sWorld.SetWorldVar(1);
-
     sLog.outString( "Loading SpellsScriptTarget...");
     sSpellMgr.LoadSpellScriptTarget();                       // must be after LoadCreatureTemplates and LoadGameobjectInfo
 
@@ -1277,9 +1275,7 @@ void World::SetInitialWorldSettings()
     sLog.outString( ">>> Creature Addon Data loaded" );
     sLog.outString();
 
-	//sWorld.LockWorld(false);
-
-    sLog.outString( "Loading Creature Respawn Data..." );   // must be after PackInstances()
+	sLog.outString( "Loading Creature Respawn Data..." );   // must be after PackInstances()
     sObjectMgr.LoadCreatureRespawnTimes();
 
     sLog.outString( "Loading Gameobject Data..." );
@@ -1577,6 +1573,8 @@ void World::SetInitialWorldSettings()
 		Field *fields = result->Fetch();
 		m_maxActiveSessionCount = fields[0].GetUInt32();
 	}
+
+	sWorld.LockWorld(false);
 }
 
 void World::DetectDBCLang()

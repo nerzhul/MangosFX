@@ -547,7 +547,10 @@ void WorldSession::HandleCharDeleteOpcode( WorldPacket & recv_data )
 void WorldSession::HandlePlayerLoginOpcode( WorldPacket & recv_data )
 {
 	if(sWorld.IsLocked())
+	{
+		KickPlayer();
 		return;
+	}
 
     if(PlayerLoading() || GetPlayer() != NULL)
     {

@@ -209,7 +209,7 @@ int Master::Run()
     }
 
     ///- Initialize the World
-    sWorld.SetInitialWorldSettings();
+    //sWorld.SetInitialWorldSettings();
 
     ///- Catch termination signals
     _HookSignals();
@@ -312,11 +312,12 @@ int Master::Run()
         freeze_thread->setPriority(ACE_Based::Highest);
     }
 
-    ///- Launch the world listener socket
+	
+	///- Launch the world listener socket
     uint16 wsport = sWorld.getConfig (CONFIG_PORT_WORLD);
     std::string bind_ip = sConfig.GetStringDefault ("BindIP", "0.0.0.0");
 
-    if (sWorldSocketMgr->StartNetwork (wsport, bind_ip) == -1)
+	if (sWorldSocketMgr->StartNetwork (wsport, bind_ip) == -1)
     {
         sLog.outError ("Failed to start network");
         Log::WaitBeforeContinueIfNeed();
