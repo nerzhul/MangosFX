@@ -21,12 +21,12 @@ struct MANGOS_DLL_DECL icc_the_damnedAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && pWho != me)
 		{
 			dmg = 0;
 			DoCastMe(70961);
 			DoCastMe(SPELL_SOUL_FEAST);
-			DoCastMe(7);
+			Kill(me);
 		}
 	}
 
@@ -70,11 +70,11 @@ struct MANGOS_DLL_DECL Deathbound_WardAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && pWho != me)
 		{
 			dmg = 0;
 			DoCastMe(SPELL_SOUL_FEAST);
-			DoCastMe(7);
+			Kill(me);
 		}
 	}
 
@@ -109,11 +109,11 @@ struct MANGOS_DLL_DECL Servant_of_the_ThroneAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && pWho != me)
 		{
 			dmg = 0;
 			DoCastMe(SPELL_SOUL_FEAST);
-			DoCastMe(7);
+			Kill(me);
 		}
 	}
 
@@ -148,11 +148,11 @@ struct MANGOS_DLL_DECL Ancient_Skeletal_SoldierAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && pWho != me)
 		{
 			dmg = 0;
 			DoCastMe(SPELL_SOUL_FEAST);
-			DoCastMe(7);
+			Kill(me);
 		}
 	}
 
@@ -191,11 +191,11 @@ struct MANGOS_DLL_DECL Nerubar_BroodkeeperAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pWho, uint32 &dmg)
 	{
-		if(dmg >= me->GetHealth())
+		if(dmg >= me->GetHealth() && pWho != me)
 		{
 			dmg = 0;
 			DoCastMe(SPELL_SOUL_FEAST);
-			DoCastMe(7);
+			Kill(me);
 		}
 	}
 
