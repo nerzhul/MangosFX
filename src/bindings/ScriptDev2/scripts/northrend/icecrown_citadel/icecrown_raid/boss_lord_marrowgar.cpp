@@ -42,6 +42,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				break;
 		}
 		AddEventOnTank(SPELL_SABER_LASH,5000,5000);
+		AddEnrageTimer(TEN_MINS);
     }
 	
 	uint8 phase;

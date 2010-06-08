@@ -402,7 +402,9 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			
 		void AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer, uint32 phase = 0, uint32 Diff = 0,
 			uint32 nb_spawn = 1, uint32 Despawn = TEN_MINS, ZoneInvoc WhereZone = ON_ME,
-			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0); 
+			Comportement Compo = AGGRESSIVE_RANDOM, uint32 TextId = 0);
+
+		void AddEnrageTimer(uint32 Timer) { AddEventMaxPrioOnMe(26662,Timer,60000); }
 
 		void UpdateEvent(uint32 diff, uint32 phase = 0);
 			
