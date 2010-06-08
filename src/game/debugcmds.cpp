@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "Common.h"
-#include "Database/DatabaseEnv.h"
+#include <Common.h>
+#include <Database/DatabaseEnv.h>
 #include "WorldPacket.h"
 #include "Vehicle.h"
 #include "Player.h"
@@ -32,6 +32,7 @@
 #include "ObjectMgr.h"
 #include "ObjectDefines.h"
 #include "SpellMgr.h"
+#include "World.h"
 
 bool ChatHandler::HandleDebugSendSpellFailCommand(const char* args)
 {
@@ -967,7 +968,7 @@ bool ChatHandler::HandleSetWorldVar(const char *args)
 		return false;
 
 	uint64 var = (uint64)atoi(args);
-	World::setWorldVar(var);
+	sWorld.SetWorldVar(var);
 	return true;
 }
 

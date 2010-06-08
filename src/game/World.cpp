@@ -97,6 +97,7 @@ World::World()
 	m_NextWeeklyQuestReset = 0;
     m_NextDailyQuestReset = 0;
     m_scheduledScripts = 0;
+	worldVar = 0;
 
     m_defaultDbcLocale = LOCALE_enUS;
     m_availableDbcLocaleMask = 0;
@@ -1116,6 +1117,7 @@ void World::LoadConfigSettings(bool reload)
 /// Initialize the World
 void World::SetInitialWorldSettings()
 {
+	sWorld.LockWorld(true);
     ///- Initialize the random number generator
     srand((unsigned int)time(NULL));
 
@@ -1246,6 +1248,8 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading Creature templates..." );
     sObjectMgr.LoadCreatureTemplates();
 
+	sWorld.SetWorldVar(1);
+
     sLog.outString( "Loading SpellsScriptTarget...");
     sSpellMgr.LoadSpellScriptTarget();                       // must be after LoadCreatureTemplates and LoadGameobjectInfo
 
@@ -1272,6 +1276,8 @@ void World::SetInitialWorldSettings()
     sObjectMgr.LoadCreatureAddons();                            // must be after LoadCreatureTemplates() and LoadCreatures()
     sLog.outString( ">>> Creature Addon Data loaded" );
     sLog.outString();
+
+	//sWorld.LockWorld(false);
 
     sLog.outString( "Loading Creature Respawn Data..." );   // must be after PackInstances()
     sObjectMgr.LoadCreatureRespawnTimes();

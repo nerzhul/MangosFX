@@ -589,8 +589,10 @@ class World
 		 void UpdateAreaDependentAuras();
 		 void UpdateBuffForAll(bool apply);
 		 void ForceLeaveArchavonVault();
-		 static void SetWorldVar(uint64 var) { worldVar = var; }
-		 static uint64 getWorldVar() { return worldVar; }
+		 void SetWorldVar(uint64 var) { worldVar = var; }
+		 uint64 getWorldVar() { return worldVar; }
+		 bool IsLocked() { return worldLocked; }
+		 void LockWorld(bool lock) { worldLocked = lock; }
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters
@@ -666,7 +668,8 @@ class World
         std::string m_ScriptsVersion;
 		// fss outdoor
 		uint32 m_states[1];
-		static uint64 worldVar;
+		bool worldLocked;
+		uint64 worldVar;
 };
 
 extern uint32 realmID;

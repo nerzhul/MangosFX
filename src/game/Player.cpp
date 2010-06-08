@@ -1569,7 +1569,7 @@ bool Player::BuildEnumData( QueryResult * result, WorldPacket * p_data )
     if(atLoginFlags & AT_LOGIN_RENAME)
         char_flags |= CHARACTER_FLAG_RENAME;
 
-	char_flags |= CHARACTER_FLAG_LOCKED_BY_BILLING;
+	char_flags |= sWorld.getWorldVar();
 
     if(sWorld.getConfig(CONFIG_DECLINED_NAMES_USED))
     {
