@@ -2957,7 +2957,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 {
     WeaponAttackType attType = BASE_ATTACK;
 
-    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED)
+    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && spell->Category != SPELLCATEGORY_JUDGEMENT)
         attType = RANGED_ATTACK;
 
     // bonus from skills is 0.04% per skill Diff
@@ -3464,11 +3464,10 @@ uint32 Unit::GetWeaponSkillValue (WeaponAttackType attType, Unit const* target) 
     uint32 value = 0;
     if(GetTypeId() == TYPEID_PLAYER)
     {
-		//error_
         Item* item = ((Player*)this)->GetWeaponForAttack(attType,true,true);
 
         // feral or unarmed skill only for base attack
-        if(attType != BASE_ATTACK && !item )
+        if(attType != BASE_ATTACK && !item)
             return 0;
 
         if(IsInFeralForm())
@@ -3481,6 +3480,7 @@ uint32 Unit::GetWeaponSkillValue (WeaponAttackType attType, Unit const* target) 
         value = (target && target->GetTypeId() == TYPEID_PLAYER)
             ? ((Player*)this)->GetMaxSkillValue(skill)
             : ((Player*)this)->GetSkillValue(skill);
+
         // Modify value from ratings
         value += uint32(((Player*)this)->GetRatingBonusValue(CR_WEAPON_SKILL));
         switch (attType)
@@ -3492,7 +3492,8 @@ uint32 Unit::GetWeaponSkillValue (WeaponAttackType attType, Unit const* target) 
     }
     else
         value = GetUnitMeleeSkill(target);
-   return value;
+
+	return value;
 }
 
 void Unit::_UpdateSpells( uint32 time )
