@@ -227,9 +227,9 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if(Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive())
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 					{
-						uint32 FullDamage = 30000;
+						uint32 FullDamage = 20000;
 						if(pPlayer->GetDistance2d(me) < 5.0f)
 							FullDamage /= 2;
 						else if(pPlayer->GetDistance2d(me) < 10.0f)
@@ -237,13 +237,11 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 						else if(pPlayer->GetDistance2d(me) < 15.0f)
 							FullDamage /= 4;
 						else if(pPlayer->GetDistance2d(me) < 20.0f)
-							FullDamage /= 5;
+							FullDamage /= 7;
 						else if(pPlayer->GetDistance2d(me) < 30.0f)
-							FullDamage /= 8;
-						else if(pPlayer->GetDistance2d(me) < 40.0f)
 							FullDamage /= 10;
 						else 
-							FullDamage /= 15;
+							FullDamage = 0;
 						pPlayer->DealDamage(pPlayer, FullDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 					}
 	}
@@ -294,6 +292,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				Yell(16946,"Tempête, dans un verre d'os !");
 				BossEmote(0,"Gargamoelle commence a incanter une tempete d'os");
 				Storm_Timer = 20000;
+				me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
 				StormTarget_Timer = 5000;
 				StormDmg_Timer = 2000;
 			}
@@ -328,6 +327,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			{
 				phase = 0;
 				DoResetThreat();
+				me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, false);
 				me->RemoveAurasDueToSpell(SPELL_BONE_STORM);
 				Storm_Timer = 40000;
 			}
