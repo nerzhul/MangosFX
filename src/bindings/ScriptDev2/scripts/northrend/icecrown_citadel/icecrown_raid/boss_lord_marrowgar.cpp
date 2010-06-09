@@ -242,7 +242,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 							FullDamage /= 10;
 						else 
 							FullDamage = 0;
-						pPlayer->DealDamage(pPlayer, FullDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+						pPlayer->DealDamage(pPlayer, FullDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, GetSpellStore()->LookupEntry(69075), false);
 					}
 	}
     void UpdateAI(const uint32 diff)
