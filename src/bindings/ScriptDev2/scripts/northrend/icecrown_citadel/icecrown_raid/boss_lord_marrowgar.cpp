@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			security++;
 			if(Unit* spTarget = GetRandomUnit())
 			{
-				if(spTarget->HasAura(SPELL_BONE_SPIKE_IMPALE) /* || spTarget == me->getVictim()*/)
+				if(spTarget->HasAura(SPELL_BONE_SPIKE_IMPALE)  || spTarget == me->getVictim())
 				{
 					i--;
 					if(security > 200)
@@ -147,7 +147,20 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 	void CallColdFlames()
 	{
-		Unit* flameTarget = GetRandomUnit();
+		Unit* flameTarget = NULL;
+		uint8 security = 0;
+		while(!flameTarget && security < 100)
+		{
+			security++;
+			if(flameTarget = GetRandomUnit())
+			{
+				if(flameTarget->GetDistance2d(me) < 8.0f || flameTarget == me->getVictim())
+					flameTarget = NULL;
+			}
+		}
+		if(!flameTarget && me->getVictim())
+			flameTarget = me->getVictim();
+		
 		if(!flameTarget)
 			return;
 		
