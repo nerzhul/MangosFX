@@ -147,19 +147,8 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 	void CallColdFlames()
 	{
-		Unit* flameTarget = NULL;
+		Unit* flameTarget = SelectUnit(SELECT_TARGET_RANDOM,1);
 		uint8 security = 0;
-		while(!flameTarget && security < 100)
-		{
-			security++;
-			if(flameTarget = GetRandomUnit())
-			{
-				if(flameTarget->GetDistance2d(me) < 8.0f || flameTarget == me->getVictim())
-					flameTarget = NULL;
-			}
-		}
-		if(!flameTarget && me->getVictim())
-			flameTarget = me->getVictim();
 		
 		if(!flameTarget)
 			return;
