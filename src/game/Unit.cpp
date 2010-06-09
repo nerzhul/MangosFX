@@ -606,9 +606,8 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 	WeaponAttackType attType = GetWeaponAttackType(spellProto);
 	// on weapon hit casts, proc from melee damage implemented in DealMeleeDamage() (sent with spellProto == NULL, which determines possible double proc)
 	if(GetTypeId() == TYPEID_PLAYER &&
-		spellProto &&
-		(spellProto->DmgClass == SPELL_DAMAGE_CLASS_MELEE ||
-		spellProto->DmgClass == SPELL_DAMAGE_CLASS_RANGED))
+		spellProto && (spellProto->DmgClass == SPELL_DAMAGE_CLASS_MELEE || spellProto->DmgClass == SPELL_DAMAGE_CLASS_RANGED) &&
+		damagetype == SPELL_DIRECT_DAMAGE && !(spellProto->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE))
 		((Player*)this)->CastItemCombatSpell(pVictim, attType);
 
     // no xp,health if type 8 /critters/
@@ -1229,8 +1228,9 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     if (damage < 0)
         return;
 
-    if(!this || !pVictim)
+    if(!pVictim)
         return;
+
     if(!this->isAlive() || !pVictim->isAlive())
         return;
 
@@ -2898,6 +2898,7 @@ bool Unit::isSpellBlocked(Unit *pVictim, SpellEntry const * spellProto, WeaponAt
 // Crit or block - determined on damage calculation phase! (and can be both in some time)
 float Unit::MeleeSpellMissChance(Unit *pVictim, WeaponAttackType attType, int32 skillDiff, SpellEntry const *spell)
 {
+	
     // Calculate hit chance (more correct for chance mod)
     int32 HitChance;
 
@@ -2966,6 +2967,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 
     uint32 roll = urand (0, 10000);
 
+	//error_log("attackerWeaponSkill %i, skillDiff %i, GetMaxSkillValueForLevel %u",attackerWeaponSkill,skillDiff,pVictim->GetMaxSkillValueForLevel(this));
     uint32 missChance = uint32(MeleeSpellMissChance(pVictim, attType, fullSkillDiff, spell)*100.0f);
     // Roll miss
     if (roll < missChance)
@@ -3042,8 +3044,6 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
                 break;
         }
     }
-
-	//error_log("%i %i",int32(pVictim->GetUnitDodgeChance()*100.0f),skillDiff);
 
     if (canDodge)
     {
@@ -3464,6 +3464,7 @@ uint32 Unit::GetWeaponSkillValue (WeaponAttackType attType, Unit const* target) 
     uint32 value = 0;
     if(GetTypeId() == TYPEID_PLAYER)
     {
+		//error_
         Item* item = ((Player*)this)->GetWeaponForAttack(attType,true,true);
 
         // feral or unarmed skill only for base attack
@@ -12289,7 +12290,6 @@ int32 Unit::CalculateSpellDamage(SpellEntry const* spellProto, uint8 effect_inde
 		}
 	}
 
-	error_log("DAMAGE : %i",value);
     return value;
 }
 

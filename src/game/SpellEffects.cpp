@@ -6666,7 +6666,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     return;
                 uint32 spellId1 = 0;
                 uint32 spellId2 = 0;
-
+				
                 // Judgement self add switch
                 switch (m_spellInfo->Id)
                 {
@@ -6678,6 +6678,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         sLog.outError("Unsupported Judgement (seal trigger) spell (Id: %u) in Spell::EffectScriptEffect",m_spellInfo->Id);
                         return;
                 }
+
                 // offensive seals have aura dummy in 2 effect
                 Unit::AuraList const& m_dummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
                 for(Unit::AuraList::const_iterator itr = m_dummyAuras.begin(); itr != m_dummyAuras.end(); ++itr)
@@ -6691,6 +6692,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         continue;
                     break;
                 }
+
                 // if there were no offensive seals than there is seal with proc trigger aura
                 if (!spellId2)
                 {
