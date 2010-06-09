@@ -156,16 +156,10 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		float dist = me->GetDistance2d(flameTarget);
 		float ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
 		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
-		float MaxDist = 39.0f;
-		float XYPas = MaxDist / 3.0f;
-		float coefDist = MaxDist / dist;
-		ecartX *= coefDist;
-		ecartY *= coefDist;
-		error_log("coef : %f / ecartX : %f / ecartY: %f / dist: %f / MaxDist: %f",coefDist,ecartX,ecartY,dist,MaxDist);
-		ecartX /= XYPas;
-		ecartY /= XYPas;
-		
-		error_log("ecartX : %f / ecartY: %f",coefDist,ecartX,ecartY);
+
+		float coef = 3/dist;
+		ecartX *= coef;
+		ecartY *= coef;
 		
 		for(uint8 i=0;i<=13;i++)
 		{
