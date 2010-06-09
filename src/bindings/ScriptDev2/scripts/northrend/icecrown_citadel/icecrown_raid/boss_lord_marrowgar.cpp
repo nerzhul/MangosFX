@@ -243,6 +243,9 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 					{
 						uint32 FullDamage = 20000;
+						if(m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC)
+							FullDamage = 30000;
+
 						if(pPlayer->GetDistance2d(me) < 5.0f)
 							FullDamage /= 2;
 						else if(pPlayer->GetDistance2d(me) < 10.0f)
