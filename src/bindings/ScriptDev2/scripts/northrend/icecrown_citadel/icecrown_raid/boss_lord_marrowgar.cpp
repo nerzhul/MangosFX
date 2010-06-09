@@ -24,10 +24,10 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
         {
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				FlameDespawn = 9000;
+				FlameDespawn = 8000;
 				break;
 			default:
-				FlameDespawn = 4000;
+				FlameDespawn = 3000;
 				break;
 		}
 		AddEventOnTank(SPELL_SABER_LASH,5000,5000);
@@ -36,6 +36,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     }
 	
 	uint8 phase;
+	uint8 FlameNb;
 	uint32 FlameDespawn;
 	uint32 Flame_Timer;
 	uint32 Storm_Timer;
@@ -43,17 +44,22 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 	uint32 enrage_Timer;
 	uint32 boneSpike_Timer;
 	uint32 StormDmg_Timer;
+	uint32 FlameSpawn_Timer;
+	float ecartX;
+	float ecartY;
 
     void Reset()
     {
 		ResetTimers();
 		CleanMyAdds();
-		Flame_Timer = 8000;
+		Flame_Timer = 7000;
 		Storm_Timer = 27000;
 		StormTarget_Timer = 15000;
 		StormDmg_Timer = 2000;
 		phase = 0;
+		FlameNb = 2;
 		enrage_Timer = TEN_MINS;
+		FlameSpawn_Timer = DAY*HOUR;
 		boneSpike_Timer = 18000;
     }
 
@@ -153,26 +159,35 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		if(!flameTarget)
 			return;
 		
-		float dist = me->GetDistance2d(flameTarget);
-		float ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
-		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
-
+		float dist = flameTarget->GetDistance(me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+		ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
+		ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
 		float coef = 3/dist;
 		ecartX *= coef;
 		ecartY *= coef;
-		
-		for(uint8 i=0;i<=13;i++)
-		{
-			error_log("X : %f / Y: %f",me->GetPositionX() + ecartX * i,me->GetPositionY() + ecartY * i);
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i, me->GetPositionY() + ecartY * i, me->GetPositionZ() + 1.0f,true);
-			if(phase == 1)
-			{
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i, me->GetPositionY() + ecartY * i, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i, me->GetPositionY() - ecartY * i, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i, me->GetPositionY() - ecartY * i, me->GetPositionZ() + 1.0f,true);
-			}
-		}
+
+		FlameSpawn_Timer = 50;
 	}
+
+	void SpawnFlame()
+	{
+		CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * FlameNb, me->GetPositionY() + ecartY * FlameNb, me->GetPositionZ() + 1.0f,true);
+		if(phase == 1)
+		{
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * FlameNb, me->GetPositionY() + ecartY * FlameNb, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * FlameNb, me->GetPositionY() - ecartY * FlameNb, me->GetPositionZ() + 1.0f,true);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * FlameNb, me->GetPositionY() - ecartY * FlameNb, me->GetPositionZ() + 1.0f,true);
+		}
+		FlameNb++;
+		if(FlameNb == 15)
+		{
+			FlameNb = 2;
+			FlameSpawn_Timer = DAY*HOUR;
+		}
+		else
+			FlameSpawn_Timer = 70;
+	}
+
 	void DoStormDamage()
 	{
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
@@ -236,6 +251,13 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		}
 		else
 			Flame_Timer -= diff;
+
+		if(FlameSpawn_Timer <= diff)
+		{
+			SpawnFlame();
+		}
+		else
+			FlameSpawn_Timer -= diff;
 				
         if(phase == 0)
         {
@@ -302,7 +324,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     flame_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-        AddEventOnMe(SPELL_COLDFLAME,1000,3000);
+        AddEventOnMe(SPELL_COLDFLAME,500,3000);
 		me->setFaction(2212);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		MakeInvisibleStalker();
