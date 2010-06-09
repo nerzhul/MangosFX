@@ -603,6 +603,14 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     if (!spellProto || !(spellProto->Mechanic == MECHANIC_ROOT || IsSpellHaveAura(spellProto,SPELL_AURA_MOD_ROOT)))
         pVictim->RemoveSpellbyDamageTaken(SPELL_AURA_MOD_ROOT, damage);
 
+	WeaponAttackType attType = GetWeaponAttackType(spellProto);
+	// on weapon hit casts, proc from melee damage implemented in DealMeleeDamage() (sent with spellProto == NULL, which determines possible double proc)
+	if(GetTypeId() == TYPEID_PLAYER &&
+		spellProto &&
+		(spellProto->DmgClass == SPELL_DAMAGE_CLASS_MELEE ||
+		spellProto->DmgClass == SPELL_DAMAGE_CLASS_RANGED))
+		((Player*)this)->CastItemCombatSpell(pVictim, attType);
+
     // no xp,health if type 8 /critters/
     if(pVictim->GetTypeId() != TYPEID_PLAYER && pVictim->GetCreatureType() == CREATURE_TYPE_CRITTER)
     {
@@ -6518,6 +6526,18 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 32747;
                     break;
                 }
+				// Tricks of Trade
+				case 57934:
+				{
+					if(Aura* pAura = GetAura(57934, EFFECT_INDEX_1))
+						if(Unit* target = GetUnit(*this, pAura->GetModMisc()))
+							CastSpell(target, 57933, true);
+					
+					triggered_spell_id = 59628;
+					target = this;
+					RemoveAurasDueToSpell(57934);
+					break;
+				}    
             }
             // Cut to the Chase
             if (dummySpell->SpellIconID == 2909)
@@ -12269,6 +12289,7 @@ int32 Unit::CalculateSpellDamage(SpellEntry const* spellProto, uint8 effect_inde
 		}
 	}
 
+	error_log("DAMAGE : %i",value);
     return value;
 }
 

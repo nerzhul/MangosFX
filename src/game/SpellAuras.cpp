@@ -2540,6 +2540,17 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         return;
                 }
                 break;
+			case SPELLFAMILY_ROGUE:
+			{
+				// Tricks of Trade
+				if (m_spellProto->Id == 57934)
+				{
+					if (Spell* tot = m_target->FindCurrentSpellBySpellId(57934))
+						if(Unit* altTarget = tot->m_targets.getUnitTarget())
+							m_modifier.m_miscvalue = altTarget->GetGUID();
+				}
+				break;
+			}
             case SPELLFAMILY_WARRIOR:
                 // Overpower
                 if(m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004))
@@ -8575,6 +8586,23 @@ void Aura::PeriodicDummyTick()
 					// probably im blind but damage is not in dbc files ...
 					int32 bp1 = m_spellProto->CalculateSimpleValue(EFFECT_INDEX_0);
 					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
+					return;
+				}
+				case 62717:                                 // Slag Pot
+				{
+					Unit* caster = GetCaster();
+					if(!caster)
+						return;
+					caster->CastSpell(m_target, 65722, true);
+					return;
+				}
+				case 63477:                                 // Slag Pot(h)
+				{
+					Unit* caster = GetCaster();
+					if(!caster)
+						return;
+					
+					caster->CastSpell(m_target, 65723, true);
 					return;
 				}
                 case 66118:                                 // Leeching Swarm 10 man

@@ -238,6 +238,7 @@ class MANGOS_DLL_SPEC Aura
         uint64 GetCastItemGUID() const { return m_castItemGuid; }
         uint32 GetEffIndex() const{ return m_effIndex; }
         int32 GetBasePoints() const { return m_currentBasePoints; }
+		int32 GetModMisc() const { return m_modifier.m_miscvalue;}
 
         int32 GetAuraMaxDuration() const { return m_maxduration; }
         void SetAuraMaxDuration(int32 duration) { m_maxduration = duration; }
