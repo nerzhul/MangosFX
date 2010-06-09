@@ -147,7 +147,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 
 	void CallColdFlames()
 	{
-		Unit* flameTarget = SelectUnit(SELECT_TARGET_RANDOM,1);
+		Unit* flameTarget = SelectUnit(SELECT_TARGET_RANDOM,0);
 		uint8 security = 0;
 		
 		if(!flameTarget)
@@ -156,70 +156,26 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		float dist = me->GetDistance2d(flameTarget);
 		float ecartX = (flameTarget->GetPositionX() - me->GetPositionX());
 		float ecartY = (flameTarget->GetPositionY() - me->GetPositionY());
-		uint8 MaxDist;
-		if(phase == 1)
-			MaxDist = 30;
-		else
-			MaxDist = 40;
-
-		if(dist < 5)
+		float MaxDist = 39.0f;
+		float XYPas = MaxDist / 3.0f;
+		float coefDist = MaxDist / dist;
+		ecartX *= coefDist;
+		ecartY *= coefDist;
+		error_log("coef : %f / ecartX : %f / ecartY: %f / dist: %f / MaxDist: %f",coefDist,ecartX,ecartY,dist,MaxDist);
+		ecartX /= XYPas;
+		ecartY /= XYPas;
+		
+		error_log("ecartX : %f / ecartY: %f",coefDist,ecartX,ecartY);
+		
+		for(uint8 i=0;i<=13;i++)
 		{
-			if(phase == 0)
-			{
-				ecartX *= 8;
-				ecartY *= 8;
-			}
-			else
-			{
-				ecartX *= 6;
-				ecartY *= 6;
-			}
-		}
-		else if(dist < 10)
-		{
-			if(phase == 0)
-			{
-				ecartX *= 4;
-				ecartY *= 4;
-			}
-			else
-			{
-				ecartX *= 3;
-				ecartY *= 3;
-			}
-		}
-		else if(dist < 20)
-		{
-			if(phase == 0)
-			{
-				ecartX *= 2.0f;
-				ecartY *= 2.0f;
-			}
-			else
-			{
-				ecartX *= 1.5f;
-				ecartY *= 1.5f;
-			}
-		}
-		else if(dist < 30)
-		{
-			ecartX *= 1.3f;
-			ecartY *= 1.3f;
-		}
-
-		if(ecartX < 2.5f)
-			ecartX = 2.5f;
-		if(ecartY < 2.5f)
-			ecartY = 2.5f;
-
-		for(uint8 i=0;i<=MaxDist;i+=3)
-		{
-			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / MaxDist, me->GetPositionY() + ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
+			error_log("X : %f / Y: %f",me->GetPositionX() + ecartX * i,me->GetPositionY() + ecartY * i);
+			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i, me->GetPositionY() + ecartY * i, me->GetPositionZ() + 1.0f,true);
 			if(phase == 1)
 			{
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / MaxDist, me->GetPositionY() + ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i / MaxDist, me->GetPositionY() - ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
-				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i / MaxDist, me->GetPositionY() - ecartY * i / MaxDist, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i, me->GetPositionY() + ecartY * i, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() + ecartX * i, me->GetPositionY() - ecartY * i, me->GetPositionZ() + 1.0f,true);
+				CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * i, me->GetPositionY() - ecartY * i, me->GetPositionZ() + 1.0f,true);
 			}
 		}
 	}

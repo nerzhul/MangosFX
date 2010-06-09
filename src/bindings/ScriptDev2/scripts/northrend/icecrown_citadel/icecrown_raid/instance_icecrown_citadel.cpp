@@ -66,9 +66,17 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
     {
         switch(pCreature->GetEntry())
         {
-            case NPC_MARROWGAR: m_uiMarrowgarGUID = pCreature->GetGUID(); break;
-            case NPC_DEATHWHISPER: m_uiDeathwhisperGUID = pCreature->GetGUID(); break;
-            case NPC_SAURFANG: m_uiSaurfangGUID = pCreature->GetGUID(); break;
+            case NPC_MARROWGAR: 
+				m_uiMarrowgarGUID = pCreature->GetGUID(); 
+				break;
+            case NPC_DEATHWHISPER: 
+				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				m_uiDeathwhisperGUID = pCreature->GetGUID(); 
+				break;
+            case NPC_SAURFANG: 
+				m_uiSaurfangGUID = pCreature->GetGUID(); 
+				break;
         }
     }
 
@@ -91,6 +99,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 break;
             case GO_DEATHWHISPER_ELEVATOR:
                 m_uiDeathwhisperElevatorGUID = pGo->GetGUID();
+				pGo->RemoveFromWorld();
                 break;
             case GO_SAURFANG_DOOR:
                 m_uiSaurfangDoorGUID = pGo->GetGUID();
