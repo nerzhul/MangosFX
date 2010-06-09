@@ -2957,9 +2957,13 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 {
     WeaponAttackType attType = BASE_ATTACK;
 
-    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && spell->Category != SPELLCATEGORY_JUDGEMENT)
+	// Hack for Paladin Ranged Spells
+    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && !(spell->Category == SPELLCATEGORY_JUDGEMENT || 
+		GetTypeId() == TYPEID_PLAYER && ((Player*)this)->getClass() == CLASS_PALADIN && 
+		(spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) || spell->Id == 53595)))
         attType = RANGED_ATTACK;
 
+	
     // bonus from skills is 0.04% per skill Diff
     int32 attackerWeaponSkill = int32(GetWeaponSkillValue(attType,pVictim));
     int32 skillDiff = attackerWeaponSkill - int32(pVictim->GetMaxSkillValueForLevel(this));
