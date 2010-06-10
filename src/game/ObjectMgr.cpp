@@ -31,6 +31,7 @@
 #include "World.h"
 #include "Group.h"
 #include "Guild.h"
+#include "InstanceData.h"
 #include "ArenaTeam.h"
 #include "Transports.h"
 #include "ProgressBar.h"
@@ -7432,6 +7433,33 @@ bool PlayerCondition::Meets(Player const * player) const
             }
             return false;
         }
+		case CONDITION_NOITEM:
+            return !player->HasItemCount(value1, value2);
+        case CONDITION_SPELL:
+        {
+            switch(value2)
+            {
+                case 0: return player->HasSpell(value1);
+                case 1: return !player->HasSpell(value1);
+            }
+            return false;
+        }
+        case CONDITION_INSTANCE_SCRIPT:
+        {
+            // have meaning only for specific map instance script so ignore other maps
+            if (player->GetMapId() != value1)
+                return false;
+            if (InstanceData* data = player->GetInstanceData())
+                return data->CheckConditionCriteriaMeet(player, value1, value2);
+            return false;
+        }
+        case CONDITION_QUESTAVAILABLE:
+        {
+            if (Quest const* quest = sObjectMgr.GetQuestTemplate(value1))
+                return player->CanTakeQuest(quest, false);
+            else
+                false;
+        }
         default:
             return false;
     }
@@ -7463,6 +7491,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             break;
         }
         case CONDITION_ITEM:
+		case CONDITION_NOITEM:
         {
             ItemPrototype const *proto = ObjectMgr::GetItemPrototype(value1);
             if(!proto)
@@ -7533,6 +7562,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         }
         case CONDITION_QUESTREWARDED:
         case CONDITION_QUESTTAKEN:
+		case CONDITION_QUESTAVAILABLE:
         {
             Quest const *Quest = sObjectMgr.GetQuestTemplate(value1);
             if (!Quest)
@@ -7617,6 +7647,33 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             if (value2 > 2)
             {
                 sLog.outErrorDb("Level condition has invalid argument %u (must be 0..2), skipped", value2);
+                return false;
+            }
+
+            break;
+        }
+		case CONDITION_SPELL:
+        {
+            if(!sSpellStore.LookupEntry(value1))
+            {
+                sLog.outErrorDb("Spell condition requires to have non existing spell (Id: %d), skipped", value1);
+                return false;
+            }
+
+            if (value2 > 1)
+            {
+                sLog.outErrorDb("Spell condition has invalid argument %u (must be 0..1), skipped", value2);
+                return false;
+            }
+
+            break;
+        }
+        case CONDITION_INSTANCE_SCRIPT:
+        {
+            MapEntry const* mapEntry = sMapStore.LookupEntry(value1);
+            if (!mapEntry || !mapEntry->IsDungeon())
+            {
+                sLog.outErrorDb("Instance script condition has not existed map id %u as first arg, skipped", value1);
                 return false;
             }
 

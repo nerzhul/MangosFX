@@ -12285,7 +12285,7 @@ void Player::RemoveItemFromBuyBackSlot( uint32 slot, bool del )
     }
 }
 
-void Player::SendEquipError( uint8 msg, Item* pItem, Item *pItem2 )
+void Player::SendEquipError( uint8 msg, Item* pItem, Item *pItem2 ) const
 {
     sLog.outDebug( "WORLD: Sent SMSG_INVENTORY_CHANGE_FAILURE (%u)", msg);
     WorldPacket data(SMSG_INVENTORY_CHANGE_FAILURE, 1+8+8+1);
@@ -13501,7 +13501,7 @@ Quest const * Player::GetNextQuest( uint64 guid, Quest const *pQuest )
     return NULL;
 }
 
-bool Player::CanSeeStartQuest( Quest const *pQuest )
+bool Player::CanSeeStartQuest( Quest const *pQuest ) const
 {
     if( SatisfyQuestRace( pQuest, false ) && SatisfyQuestSkillOrClass( pQuest, false ) &&
         SatisfyQuestExclusiveGroup( pQuest, false ) && SatisfyQuestReputation( pQuest, false ) &&
@@ -13514,7 +13514,7 @@ bool Player::CanSeeStartQuest( Quest const *pQuest )
     return false;
 }
 
-bool Player::CanTakeQuest( Quest const *pQuest, bool msg )
+bool Player::CanTakeQuest( Quest const *pQuest, bool msg ) const
 {
     return SatisfyQuestStatus( pQuest, msg ) && SatisfyQuestExclusiveGroup( pQuest, msg )
         && SatisfyQuestRace( pQuest, msg ) && SatisfyQuestLevel( pQuest, msg )
@@ -13524,7 +13524,7 @@ bool Player::CanTakeQuest( Quest const *pQuest, bool msg )
         && SatisfyQuestDay( pQuest, msg ) && SatisfyQuestWeek( pQuest, msg );
 }
 
-bool Player::CanAddQuest( Quest const *pQuest, bool msg )
+bool Player::CanAddQuest( Quest const *pQuest, bool msg ) const
 {
     if( !SatisfyQuestLog( msg ) )
         return false;
@@ -13548,70 +13548,75 @@ bool Player::CanAddQuest( Quest const *pQuest, bool msg )
     return true;
 }
 
-bool Player::CanCompleteQuest( uint32 quest_id )
+bool Player::CanCompleteQuest( uint32 quest_id ) const
 {
-    if( quest_id )
+    if (!quest_id)
+        return false;
+
+    QuestStatusMap::const_iterator q_itr = mQuestStatus.find(quest_id);
+
+    // some quests can be auto taken and auto completed in one step
+    QuestStatus status = q_itr != mQuestStatus.end() ? q_itr->second.m_status : QUEST_STATUS_NONE;
+
+    if (status == QUEST_STATUS_COMPLETE)
+        return false;                                   // not allow re-complete quest
+
+    Quest const* qInfo = sObjectMgr.GetQuestTemplate(quest_id);
+
+    if (!qInfo)
+        return false;
+
+    // auto complete quest
+    if (qInfo->IsAutoComplete() && CanTakeQuest(qInfo, false))
+        return true;
+
+    if (status != QUEST_STATUS_INCOMPLETE)
+        return false;
+
+    // incomplete quest have status data
+    QuestStatusData const& q_status = q_itr->second;
+
+    if (qInfo->HasFlag( QUEST_MANGOS_FLAGS_DELIVER ))
     {
-        QuestStatusData& q_status = mQuestStatus[quest_id];
-        if( q_status.m_status == QUEST_STATUS_COMPLETE )
-            return false;                                   // not allow re-complete quest
-
-        Quest const* qInfo = sObjectMgr.GetQuestTemplate(quest_id);
-
-        if(!qInfo)
-            return false;
-
-        // auto complete quest
-        if (qInfo->IsAutoComplete() && CanTakeQuest(qInfo, false))
-            return true;
-
-        if ( q_status.m_status == QUEST_STATUS_INCOMPLETE )
+        for(int i = 0; i < QUEST_ITEM_OBJECTIVES_COUNT; ++i)
         {
-
-            if ( qInfo->HasFlag( QUEST_MANGOS_FLAGS_DELIVER ) )
-            {
-                for(int i = 0; i < QUEST_ITEM_OBJECTIVES_COUNT; ++i)
-                {
-                    if( qInfo->ReqItemCount[i] != 0 && q_status.m_itemcount[i] < qInfo->ReqItemCount[i] )
-                        return false;
-                }
-            }
-
-            if ( qInfo->HasFlag(QUEST_MANGOS_FLAGS_KILL_OR_CAST | QUEST_MANGOS_FLAGS_SPEAKTO) )
-            {
-                for(int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
-                {
-                    if( qInfo->ReqCreatureOrGOId[i] == 0 )
-                        continue;
-
-                    if( qInfo->ReqCreatureOrGOCount[i] != 0 && q_status.m_creatureOrGOcount[i] < qInfo->ReqCreatureOrGOCount[i] )
-                        return false;
-                }
-            }
-
-            if ( qInfo->HasFlag( QUEST_MANGOS_FLAGS_EXPLORATION_OR_EVENT ) && !q_status.m_explored )
+            if (qInfo->ReqItemCount[i] != 0 && q_status.m_itemcount[i] < qInfo->ReqItemCount[i])
                 return false;
-
-            if ( qInfo->HasFlag( QUEST_MANGOS_FLAGS_TIMED ) && q_status.m_timer == 0 )
-                return false;
-
-            if ( qInfo->GetRewOrReqMoney() < 0 )
-            {
-                if ( GetMoney() < uint32(-qInfo->GetRewOrReqMoney()) )
-                    return false;
-            }
-
-            uint32 repFacId = qInfo->GetRepObjectiveFaction();
-            if ( repFacId && GetReputationMgr().GetReputation(repFacId) < qInfo->GetRepObjectiveValue() )
-                return false;
-
-            return true;
         }
     }
-    return false;
+
+    if (qInfo->HasFlag(QUEST_MANGOS_FLAGS_KILL_OR_CAST | QUEST_MANGOS_FLAGS_SPEAKTO))
+    {
+        for(int i = 0; i < QUEST_OBJECTIVES_COUNT; ++i)
+        {
+            if (qInfo->ReqCreatureOrGOId[i] == 0)
+                continue;
+
+            if (qInfo->ReqCreatureOrGOCount[i] != 0 && q_status.m_creatureOrGOcount[i] < qInfo->ReqCreatureOrGOCount[i])
+                return false;
+        }
+    }
+
+    if (qInfo->HasFlag( QUEST_MANGOS_FLAGS_EXPLORATION_OR_EVENT ) && !q_status.m_explored)
+        return false;
+
+    if (qInfo->HasFlag( QUEST_MANGOS_FLAGS_TIMED ) && q_status.m_timer == 0)
+        return false;
+
+    if (qInfo->GetRewOrReqMoney() < 0)
+    {
+        if (GetMoney() < uint32(-qInfo->GetRewOrReqMoney()))
+            return false;
+    }
+
+    uint32 repFacId = qInfo->GetRepObjectiveFaction();
+    if (repFacId && GetReputationMgr().GetReputation(repFacId) < qInfo->GetRepObjectiveValue())
+        return false;
+
+    return true;
 }
 
-bool Player::CanCompleteRepeatableQuest( Quest const *pQuest )
+bool Player::CanCompleteRepeatableQuest( Quest const *pQuest ) const
 {
     // Solve problem that player don't have the quest and try complete it.
     // if repeatable she must be able to complete event if player don't have it.
@@ -13630,7 +13635,7 @@ bool Player::CanCompleteRepeatableQuest( Quest const *pQuest )
     return true;
 }
 
-bool Player::CanRewardQuest( Quest const *pQuest, bool msg )
+bool Player::CanRewardQuest( Quest const *pQuest, bool msg ) const
 {
     // not auto complete quest and not completed quest (only cheating case, then ignore without message)
     if(!pQuest->IsAutoComplete() && GetQuestStatus(pQuest->GetQuestId()) != QUEST_STATUS_COMPLETE)
@@ -13666,7 +13671,7 @@ bool Player::CanRewardQuest( Quest const *pQuest, bool msg )
     return true;
 }
 
-bool Player::CanRewardQuest( Quest const *pQuest, uint32 reward, bool msg )
+bool Player::CanRewardQuest( Quest const *pQuest, uint32 reward, bool msg ) const
 {
     // prevent receive reward with quest items in bank or for not completed quest
     if(!CanRewardQuest(pQuest,msg))
@@ -14013,7 +14018,7 @@ void Player::FailQuest(uint32 questId)
     }
 }
 
-bool Player::SatisfyQuestSkillOrClass( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestSkillOrClass( Quest const* qInfo, bool msg ) const
 {
     int32 zoneOrSort   = qInfo->GetZoneOrSort();
     int32 skillOrClass = qInfo->GetSkillOrClass();
@@ -14059,7 +14064,7 @@ bool Player::SatisfyQuestSkillOrClass( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestLevel( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestLevel( Quest const* qInfo, bool msg ) const
 {
     if( getLevel() < qInfo->GetMinLevel() )
     {
@@ -14070,7 +14075,7 @@ bool Player::SatisfyQuestLevel( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestLog( bool msg )
+bool Player::SatisfyQuestLog( bool msg ) const
 {
     // exist free slot
     if( FindQuestSlot(0) < MAX_QUEST_LOG_SIZE )
@@ -14086,7 +14091,7 @@ bool Player::SatisfyQuestLog( bool msg )
     return false;
 }
 
-bool Player::SatisfyQuestPreviousQuest( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestPreviousQuest( Quest const* qInfo, bool msg ) const
 {
     // No previous quest (might be first quest in a series)
     if( qInfo->prevQuests.empty())
@@ -14183,7 +14188,7 @@ bool Player::SatisfyQuestPreviousQuest( Quest const* qInfo, bool msg )
     return false;
 }
 
-bool Player::SatisfyQuestRace( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestRace( Quest const* qInfo, bool msg ) const
 {
     uint32 reqraces = qInfo->GetRequiredRaces();
     if ( reqraces == 0 )
@@ -14197,7 +14202,7 @@ bool Player::SatisfyQuestRace( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestReputation( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestReputation( Quest const* qInfo, bool msg ) const
 {
     uint32 fIdMin = qInfo->GetRequiredMinRepFaction();      //Min required rep
     if(fIdMin && GetReputationMgr().GetReputation(fIdMin) < qInfo->GetRequiredMinRepValue())
@@ -14218,7 +14223,7 @@ bool Player::SatisfyQuestReputation( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestStatus( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestStatus( Quest const* qInfo, bool msg ) const
 {
     QuestStatusMap::const_iterator itr = mQuestStatus.find( qInfo->GetQuestId() );
     if  ( itr != mQuestStatus.end() && itr->second.m_status != QUEST_STATUS_NONE )
@@ -14230,7 +14235,7 @@ bool Player::SatisfyQuestStatus( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestTimed(Quest const* qInfo, bool msg)
+bool Player::SatisfyQuestTimed(Quest const* qInfo, bool msg) const
 {
     if (!m_timedquests.empty() && qInfo->HasFlag(QUEST_MANGOS_FLAGS_TIMED))
     {
@@ -14242,7 +14247,7 @@ bool Player::SatisfyQuestTimed(Quest const* qInfo, bool msg)
     return true;
 }
 
-bool Player::SatisfyQuestExclusiveGroup( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestExclusiveGroup( Quest const* qInfo, bool msg ) const
 {
     // non positive exclusive group, if > 0 then can be start if any other quest in exclusive group already started/completed
     if(qInfo->GetExclusiveGroup() <= 0)
@@ -14270,7 +14275,7 @@ bool Player::SatisfyQuestExclusiveGroup( Quest const* qInfo, bool msg )
             return false;
         }
 
-        QuestStatusMap::iterator i_exstatus = mQuestStatus.find( exclude_Id );
+        QuestStatusMap::const_iterator i_exstatus = mQuestStatus.find( exclude_Id );
 
         // alternative quest already started or completed
         if( i_exstatus != mQuestStatus.end()
@@ -14284,7 +14289,7 @@ bool Player::SatisfyQuestExclusiveGroup( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestNextChain( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestNextChain( Quest const* qInfo, bool msg ) const
 {
     if(!qInfo->GetNextQuestInChain())
         return true;
@@ -14305,7 +14310,7 @@ bool Player::SatisfyQuestNextChain( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestPrevChain( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestPrevChain( Quest const* qInfo, bool msg ) const
 {
     // No previous quest in chain
     if( qInfo->prevChainQuests.empty())
@@ -14339,7 +14344,7 @@ bool Player::SatisfyQuestPrevChain( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg ) const
 {
     if(!qInfo->IsDaily())
         return true;
@@ -14365,7 +14370,7 @@ bool Player::SatisfyQuestDay( Quest const* qInfo, bool msg )
     return true;
 }
 
-bool Player::SatisfyQuestWeek( Quest const* qInfo, bool msg )
+bool Player::SatisfyQuestWeek( Quest const* qInfo, bool msg ) const
 {
 	if (!qInfo->IsWeekly() || m_weeklyquests.empty())
 		return true;
@@ -15015,7 +15020,7 @@ void Player::SendQuestTimerFailed( uint32 quest_id )
     }
 }
 
-void Player::SendCanTakeQuestResponse( uint32 msg )
+void Player::SendCanTakeQuestResponse( uint32 msg ) const
 {
     WorldPacket data( SMSG_QUESTGIVER_QUEST_INVALID, 4 );
     data << uint32(msg);

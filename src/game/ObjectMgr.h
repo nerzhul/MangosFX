@@ -323,9 +323,13 @@ enum ConditionType
     CONDITION_AREA_FLAG             = 13,                   // area_flag    area_flag_not
     CONDITION_RACE_CLASS            = 14,                   // race_mask    class_mask
     CONDITION_LEVEL                 = 15,                   // player_level 0, 1 or 2 (0: equal to, 1: equal or higher than, 2: equal or less than)
+	CONDITION_NOITEM                = 16,                   // item_id      count
+	CONDITION_SPELL                 = 17,                   // spell_id     0, 1 (0: has spell, 1: hasn't spell)
+	CONDITION_INSTANCE_SCRIPT       = 18,                   // map_id       instance_condition_id (instance script specific enum)
+	CONDITION_QUESTAVAILABLE        = 19,                   // quest_id     0       for case when loot/gossip possible only if player can start quest
 };
 
-#define MAX_CONDITION                 16                    // maximum value in ConditionType enum
+#define MAX_CONDITION                 20                    // maximum value in ConditionType enum
 
 struct PlayerCondition
 {
