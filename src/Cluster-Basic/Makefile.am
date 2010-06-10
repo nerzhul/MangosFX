@@ -21,7 +21,7 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../
 
 ## Build world daemon as standalone program
 bin_PROGRAMS = mangosFX-BasicCluster
-mangosFX_LootCluster_SOURCES = \
+mangosFX_BasicCluster_SOURCES = \
 	CliCommand.cpp \
 	Cluster.cpp \
 	Cluster.h \
@@ -30,7 +30,7 @@ mangosFX_LootCluster_SOURCES = \
 	Main.cpp
 
 ## Link world daemon against the shared library
-mangosFX_LootCluster_LDADD = \
+mangosFX_BasicCluster_LDADD = \
 	../game/libmangosgame.a \
 	../shared/Database/libmangosdatabase.a \
 	../shared/Config/libmangosconfig.a \
@@ -40,7 +40,7 @@ mangosFX_LootCluster_LDADD = \
 	../../dep/src/g3dlite/libg3dlite.a \
 	../framework/libmangosframework.a 
 
-mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
+mangosFX_BasicCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
