@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			FlameSpawn_Timer = DAY*HOUR;
 		}
 		else
-			FlameSpawn_Timer = 120;
+			FlameSpawn_Timer = 150;
 	}
 
 	void DoStormDamage()
