@@ -1,24 +1,23 @@
-#include "ClusterLoot.h"
-#include "cObjectMgr.h"
+#include "ClusterSpec.h"
 #include <Timer.h>
 #include <Config/ConfigEnv.h>
 #include <Database/DatabaseEnv.h>
 #include <Policies/SingletonImp.h>
 #include <ObjectMgr.h>
 
-INSTANTIATE_SINGLETON_1( ClusterLoot );
-volatile bool ClusterLoot::m_stopEvent = false;
-uint8 ClusterLoot::m_ExitCode = SHUTDOWN_EXIT_CODE;
+INSTANTIATE_SINGLETON_1( ClusterBasic );
+volatile bool ClusterBasic::m_stopEvent = false;
+uint8 ClusterBasic::m_ExitCode = SHUTDOWN_EXIT_CODE;
 
-ClusterLoot::ClusterLoot()
+ClusterBasic::ClusterBasic()
 {
 }
 
-ClusterLoot::~ClusterLoot()
+ClusterBasic::~ClusterBasic()
 {
 }
 
-void ClusterLoot::run()
+void ClusterBasic::run()
 {
 	// Init
 	///- Init new SQL thread for the world database
@@ -50,7 +49,7 @@ void ClusterLoot::run()
     WorldDatabase.ThreadEnd();                                  // free mySQL thread resources
 }
 
-void ClusterLoot::SetInitialSettings()
+void ClusterBasic::SetInitialSettings()
 {
 	///- Time server startup
     uint32 uStartTime = getMSTime();
@@ -65,31 +64,13 @@ void ClusterLoot::SetInitialSettings()
 
 	// For other clusters, modify loaded tables there
 
-	sLog.outString( "Loading Items..." );
-    sClusterObjectMgr.LoadItemPrototypes();
-
-	sLog.outString( "Loading Creature templates..." );
-    sClusterObjectMgr.LoadCreatureTemplates();
-
-	sLog.outString( "Loading Game Object Templates..." );
-    sClusterObjectMgr.LoadGameobjectInfo();
-
-	sLog.outString( "Loading Quests..." );
-    sClusterObjectMgr.LoadQuests();
-
-	sLog.outString( "Loading Loot Tables..." );
-    sLog.outString();
-    LoadLootTables();
-    sLog.outString( ">>> Loot Tables loaded" );
-    sLog.outString();
-
-	sLog.outString( "CLUSTER: ClusterLoot initialized" );
+	sLog.outString( "CLUSTER: ClusterBasic initialized" );
 
 	uint32 uStartInterval = getMSTimeDiff(uStartTime, getMSTime());
 	sLog.outBasic( "CLUSTER STARTUP TIME: %i minutes %i seconds", uStartInterval / 60000, (uStartInterval % 60000) / 1000 );
 }
 
-void ClusterLoot::DetectDBCLang()
+void ClusterBasic::DetectDBCLang()
 {
     uint32 m_lang_confid = sConfig.GetIntDefault("DBC.Locale", 255);
 
@@ -133,11 +114,11 @@ void ClusterLoot::DetectDBCLang()
     sLog.outString();
 }
 
-void ClusterLoot::LoadConfigSettings()
+void ClusterBasic::LoadConfigSettings()
 {
 }
 
-void ClusterLoot::Wait()
+void ClusterBasic::Wait()
 {
 	while(!MustStop())
 	{

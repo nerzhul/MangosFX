@@ -132,7 +132,7 @@ extern int main(int argc, char **argv)
 	sLog.outTitle( " //         //     //   //     //     //  //     //    //   //     //   //   " );
 	sLog.outTitle( "//     ////// //////   ////// ////// ////// //////    //   ////// //   //    " );
 	sLog.outTitle( "-----------------------------------------------------------------------------" );
-	sLog.outTitle( "Frost Sapphire Studios Loot Cluster");
+	sLog.outTitle( "Frost Sapphire Studios Quest Cluster");
     sLog.outString("Using configuration file %s.", cfg_file);
 
     sLog.outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));

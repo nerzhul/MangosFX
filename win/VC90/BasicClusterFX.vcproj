@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="ClusterFX-Loot"
-	ProjectGUID="{5C2CCE09-5A68-4A1F-9A9F-88711B7B6609}"
+	Name="ClusterFX-Basic"
+	ProjectGUID="{06761B24-4922-48D7-A676-16CCC9521223}"
 	RootNamespace="mangosd"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
@@ -122,8 +122,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)"
-			IntermediateDirectory=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)"
+			OutputDirectory=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)"
+			IntermediateDirectory=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -159,10 +159,10 @@
 				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="0"
 				RuntimeTypeInfo="true"
-				PrecompiledHeaderFile=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\mangosd.pch"
-				AssemblerListingLocation=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
-				ObjectFile=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
-				ProgramDataBaseFileName=".\LootClusterFX__$(PlatformName)_$(ConfigurationName)\"
+				PrecompiledHeaderFile=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)\mangosd.pch"
+				AssemblerListingLocation=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)\"
+				ObjectFile=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)\"
+				ProgramDataBaseFileName=".\BasicClusterFX__$(PlatformName)_$(ConfigurationName)\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -184,14 +184,14 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrt.lib"
-				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.exe"
+				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\BasicClusterFX.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;..\..\dep\lib\$(PlatformName)_$(ConfigurationName)&quot;;&quot;.\framework__$(PlatformName)_$(ConfigurationName)&quot;"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.pdb"
+				ProgramDatabaseFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\BasicClusterFX.pdb"
 				GenerateMapFile="true"
-				MapFileName="..\..\bin\$(PlatformName)_$(ConfigurationName)\LootClusterFX.map"
+				MapFileName="..\..\bin\$(PlatformName)_$(ConfigurationName)\BasicClusterFX.map"
 				SubSystem="1"
 				StackReserveSize="4194304"
 				LinkTimeCodeGeneration="0"
@@ -642,24 +642,16 @@
 		<Filter
 			Name="Replicat"
 			>
-			<File
-				RelativePath="..\..\src\Cluster-Loots\cObjectMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Cluster-Loots\cObjectMgr.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="ClusterSpec"
 			>
 			<File
-				RelativePath="..\..\src\Cluster-Loots\ClusterSpec.cpp"
+				RelativePath="..\..\src\Cluster-Basic\ClusterSpec.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\Cluster-Loots\ClusterSpec.h"
+				RelativePath="..\..\src\Cluster-Basic\ClusterSpec.h"
 				>
 			</File>
 		</Filter>
@@ -667,28 +659,28 @@
 			Name="Miscellaneous"
 			>
 			<File
-				RelativePath="..\..\src\Cluster-Loots\CliCommand.cpp"
+				RelativePath="..\..\src\Cluster-Basic\CliCommand.cpp"
 				>
 			</File>
 		</Filter>
 		<File
-			RelativePath="..\..\src\Cluster-Loots\Cluster.cpp"
+			RelativePath="..\..\src\Cluster-Basic\BasicClusterFX.rc"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\Cluster-Loots\Cluster.h"
+			RelativePath="..\..\src\Cluster-Basic\Cluster.cpp"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\Cluster-Loots\icon1.ico"
+			RelativePath="..\..\src\Cluster-Basic\Cluster.h"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\Cluster-Loots\LootClusterFX.rc"
+			RelativePath="..\..\src\Cluster-Basic\icon1.ico"
 			>
 		</File>
 		<File
-			RelativePath="..\..\src\Cluster-Loots\Main.cpp"
+			RelativePath="..\..\src\Cluster-Basic\Main.cpp"
 			>
 		</File>
 		<File

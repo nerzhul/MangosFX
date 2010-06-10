@@ -1,5 +1,5 @@
 #include "Cluster.h"
-#include "ClusterLoot.h"
+#include "ClusterSpec.h"
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
@@ -38,13 +38,13 @@ int Cluster::Run()
     }
 
     ///- Initialize the World
-    sClusterLoot.SetInitialSettings();
+    sClusterQuest.SetInitialSettings();
 
     ///- Catch termination signals
     _HookSignals();
 
     ///- Launch WorldRunnable thread
-    ACE_Based::Thread cluster_thread(new ClusterLoot);
+    ACE_Based::Thread cluster_thread(new ClusterQuest);
     cluster_thread.setPriority(ACE_Based::Highest);
 
 	///- Handle affinity for multiple processors and process priority on Windows
@@ -125,7 +125,7 @@ int Cluster::Run()
         delete freeze_thread;
     }*/
 
-	sClusterLoot.Wait();
+	sClusterQuest.Wait();
 
     ///- Remove signal handling before leaving
     _UnhookSignals();
@@ -233,13 +233,13 @@ void Cluster::_OnSignal(int s)
     switch (s)
     {
         case SIGINT:
-			ClusterLoot::StopNOW();
+			ClusterQuest::StopNOW();
             break;
         case SIGTERM:
         #ifdef _WIN32
         case SIGBREAK:
         #endif
-            ClusterLoot::StopNOW();
+            ClusterQuest::StopNOW();
             break;
     }
 
