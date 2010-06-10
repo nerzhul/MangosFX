@@ -5,8 +5,6 @@
 #include <Database/DatabaseEnv.h>
 #include <Policies/SingletonImp.h>
 #include <ObjectMgr.h>
-#include <GameEventMgr.h>
-#include <PoolManager.h>
 
 INSTANTIATE_SINGLETON_1( ClusterLoot );
 volatile bool ClusterLoot::m_stopEvent = false;
@@ -78,15 +76,6 @@ void ClusterLoot::SetInitialSettings()
 
 	sLog.outString( "Loading Quests..." );
     sClusterObjectMgr.LoadQuests();
-
-	sLog.outString( "Loading Objects Pooling Data...");
-    sPoolMgr.LoadFromDB(true);
-
-	sLog.outString( "Loading Game Event Data...");
-    sLog.outString();
-    sGameEventMgr.LoadFromDB(true);
-    sLog.outString( ">>> Game Event Data loaded" );
-    sLog.outString();
 
 	sLog.outString( "Loading Loot Tables..." );
     sLog.outString();

@@ -525,11 +525,11 @@ void PlayerMenu::SendQuestGiverQuestDetails( Quest const *pQuest, uint64 npcGUID
     data << uint32(0);
     data << uint32(0);
 
-    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward factions ids
+        data << uint32(pQuest->RewRepFaction[i]);
 
-    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // columnid in QuestFactionReward.dbc (if negative, from second row)
+        data << int32(pQuest->RewRepValueId[i]);
 
     for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)
         data << uint32(0);
@@ -648,14 +648,15 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
         }
     }
 
-    for(iI = 0; iI < QUEST_REPUTATIONS_COUNT; ++iI)         // reward factions ids
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward factions ids
+        data << uint32(pQuest->RewRepFaction[i]);
 
-    for(iI = 0; iI < QUEST_REPUTATIONS_COUNT; ++iI)         // column index in QuestFactionReward.dbc?
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // columnid in QuestFactionReward.dbc (if negative, from second row)
+        data << int32(pQuest->RewRepValueId[i]);
 
-    for(iI = 0; iI < QUEST_REPUTATIONS_COUNT; ++iI)         // reward reputation override?
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward reputation override. No bonus is expected given
+        data << int32(0);
+        //data << int32(pQuest->RewRepValue[i]);            // current field for store of rep value, can be reused to implement "override value"
 
     data << pQuest->GetPointMapId();
     data << pQuest->GetPointX();
@@ -786,13 +787,14 @@ void PlayerMenu::SendQuestGiverOfferReward( Quest const* pQuest, uint64 npcGUID,
     data << uint32(0);                                      // unknown
 
     for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward factions ids
-        data << uint32(0);
+        data << uint32(pQuest->RewRepFaction[i]);
 
-    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // columnid in QuestFactionReward.dbc (zero based)?
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // columnid in QuestFactionReward.dbc (if negative, from second row)
+        data << int32(pQuest->RewRepValueId[i]);
 
-    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward reputation override?
-        data << uint32(0);
+    for(int i = 0; i < QUEST_REPUTATIONS_COUNT; ++i)        // reward reputation override. No diplomacy bonus is expected given, reward also does not display in chat window
+        data << int32(0);
+        //data << int32(pQuest->RewRepValue[i]);
 
     pSession->SendPacket( &data );
     sLog.outDebug( "WORLD: Sent SMSG_QUESTGIVER_OFFER_REWARD NPCGuid=%u, questid=%u", GUID_LOPART(npcGUID), pQuest->GetQuestId() );
