@@ -6583,7 +6583,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         if ((familyFlag & UI64LIT(0x0000000000004000)) && aura->GetEffIndex() == 0)
                         {
                             // m_amount already include RAP bonus
-                            basePoint = aura->GetModifier()->m_amount * (aura->GetAuraMaxDuration() / aura->GetModifier()->periodictime)  * 40 / 100;
+                            basePoint = aura->GetModifier()->m_amount * aura->GetAuraMaxTicks() * 40 / 100;
                             spellId = 53353;                // Chimera Shot - Serpent
                         }
                         // Viper Sting - Instantly restores mana to you equal to 60% of the total amount drained by your Viper Sting.
