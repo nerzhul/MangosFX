@@ -25,8 +25,8 @@ mangosFX_LootCluster_SOURCES = \
 	CliCommand.cpp \
 	Cluster.cpp \
 	Cluster.h \
-	ClusterLoot.cpp \
-	ClusterLoot.h \
+	ClusterSpec.cpp \
+	ClusterSpec.h \
 	cObjectMgr.cpp \
 	cObjectMgr.h \
 	Main.cpp

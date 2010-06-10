@@ -17,7 +17,8 @@
 ## Process this file with automake to produce Makefile.in
 
 ## Sub-directories to parse
-SUBDIRS = tools framework shared realmd game bindings mangosd LootCluster
+SUBDIRS = tools framework shared realmd game bindings mangosd 
+SUBDIRS += Cluster-Loots Cluster-Basic Cluster-Quests
 
 ## Additional files to include when running 'make dist'
 #  Nothing yet.
