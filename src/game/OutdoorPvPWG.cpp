@@ -362,7 +362,6 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 {
 	if(!Horde_Spawns.empty())
 	{
-		error_log("Inversion de spawns HORDE");
 		for (std::vector<uint64>::iterator itr = Horde_Spawns.begin(); itr != Horde_Spawns.end(); ++itr)
 		{
 			if(owner == BG_TEAM_HORDE)
@@ -371,7 +370,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 				{
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 					{
-						cr->SetRespawnDelay(300000);
+						cr->SetRespawnDelay(300);
 						cr->Respawn();
 						cr->SetPhaseMask(1,true);
 					}
@@ -394,19 +393,15 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 
 	if(!Alliance_Spawns.empty())
 	{
-		error_log("Inversion de spawns Alliance");
 		for (std::vector<uint64>::iterator itr = Alliance_Spawns.begin(); itr != Alliance_Spawns.end(); ++itr)
 		{
-			error_log("Inversion de spawns %u",*itr);
 			if(owner == BG_TEAM_ALLIANCE)
 			{
-				error_log("Alliance possess");
 				if(GetMap())
 				{
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 					{
-						error_log("Respawn");
-						cr->SetRespawnDelay(300000);
+						cr->SetRespawnDelay(300);
 						cr->Respawn();
 						cr->SetPhaseMask(1,true);
 					}
@@ -414,12 +409,10 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			}
 			else
 			{
-				error_log("Horde possess");
 				if(GetMap())
 				{
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 					{
-						error_log("Despawn");
 						cr->SetRespawnDelay(1000*RESPAWN_ONE_DAY);
 						cr->ForcedDespawn(1000);
 						cr->SetPhaseMask(2,true);
@@ -765,6 +758,8 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 				creature->SetPhaseMask(2,true);
 				creature->ForcedDespawn(500);
 			}
+			else
+				creature->Respawn();
 			Horde_Spawns.push_back(creature->GetGUID());
 			break;
 		case 32626:
@@ -776,11 +771,14 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 32294:
 		case 31054:
 		case 31051:
+		case 30488:
 			if(m_defender == BG_TEAM_HORDE)
 			{
 				creature->SetPhaseMask(2,true);
 				creature->ForcedDespawn(500);
 			}
+			else
+				creature->Respawn();
 			Alliance_Spawns.push_back(creature->GetGUID());
 			break;
         default:
@@ -1016,8 +1014,8 @@ bool OutdoorPvPWG::UpdateQuestGiverPosition(uint32 guid, Creature *creature)
 //        true  = no need to rebuild (ie: Banners or teleporters)
 bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
 {
-    uint32 attFaction = 35;
-    uint32 defFaction = 35;
+    uint32 attFaction = 14;
+    uint32 defFaction = 14;
 
     if (isWarTime())
     {
