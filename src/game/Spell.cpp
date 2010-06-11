@@ -1648,12 +1648,15 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             else
                 break;
 
-            MaNGOS::GameObjectInRangeCheck check(x, y, z, radius + 12); //By default 50, but this value too big seemed to me (all walls fell at the left and on the right though shot directly!
+            MaNGOS::GameObjectInRangeCheck check(x, y, z, radius + 30); //By default 50, but this value too big seemed to me (all walls fell at the left and on the right though shot directly!
             std::list<GameObject*> goList;
             MaNGOS::GameObjectListSearcher<MaNGOS::GameObjectInRangeCheck> searcher(m_caster, goList, check);
-			m_caster->GetMap()->VisitWorld(x, y, radius, searcher);
+			m_caster->GetMap()->VisitGrid(x, y, radius, searcher);
             for(std::list<GameObject*>::iterator itr = goList.begin(); itr != goList.end(); ++itr)
-                AddGOTarget(*itr, effIndex);
+			{
+				if((*itr)->GetGOInfo()->type == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+					AddGOTarget(*itr, effIndex);
+			}
 			break;
 		}
         case TARGET_RANDOM_ENEMY_CHAIN_IN_AREA:

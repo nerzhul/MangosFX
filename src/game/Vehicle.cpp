@@ -345,6 +345,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	//unit->m_movementInfo.SetTransportData(unit->GetGUID(),
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(unit->GetVehicle()->GetVehicleInfo()->m_ID);
     if(!ve)
@@ -359,6 +360,30 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		(veSeat->m_attachmentOffsetZ),
 		veSeat->m_passengerYaw, 0/*v->GetCreationTime()*/, seatId, veSeat->m_ID,
 		sObjectMgr.GetSeatFlags(veSeat->m_ID), GetVehicleFlags());
+
+	unit->addUnitState(UNIT_STAT_ON_VEHICLE);
+
+	if(me->IsInWorld())
+	{
+		WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
+		data.append(unit->GetPackGUID());
+		data.append(me->GetPackGUID());
+		data << uint8(seatId);
+		data << uint8(0);
+		data << me->GetPositionX();
+		data << me->GetPositionY();
+		data << me->GetPositionZ();
+		data << uint32(getMSTime());
+		data << uint8(4);
+		data << unit->GetTransOffsetO();
+		data << uint32(SPLINEFLAG_UNKNOWN5);
+		data << uint32(0);// move time
+		data << uint32(1);
+		data << unit->GetTransOffsetX();
+		data << unit->GetTransOffsetY();
+		data << unit->GetTransOffsetZ();
+		unit->SendMessageToSet(&data, true);
+	}
 
 	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
     {
@@ -433,24 +458,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/
 
     if(me->IsInWorld())
-    {WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
-		data.append(unit->GetPackGUID());
-		data.append(me->GetPackGUID());
-		data << uint8(seatId);
-		data << uint8(0);
-		data << me->GetPositionX();
-		data << me->GetPositionY();
-		data << me->GetPositionZ();
-		data << uint32(getMSTime());
-		data << uint8(4);
-		data << unit->GetTransOffsetO();
-		data << uint32(SPLINEFLAG_UNKNOWN5);
-		data << uint32(0);// move time
-		data << uint32(1);
-		data << unit->GetTransOffsetX();
-		data << unit->GetTransOffsetY();
-		data << unit->GetTransOffsetZ();
-		unit->SendMessageToSet(&data, true);
+    {
         if(me->GetTypeId() == TYPEID_UNIT)
         {
             /*if(((Creature*)me)->IsAIEnabled)
@@ -542,10 +550,10 @@ void Vehicle::RemovePassenger(Unit *unit)
 
     sLog.outDebug("Unit %s exit vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
-	unit->SetVehicleGUID(0);
-
 	if((seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FREE | SEAT_VEHICLE_FULL)) && seat->second.passenger == unit)
     {
+		unit->SetVehicleGUID(0);
+
         if(seat->second.vs_flags & SF_MAIN_RIDER)
         {
             if(unit->GetTypeId() == TYPEID_PLAYER)
@@ -587,14 +595,10 @@ void Vehicle::RemovePassenger(Unit *unit)
                 unit->SendMessageToSet(&data1,true);
             }
         }
-        unit->m_movementInfo.ClearTransportData();
 
         seat->second.passenger = NULL;
         seat->second.flags = SEAT_FREE;
-
-		unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
-		unit->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
-		
+	
         EmptySeatsCountChanged();
     }
 }

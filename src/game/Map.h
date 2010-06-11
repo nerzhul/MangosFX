@@ -432,6 +432,7 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
         // DynObjects currently
         uint32 GenerateLocalLowGuid(HighGuid guidhigh);
 		template<class NOTIFIER> void VisitWorld(const float &x, const float &y, float radius, NOTIFIER &notifier);
+		template<class NOTIFIER> void VisitGrid(const float &x, const float &y, float radius, NOTIFIER &notifier);
 		static bool IsWintergraspBuffValidMap(uint32 mapid);
         
     private:
@@ -639,12 +640,25 @@ inline void
 Map::VisitWorld(const float &x, const float &y, float radius, NOTIFIER &notifier)
 {
     float x_off, y_off;
-	CellPair p(MaNGOS::ComputeCellPair(x, y, x_off, y_off));
+	CellPair p(MaNGOS::ComputeCellPair(x, y));
     Cell cell(p);
     cell.data.Part.reserved = ALL_DISTRICT;
     cell.SetNoCreate();
     TypeContainerVisitor<NOTIFIER, WorldTypeMapContainer> world_object_notifier(notifier);
-    cell.Visit(p, world_object_notifier, *this, radius, x_off, y_off);
+    cell.Visit(p, world_object_notifier, *this, radius, x, y);
+}
+
+template<class NOTIFIER>
+inline void
+Map::VisitGrid(const float &x, const float &y, float radius, NOTIFIER &notifier)
+{
+    CellPair p(MaNGOS::ComputeCellPair(x, y));
+    Cell cell(p);
+    cell.data.Part.reserved = ALL_DISTRICT;
+    cell.SetNoCreate();
+
+    TypeContainerVisitor<NOTIFIER, GridTypeMapContainer >  grid_object_notifier(notifier);
+    cell.Visit(p, grid_object_notifier, *this, radius, x, y);
 }
 
 #endif
