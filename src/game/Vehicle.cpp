@@ -404,8 +404,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 SendMessageToSet(&data3,false);
             }
 		}
-
-		BuildVehicleActionBar((Player*)unit);
 		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
         for(SpellClickInfoMap::const_iterator itr = clickPair.first; itr != clickPair.second; ++itr)
         {
@@ -422,6 +420,8 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	if(unit->GetTypeId() == TYPEID_PLAYER) // not right
 	{
+		BuildVehicleActionBar((Player*)unit);
+
 		if(((Player*)unit)->GetGroup())
 		   ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
            
@@ -469,6 +469,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 void Vehicle::BuildVehicleActionBar(Player *plr) const
 {
+	// TODO: player spell if he isn't the master of the vehicle
     WorldPacket data(SMSG_PET_SPELLS, 8+2+4+4+4*10+1+1);
     data << uint64(me->GetGUID());
     data << uint16(0x00000000);                     // creature family, not used in vehicles
@@ -552,7 +553,8 @@ void Vehicle::RemovePassenger(Unit *unit)
             if(unit->GetTypeId() == TYPEID_PLAYER)
             {
                 ((Player*)unit)->SetMover(NULL);
-                ((Player*)unit)->SetClientControl(unit, 0);
+				((Player*)unit)->SetClientControl(me, 0);
+                ((Player*)unit)->SetClientControl(unit, 1);
                 ((Player*)unit)->SetMoverInQueve(NULL);
             }
             unit->SetCharm(NULL);
