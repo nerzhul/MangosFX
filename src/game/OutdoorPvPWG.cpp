@@ -421,6 +421,51 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			}
 		}
 	}
+	if(!FortressPicBanners.empty())
+	{
+		for (std::vector<uint64>::iterator itr = FortressPicBanners.begin(); itr != FortressPicBanners.end(); ++itr)
+		{
+			if(owner == BG_TEAM_ALLIANCE)
+			{
+				if(GameObject* go = GetMap()->GetGameObject(*itr))
+				{
+					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,5651);
+					go->Respawn();
+				}
+			}
+			else
+			{
+				if(GameObject* go = GetMap()->GetGameObject(*itr))
+				{
+					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,5652);
+					go->Respawn();
+				}
+			}
+		}
+	}
+
+	if(!FortressLargeBanners.empty())
+	{
+		for (std::vector<uint64>::iterator itr = FortressLargeBanners.begin(); itr != FortressLargeBanners.end(); ++itr)
+		{
+			if(owner == BG_TEAM_ALLIANCE)
+			{
+				if(GameObject* go = GetMap()->GetGameObject(*itr))
+				{
+					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,8256);
+					go->Respawn();
+				}
+			}
+			else
+			{
+				if(GameObject* go = GetMap()->GetGameObject(*itr))
+				{
+					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,8257);
+					go->Respawn();
+				}
+			}
+		}
+	}
 }
 
 void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
@@ -817,8 +862,21 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
         }
     }
 
-	if(go->GetEntry() == 192829)
-		TitanRelic = go;
+	switch(go->GetEntry())
+	{
+		case 192829:
+			TitanRelic = go;
+			break;
+		case 192254:
+		case 192255:
+		case 192284:
+		case 192285:
+			if(go->GetPositionX() > 5073.0f && go->GetPositionX() < 5392.0f && go->GetPositionY() > 2550.0f && go->GetPositionY() < 3100.0f)
+				FortressPicBanners.push_back(go->GetGUID());
+	}
+	if(go->GetGOInfo()->displayId == 8257)
+		if(go->GetPositionX() > 5073.0f && go->GetPositionX() < 5392.0f && go->GetPositionY() > 2550.0f && go->GetPositionY() < 3100.0f)
+			FortressLargeBanners.push_back(go->GetGUID());
 }
 
 void OutdoorPvPWG::UpdateAllWorldObject()
