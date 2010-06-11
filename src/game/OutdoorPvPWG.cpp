@@ -439,6 +439,8 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 			if(user)
 				sWorld.SendZoneText(ZONE_WINTERGRASP, fmtstring("%s a pris l'Orbe !", user->GetName()));
 			m_defender = getAttackerTeam();
+			ChangeFortressSpawns(m_defender);
+			CharacterDatabase.PQuery("UPDATE needed_variables set needed_variables.value = %u where needed_variables.key = '1';",m_defender);
             m_changeDefender = true;
 			EndBattle();
         }
@@ -1386,8 +1388,6 @@ bool OutdoorPvPWG::Update(uint32 diff)
         if (m_changeDefender)
         {
             m_changeDefender = false;
-			ChangeFortressSpawns(m_defender);
-			CharacterDatabase.PQuery("UPDATE needed_variables set needed_variables.value = %u where needed_variables.key = '1';",m_defender);
             entry = LANG_BG_WG_CAPTURED;;
         }
 
