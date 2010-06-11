@@ -15065,7 +15065,7 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	if(m_vehicle)
 		return;
-	
+	error_log("BASE SEAT ID %i",seatId);
     m_vehicle = vehicle;
 	if(seatId < 0)
 		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
