@@ -258,6 +258,8 @@ class OutdoorPvPWG : public OutdoorPvP
         void RemovePlayerFromResurrectQueue(uint64 player_guid);
         void RelocateDeadPlayers(Creature *cr);
 		void EndBattle();
+		void SetMap(Map* map) { m_map = map; }
+		Map* GetMap() { return m_map; }
         // BG end
     protected:
         // Temporal BG specific till 3.2
@@ -266,8 +268,10 @@ class OutdoorPvPWG : public OutdoorPvP
         // Spirit Guide guid + Player list GUIDS
         std::map<uint64, std::vector<uint64> >  m_ReviveQueue;
 
-		std::vector<Creature*> Horde_Spawns;
-		std::vector<Creature*> Alliance_Spawns;
+		std::vector<uint64> Horde_Spawns;
+		std::vector<uint64> Alliance_Spawns;
+		GameObject* TitanRelic;
+		Map* m_map;
 
         uint32 GetLastResurrectTime() const { return m_LastResurrectTime; }
         uint32 GetReviveQueueSize() const { return m_ReviveQueue.size(); }

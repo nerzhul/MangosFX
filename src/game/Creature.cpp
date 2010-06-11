@@ -627,6 +627,7 @@ bool Creature::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, 
 		{
 			if(OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197))
 			{
+				pvpWG->SetMap(map);
 				pvpWG->OnCreatureCreate(this,true);
 			}
 		}

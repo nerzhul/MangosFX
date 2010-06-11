@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USAo
  */
 
 #include "OutdoorPvPWG.h"
@@ -362,34 +362,69 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 {
 	if(!Horde_Spawns.empty())
 	{
-		for (std::vector<Creature*>::iterator itr = Horde_Spawns.begin(); itr != Horde_Spawns.end(); ++itr)
+		error_log("Inversion de spawns HORDE");
+		for (std::vector<uint64>::iterator itr = Horde_Spawns.begin(); itr != Horde_Spawns.end(); ++itr)
 		{
 			if(owner == BG_TEAM_HORDE)
 			{
-				(*itr)->SetRespawnDelay(300000);
-				(*itr)->Respawn();
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						cr->SetRespawnDelay(300000);
+						cr->Respawn();
+						cr->SetPhaseMask(1,true);
+					}
+				}
 			}
 			else
 			{
-				(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
-				(*itr)->ForcedDespawn(10000);
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						cr->SetRespawnDelay(1000*RESPAWN_ONE_DAY);
+						cr->ForcedDespawn(1000);
+						cr->SetPhaseMask(2,true);
+					}
+				}
 			}
 		}
 	}
 
 	if(!Alliance_Spawns.empty())
 	{
-		for (std::vector<Creature*>::iterator itr = Alliance_Spawns.begin(); itr != Alliance_Spawns.end(); ++itr)
+		error_log("Inversion de spawns Alliance");
+		for (std::vector<uint64>::iterator itr = Alliance_Spawns.begin(); itr != Alliance_Spawns.end(); ++itr)
 		{
+			error_log("Inversion de spawns %u",*itr);
 			if(owner == BG_TEAM_ALLIANCE)
 			{
-				(*itr)->SetRespawnDelay(300000);
-				(*itr)->Respawn();
+				error_log("Alliance possess");
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						error_log("Respawn");
+						cr->SetRespawnDelay(300000);
+						cr->Respawn();
+						cr->SetPhaseMask(1,true);
+					}
+				}
 			}
 			else
 			{
-				(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
-				(*itr)->ForcedDespawn(10000);
+				error_log("Horde possess");
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						error_log("Despawn");
+						cr->SetRespawnDelay(1000*RESPAWN_ONE_DAY);
+						cr->ForcedDespawn(1000);
+						cr->SetPhaseMask(2,true);
+					}
+				}
 			}
 		}
 	}
@@ -617,7 +652,7 @@ OutdoorPvPWGCreType OutdoorPvPWG::GetCreatureType(uint32 entry) const
 
 void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 {
-    uint32 entry = creature->GetEntry();
+	uint32 entry = creature->GetEntry();
     switch(GetCreatureType(entry))
     {
         case CREATURE_SIEGE_VEHICLE:
@@ -723,7 +758,12 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 31091:
 		case 32296:
 		case 31053:
-			Horde_Spawns.push_back(creature);
+			if(m_defender == BG_TEAM_ALLIANCE)
+			{
+				creature->SetPhaseMask(2,true);
+				creature->ForcedDespawn(500);
+			}
+			Horde_Spawns.push_back(creature->GetGUID());
 			break;
 		case 32626:
 		case 31109:
@@ -734,7 +774,12 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 32294:
 		case 31054:
 		case 31051:
-			Alliance_Spawns.push_back(creature);
+			if(m_defender == BG_TEAM_HORDE)
+			{
+				creature->SetPhaseMask(2,true);
+				creature->ForcedDespawn(500);
+			}
+			Alliance_Spawns.push_back(creature->GetGUID());
 			break;
         default:
             break;
@@ -771,6 +816,9 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
             }
         }
     }
+
+	if(go->GetEntry() == 192829)
+		TitanRelic = go;
 }
 
 void OutdoorPvPWG::UpdateAllWorldObject()
