@@ -316,10 +316,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     if(seat == m_Seats.end())
         return false;
 
-    sLog.outError("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
+    sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %d", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first);
 
 	unit->SetVehicleGUID(me->GetGUID());
-	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 	seat->second.passenger = unit;
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
@@ -343,7 +342,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SendMessageToSet(&data0,true);
     }*/
 
-	//unit->m_movementInfo.SetTransportData(unit->GetGUID(),
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
@@ -351,6 +349,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     if(!ve)
         return false;
 
+	error_log("SEATID : %i",seatId,seat->first);
 	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
     if(!veSeat)
         return false;
@@ -554,17 +553,13 @@ void Vehicle::RemovePassenger(Unit *unit)
     {
 		unit->SetVehicleGUID(0);
 
-        if(seat->second.vs_flags & SF_MAIN_RIDER)
+        if(seat->second.vs_flags & SF_MAIN_RIDER || seat->first == 0)
         {
             if(unit->GetTypeId() == TYPEID_PLAYER)
             {
                 ((Player*)unit)->SetMover(NULL);
                 ((Player*)unit)->SetClientControl(unit, 1);
                 ((Player*)unit)->SetMoverInQueve(NULL);
-                ((Player*)unit)->RemovePetActionBar();
-
-                if(((Player*)unit)->GetGroup())
-                    ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
             }
             unit->SetCharm(NULL);
             me->SetCharmerGUID(NULL);			
@@ -578,6 +573,11 @@ void Vehicle::RemovePassenger(Unit *unit)
         // restore player control
         if(unit->GetTypeId() == TYPEID_PLAYER)
         {
+			if(((Player*)unit)->GetGroup())
+				((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+
+			((Player*)unit)->RemovePetActionBar();
+
             ((Player*)unit)->SetFarSightGUID(NULL);
 
             if(seat->second.vs_flags & SF_CAN_CAST)
