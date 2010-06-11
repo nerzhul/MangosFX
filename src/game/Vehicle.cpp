@@ -394,7 +394,12 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->SetClientControl(me, 1);
 				((Player*)unit)->SetMover(me);
 				((Player*)unit)->SetMoverInQueve(me);
-				
+				if(((Player*)unit)->GetGroup())
+					((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
+           
+				((Player*)unit)->SetFarSightGUID(me->GetGUID());
+
+				BuildVehicleActionBar((Player*)unit);
 			}
 			if(/*me->canFly() ||*/ me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
@@ -416,20 +421,15 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 					caster->CastSpell(target, itr->second.spellId, true);
             }
         }*/
+
 	}
 
 	if(unit->GetTypeId() == TYPEID_PLAYER) // not right
 	{
-		BuildVehicleActionBar((Player*)unit);
-
-		if(((Player*)unit)->GetGroup())
-		   ((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
-           
-		((Player*)unit)->SetFarSightGUID(me->GetGUID());
+		
         
 		if (((Player*)unit)->isAFK())
-			((Player*)unit)->ToggleAFK();
-		
+			((Player*)unit)->ToggleAFK();		
 	}
 
 	if(!((Creature*)me)->isHostileVehicle())
@@ -548,14 +548,19 @@ void Vehicle::RemovePassenger(Unit *unit)
 
 	if((seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FREE | SEAT_VEHICLE_FULL)) && seat->second.passenger == unit)
     {
+		unit->SetVehicleGUID(0);
+
         if(seat->second.vs_flags & SF_MAIN_RIDER || seat->first == 0)
         {
+			me->RemoveSpellsCausingAura(SPELL_AURA_CONTROL_VEHICLE);
+
             if(unit->GetTypeId() == TYPEID_PLAYER)
             {
                 ((Player*)unit)->SetMover(NULL);
 				((Player*)unit)->SetClientControl(me, 0);
                 ((Player*)unit)->SetClientControl(unit, 1);
                 ((Player*)unit)->SetMoverInQueve(NULL);
+				((Player*)unit)->RemovePetActionBar();
             }
             unit->SetCharm(NULL);
             me->SetCharmerGUID(NULL);			
@@ -571,8 +576,6 @@ void Vehicle::RemovePassenger(Unit *unit)
         {
 			if(((Player*)unit)->GetGroup())
 				((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
-
-			((Player*)unit)->RemovePetActionBar();
 
             ((Player*)unit)->SetFarSightGUID(NULL);
 
@@ -592,7 +595,6 @@ void Vehicle::RemovePassenger(Unit *unit)
             }
         }
 		
-		unit->SetVehicleGUID(0);
         seat->second.passenger = NULL;
 		ChangeSeatFlag(seat->first, SEAT_FREE);
 	

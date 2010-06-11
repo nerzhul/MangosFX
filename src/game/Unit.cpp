@@ -15065,8 +15065,8 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	if(m_vehicle)
 		return;
-	error_log("BASE SEAT ID %i",seatId);
-    m_vehicle = vehicle;
+
+	m_vehicle = vehicle;
 	if(seatId < 0)
 		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
 
@@ -15074,6 +15074,13 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	if(Pet *pet = GetPet())
         pet->Remove(PET_SAVE_AS_CURRENT);
+
+	if(GetTypeId() == TYPEID_PLAYER)
+	{
+		WorldPacket data(SMSG_BREAK_TARGET, 8);
+		data.appendPackGUID(vehicle->GetBase()->GetGUID());
+		((Player*)this)->GetSession()->SendPacket(&data);
+	}
 
     if (!m_vehicle->AddPassenger(this, seatId))
     {

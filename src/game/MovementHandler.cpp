@@ -648,7 +648,6 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 			break;
 		case CMSG_CHANGE_SEATS_ON_CONTROLLED_VEHICLE:
 		{
-			
 			Unit* vehicle_base = GetPlayer()->GetVehicleBase();
 			if(!vehicle_base)
 				return;
@@ -664,14 +663,18 @@ void WorldSession::HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data)
 			recv_data >> seatId;
 			
 			if(!accessory)
+			{
                 GetPlayer()->ChangeSeat(-1, seatId > 0); // prev/next
+			}
 			else if(Unit *vehUnit = Unit::GetUnit(*GetPlayer(), accessory))
+			{
                 if(Vehicle *vehicle = vehUnit->GetVehicleKit())
                     if(vehicle->HasEmptySeat(seatId))
 					{
-                        _player->ExitVehicle();
-						_player->EnterVehicle(vehicle, seatId);
+						GetPlayer()->ExitVehicle();
+						GetPlayer()->EnterVehicle(vehicle, seatId);
 					}
+			}
 			break;
 		}
 		case CMSG_REQUEST_VEHICLE_SWITCH_SEAT:
