@@ -406,14 +406,13 @@ bool GOHello_go_trouble_int(Player* pPlayer, GameObject* pGo)
 
 bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 {
-	/*OutdoorPvP * pvp = sOutdoorPvPMgr.GetOutdoorPvPToZoneId(pPlayer->GetZoneId());
-	if(pvp && pvp->GetTypeId() == OUTDOOR_PVP_WG && pPlayer->GetBGTeam() == ((OutdoorPvPWG*)pvp)->getDefenderTeam())
-	{*/
+	if(pPlayer->IsWintergraspPortalActive() || !pPlayer->IsWintergraspPortalActive() && pPlayer->IsWintergraspDefender())
+	{
 		if(pGO->GetDistance2d(5406.0f,2853.0f) < 2.0f)
 			pPlayer->TeleportTo(571,5392.407f,2853.970f,419.675f,3.0f);
 		else if(pGO->GetDistance2d(5390.750f,2828.649f) < 2.0f)
 			pPlayer->TeleportTo(571,5405.544f,2829.523f,418.674f,0.0f);
-	/*}*/
+	}
     return true;
 }
 

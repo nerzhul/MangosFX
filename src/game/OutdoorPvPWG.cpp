@@ -428,18 +428,12 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			if(owner == BG_TEAM_ALLIANCE)
 			{
 				if(GameObject* go = GetMap()->GetGameObject(*itr))
-				{
 					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,5651);
-					go->Respawn();
-				}
 			}
 			else
 			{
 				if(GameObject* go = GetMap()->GetGameObject(*itr))
-				{
 					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,5652);
-					go->Respawn();
-				}
 			}
 		}
 	}
@@ -451,18 +445,12 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			if(owner == BG_TEAM_ALLIANCE)
 			{
 				if(GameObject* go = GetMap()->GetGameObject(*itr))
-				{
 					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,8256);
-					go->Respawn();
-				}
 			}
 			else
 			{
 				if(GameObject* go = GetMap()->GetGameObject(*itr))
-				{
 					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,8257);
-					go->Respawn();
-				}
 			}
 		}
 	}
