@@ -850,6 +850,9 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
         }
     }
 
+	if(go->GetGoType() == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
+		BuildingDestroyables.push_back(go->GetGUID());
+
 	switch(go->GetEntry())
 	{
 		case 192829:
@@ -1506,6 +1509,14 @@ void OutdoorPvPWG::StartBattle()
 	sWorld.UpdateBuffForAll(false);
 	sWorld.ForceLeaveArchavonVault();
 
+	for(std::vector<uint64>::iterator itr = BuildingDestroyables.begin(); itr != BuildingDestroyables.end();itr++)
+	{
+		if(GetMap())
+			if(GameObject* go = GetMap()->GetGameObject(*itr))
+			{
+				go->Rebuild();
+			}
+	}
     // destroyed all vehicles
     /*for (uint32 team = 0; team < 2; ++team)
     {

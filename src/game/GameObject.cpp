@@ -1510,6 +1510,7 @@ void GameObject::Rebuild()
     RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED + GO_FLAG_DESTROYED);
     SetUInt32Value(GAMEOBJECT_DISPLAYID, m_goInfo->displayId);
     m_goValue->building.health = m_goInfo->building.intactNumHits + m_goInfo->building.damagedNumHits;
+	SetGoAnimProgress(255);
     EventInform(m_goInfo->building.rebuildingEvent);
 }
 
