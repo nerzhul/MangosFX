@@ -4536,7 +4536,6 @@ void Aura::HandleModStealth(bool apply, bool Real)
                     // Overkill
                     else if ((*i)->GetId() == 58426 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000400000))
                     {
-                        m_target->RemoveAurasDueToSpell(58428);
                         m_target->CastSpell(m_target, 58427, true);
                     }
                 }
@@ -4575,7 +4574,13 @@ void Aura::HandleModStealth(bool apply, bool Real)
                     m_target->CastSpell(m_target, 31666, true);
                 // Overkill
                 else if ((*i)->GetId() == 58426 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000400000))
-                    m_target->CastSpell(m_target, 58428, true);
+                {
+					if (Aura* aura = m_target->GetAura(58427, EFFECT_INDEX_0))
+					{
+						aura->SetAuraMaxDuration(20*IN_MILLISECONDS);
+						aura->RefreshAura();
+					}
+				}
             }
         }
     }
@@ -5295,8 +5300,6 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
                 {
                     // Master of Subtlety
                     case 31666: m_target->RemoveAurasDueToSpell(31665); break;
-                    // Overkill
-                    case 58428: m_target->RemoveAurasDueToSpell(58427); break;
                 }
             }
             break;
@@ -9180,6 +9183,19 @@ void Aura::HandleAllowOnlyAbility(bool apply, bool Real)
     m_target->UpdateDamagePhysical(BASE_ATTACK);
     m_target->UpdateDamagePhysical(RANGED_ATTACK);
     m_target->UpdateDamagePhysical(OFF_ATTACK);
+}
+
+void Aura::SetAuraMaxDuration( int32 duration )
+{
+	m_maxduration = duration;
+	// possible overwrite persistent state
+	if (duration > 0)
+	{
+		if (!(m_isPassive && m_spellProto->DurationIndex == 0))
+			m_permanent = false;
+		
+		m_auraFlags |= AFLAG_DURATION;
+	}
 }
 
 void Aura::HandleIgnoreUnitState(bool apply, bool Real)

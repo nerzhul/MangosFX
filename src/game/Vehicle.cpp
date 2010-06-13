@@ -703,7 +703,6 @@ void Vehicle::ChangeSeatFlag(uint8 seat, uint8 flag)
     if(i_seat == m_Seats.end())
         return;
 
-	error_log("ChangeSeatFlag %u bef %u aft %u",seat,i_seat->second.flags,flag);
     if(i_seat->second.flags != flag)
     {
         i_seat->second.flags = flag;

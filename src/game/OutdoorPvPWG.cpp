@@ -1517,6 +1517,7 @@ void OutdoorPvPWG::StartBattle()
 				go->Rebuild();
 			}
 	}
+
     // destroyed all vehicles
     /*for (uint32 team = 0; team < 2; ++team)
     {
@@ -1759,8 +1760,16 @@ void World::ForceLeaveArchavonVault()
 
 		if(Player* plr = itr->second->GetPlayer())
 		{
+			// Teleport players in archavon vault
 			if(plr->GetMapId() == 624)
 				plr->TeleportToHomebind();
+			else if(plr->GetMapId() == 571)
+			{
+				// Also die all bad located players at starting WG
+				if(!plr->IsWintergraspDefender() && !plr->isGameMaster())
+					if(plr->GetPositionX() > 5073.0f && plr->GetPositionX() < 5392.0f && plr->GetPositionY() > 2550.0f && plr->GetPositionY() < 3100.0f)
+						plr->DealDamage(plr,plr->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+			}
 		}
     }
 }
