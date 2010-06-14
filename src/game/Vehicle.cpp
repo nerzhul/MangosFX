@@ -301,9 +301,13 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
         if(minion)
             accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
         accessory->EnterVehicle(this, seatId);
-		WorldPacket data;
+		
+		/*WorldPacket data;
 		accessory->BuildHeartBeatMsg(&data);
-		accessory->SendMessageToSet(&data, false);
+		accessory->SendMessageToSet(&data, false);*/
+		if(accessory->isVehicle())
+			accessory->BuildVehicleInfo(accessory);
+
     }
 }
 
@@ -323,9 +327,15 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
 		if(unit->GetVehicleKit()->GetEmptySeatsCount(true) == 0)
+		{
+			error_log("FULL");
 			ChangeSeatFlag(seatId, SEAT_VEHICLE_FULL);
+		}
         else
+		{
+			error_log("EMPTY");
 			ChangeSeatFlag(seatId, SEAT_VEHICLE_FREE);
+		}
     }
     else
 		ChangeSeatFlag(seatId, SEAT_FULL);
@@ -350,7 +360,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	VehicleSeatEntry const *veSeat = sVehicleSeatStore.LookupEntry(ve->m_seatID[seatId]);
     if(!veSeat)
         return false;
-	me->m_movementInfo.SetTransportData(me->GetGUID(),
+	unit->m_movementInfo.SetTransportData(me->GetGUID(),
 		(veSeat->m_attachmentOffsetX),
 		(veSeat->m_attachmentOffsetY),
 		(veSeat->m_attachmentOffsetZ),
@@ -767,10 +777,8 @@ Vehicle* Vehicle::GetFirstEmptySeat(int8 *seatId, bool force)
 {
     for(SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
     {
-		error_log("SEATID %i",itr->first);
         if(itr->second.flags & SEAT_FREE)
         {
-			error_log("is free");
             if(!force && (itr->second.vs_flags & SF_UNACCESSIBLE))
                 continue;
 

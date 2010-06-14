@@ -187,6 +187,35 @@ void MovementInfo::Write(ByteBuffer &data)
     }
 }
 
+void Unit::BuildVehicleInfo(Unit *target)
+{
+	if(!target)
+		return;
+	
+	if(!target->GetVehicle())
+		return;
+	
+	uint32 veh_time = getMSTimeDiff(target->m_movementInfo.GetTransportTime(),getMSTime());
+	WorldPacket data(MSG_MOVE_HEARTBEAT, 100);
+	data.append(target->GetPackGUID());
+	data << uint32(MOVEFLAG_ONTRANSPORT | MOVEFLAG_FLY_UNK1);
+	data << uint16(0);
+	data << uint32(getMSTime());
+	data << float(target->GetPositionX());
+	data << float(target->GetPositionY());
+	data << float(target->GetPositionZ());
+	data << float(target->GetOrientation());
+	data.appendPackGUID(target->GetVehicleGUID());
+	data << float(target->m_movementInfo.GetTransportPos()->x);
+	data << float(target->m_movementInfo.GetTransportPos()->y);
+	data << float(target->m_movementInfo.GetTransportPos()->z);
+	data << float(target->m_movementInfo.GetTransportPos()->o);
+	data << uint32(veh_time);
+	data << uint8 (target->m_movementInfo.GetTransportSeat());
+	data << uint32(m_movementInfo.GetFallTime());
+	SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
+}
+
 Unit::Unit()
 : WorldObject(), i_motionMaster(this), m_ThreatManager(this), m_HostileRefManager(this),
 m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE)

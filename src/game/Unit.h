@@ -1909,6 +1909,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		void EnterVehicle(Unit *base) { EnterVehicle(base->GetVehicleKit()); }
 		void EnterVehicle(Vehicle *vehicle, int8 seatId = -1);
 		void ChangeSeat(int8 seatId, bool next = true);
+		void BuildVehicleInfo(Unit *target = NULL);
 		Unit *GetVehicleBase()  const;
 		bool CreateVehicleKit(uint32 id);
 		Creature *GetVehicleCreatureBase() const;
