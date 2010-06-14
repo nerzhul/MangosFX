@@ -660,14 +660,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\ObjectGridLoader.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ObjectGridLoader.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Path.h"
 				>
 			</File>
@@ -1080,6 +1072,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\MapManager.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ObjectGridLoader.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ObjectGridLoader.h"
 					>
 				</File>
 			</Filter>

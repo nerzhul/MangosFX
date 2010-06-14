@@ -145,7 +145,7 @@ void WorldSession::SendUpdateTrade()
             data << (uint32) item->GetProto()->DisplayInfoID;
                                                             // stack count
             data << (uint32) item->GetUInt32Value(ITEM_FIELD_STACK_COUNT);
-            data << (uint32) 0;                             // probably gift=1, created_by=0?
+            data << uint32(item->HasFlag(ITEM_FIELD_FLAGS,ITEM_FLAGS_WRAPPED) ? 1 : 0);
                                                             // gift creator
             data << (uint64) item->GetUInt64Value(ITEM_FIELD_GIFTCREATOR);
             data << (uint32) item->GetEnchantmentId(PERM_ENCHANTMENT_SLOT);
@@ -248,8 +248,10 @@ void WorldSession::moveItems(Item* myItems[], Item* hisItems[])
 
 //==============================================================
 
-void WorldSession::HandleAcceptTradeOpcode(WorldPacket& /*recvPacket*/)
+void WorldSession::HandleAcceptTradeOpcode(WorldPacket& recvPacket)
 {
+	recvPacket.read_skip<uint32>();                         // 7, amount traded slots ?
+
     Item *myItems[TRADE_SLOT_TRADED_COUNT]  = { NULL, NULL, NULL, NULL, NULL, NULL };
     Item *hisItems[TRADE_SLOT_TRADED_COUNT] = { NULL, NULL, NULL, NULL, NULL, NULL };
     bool myCanCompleteTrade=true,hisCanCompleteTrade=true;
@@ -457,10 +459,11 @@ void WorldSession::HandleCancelTradeOpcode(WorldPacket& /*recvPacket*/)
 
 void WorldSession::HandleInitiateTradeOpcode(WorldPacket& recvPacket)
 {
-    if (GetPlayer()->pTrader)
-        return;
-
     uint64 ID;
+	recvPacket >> ID;
+
+	if (GetPlayer()->pTrader)
+        return;
 
     if (!GetPlayer()->isAlive())
     {
@@ -485,8 +488,6 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPacket& recvPacket)
         SendTradeStatus(TRADE_STATUS_TARGET_TO_FAR);
         return;
     }
-
-    recvPacket >> ID;
 
     Player* pOther = ObjectAccessor::FindPlayer( ID );
 
@@ -556,12 +557,11 @@ void WorldSession::HandleInitiateTradeOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleSetTradeGoldOpcode(WorldPacket& recvPacket)
 {
-    if(!_player->pTrader)
-        return;
-
     uint32 gold;
-
     recvPacket >> gold;
+
+	if(!_player->pTrader)
+        return;
 
     // gold can be incorrect, but this is checked at trade finished.
     _player->tradeGold = gold;
@@ -571,9 +571,6 @@ void WorldSession::HandleSetTradeGoldOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleSetTradeItemOpcode(WorldPacket& recvPacket)
 {
-    if(!_player->pTrader)
-        return;
-
     // send update
     uint8 tradeSlot;
     uint8 bag;
@@ -582,6 +579,9 @@ void WorldSession::HandleSetTradeItemOpcode(WorldPacket& recvPacket)
     recvPacket >> tradeSlot;
     recvPacket >> bag;
     recvPacket >> slot;
+
+	if(!_player->pTrader)
+        return;	
 
     // invalid slot number
     if(tradeSlot >= TRADE_SLOT_COUNT)
@@ -618,11 +618,10 @@ void WorldSession::HandleSetTradeItemOpcode(WorldPacket& recvPacket)
 
 void WorldSession::HandleClearTradeItemOpcode(WorldPacket& recvPacket)
 {
-    if(!_player->pTrader)
-        return;
-
     uint8 tradeSlot;
     recvPacket >> tradeSlot;
+	if(!_player->pTrader)
+        return;
 
     // invalid slot number
     if(tradeSlot >= TRADE_SLOT_COUNT)
