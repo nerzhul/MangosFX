@@ -504,6 +504,22 @@ void BattleGround::Update(uint32 diff)
         }
     }
 
+	if(isArena())
+	{
+		if(m_StartTime > uint32(ARENA_TIME_LIMIT))
+		{
+			uint32 winner;
+			if(GetDamageDoneForTeam(ALLIANCE) > GetDamageDoneForTeam(HORDE))
+				winner = ALLIANCE;
+			else if (GetDamageDoneForTeam(HORDE) > GetDamageDoneForTeam(ALLIANCE))
+				winner = HORDE;
+			else
+				winner = 0;
+			
+			EndBattleGround(winner);
+		}
+	}
+
     //update start time
     m_StartTime += diff;
 }
@@ -784,7 +800,7 @@ void BattleGround::EndBattleGround(uint32 winner)
     m_EndTime = TIME_TO_AUTOREMOVE;
 
     // arena rating calculation
-    if (isArena() && isRated())
+    if (isArena() && isRated() && winner)
     {
         winner_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(winner));
         loser_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(winner)));
@@ -1478,6 +1494,45 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             sLog.outError("BattleGround: Unknown player score type %u", type);
             break;
     }
+}
+
+uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
+{
+    BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
+
+    if(itr == m_PlayerScores.end()) // player not found...
+        return 0;
+
+    switch(type)
+    {
+        case SCORE_KILLING_BLOWS: // Killing blows
+            return itr->second->KillingBlows;
+        case SCORE_DEATHS: // Deaths
+            return itr->second->Deaths;
+        case SCORE_DAMAGE_DONE: // Damage Done
+            return itr->second->DamageDone;
+        case SCORE_HEALING_DONE: // Healing Done
+            return itr->second->HealingDone;
+        default:
+            sLog.outError("BattleGround: Unknown player score type %u", type);
+            return 0;
+    }
+}
+
+uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
+{
+	uint32 finaldamage = 0;
+	for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	{
+		uint32 team = itr->second.Team;
+		Player *plr = sObjectMgr.GetPlayer(itr->first);
+		if (!plr)
+			continue; 
+		if(!team) team = plr->GetTeam();
+		if(team == TeamID)
+			finaldamage += GetPlayerScore(plr, SCORE_DAMAGE_DONE);
+	}
+	return finaldamage;
 }
 
 bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime)

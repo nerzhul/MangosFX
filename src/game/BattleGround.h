@@ -111,6 +111,7 @@ enum BattleGroundTimeIntervals
     RESPAWN_IMMEDIATELY             = 0,                    // secs
     BUFF_RESPAWN_TIME               = 180,                  // secs
     ARENA_SPAWN_BUFF_OBJECTS        = 90000,                // ms - 90sec after start
+	ARENA_TIME_LIMIT                = 282000,               // ms - 47 minutes after start
 };
 
 enum BattleGroundStartTimeIntervals
@@ -560,6 +561,9 @@ class BattleGround
         // creatures will get added wrong
         // door-events are automaticly added - but _ALL_ other must be in this vector
         std::map<uint8, uint8> m_ActiveEvents;
+
+		uint32 GetPlayerScore(Player *Source, uint32 type);
+		uint32 GetDamageDoneForTeam(uint32 TeamID);
 
 		void UpdateArenaWorldState();
 		GameObject* GetBGObject(uint32 type);
