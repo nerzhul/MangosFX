@@ -179,7 +179,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			CallCreature(NPC_COLDFLAME,FlameDespawn,PREC_COORDS,NOTHING,me->GetPositionX() - ecartX * FlameNb, me->GetPositionY() - ecartY * FlameNb, me->GetPositionZ() + 1.0f,true);
 		}
 		FlameNb++;
-		if(FlameNb == 15)
+		if(FlameNb == 19)
 		{
 			FlameNb = 2;
 			FlameSpawn_Timer = DAY*HOUR;

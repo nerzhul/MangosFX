@@ -85,8 +85,8 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
     data << (uint32) raid_reset_count;                      //  unk counter 4
     for (int i = 0; i < raid_reset_count; i++)
     {
-		uint32 mapId,resetTime,unkTime;
-		data << mapId,resetTime,unkTime;
+		uint32 mapId = 530,resetTime = 0,unkTime = 0;
+		data << mapId << resetTime << unkTime;
 	}
     data << (uint32) holiday_count;                   // unk counter 5
     for (int i = 0; i < holiday_count; i++)
