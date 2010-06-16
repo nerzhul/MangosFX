@@ -266,6 +266,7 @@ BattleGround::BattleGround()
     m_TeamScores[BG_TEAM_HORDE]         = 0;
 
     m_PrematureCountDown = false;
+	m_TimerArenaDone = false;
     m_PrematureCountDown = 0;
 
     m_StartDelayTimes[BG_STARTING_EVENT_FIRST]  = BG_START_DELAY_2M;
@@ -506,7 +507,7 @@ void BattleGround::Update(uint32 diff)
 
 	if(isArena())
 	{
-		if(m_StartTime > uint32(ARENA_TIME_LIMIT))
+		if(m_StartTime > uint32(ARENA_TIME_LIMIT) && !m_TimerArenaDone)
 		{
 			uint32 winner;
 			if(GetDamageDoneForTeam(ALLIANCE) > GetDamageDoneForTeam(HORDE))
@@ -515,6 +516,8 @@ void BattleGround::Update(uint32 diff)
 				winner = HORDE;
 			else
 				winner = 0;
+
+			m_TimerArenaDone = true;
 			
 			EndBattleGround(winner);
 		}

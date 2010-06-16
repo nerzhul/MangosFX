@@ -617,6 +617,7 @@ class BattleGround
         int32  m_StartDelayTime;
         bool   m_IsRated;                                   // is this battle rated?
         bool   m_PrematureCountDown;
+		bool   m_TimerArenaDone;
         uint32 m_PrematureCountDownTimer;
         char const *m_Name;
 
