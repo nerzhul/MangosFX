@@ -20,6 +20,7 @@
 #include "BattleGround.h"
 #include "BattleGroundSA.h"
 #include "Language.h"
+#include "ObjectMgr.h"
 #include "WorldPacket.h"
 
 BattleGroundSA::BattleGroundSA()
