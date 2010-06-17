@@ -194,7 +194,6 @@ void BattleGroundAB::AddPlayer(Player *plr)
 
 void BattleGroundAB::RemovePlayer(Player * /*plr*/, uint64 /*guid*/)
 {
-
 }
 
 void BattleGroundAB::HandleAreaTrigger(Player *Source, uint32 Trigger)

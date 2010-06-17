@@ -352,7 +352,7 @@ void Creature::Update(uint32 diff)
         case JUST_ALIVED:
             // Don't must be called, see Creature::setDeathState JUST_ALIVED -> ALIVE promoting.
             sLog.outError("Creature (GUIDLow: %u Entry: %u ) in wrong state: JUST_ALIVED (4)",GetGUIDLow(),GetEntry());
-            break;
+            break;	
         case JUST_DIED:
             // Don't must be called, see Creature::setDeathState JUST_DIED -> CORPSE promoting.
             sLog.outError("Creature (GUIDLow: %u Entry: %u ) in wrong state: JUST_DEAD (1)",GetGUIDLow(),GetEntry());
@@ -388,7 +388,8 @@ void Creature::Update(uint32 diff)
                     ((BattleGroundMap*)GetMap())->GetBG()->OnCreatureRespawn(this); // for alterac valley needed to adjust the correct level again
 
                 //Call AI respawn virtual function
-                i_AI->JustRespawned();
+				if(i_AI)
+					i_AI->JustRespawned();
 
                 uint16 poolid = GetDBTableGUIDLow() ? sPoolMgr.IsPartOfAPool<Creature>(GetDBTableGUIDLow()) : 0;
                 if (poolid)
@@ -456,7 +457,8 @@ void Creature::Update(uint32 diff)
             {
                 // do not allow the AI to be changed during update
                 m_AI_locked = true;
-                i_AI->UpdateAI(diff);
+				if(i_AI)
+					i_AI->UpdateAI(diff);
                 m_AI_locked = false;
             }
 

@@ -1394,8 +1394,8 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                         break;
                     case 607:
                         *data << uint32(2);
-						*data << uint32(((BattleGroundSAScore*)itr->second)->DemolishersDestroyed);
-						*data << uint32(((BattleGroundSAScore*)itr->second)->GatesDestroyed);
+						*data << uint32(((BattleGroundSAScore*)itr->second)->demolishers_destroyed);
+						*data << uint32(((BattleGroundSAScore*)itr->second)->gates_destroyed);
                         break;
                     default:
                         *data << (int32)0;                  // 0
@@ -1425,8 +1425,8 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
                 break;
 			case BATTLEGROUND_SA:
                 *data << (uint32)0x00000002;                // count of next fields
-				*data << (uint32)((BattleGroundSAScore*)itr->second)->DemolishersDestroyed; // demolishers destroyed
-				*data << (uint32)((BattleGroundSAScore*)itr->second)->GatesDestroyed;       // gates destroyed
+				*data << (uint32)((BattleGroundSAScore*)itr->second)->demolishers_destroyed; // demolishers destroyed
+				*data << (uint32)((BattleGroundSAScore*)itr->second)->gates_destroyed;       // gates destroyed
                 break;
             case BATTLEGROUND_NA:
             case BATTLEGROUND_BE:

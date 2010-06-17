@@ -145,9 +145,9 @@ void BattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 value
     if(itr == m_PlayerScores.end())                         // player not found...
         return;
     if(type == SCORE_DESTROYED_DEMOLISHER)
-		((BattleGroundSAScore*)itr->second)->DemolishersDestroyed += value;
+		((BattleGroundSAScore*)itr->second)->demolishers_destroyed += value;
     else if(type == SCORE_DESTROYED_WALL)
-		((BattleGroundSAScore*)itr->second)->GatesDestroyed += value;
+		((BattleGroundSAScore*)itr->second)->gates_destroyed += value;
     
     BattleGround::UpdatePlayerScore(Source,type,value);
 
@@ -225,4 +225,21 @@ void BattleGroundSA::StartShips()
 	}
 	  
 	ShipsStarted = true;
+}
+
+bool BattleGroundSA::SetupBattleGround()
+{
+	return true;
+}
+
+void BattleGroundSA::HandleKillUnit(Creature *unit, Player *killer)
+{
+}
+
+void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target_obj)
+{
+}
+
+void BattleGroundSA::EndBattleGround(uint32 winner)
+{
 }
