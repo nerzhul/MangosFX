@@ -9983,7 +9983,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
     tmpDamage = (tmpDamage + TakenTotal) * TakenTotalMod;
 
-	tmpDamage += BDSpellDamageHacks();
+	if(damagetype != DOT)
+		tmpDamage += BDSpellDamageHacks();
 	
     return tmpDamage > 0 ? uint32(tmpDamage) : 0;
 }
