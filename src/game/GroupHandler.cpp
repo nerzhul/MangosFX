@@ -24,6 +24,7 @@
 #include "WorldSession.h"
 #include "World.h"
 #include "Chat.h"
+#include "GameObject.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Group.h"
