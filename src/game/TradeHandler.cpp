@@ -617,8 +617,6 @@ void WorldSession::HandleSetTradeItemOpcode(WorldPacket& recvPacket)
         return;
     }
 
-    uint16 pos = (bag << 8) | slot;
-
     // prevent place single item into many trade slots using cheating and client bugs
 	if (my_trade->HasItem(item->GetGUID()))
     {
@@ -627,7 +625,7 @@ void WorldSession::HandleSetTradeItemOpcode(WorldPacket& recvPacket)
         return;
     }
 
-    my_trade->m_tradeItems[tradeSlot] = pos;
+	my_trade->m_tradeItems[tradeSlot] = item->GetGUID();
 
     my_trade->m_tradeWith->GetSession()->SendUpdateTrade();
 }
