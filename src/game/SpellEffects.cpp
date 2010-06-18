@@ -7157,6 +7157,9 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 
     pTotem->Summon(m_caster);
 
+	// Hack for totem bug
+	pTotem->SetPhaseMask(1,true);
+
     if(slot < MAX_TOTEM && m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data(SMSG_TOTEM_CREATED, 1 + 8 + 4 + 4);
