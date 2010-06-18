@@ -2039,4 +2039,6 @@ void WorldObject::SetZoneScript()
 		else
 			m_zoneScript = NULL;
     }
+	else
+		m_zoneScript = NULL;
 }
