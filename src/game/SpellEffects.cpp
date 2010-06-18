@@ -4446,7 +4446,13 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
                 summon->SetPower(POWER_MANA, 28 + 30*m_caster->getLevel());
                 
 				summon->SetName(m_caster->GetName());
-				summon->setFaction(m_caster->getFaction());
+				if(m_caster->GetTypeId() == TYPEID_PLAYER)
+				{
+					if(((Player*)m_caster)->GetTeam() == HORDE)
+						summon->setFaction(summon->GetCreatureInfo()->faction_H);
+					else
+						summon->setFaction(summon->GetCreatureInfo()->faction_A);
+				}
 				if(m_caster->IsPvP())
 					summon->SetPvP(true);
 				if(m_caster->IsFFAPvP())
@@ -4457,7 +4463,7 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
 				summon->GetMotionMaster()->MoveFollow(m_caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
 				summon->SetOwnerGUID(m_caster->GetGUID());
 				summon->SetCreatorGUID(m_caster->GetGUID());
-				summon->SetSpeedRate(MOVE_RUN,1.2f,true);
+				//summon->SetSpeedRate(MOVE_RUN,1.2f,true);
 				if(m_caster->GetTypeId() == TYPEID_PLAYER)
 					summon->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
 
