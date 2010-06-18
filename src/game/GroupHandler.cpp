@@ -23,6 +23,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "World.h"
+#include "Chat.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Group.h"
@@ -105,6 +106,7 @@ void WorldSession::HandleGroupInviteOpcode( WorldPacket & recv_data )
     if( group2 || player->GetGroupInvite() )
     {
         SendPartyResult(PARTY_OP_INVITE, membername, ERR_ALREADY_IN_GROUP_S);
+		ChatHandler(player).PSendSysMessage(2990,GetPlayer()->GetName());
         return;
     }
 
