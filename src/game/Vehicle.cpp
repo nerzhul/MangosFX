@@ -327,15 +327,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
     {
 		if(unit->GetVehicleKit()->GetEmptySeatsCount(true) == 0)
-		{
-			error_log("FULL");
 			ChangeSeatFlag(seatId, SEAT_VEHICLE_FULL);
-		}
         else
-		{
-			error_log("EMPTY");
 			ChangeSeatFlag(seatId, SEAT_VEHICLE_FREE);
-		}
     }
     else
 		ChangeSeatFlag(seatId, SEAT_FULL);

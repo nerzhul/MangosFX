@@ -8238,14 +8238,12 @@ void Spell::EffectWMODamage(uint32 /*i*/)
         if (!caster)
             return;
 
-		error_log("EffectWMODamage with caster damage : %i",damage);
         FactionTemplateEntry const *casterft, *goft;
         casterft = caster->getFactionTemplateEntry();
         goft = sFactionTemplateStore.LookupEntry(gameObjTarget->GetUInt32Value(GAMEOBJECT_FACTION));
         // Do not allow to damage GO's of friendly factions (ie: Wintergrasp Walls)
-        if (casterft /*&& goft && !casterft->IsFriendlyTo(*goft)*/)
+        if (casterft && goft && !casterft->IsFriendlyTo(*goft))
 		{
-			error_log("EffectWMODamage Taken ! damage : %i",damage);
             gameObjTarget->TakenDamage(uint32(damage));
 			WorldPacket data(SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 8+8+8+4+4);
 			data.append(gameObjTarget->GetPackGUID());
