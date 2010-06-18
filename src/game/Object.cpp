@@ -1095,6 +1095,7 @@ WorldObject::WorldObject()
     : m_currMap(NULL), m_mapId(0), m_InstanceId(0), m_phaseMask(PHASEMASK_NORMAL),
     m_positionX(0.0f), m_positionY(0.0f), m_positionZ(0.0f), m_orientation(0.0f)
 {
+	m_zoneScript = NULL;
 }
 
 void WorldObject::CleanupsBeforeDelete()
