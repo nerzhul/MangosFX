@@ -637,6 +637,8 @@ bool Creature::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, 
 			}
 		}
 
+		SetZoneScript();
+
         switch (GetCreatureInfo()->rank)
         {
             case CREATURE_ELITE_RARE:
@@ -1054,8 +1056,8 @@ float Creature::GetSpellDamageMod(int32 Rank)
 
 bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const CreatureData *data, uint32 vehId)
 {
-	/*SetZoneScript();
-	if(m_zoneScript && data)
+	
+	/*if(m_zoneScript && data)
     {
         Entry = m_zoneScript->GetCreatureEntry(guidlow, data);
         if(!Entry)

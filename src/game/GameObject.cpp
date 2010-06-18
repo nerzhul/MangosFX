@@ -188,6 +188,8 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 			SetGoState(GO_STATE_ACTIVE);
 	}
 
+	SetZoneScript();
+
 	return true;
 }
 
