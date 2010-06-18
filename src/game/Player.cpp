@@ -17012,7 +17012,15 @@ void Player::SaveToDB()
 
     ss << uint32(m_atLoginFlags) << ", ";
 
-    ss << GetZoneId() << ", ";
+	try
+	{
+		ss << GetZoneId() << ", ";
+	}
+	catch(...)
+	{
+		error_log("GetZoneId() on Player::SaveToDb() failed, correct it");
+		ss << "0" << ", ";
+	}
 
     ss << (uint64)m_deathExpireTime << ", '";
 
