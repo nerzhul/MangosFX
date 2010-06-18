@@ -19,6 +19,7 @@
 #ifndef MANGOSSERVER_CHAT_H
 #define MANGOSSERVER_CHAT_H
 
+#include "GameObject.h"
 #include "SharedDefines.h"
 
 class ChatHandler;
