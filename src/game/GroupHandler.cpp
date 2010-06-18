@@ -24,12 +24,12 @@
 #include "WorldSession.h"
 #include "World.h"
 #include "GameObject.h"
-#include "Chat.h"
 #include "ObjectMgr.h"
 #include "Player.h"
 #include "Group.h"
 #include "LFGMgr.h"
 #include "SocialMgr.h"
+#include "Chat.h"
 #include "Util.h"
 
 /* differeces from off:
