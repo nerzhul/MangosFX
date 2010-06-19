@@ -12065,6 +12065,9 @@ bool Unit::CanHaveThreatList() const
     if( ((Creature*)this)->isPet() && IS_PLAYER_GUID(((Pet*)this)->GetOwnerGUID()) )
         return false;
 
+	if( ((Creature*)this)->IsVehicle() && !((Creature*)this)->isHostileVehicle())
+		return false;
+
     return true;
 }
 

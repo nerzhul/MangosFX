@@ -187,7 +187,7 @@ void Vehicle::Update(uint32 diff)
 			uint8 count = me->GetPower(POWER_ENERGY) + 20;
 			me->ModifyPower(POWER_ENERGY, count > 100 ? 100 : count);
 		}
-		m_regentimer = 4000;
+		m_regentimer = 2500;
 	}
 	else
 		m_regentimer -= diff;

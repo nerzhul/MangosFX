@@ -469,6 +469,10 @@ void Creature::Update(uint32 diff)
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
             if(!isAlive())
                 break;
+
+			if(isVehicle())
+				GetVehicleKit()->Update(diff);
+
             if(m_regenTimer > 0)
             {
                 if(diff >= m_regenTimer)
@@ -482,15 +486,7 @@ void Creature::Update(uint32 diff)
             if (!isInCombat() || IsPolymorphed())
                 RegenerateHealth();
 
-			if(getPowerType() == POWER_ENERGY)
-            {
-                /*if(!IsVehicle() || GetVehicleKit()->GetVehicleInfo()->m_powerType != POWER_PYRITE)
-                    Regenerate(POWER_ENERGY);*/
-                if(isVehicle())
-					GetVehicleKit()->Update(diff);
-            }
-			else
-				RegenerateMana();
+			RegenerateMana();
 
             m_regenTimer = REGEN_TIME_FULL;
             break;
