@@ -113,7 +113,6 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 					}
 					else if(subphase == 1)
 					{
-						Relocate(5297.3f,2506.6f,686.1f);
 						me->CastStop();
 						DoCastMe(SPELL_SOULSTORM);
 						SetCombatMovement(false);
