@@ -182,7 +182,7 @@ void Vehicle::Update(uint32 diff)
 {
 	if(m_regentimer <= diff)
 	{
-		if(me->getPowerType() == POWER_ENERGY)
+		if(me->getPowerType() == POWER_ENERGY && HasAutoRegen())
 		{
 			uint8 count = me->GetPower(POWER_ENERGY) + 20;
 			me->ModifyPower(POWER_ENERGY, count > 100 ? 100 : count);
@@ -788,4 +788,16 @@ Vehicle* Vehicle::GetFirstEmptySeat(int8 *seatId, bool force)
     }
 
     return NULL;
+}
+
+bool Vehicle::HasAutoRegen()
+{
+	switch(me->GetEntry())
+	{
+		// Pyrite Vehicles
+		case 0:
+			return false;
+		default:
+			return true;
+	}
 }

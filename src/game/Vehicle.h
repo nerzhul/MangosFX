@@ -101,6 +101,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
 		uint32 m_regentimer;
         
     private:
+		bool HasAutoRegen();
 		void InitSeats();
 };
 #endif
