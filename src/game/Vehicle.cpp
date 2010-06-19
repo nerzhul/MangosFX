@@ -795,7 +795,7 @@ bool Vehicle::HasAutoRegen()
 	switch(me->GetEntry())
 	{
 		// Pyrite Vehicles
-		case 0:
+		case 33109:
 			return false;
 		default:
 			return true;

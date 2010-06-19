@@ -5976,7 +5976,7 @@ bool Player::IsActionButtonDataValid(uint8 button, uint32 action, uint8 type, Pl
 
             if(player && !player->HasSpell(action))
             {
-                sLog.outError( "Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName() );
+                //sLog.outError( "Spell action %u not added into button %u for player %s: player don't known this spell", action, button, player->GetName() );
                 return false;
             }
             break;
@@ -15944,7 +15944,7 @@ void Player::_LoadActions(QueryResult *result, bool startup)
             }
             else
             {
-                sLog.outError( "  ...at loading, and will deleted in DB also");
+                //sLog.outError( "  ...at loading, and will deleted in DB also");
 
                 // Will deleted in DB at next save (it can create data until save but marked as deleted)
                 m_actionButtons[button].uState = ACTIONBUTTON_DELETED;
