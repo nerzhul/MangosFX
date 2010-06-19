@@ -118,7 +118,10 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		if(Vehicle_Timer <= diff)
 		{
 			if(Unit* catched = GetGuidUnit(catchPlayer))
+			{
 				catched->ExitVehicle();
+				Vehicle_Timer = 20000;
+			}
 			else
 			{
 				if(Unit* tmp = GetRandomUnit(0))
@@ -126,6 +129,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 					catchPlayer = tmp->GetGUID();
 					tmp->EnterVehicle(me);
 				}
+				Vehicle_Timer = 10000;
 			}
 		}
 		else 
