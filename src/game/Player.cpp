@@ -17238,7 +17238,7 @@ void Player::_SaveInventory()
 		}
 		else
 		{
-			sLog.outError("Can't find item guid " UI64FMTD " but is in refundable storage for player %u ! Removing.", (*itr), GetGUIDLow());
+			sLog.outDebug("Can't find item guid " UI64FMTD " but is in refundable storage for player %u ! Removing.", (*itr), GetGUIDLow());
  
 			m_refundableItems.erase(itr);
 		}
