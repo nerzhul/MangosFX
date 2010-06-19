@@ -372,9 +372,10 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     }
     else                                                    // creature charmed
     {
-        if(mover->IsInWorld())
+		if(mover->IsInWorld() && mover->GetTypeId() == TYPEID_UNIT)
 		{
-            mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
+			if(mover->GetMap())
+	            mover->GetMap()->CreatureRelocation((Creature*)mover, movementInfo.GetPos()->x, movementInfo.GetPos()->y, movementInfo.GetPos()->z, movementInfo.GetPos()->o);
 			if(((Creature*)mover)->isVehicle())
 				mover->GetVehicleKit()->RelocatePassengers(mover->GetPositionX(),mover->GetPositionY(),mover->GetPositionZ(),mover->GetOrientation(),mover->GetMap());
 		}
