@@ -98,10 +98,10 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         Unit *me;
         VehicleEntry const *m_vehicleInfo;
 		uint32 m_maxSeatsNum;
-		uint32 m_regentimer;
         
     private:
 		bool HasAutoRegen();
 		void InitSeats();
+		uint32 m_vRegenTimer;
 };
 #endif

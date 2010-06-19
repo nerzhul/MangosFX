@@ -30,7 +30,7 @@
 #include "ZoneScript.h"
 
 Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), 
-me(unit), m_vehicleInfo(vehInfo),m_regentimer(4000)
+me(unit), m_vehicleInfo(vehInfo),m_vRegenTimer(4000)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
     InitSeats();
@@ -180,17 +180,17 @@ void Vehicle::Uninstall()
 
 void Vehicle::Update(uint32 diff)
 {
-	if(m_regentimer <= diff)
+	if(m_vRegenTimer <= diff)
 	{
 		if(me->getPowerType() == POWER_ENERGY && HasAutoRegen())
 		{
 			uint8 count = me->GetPower(POWER_ENERGY) + 20;
 			me->ModifyPower(POWER_ENERGY, count > 100 ? 100 : count);
 		}
-		m_regentimer = 2500;
+		m_vRegenTimer = 2500;
 	}
 	else
-		m_regentimer -= diff;
+		m_vRegenTimer -= diff;
 }
 
 void Vehicle::Die()
