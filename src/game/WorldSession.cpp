@@ -445,7 +445,8 @@ void WorldSession::LogoutPlayer(bool Save)
         // e.g if he got disconnected during a transfer to another map
         // calls to GetMap in this case may cause crashes
         Map* _map = _player->GetMap();
-        _map->Remove(_player, true);
+		if(_map)
+			_map->Remove(_player, true);
         SetPlayer(NULL);                                    // deleted in Remove call
 
         ///- Send the 'logout complete' packet to the client

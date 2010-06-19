@@ -830,7 +830,8 @@ Map::Remove(T *obj, bool remove)
 
     DEBUG_LOG("Remove object (GUID: %u TypeId:%u) from grid[%u,%u]", obj->GetGUIDLow(), obj->GetTypeId(), cell.data.Part.grid_x, cell.data.Part.grid_y);
     NGridType *grid = getNGrid(cell.GridX(), cell.GridY());
-    ASSERT( grid != NULL );
+	if(!grid)
+		return;
 
     if(obj->isActiveObject())
         RemoveFromActive(obj);
