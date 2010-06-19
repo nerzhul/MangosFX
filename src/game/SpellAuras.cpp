@@ -2347,9 +2347,7 @@ void Aura::TriggerSpell()
             }
 			break;
 		case 13810:
-			// HUNT FIX THERE
-			//trigger_spell_id = 0;
-			break;			
+			return;			
 		default: 
 			break;
 	}
