@@ -448,7 +448,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void DealDamage(Unit* target, uint32 damage);
 		void DealPercentDamage(Unit* target, float percent);
 
-		Unit* GetRandomUnit() { return SelectUnit(SELECT_TARGET_RANDOM,0); }
+		Unit* GetRandomUnit(uint8 pos = 0) { return SelectUnit(SELECT_TARGET_RANDOM,pos); }
 
 		void MakeInvisibleStalker();
 	

@@ -39,14 +39,14 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		{
 			AddEvent(SPELL_FLAME_JETS_H,32000,25000,0,TARGET_MAIN);
 			AddEvent(SPELL_SCORCH_H,10000,25000,0,TARGET_MAIN);
-			AddEvent(SPELL_SLAG_POT_H,100,30000);
+			AddEvent(SPELL_SLAG_POT_H,15000,30000);
 			Assemblage_Timer = 30000;
 		}
 		else
 		{
 			AddEvent(SPELL_FLAME_JETS,32000,25000,0,TARGET_MAIN);
 			AddEvent(SPELL_SCORCH,10000,25000,0,TARGET_MAIN);
-			AddEvent(SPELL_SLAG_POT,5000,30000);
+			AddEvent(SPELL_SLAG_POT,15000,30000);
 			Assemblage_Timer = 40000;
 		}
 	}
@@ -54,6 +54,8 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 	uint32 Assemblage_Timer;
 	uint32 Fire_Timer;
 	std::vector<Unit*> IgnisAdds;
+	uint32 Vehicle_Timer;
+	uint64 catchPlayer;
 
     void Reset()
     {
@@ -73,6 +75,8 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 			Assemblage_Timer = 40000;
 		
 		Fire_Timer = 10000;
+		Vehicle_Timer = 15000;
+		catchPlayer = 0;
     }
 
     void EnterCombat(Unit* who)
@@ -110,6 +114,22 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
             return;
 
 		me->RemoveAurasDueToSpell(SPELL_CHALEUR);
+
+		if(Vehicle_Timer <= diff)
+		{
+			if(Unit* catched = GetGuidUnit(catchPlayer))
+				catched->ExitVehicle();
+			else
+			{
+				if(Unit* tmp = GetRandomUnit(0))
+				{
+					catchPlayer = tmp->GetGUID();
+					tmp->EnterVehicle(me);
+				}
+			}
+		}
+		else 
+			Vehicle_Timer -= diff;
 		if(Assemblage_Timer <= diff)
 		{
 			if(Unit* tmpcr = GetInstanceCreature(DATA_IGNIS_ADDS))
