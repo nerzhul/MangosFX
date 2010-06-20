@@ -15051,7 +15051,7 @@ void Unit::ExitVehicle()
 					if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
 					{
 						// will be deleted at next update
-//						vehicle->SetSpawnDuration(1);
+						vehicle->SetSpawnDuration(1);
 					}
 				}
 				v_size = vehicle->GetBase()->GetObjectSize();

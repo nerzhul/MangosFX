@@ -33,6 +33,7 @@ Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SU
 me(unit), m_vehicleInfo(vehInfo),m_vRegenTimer(4000)
 {
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
+	m_duration = DAY * IN_MILLISECONDS * 7;
     InitSeats();
 }
 
@@ -191,6 +192,14 @@ void Vehicle::Update(uint32 diff)
 	}
 	else
 		m_vRegenTimer -= diff;
+
+	if(m_duration <= diff)
+	{
+		Dismiss();
+		m_duration = DAY;
+	}
+	else
+		m_duration -= diff;
 }
 
 void Vehicle::Die()

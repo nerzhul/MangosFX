@@ -89,6 +89,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         void RemoveAllPassengers();
         void Dismiss();
 		void BuildVehicleActionBar(Player *plr) const;
+		void SetSpawnDuration(uint32 duration) { m_duration = duration; }
 
         SeatMap m_Seats;
 		void InstallAccessory(uint32 entry, int8 seatId, bool minion = true);
@@ -102,6 +103,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
     private:
 		bool HasAutoRegen();
 		void InitSeats();
+		uint32 m_duration;
 		uint32 m_vRegenTimer;
 };
 #endif

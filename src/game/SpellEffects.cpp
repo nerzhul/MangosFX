@@ -8222,21 +8222,24 @@ void Spell::EffectSummonVehicle(uint32 i)
     else
         m_caster->GetClosePoint(px,py,pz,3.0f);
 
-    /*Vehicle *v = m_caster->SummonVehicle(creature_entry, px, py, pz, m_caster->GetOrientation());
-    if(!v)
+	Creature* cr = m_caster->SummonCreature(creature_entry, px, py, pz, m_caster->GetOrientation(),TEMPSUMMON_DEAD_DESPAWN,DAY*HOUR);
+    if(!cr)
         return;
 
-    v->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
-    v->SetCreatorGUID(m_caster->GetGUID());
+	if(!cr->GetVehicleKit())
+		cr->RemoveFromWorld();
+
+    cr->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
+	cr->SetCreatorGUID(m_caster->GetGUID());
 
     if(damage)
     {
-        m_caster->CastSpell(v, damage, true);
-        m_caster->EnterVehicle(v, 0);
+        m_caster->CastSpell(cr, damage, true);
+        m_caster->EnterVehicle(cr);
     }
     int32 duration = GetSpellMaxDuration(m_spellInfo);
-    if(duration > 0)
-        v->SetSpawnDuration(duration);*/
+	if(duration > 0 && cr->GetVehicleKit())
+        cr->GetVehicleKit()->SetSpawnDuration(duration);
 }
 
 void Spell::EffectWMODamage(uint32 /*i*/)
