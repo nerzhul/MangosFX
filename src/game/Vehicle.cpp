@@ -655,9 +655,9 @@ void Vehicle::RelocatePassengers(float x, float y, float z, float ang, Map* map)
 void Vehicle::Dismiss()
 {
     Uninstall();
-    SendObjectDeSpawnAnim(GetGUID());
-    CombatStop();
-    AddObjectToRemoveList();
+    me->SendObjectDeSpawnAnim(me->GetGUID());
+    me->CombatStop();
+    me->AddObjectToRemoveList();
 }
 
 int8 Vehicle::GetEmptySeatsCount(bool force)
