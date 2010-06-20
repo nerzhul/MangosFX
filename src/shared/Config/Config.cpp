@@ -37,7 +37,7 @@ static bool GetValueHelper(ACE_Configuration_Heap *mConf, const char *name, ACE_
     while (mConf->enumerate_sections(root_key, i, section_name) == 0)
     {
         mConf->open_section(root_key, section_name.c_str(), 0, section_key);
-        if (mConf->get_string_value(section_key, name, result) == 0)
+        if (mConf->get_string_value(section_key, name, result) != -1)
             return true;
         ++i;
     }
