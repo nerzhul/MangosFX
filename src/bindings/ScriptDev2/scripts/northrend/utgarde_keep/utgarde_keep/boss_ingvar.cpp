@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
 
 	void DamageTaken(Unit *done_by, uint32 &damage)
     {
-        if (damage > me->GetHealth() && m_bIsResurrected == false)                // Don't let ourselves be slain before we do our death speech
+        if (damage >= me->GetHealth() && !m_bIsResurrected)                // Don't let ourselves be slain before we do our death speech
         {
             damage = 0;
 			phase = 2;
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
 		uint32 PercentLife = GetPercentLife();
 		if((PercentLife < 79 && PercentLife > 72) || (PercentLife < 52 && PercentLife > 47) || (PercentLife < 27 && PercentLife > 22))
 		{
-			if(m_difficulty == true)
+			if(m_difficulty)
 			{
 				if(Smash_Timer <= diff)
 				{
@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
 			}
 		}
 
-		if(m_bIsResurrected == true)
+		if(m_bIsResurrected)
 		{
 			if(PercentLife < 54 && PercentLife > 45 && !axe_here)
 			{

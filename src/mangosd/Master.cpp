@@ -29,7 +29,7 @@
 #include "Log.h"
 #include "Timer.h"
 #include "Policies/SingletonImp.h"
-#include "Config/ConfigEnv.h"
+#include "Config/Config.h"
 #include "Database/DatabaseEnv.h"
 #include "CliRunnable.h"
 #include "RASocket.h"
