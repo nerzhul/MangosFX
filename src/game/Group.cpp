@@ -998,7 +998,10 @@ void Group::SendUpdate()
         WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+8+4+GetMembersCount()*20));
         data << uint8(m_groupType);                         // group type (flags in 3.3)
         data << uint8(citr->group);                         // groupid
-        data << uint8(GetFlags(*citr));                     // group flags
+        if(!isBGGroup())									// seems its causing errors in BGGroup
+            data << uint8(GetFlags(*citr));					// group flags
+        else
+            data << uint8(0);
         data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
         if(m_groupType & GROUPTYPE_LFD)
         {
@@ -1016,12 +1019,14 @@ void Group::SendUpdate()
             uint8 onlineState = (member) ? MEMBER_STATUS_ONLINE : MEMBER_STATUS_OFFLINE;
             onlineState = onlineState | ((isBGGroup()) ? MEMBER_STATUS_PVP : 0);
 
-            data << citr2->name;
+			data << std::string(citr2->name);
             data << uint64(citr2->guid);
-                                                            // online-state
-            data << uint8(onlineState);
+            data << uint8(onlineState);						// online-state
             data << uint8(citr2->group);                    // groupid
-            data << uint8(GetFlags(*citr2));                // group flags
+            if(!isBGGroup())								// seems its causing errors in BGGroup
+                data << uint8(GetFlags(*citr2));			// group flags
+            else
+                data << uint8(0);
             data << uint8(0/*citr2->m_lookingForGroup.roles*/);  // 3.3, role? 
         }
 
