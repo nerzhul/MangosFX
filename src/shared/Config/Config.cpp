@@ -17,6 +17,7 @@
 */
 
 #include "Config.h"
+#include "Log.h"
 #include "ace/Configuration_Import_Export.h"
 
 #include "Policies/SingletonImp.h"
@@ -66,10 +67,10 @@ bool Config::Reload()
     delete mConf;
     mConf = new ACE_Configuration_Heap;
 
-    if (mConf->open() == 0)
+    if (mConf->open() != -1)
     {
         ACE_Ini_ImpExp config_importer(*mConf);
-        if (config_importer.import_config(mFilename.c_str()) == 0)
+        if (config_importer.import_config(mFilename.c_str()) != -1)
             return true;
     }
 
