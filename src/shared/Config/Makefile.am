@@ -27,14 +27,8 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir) -I$(sr
 noinst_LIBRARIES = libmangosconfig.a
 
 libmangosconfig_a_SOURCES = \
-	dotconfpp/dotconfpp.cpp \
-	dotconfpp/dotconfpp.h \
-	dotconfpp/mempool.cpp \
-	dotconfpp/mempool.h \
-	Config.cpp \
-	Config.h \
-	ConfigEnv.h
+	Config.cpp
 
 #  VC++ project workspace for dotconfpp
 EXTRA_DIST = \
-	ConfigLibrary.vcproj
+	Config.h
