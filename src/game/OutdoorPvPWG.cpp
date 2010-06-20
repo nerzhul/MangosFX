@@ -824,6 +824,20 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 			else if(creature->GetDistance2d(4359.9f,2347.7f) < 70.0f)
 				SESpawnsCr.push_back(creature->GetGUID());
 			break;
+		case 30872:
+		case 30873:
+		case 30875:
+		case 30876:
+		case 30877:
+		case 30842:
+		case 30845:
+		case 30846:
+		case 30847:
+		case 30848:
+		case 30849:
+		case 34300:
+			ToDespawnInWarCr.push_back(creature->GetGUID());
+			break;
         default:
             break;
   }
@@ -1548,6 +1562,17 @@ void OutdoorPvPWG::StartBattle()
 			}
 	}
 
+	for(std::vector<uint64>::iterator itr = ToDespawnInWarCr.begin(); itr != ToDespawnInWarCr.end();itr++)
+	{
+		if(GetMap())
+			if(Creature* cr = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*itr))
+			{
+				cr->SetPhaseMask(2,true);
+			}
+	}
+
+	
+
     // destroyed all vehicles
     /*for (uint32 team = 0; team < 2; ++team)
     {
@@ -1691,6 +1716,14 @@ void OutdoorPvPWG::EndBattle()
         }
     }
 
+	for(std::vector<uint64>::iterator itr = ToDespawnInWarCr.begin(); itr != ToDespawnInWarCr.end();itr++)
+	{
+		if(GetMap())
+			if(Creature* cr = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*itr))
+			{
+				cr->SetPhaseMask(1,true);
+			}
+	}
 
     m_wartime = false;
 	CharacterDatabase.Execute("UPDATE needed_variables set value = '150' where needed_variables.key = '0'");
