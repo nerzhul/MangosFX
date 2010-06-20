@@ -814,6 +814,16 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 				creature->Respawn();
 			Alliance_Spawns.push_back(creature->GetGUID());
 			break;
+		case 30400:
+			if(creature->GetDistance2d(4945.7f,2389.8f) < 70.0f)
+				NESpawnsCr.push_back(creature->GetGUID());
+			else if(creature->GetDistance2d(4954.2f,3384.1f) < 70.0f)
+				NWSpawnsCr.push_back(creature->GetGUID());
+			else if(creature->GetDistance2d(4354.6f,3301.6f) < 70.0f)
+				SWSpawnsCr.push_back(creature->GetGUID());
+			else if(creature->GetDistance2d(4359.9f,2347.7f) < 70.0f)
+				SESpawnsCr.push_back(creature->GetGUID());
+			break;
         default:
             break;
   }

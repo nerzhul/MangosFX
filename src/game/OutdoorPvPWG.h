@@ -273,6 +273,10 @@ class OutdoorPvPWG : public OutdoorPvP
 		std::vector<uint64> FortressLargeBanners;
 		std::vector<uint64> FortressPicBanners;
 		std::vector<uint64> BuildingDestroyables;
+		std::vector<uint64> NESpawnsCr;
+		std::vector<uint64> SESpawnsCr;
+		std::vector<uint64> NWSpawnsCr;
+		std::vector<uint64> SWSpawnsCr;
 		GameObject* TitanRelic;
 		Map* m_map;
 
