@@ -102,6 +102,7 @@ class MANGOS_DLL_DECL Vehicle : public Creature
         
     private:
 		bool HasAutoRegen();
+		bool CanMoveVehicle();
 		void InitSeats();
 		uint32 m_duration;
 		uint32 m_vRegenTimer;

@@ -419,7 +419,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
                 WorldPacket data3(SMSG_MOVE_SET_CAN_FLY, 12);
                 data3.append(me->GetPackGUID());
                 data3 << (uint32)(0);
-                SendMessageToSet(&data3,false);
+                me->SendMessageToSet(&data3,false);
             }
 		}
 		/*SpellClickInfoMapBounds clickPair = sObjectMgr.GetSpellClickInfoMapBounds(me->GetEntry());
@@ -449,13 +449,13 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	//if(!(GetVehicleFlags() & VF_FACTION))
 		me->setFaction(((Player*)unit)->getFaction());
 
-	/*if(GetVehicleFlags() & VF_CANT_MOVE)
+	if(!CanMoveVehicle())
     {
         WorldPacket data2(SMSG_FORCE_MOVE_ROOT, 10);
 		data2.append(me->GetPackGUID());
         data2 << (uint32)(2);
-        SendMessageToSet(&data2,false);
-    }*/
+        me->SendMessageToSet(&data2,false);
+    }
 
 	/*if(!((Creature*)me)->isHostileVehicle())
 	//if(GetVehicleFlags() & VF_NON_SELECTABLE)
@@ -805,6 +805,18 @@ bool Vehicle::HasAutoRegen()
 	{
 		// Pyrite Vehicles
 		case 33109:
+			return false;
+		default:
+			return true;
+	}
+}
+
+bool Vehicle::CanMoveVehicle()
+{
+	switch(me->GetEntry())
+	{
+		case 28833:
+		case 27894:
 			return false;
 		default:
 			return true;
