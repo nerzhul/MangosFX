@@ -874,10 +874,30 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
 		case 192285:
 			if(go->GetPositionX() > 5073.0f && go->GetPositionX() < 5392.0f && go->GetPositionY() > 2550.0f && go->GetPositionY() < 3100.0f)
 				FortressPicBanners.push_back(go->GetGUID());
+			if(go->GetDistance2d(4945.7f,2389.8f) < 70.0f)
+				NESpawnsGo.push_back(go->GetGUID());
+			else if(go->GetDistance2d(4954.2f,3384.1f) < 70.0f)
+				NWSpawnsGo.push_back(go->GetGUID());
+			else if(go->GetDistance2d(4354.6f,3301.6f) < 70.0f)
+				SWSpawnsGo.push_back(go->GetGUID());
+			else if(go->GetDistance2d(4359.9f,2347.7f) < 70.0f)
+				SESpawnsGo.push_back(go->GetGUID());
+
 	}
 	if(go->GetGOInfo()->displayId == 8257)
+	{
 		if(go->GetPositionX() > 5073.0f && go->GetPositionX() < 5392.0f && go->GetPositionY() > 2550.0f && go->GetPositionY() < 3100.0f)
 			FortressLargeBanners.push_back(go->GetGUID());
+		if(go->GetDistance2d(4945.7f,2389.8f) < 70.0f)
+			NESpawnsGo.push_back(go->GetGUID());
+		else if(go->GetDistance2d(4954.2f,3384.1f) < 70.0f)
+			NWSpawnsGo.push_back(go->GetGUID());
+		else if(go->GetDistance2d(4354.6f,3301.6f) < 70.0f)
+			SWSpawnsGo.push_back(go->GetGUID());
+		else if(go->GetDistance2d(4359.9f,2347.7f) < 70.0f)
+			SESpawnsGo.push_back(go->GetGUID());
+	}
+
 }
 
 void OutdoorPvPWG::UpdateAllWorldObject()
