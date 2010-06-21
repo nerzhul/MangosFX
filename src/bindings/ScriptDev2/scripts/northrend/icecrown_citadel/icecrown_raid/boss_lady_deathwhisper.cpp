@@ -70,9 +70,7 @@ enum BossSpells
         SPELL_BERSERK                           = 47008,
         //yells
         //summons
-        NPC_FANATIC                             = 37890,
         NPC_REANIMATED_FANATIC                  = 38009,
-        NPC_ADHERENT                            = 37949,
         NPC_REANIMATED_ADHERENT                 = 38010,
         //Abilities
         SPELL_DOMINATE_MIND                     = 71289,
@@ -100,6 +98,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     boss_deathwhisperAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		AddEnrageTimer(TEN_MINS);
+		AddEvent(SPELL_SHADOW_BOLT,3000,4000,0,TARGET_RANDOM,1);
     }
     uint32 ShadowBolt_Timer;
     uint32 DeathAndDecay_Timer;
@@ -115,6 +115,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 
     void Reset()
     {
+		CleanMyAdds();
         ShadowBolt_Timer = 5000;
         DeathAndDecay_Timer = 30000;
         Summon_Cult_Timer = 20000;
@@ -132,6 +133,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
         if (pInstance)
             pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
+
+		DoCastMe(SPELL_MANA_BARRIER);
     }
 
     void JustDied(Unit* pKiller)
@@ -174,26 +177,40 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
                 Phase = 2;
                 return;
             }
-
-            if (!me->HasAura(SPELL_MANA_BARRIER))
-                 DoCastSpellIfCan(me, SPELL_MANA_BARRIER);
+			else if(!me->HasAura(SPELL_MANA_BARRIER))
+			{
+				DoCastMe(SPELL_MANA_BARRIER);
+			}
 
             if (Summon_Cult_Timer < diff)
             {
-                if (SpawnLeft)
-                {
-                    me->SummonCreature(NPC_CULT_FANATIC,ADD_1X,ADD_1Y,ADD_1Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    me->SummonCreature(NPC_CULT_ADHERENT,ADD_2X,ADD_2Y,ADD_2Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    me->SummonCreature(NPC_CULT_FANATIC,ADD_3X,ADD_3Y,ADD_3Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    SpawnLeft = false;
-                }
-                else
-                {
-                    me->SummonCreature(NPC_CULT_ADHERENT,ADD_4X,ADD_4Y,ADD_4Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    me->SummonCreature(NPC_CULT_FANATIC,ADD_5X,ADD_5Y,ADD_5Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    me->SummonCreature(NPC_CULT_ADHERENT,ADD_6X,ADD_6Y,ADD_6Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,5000);
-                    SpawnLeft = true;
-                }
+				if(m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_10MAN_NORMAL)
+				{
+					if (SpawnLeft)
+					{
+						CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_1X,ADD_1Y,ADD_1Z);
+						CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_2X,ADD_2Y,ADD_2Z);
+						CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_3X,ADD_3Y,ADD_3Z);
+						SpawnLeft = false;
+					}
+					else
+					{
+						CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_4X,ADD_4Y,ADD_4Z);
+						CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_5X,ADD_5Y,ADD_5Z);
+						CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_6X,ADD_6Y,ADD_6Z);
+						SpawnLeft = true;
+					}
+				}
+				else
+				{
+					CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_1X,ADD_1Y,ADD_1Z);
+					CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_2X,ADD_2Y,ADD_2Z);
+					CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_3X,ADD_3Y,ADD_3Z);
+					CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_4X,ADD_4Y,ADD_4Z);
+					CallCreature(NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_5X,ADD_5Y,ADD_5Z);
+					CallCreature(NPC_CULT_ADHERENT,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,ADD_6X,ADD_6Y,ADD_6Z);
+					CallCreature(urand(0,1) ? NPC_CULT_ADHERENT : NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,-547.631f,2212.955f,53.25f);
+				}
 
                 Summon_Cult_Count++;
                 Summon_Cult_Timer = 60000;
