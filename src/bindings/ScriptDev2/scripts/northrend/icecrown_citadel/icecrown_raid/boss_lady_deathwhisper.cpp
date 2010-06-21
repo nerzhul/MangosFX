@@ -79,30 +79,17 @@ enum BossSpells
         SPELL_VENGEFUL_BLAST_0                  = 71544,
 };
 
-const static float SpawnLoc[11][3]=
-{
-    {-623.055481f, 2211.326660f, 51.764259f},  // 0 Lady's stay point
-    {-620.197449f, 2272.062256f, 50.848679f},  // 1 Right Door 1
-    {-598.636353f, 2272.062256f, 50.848679f},  // 2 Right Door 2
-    {-578.495728f, 2272.062256f, 50.848679f},  // 3 Right Door 3
-    {-578.495728f, 2149.211182f, 50.848679f},  // 4 Left Door 1
-    {-598.636353f, 2149.211182f, 50.848679f},  // 5 Left Door 2
-    {-620.197449f, 2149.211182f, 50.848679f},  // 6 Left Door 3
-    {-517.652466f, 2216.611328f, 62.823681f},  // 7 Upper marsh 1
-    {-517.652466f, 2211.611328f, 62.823681f},  // 8 Upper marsh 2
-    {-517.652466f, 2206.611328f, 62.823681f},  // 9 Upper marsh 3
-};
-
 struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 {
     boss_deathwhisperAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
 		AddEnrageTimer(TEN_MINS);
-		AddEvent(SPELL_SHADOW_BOLT,3000,4000,0,TARGET_RANDOM,1);
+		AddPhase1Event(SPELL_SHADOW_BOLT,3000,4000);
+		AddMaxPrioEvent(SPELL_DEATH_AND_DECAY,25000,30000);
+		Add
     }
     uint32 ShadowBolt_Timer;
-    uint32 DeathAndDecay_Timer;
     uint32 Frostbolt_Timer;
     uint32 FrostboltVolley_Timer;
     uint32 Insignificance_Timer;
@@ -116,9 +103,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void Reset()
     {
 		CleanMyAdds();
-        ShadowBolt_Timer = 5000;
-        DeathAndDecay_Timer = 30000;
-        Summon_Cult_Timer = 20000;
+        Summon_Cult_Timer = 5000;
         Frostbolt_Timer = 15000;
         FrostboltVolley_Timer = 40000;
         Insignificance_Timer = 5000+rand()%40000;
@@ -175,6 +160,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1)
             {
                 Phase = 2;
+				DoResetThreat();
                 return;
             }
 			else if(!me->HasAura(SPELL_MANA_BARRIER))
@@ -216,14 +202,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
                 Summon_Cult_Timer = 60000;
             }
             else Summon_Cult_Timer -= diff;
-
-            if (ShadowBolt_Timer < diff)
-            {
-                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, SPELL_SHADOW_BOLT);
-                ShadowBolt_Timer = 5000;
-            }
-            else ShadowBolt_Timer -= diff;
 
             DoStartNoMovement(me->getVictim());
         }
@@ -270,13 +248,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             DoMeleeAttackIfReady();
         }
 
-        if (DeathAndDecay_Timer < diff)
-        {
-            if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                 DoCastSpellIfCan(target, SPELL_DEATH_AND_DECAY);
-            DeathAndDecay_Timer = 30000;
-        }
-        else DeathAndDecay_Timer -= diff;
+		UpdateEvent(diff,Phase);
+		UpdateEvent(diff);
     }
 };
 
