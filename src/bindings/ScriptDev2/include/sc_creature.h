@@ -369,7 +369,12 @@ class MANGOS_DLL_SPEC MobEventTasks
 class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 {
 	public:
-		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {};
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) 
+		{
+			ManualMoveEnable = false;
+			CanMove = true;
+			CheckDistanceTimer = 1000;
+		}
 		~LibDevFSAI() {};
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
@@ -468,6 +473,9 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		Unit* GetRandomUnit(uint8 pos = 0) { return SelectUnit(SELECT_TARGET_RANDOM,pos); }
 
+		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
+		void SetMovePhase(bool yes = true) { CanMove = yes; }
+
 		void MakeInvisibleStalker();
 	
 	private:
@@ -477,6 +485,9 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		SpellEvents SavedEventSh;
 		SummonEvents SavedEventSummon;
 		std::vector<uint64> MyAdds;
+		bool ManualMoveEnable;
+		uint32 CheckDistanceTimer;
+		bool CanMove;
 		
 };
 #endif

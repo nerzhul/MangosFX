@@ -93,6 +93,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void Reset()
     {
 		CleanMyAdds();
+		ActivateManualMoveSystem();
+		SetMovePhase(false);
 		Enrage_Timer = TEN_MINS;
         Summon_Cult_Timer = 5000;
 		Shade_Timer = 12000;
@@ -175,6 +177,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
                 Phase = 2;
 				Yell(16877,"Assez ! Je vois qu'il faut que je prenne la situation en main !");
 				DoResetThreat();
+				SetMovePhase();
                 return;
             }
 			else if(!me->HasAura(SPELL_MANA_BARRIER))
@@ -215,8 +218,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
                 Summon_Cult_Timer = 60000;
             }
             else Summon_Cult_Timer -= diff;
-
-            DoStartNoMovement(me->getVictim());
         }
 
         if (Phase == 2)
@@ -239,8 +240,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 			else
 				Shade_Timer -= diff;
 
-			DoStartMovement(me->getVictim(),5.0f);
-            DoMeleeAttackIfReady();
+			DoMeleeAttackIfReady();
         }
 
 		if(Enrage_Timer <= diff)

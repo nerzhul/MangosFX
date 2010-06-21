@@ -1051,6 +1051,27 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 				(*itr).Timer -= diff;	
 		}
 	}
+
+	if(ManualMoveEnable)
+	{
+		if(CheckDistanceTimer < diff)
+		{
+			if(CanMove && me->getVictim() && me->getVictim()->GetDistance2d(me) > 8.0f)
+				me->GetMotionMaster()->MoveChase(me->getVictim());
+			else
+			{
+				me->GetMotionMaster()->MoveIdle();
+				me->StopMoving();
+			}
+
+			if(CanMove)
+				CheckDistanceTimer = 1500;
+			else
+				CheckDistanceTimer = 200;
+		}
+		else
+			CheckDistanceTimer -= diff;
+	}
 }
 
 void LibDevFSAI::ResetTimers()

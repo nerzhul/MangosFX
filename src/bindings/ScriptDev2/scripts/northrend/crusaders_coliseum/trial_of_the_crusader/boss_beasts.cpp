@@ -204,7 +204,6 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 
 	uint8 phase;
 	uint32 phase_Timer;
-	uint32 CheckDistanceTimer;
 	bool Spawnable;
 	uint32 Spawn_Timer;
 	uint32 Spew_Timer;
@@ -212,6 +211,8 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
     void Reset()
     {		
 		ResetTimers();
+		ActivateManualMoveSystem();
+		SetMovePhase();
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -227,7 +228,6 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 		phase_Timer = 10000;
 		Spawn_Timer = 180000;
 		Spew_Timer = 15100;
-		CheckDistanceTimer = 1000;
 		AggroAllPlayers(150.0f);
     }
 	
@@ -337,23 +337,6 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 		}
 
 		UpdateEvent(diff,phase);
-
-		if(CheckDistanceTimer < diff)
-		{
-			if(phase == 1 && me->getVictim() && me->getVictim()->GetDistance2d(me) > 8.0f)
-				me->GetMotionMaster()->MoveChase(me->getVictim());
-			else if (phase == 2)
-			{
-				me->GetMotionMaster()->MoveIdle();
-				me->StopMoving();
-			}
-			if(phase == 1)
-				CheckDistanceTimer = 1500;
-			else
-				CheckDistanceTimer = 100;
-		}
-		else
-			CheckDistanceTimer -= diff;
 
 		if(Spawnable)
 		{
