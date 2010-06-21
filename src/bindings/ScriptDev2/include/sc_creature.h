@@ -423,7 +423,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void AddPhase2Event(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
 			SpellCastTarget targ = TARGET_RANDOM, uint32 TextId = 0, bool MaxPriority = false,
 			uint16 Repeat = 1, bool front = true)
-			{ AddEvent(SpellId, Timer, NormTimer, Diff, targ, 1, TextId, MaxPriority, Repeat, front); }
+			{ AddEvent(SpellId, Timer, NormTimer, Diff, targ, 2, TextId, MaxPriority, Repeat, front); }
 
 		void AddEnrageTimer(uint32 Timer) { AddEventMaxPrioOnMe(26662,Timer,60000); }
 
