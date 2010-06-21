@@ -955,6 +955,23 @@ void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32
 	EventShVect.push_back(tmpEvent);
 	SavedEventSh.push_back(tmpEvent);
 }
+
+void LibDevFSAI::AddTextEvent(uint32 soundId, std::string text, uint32 Timer, uint32 NormTimer, uint8 type, uint8 phase)
+{
+	if(soundId < 1 || !GetSoundEntriesStore()->LookupEntry(soundId))
+		return;
+
+	TextSh tmpEvent;
+	tmpEvent.SoundId = soundId;
+	tmpEvent.Text = text;
+	tmpEvent.type = type;
+	tmpEvent.phase = phase;
+	tmpEvent.Timer = Timer;
+	tmpEvent.NormTimer = NormTimer;
+	EventTextVect.push_back(tmpEvent);
+	SavedEventTexts.push_back(tmpEvent);
+}
+
 void MobEventTasks::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 			SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
 {
@@ -1052,6 +1069,20 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 		}
 	}
 
+	for(TextEvents::iterator itr = EventTextVect.begin(); itr!= EventTextVect.end(); ++itr)
+	{
+		if((*itr).phase == phase)
+		{
+			if((*itr).Timer <= diff || (*itr).Timer > 45000000)
+			{
+				Speak((*itr).type,(*itr).SoundId,(*itr).Text);
+				(*itr).Timer = (*itr).NormTimer;
+			}
+			else
+				(*itr).Timer -= diff;	
+		}
+	}
+
 	if(ManualMoveEnable)
 	{
 		if(CheckDistanceTimer < diff)
@@ -1078,11 +1109,15 @@ void LibDevFSAI::ResetTimers()
 {
 	EventShVect.clear();
 	EventSummonVect.clear();
+	SavedEventTexts.clear();
 	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
 		EventShVect.push_back(*itr);
 		
 	for(SummonEvents::iterator itr = SavedEventSummon.begin(); itr!= SavedEventSummon.end(); ++itr)
 		EventSummonVect.push_back(*itr);
+
+	for(TextEvents::iterator itr = SavedEventTexts.begin(); itr!= SavedEventTexts.end(); ++itr)
+		EventTextVect.push_back(*itr);
 }
 
 void MobEventTasks::UpdateEvent(uint32 diff, uint32 phase)

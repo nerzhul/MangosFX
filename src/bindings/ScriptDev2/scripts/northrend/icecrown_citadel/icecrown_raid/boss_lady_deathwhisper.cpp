@@ -83,19 +83,19 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 		AddPhase2Event(SPELL_FROSTBOLT,5000,5000,1000);
 		AddPhase2Event(SPELL_FROSTBOLT_VOLLEY,6000,20000,1000);
 		AddEventMaxPrioOnTank(SPELL_INSIGNIFICANCE,8000,10000,1000,2);
+		AddTextEvent(16872,"Cette supercherie n'a que trop duré !",TEN_MINS,DAY*HOUR);
     }
     uint32 Summon_Cult_Timer;
-	uint32 Enrage_Timer;
 	uint32 Shade_Timer;
     uint8 Phase;
     bool SpawnLeft;
 
     void Reset()
     {
+		ResetTimers();
 		CleanMyAdds();
 		ActivateManualMoveSystem();
 		SetMovePhase(false);
-		Enrage_Timer = TEN_MINS;
         Summon_Cult_Timer = 5000;
 		Shade_Timer = 12000;
         Phase = 1;
@@ -242,14 +242,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 
 			DoMeleeAttackIfReady();
         }
-
-		if(Enrage_Timer <= diff)
-		{
-			Yell(16872,"Cette supercherie n'a que trop duré !");
-			Enrage_Timer = DAY*HOUR;
-		}
-		else
-			Enrage_Timer -= diff;
 
 		UpdateEvent(diff,Phase);
 		UpdateEvent(diff);

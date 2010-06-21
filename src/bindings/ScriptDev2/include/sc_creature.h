@@ -269,6 +269,16 @@ struct EventSh
 	bool RequireFront;
 };
 
+struct TextSh
+{
+	uint32 SoundId;
+	std::string Text;
+	uint8 type;
+	uint32 Timer;
+	uint32 NormTimer;
+	uint8 phase;
+};
+
 enum ZoneInvoc
 {
 	ON_ME		=	0,
@@ -322,6 +332,7 @@ enum MobConstantes
 
 typedef std::vector<EventSh> SpellEvents;
 typedef std::vector<EventSummon> SummonEvents;
+typedef std::vector<TextSh> TextEvents;
 
 class MANGOS_DLL_SPEC MobEventTasks
 {
@@ -432,6 +443,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void AddEnrageTimer(uint32 Timer) { AddEventMaxPrioOnMe(26662,Timer,60000); }
 
+		void AddTextEvent(uint32 soundId, std::string text, uint32 Timer, uint32 NormTimer, uint8 type = CHAT_TYPE_YELL, uint8 phase = 0);
+
 		void UpdateEvent(uint32 diff, uint32 phase = 0);
 			
 		Creature* CallAggressiveCreature(uint32 entry, uint32 Despawn = TEN_MINS,
@@ -448,6 +461,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		{
 			EventShVect.clear();
 			EventSummonVect.clear();
+			EventTextVect.clear();
 			Reset();
 		}
 
@@ -465,6 +479,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			EventSummonVect.clear();
 			SavedEventSh.clear();
 			SavedEventSummon.clear();
+			EventTextVect.clear();
+			SavedEventTexts.clear();
 		}
 
 		void AddPercentLife(Unit* u,uint8 percent);
@@ -484,6 +500,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		SummonEvents EventSummonVect;
 		SpellEvents SavedEventSh;
 		SummonEvents SavedEventSummon;
+		TextEvents EventTextVect;
+		TextEvents SavedEventTexts;
 		std::vector<uint64> MyAdds;
 		bool ManualMoveEnable;
 		uint32 CheckDistanceTimer;
