@@ -95,18 +95,12 @@ const static float SpawnLoc[11][3]=
     {-517.652466f, 2206.611328f, 62.823681f},  // 9 Upper marsh 3
 };
 
-struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 {
-    boss_deathwhisperAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_deathwhisperAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
+        InitInstance();
     }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
-
     uint32 ShadowBolt_Timer;
     uint32 DeathAndDecay_Timer;
     uint32 Frostbolt_Timer;
@@ -136,20 +130,20 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_DEATHWHISPER, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_DEATHWHISPER, DONE);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_DEATHWHISPER, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_DEATHWHISPER, FAIL);
     }
 
     void JustSummoned(Creature* pSummoned)

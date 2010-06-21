@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 break;
             case GO_DEATHWHISPER_ELEVATOR:
                 m_uiDeathwhisperElevatorGUID = pGo->GetGUID();
-				pGo->RemoveFromWorld();
+				pGo->SetPhaseMask(2,true);
                 break;
             case GO_SAURFANG_DOOR:
                 m_uiSaurfangDoorGUID = pGo->GetGUID();
@@ -138,6 +138,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 break;
             case TYPE_DEATHWHISPER:
                 m_auiEncounter[1] = uiData;
+				if(uiData == DONE)
+				{
+					if(GameObject* go = GetGoInMap(m_uiDeathwhisperElevatorGUID))
+						go->SetPhaseMask(1,true);
+				}
                 break;
             case TYPE_SAURFANG:
                 m_auiEncounter[2] = uiData;

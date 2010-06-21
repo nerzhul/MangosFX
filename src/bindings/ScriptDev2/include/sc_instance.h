@@ -52,6 +52,12 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 			return (Creature*)GetUnitInMap(guid);
 		}
 
+		GameObject* GetGoInMap(uint64 guid)
+		{
+			if(!instance) return NULL;
+			return instance->GetGameObject(guid);
+		}
+
 		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
 };
 #endif
