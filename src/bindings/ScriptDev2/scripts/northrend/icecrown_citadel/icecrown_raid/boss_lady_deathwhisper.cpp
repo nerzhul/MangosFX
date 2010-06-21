@@ -88,9 +88,9 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 		AddPhase2Event(SPELL_FROSTBOLT,5000,5000,1000);
 		AddPhase2Event(SPELL_FROSTBOLT_VOLLEY,6000,20000,1000);
 		AddEventMaxPrioOnTank(SPELL_INSIGNIFICANCE,8000,10000,1000,2);
-		AddEventOnMe(SPELL_VENGEFUL_SHADE,20000,30000);
     }
     uint32 Summon_Cult_Timer;
+	uint32 Shade_Timer;
     uint8 Phase;
     bool SpawnLeft;
 
@@ -98,6 +98,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
 		CleanMyAdds();
         Summon_Cult_Timer = 5000;
+		Shade_Timer = 12000;
         Phase = 1;
         SpawnLeft = true;
     }
@@ -198,6 +199,21 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             if (me->HasAura(SPELL_MANA_BARRIER))
                 me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
 
+			if(Shade_Timer <= diff)
+			{
+				if(Unit* target = GetRandomUnit(/*2*/0))
+				{
+					if(Creature* shade = CallCreature(NPC_VENGEFUL_SHADE,20000,PREC_COORDS,NOTHING,target->GetPositionX() + irand(-10,10), 
+						target->GetPositionY() + irand(-10,10),target->GetPositionZ() + 0.5f))
+					{
+						shade->AddThreat(target,10000000.0f,true);
+					}
+				}
+				Shade_Timer = 20000;
+			}
+			else
+				Shade_Timer -= diff;
+
             DoMeleeAttackIfReady();
         }
 
@@ -211,11 +227,47 @@ CreatureAI* GetAI_boss_deathwhisper(Creature* pCreature)
     return new boss_deathwhisperAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL icc_dw_shadeAI : public LibDevFSAI
+{
+    icc_dw_shadeAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		SetAuraStack(71494,1,me,me,1);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_icc_dw_shade(Creature* pCreature)
+{
+    return new icc_dw_shadeAI(pCreature);
+}
+
 void AddSC_boss_deathwhisper()
 {
     Script* NewScript;
     NewScript = new Script;
     NewScript->Name = "boss_deathwhisper";
     NewScript->GetAI = &GetAI_boss_deathwhisper;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_dw_shade";
+    NewScript->GetAI = &GetAI_icc_dw_shade;
     NewScript->RegisterSelf();
 }
