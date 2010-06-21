@@ -411,6 +411,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			uint8 phase = 0, uint32 TextId = 0,	bool MaxPriority = false, uint16 Repeat = 1, bool front = true)
 			{ AddEvent(SpellId,Timer,NormTimer,Diff,HEAL_MY_FRIEND,phase,TextId,MaxPriority,Repeat,front); }
 
+		void AddHealEventMaxPrio(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			uint8 phase = 0, uint32 TextId = 0,	uint16 Repeat = 1, bool front = true)
+			{ AddEvent(SpellId, Timer, NormTimer, Diff, HEAL_MY_FRIEND, phase, TextId, true, Repeat, front); }	
+
 		void AddEnrageTimer(uint32 Timer) { AddEventMaxPrioOnMe(26662,Timer,60000); }
 
 		void UpdateEvent(uint32 diff, uint32 phase = 0);

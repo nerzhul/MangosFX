@@ -362,6 +362,9 @@ struct MANGOS_DLL_DECL deathspeaker_discipleAI : public LibDevFSAI
     deathspeaker_discipleAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		AddHealEventMaxPrio(69389,10000,10000,1000);
+		AddHealEvent(69391,3000,5000,1000);
+		AddEvent(69387,500,3000,1000);
     }
 
     void Reset()
@@ -393,6 +396,85 @@ struct MANGOS_DLL_DECL deathspeaker_discipleAI : public LibDevFSAI
 CreatureAI* GetAI_deathspeaker_disciple(Creature* pCreature)
 {
     return new deathspeaker_discipleAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL deathspeaker_zeloteAI : public LibDevFSAI
+{
+    deathspeaker_zeloteAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEventOnTank(69492,1000,6000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_deathspeaker_zelote(Creature* pCreature)
+{
+    return new deathspeaker_zeloteAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL deathspeaker_priestAI : public LibDevFSAI
+{
+    deathspeaker_priestAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(69483,5000,10000,5000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(69491);
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_deathspeaker_priest(Creature* pCreature)
+{
+    return new deathspeaker_priestAI (pCreature);
 }
 
 void AddSC_ICC10_mobs()
@@ -442,5 +524,15 @@ void AddSC_ICC10_mobs()
 	newscript = new Script;
     newscript->Name = "icc_deathspeaker_disciple";
     newscript->GetAI = &GetAI_deathspeaker_attendant;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_deathspeaker_zelote";
+    newscript->GetAI = &GetAI_deathspeaker_zelote;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_deathspeaker_priest";
+    newscript->GetAI = &GetAI_deathspeaker_priest;
     newscript->RegisterSelf();
 }
