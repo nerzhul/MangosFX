@@ -160,7 +160,10 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
         if (me->HasAura(SPELL_MANA_BARRIER))
         {
-            me->SetPower(POWER_MANA,me->GetPower(POWER_MANA)-damage);
+			if(damage >= me->GetPower(POWER_MANA))
+				me->SetPower(POWER_MANA,0);
+			else
+				me->SetPower(POWER_MANA,me->GetPower(POWER_MANA)-damage);
 			damage = 0;
         }
     }
@@ -175,6 +178,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1)
             {
                 Phase = 2;
+				me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
 				Yell(16877,"Assez ! Je vois qu'il faut que je prenne la situation en main !");
 				DoResetThreat();
 				SetMovePhase();
@@ -227,7 +231,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 
 			if(Shade_Timer <= diff)
 			{
-				if(Unit* target = GetRandomUnit(/*2*/0))
+				if(Unit* target = GetRandomUnit(1))
 				{
 					if(Creature* shade = CallCreature(NPC_VENGEFUL_SHADE,20000,PREC_COORDS,NOTHING,target->GetPositionX() + irand(-10,10), 
 						target->GetPositionY() + irand(-10,10),target->GetPositionZ() + 0.5f))
