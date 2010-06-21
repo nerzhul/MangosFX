@@ -218,11 +218,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
     {
         switch(uiData)
         {
-            case NPC_MARROWGAR:
+            case TYPE_MARROWGAR:
                 return m_uiMarrowgarGUID;
-            case NPC_DEATHWHISPER:
+            case TYPE_DEATHWHISPER:
                 return m_uiDeathwhisperGUID;
-            case NPC_SAURFANG:
+            case TYPE_SAURCROC:
                 return m_uiSaurfangGUID;
 			case GO_MARROWGAR_DOOR:
 				return m_uiMarrowgarDoorGUID;

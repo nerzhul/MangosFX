@@ -85,6 +85,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 		AddEventMaxPrioOnTank(SPELL_INSIGNIFICANCE,8000,10000,1000,2);
     }
     uint32 Summon_Cult_Timer;
+	uint32 Enrage_Timer;
 	uint32 Shade_Timer;
     uint8 Phase;
     bool SpawnLeft;
@@ -92,6 +93,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void Reset()
     {
 		CleanMyAdds();
+		Enrage_Timer = TEN_MINS;
         Summon_Cult_Timer = 5000;
 		Shade_Timer = 12000;
         Phase = 1;
@@ -104,7 +106,16 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
 
 		DoCastMe(SPELL_MANA_BARRIER);
+		Yell(16868,"Quelle est cette perturbation ? Vous osez profaner cette terre sacrée ? Elle deviendra votre sépulture !");
     }
+
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Yell(16869,"Saisissez vous maintenant la futilité de vos actes ?");
+		else
+			Yell(16870,"Acceptez les ténèbres... éternelles !");
+	}
 
     void JustDied(Unit* pKiller)
     {
@@ -127,6 +138,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 				GiveEmblemsToGroup(GIVRE,3);
 				break;
 		}
+
+		Yell(16871,"Le maître avait tout prévu... votre fin est... inévitable...");
     }
 
     void JustReachedHome()
@@ -145,8 +158,8 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
         if (me->HasAura(SPELL_MANA_BARRIER))
         {
-            me->SetHealth(me->GetHealth()+damage);
             me->SetPower(POWER_MANA,me->GetPower(POWER_MANA)-damage);
+			damage = 0;
         }
     }
 
@@ -160,6 +173,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1)
             {
                 Phase = 2;
+				Yell(16877,"Assez ! Je vois qu'il faut que je prenne la situation en main !");
 				DoResetThreat();
                 return;
             }
@@ -225,8 +239,17 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 			else
 				Shade_Timer -= diff;
 
+			DoStartMovement(me->getVictim(),5.0f);
             DoMeleeAttackIfReady();
         }
+
+		if(Enrage_Timer <= diff)
+		{
+			Yell(16872,"Cette supercherie n'a que trop duré !");
+			Enrage_Timer = DAY*HOUR;
+		}
+		else
+			Enrage_Timer -= diff;
 
 		UpdateEvent(diff,Phase);
 		UpdateEvent(diff);
@@ -288,7 +311,7 @@ struct MANGOS_DLL_DECL icc_dw_cult_adherentAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		switchPhase_Timer = urand(40000,60000);
+		switchPhase_Timer = urand(20000,80000);
 		Phase = 1;
     }
 
@@ -303,7 +326,9 @@ struct MANGOS_DLL_DECL icc_dw_cult_adherentAI : public LibDevFSAI
 			{
 				me->CastStop();
 				DoCastMe(70903);
-				switchPhase_Timer = 3000;
+				if(Creature* Dw = GetInstanceCreature(TYPE_DEATHWHISPER))
+					Yell(16875,"Lève toi, dans l'exultation de cette nouvelle pureté.",Dw);
+				switchPhase_Timer = 5000;
 			}
 			else if(Phase == 2)
 			{
@@ -345,7 +370,7 @@ struct MANGOS_DLL_DECL icc_dw_cult_fanaticAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		switchPhase_Timer = urand(40000,60000);
+		switchPhase_Timer = urand(20000,80000);
 		Phase = 1;
     }
 
@@ -360,7 +385,9 @@ struct MANGOS_DLL_DECL icc_dw_cult_fanaticAI : public LibDevFSAI
 			{
 				me->CastStop();
 				DoCastMe(70903);
-				switchPhase_Timer = 3000;
+				if(Creature* Dw = GetInstanceCreature(TYPE_DEATHWHISPER))
+					Yell(16874,"Loyal partisan, je te libère de la malédiction de la chair !",Dw);
+				switchPhase_Timer = 5000;
 			}
 			else if(Phase == 2)
 			{
