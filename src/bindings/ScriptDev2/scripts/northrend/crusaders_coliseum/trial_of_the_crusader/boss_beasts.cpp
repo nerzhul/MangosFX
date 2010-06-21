@@ -316,9 +316,15 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 		{
 			DoResetThreat();
 			if(phase == 1)
+			{
 				phase = 2;
+				SetMovePhase(false);
+			}
 			else
+			{
 				phase = 1;
+				SetMovePhase();
+			}
 
 			phase_Timer = 45000;
 		}
