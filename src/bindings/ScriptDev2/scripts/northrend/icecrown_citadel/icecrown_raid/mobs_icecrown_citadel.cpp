@@ -276,6 +276,125 @@ CreatureAI* GetAI_Nerubar_webkeep(Creature* pCreature)
     return new Nerubar_webkeepAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL deathspeaker_servantAI : public LibDevFSAI
+{
+    deathspeaker_servantAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(69404,1000,3000,1000);
+		AddEventOnTank(69576,2000,10000,1000);
+		AddEvent(69405,5000,20000,1000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_deathspeaker_servant(Creature* pCreature)
+{
+    return new deathspeaker_servantAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL deathspeaker_attendantAI : public LibDevFSAI
+{
+    deathspeaker_attendantAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(69387,1000,3000,500);
+		AddMaxPrioEvent(69355,5000,10000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_deathspeaker_attendant(Creature* pCreature)
+{
+    return new deathspeaker_attendantAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL deathspeaker_discipleAI : public LibDevFSAI
+{
+    deathspeaker_discipleAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_deathspeaker_disciple(Creature* pCreature)
+{
+    return new deathspeaker_discipleAI (pCreature);
+}
+
 void AddSC_ICC10_mobs()
 {
 	Script *newscript;
@@ -308,5 +427,20 @@ void AddSC_ICC10_mobs()
 	newscript = new Script;
     newscript->Name = "icc_nerubar_webkeeper";
     newscript->GetAI = &GetAI_Nerubar_webkeep;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_deathspeaker_servant";
+    newscript->GetAI = &GetAI_deathspeaker_servant;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_deathspeaker_attendant";
+    newscript->GetAI = &GetAI_deathspeaker_attendant;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_deathspeaker_disciple";
+    newscript->GetAI = &GetAI_deathspeaker_attendant;
     newscript->RegisterSelf();
 }
