@@ -66,17 +66,14 @@ enum
 
 enum BossSpells
 {
-        //common
-        SPELL_BERSERK                           = 47008,
-        //yells
-        //summons
-        NPC_REANIMATED_FANATIC                  = 38009,
-        NPC_REANIMATED_ADHERENT                 = 38010,
-        //Abilities
-        SPELL_DOMINATE_MIND                     = 71289,
+    //summons
+    NPC_REANIMATED_FANATIC                  = 38009,
+    NPC_REANIMATED_ADHERENT                 = 38010,
+    //Abilities
+    SPELL_DOMINATE_MIND                     = 71289,
 
-        SPELL_VENGEFUL_BLAST                    = 71494,
-        SPELL_VENGEFUL_BLAST_0                  = 71544,
+    SPELL_VENGEFUL_BLAST                    = 71494,
+    SPELL_VENGEFUL_BLAST_0                  = 71544,
 };
 
 struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
@@ -85,32 +82,23 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
         InitInstance();
 		AddEnrageTimer(TEN_MINS);
+		AddHealEvent(SPELL_DARK_EMPOWERMENT,20000,60000,2000,1);
 		AddPhase1Event(SPELL_SHADOW_BOLT,3000,4000);
 		AddMaxPrioEvent(SPELL_DEATH_AND_DECAY,25000,30000);
-		Add
+		AddPhase2Event(SPELL_FROSTBOLT,5000,5000,1000);
+		AddPhase2Event(SPELL_FROSTBOLT_VOLLEY,6000,20000,1000);
+		AddEventMaxPrioOnTank(SPELL_INSIGNIFICANCE,8000,10000,1000,2);
+		AddEventOnMe(SPELL_VENGEFUL_SHADE,20000,30000);
     }
-    uint32 ShadowBolt_Timer;
-    uint32 Frostbolt_Timer;
-    uint32 FrostboltVolley_Timer;
-    uint32 Insignificance_Timer;
     uint32 Summon_Cult_Timer;
-    uint32 Summon_Shade_Timer;
     uint8 Phase;
-    uint8 Summon_Cult_Count;
-    uint8 Summon_Shade_Count;
     bool SpawnLeft;
 
     void Reset()
     {
 		CleanMyAdds();
         Summon_Cult_Timer = 5000;
-        Frostbolt_Timer = 15000;
-        FrostboltVolley_Timer = 40000;
-        Insignificance_Timer = 5000+rand()%40000;
-        Summon_Shade_Timer = 25000;
         Phase = 1;
-        Summon_Cult_Count = 0;
-        Summon_Shade_Count = 0;
         SpawnLeft = true;
     }
 
@@ -198,7 +186,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 					CallCreature(urand(0,1) ? NPC_CULT_ADHERENT : NPC_CULT_FANATIC,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,-547.631f,2212.955f,53.25f);
 				}
 
-                Summon_Cult_Count++;
                 Summon_Cult_Timer = 60000;
             }
             else Summon_Cult_Timer -= diff;
@@ -210,40 +197,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
         {
             if (me->HasAura(SPELL_MANA_BARRIER))
                 me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
-
-            if (Insignificance_Timer < diff)
-            {
-                 DoCastSpellIfCan(me->getVictim(), SPELL_INSIGNIFICANCE);
-                Insignificance_Timer = 5000+rand()%40000;
-            }
-            else Insignificance_Timer -= diff;
-
-            if (FrostboltVolley_Timer < diff)
-            {
-                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, SPELL_FROSTBOLT_VOLLEY);
-                FrostboltVolley_Timer = 40000;
-            }
-            else FrostboltVolley_Timer -= diff;
-
-            if (Summon_Shade_Count < Summon_Cult_Count)
-            {
-                if (Summon_Shade_Timer < diff)
-                {
-                     DoCastSpellIfCan(me, SPELL_VENGEFUL_SHADE);
-                    Summon_Shade_Count++;
-                    Summon_Shade_Timer = 25000;
-                }
-                else Summon_Shade_Timer -= diff;
-            }
-
-            if (Frostbolt_Timer < diff)
-            {
-                if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
-                     DoCastSpellIfCan(target, SPELL_FROSTBOLT);
-                Frostbolt_Timer = 15000;
-            }
-            else Frostbolt_Timer -= diff;
 
             DoMeleeAttackIfReady();
         }
