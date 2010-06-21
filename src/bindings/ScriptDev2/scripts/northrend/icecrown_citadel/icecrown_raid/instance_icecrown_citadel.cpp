@@ -70,8 +70,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				m_uiMarrowgarGUID = pCreature->GetGUID(); 
 				break;
             case NPC_DEATHWHISPER: 
-				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				/*pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);*/
 				m_uiDeathwhisperGUID = pCreature->GetGUID(); 
 				break;
             case NPC_SAURFANG: 
@@ -99,7 +99,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 break;
             case GO_DEATHWHISPER_ELEVATOR:
                 m_uiDeathwhisperElevatorGUID = pGo->GetGUID();
-				pGo->SetPhaseMask(2,true);
+				if (m_auiEncounter[TYPE_DEATHWHISPER] == DONE)
+					pGo->SetPhaseMask(1,true);
+				else
+					pGo->SetPhaseMask(2,true);
                 break;
             case GO_SAURFANG_DOOR:
                 m_uiSaurfangDoorGUID = pGo->GetGUID();
@@ -126,7 +129,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         switch(uiType)
         {
             case TYPE_MARROWGAR:
-                m_auiEncounter[0] = uiData;
+                m_auiEncounter[TYPE_MARROWGAR] = uiData;
                 if (uiData == DONE)
                 {
                     /*OpenDoor(m_uiMarrowgarIce1GUID);
@@ -137,15 +140,18 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiMarrowgarDoorGUID);
                 break;
             case TYPE_DEATHWHISPER:
-                m_auiEncounter[1] = uiData;
+                m_auiEncounter[TYPE_DEATHWHISPER] = uiData;
 				if(uiData == DONE)
 				{
 					if(GameObject* go = GetGoInMap(m_uiDeathwhisperElevatorGUID))
 						go->SetPhaseMask(1,true);
 				}
                 break;
-            case TYPE_SAURFANG:
-                m_auiEncounter[2] = uiData;
+			case TYPE_BATTLE_OF_CANNONS:
+				m_auiEncounter[TYPE_BATTLE_OF_CANNONS] = uiData;
+				break;
+            case TYPE_SAURCROC:
+                m_auiEncounter[TYPE_SAURCROC] = uiData;
                 if (uiData == DONE)
                     DoUseDoorOrButton(m_uiSaurfangDoorGUID);
                 break;
@@ -181,7 +187,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         OUT_LOAD_INST_DATA(chrIn);
 
         std::istringstream loadStream(chrIn);
-        loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2];
+        loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2] >> m_auiEncounter[3];
 
         for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
         {
@@ -197,11 +203,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         switch(uiType)
         {
             case TYPE_MARROWGAR:
-                return m_auiEncounter[0];
+                return m_auiEncounter[TYPE_MARROWGAR];
             case TYPE_DEATHWHISPER:
-                return m_auiEncounter[1];
-            case TYPE_SAURFANG:
-                return m_auiEncounter[2];
+                return m_auiEncounter[TYPE_DEATHWHISPER];
+			case TYPE_BATTLE_OF_CANNONS:
+                return m_auiEncounter[TYPE_BATTLE_OF_CANNONS];
+            case TYPE_SAURCROC:
+                return m_auiEncounter[TYPE_SAURCROC];
         }
         return 0;
     }

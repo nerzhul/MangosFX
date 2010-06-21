@@ -82,8 +82,6 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 
     void Aggro(Unit* pWho)
     {
-        me->SetInCombatWithZone();
-
         if (pInstance)
 		{
             pInstance->SetData(TYPE_GormoktheImpaler, IN_PROGRESS);

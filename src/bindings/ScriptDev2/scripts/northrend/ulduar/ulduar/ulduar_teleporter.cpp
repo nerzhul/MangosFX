@@ -26,15 +26,15 @@ bool GoHello_ulduar_teleporter( Player *pPlayer, GameObject *pGO )
     ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
     if(!pInstance) return true;
 
-    pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Expedition Base Camp", GOSSIP_SENDER_MAIN, BASE_CAMP);
-    pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Formation Grounds", GOSSIP_SENDER_MAIN, GROUNDS);
+    pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au camp de base", GOSSIP_SENDER_MAIN, BASE_CAMP);
+    pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation to the Formation Grounds", GOSSIP_SENDER_MAIN, GROUNDS);
     /*if(pInstance->GetData(TYPE_LEVIATHAN) == DONE)
     {*/
-        pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Colossal Forge", GOSSIP_SENDER_MAIN, FORGE);
+        pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a la Forge Colossale", GOSSIP_SENDER_MAIN, FORGE);
         if(pInstance->GetData(TYPE_XT002) == DONE)
         {
             pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Scrapyard", GOSSIP_SENDER_MAIN, SCRAPYARD);
-            pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Antechamber of Ulduar", GOSSIP_SENDER_MAIN, ANTECHAMBER);
+            pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation dans l'Antichambre d'Ulduar", GOSSIP_SENDER_MAIN, ANTECHAMBER);
             if(pInstance->GetData(TYPE_KOLOGARN) == DONE)
             {
                 pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Shattered Walkway", GOSSIP_SENDER_MAIN, WALKWAY);

@@ -7,11 +7,12 @@
 
 enum
 {
-    MAX_ENCOUNTER               = 3,
+    MAX_ENCOUNTER               = 4,
 
-    TYPE_MARROWGAR              = 1,
-    TYPE_DEATHWHISPER           = 2,
-    TYPE_SAURFANG               = 3,
+    TYPE_MARROWGAR              = 0,
+    TYPE_DEATHWHISPER           = 1,
+	TYPE_BATTLE_OF_CANNONS		= 2,
+    TYPE_SAURCROC               = 3,
 
     NPC_MARROWGAR               = 36612,
     NPC_DEATHWHISPER            = 36855,

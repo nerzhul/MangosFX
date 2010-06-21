@@ -477,6 +477,69 @@ CreatureAI* GetAI_deathspeaker_priest(Creature* pCreature)
     return new deathspeaker_priestAI (pCreature);
 }
 
+enum TpDest
+{
+	BASE			=	0,
+	MARROWGAR		=	1,
+	DEATHWHISPER	=	2,
+	BATTLECANON		=	3,
+	SAURCROC		=	4,
+};
+bool GoHello_icc_teleporter( Player *pPlayer, GameObject *pGO )
+{
+    ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
+    if(!pInstance) return true;
+
+    pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Marteau de Lumiere", GOSSIP_SENDER_MAIN, BASE);
+	if(pInstance->GetData(TYPE_MARROWGAR) == DONE || pPlayer->isGameMaster())
+    {
+		pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a La Fleche", GOSSIP_SENDER_MAIN, MARROWGAR);
+		if(pInstance->GetData(TYPE_DEATHWHISPER) == DONE || pPlayer->isGameMaster())
+		{
+			pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Rempart des Cranes", GOSSIP_SENDER_MAIN, DEATHWHISPER);
+			if(pInstance->GetData(TYPE_BATTLE_OF_CANNONS) == DONE || pPlayer->isGameMaster())
+			{
+				pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a la Cime du Porte-Mort", GOSSIP_SENDER_MAIN, BATTLECANON);
+				if(/*pInstance->GetData(TYPE_SAURCROC) == DONE || */pPlayer->isGameMaster())
+				{
+					pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a La Fleche (partie haute)", GOSSIP_SENDER_MAIN, SAURCROC);
+				}
+			}
+		}
+	}
+
+    pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pGO->GetGUID());
+
+    return true;
+}
+
+bool GOSelect_icc_teleporter( Player *pPlayer, GameObject *pGO, uint32 sender, uint32 action )
+{
+    if(sender != GOSSIP_SENDER_MAIN) return true;
+    if(!pPlayer->getAttackers().empty()) return true;
+
+    switch(action)
+    {
+		case BASE:
+			pPlayer->TeleportTo(631, -17.275f, 2211.47f, 30.116, 3.09f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case MARROWGAR:
+			pPlayer->TeleportTo(631, -503.634f, 2211.42f, 62.83f, 2.89f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case DEATHWHISPER:
+			pPlayer->TeleportTo(631, -615.383f, 2211.47f, 199.973f, 6.15f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case BATTLECANON:
+			pPlayer->TeleportTo(631, -549.595f, 2211.331f, 539.290f, 0.01f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case SAURCROC:
+			pPlayer->TeleportTo(631, 4199.126f, 2769.197f, 351.06f, 0.07f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+    }
+
+    return true;
+}
+
 void AddSC_ICC10_mobs()
 {
 	Script *newscript;
@@ -534,5 +597,11 @@ void AddSC_ICC10_mobs()
 	newscript = new Script;
     newscript->Name = "icc_deathspeaker_priest";
     newscript->GetAI = &GetAI_deathspeaker_priest;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_teleporter";
+    newscript->pGOHello = &GoHello_icc_teleporter;
+    newscript->pGOSelect = &GOSelect_icc_teleporter;
     newscript->RegisterSelf();
 }
