@@ -1011,7 +1011,7 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 							DoCastPlayer((*itr).SpellId);
 							break;
 						case HEAL_MY_FRIEND:
-							if(Unit* target = DoSelectLowestHpFriendly(30.0f,100))
+							if(Unit* target = DoSelectLowestHpFriendly(40.0f,100))
 								DoCast(target,(*itr).SpellId);
 							break;
 						case NO_TANK:

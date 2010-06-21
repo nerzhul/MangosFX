@@ -62,18 +62,13 @@ enum
     NPC_CULT_ADHERENT          = 37949,
     NPC_CULT_FANATIC           = 37890,
     NPC_VENGEFUL_SHADE         = 38222,
+	SPELL_VENGEFUL_BLAST       = 71494,
 };
 
 enum BossSpells
 {
-    //summons
-    NPC_REANIMATED_FANATIC                  = 38009,
-    NPC_REANIMATED_ADHERENT                 = 38010,
     //Abilities
     SPELL_DOMINATE_MIND                     = 71289,
-
-    SPELL_VENGEFUL_BLAST                    = 71494,
-    SPELL_VENGEFUL_BLAST_0                  = 71544,
 };
 
 struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
@@ -115,6 +110,23 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     {
         if (pInstance)
             pInstance->SetData(TYPE_DEATHWHISPER, DONE);
+
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,1);
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+		}
     }
 
     void JustReachedHome()
@@ -129,7 +141,6 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
             pSummoned->AI()->AttackStart(pTarget);
     }
 
-    //Mana Barrier is bugged so we override it for now
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
         if (me->HasAura(SPELL_MANA_BARRIER))
@@ -239,7 +250,7 @@ struct MANGOS_DLL_DECL icc_dw_shadeAI : public LibDevFSAI
 		ResetTimers();
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		SetAuraStack(71494,1,me,me,1);
+		SetAuraStack(SPELL_VENGEFUL_BLAST,1,me,me,1);
     }
 
     void UpdateAI(const uint32 diff)
@@ -258,6 +269,122 @@ CreatureAI* GetAI_icc_dw_shade(Creature* pCreature)
     return new icc_dw_shadeAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL icc_dw_cult_adherentAI : public LibDevFSAI
+{
+    icc_dw_cult_adherentAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(55095,5000,15000,1000);
+		AddEventOnMe(70768,1000,30000);
+		AddEvent(72005,500,2500,500);
+		AddEvent(71237,7000,10000);
+		AddEventMaxPrioOnMe(70901,35000,60000,0,1);
+		AddEventOnTank(70906,12000,20000,1000,1);
+    }
+
+	uint8 Phase;
+	uint32 switchPhase_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		switchPhase_Timer = urand(40000,60000);
+		Phase = 1;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		if(switchPhase_Timer <= diff)
+		{
+			if(Phase == 1)
+			{
+				me->CastStop();
+				DoCastMe(70903);
+				switchPhase_Timer = 3000;
+			}
+			else if(Phase == 2)
+			{
+				me->CastStop();
+				DoCastMe(71234);
+				switchPhase_Timer = DAY*HOUR;
+			}
+			Phase++;
+		}
+		else
+			switchPhase_Timer -= diff;
+
+		UpdateEvent(diff);
+		UpdateEvent(diff,Phase);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_icc_dw_cult_adherent(Creature* pCreature)
+{
+    return new icc_dw_cult_adherentAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL icc_dw_cult_fanaticAI : public LibDevFSAI
+{
+    icc_dw_cult_fanaticAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEventOnTank(70659,2000,3000);
+		AddEventOnMe(70674,24000,60000);
+		AddEventOnTank(70670,5000,5000,1000);
+		AddEventMaxPrioOnMe(70900,20000,60000,1000);
+    }
+
+	uint8 Phase;
+	uint32 switchPhase_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		switchPhase_Timer = urand(40000,60000);
+		Phase = 1;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		if(switchPhase_Timer <= diff)
+		{
+			if(Phase == 1)
+			{
+				me->CastStop();
+				DoCastMe(70903);
+				switchPhase_Timer = 3000;
+			}
+			else if(Phase == 2)
+			{
+				me->CastStop();
+				DoCastMe(71235);
+				switchPhase_Timer = DAY*HOUR;
+			}
+			Phase++;
+		}
+		else
+			switchPhase_Timer -= diff;
+
+		UpdateEvent(diff);
+		UpdateEvent(diff,Phase);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_icc_dw_cult_fanatic(Creature* pCreature)
+{
+    return new icc_dw_cult_fanaticAI(pCreature);
+}
+
 void AddSC_boss_deathwhisper()
 {
     Script* NewScript;
@@ -269,5 +396,15 @@ void AddSC_boss_deathwhisper()
 	NewScript = new Script;
     NewScript->Name = "icc_dw_shade";
     NewScript->GetAI = &GetAI_icc_dw_shade;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_dw_cult_adherent";
+    NewScript->GetAI = &GetAI_icc_dw_cult_adherent;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_dw_cult_fanatic";
+    NewScript->GetAI = &GetAI_icc_dw_cult_fanatic;
     NewScript->RegisterSelf();
 }
