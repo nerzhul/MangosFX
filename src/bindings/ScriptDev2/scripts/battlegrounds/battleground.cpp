@@ -104,6 +104,54 @@ CreatureAI* GetAI_npc_spirit_guide(Creature* pCreature)
     return new npc_spirit_guideAI(pCreature);
 }
 
+enum VehicleType
+{
+	CATAPULT	=	0,	// 56663
+	DEMOLISHER	=	1,	// 56575
+	SIEGE		=	2	// all : 56661 horde : 61408
+}
+
+bool GoHello_wg_engineer( Player *pPlayer, GameObject *pGO )
+{
+    ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
+    if(!pInstance) return true;
+
+    pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Marteau de Lumiere", GOSSIP_SENDER_MAIN, BASE);
+	
+
+    pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pGO->GetGUID());
+
+    return true;
+}
+
+bool GOSelect_wg_engineer( Player *pPlayer, GameObject *pGO, uint32 sender, uint32 action )
+{
+    if(sender != GOSSIP_SENDER_MAIN) 
+		return true;
+    if(!pPlayer->getAttackers().empty()) 
+		return true;
+
+    switch(action)
+    {
+		case BASE:
+			pPlayer->TeleportTo(631, -17.275f, 2211.47f, 30.116, 3.09f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case MARROWGAR:
+			pPlayer->TeleportTo(631, -503.634f, 2211.42f, 62.83f, 2.89f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case DEATHWHISPER:
+			pPlayer->TeleportTo(631, -615.383f, 2211.47f, 199.973f, 6.15f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case BATTLECANON:
+			pPlayer->TeleportTo(631, -549.595f, 2211.331f, 539.290f, 0.01f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case SAURCROC:
+			pPlayer->TeleportTo(631, 4199.126f, 2769.197f, 351.06f, 0.07f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+    }
+
+}
+
 void AddSC_battleground()
 {
     Script* newscript;
@@ -112,5 +160,11 @@ void AddSC_battleground()
     newscript->Name = "npc_spirit_guide";
     newscript->GetAI = &GetAI_npc_spirit_guide;
     newscript->pGossipHello = &GossipHello_npc_spirit_guide;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "wg_engineer";
+    newscript->pGOHello = &GoHello_wg_engineer;
+    newscript->pGOSelect = &GOSelect_wg_engineer;
     newscript->RegisterSelf();
 }
