@@ -354,7 +354,7 @@ CreatureAI* GetAI_boss_right_arm(Creature* pCreature)
 
 struct MANGOS_DLL_DECL mob_right_focus_eyeAI : public LibDevFSAI
 {
-    mob_focus_eyeAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+    mob_right_focus_eyeAI(Creature* pCreature) : LibDevFSAI(pCreature) 
 	{
 		InitInstance();
 		MakeHostileInvisibleStalker();
