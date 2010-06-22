@@ -19,6 +19,8 @@
 #include "InstanceData.h"
 #include "Database/DatabaseEnv.h"
 #include "Map.h"
+#include "Player.h"
+#include "DBCStores.h"
 #include "Log.h"
 
 void InstanceData::SaveToDB()

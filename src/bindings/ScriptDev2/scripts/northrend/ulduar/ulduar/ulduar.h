@@ -92,21 +92,12 @@ enum
 
 struct MANGOS_DLL_DECL instance_ulduar;
 
-struct MANGOS_DLL_DECL boss_steelbreakerAI: public ScriptedAI
+struct MANGOS_DLL_DECL boss_steelbreakerAI: public LibDevFSAI
 {
-	boss_steelbreakerAI(Creature *c) : ScriptedAI(c)
-    {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-		m_bIsHeroic = c->GetMap()->GetDifficulty();
-		Reset();
-    }
+	boss_steelbreakerAI(Creature *c);
 
-	ScriptedInstance* pInstance;
     uint32 phase;
-	uint32 Disruption_Timer;
-	bool m_bIsHeroic;
 
-	MobEventTasks MobsTasks;
 	void UpdateAI(const uint32 diff);
 	void KilledUnit(Unit *who);
 	void JustDied(Unit* Killer);
@@ -115,23 +106,11 @@ struct MANGOS_DLL_DECL boss_steelbreakerAI: public ScriptedAI
 	void EnterCombat(Unit *who);
 	void Reset();
 };
-struct MANGOS_DLL_DECL boss_runemaster_molgeimAI: public ScriptedAI
+struct MANGOS_DLL_DECL boss_runemaster_molgeimAI: public LibDevFSAI
 {
-	boss_runemaster_molgeimAI(Creature *c) : ScriptedAI(c)
-    {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-		m_bIsHeroic = c->GetMap()->GetDifficulty();
-		Reset();
-    }
-
-	bool m_bIsHeroic;
-    ScriptedInstance* pInstance;
-	MobEventTasks MobsTasks;
+	boss_runemaster_molgeimAI(Creature *c);
 
     uint32 phase;
-	uint32 Shield_Timer;
-	uint32 RuneD_Timer;
-	uint32 RuneS_Timer;
 
 	void UpdateAI(const uint32 diff);
 	void JustDied(Unit* Killer);
@@ -140,22 +119,12 @@ struct MANGOS_DLL_DECL boss_runemaster_molgeimAI: public ScriptedAI
 	void EnterCombat(Unit *who);
 	void Reset();
 };
-struct MANGOS_DLL_DECL boss_stormcaller_brundirAI: public ScriptedAI
+struct MANGOS_DLL_DECL boss_stormcaller_brundirAI: public LibDevFSAI
 {
-	boss_stormcaller_brundirAI(Creature *c) : ScriptedAI(c)
-    {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-		m_bIsHeroic = c->GetMap()->GetDifficulty();
-		Reset();
-    }
+	boss_stormcaller_brundirAI(Creature *c);
 
-	MobEventTasks MobsTasks;
+	uint32 phase;
 
-	bool m_bIsHeroic;
-    ScriptedInstance* pInstance;
-    uint32 phase;
-
-	uint32 LightW_Timer;
 	uint32 LightT_Timer;
 
 	void UpdateAI(const uint32 diff);

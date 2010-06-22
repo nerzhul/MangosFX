@@ -58,18 +58,20 @@ struct MANGOS_DLL_DECL mob_ulduar_rubbleAI : public LibDevFSAI
 			{
 				uiDamage = 0;
 				DoCastMe(SPELL_RUMBLE);
-				Death_Timer = 500;
+				Death_Timer = 1000;
 				die = true;
 			}
     }
 
 	void UpdateAI(const uint32 diff)
     {
-		if (Death_Timer < diff && die)
-			Kill(me);
-		else 
-			Death_Timer -= diff;
-
+		if(die)
+		{
+			if (Death_Timer < diff)
+				DoCastMe(7);
+			else 
+				Death_Timer -= diff;
+		}
 
 		UpdateEvent(diff);
 
@@ -118,6 +120,23 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pDoneBy,uint32 &dmg)
 	{
+		
+		if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
+			if(pDoneBy == pTemp)
+			{
+				dmg = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+
+		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
+			if(pDoneBy == pTemp)
+			{
+				dmg = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+
 		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
@@ -125,7 +144,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 				if (pTemp->isAlive())
 					DealPercentDamage(pTemp,15);
 			FreezeMob();
-			// TODO : change displayid
+			me->SetDisplayId(16925);
 		}
 	}
 
@@ -143,7 +162,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 	{
 		me->SetHealth(me->GetMaxHealth());
 		FreezeMob(false);
-		// TODO : restore displayid
+		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
 	}
 };
 
@@ -194,6 +213,22 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 
 	void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
     {
+		if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
+			if(pDoneBy == pTemp)
+			{
+				uiDamage = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+
+		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
+			if(pDoneBy == pTemp)
+			{
+				uiDamage = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+
 		if (grip)
 		{
 			gripdmg += uiDamage;
@@ -221,10 +256,9 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			if(pGripTarget)
 			{
 				pGripTarget->ExitVehicle();
-				//pGripTarget->Relocate(1781.764f,-24.704f,449.0f,6.27f);
 			}
+			me->SetDisplayId(16925);
 			FreezeMob();
-			// TODO : change displayid
 		}
     }
 
@@ -236,7 +270,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 		if (Stone_Grip_Timer < diff)
         {
 			//stone grip emote
-			if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+			if (Unit* target = GetRandomUnit())
 			{
 				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
 				if(pGripTarget)
@@ -261,7 +295,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 	{
 		me->SetHealth(me->GetMaxHealth());
 		FreezeMob(false);
-		// TODO : restore displayid
+		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
 	}
 };
 
@@ -356,6 +390,25 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 					pTemp->Respawn();
 		}
     }
+
+	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
+	{
+		if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
+			if(pDoneBy == pTemp)
+			{
+				dmg = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+
+		if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
+			if(pDoneBy == pTemp)
+			{
+				dmg = 0;
+				me->getThreatManager().modifyThreatPercent(pTemp,0);
+				pTemp->getThreatManager().modifyThreatPercent(me,0);
+			}
+	}
 
 	void UpdateAI(const uint32 diff)
     {
