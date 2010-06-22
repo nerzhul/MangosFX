@@ -117,6 +117,20 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 		}
+		if(pInstance && TimeDownSucceed())
+		{
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_NORMAL:
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+					pInstance->CompleteAchievementForGroup(3799);
+					break;
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					pInstance->CompleteAchievementForGroup(3815);
+					break;
+			}
+		}
 		me->ForcedDespawn(TEN_MINS*1000);
     }
 

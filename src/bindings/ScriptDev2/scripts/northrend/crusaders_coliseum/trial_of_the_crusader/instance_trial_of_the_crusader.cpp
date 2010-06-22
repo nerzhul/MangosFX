@@ -166,7 +166,6 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 								break;
 						}
 					}
-					
 				}
 				break;
 			case TYPE_CHAMPIONWAR:
