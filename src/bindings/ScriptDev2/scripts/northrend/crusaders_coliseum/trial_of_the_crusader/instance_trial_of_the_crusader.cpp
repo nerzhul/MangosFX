@@ -148,6 +148,25 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 					if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
 						if (pChest && !pChest->isSpawned())
 							pChest->SetRespawnTime(350000000);
+					if(instance)
+					{
+						switch(instance->GetDifficulty())
+						{
+							case RAID_DIFFICULTY_10MAN_NORMAL:
+								CompleteAchivementForGroup(4036);
+								break;
+							case RAID_DIFFICULTY_10MAN_HEROIC:
+								CompleteAchivementForGroup(4037);
+								break;
+							case RAID_DIFFICULTY_25MAN_NORMAL:
+								CompleteAchievementForGroup(4038);
+								break;
+							case RAID_DIFFICULTY_25MAN_HEROIC:
+								CompleteAchivementForGroup(4039);
+								break;
+						}
+					}
+					
 				}
 				break;
 			case TYPE_CHAMPIONWAR:
