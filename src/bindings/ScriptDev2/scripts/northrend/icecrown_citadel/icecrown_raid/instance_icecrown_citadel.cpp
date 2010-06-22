@@ -86,13 +86,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         {
             case GO_MARROWGAR_ICE_1:
                 m_uiMarrowgarIce1GUID = pGo->GetGUID();
-                /*if (m_auiEncounter[0] == DONE)
-                    pGo->SetGoState(GO_STATE_ACTIVE);*/
+                if (m_auiEncounter[0] == DONE)
+                    pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
             case GO_MARROWGAR_ICE_2:
                 m_uiMarrowgarIce2GUID = pGo->GetGUID();
-                /*if (m_auiEncounter[0] == DONE)
-                    pGo->SetGoState(GO_STATE_ACTIVE);*/
+                if (m_auiEncounter[0] == DONE)
+                    pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
             case GO_DEATHWHISPER_GATE:
                 m_uiDeathwhisperGateGUID = pGo->GetGUID();
@@ -132,8 +132,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 m_auiEncounter[TYPE_MARROWGAR] = uiData;
                 if (uiData == DONE)
                 {
-                    /*OpenDoor(m_uiMarrowgarIce1GUID);
-                    OpenDoor(m_uiMarrowgarIce2GUID);*/
+                    OpenDoor(m_uiMarrowgarIce1GUID);
+                    OpenDoor(m_uiMarrowgarIce2GUID);
 					CloseDoor(m_uiMarrowgarDoorGUID);
                 }
 				else if(uiData == IN_PROGRESS)
