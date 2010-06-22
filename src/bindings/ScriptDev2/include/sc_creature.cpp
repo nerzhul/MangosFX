@@ -1083,7 +1083,7 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 		}
 	}
 
-	if(ManualMoveEnable)
+	if(ManualMoveEnable && phase == 0)
 	{
 		if(CheckDistanceTimer <= diff)
 		{
@@ -1104,7 +1104,7 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 			CheckDistanceTimer -= diff;
 	}
 
-	if(TimedDownEnable)
+	if(TimedDownEnable && phase == 0)
 	{
 		if(AchTimedDownTimer <= diff)
 			TimedDownEnable = false;
