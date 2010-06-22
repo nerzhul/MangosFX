@@ -165,6 +165,7 @@ void Vehicle::InstallAllAccessories()
             me->SetMaxPower(POWER_ENERGY, 100);
             me->ModifyPower(POWER_ENERGY, 100);
 			break;
+		case 33293: InstallAccessory(33329,-1); break // XT002 heart
 		//case 36476:InstallAccessory(36477,0);break; Ick & Krick desactivated
     }
 }

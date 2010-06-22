@@ -99,6 +99,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		nbexplode = 0;
 		HeartGUID = 0;
 		Heart_Count = 0;
@@ -112,8 +113,6 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		if(pInstance)
 			pInstance->SetData(TYPE_XT002,NOT_STARTED);
 		ActivateTimeDown(205000);
-		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
     }
 
     void Aggro(Unit* who)
@@ -121,6 +120,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
         Speak(CHAT_TYPE_SAY,15724,"De nouveaux jouets ! Pour moi. Cette fois-ci je ne les casserai pas !");
 		if(pInstance)
 			pInstance->SetData(TYPE_XT002,IN_PROGRESS);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     void KilledUnit(Unit* victim)
@@ -149,11 +149,6 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
-
-    void MoveInLineOfSight(Unit* who) 
-	{
-		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
-	}
 
 	void SetRepaired()
 	{
@@ -201,6 +196,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 			if(Creature* Heart = CallCreature(NPC_HEART_XT002,30000,PREC_COORDS,NOTHING,me->GetPositionX() + 5.0f,me->GetPositionY() + 5.0f,me->GetPositionZ() + 1.0f))
 				HeartGUID = Heart->GetGUID();
 			OpenHeart = true;
+			check_Heart_Timer = 1500;
 		}
 		
 		if(me->HasAura(SPELL_WRATH,0) || me->HasAura(SPELL_SLEEP))
@@ -215,10 +211,11 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 					if(!Heart->isAlive())
 					{
 						if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
-							DoCastMe(SPELL_XT002_ACT_HARD_25);
+							SetAuraStack(SPELL_XT002_ACT_HARD_25,1,me,me,1);
 						else
-							DoCastMe(SPELL_XT002_ACT_HARD_10);
+							SetAuraStack(SPELL_XT002_ACT_HARD_10,1,me,me,1);
 						
+						me->SetHealth(me->GetMaxHealth());
 						HARDMODE = true;
 						OpenHeart = false;
 						HeartGUID = 0;
@@ -266,12 +263,10 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 			}
 			else
 				wrath_Timer -= diff;
-			
-			DoMeleeAttackIfReady();
 		}
 
 		UpdateEvent(diff);
-		
+		DoMeleeAttackIfReady();
     }
 };
 

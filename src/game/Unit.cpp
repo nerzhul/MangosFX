@@ -12250,7 +12250,7 @@ bool Unit::SelectHostileTarget()
     }
 
     // enter in evade mode in other case
-    if(!((Creature*)this)->isVehicle())
+	if(!((Creature*)this)->isVehicle() || ((Creature*)this)->isHostileVehicle())
         ((Creature*)this)->AI()->EnterEvadeMode();
 
     return false;

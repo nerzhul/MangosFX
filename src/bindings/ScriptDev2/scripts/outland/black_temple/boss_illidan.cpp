@@ -1527,7 +1527,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
         }
 
         // If we don't have a target, return.
-        if (CanDoSomething() || IsTalking)
+        if (!CanDoSomething() || IsTalking)
             return;
 
         // If we are 'caged', then we shouldn't do anything such as cast spells or transform into Demon Form.
