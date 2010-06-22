@@ -82,7 +82,6 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		}
     }
 
-	float percent;
 	uint8 nbexplode;
 
 	uint32 check_Heart_Timer;
@@ -93,24 +92,24 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 	bool HARDMODE;
 	bool OpenHeart;
 
-	Creature* Heart;
+	uint64 HeartGUID;
 	uint16 Heart_Count;
 
     void Reset()
     {
 		ResetTimers();
 		nbexplode = 0;
+		HeartGUID = 0;
+		Heart_Count = 0;
 		check_Heart_Timer = 1500;
-		percent = 100;
 		wrath_Timer = 30000;
-		Heart = NULL;
 		HARDMODE = false;
 		OpenHeart = false;
 		addspawn_Timer = 1000;
-		Heart_Count = 0;
 		FreezeMob(false,me);
-		pInstance->SetData(TYPE_XT002,NOT_STARTED);
-		
+		if(pInstance)
+			pInstance->SetData(TYPE_XT002,NOT_STARTED);
+		ActivateTimeDown(205000);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
     }
@@ -135,7 +134,14 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
         Speak(CHAT_TYPE_SAY,15731,"Vous êtes des vilains jouets, bah oui, vilains...");
 
         if (pInstance)
+		{
             pInstance->SetData(TYPE_XT002, DONE);
+			if(TimeDownSucceed())
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
+			if(HARDMODE)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
+
+		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
@@ -175,19 +181,17 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
             return;
 
 		// explosion du coeur 
-		percent = ((float)me->GetHealth() * 100/(float)me->GetMaxHealth());
-		if(!HARDMODE && ((percent < 75 && nbexplode == 0) || (percent < 50 && nbexplode == 1) ||
-			(percent < 25 && nbexplode == 2)))
+		if(!HARDMODE && ((CheckPercentLife(75) && nbexplode == 0) || (CheckPercentLife(50) && nbexplode == 1) ||
+			(CheckPercentLife(50) && nbexplode == 2)))
 		{
 			nbexplode++;
 			me->CastStop();
 			DoCastMe(SPELL_SLEEP);
 			FreezeMob(true,me);
 			Speak(CHAT_TYPE_SAY,15725,"Ah, tellement fatiguÃ©, je vais me reposer une petite minute.");
-			Heart = me->SummonCreature(NPC_HEART_XT002,me->GetPositionX() + 5.0f,me->GetPositionY() + 5.0f,me->GetPositionZ() + 1.0f,-me->GetOrientation(),TEMPSUMMON_TIMED_DESPAWN,30000);
-
+			if(Creature* Heart = CallCreature(NPC_HEART_XT002,30000,PREC_COORDS,NOTHING,me->GetPositionX() + 5.0f,me->GetPositionY() + 5.0f,me->GetPositionZ() + 1.0f))
+				HeartGUID = Heart->GetGUID();
 			OpenHeart = true;
-			
 		}
 		
 		if(me->HasAura(SPELL_WRATH,0) || me->HasAura(SPELL_SLEEP))
@@ -197,7 +201,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		{
 			if(check_Heart_Timer <= diff)
 			{
-				if(Heart)
+				if(Creature* Heart = GetGuidCreature(HeartGUID))
 				{
 					if(!Heart->isAlive())
 					{
@@ -208,7 +212,8 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 						
 						HARDMODE = true;
 						OpenHeart = false;
-						Heart = NULL;
+						HeartGUID = 0;
+						Yell(15730,"J'en ai assez de ces jouets. Je veux plus jouer !");
 						FreezeMob(false,me);
 						Heart_Count = 0;
 					}
@@ -226,10 +231,10 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 					Heart_Count++;
 					if(Heart_Count == 29)
 					{
-						Heart = NULL;
+						HeartGUID = 0;
 						OpenHeart = false;	
 						FreezeMob(false,me);
-						Speak(CHAT_TYPE_SAY,15726,"Je suis prêt, à jouer !");
+						Say(15726,"Je suis prêt, à jouer !");
 						Heart_Count = 0;
 					}
 				}
@@ -257,9 +262,10 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 			else
 				wrath_Timer -= diff;
 			
-			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 		}
+
+		UpdateEvent(diff);
 		
     }
 };

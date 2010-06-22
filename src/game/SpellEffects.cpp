@@ -2775,6 +2775,19 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
 		}
 		case 47531:
 			return;
+		case 64884:
+		{
+			Map::PlayerList const& lPlayers = unitTarget->GetMap()->GetPlayers();
+			if (!lPlayers.isEmpty())
+			{
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					if (Player* pPlayer = itr->getSource())
+						if(pPlayer->isAlive() && pPlayer->GetDistance2d(unitTarget) < 20.0f)
+							pPlayer->TeleportTo(unitTarget->GetMapId(),unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),
+								unitTarget->GetOrientation());
+			}
+			return;
+		}
     }
 
     // normal case
