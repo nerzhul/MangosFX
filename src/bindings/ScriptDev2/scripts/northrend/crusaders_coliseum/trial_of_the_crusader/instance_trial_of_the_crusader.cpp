@@ -153,16 +153,16 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 						switch(instance->GetDifficulty())
 						{
 							case RAID_DIFFICULTY_10MAN_NORMAL:
-								CompleteAchivementForGroup(4036);
+								CompleteAchievementForGroup(4036);
 								break;
 							case RAID_DIFFICULTY_10MAN_HEROIC:
-								CompleteAchivementForGroup(4037);
+								CompleteAchievementForGroup(4037);
 								break;
 							case RAID_DIFFICULTY_25MAN_NORMAL:
 								CompleteAchievementForGroup(4038);
 								break;
 							case RAID_DIFFICULTY_25MAN_HEROIC:
-								CompleteAchivementForGroup(4039);
+								CompleteAchievementForGroup(4039);
 								break;
 						}
 					}

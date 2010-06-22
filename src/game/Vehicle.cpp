@@ -729,6 +729,7 @@ Vehicle* Vehicle::FindFreeSeat(int8 *seatid, bool force)
 	{
         return GetFirstEmptySeat(seatid, force);
 	}
+
     if((i_seat->second.flags & (SEAT_FULL | SEAT_VEHICLE_FULL)) || (!force && (i_seat->second.vs_flags & SF_UNACCESSIBLE)))
 	{
         return GetNextEmptySeat(seatid, true, force);
