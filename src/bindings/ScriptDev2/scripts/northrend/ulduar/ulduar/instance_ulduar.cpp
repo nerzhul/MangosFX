@@ -50,7 +50,7 @@ void instance_ulduar::Initialize()
 	AuriayaDoorGUID = 0;
 	VezaxDoorGUID = 0;
 
-	IgnisAddTimedActivate = false;
+	IgnisAddTimedActivate = 0;
 
 	checkPlayer_Timer = 1500;
 	
@@ -342,11 +342,11 @@ void instance_ulduar::Update(uint32 diff)
 	else
 		checkPlayer_Timer -= diff;
 
-	if(IgnisAddTimedActivate)
+	if(IgnisAddTimedActivate > 0)
 	{
 		if(IgnisHFReset_Timer <= diff)
 		{
-			IgnisAddTimedActivate = false;
+			IgnisAddTimedActivate = 0;
 		}
 		else
 			IgnisHFReset_Timer -= diff;
@@ -367,9 +367,9 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		case TYPE_IGNIS:
 			m_auiEncounter[uiType] = uiData;
-			if(IgnisAddTimedActivate)
+			if(IgnisAddTimedActivate > 1)
 			{
-				IgnisAddTimedActivate = false;
+				IgnisAddTimedActivate = 0;
 				CompleteAchievementForGroup(instance->GetDifficulty() ? 2926 : 2925);
 			}
 			break;
@@ -508,9 +508,9 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		}
 		case DATA_IGNIS_ADD_MONO:
-			if(!IgnisAddTimedActivate)
+			if(IgnisAddTimedActivate == 0)
 				IgnisHFReset_Timer = 5000;
-			IgnisAddTimedActivate = true;
+			IgnisAddTimedActivate++;
 			break;
     }
 

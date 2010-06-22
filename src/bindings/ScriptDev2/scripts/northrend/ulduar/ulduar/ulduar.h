@@ -219,7 +219,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 
 	uint32 checkPlayer_Timer;
 	uint32 IgnisHFReset_Timer;
-	bool IgnisAddTimedActivate;
+	uint8 IgnisAddTimedActivate;
 
 	std::vector<Creature*> IgnisIronAdds;
 	std::vector<Creature*> ThorimThunderOrbs;

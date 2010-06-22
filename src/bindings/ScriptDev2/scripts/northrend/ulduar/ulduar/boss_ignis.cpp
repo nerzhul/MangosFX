@@ -235,10 +235,14 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
 					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
-			if(pInstance)
-				pInstance->SetData(DATA_IGNIS_ADD_MONO,DONE);
 			Kill(me);
 		}
+	}
+
+	void JustDied(Unit* pWho)
+	{
+		if(pInstance)
+			pInstance->SetData(DATA_IGNIS_ADD_MONO,DONE);
 	}
 
 	void UpdateAI(const uint32 diff)
