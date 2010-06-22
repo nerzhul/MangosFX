@@ -109,14 +109,14 @@ enum VehicleType
 	CATAPULT	=	0,	// 56663
 	DEMOLISHER	=	1,	// 56575
 	SIEGE		=	2	// all : 56661 horde : 61408
-}
+};
 
 bool GoHello_wg_engineer( Player *pPlayer, GameObject *pGO )
 {
     ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
     if(!pInstance) return true;
 
-    pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Marteau de Lumiere", GOSSIP_SENDER_MAIN, BASE);
+    pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
 	
 
     pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pGO->GetGUID());
@@ -133,23 +133,20 @@ bool GOSelect_wg_engineer( Player *pPlayer, GameObject *pGO, uint32 sender, uint
 
     switch(action)
     {
-		case BASE:
-			pPlayer->TeleportTo(631, -17.275f, 2211.47f, 30.116, 3.09f);
+		case CATAPULT:
+			pPlayer->CastSpell(pPlayer,56663,true);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
-		case MARROWGAR:
-			pPlayer->TeleportTo(631, -503.634f, 2211.42f, 62.83f, 2.89f);
+			break;
+		case DEMOLISHER:
+			pPlayer->CastSpell(pPlayer,56575,true);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
-		case DEATHWHISPER:
-			pPlayer->TeleportTo(631, -615.383f, 2211.47f, 199.973f, 6.15f);
+			break;
+		case SIEGE:
+			pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, true);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
-		case BATTLECANON:
-			pPlayer->TeleportTo(631, -549.595f, 2211.331f, 539.290f, 0.01f);
-			pPlayer->CLOSE_GOSSIP_MENU(); break;
-		case SAURCROC:
-			pPlayer->TeleportTo(631, 4199.126f, 2769.197f, 351.06f, 0.07f);
-			pPlayer->CLOSE_GOSSIP_MENU(); break;
+			break;
     }
-
+	return true;
 }
 
 void AddSC_battleground()
