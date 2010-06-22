@@ -243,6 +243,7 @@ class AchievementMgr
 		bool IsCompletedAchievement(uint32 entry) { return IsCompletedAchievement(sAchievementStore.LookupEntry(entry)); }
         void SendRespondInspectAchievements(Player* player);
         Player* GetPlayer() { return m_player;}
+		void DoCompleteAchivement(AchievementEntry const* entry) { CompletedAchievement(entry); }
 
     private:
         enum ProgressType { PROGRESS_SET, PROGRESS_ACCUMULATE, PROGRESS_HIGHEST };

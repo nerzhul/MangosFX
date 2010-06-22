@@ -143,9 +143,12 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 				break;
 			case TYPE_CHAMPIONS:
 				m_auiEncounter[uiType] = uiData;
-				if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
-					if (pChest && !pChest->isSpawned())
-						pChest->SetRespawnTime(350000000);
+				if(uiType == DONE)
+				{
+					if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
+						if (pChest && !pChest->isSpawned())
+							pChest->SetRespawnTime(350000000);
+				}
 				break;
 			case TYPE_CHAMPIONWAR:
 			case TYPE_CHAMPIONDRUID:

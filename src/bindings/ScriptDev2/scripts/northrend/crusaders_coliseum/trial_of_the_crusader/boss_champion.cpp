@@ -15,37 +15,32 @@ enum
 	SPELL_SUNDER_ARMOR = 65936,
 };
 
-struct MANGOS_DLL_DECL boss_championWarAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_championWarAI : public LibDevFSAI
 {
-    boss_championWarAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_championWarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bDifficulty = pCreature->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
     }
 
-    ScriptedInstance* m_pInstance;
-    MobEventTasks Tasks;
-    Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		ResetAggro_Timer = 6000;
-		Tasks.AddEvent(SPELL_DISARM,25000,60000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_INTIMIDATING_SHOUT,15000,120000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_RETALIATION,180000,300000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_PVP_TRINKET,90000,120000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_SHATTERING_THROW,30000,300000);
-		Tasks.AddEvent(SPELL_SUNDER_ARMOR,4000,1200,6000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_CHARGE,1000,15000,0);
-		Tasks.AddEvent(SPELL_MORTAL_STRIKE,3000,6000,0,TARGET_MAIN);
+		AddEventOnTank(SPELL_DISARM,25000,60000,0,TARGET_MAIN);
+		AddEventOnTank(SPELL_INTIMIDATING_SHOUT,15000,120000,0,TARGET_MAIN);
+		AddEventOnMe(SPELL_RETALIATION,180000,300000,0,TARGET_ME);
+		AddEventOnMe(SPELL_PVP_TRINKET,90000,120000,0,TARGET_ME);
+		AddEvent(SPELL_SHATTERING_THROW,30000,300000);
+		AddEventOnTank(SPELL_SUNDER_ARMOR,4000,1200,6000,TARGET_MAIN);
+		AddEvent(SPELL_CHARGE,1000,15000,0);
+		AddEventOnTank(SPELL_MORTAL_STRIKE,3000,6000,0,TARGET_MAIN);
     }
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHAMPIONWAR, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_CHAMPIONWAR, DONE);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -59,8 +54,8 @@ struct MANGOS_DLL_DECL boss_championWarAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHAMPIONWAR, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_CHAMPIONWAR, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -76,7 +71,7 @@ struct MANGOS_DLL_DECL boss_championWarAI : public ScriptedAI
 		else
 			ResetAggro_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
@@ -98,6 +93,7 @@ enum druidbalancespells
 	SPELL_STARFIRE = 65854,
 	SPELL_WRATH = 65862,
 };
+
 struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public ScriptedAI
 {
     boss_championDruidBalanceAI(Creature* pCreature) : ScriptedAI(pCreature)
