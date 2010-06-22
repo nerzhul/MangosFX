@@ -61,6 +61,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 		Ball_Timer = 8000;
 		DoCastMe(SPELL_SURGE_OF_DARKNESS);
 		SetEquipmentSlots(false, 45990, 47470, 47267);
+		ActivateTimeDown(240000);
     }
 
 	void DamageDeal(Unit *pDoneTo, uint32 &uiDamage)

@@ -49,8 +49,6 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 			AddEvent(SPELL_SLAG_POT,15000,30000);
 			Assemblage_Timer = 40000;
 		}
-
-		ActivateTimeDown(240000);
 	}
 
 	uint32 Assemblage_Timer;
@@ -79,6 +77,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		Fire_Timer = 10000;
 		Vehicle_Timer = 15000;
 		catchPlayer = 0;
+		ActivateTimeDown(240000);
     }
 
     void EnterCombat(Unit* who)
@@ -127,7 +126,12 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		{
 			if(Unit* catched = GetGuidUnit(catchPlayer))
 			{
-				catched->ExitVehicle();
+				if(catched->isAlive())
+				{
+					catched->ExitVehicle();
+					if(pInstance && catched->GetTypeId() == TYPEID_PLAYER)
+						pInstance->CompleteAchievementForPlayer((Player*)catched,m_difficulty ? 2928 : 2927);
+				}
 				catchPlayer = 0;
 				Vehicle_Timer = 20000;
 			}
