@@ -492,7 +492,10 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
 		void SetMovePhase(bool yes = true) { CanMove = yes; }
 
+		void SetDespawnTimer(uint32 Timer) { me->ForcedDespawn(Timer); }
+
 		void MakeInvisibleStalker();
+		void MakeHostileInvisibleStalker();
 	
 	private:
 		

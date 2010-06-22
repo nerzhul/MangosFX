@@ -1085,7 +1085,7 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 
 	if(ManualMoveEnable)
 	{
-		if(CheckDistanceTimer < diff)
+		if(CheckDistanceTimer <= diff)
 		{
 			if(CanMove && me->getVictim() && me->getVictim()->GetDistance2d(me) > 8.0f)
 				me->GetMotionMaster()->MoveChase(me->getVictim());
@@ -1558,6 +1558,13 @@ void LibDevFSAI::MakeInvisibleStalker()
 {
 	me->SetDisplayId(16925);
 	me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+}
+
+void LibDevFSAI::MakeHostileInvisibleStalker()
+{
+	MakeInvisibleStalker();
+	me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+	me->setFaction(14);
 }
 
 void ScriptedAI::DoSpeakEmote(Unit* who)

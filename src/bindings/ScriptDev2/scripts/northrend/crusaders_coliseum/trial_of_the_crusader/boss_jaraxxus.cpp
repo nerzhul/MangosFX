@@ -312,16 +312,15 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public LibDevFSAI
     mob_legion_flameAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		MakeInvisibleStalker();
+		MakeHostileInvisibleStalker();
 	}
 
     void Reset()
     {
 		ResetTimers();
 		SetAuraStack(66201,1,me,me,1);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetRespawnDelay(DAY);
-		me->setFaction(14);
+		SetDespawnTimer(m_difficulty ? 30000 : 60000);
 		SetCombatMovement(false);
     }
 
