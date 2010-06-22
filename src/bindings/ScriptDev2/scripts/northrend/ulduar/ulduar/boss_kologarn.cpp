@@ -31,6 +31,7 @@ enum
 	MOB_RUBBLE					= 33768
 };
 
+struct MANGOS_DLL_DECL boss_kologarnAI;
 // Rubble
 struct MANGOS_DLL_DECL mob_ulduar_rubbleAI : public LibDevFSAI
 {
@@ -174,7 +175,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 
 	bool CheckPlayers()
 	{
-		Map::PlayerList const& lPlayers = instance->GetPlayers();
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
@@ -329,7 +330,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 
 	bool CheckPlayers()
 	{
-		Map::PlayerList const& lPlayers = instance->GetPlayers();
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
@@ -517,7 +518,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 	bool CheckPlayers()
 	{
-		Map::PlayerList const& lPlayers = instance->GetPlayers();
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
@@ -526,8 +527,8 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						return true;
 				}
-
-		re
+		return false;
+	}
 };
 
 CreatureAI* GetAI_boss_kologarn(Creature* pCreature)
