@@ -153,6 +153,13 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(!CheckPlayers())
+		{
+			me->RemoveAllAuras();
+			DoResetThreat();
+			return;
+		}
+
 		UpdateEvent(diff);
 
 		DoMeleeAttackIfReady();
@@ -163,6 +170,21 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 		me->SetHealth(me->GetMaxHealth());
 		FreezeMob(false);
 		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
+	}
+
+	bool CheckPlayers()
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+				{
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						return true;
+				}
+
+		return false;
 	}
 };
 
@@ -267,6 +289,13 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(!CheckPlayers())
+		{
+			me->RemoveAllAuras();
+			DoResetThreat();
+			return;
+		}
+
 		if (Stone_Grip_Timer < diff)
         {
 			//stone grip emote
@@ -296,6 +325,21 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 		me->SetHealth(me->GetMaxHealth());
 		FreezeMob(false);
 		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
+	}
+
+	bool CheckPlayers()
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+				{
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						return true;
+				}
+
+		return false;
 	}
 };
 
@@ -377,20 +421,6 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 		FreezeMob(false);
     }
 
-	void JustReachedHome()
-    {
-        if (pInstance)
-		{
-            pInstance->SetData(TYPE_KOLOGARN, FAIL);
-			if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
-				if (!pTemp->isAlive())
-					pTemp->Respawn();
-			if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
-				if (!pTemp->isAlive())
-					pTemp->Respawn();
-		}
-    }
-
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
 		if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
@@ -415,15 +445,21 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 		if (!CanDoSomething())
             return;
 
+		if(!CheckPlayers())
+		{
+			me->RemoveAllAuras();
+			DoResetThreat();
+			return;
+		}
+
 		if (Spell_Timer < diff)
         {
 			if (right && left)
 				DoCastVictim(m_difficulty ? SPELL_OVERHEAD_SMASH_H : SPELL_OVERHEAD_SMASH);
+			else if (!right && !left)
+				DoCastVictim(m_difficulty ? SPELL_STONE_SHOUT_H : SPELL_STONE_SHOUT);
 			else
-				if (!right && !left)
-					DoCastVictim(m_difficulty ? SPELL_STONE_SHOUT_H : SPELL_STONE_SHOUT);
-				else
-					DoCastVictim(m_difficulty ? SPELL_ONE_ARMED_SMASH_H : SPELL_ONE_ARMED_SMASH);
+				DoCastVictim(m_difficulty ? SPELL_ONE_ARMED_SMASH_H : SPELL_ONE_ARMED_SMASH);
             Spell_Timer = 20000;
         }
 		else 
@@ -478,6 +514,20 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 		DoMeleeAttackIfReady();
 	}
+
+	bool CheckPlayers()
+	{
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+				{
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						return true;
+				}
+
+		re
 };
 
 CreatureAI* GetAI_boss_kologarn(Creature* pCreature)
