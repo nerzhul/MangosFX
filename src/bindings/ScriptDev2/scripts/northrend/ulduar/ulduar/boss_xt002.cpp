@@ -236,19 +236,15 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 						else
 							addspawn_Timer -= 1000;
 					}
-
-					Heart_Count++;
-					if(Heart_Count == 29)
-					{
-						HeartGUID = 0;
-						OpenHeart = false;	
-						FreezeMob(false,me);
-						Say(15726,"Je suis prêt, à jouer !");
-						Heart_Count = 0;
-					}
 				}
 				else
+				{
+					HeartGUID = 0;
 					OpenHeart = false;
+					FreezeMob(false,me);
+					Say(15726,"Je suis prêt, à jouer !");
+					Heart_Count = 0;
+				}
 
 				check_Heart_Timer = 1000;
 			}
