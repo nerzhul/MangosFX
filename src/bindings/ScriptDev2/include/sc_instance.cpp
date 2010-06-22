@@ -3,6 +3,8 @@
  * Please see the included DOCS/LICENSE.TXT for more information */
 
 #include "precompiled.h"
+#include "DBCStores.h"
+#include "AchievementMgr.h"
 
 //Optional uiWithRestoreTime. If not defined, autoCloseTime will be used (if not 0 by default in *_template)
 void ScriptedInstance::DoUseDoorOrButton(uint64 uiGuid, uint32 uiWithRestoreTime, bool bUseAlternativeState)
@@ -107,21 +109,4 @@ void ScriptedInstance::DoSpeak(Unit* pwho, uint32 soundid, std::string text, uin
             pwho->MonsterTextEmote(text.c_str(), pwho ? pwho->GetGUID() : 0, true);
             break;
 	}
-}
-
-void ScriptedInstance::CompleteAchievementForGroup(uint32 AchId)
-{
-	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
-    Map::PlayerList const &PlayerList = instance->GetPlayers();
-
-    if (!pAE)
-    {
-        sLog.outError("ScriptDev2: DoCompleteAchievement called for not existing achievement %u", AchId);
-        return;
-    }
-
-    if (!PlayerList.isEmpty())
-        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
-            if (Player *pPlayer = i->getSource())
-				pPlayer->GetAchievementMgr().DoCompleteAchivement(pAE);
 }

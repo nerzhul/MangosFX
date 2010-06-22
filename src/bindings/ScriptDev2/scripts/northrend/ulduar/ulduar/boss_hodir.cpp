@@ -100,9 +100,12 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
         me->SetInCombatWithZone();
 
         if (pInstance)
+		{
             pInstance->SetData(TYPE_HODIR, IN_PROGRESS);
+			((instance_ulduar*)pInstance)->FreezeAllHodirAdds();
+		}
 		InitPlayers();
-		((instance_ulduar*)pInstance)->FreezeAllHodirAdds();
+		
     }
 
 	void InitPlayers()

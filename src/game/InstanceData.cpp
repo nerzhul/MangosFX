@@ -42,3 +42,35 @@ bool InstanceData::CheckConditionCriteriaMeet(Player const* /*source*/, uint32 m
         instance->GetId(), instance_condition_id, map_id);*/
     return false;
 }
+
+void InstanceData::CompleteAchievementForGroup(uint32 AchId)
+{
+	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
+    Map::PlayerList const &PlayerList = instance->GetPlayers();
+
+    if (!pAE)
+    {
+        sLog.outError("ScriptDev2: DoCompleteAchievement called for not existing achievement %u", AchId);
+        return;
+    }
+
+    if (!PlayerList.isEmpty())
+        for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
+            if (Player *pPlayer = i->getSource())
+				pPlayer->GetAchievementMgr().DoCompleteAchivement(pAE);
+}
+
+void InstanceData::CompleteAchievementForPlayer(Player* plr, uint32 AchId)
+{
+	if(!plr)
+		return;
+
+	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
+	if (!pAE)
+    {
+        sLog.outError("ScriptDev2: DoCompleteAchievement called for not existing achievement %u", AchId);
+        return;
+    }
+	
+	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
+}

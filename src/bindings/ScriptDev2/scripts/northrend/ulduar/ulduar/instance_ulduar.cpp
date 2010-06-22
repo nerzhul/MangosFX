@@ -38,6 +38,18 @@ void instance_ulduar::Initialize()
 	m_uiLeviMKIIGUID		= 0;
 	m_uiVX001GUID			= 0;
 	m_uiMimironHeadGUID		= 0;
+
+	XTDoorGUID = 0;
+	IronCouncilDoorGUID = 0;
+	IronCouncilArchivumGUID = 0;
+	KologarnDoorGUID = 0;
+	HodirDoorGUID = 0;
+	HodirExitDoor1GUID = 0;
+	HodirExitDoor2GUID = 0;
+	ThorimDoorGUID = 0;
+	AuriayaDoorGUID = 0;
+
+	checkPlayer_Timer = 1500;
 	
     memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
     memset(&m_auiAssemblyGUIDs, 0, sizeof(m_auiAssemblyGUIDs));
@@ -224,22 +236,143 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
     }
 }
 
+void instance_ulduar::OnObjectCreate(GameObject* pGo)
+{
+	switch(pGo->GetEntry())
+    {
+		case GO_KOLOGARN_BRIDGE:
+			m_uiKologarnBridgeGUID = pGo->GetGUID();
+			if(!(GetData(TYPE_KOLOGARN) == DONE))
+				pGo->SetGoState(GO_STATE_ACTIVE);
+			else
+				pGo->SetGoState(GO_STATE_READY);
+			break;
+		case GO_KOLOGARN_LOOT:
+		case GO_KOLOGARN_LOOT_H:
+			m_uiKologarnLootGUID = pGo->GetGUID();
+			break;
+		case 8151: // Thorim Door
+			m_uiThorimDoor = pGo->GetGUID();
+			break;
+		case 194312:
+		case 194313:
+			m_uiThorimLootGUID = pGo->GetGUID();
+			break;
+		case 194631:
+			XTDoorGUID = pGo->GetGUID();
+			break;
+		case 194554:
+			IronCouncilDoorGUID = pGo->GetGUID();
+			break;
+		case 194556:
+			IronCouncilArchivumGUID = pGo->GetGUID();
+			break;
+		case 194553:
+			KologarnDoorGUID = pGo->GetGUID();
+			break;
+		case 194442:
+			HodirDoorGUID = pGo->GetGUID();
+			break;
+		case 194441:
+			HodirExitDoor1GUID = pGo->GetGUID();
+			break;
+		case 194634:
+			HodirExitDoor2GUID = pGo->GetGUID();
+			break;
+		case 194560:
+			ThorimDoorGUID = pGo->GetGUID();
+			break;
+		case 194255:
+			AuriayaDoorGUID = pGo->GetGUID();
+			break;
+	}
+}
+
+void instance_ulduar::Update(uint32 diff)
+{
+	if(checkPlayer_Timer <= diff)
+	{
+		if(!CheckPlayersInMap())
+		{
+			CloseDoor(XTDoorGUID);
+			OpenDoor(IronCouncilDoorGUID);
+			if(GetData(TYPE_ASSEMBLY == DONE))
+				CloseDoor(IronCouncilArchivumGUID);
+			else
+				OpenDoor(IronCouncilArchivumGUID);
+
+			CloseDoor(KologarnDoorGUID);
+			CloseDoor(HodirDoorGUID);
+
+			if(!(GetData(TYPE_HODIR) == DONE))
+			{
+				CloseDoor(HodirExitDoor1GUID);
+				CloseDoor(HodirExitDoor2GUID);
+			}
+			else
+			{
+				OpenDoor(HodirExitDoor1GUID);
+				OpenDoor(HodirExitDoor2GUID);
+			}
+
+			if(!(GetData(TYPE_THORIM) == DONE))
+				CloseDoor(ThorimDoorGUID);
+			else
+				OpenDoor(ThorimDoorGUID);
+
+			if(!(GetData(TYPE_AURIAYA) == DONE))
+				CloseDoor(AuriayaDoorGUID);
+			else
+				OpenDoor(AuriayaDoorGUID);
+
+		}
+		checkPlayer_Timer = 500;
+	}
+	else
+		checkPlayer_Timer -= diff;
+}
+
 void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 {
 	switch(uiType)
     {
+		
 		case TYPE_LEVIATHAN:
 		case TYPE_IGNIS:
 		case TYPE_RAZORSCALE:
-		case TYPE_XT002:
-		case TYPE_ASSEMBLY:
-		case TYPE_AURIAYA:
 		case TYPE_MIMIRON:
 		case TYPE_VEZAX:
 		case TYPE_YOGGSARON:
 		case TYPE_ALGALON:
 			m_auiEncounter[uiType] = uiData;
-				break;
+			break;
+		case TYPE_AURIAYA:
+			m_auiEncounter[uiType] = uiData;
+			if(uiData == DONE)
+				OpenDoor(AuriayaDoorGUID);
+			break;
+		case TYPE_ASSEMBLY:
+			m_auiEncounter[uiType] = uiData;
+			if(uiData == DONE)
+			{
+				CloseDoor(IronCouncilDoorGUID);
+				CloseDoor(IronCouncilArchivumGUID);
+			}
+			else
+			{
+				OpenDoor(IronCouncilDoorGUID);
+				OpenDoor(IronCouncilArchivumGUID);
+			}
+
+			CompleteAchievementForGroup(instance->GetDifficulty() ? 2885 : 2860);
+			break;
+		case TYPE_XT002:
+			m_auiEncounter[uiType] = uiData;
+			if(uiData == DONE)
+				CloseDoor(XTDoorGUID);
+			else
+				OpenDoor(XTDoorGUID);
+			break;
 		case TYPE_THORIM:
 			m_auiEncounter[uiType] = uiData;
 			if (uiData == DONE)
@@ -248,6 +381,8 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 					if (pChest && !pChest->isSpawned())
 						pChest->SetRespawnTime(350000000);
 			}
+			else if(uiData == IN_PROGRESS)
+				OpenDoor(ThorimDoorGUID);
 			break;
 		case TYPE_FREYA:
 			m_auiEncounter[uiType] = uiData;
@@ -265,6 +400,16 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				for(std::vector<Creature*>::const_iterator itr = HodirAdds.begin(); itr != HodirAdds.end(); ++itr)
 					(*itr)->Respawn();
 			}
+			else if(uiData == DONE)
+			{
+				OpenDoor(HodirDoorGUID);
+				OpenDoor(HodirExitDoor1GUID);
+				OpenDoor(HodirExitDoor2GUID);
+			}
+			else if(uiData == IN_PROGRESS)
+			{
+				CloseDoor(HodirDoorGUID);
+			}
 			break;
 		case TYPE_KOLOGARN:
 			m_auiEncounter[5] = uiData;
@@ -279,7 +424,11 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				for (std::vector<Creature*>::iterator itr = KologarnTrashs.begin(); itr != KologarnTrashs.end();++itr)
 					if((*itr) && (*itr)->isAlive())
 						(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
+
+				CloseDoor(KologarnDoorGUID);
 			}
+			else if(uiData == IN_PROGRESS)
+				OpenDoor(KologarnDoorGUID);
 			break;
 		case DATA_THORIM_ORB:
 		{
@@ -342,6 +491,8 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
         OUT_SAVE_INST_DATA_COMPLETE;
     }
 }
+
+
 InstanceData* GetInstanceData_instance_ulduar(Map* pMap)
 {
     return new instance_ulduar(pMap);

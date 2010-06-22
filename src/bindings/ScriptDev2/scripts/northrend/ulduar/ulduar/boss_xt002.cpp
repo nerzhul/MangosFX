@@ -109,6 +109,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		addspawn_Timer = 1000;
 		Heart_Count = 0;
 		FreezeMob(false,me);
+		pInstance->SetData(TYPE_XT002,NOT_STARTED);
 		
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
@@ -117,6 +118,8 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
     void Aggro(Unit* who)
     {
         Speak(CHAT_TYPE_SAY,15724,"De nouveaux jouets ! Pour moi. Cette fois-ci je ne les casserai pas !");
+		if(pInstance)
+			pInstance->SetData(TYPE_XT002,IN_PROGRESS);
     }
 
     void KilledUnit(Unit* victim)

@@ -104,6 +104,8 @@ void boss_steelbreakerAI::EnterCombat(Unit *who)
 	Yell(15674,"Vous ne vainquerez pas si facilement l'assemblÃ©e de fer, envahisseur !");
 	DoCastMe( (m_bIsHeroic)? SPELL_HIGH_VOLTAGE : SPELL_HIGH_VOLTAGE_H);
     UpdatePhase();
+	if(pInstance)
+		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
 	if(Unit* Brundir = Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_BRUNDIR) : 0))
         Brundir->AddThreat(me->getVictim());
 	if(Unit* Molgeim = Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_MOLGEIM) : 0))
@@ -149,7 +151,10 @@ void boss_steelbreakerAI::DamageTaken(Unit* pKiller, uint32 &damage)
 void boss_steelbreakerAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
+	{
         pInstance->SetData(TYPE_ASSEMBLY, DONE);
+		pInstance->CompleteAchievementForGroup(m_bIsHeroic ? 2944 : 2941);
+	}
 }
 
 void boss_steelbreakerAI::KilledUnit(Unit *who)
@@ -221,6 +226,8 @@ void boss_runemaster_molgeimAI::EnterCombat(Unit* who)
         Steelbreaker->AddThreat(me->getVictim());
 	if(Unit* Brundir = Unit::GetUnit((*me), pInstance ? pInstance->GetData64(DATA_BRUNDIR) : 0))
         Brundir->AddThreat(me->getVictim());
+	if(pInstance)
+		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
     Yell(15657,"Seule votre extermination complète me conviendra !");
     UpdatePhase();
 }
@@ -266,7 +273,10 @@ void boss_runemaster_molgeimAI::DamageTaken(Unit* pKiller, uint32 &damage)
 void boss_runemaster_molgeimAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
+	{
         pInstance->SetData(TYPE_ASSEMBLY, DONE);
+		pInstance->CompleteAchievementForGroup(m_bIsHeroic ? 2942 : 2939);
+	}
 	if(urand(0,1))
 		Yell(15662,"L'hÃ©ritage des tempêtes ne sera pas anÃ©anti...");
 	else
@@ -390,6 +400,8 @@ void boss_stormcaller_brundirAI::EnterCombat(Unit* who)
         Steelbreaker->AddThreat(me->getVictim());
 	if(Unit* Molgeim = Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_MOLGEIM) : 0))
         Molgeim->AddThreat(me->getVictim());
+	if(pInstance)
+		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
 }
 
 void boss_stormcaller_brundirAI::UpdatePhase()
@@ -404,7 +416,6 @@ void boss_stormcaller_brundirAI::UpdatePhase()
         DoCastMe(SPELL_STORMSHIELD);
 		LightW_Timer = urand(40000,80000);
     }
-
 }
 
 void boss_stormcaller_brundirAI::DamageTaken(Unit* pKiller, uint32 &damage)
@@ -437,7 +448,10 @@ void boss_stormcaller_brundirAI::DamageTaken(Unit* pKiller, uint32 &damage)
 void boss_stormcaller_brundirAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
+	{
         pInstance->SetData(TYPE_ASSEMBLY, DONE);
+		pInstance->CompleteAchievementForGroup(m_bIsHeroic ? 2943 : 2940);
+	}
 	if(urand(0,1))
 		Speak(CHAT_TYPE_SAY,15689,"La puissance de la tempête survivra...");
 	else

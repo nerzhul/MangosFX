@@ -323,7 +323,6 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 			if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
 				if (pTemp->isAlive())
 					pTemp->RemoveFromWorld();
-
 		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }

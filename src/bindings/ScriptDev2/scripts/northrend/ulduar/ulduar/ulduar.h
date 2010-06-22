@@ -205,6 +205,18 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 m_uiVX001GUID;
 	uint64 m_uiMimironHeadGUID;
 
+	uint64 XTDoorGUID;
+	uint64 IronCouncilDoorGUID;
+	uint64 IronCouncilArchivumGUID;
+	uint64 KologarnDoorGUID;
+	uint64 HodirDoorGUID;
+	uint64 HodirExitDoor1GUID;
+	uint64 HodirExitDoor2GUID;
+	uint64 ThorimDoorGUID;
+	uint64 AuriayaDoorGUID;
+
+	uint32 checkPlayer_Timer;
+
 	std::vector<Creature*> IgnisIronAdds;
 	std::vector<Creature*> ThorimThunderOrbs;
 
@@ -233,29 +245,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 
     void OnCreatureCreate(Creature* pCreature);
     
-    void OnObjectCreate(GameObject *pGo)
-    {
-		switch(pGo->GetEntry())
-        {
-			case GO_KOLOGARN_BRIDGE:
-				m_uiKologarnBridgeGUID = pGo->GetGUID();
-				pGo->SetGoState(GO_STATE_ACTIVE);
-				break;
-			case GO_KOLOGARN_LOOT:
-			case GO_KOLOGARN_LOOT_H:
-				m_uiKologarnLootGUID = pGo->GetGUID();
-				break;
-			case 8151: // Thorim Door
-				m_uiThorimDoor = pGo->GetGUID();
-				pGo->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
-				break;
-			case 194312:
-			case 194313:
-				m_uiThorimLootGUID = pGo->GetGUID();
-				break;
-		}
-    }
-
+    void OnObjectCreate(GameObject *pGo);
 
     void SetData(uint32 uiType, uint32 uiData);    
 
@@ -422,6 +412,21 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 			}
 	}
 
+	bool CheckPlayersInMap()
+	{
+		bool found = false;
+		Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+				{
+					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
+						found = true;
+				}
+		return found;
+	}
+
 	const char* Save(){ return m_strInstData.c_str(); }
 
     void Load(const char* strIn)
@@ -446,5 +451,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 
         OUT_LOAD_INST_DATA_COMPLETE;
     }
+
+	void Update(uint32 diff);
 };
 #endif
