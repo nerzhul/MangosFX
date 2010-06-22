@@ -214,15 +214,18 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 	void DamageTaken(Unit* pDoneBy, uint32 &damage)
 	{
 		bool KillMe = false;
-		if(me->HasAura(SPELL_FRAGILE) && damage > 3000)
+		if(pDoneBy != me)
 		{
-			damage = 0;
-			KillMe = true;
-		}
-		else if(me->HasAura(SPELL_FRAGILE) && damage > 5000)
-		{
-			damage = 0;
-			KillMe = true;
+			if(me->HasAura(SPELL_FRAGILE) && damage > 3000)
+			{
+				damage = 0;
+				KillMe = true;
+			}
+			else if(me->HasAura(SPELL_FRAGILE) && damage > 5000)
+			{
+				damage = 0;
+				KillMe = true;
+			}
 		}
 		if(KillMe)
 		{
@@ -232,7 +235,8 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
 					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
 				}
-
+			if(pInstance)
+				pInstance->SetData(DATA_IGNIS_ADD_MONO,DONE);
 			Kill(me);
 		}
 	}

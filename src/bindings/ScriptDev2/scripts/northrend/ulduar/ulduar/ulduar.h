@@ -60,6 +60,7 @@ enum
 	DATA_IGNIS_FIRE				= 55,
 	DATA_YOGG_NUAGE				= 56,
 	DATA_HODIR_FREEZE			= 57,
+	DATA_IGNIS_ADD_MONO			= 58,
 
     NPC_LEVIATHAN               = 33113,
     NPC_IGNIS                   = 33118,
@@ -217,6 +218,8 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 VezaxDoorGUID;
 
 	uint32 checkPlayer_Timer;
+	uint32 IgnisHFReset_Timer;
+	bool IgnisAddTimedActivate;
 
 	std::vector<Creature*> IgnisIronAdds;
 	std::vector<Creature*> ThorimThunderOrbs;
