@@ -91,6 +91,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 
 	bool HARDMODE;
 	bool OpenHeart;
+	bool NoRepair;
 
 	uint64 HeartGUID;
 	uint16 Heart_Count;
@@ -105,6 +106,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		wrath_Timer = 30000;
 		HARDMODE = false;
 		OpenHeart = false;
+		NoRepair = true;
 		addspawn_Timer = 1000;
 		FreezeMob(false,me);
 		if(pInstance)
@@ -140,6 +142,8 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
 			if(HARDMODE)
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
+			if(NoRepair)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2932 : 2931);
 
 		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
@@ -149,6 +153,11 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
     void MoveInLineOfSight(Unit* who) 
 	{
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
+	}
+
+	void SetRepaired()
+	{
+		NoRepair = false;
 	}
 
 	void DoSpawnAdds()
@@ -286,28 +295,20 @@ struct MANGOS_DLL_DECL boss_xm024_AI : public LibDevFSAI
 		AddEventOnTank(SPELL_TRAMPLE,2000,4000,3000);
 		AddEventOnTank(SPELL_UPPERCUT,2500,3000,2000);
     }
-	
-	uint32 uppercut_Timer;
 
-	void Reset() {
+	void Reset() 
+	{
 		ResetTimers();
-		uppercut_Timer = 2500;
+		AggroAllPlayers(250.0f);
 	}
-    ScriptedInstance* pInstance;
 
 	void UpdateAI(const uint32 diff)
 	{
 		if (!CanDoSomething())
-		{
-			/*if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
-				me->GetMotionMaster()->MovePoint(0,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ());*/
-		}
-		else
-		{
+			return;
 
-			UpdateEvent(diff);
-			DoMeleeAttackIfReady();
-		}
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
 	}
 };
 
@@ -320,7 +321,10 @@ struct MANGOS_DLL_DECL boss_xe321_AI : public LibDevFSAI
         InitInstance();
     }
 
-	void Reset() {}
+	void Reset() 
+	{
+		AggroAllPlayers(250.0f);
+	}
 	
 	void UpdateAI(const uint32 diff)
 	{
@@ -341,21 +345,28 @@ struct MANGOS_DLL_DECL boss_xs013_AI : public LibDevFSAI
     }
 
 	void Reset()
-	{}
+	{
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+        me->ApplySpellImmune(1, IMMUNITY_EFFECT,SPELL_EFFECT_ATTACK_ME, true);
+	}
 	
 	void UpdateAI(const uint32 diff)
 	{
 		me->ClearInCombat();
 		if(pInstance)
 		{
-			if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
+			if (Creature* pUnit = GetInstanceCreature(TYPE_XT002))
 			{
-				//me->GetMotionMaster()->MovePoint(0,pUnit->GetPositionX(),pUnit->GetPositionY(),pUnit->GetPositionZ());
-				if(me->GetDistance2d(pUnit->GetPositionX(),pUnit->GetPositionY()) < 3.0f)
+				if(pUnit->isAlive())
 				{
-					AddPercentLife(pUnit,5);
-					Kill(me);
-				}	
+					me->AddThreat(pUnit,1000000.0f);
+					if(me->GetDistance2d(pUnit->GetPositionX(),pUnit->GetPositionY()) < 5.0f)
+					{
+						AddPercentLife(pUnit,5);
+						((boss_xt002_AI*)pUnit->AI())->SetRepaired();
+						Kill(me);
+					}	
+				}
 			}
 		}
 	}
@@ -377,7 +388,7 @@ struct MANGOS_DLL_DECL xt_heart_AI : public LibDevFSAI
 	
 	void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
 	{
-		if (Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(TYPE_XT002)))
+		if (Creature* pUnit = GetInstanceCreature(TYPE_XT002))
 			if(pUnit->isAlive())
 				pUnit->DealDamage(pUnit,uiDamage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}

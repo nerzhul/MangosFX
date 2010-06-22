@@ -2782,7 +2782,7 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
 			{
 				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 					if (Player* pPlayer = itr->getSource())
-						if(pPlayer->isAlive() && pPlayer->GetDistance2d(unitTarget) < 20.0f)
+						if(pPlayer->isAlive() && pPlayer->GetDistance2d(unitTarget) <= 20.0f)
 							pPlayer->TeleportTo(unitTarget->GetMapId(),unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),
 								unitTarget->GetOrientation());
 			}
