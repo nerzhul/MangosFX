@@ -367,10 +367,13 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		case TYPE_IGNIS:
 			m_auiEncounter[uiType] = uiData;
-			if(IgnisAddTimedActivate > 1)
+			if(uiData == DONE)
 			{
-				IgnisAddTimedActivate = 0;
-				CompleteAchievementForGroup(instance->GetDifficulty() ? 2926 : 2925);
+				if(IgnisAddTimedActivate > 1)
+				{
+					IgnisAddTimedActivate = 0;
+					CompleteAchievementForGroup(instance->GetDifficulty() ? 2926 : 2925);
+				}
 			}
 			break;
 		case TYPE_VEZAX:
