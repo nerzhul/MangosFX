@@ -15104,9 +15104,17 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(m_vehicle)
 		return;
 
-	m_vehicle = vehicle;
 	if(seatId < 0)
-		m_vehicle = vehicle->FindFreeSeat(&seatId,false);
+		vehicle = vehicle->FindFreeSeat(&seatId,false);
+
+	// BD stop crash !!!
+	if(seatId != 0)
+	{
+		ExitVehicle();
+		return;
+	}
+
+	m_vehicle = vehicle;
 
 	InterruptNonMeleeSpells(false);
 

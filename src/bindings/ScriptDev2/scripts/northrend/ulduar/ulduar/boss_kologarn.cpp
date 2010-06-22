@@ -16,7 +16,9 @@ enum
 	SPELL_PETRIFYING_BREATH_H	= 63980,
 
 	SPELL_FOCUS_EYE_10			= 63346,
+	SPELL_TRIGGER_FOCUS_10		= 63347,
 	SPELL_FOCUS_EYE_25			= 63976,
+	SPELL_TRIGGER_FOCUS_25		= 63977,
 	//left arm
 	SPELL_SHOCKWAVE				= 63783,
 	SPELL_SHOCKWAVE_H			= 63982,
@@ -349,6 +351,56 @@ CreatureAI* GetAI_boss_right_arm(Creature* pCreature)
     return new boss_right_armAI(pCreature);
 }
 
+
+struct MANGOS_DLL_DECL mob_right_focus_eyeAI : public LibDevFSAI
+{
+    mob_focus_eyeAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+		MakeHostileInvisibleStalker();
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(m_difficulty ? SPELL_TRIGGER_FOCUS_25 : SPELL_TRIGGER_FOCUS_10);
+    }
+
+	void SetTarget(Unit* target)
+	{
+		me->AddThreat(target,1000000.0f);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		
+	}
+};
+
+struct MANGOS_DLL_DECL mob_left_focus_eyeAI : public LibDevFSAI
+{
+    mob_left_focus_eyeAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+		MakeHostileInvisibleStalker();
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(m_difficulty ? SPELL_TRIGGER_FOCUS_25 : SPELL_TRIGGER_FOCUS_10);
+    }
+
+	void SetTarget(Unit* target)
+	{
+		me->AddThreat(target,1000000.0f);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		
+	}
+};
 // Kologarn
 struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 {
