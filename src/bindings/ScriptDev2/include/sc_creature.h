@@ -384,6 +384,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		{
 			ManualMoveEnable = false;
 			CanMove = true;
+			TimedDownEnable = false;
 			CheckDistanceTimer = 1000;
 		}
 		~LibDevFSAI() {};
@@ -494,6 +495,9 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void SetDespawnTimer(uint32 Timer) { me->ForcedDespawn(Timer); }
 
+		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
+		bool TimeDownSucceed() { return TimedDownEnable; }
+
 		void MakeInvisibleStalker();
 		void MakeHostileInvisibleStalker();
 	
@@ -506,9 +510,12 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		TextEvents EventTextVect;
 		TextEvents SavedEventTexts;
 		std::vector<uint64> MyAdds;
+		// Manual Move
 		bool ManualMoveEnable;
 		uint32 CheckDistanceTimer;
 		bool CanMove;
-		
+		// Down timer on HF
+		bool TimedDownEnable;
+		uint32 AchTimedDownTimer;
 };
 #endif

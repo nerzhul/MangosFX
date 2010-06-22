@@ -214,6 +214,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 HodirExitDoor2GUID;
 	uint64 ThorimDoorGUID;
 	uint64 AuriayaDoorGUID;
+	uint64 VezaxDoorGUID;
 
 	uint32 checkPlayer_Timer;
 

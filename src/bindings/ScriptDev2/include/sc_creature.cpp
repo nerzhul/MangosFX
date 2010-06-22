@@ -1103,6 +1103,14 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 		else
 			CheckDistanceTimer -= diff;
 	}
+
+	if(TimedDownEnable)
+	{
+		if(AchTimedDownTimer <= diff)
+			TimedDownEnable = false;
+		else
+			AchTimedDownTimer -= diff;
+	}
 }
 
 void LibDevFSAI::ResetTimers()

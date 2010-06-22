@@ -49,6 +49,8 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 			AddEvent(SPELL_SLAG_POT,15000,30000);
 			Assemblage_Timer = 40000;
 		}
+
+		ActivateTimeDown(240000);
 	}
 
 	uint32 Assemblage_Timer;
@@ -99,7 +101,13 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
         {
 				Kill((*itr));
 		}
-		pInstance->SetData(TYPE_IGNIS,DONE);
+		if(pInstance)
+		{
+			pInstance->SetData(TYPE_IGNIS,DONE);
+			if(TimeDownSucceed())
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2929 : 2930);
+		}
+		
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 

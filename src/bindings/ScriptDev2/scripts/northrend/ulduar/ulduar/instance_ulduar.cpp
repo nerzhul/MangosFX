@@ -48,6 +48,7 @@ void instance_ulduar::Initialize()
 	HodirExitDoor2GUID = 0;
 	ThorimDoorGUID = 0;
 	AuriayaDoorGUID = 0;
+	VezaxDoorGUID = 0;
 
 	checkPlayer_Timer = 1500;
 	
@@ -285,6 +286,9 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 		case 194255:
 			AuriayaDoorGUID = pGo->GetGUID();
 			break;
+		case 194750:
+			VezaxDoorGUID = pGo->GetGUID();
+			break;
 	}
 }
 
@@ -295,11 +299,11 @@ void instance_ulduar::Update(uint32 diff)
 		if(!CheckPlayersInMap())
 		{
 			CloseDoor(XTDoorGUID);
-			OpenDoor(IronCouncilDoorGUID);
+			CloseDoor(IronCouncilDoorGUID);
 			if(GetData(TYPE_ASSEMBLY == DONE))
-				CloseDoor(IronCouncilArchivumGUID);
-			else
 				OpenDoor(IronCouncilArchivumGUID);
+			else
+				CloseDoor(IronCouncilArchivumGUID);
 
 			CloseDoor(KologarnDoorGUID);
 			CloseDoor(HodirDoorGUID);
@@ -325,6 +329,11 @@ void instance_ulduar::Update(uint32 diff)
 			else
 				OpenDoor(AuriayaDoorGUID);
 
+			if(!(GetData(TYPE_VEZAX) == DONE))
+				CloseDoor(VezaxDoorGUID);
+			else
+				OpenDoor(VezaxDoorGUID);
+
 		}
 		checkPlayer_Timer = 500;
 	}
@@ -341,10 +350,16 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 		case TYPE_IGNIS:
 		case TYPE_RAZORSCALE:
 		case TYPE_MIMIRON:
-		case TYPE_VEZAX:
 		case TYPE_YOGGSARON:
 		case TYPE_ALGALON:
 			m_auiEncounter[uiType] = uiData;
+			break;
+		case TYPE_VEZAX:
+			m_auiEncounter[uiType] = uiData;
+			if(uiData == DONE)
+				OpenDoor(VezaxDoorGUID);
+			else
+				CloseDoor(VezaxDoorGUID);
 			break;
 		case TYPE_AURIAYA:
 			m_auiEncounter[uiType] = uiData;
@@ -356,12 +371,12 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			if(uiData == DONE)
 			{
 				CloseDoor(IronCouncilDoorGUID);
-				CloseDoor(IronCouncilArchivumGUID);
+				OpenDoor(IronCouncilArchivumGUID);
 			}
-			else
+			else if(uiData == IN_PROGRESS)
 			{
 				OpenDoor(IronCouncilDoorGUID);
-				OpenDoor(IronCouncilArchivumGUID);
+				CloseDoor(IronCouncilArchivumGUID);
 			}
 
 			CompleteAchievementForGroup(instance->GetDifficulty() ? 2885 : 2860);
@@ -402,13 +417,13 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			}
 			else if(uiData == DONE)
 			{
-				OpenDoor(HodirDoorGUID);
+				CloseDoor(HodirDoorGUID);
 				OpenDoor(HodirExitDoor1GUID);
 				OpenDoor(HodirExitDoor2GUID);
 			}
 			else if(uiData == IN_PROGRESS)
 			{
-				CloseDoor(HodirDoorGUID);
+				OpenDoor(HodirDoorGUID);
 			}
 			break;
 		case TYPE_KOLOGARN:
@@ -474,7 +489,6 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		}
     }
-
 
     if (uiData == DONE)
     {
