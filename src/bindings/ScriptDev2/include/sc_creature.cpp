@@ -848,8 +848,8 @@ void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	{
 		if(GetSpellStore()->LookupEntry(spell))
 		{
-			for(int k=0;k<stacks;k++)
-				for(int i=0;i<3;i++)
+			for(uint8 k=0;k<stacks;k++)
+				for(uint8 i=0;i<3;i++)
 				{
 					Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
 					target->AddAura(aur);
@@ -858,11 +858,13 @@ void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	}
 	else
 	{
-		if(!target->HasAura(spell))
-			return;
-
 		for(uint8 i=0;i<stacks;i++)
+		{
+			if(!target->HasAura(spell))
+				return;
+
 			target->RemoveSingleSpellAurasFromStack(spell);
+		}
 	}
 }
 
