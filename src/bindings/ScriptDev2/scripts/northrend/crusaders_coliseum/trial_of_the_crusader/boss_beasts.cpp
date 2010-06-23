@@ -380,18 +380,19 @@ enum DraedscaleSpells
 	//SPELL_ENRAGE = 68335,
 };
 
-struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 {
-    boss_Dreadscale_AI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_Dreadscale_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnMe(26662,360000,10000);
+		AddEventOnTank(SPELL_BURNING_BITE,9000,12000,1000,1);
+		AddEventOnTank(SPELL_BURNING_SPRAY,17000,15000,1000,2);
+		AddEvent(SPELL_FIRE_SPIT,6000,9000,1000,TARGET_RANDOM,2);
+		AddNoTankEvent(SPELL_FIRE_SPIT,3000);
+		AddEventOnTank(SPELL_MOLTEN_SPEW,15000,15000,1000,1);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	Difficulty m_bIsHeroic;
 	uint8 phase;
 	uint32 phase_Timer;
 	uint32 CheckDistanceTimer;
@@ -400,15 +401,9 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 	uint32 Check_Para_Timer;
 
     void Reset()
-    {		
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(26662,360000,10000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_BURNING_BITE,9000,12000,1000,TARGET_MAIN,1);
-		Tasks.AddEvent(SPELL_BURNING_SPRAY,17000,15000,1000,TARGET_MAIN,2);
-		Tasks.AddEvent(SPELL_FIRE_SPIT,6000,9000,1000,TARGET_RANDOM,2);
-		Tasks.AddNoTankEvent(SPELL_FIRE_SPIT,3000);
-		Tasks.AddEvent(SPELL_MOLTEN_SPEW,15000,15000,1000,TARGET_MAIN,1);
-		switch(m_bIsHeroic)
+    {
+		ResetTimers();
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:
@@ -429,13 +424,13 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Dreadscale, DONE);
-		if (Creature* Acidmaw = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Acidmaw) : 0)))
+        if (pInstance)
+            pInstance->SetData(TYPE_Dreadscale, DONE);
+		if (Creature* Acidmaw = GetInstanceCreature(TYPE_Acidmaw))
 		{
 			if(Acidmaw->isAlive())
 			{
-				switch(m_bIsHeroic)
+				switch(m_difficulty)
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
@@ -445,20 +440,22 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 			}
 			else
 			{
-				switch(m_bIsHeroic)
+				switch(m_difficulty)
 				{
 					case RAID_DIFFICULTY_10MAN_NORMAL:
 					case RAID_DIFFICULTY_25MAN_NORMAL:
-						m_pInstance->SetData(TYPE_Dreadscale, DONE);
-						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+						if(pInstance)
+							pInstance->SetData(TYPE_Dreadscale, DONE);
+						if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						break;
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
 						if(Spawnable)
 						{
-							m_pInstance->SetData(TYPE_Dreadscale, DONE);
-							if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+							if(pInstance)
+								pInstance->SetData(TYPE_Dreadscale, DONE);
+							if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 								((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						}
 						break;
@@ -482,11 +479,11 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 
-		if (Creature* Acidmaw = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Acidmaw) : 0)))
+		if (Creature* Acidmaw = GetInstanceCreature(TYPE_Acidmaw))
 			if(Acidmaw->isAlive())
 				Acidmaw->AddThreat(pWho);
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Dreadscale, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_Dreadscale, IN_PROGRESS);
 
     }
 
@@ -502,7 +499,10 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 						if(pPlayer->HasAura(SPELL_PARALYTIC_TOXIN))
 						{
 							if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0))
-								pPlayer->SetSpeedRate(MOVE_RUN,float(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration()) / 60000,true);
+							{
+								float rate = float(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration()) / 60000;
+								pPlayer->SetSpeedRate(MOVE_RUN,rate,true);
+							}
 
 							if(me->getVictim() && me->getVictim()->HasAura(SPELL_BURNING_BILE) && pPlayer->GetDistance2d(me->getVictim()) < 5.0f)
 							{
@@ -557,10 +557,10 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 		{
 			if(Spawn_Timer <= diff)
 			{
-				if (Creature* Acidmaw = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(TYPE_Acidmaw) : 0)))
+				if (Creature* Acidmaw = GetInstanceCreature(TYPE_Acidmaw))
 					if(!Acidmaw->isAlive())
 					{
-						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, m_pInstance ? m_pInstance->GetData64(DATA_ANNOUNCER) : 0)))
+						if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 					}
 				Spawn_Timer = 180000;
@@ -578,7 +578,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 		else
 			Check_Para_Timer -= diff;
 
-		Tasks.UpdateEvent(diff,phase);
+		UpdateEvent(diff,phase);
 
         DoMeleeAttackIfReady();
 

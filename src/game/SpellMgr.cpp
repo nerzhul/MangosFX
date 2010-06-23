@@ -1380,14 +1380,6 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 		spellInfo_1->SpellIconID == 329 && spellInfo_1->SpellVisual[0] == 7625)
 		return false;
 
-	if(spellInfo_1->Id == 55275 && spellInfo_2->Id == 55275)
-		return true;
-
-	// Freya Adds Spell
-	if((spellInfo_1->Id == 62532 && spellInfo_2->Id == 62619) ||
-		(spellInfo_1->Id == 62619 && spellInfo_2->Id == 62532))
-		return true;
-
     // Specific spell family spells
     switch(spellInfo_1->SpellFamilyName)
     {

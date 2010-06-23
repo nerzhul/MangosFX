@@ -513,7 +513,7 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
 		MakeHostileInvisibleStalker();
 		ModifyAuraStack(31690);
 		ModifyAuraStack(62619);
-		FreezeMob();
+		//FreezeMob();
 		SetCombatMovement(false);
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
 		growth_Timer = 1000;
@@ -530,7 +530,7 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
 				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 					if (Player* pPlayer = itr->getSource())
 					{
-						if(pPlayer->isAlive())
+						if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) <= 8.0f)
 							pPlayer->RemoveAurasDueToSpell(62532);
 					}
 			growth_Timer = 500;
