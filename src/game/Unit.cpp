@@ -9442,7 +9442,7 @@ int32 Unit::DealHeal(Unit *pVictim, uint32 addhealth, SpellEntry const *spellPro
         ((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_TOTAL_HEALING_RECEIVED, gain);
         ((Player*)pVictim)->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_HEALING_RECEIVED, addhealth);
     }
-	else if(pVictim->GetTypeId() == TYPEID_UNIT)
+	else if( pVictim->GetTypeId()== TYPEID_UNIT && ((Creature*)pVictim)->AI() )
 	{
 		((Creature*)pVictim)->AI()->HealBy(this, addhealth);
 	}
@@ -11328,6 +11328,11 @@ int32 Unit::ModifyHealth(int32 dVal)
 
     if(dVal==0)
         return 0;
+
+	if(dVal > 0 && GetTypeId() == TYPEID_UNIT && ((Creature*)this)->AI())
+	{
+		(((Creature*)this)->AI())->HealBy(this, (uint32&)dVal);
+	}
 
     int32 curHealth = (int32)GetHealth();
 

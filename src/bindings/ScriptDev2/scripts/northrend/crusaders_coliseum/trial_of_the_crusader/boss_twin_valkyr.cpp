@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 				pDoneBy->DealDamage(Fjola,dmg,NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 	}
 
-	void HealBy(Unit* pHealer,uint32 heal)
+	void HealBy(Unit* pHealer,uint32& heal)
 	{
 		if (Creature* Fjola = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(Fjola->isAlive())
@@ -288,7 +288,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 				uiDamage = 0;
 	}
 
-	void HealBy(Unit* pHealer,uint32 heal)
+	void HealBy(Unit* pHealer,uint32& heal)
 	{
 		if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(Eydis->isAlive())

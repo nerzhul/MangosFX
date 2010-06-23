@@ -73,7 +73,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     void EnterEvadeMode();
 
     //Called at any heal cast/item used
-    void HealBy(Unit* pHealer, uint32 uiAmountHealed) {}
+    void HealBy(Unit* pHealer, uint32& uiAmountHealed) {}
 
     // Called at any Damage to any victim (before damage apply)
     void DamageDeal(Unit* pDoneTo, uint32& uiDamage) {}

@@ -27,6 +27,7 @@ enum FreyaAdds
 	NPC_SNAPLASHER				= 32916,
 	//vague Type 3
 	NPC_ANCIENT_CONSERVATOR		= 33203,
+	NPC_SPORE					= 33215,
 };
 
 struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
@@ -38,7 +39,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		AddTextEvent(15532,"Vous avez voulu aller trop loin, perdre trop de temps !",720000,DAY*HOUR);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
 		AddNear15mSummonEvent(33228,20000,30000,0,15000);
-	
+
 		if(m_difficulty)
 		{
 			AddEvent(SPELL_GROUND_TREMOR_H,20000,15000,2000,TARGET_MAIN,2);
@@ -96,13 +97,13 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		phase = 1;
     }
 
-	void HealBy(Unit* pHeal, uint32 heal)
+	void HealBy(Unit* pHeal, uint32& heal)
 	{
 		error_log("HEALBY ?");
 		if(me->HasAura(SPELL_ATTUNED_TO_NATURE))
 		{
 			uint8 stk = me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount();
-			me->SetHealth(me->GetHealth() + heal * stk * 8 / 100);
+			heal = heal * stk * 8 / 100;
 		}
 	}
 
@@ -169,6 +170,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 					case 3:
 					case 5:
 						Yell(15533,"Mes enfants, venez m'aider !");
+						BossEmote(0,"Des allies de la Nature apparaissent !");
 						for(int i=0;i<(m_difficulty ? 10 : 8);i++)
 							CallCreature(NPC_DETONATING_LASHER,TEN_MINS,NEAR_15M);
 						break;
@@ -184,6 +186,8 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 					case 4:
 					case 6:
 						Say(15528,"Eonar, ta servante a besoin d'aide");
+						for(uint8 i=0;i<(m_difficulty ? 12 : 5);i++)
+							CallCreature(30391,60000,NEAR_15M,NOTHING);
 						CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
 						break;
 					case 7:
@@ -451,6 +455,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
 		growth_Timer = 1000;
 		AggroAllPlayers(150.0f);
+		BossEmote(0,"Un cadeau d'Eonar commence a pousser");
     }
 	
 	void JustDied(Unit* pWho)
@@ -495,6 +500,56 @@ CreatureAI* GetAI_freya_gift(Creature* pCreature)
     return new freya_giftAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
+{
+    freya_mushroomAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+	}
+
+	bool death;
+	uint32 growth_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		MakeInvisibleStalker();
+		me->setFaction(35);
+		ModifyAuraStack(31690);
+		DoCastMe(62619);
+		SetCombatMovement(false);
+		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+		growth_Timer = 1000;
+    }
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		if(growth_Timer <= diff)
+		{
+			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.1f);
+			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+				if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+				{
+					
+				}
+			growth_Timer = 1000;
+			
+		}
+		else
+			growth_Timer -= diff;
+
+		UpdateEvent(diff);
+	}
+};
+
+CreatureAI* GetAI_freya_mushroom(Creature* pCreature)
+{
+    return new freya_mushroomAI(pCreature);
+}
+
 void AddSC_boss_freya()
 {
     Script *newscript;
@@ -526,6 +581,11 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_gift";
     newscript->GetAI = &GetAI_freya_gift;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_mushroom";
+    newscript->GetAI = &GetAI_freya_mushroom;
     newscript->RegisterSelf();
 
 	newscript = new Script;
