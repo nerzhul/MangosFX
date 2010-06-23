@@ -247,7 +247,7 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
 				death = true;
 				DoCastMe(m_difficulty ? 62937 : 62598);
 				if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-					if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+					if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 						ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-2,Freya);
 				me->ForcedDespawn(800);
 			}
@@ -287,7 +287,7 @@ struct MANGOS_DLL_DECL freya_water_spiritAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+			if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL freya_storm_lasherAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+			if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -374,7 +374,7 @@ struct MANGOS_DLL_DECL freya_snaplasherAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+			if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -411,7 +411,7 @@ struct MANGOS_DLL_DECL freya_ancient_conservatorAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+			if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-25,Freya);
 	}
 
@@ -455,7 +455,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 	void JustDied(Unit* pWho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+			if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				Freya->RemoveAurasDueToSpell(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH);
 	}
 
@@ -468,7 +468,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 		{
 			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.1f);
 			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-				if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+				if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				{
 					if(me->GetFloatValue(OBJECT_FIELD_SCALE_X) >= 2.0f)
 					{
