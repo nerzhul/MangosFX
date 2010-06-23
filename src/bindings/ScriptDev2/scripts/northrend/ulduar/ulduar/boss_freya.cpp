@@ -27,7 +27,6 @@ enum FreyaAdds
 	NPC_SNAPLASHER				= 32918,
 	//vague Type 3
 	NPC_ANCIENT_CONSERVATOR		= 33203,
-
 };
 
 /*
@@ -35,21 +34,31 @@ enum FreyaAdds
 #define SAY_SLAY -1
 */
 
-struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 {
-    boss_freyaAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_freyaAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEnrageTimer(720000);
+		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
+	
+		if(m_difficulty)
+		{
+			AddEvent(SPELL_GROUND_TREMOR_H,20000,15000,2000,TARGET_MAIN,2);
+			AddEvent(SPELL_SUNBEAM_H,15000,10000,2000,TARGET_RANDOM,2);
+			AddEventOnMe(SPELL_TOUCH_H,4000,5000);
+		}
+		else
+		{
+			AddEvent(SPELL_GROUND_TREMOR,20000,15000,2000,TARGET_MAIN,2);
+			AddEvent(SPELL_SUNBEAM,15000,10000,2,TARGET_RANDOM,2);
+			AddEventOnMe(SPELL_TOUCH,4000,5000);
+		}
     }
 
-	MobEventTasks Tasks;
-	bool m_bIsHeroic;
 	bool HardMode;
 	bool TriAddAlive[3];
 	uint32 AskRezNextCycle;
-    ScriptedInstance* m_pInstance;
 	uint8 phase;
 	uint32 Vague_Timer;
 	uint16 Vague_Count;
@@ -58,6 +67,9 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 
     void Reset()
     {
+		ResetTimers();
+		CleanMyAdds();
+		SetAuraStack(SPELL_ATTUNED_TO_NATURE,150,me,me,1);
 		HardMode = false;
 		AskRezNextCycle = RESPAWN_ONE_DAY*1000;
 		TriAdds.clear();
@@ -65,44 +77,37 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 		Vague_Timer = 5000;
 		Check_InLife_Timer = 1500;
 		Vague_Count = 0;
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
-		Tasks.AddEvent(SPELL_ENRAGE,720000,60000,0,TARGET_ME);
-	
-		if(m_bIsHeroic)
-		{
-			Tasks.AddEvent(SPELL_GROUND_TREMOR_H,20000,15000,2000,TARGET_MAIN,2);
-			Tasks.AddEvent(SPELL_SUNBEAM_H,15000,10000,2000,TARGET_RANDOM,2);
-			Tasks.AddEvent(SPELL_TOUCH_H,4000,5000,0,TARGET_ME,0);
-			Tasks.AddEvent(SPELL_PHOTOSYNTHESIS,5000,6000,0,HEAL_MY_FRIEND,0);
-		}
-		else
-		{
-			Tasks.AddEvent(SPELL_GROUND_TREMOR,20000,15000,2000,TARGET_MAIN,2);
-			Tasks.AddEvent(SPELL_SUNBEAM,15000,10000,2,TARGET_RANDOM,2);
-			Tasks.AddEvent(SPELL_TOUCH,4000,5000,0,TARGET_ME,0);
-			Tasks.AddEvent(SPELL_PHOTOSYNTHESIS,5000,6000,0,TARGET_ME,0);
-		}
     }
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_FREYA, DONE);
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
+        if (pInstance)
+            pInstance->SetData(TYPE_FREYA, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_FREYA, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_FREYA, IN_PROGRESS);
 
 		phase = 1;
-		
-		SetAuraStack(SPELL_ATTUNED_TO_NATURE,150,me,me,1);
     }
+
+	void UpdateHealStack(uint8 diff)
+	{
+		if(!me->HasAura(SPELL_ATTUNED_TO_NATURE))
+			return;
+
+		uint8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
+		stk -= diff;
+		if(stk < 1)
+			me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
+		else
+			SetAuraStack(SPELL_ATTUNED_TO_NATURE,stk,me,me,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -175,20 +180,20 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 					case 1:
 					case 3:
 					case 5:
-						for(int i=0;i<(m_bIsHeroic ? 10 : 8);i++)
-							Tasks.CallCreature(NPC_DETONATING_LASHER,TEN_MINS,NEAR_7M);
+						for(int i=0;i<(m_difficulty ? 10 : 8);i++)
+							CallCreature(NPC_DETONATING_LASHER,TEN_MINS,NEAR_7M);
 						break;
 					case 2:
-						if(Creature* tmpCr = Tasks.CallCreature(NPC_WATER_SPIRIT,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_WATER_SPIRIT,TEN_MINS,NEAR_7M))
 							TriAdds.push_back(tmpCr);
-						if(Creature* tmpCr = Tasks.CallCreature(NPC_STORM_LASHER,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_STORM_LASHER,TEN_MINS,NEAR_7M))
 							TriAdds.push_back(tmpCr);
-						if(Creature* tmpCr = Tasks.CallCreature(NPC_SNAPLASHER,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_SNAPLASHER,TEN_MINS,NEAR_7M))
 							TriAdds.push_back(tmpCr);
 						break;
 					case 4:
 					case 6:
-						Tasks.CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
+						CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
 						break;
 					case 7:
 						for(std::vector<Creature*>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
@@ -200,8 +205,8 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 						phase++;
 						me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
 						break;
-				default:
-					break;
+					default:
+						break;
 
 				}
 
@@ -211,8 +216,8 @@ struct MANGOS_DLL_DECL boss_freyaAI : public ScriptedAI
 				Vague_Timer -= diff;
 		}
 
-		Tasks.UpdateEvent(diff);
-		Tasks.UpdateEvent(diff,phase);
+		UpdateEvent(diff);
+		UpdateEvent(diff,phase);
 
 		DoMeleeAttackIfReady();
 
@@ -224,11 +229,62 @@ CreatureAI* GetAI_boss_freya(Creature* pCreature)
     return new boss_freyaAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
+{
+    detonating_lasherAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+		AddEventOnTank(62608,500,2500);
+	}
+
+	bool death;
+
+    void Reset()
+    {
+		ResetTimers();
+		AggroAllPlayers(150.0f);
+    }
+
+	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && !death)
+		{
+			dmg = 0;
+			death = true;
+			DoCastVictim(m_difficulty ? 62937 : 62598);
+			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+				if(Freya->isAlive())
+					((boss_freyaAI*)Freya->AI())->UpdateHealStack(2);
+			me->ForcedDespawn(1000);
+		}
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_detonating_lasher(Creature* pCreature)
+{
+    return new detonating_lasherAI(pCreature);
+}
+
 void AddSC_boss_freya()
 {
     Script *newscript;
     newscript = new Script;
     newscript->Name = "boss_freya";
     newscript->GetAI = &GetAI_boss_freya;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_deton_lasher";
+    newscript->GetAI = &GetAI_detonating_lasher;
     newscript->RegisterSelf();
 }
