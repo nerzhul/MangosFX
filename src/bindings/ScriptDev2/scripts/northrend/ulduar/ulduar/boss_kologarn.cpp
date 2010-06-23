@@ -171,7 +171,9 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 	void ReviveMe()
 	{
 		me->SetHealth(me->GetMaxHealth());
+		DoResetThreat();
 		FreezeMob(false);
+		me->RemoveAllAuras();
 		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
 	}
 
@@ -326,7 +328,9 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 	void ReviveMe()
 	{
 		me->SetHealth(me->GetMaxHealth());
+		DoResetThreat();
 		FreezeMob(false);
+		me->RemoveAllAuras();
 		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
 	}
 
@@ -422,6 +426,8 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 	bool right;
 	bool left;
+	bool ArmKilled;
+	uint16 nbDebris;
 
     void Reset()
     {
@@ -433,6 +439,9 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 		CheckTimer = 1000;
 		right = true;
 		left = true;
+		// HFs
+		ArmKilled = false;
+		nbDebris = 0;
 		if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
 			if (pTemp->isAlive())
 				((boss_right_armAI*)pTemp->AI())->ReviveMe();
@@ -454,6 +463,11 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 			if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
 				if (pTemp->isAlive())
 					pTemp->RemoveFromWorld();
+			if(!ArmKilled)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2952 : 2951);
+			if(nbDebris >= 25)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 2960 : 2959);
+
 		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
@@ -500,8 +514,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			me->RemoveAllAuras();
-			DoResetThreat();
+			me->Respawn();
 			return;
 		}
 
@@ -544,16 +557,20 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 				if (!lArm->isAlive() && left)
 				{
 					left = false;
+					ArmKilled = true;
 					for(int i=0;i<5;i++)
 						CallCreature(MOB_RUBBLE,TEN_MINS,PREC_COORDS,AGGRESSIVE_MAIN,1776.96f,-44.839f,449.0f);
+					nbDebris += 5;
 					respawnleft = 60000;
 				}
 			if (Creature* rArm = GetInstanceCreature(DATA_RIGHT_ARM))
 				if (!rArm->isAlive() && right)
 				{
 					right = false;
+					ArmKilled = true;
 					for(int i=0;i<5;i++)
 						CallCreature(MOB_RUBBLE,TEN_MINS,PREC_COORDS,AGGRESSIVE_MAIN,1777.81f,-3.539f,449.0f);
+					nbDebris += 5;
 					respawnright = 60000;
 				}
 			if (!me->IsWithinDistInMap(me->getVictim(), 10))

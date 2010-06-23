@@ -38,14 +38,18 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 			AddEventOnTank(SPELL_SONIC_SCREECH,30000,28000);
 		}
 		AddEventMaxPrioOnTank(SPELL_TERRIFYING_SCREECH,9500,30000);
+		AddEnrageTimer(TEN_MINS);
+		AddTextEvent(15477,"Vous me faîtes perdre mon temps.",TEN_MINS,DAY*HOUR);
     }
 
-	uint32 enrage_Timer;
+	bool SentryDown;
+	bool DefenderDown;
 
     void Reset()
     {
+		ResetTimers();
 		CleanMyAdds();
-		enrage_Timer = TEN_MINS;
+		SentryDown = false;
     }
 
     void Aggro(Unit* who)
@@ -54,6 +58,16 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 		CallCreature(34014,TEN_MINS,NEAR_7M,AGGRESSIVE_MAIN);
 		Speak(CHAT_TYPE_SAY,15473,"Certaines choses ne doivent pas êtres dérangÃ©es !");
     }
+
+	void SetSentryDown()
+	{
+		SentryDown = true;
+	}
+
+	void SetDefenderDown()
+	{
+		DefenderDown = true;
+	}
 
     void KilledUnit(Unit* victim)
     {
@@ -68,7 +82,13 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 		Yell(15476,"Aaaaaaaaaaaaaaaaaaaaaaaaaaaaargh");
 
         if (pInstance)
+		{
             pInstance->SetData(TYPE_AURIAYA, DONE);
+			if(!SentryDown)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3007 : 3006);
+			if(DefenderDown)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3077 : 3076);
+		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
@@ -76,15 +96,6 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
-
-		if(enrage_Timer <= diff)
-		{
-			DoCastMe(SPELL_ENRAGE);
-			Yell(15477,"Vous me faîtes perdre mon temps.");
-			enrage_Timer = 60000;
-		}
-		else
-			enrage_Timer -= diff;
 
 		UpdateEvent(diff);
 
@@ -155,6 +166,10 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 					DoCastVictim(SPELL_SEEPING_25);
 				else
 					DoCastVictim(SPELL_SEEPING_10);
+				if(Creature* Auriaya = GetInstanceCreature(TYPE_AURIAYA))
+				{
+					((boss_auriaya_AI*)Auriaya->AI())->SetDefenderDown();
+				}
 				Kill(me);
 			}
 		}
@@ -205,11 +220,15 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public LibDevFSAI
 	void Reset()
 	{
 		ResetTimers();
+		SetAuraStack(SPELL_PACK_STR,1,me,me);	
 	}
 
-	void MoveInLineOfSight(Unit* tar)
+	void JustDied(Unit* pWho)
 	{
-		SetAuraStack(SPELL_PACK_STR,1,me,me);	
+		if(Creature* Auriaya = GetInstanceCreature(TYPE_AURIAYA))
+		{
+			((boss_auriaya_AI*)Auriaya->AI())->SetSentryDown();
+		}
 	}
 
 	void UpdateAI(const uint32 diff)
