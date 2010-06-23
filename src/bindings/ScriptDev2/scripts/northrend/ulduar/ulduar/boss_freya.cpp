@@ -221,7 +221,6 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		UpdateEvent(diff,phase);
 
 		DoMeleeAttackIfReady();
-
     }
 };
 
