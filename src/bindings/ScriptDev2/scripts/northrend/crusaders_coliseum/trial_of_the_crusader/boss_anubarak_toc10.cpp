@@ -123,7 +123,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 					Yell(16240,"Aoum Na'akish ! Dévorez mes serviteurs !");
 					if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
 					{
-						SetAuraStack(SPELL_MARK,1,target,me);
+						ModifyAuraStack(SPELL_MARK,1,target);
 						if(Creature* spike = Tasks.CallCreature(34660,60000))
 						{
 							spike->GetMotionMaster()->MoveFollow(target,0.5f,0.0f);
@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 		{
 			Yell(16241,"L'essaim va vous submerger !");
 			DoCastMe(SPELL_LEECHING_SWARM);
-			SetAuraStack(SPELL_LEECHING_SWARM,1,me,me,1);
+			ModifyAuraStack(SPELL_LEECHING_SWARM);
 			phase = 3;
 		}
 

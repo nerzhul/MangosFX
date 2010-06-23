@@ -449,12 +449,12 @@ struct MANGOS_DLL_DECL Valkyr_BallAI : public LibDevFSAI
 		{
 			u->RemoveAurasDueToSpell(67590);
 			if(urand(0,1))
-				SetAuraStack(65724,1,u,me,1);
+				ModifyAuraStack(65724,1,u);
 			else
-				SetAuraStack(65748,1,u,me,1);
+				ModifyAuraStack(65748,1,u);
 		}
 		else
-			SetAuraStack(67590,stk + 7,u,me,1);
+			ModifyAuraStack(67590,stk + 7,u);
 	}
 
     void UpdateAI(const uint32 diff)

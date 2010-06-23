@@ -318,7 +318,7 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		SetAuraStack(66201,1,me,me,1);
+		ModifyAuraStack(66201);
         me->SetRespawnDelay(DAY);
 		SetDespawnTimer(m_difficulty ? 30000 : 60000);
 		SetCombatMovement(false);

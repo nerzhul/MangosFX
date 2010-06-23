@@ -858,7 +858,7 @@ void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	}
 	else
 	{
-		for(uint8 i=0;i<diff;i++)
+		for(uint8 i=0;i<stacks;i++)
 			target->RemoveSingleSpellAurasFromStack(spell);
 	}
 }

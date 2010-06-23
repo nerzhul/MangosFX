@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 					CallCreature(NPC_FRIGBOLD,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
 
 				Frigibold_count--;
-				SetAuraStack(SPELL_RISING_ANGER,5 - Frigibold_count,me,me,1);
+				ModifyAuraStack(SPELL_RISING_ANGER,5 - Frigibold_count);
 				frigibold_Timer = 60000;
 			}
 			else
@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 			if (Player* pPlayer = itr->getSource())
 			{
 				if(pPlayer->isAlive() && !pPlayer->isGameMaster() && me->HasInArc(M_PI/2, pPlayer))
-					SetAuraStack(SPELL_PARALYTIC_TOXIN,1,pPlayer,me,1);
+					ModifyAuraStack(SPELL_PARALYTIC_TOXIN,1,pPlayer);
 			}
 		}
 	}
@@ -439,7 +439,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
-						SetAuraStack(SPELL_ENRAGE,1,Acidmaw,Acidmaw,1);
+						ModifyAuraStack(SPELL_ENRAGE,1,Acidmaw,Acidmaw);
 						break;
 				}
 			}
@@ -509,7 +509,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 								pPlayer->RemoveAurasDueToSpell(66830);
 							}
 							else if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration() < 10000)
-								SetAuraStack(66830,1,pPlayer,me,1);
+								ModifyAuraStack(66830,1,pPlayer);
 						}
 						else
 							pPlayer->SetSpeedRate(MOVE_RUN,1.0f,true);						
@@ -715,7 +715,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 								for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 									if (Player* pPlayer = itr->getSource())
 										if(pPlayer->isAlive())
-											SetAuraStack(SPELL_SURGE_OF_ADRENALINE,1,pPlayer,me,1);
+											ModifyAuraStack(SPELL_SURGE_OF_ADRENALINE,1,pPlayer);
 							}
 							break;
 						}
@@ -748,9 +748,9 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 						}
 					}
 					if(PlayerHit)
-						SetAuraStack(SPELL_FROTHING_RAGE,1,me,me,1);
+						ModifyAuraStack(SPELL_FROTHING_RAGE);
 					else
-						SetAuraStack(SPELL_STAGGERED_DAZE,1,me,me,1);
+						ModifyAuraStack(SPELL_STAGGERED_DAZE);
 					phase_Timer = 60000;
 					phase = 1;
 					break;
@@ -816,7 +816,7 @@ struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public ScriptedAI
 		
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		SetAuraStack(30914,1,me,me,1);
+		ModifyAuraStack(30914);
 		switch(m_bIsHeroic)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -867,7 +867,7 @@ struct MANGOS_DLL_DECL boss_gormok_flameAI : public LibDevFSAI
 
     void Reset()
     {
-		SetAuraStack(66318,1,me,me,1);
+		ModifyAuraStack(66318);
 		SetCombatMovement(false);
 		MakeHostileInvisibleStalker();
 		me->SetPhaseMask(1,true);

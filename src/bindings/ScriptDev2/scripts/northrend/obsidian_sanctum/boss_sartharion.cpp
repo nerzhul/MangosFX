@@ -400,7 +400,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 			if((pTemp && pTemp->isAlive()) || (pTemp2 && pTemp2->isAlive()) || (pTemp3 && pTemp3->isAlive()))
 			{
 				DoScriptText(SAY_SARTHARION_BERSERK,me);
-				SetAuraStack(SPELL_BERSERK,1,me,me);
+				ModifyAuraStack(SPELL_BERSERK);
 				m_bIsBerserk = true;
 			}
         }
@@ -714,7 +714,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
 		
     }
@@ -1083,7 +1083,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
     }
 
@@ -1217,7 +1217,7 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
     void Reset()
     {
 		Tasks.SetObjects(this,me);
-		SetAuraStack(SPELL_FLAME_TSUNAMI,1,me,me,1);
+		ModifyAuraStack(SPELL_FLAME_TSUNAMI);
 		SetCombatMovement(false);
         m_uiBumpTimer = 1000;
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
@@ -1233,7 +1233,7 @@ struct MANGOS_DLL_DECL sartha_tsunamiAI : public ScriptedAI
 					if(plr->isAlive() && plr->GetDistance2d(me) < 8.0f)
 					{
 						plr->CastStop();
-						SetAuraStack(57491,1,plr,plr,1);
+						ModifyAuraStack(57491,1,plr,plr);
 						plr->CastSpell(plr,SPELL_FLAME_TSUNAMI_LEAP,true);
 					}
 
