@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				else
 				{
 					CallCreature(NPC_BONE_SPIKE,TEN_MINS,PREC_COORDS,NOTHING,spTarget->GetPositionX(),spTarget->GetPositionY(),spTarget->GetPositionZ(),true);
-					SetAuraStack(SPELL_BONE_SPIKE_IMPALE,1,spTarget,me,1);
+					ModifyAuraStack(SPELL_BONE_SPIKE_IMPALE,1,spTarget);
 				}
 			}
 		}

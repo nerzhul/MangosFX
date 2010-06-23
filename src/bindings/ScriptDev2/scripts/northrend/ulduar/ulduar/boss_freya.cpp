@@ -115,24 +115,6 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 			Say(15530,"De votre mort renaîtra la vie !");
 	}
 
-	void UpdateHealStack(uint8 diff)
-	{
-		error_log("UpdateHealStack");
-		if(!me->HasAura(SPELL_ATTUNED_TO_NATURE))
-			return;
-
-		/*int8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
-		error_log("Stacks : %u",stk);*/
-		for(uint8 i=0;i<diff;i++)
-			me->RemoveSingleSpellAurasFromStack(SPELL_ATTUNED_TO_NATURE);
-		/*stk -= diff;
-		error_log("Stacks : %u",stk);
-		if(stk < 1)
-			me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
-		else
-			SetAuraStack(SPELL_ATTUNED_TO_NATURE,stk,me,me,1);*/
-	}
-
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
@@ -284,7 +266,7 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
 				DoCastMe(m_difficulty ? 62937 : 62598);
 				if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
 					if(Freya->isAlive())
-						((boss_freyaAI*)Freya->AI())->UpdateHealStack(2);
+						ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-2,Freya);
 				me->ForcedDespawn(800);
 			}
 		}
@@ -324,7 +306,7 @@ struct MANGOS_DLL_DECL freya_water_spiritAI : public LibDevFSAI
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
 			if(Freya->isAlive())
-				((boss_freyaAI*)Freya->AI())->UpdateHealStack(10);
+				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
 	void UpdateAI(const uint32 diff)
@@ -370,7 +352,7 @@ struct MANGOS_DLL_DECL freya_storm_lasherAI : public LibDevFSAI
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
 			if(Freya->isAlive())
-				((boss_freyaAI*)Freya->AI())->UpdateHealStack(10);
+				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
 	void UpdateAI(const uint32 diff)
@@ -472,7 +454,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 						me->ForcedDespawn(800);
 					}
 					else
-						DoCast(Freya,m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH);
+						ModifyAuraStack(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH, 1, Freya, me);
 				}
 			growth_Timer = 1000;
 			

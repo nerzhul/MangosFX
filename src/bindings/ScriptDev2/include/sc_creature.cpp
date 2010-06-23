@@ -833,36 +833,21 @@ void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
 	}
 }
 
-void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster, uint8 module)
+void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster)
 {
-	if(module == 0)
-	{
-		if (!target->HasAura(spell))
-		{
-			if(stacks > 0)
-			{
-				for(int k=0;k<stacks;k++)
-					for(int i=0;i<3;i++)
-					{
-						Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spell),i,NULL,target,caster);
-						target->AddAura(aur);
-					}
-			}
-		}
-		else
-		{
-			if (target->GetAura(spell, 0)->GetStackAmount() == 1 && stacks == -1 
-				|| target->GetAura(spell, 0)->GetStackAmount() < stacks)
-					target->RemoveAurasDueToSpell(spell);
-			else
-				target->GetAura(spell,0)->modStackAmount(stacks);
-		}
-	}
-	else
+	if(stacks == 0)
+		return;
+
+	if(!target)
+		target = me;
+
+	if(!caster)
+		caster = me;
+
+	if(stacks > 0)
 	{
 		if(GetSpellStore()->LookupEntry(spell))
 		{
-			target->RemoveAurasDueToSpell(spell);
 			for(int k=0;k<stacks;k++)
 				for(int i=0;i<3;i++)
 				{
@@ -870,6 +855,11 @@ void ScriptedAI::SetAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* c
 					target->AddAura(aur);
 				}
 		}
+	}
+	else
+	{
+		for(uint8 i=0;i<diff;i++)
+			target->RemoveSingleSpellAurasFromStack(spell);
 	}
 }
 

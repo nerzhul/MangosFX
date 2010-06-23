@@ -91,9 +91,9 @@ struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
     void Reset()
     {
 		if(pInstance->GetData(DATA_FACTION) == ALLIANCE)
-			SetAuraStack(SPELL_ICEBLOCK,1,me,me,1);
+			ModifyAuraStack(SPELL_ICEBLOCK);
 		else
-			SetAuraStack(SPELL_DARK_ARROW,1,me,me,1);
+			ModifyAuraStack(SPELL_DARK_ARROW);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);

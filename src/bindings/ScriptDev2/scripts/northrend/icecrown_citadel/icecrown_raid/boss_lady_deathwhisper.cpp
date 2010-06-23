@@ -269,7 +269,7 @@ struct MANGOS_DLL_DECL icc_dw_shadeAI : public LibDevFSAI
 		ResetTimers();
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		SetAuraStack(SPELL_VENGEFUL_BLAST,1,me,me,1);
+		ModifyAuraStack(SPELL_VENGEFUL_BLAST);
     }
 
     void UpdateAI(const uint32 diff)

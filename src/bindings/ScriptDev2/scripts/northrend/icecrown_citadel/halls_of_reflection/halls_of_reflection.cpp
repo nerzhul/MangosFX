@@ -44,9 +44,7 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		SetAuraStack(66830,1,me,me,1);
+		FreezeMob();
     }
 
     void UpdateAI(const uint32 diff)
@@ -54,7 +52,7 @@ struct MANGOS_DLL_DECL HoR_WarriorAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				SetAuraStack(66830,1,me,me,1);
+				ModifyAuraStack(66830);
 			EnterEvadeMode();
             return;
 		}

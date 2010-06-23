@@ -209,7 +209,7 @@ struct MANGOS_DLL_DECL Nerubar_BroodkeeperAI : public LibDevFSAI
 			if(Unit* target = GetRandomUnit())
 			{
 				CallCreature(38028,THREE_MINS,PREC_COORDS,NOTHING,target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
-				SetAuraStack(28622,1,target,me,1);
+				ModifyAuraStack(28622,1,target);
 			}
 			web_Timer = 20000;
 		}
