@@ -24,7 +24,7 @@ enum FreyaAdds
 	//vague Type 2 (les 3 toutes les minutes)
 	NPC_WATER_SPIRIT			= 33202,
 	NPC_STORM_LASHER			= 32919,
-	NPC_SNAPLASHER				= 32918,
+	NPC_SNAPLASHER				= 32916,
 	//vague Type 3
 	NPC_ANCIENT_CONSERVATOR		= 33203,
 };
@@ -37,7 +37,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		AddEnrageTimer(720000);
 		AddTextEvent(15532,"Vous avez voulu aller trop loin, perdre trop de temps !",720000,DAY*HOUR);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
-		AddSummonEvent(33228,20000,30000,0,15000);
+		AddNear15mSummonEvent(33228,20000,30000,0,15000);
 	
 		if(m_difficulty)
 		{
@@ -121,14 +121,16 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		if(!me->HasAura(SPELL_ATTUNED_TO_NATURE))
 			return;
 
-		int8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
-		error_log("Stacks : %u",stk);
-		stk -= diff;
+		/*int8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
+		error_log("Stacks : %u",stk);*/
+		for(uint8 i=0;i<diff;i++)
+			me->RemoveSingleSpellAurasFromStack(SPELL_ATTUNED_TO_NATURE);
+		/*stk -= diff;
 		error_log("Stacks : %u",stk);
 		if(stk < 1)
 			me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
 		else
-			SetAuraStack(SPELL_ATTUNED_TO_NATURE,stk,me,me,1);
+			SetAuraStack(SPELL_ATTUNED_TO_NATURE,stk,me,me,1);*/
 	}
 
     void UpdateAI(const uint32 diff)
@@ -387,6 +389,43 @@ CreatureAI* GetAI_freya_storm_lasher(Creature* pCreature)
     return new freya_storm_lasherAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL freya_snaplasherAI : public LibDevFSAI
+{
+    freya_snaplasherAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(m_difficulty ? 64191 : 62664);
+		AggroAllPlayers(150.0f);
+    }
+
+	void JustDied(Unit* pwho)
+	{
+		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+			if(Freya->isAlive())
+				((boss_freyaAI*)Freya->AI())->UpdateHealStack(10);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_freya_snaplasher(Creature* pCreature)
+{
+    return new freya_snaplasherAI(pCreature);
+}
+
 struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 {
     freya_giftAI(Creature* pCreature) : LibDevFSAI(pCreature) 
@@ -429,7 +468,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 					if(me->GetFloatValue(OBJECT_FIELD_SCALE_X) >= 2.0f)
 					{
 						DoCast(Freya,m_difficulty ? 64185 : 62584);
-						//Freya->SetHealth(Freya->GetHealth() + Freya->GetMaxHealth() * (m_difficulty ? 60 : 30) / 100);
+						Freya->SetHealth(Freya->GetHealth() + Freya->GetMaxHealth() * (m_difficulty ? 60 : 30) / 100);
 						me->ForcedDespawn(800);
 					}
 					else
@@ -461,6 +500,11 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_deton_lasher";
     newscript->GetAI = &GetAI_detonating_lasher;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_snaplasher";
+    newscript->GetAI = &GetAI_freya_snaplasher;
     newscript->RegisterSelf();
 
 	newscript = new Script;
