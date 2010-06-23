@@ -507,8 +507,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			Kill(me);
-			me->Respawn();
+			EnterEvadeMode();
 			return;
 		}
 
