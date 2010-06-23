@@ -3951,6 +3951,12 @@ void Spell::EffectApplyAreaAura(uint32 i)
     if (!unitTarget->isAlive())
         return;
 
+	if(unitTarget->HasAura(62532) && m_spellInfo->Id == 62619)
+	{
+		unitTarget->RemoveAurasDueToSpell(62532);
+		return;
+	}
+
     AreaAura* Aur = new AreaAura(m_spellInfo, i, &m_currentBasePoints[i], unitTarget, m_caster, m_CastItem);
     unitTarget->AddAura(Aur);
 }

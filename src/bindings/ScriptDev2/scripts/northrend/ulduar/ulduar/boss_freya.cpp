@@ -523,7 +523,8 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
     {
 		if(growth_Timer <= diff)
 		{
-			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.05f);
+			if(me->GetFloatValue(OBJECT_FIELD_SCALE_X) < 2.0f)
+				me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.05f);
 			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 
 			if (!lPlayers.isEmpty())
