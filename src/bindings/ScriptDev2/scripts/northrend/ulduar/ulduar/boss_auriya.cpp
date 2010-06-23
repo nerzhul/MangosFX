@@ -50,6 +50,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 		ResetTimers();
 		CleanMyAdds();
 		SentryDown = false;
+		DefenderDown = false;
     }
 
     void Aggro(Unit* who)
