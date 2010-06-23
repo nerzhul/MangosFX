@@ -42,13 +42,13 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 		if(m_difficulty)
 		{
-			AddEvent(SPELL_GROUND_TREMOR_H,20000,15000,2000,TARGET_MAIN,2);
+			AddEventOnTank(SPELL_GROUND_TREMOR_H,20000,15000,2000,2);
 			AddEvent(SPELL_SUNBEAM_H,15000,10000,2000,TARGET_RANDOM,2);
 			
 		}
 		else
 		{
-			AddEvent(SPELL_GROUND_TREMOR,20000,15000,2000,TARGET_MAIN,2);
+			AddEventOnTank(SPELL_GROUND_TREMOR,20000,15000,2000,2);
 			AddEvent(SPELL_SUNBEAM,15000,10000,2,TARGET_RANDOM,2);
 		}
     }
@@ -93,13 +93,11 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		Yell(15526,"Le Jardin doit être protégé !");
 		// elder spécial :
 		//15527
-
 		phase = 1;
     }
 
 	void HealBy(Unit* pHeal, uint32& heal)
 	{
-		error_log("HEALBY ?");
 		if(me->HasAura(SPELL_ATTUNED_TO_NATURE))
 		{
 			uint8 stk = me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount();
@@ -187,7 +185,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 					case 6:
 						Say(15528,"Eonar, ta servante a besoin d'aide");
 						for(uint8 i=0;i<(m_difficulty ? 12 : 5);i++)
-							CallCreature(30391,60000,NEAR_15M,NOTHING);
+							CallCreature(30391,60000,NEAR_7M,NOTHING);
 						CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
 						break;
 					case 7:
@@ -507,14 +505,13 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
 		InitInstance();
 	}
 
-	bool death;
 	uint32 growth_Timer;
 
     void Reset()
     {
 		ResetTimers();
-		MakeInvisibleStalker();
-		me->setFaction(35);
+		MakeHostileInvisibleStalker();
+		FreezeMob();
 		ModifyAuraStack(31690);
 		DoCastMe(62619);
 		SetCombatMovement(false);
@@ -524,24 +521,22 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
 
 	void UpdateAI(const uint32 diff)
     {
-		if(!CanDoSomething())
-			return;
-
 		if(growth_Timer <= diff)
 		{
-			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.1f);
-			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-				if(Freya->isAlive() && pInstance && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
-				{
-					
-				}
-			growth_Timer = 1000;
-			
+			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.05f);
+			Map::PlayerList const& lPlayers = instance->GetPlayers();
+
+			if (!lPlayers.isEmpty())
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					if (Player* pPlayer = itr->getSource())
+					{
+						if(pPlayer->isAlive())
+							pPlayer->RemoveAurasDueToSpell(62532);
+					}
+			growth_Timer = 500;
 		}
 		else
 			growth_Timer -= diff;
-
-		UpdateEvent(diff);
 	}
 };
 
