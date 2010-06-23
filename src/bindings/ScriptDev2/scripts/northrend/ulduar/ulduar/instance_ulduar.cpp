@@ -428,10 +428,10 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 		case TYPE_FREYA:
 			m_auiEncounter[uiType] = uiData;
 			for (std::vector<Creature*>::iterator itr = FreyaTrashs.begin(); itr != FreyaTrashs.end();++itr)
-					if((*itr) && (*itr)->isAlive())
-						(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
+				if((*itr) && (*itr)->isAlive())
+					(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
 
-			if(uiType == DONE)
+			if(uiData == DONE)
 			{
 				if (GameObject* pChest = instance->GetGameObject(FreyaGiftGUID))
 					if (pChest && !pChest->isSpawned())
