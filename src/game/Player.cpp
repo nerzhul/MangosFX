@@ -17266,14 +17266,14 @@ void Player::_SaveInventory()
 
         if (test == NULL)
         {
-            sLog.outError("Player(GUID: %u Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the player doesn't have an item at that position!", GetGUIDLow(), GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow());
+            sLog.outError("Player(Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the player doesn't have an item at that position!", GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow());
 			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
 			m_itemUpdateQueue.erase(itr);
             error = true;
         }
         else if (test != item)
         {
-            sLog.outError("Player(GUID: %u Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the item with guid %d is there instead!", GetGUIDLow(), GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow(), test->GetGUIDLow());
+            sLog.outError("Player(Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the item with guid %d is there instead!", GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow(), test->GetGUIDLow());
 			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
 			DestroyItem(test->GetBagSlot(),test->GetSlot(),true);
 			m_itemUpdateQueue.erase(itr);

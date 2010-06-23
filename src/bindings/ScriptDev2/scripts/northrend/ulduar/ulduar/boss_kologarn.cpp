@@ -128,16 +128,14 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 			if(pDoneBy == pTemp)
 			{
 				dmg = 0;
-				me->getThreatManager().modifyThreatPercent(pTemp,0);
-				pTemp->getThreatManager().modifyThreatPercent(me,0);
+				EnterEvadeMode();
 			}
 
 		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
 			if(pDoneBy == pTemp)
 			{
 				dmg = 0;
-				me->getThreatManager().modifyThreatPercent(pTemp,0);
-				pTemp->getThreatManager().modifyThreatPercent(me,0);
+				EnterEvadeMode();
 			}
 
 		if(dmg >= me->GetHealth())
@@ -158,8 +156,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			me->RemoveAllAuras();
-			DoResetThreat();
+			EnterEvadeMode();
 			return;
 		}
 
@@ -244,16 +241,14 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			if(pDoneBy == pTemp)
 			{
 				uiDamage = 0;
-				me->getThreatManager().modifyThreatPercent(pTemp,0);
-				pTemp->getThreatManager().modifyThreatPercent(me,0);
+				EnterEvadeMode();
 			}
 
 		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
 			if(pDoneBy == pTemp)
 			{
 				uiDamage = 0;
-				me->getThreatManager().modifyThreatPercent(pTemp,0);
-				pTemp->getThreatManager().modifyThreatPercent(me,0);
+				EnterEvadeMode();
 			}
 
 		if (grip)
@@ -296,8 +291,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			me->RemoveAllAuras();
-			DoResetThreat();
+			EnterEvadeMode();
 			return;
 		}
 
@@ -514,7 +508,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			me->Respawn();
+			EnterEvadeMode();
 			return;
 		}
 
