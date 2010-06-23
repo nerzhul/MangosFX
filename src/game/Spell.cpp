@@ -2797,9 +2797,6 @@ void Spell::cast(bool skipCheck)
 {
     SetExecutedCurrently(true);
 
-	if(m_spellInfo->Id == 36812 && m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetSession()->GetSecurity() < SEC_ADMINISTRATOR)
-		return;
-
     // update pointers base at GUIDs to prevent access to non-existed already object
     UpdatePointers();
 
@@ -2811,6 +2808,9 @@ void Spell::cast(bool skipCheck)
         SetExecutedCurrently(false);
         return;
     }
+
+	if(m_spellInfo->Id == 36812 && m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetSession()->GetSecurity() < SEC_ADMINISTRATOR)
+		return;
 
     if(m_caster->GetTypeId() != TYPEID_PLAYER && m_targets.getUnitTarget() && m_targets.getUnitTarget() != m_caster)
         m_caster->SetInFront(m_targets.getUnitTarget());

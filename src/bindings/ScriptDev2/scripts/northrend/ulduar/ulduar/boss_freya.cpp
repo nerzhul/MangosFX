@@ -37,7 +37,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		AddEnrageTimer(720000);
 		AddTextEvent(15532,"Vous avez voulu aller trop loin, perdre trop de temps !",720000,DAY*HOUR);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
-		AddSummonEvent(33228,30000,30000,0,15000);
+		AddSummonEvent(33228,20000,30000,0,15000);
 	
 		if(m_difficulty)
 		{
@@ -415,5 +415,10 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_water_spirit";
     newscript->GetAI = &GetAI_detonating_lasher;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_gift";
+    newscript->GetAI = &GetAI_freya_gift;
     newscript->RegisterSelf();
 }
