@@ -41,6 +41,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         InitInstance();
 		AddEnrageTimer(720000);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
+		AddSummonEvent(33328,30000,30000,0,15000);
 	
 		if(m_difficulty)
 		{
