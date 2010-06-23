@@ -38,6 +38,7 @@ void instance_ulduar::Initialize()
 	m_uiLeviMKIIGUID		= 0;
 	m_uiVX001GUID			= 0;
 	m_uiMimironHeadGUID		= 0;
+	FreyaGiftGUID = 0;
 
 	XTDoorGUID = 0;
 	IronCouncilDoorGUID = 0;
@@ -291,6 +292,9 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 		case 194750:
 			VezaxDoorGUID = pGo->GetGUID();
 			break;
+		case 194325:
+			FreyaGiftGUID = pGo->GetGUID();
+			break;
 	}
 }
 
@@ -426,6 +430,13 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			for (std::vector<Creature*>::iterator itr = FreyaTrashs.begin(); itr != FreyaTrashs.end();++itr)
 					if((*itr) && (*itr)->isAlive())
 						(*itr)->SetRespawnDelay(7*RESPAWN_ONE_DAY);
+
+			if(uiType == DONE)
+			{
+				if (GameObject* pChest = instance->GetGameObject(FreyaGiftGUID))
+					if (pChest && !pChest->isSpawned())
+						pChest->SetRespawnTime(350000000);
+			}
 			break;
 		case TYPE_HODIR:
 			m_auiEncounter[uiType] = uiData;

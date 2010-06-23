@@ -174,6 +174,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 m_uiLeviMKIIGUID;
 	uint64 m_uiVX001GUID;
 	uint64 m_uiMimironHeadGUID;
+	uint64 FreyaGiftGUID;
 
 	uint64 XTDoorGUID;
 	uint64 IronCouncilDoorGUID;

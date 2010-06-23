@@ -41,19 +41,18 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         InitInstance();
 		AddEnrageTimer(720000);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
-		AddSummonEvent(33328,30000,30000,0,15000);
+		AddSummonEvent(33228,30000,30000,0,15000);
 	
 		if(m_difficulty)
 		{
 			AddEvent(SPELL_GROUND_TREMOR_H,20000,15000,2000,TARGET_MAIN,2);
 			AddEvent(SPELL_SUNBEAM_H,15000,10000,2000,TARGET_RANDOM,2);
-			AddEventOnMe(SPELL_TOUCH_H,4000,5000);
+			
 		}
 		else
 		{
 			AddEvent(SPELL_GROUND_TREMOR,20000,15000,2000,TARGET_MAIN,2);
 			AddEvent(SPELL_SUNBEAM,15000,10000,2,TARGET_RANDOM,2);
-			AddEventOnMe(SPELL_TOUCH,4000,5000);
 		}
     }
 
@@ -96,6 +95,15 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 		phase = 1;
     }
+
+	void HealBy(Unit* pHeal, uint32 heal)
+	{
+		if(me->HasAura(SPELL_ATTUNED_TO_NATURE))
+		{
+			uint8 stk = me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount();
+			me->SetHealth(me->GetHealth() + heal * stk * 8 / 100);
+		}
+	}
 
 	void UpdateHealStack(uint8 diff)
 	{
@@ -273,6 +281,71 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
 CreatureAI* GetAI_detonating_lasher(Creature* pCreature)
 {
     return new detonating_lasherAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
+{
+    freya_giftAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+	}
+
+	bool death;
+	uint32 growth_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		SetAuraStack(62619,1,me,me,1);
+		SetAuraStack(SPELL_PHOTOSYNTHESIS,1,me,me,1);
+		SetCombatMovement(false);
+		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
+		growth_Timer = 1000;
+		AggroAllPlayers(150.0f);
+    }
+	
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+			if(Freya->isAlive())
+				Freya->RemoveAurasDueToSpell(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		if(growth_Timer <= diff)
+		{
+			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.1f);
+			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+				if(Freya->isAlive())
+				{
+					if(me->GetFloatValue(OBJECT_FIELD_SCALE_X) >= 2.0f)
+					{
+						DoCast(Freya,m_difficulty ? 64185 : 62584);
+						//Freya->SetHealth(Freya->GetHealth() + Freya->GetMaxHealth() * (m_difficulty ? 60 : 30) / 100);
+						me->ForcedDespawn(1000);
+					}
+					else
+						DoCast(Freya,m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH);
+				}
+			growth_Timer = 1000;
+			
+		}
+		else
+			growth_Timer -= diff;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_freya_gift(Creature* pCreature)
+{
+    return new freya_giftAI(pCreature);
 }
 
 void AddSC_boss_freya()

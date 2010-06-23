@@ -858,30 +858,24 @@ CreatureAI* GetAI_boss_jorm_flaque(Creature* pCreature)
     return new boss_jorm_flaqueAI (pCreature);
 }
 
-struct MANGOS_DLL_DECL boss_gormok_flameAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_gormok_flameAI : public LibDevFSAI
 {
-    boss_gormok_flameAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_gormok_flameAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-		Reset();
+		InitInstance();
     }
-
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		SetAuraStack(66318,1,me,me,1);
 		SetCombatMovement(false);
-		
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		me->setFaction(14);
+		MakeHostileInvisibleStalker();
 		me->SetPhaseMask(1,true);
     }
 
     void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 };
 
