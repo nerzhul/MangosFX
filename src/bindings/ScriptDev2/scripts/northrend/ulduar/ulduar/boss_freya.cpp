@@ -99,6 +99,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 	void HealBy(Unit* pHeal, uint32 heal)
 	{
+		error_log("HEALBY ?");
 		if(me->HasAura(SPELL_ATTUNED_TO_NATURE))
 		{
 			uint8 stk = me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount();
@@ -116,11 +117,14 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 	void UpdateHealStack(uint8 diff)
 	{
+		error_log("UpdateHealStack");
 		if(!me->HasAura(SPELL_ATTUNED_TO_NATURE))
 			return;
 
-		uint8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
+		int8 stk = (me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() > 1) ? me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount() : 1;
+		error_log("Stacks : %u",stk);
 		stk -= diff;
+		error_log("Stacks : %u",stk);
 		if(stk < 1)
 			me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
 		else
@@ -270,15 +274,16 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
 	{
 		if(dmg >= me->GetHealth())
 		{
+			me->SetHealth(1);
 			dmg = 0;
 			if(!death)
 			{
 				death = true;
-				DoCastVictim(m_difficulty ? 62937 : 62598);
+				DoCastMe(m_difficulty ? 62937 : 62598);
 				if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
 					if(Freya->isAlive())
 						((boss_freyaAI*)Freya->AI())->UpdateHealStack(2);
-				me->ForcedDespawn(1000);
+				me->ForcedDespawn(800);
 			}
 		}
 	}
@@ -334,6 +339,52 @@ struct MANGOS_DLL_DECL freya_water_spiritAI : public LibDevFSAI
 CreatureAI* GetAI_freya_water_spirit(Creature* pCreature)
 {
     return new freya_water_spiritAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL freya_storm_lasherAI : public LibDevFSAI
+{
+    freya_storm_lasherAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+		if(m_difficulty)
+		{
+			AddEvent(62649,500,4000,1000);
+			AddEvent(62648,1000,4000,1000);
+		}
+		else
+		{
+			AddEvent(62938,500,4000,1000);
+			AddEvent(62939,1000,4000,1000);
+		}
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		AggroAllPlayers(150.0f);
+    }
+
+	void JustDied(Unit* pwho)
+	{
+		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+			if(Freya->isAlive())
+				((boss_freyaAI*)Freya->AI())->UpdateHealStack(10);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_freya_storm_lasher(Creature* pCreature)
+{
+    return new freya_storm_lasherAI(pCreature);
 }
 
 struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
@@ -415,6 +466,11 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_water_spirit";
     newscript->GetAI = &GetAI_detonating_lasher;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_storm_lasher";
+    newscript->GetAI = &GetAI_freya_storm_lasher;
     newscript->RegisterSelf();
 
 	newscript = new Script;
