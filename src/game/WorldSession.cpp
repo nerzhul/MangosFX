@@ -291,6 +291,9 @@ void WorldSession::LogoutPlayer(bool Save)
     while(_player && _player->IsBeingTeleportedFar())
         HandleMoveWorldportAckOpcode();
 
+	if(m_playerLogout)
+		return;
+
     m_playerLogout = true;
     m_playerSave = Save;
 

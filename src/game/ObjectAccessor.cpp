@@ -154,8 +154,11 @@ void ObjectAccessor::KickPlayer(uint64 guid)
     if (Player* p = HashMapHolder<Player>::Find(guid))
     {
         WorldSession* s = p->GetSession();
-        s->KickPlayer();                            // mark session to remove at next session list update
-        s->LogoutPlayer(false);                     // logout player without waiting next session list update
+		if(s)
+		{
+			s->KickPlayer();                            // mark session to remove at next session list update
+			s->LogoutPlayer(false);                     // logout player without waiting next session list update
+		}
     }
 }
 
