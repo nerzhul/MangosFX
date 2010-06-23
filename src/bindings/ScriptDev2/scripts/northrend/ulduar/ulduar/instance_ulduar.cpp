@@ -331,10 +331,10 @@ void instance_ulduar::Update(uint32 diff)
 			else
 				OpenDoor(AuriayaDoorGUID);
 
-			if(!(GetData(TYPE_VEZAX) == DONE))
+			/*if(!(GetData(TYPE_VEZAX) == DONE))
 				CloseDoor(VezaxDoorGUID);
 			else
-				OpenDoor(VezaxDoorGUID);
+				OpenDoor(VezaxDoorGUID);*/
 
 		}
 		checkPlayer_Timer = 500;
@@ -378,10 +378,10 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		case TYPE_VEZAX:
 			m_auiEncounter[uiType] = uiData;
-			if(uiData == DONE)
+			/*if(uiData == DONE)
 				OpenDoor(VezaxDoorGUID);
 			else
-				CloseDoor(VezaxDoorGUID);
+				CloseDoor(VezaxDoorGUID);*/
 			break;
 		case TYPE_AURIAYA:
 			m_auiEncounter[uiType] = uiData;
