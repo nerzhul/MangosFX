@@ -760,6 +760,7 @@ void Map::Remove(Player *player, bool remove)
     if( !getNGrid(cell.data.Part.grid_x, cell.data.Part.grid_y) )
     {
         sLog.outError("Map::Remove() i_grids was NULL x:%d, y:%d",cell.data.Part.grid_x,cell.data.Part.grid_y);
+		player->TeleportToHomebind();
         return;
     }
 

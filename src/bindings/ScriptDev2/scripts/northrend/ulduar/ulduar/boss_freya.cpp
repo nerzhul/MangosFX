@@ -53,13 +53,12 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
     }
 
 	bool HardMode;
-	bool TriAddAlive[3];
-	uint32 AskRezNextCycle;
 	uint8 phase;
 	uint32 Vague_Timer;
 	uint16 Vague_Count;
 	uint32 Check_InLife_Timer;
-	std::vector<Creature*> TriAdds;
+	bool CheckInLife;
+	std::vector<uint64> TriAdds;
 
     void Reset()
     {
@@ -67,11 +66,11 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		CleanMyAdds();
 		ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,150);
 		HardMode = false;
-		AskRezNextCycle = RESPAWN_ONE_DAY*1000;
 		TriAdds.clear();
 		phase = 0;
 		Vague_Timer = 5000;
 		Check_InLife_Timer = 1500;
+		CheckInLife = false;
 		Vague_Count = 0;
     }
 
@@ -126,56 +125,39 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 			{
 				if(!TriAdds.empty())
 				{
-					Creature* TriElems[3];
-					uint8 i = 0;
-					for(std::vector<Creature*>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
+					uint8 AliveCount = 0;
+					for(std::vector<uint64>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
 					{
-						TriElems[i] = (*itr);
-						i++;
+						if(Creature* cr = GetGuidCreature(*itr))
+							if(cr->isAlive())
+								AliveCount++;
 					}
-
-					if(TriElems[0] && TriElems[0]->isAlive())
+					if(!CheckInLife)
 					{
-						if(TriElems[1] && !TriElems[1]->isAlive() || TriElems[2] && !TriElems[2]->isAlive())
+						if(AliveCount > 0  && AliveCount < 3)
+							CheckInLife = true;
+					}
+					else
+					{
+						CheckInLife = false;
+						if(AliveCount > 0)
 						{
-							AskRezNextCycle = 10000;
+							for(std::vector<uint64>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
+							{
+								if(Creature* cr = GetGuidCreature(*itr))
+									if(!cr->isAlive())
+										cr->Respawn();
+							}
 						}
 					}
-
-					if(TriElems[1] && TriElems[1]->isAlive())
-
-					{
-						if(TriElems[0] && !TriElems[0]->isAlive() || TriElems[2] && !TriElems[2]->isAlive())
-						{
-							AskRezNextCycle = 10000;
-						}
-					}
-
-					if(TriElems[2] && TriElems[2]->isAlive())
-					{
-						if(TriElems[1] && !TriElems[1]->isAlive() || TriElems[0] && !TriElems[0]->isAlive())
-						{
-							AskRezNextCycle = 10000;
-						}
-					}
+					
+					Check_InLife_Timer = 10000;
 				}
 
 				Check_InLife_Timer = 1500;
 			}
 			else
 				Check_InLife_Timer -= diff;
-
-			if(AskRezNextCycle <= diff)
-			{
-				if(!TriAdds.empty())
-					for(std::vector<Creature*>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
-						if(!(*itr)->isAlive())
-							(*itr)->Respawn();
-
-				AskRezNextCycle = RESPAWN_ONE_DAY*1000;
-			}
-			else
-				AskRezNextCycle -= diff;
 
 			if(Vague_Timer <= diff)
 			{
@@ -193,11 +175,11 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 					case 2:
 						Yell(15534,"La nuée des éléments va vous submerger !");
 						if(Creature* tmpCr = CallCreature(NPC_WATER_SPIRIT,TEN_MINS,NEAR_7M))
-							TriAdds.push_back(tmpCr);
+							TriAdds.push_back(tmpCr->GetGUID());
 						if(Creature* tmpCr = CallCreature(NPC_STORM_LASHER,TEN_MINS,NEAR_7M))
-							TriAdds.push_back(tmpCr);
+							TriAdds.push_back(tmpCr->GetGUID());
 						if(Creature* tmpCr = CallCreature(NPC_SNAPLASHER,TEN_MINS,NEAR_7M))
-							TriAdds.push_back(tmpCr);
+							TriAdds.push_back(tmpCr->GetGUID());
 						break;
 					case 4:
 					case 6:
@@ -205,14 +187,14 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 						CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
 						break;
 					case 7:
-						for(std::vector<Creature*>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
-							if(!(*itr)->isAlive())
-								AllAlive = false;
+						for(std::vector<uint64>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
+							if(Creature* cr = GetGuidCreature(*itr))
+								if(!cr->isAlive())
+									AllAlive = false;
 						if(AllAlive)
 							HardMode = true;
 
 						phase++;
-						me->RemoveAurasDueToSpell(SPELL_ATTUNED_TO_NATURE);
 						break;
 					default:
 						break;

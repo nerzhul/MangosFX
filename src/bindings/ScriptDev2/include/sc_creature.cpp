@@ -931,6 +931,9 @@ void ScriptedAI::AggroAllPlayers(float maxdist)
 void LibDevFSAI::AddEvent(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff,
 							 SpellCastTarget targ, uint8 phase, uint32 TextId, bool MaxPriority, uint16 Repeat, bool front)
 {
+
+	if(SpellId == 26662)
+		error_log("Added Enrage Timer for creature %u",me->GetEntry());
 	EventSh tmpEvent;
 	tmpEvent.SpellId = SpellId;
 	tmpEvent.phase = phase;
