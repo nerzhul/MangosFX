@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
             return;
 
 		// explosion du coeur 
-		if(!HARDMODE && ((CheckPercentLife(75) && nbexplode == 0) || (CheckPercentLife(50) && nbexplode == 1) ||
+		if(!HARDMODE && && !OpenHeart && ((CheckPercentLife(75) && nbexplode == 0) || (CheckPercentLife(50) && nbexplode == 1) ||
 			(CheckPercentLife(50) && nbexplode == 2)))
 		{
 			nbexplode++;
@@ -263,10 +263,11 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 			}
 			else
 				wrath_Timer -= diff;
+
+			DoMeleeAttackIfReady();
 		}
 
 		UpdateEvent(diff);
-		DoMeleeAttackIfReady();
     }
 };
 
