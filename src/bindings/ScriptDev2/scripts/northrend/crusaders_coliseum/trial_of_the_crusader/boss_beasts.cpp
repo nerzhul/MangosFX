@@ -501,7 +501,8 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public ScriptedAI
 					if(pPlayer->isAlive())
 						if(pPlayer->HasAura(SPELL_PARALYTIC_TOXIN))
 						{
-							pPlayer->SetSpeedRate(MOVE_RUN,float(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration()) / 60000,true);
+							if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0))
+								pPlayer->SetSpeedRate(MOVE_RUN,float(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration()) / 60000,true);
 
 							if(me->getVictim() && me->getVictim()->HasAura(SPELL_BURNING_BILE) && pPlayer->GetDistance2d(me->getVictim()) < 5.0f)
 							{

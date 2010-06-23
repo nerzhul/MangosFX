@@ -511,9 +511,9 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
     {
 		ResetTimers();
 		MakeHostileInvisibleStalker();
-		FreezeMob();
 		ModifyAuraStack(31690);
-		DoCastMe(62619);
+		ModifyAuraStack(62619);
+		FreezeMob();
 		SetCombatMovement(false);
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
 		growth_Timer = 1000;
@@ -524,7 +524,7 @@ struct MANGOS_DLL_DECL freya_mushroomAI : public LibDevFSAI
 		if(growth_Timer <= diff)
 		{
 			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.05f);
-			Map::PlayerList const& lPlayers = instance->GetPlayers();
+			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 
 			if (!lPlayers.isEmpty())
 				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)

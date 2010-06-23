@@ -1531,6 +1531,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool CheckAllControlledUnits(Func const& func, bool withTotems, bool withGuardians, bool withCharms) const;
 
         bool AddAura(Aura *aur);
+		bool CanStackAuraWithAnother(uint32 spellId);
 
         // removing specific aura stack
         void RemoveAura(Aura* aura, AuraRemoveMode mode = AURA_REMOVE_BY_DEFAULT);

@@ -4031,6 +4031,12 @@ bool Unit::AddAura(Aura *Aur)
         return false;
     }
 
+	if(!CanStackAuraWithAnother(Aur->GetSpellProto()->Id))
+	{
+		delete Aur;
+		return false;
+	}
+
     // m_auraname can be modified to SPELL_AURA_NONE for area auras, this expected for this value
     AuraType aurName = Aur->GetModifier()->m_auraname;
 
@@ -15252,4 +15258,19 @@ float Unit::BDSpellDamageHacks()
 		}
 	}
 	return newDamage;
+}
+
+bool Unit::CanStackAuraWithAnother(uint32 spellId)
+{
+	switch(spellId)
+	{
+		case 62619:
+			RemoveAurasDueToSpell(62532);
+			break;
+		case 62532:
+			if(HasAura(62619)) return false;
+			break;
+	}
+
+	return true;
 }
