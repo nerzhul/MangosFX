@@ -399,12 +399,13 @@ struct MANGOS_DLL_DECL freya_ancient_conservatorAI : public LibDevFSAI
     freya_ancient_conservatorAI(Creature* pCreature) : LibDevFSAI(pCreature) 
 	{
 		InitInstance();
+		AddEventOnTank(m_difficulty ? 63571 : 62589,8000,6000,2000);
+		AddEventOnMe(62532,3000,120000);
 	}
 
     void Reset()
     {
 		ResetTimers();
-		DoCastMe(m_difficulty ? 64191 : 62664);
 		AggroAllPlayers(150.0f);
     }
 

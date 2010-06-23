@@ -833,7 +833,7 @@ void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)
 	}
 }
 
-void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit* caster)
+void ScriptedAI::ModifyAuraStack(uint32 spell, int32 stacks, Unit* target, Unit* caster)
 {
 	if(stacks == 0)
 		return;
@@ -858,7 +858,8 @@ void ScriptedAI::ModifyAuraStack(uint32 spell, uint32 stacks, Unit* target, Unit
 	}
 	else
 	{
-		for(uint8 i=0;i<stacks;i++)
+		stacks = -stacks;
+		for(int8 i=0;i<stacks;i++)
 		{
 			if(!target->HasAura(spell))
 				return;
