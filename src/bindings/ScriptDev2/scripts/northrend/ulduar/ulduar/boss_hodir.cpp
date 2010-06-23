@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 					uint32 stk = 0;
 					if(pPlayer->HasAura(SPELL_BITING_COLD))
 						stk = pPlayer->GetAura(SPELL_BITING_COLD,0)->GetStackAmount();
-					SetAuraStack(SPELL_BITING_COLD,stk + 1,pPlayer,me,1);
+					ModifyAuraStack(SPELL_BITING_COLD,stk + 1,pPlayer);
 					me->DealDamage(pPlayer, 200*(stk + 1), NULL, SPELL_DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FROST, GetSpellStore()->LookupEntry(SPELL_BITING_COLD), false);
 				}
 			}
@@ -174,7 +174,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 					{
 						if((*itr)->plr)
 						{
-							SetAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr,me,1);
+							ModifyAuraStack(SPELL_HODIR_FUROR,1,(*itr)->plr);
 							CallCreature(33212,TEN_MINS,PREC_COORDS,NOTHING,(*itr)->plr->GetPositionX(),
 								(*itr)->plr->GetPositionY(),(*itr)->plr->GetPositionZ());
 						}
@@ -320,7 +320,7 @@ struct MANGOS_DLL_DECL freeze_hodirAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		SetAuraStack(62297,1,me,me,1);
+		ModifyAuraStack(62297);
 		me->setFaction(14);
 		me->SetMaxHealth(m_difficulty ? 180000:60000);
 		me->SetHealth(m_difficulty ? 180000:60000);

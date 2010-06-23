@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public LibDevFSAI
 					DoScriptText(EMOTE_TOMB,me);
 					if(targettomb)
 						tomb->CastSpell(targettomb,SPELL_FROST_TOMB_CHAN,false);
-					SetAuraStack(48400,1,targettomb,tomb);
+					ModifyAuraStack(48400,1,targettomb,tomb);
 				}
 			}
 		}

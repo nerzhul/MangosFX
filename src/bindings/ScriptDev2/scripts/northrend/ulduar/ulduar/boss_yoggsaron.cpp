@@ -335,7 +335,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				ControlPlayer((Player*)tar);
 		}
 		else
-			SetAuraStack(SPELL_Sanity,stk - count,tar,tar,1);
+			ModifyAuraStack(SPELL_Sanity,stk - count,tar,tar);
 	}
 
 	void GoPhase3()
@@ -747,7 +747,7 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public ScriptedAI
 							uint32 nbstack = pPlayer->GetAura(SPELL_Sanity,0)->GetStackAmount() + 20;
 							if(nbstack> 100)
 								nbstack = 100;
-							SetAuraStack(SPELL_Sanity,nbstack,pPlayer,me,1);
+							ModifyAuraStack(SPELL_Sanity,nbstack,pPlayer);
 						}
 					}
 	}
@@ -888,7 +888,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 						if(me->GetDistance2d(pPlayer) < 350.0f && !pPlayer->isGameMaster())
-							SetAuraStack(SPELL_Sanity,100,pPlayer,pPlayer,1);
+							ModifyAuraStack(SPELL_Sanity,100,pPlayer,pPlayer);
 
 		if (m_pInstance)
             m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);

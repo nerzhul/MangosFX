@@ -211,9 +211,9 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 					if(!Heart->isAlive())
 					{
 						if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
-							SetAuraStack(SPELL_XT002_ACT_HARD_25,1,me,me,1);
+							ModifyAuraStack(SPELL_XT002_ACT_HARD_25);
 						else
-							SetAuraStack(SPELL_XT002_ACT_HARD_10,1,me,me,1);
+							ModifyAuraStack(SPELL_XT002_ACT_HARD_10);
 						
 						me->SetHealth(me->GetMaxHealth());
 						HARDMODE = true;

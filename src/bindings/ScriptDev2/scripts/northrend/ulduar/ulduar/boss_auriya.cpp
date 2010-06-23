@@ -143,7 +143,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 	{
 		numb_lives = 8;
 		me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
-		SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me);
+		ModifyAuraStack(SPELL_FERAL_ESSENCE,numb_lives);
 	}
 
 	void DamageTaken(Unit* done_by, uint32 &damage)
@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL add_feral_defender_AI : public LibDevFSAI
 				me->SetHealth(me->GetMaxHealth());
 				if(me->HasAura(SPELL_FERAL_ESSENCE))
 					if(me->GetAura(SPELL_FERAL_ESSENCE,0)->GetStackAmount() > 1)
-						SetAuraStack(SPELL_FERAL_ESSENCE,numb_lives,me,me,1);
+						ModifyAuraStack(SPELL_FERAL_ESSENCE,numb_lives);
 					else
 						me->RemoveAurasDueToSpell(SPELL_FERAL_ESSENCE);
 			}
@@ -221,7 +221,7 @@ struct MANGOS_DLL_DECL add_sanctum_sentry_AI : public LibDevFSAI
 	void Reset()
 	{
 		ResetTimers();
-		SetAuraStack(SPELL_PACK_STR,1,me,me);	
+		ModifyAuraStack(SPELL_PACK_STR);	
 	}
 
 	void JustDied(Unit* pWho)

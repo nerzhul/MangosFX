@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 				{
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
-						SetAuraStack(spell->Id,1,pPlayer,me,1);
+						ModifyAuraStack(spell->Id,1,pPlayer);
 				}
 			}
 		}

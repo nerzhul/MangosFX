@@ -126,7 +126,7 @@ void boss_steelbreakerAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		ModifyAuraStack(SPELL_SUPERCHARGE,phase - 1);
 }
 
 void boss_steelbreakerAI::DamageTaken(Unit* pKiller, uint32 &damage)
@@ -232,7 +232,7 @@ void boss_runemaster_molgeimAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		ModifyAuraStack(SPELL_SUPERCHARGE,phase - 1);
 
 }
 
@@ -397,7 +397,7 @@ void boss_stormcaller_brundirAI::UpdatePhase()
 {
     ++phase;
 	if(phase > 1)
-		SetAuraStack(SPELL_SUPERCHARGE,phase - 1,me,me,1);
+		ModifyAuraStack(SPELL_SUPERCHARGE,phase - 1);
     if(phase >= 3)
         DoCastMe(SPELL_STORMSHIELD);
 }

@@ -257,7 +257,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 				{
 					case RAID_DIFFICULTY_10MAN_HEROIC:
 					case RAID_DIFFICULTY_25MAN_HEROIC:
-						SetAuraStack(SPELL_ENRAGE,1,Dreadscale,Dreadscale,1);
+						ModifyAuraStack(SPELL_ENRAGE,1,Dreadscale,Dreadscale);
 						break;
 				}
 			}

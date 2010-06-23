@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 				FreezeMob(false,(Creature*)tmpcr);
 				tmpcr->AddThreat(me->getVictim());
 				me->CastStop();
-				SetAuraStack(SPELL_CREATOR_STRENGH,1,me,me);
+				ModifyAuraStack(SPELL_CREATOR_STRENGH);
 			}
 
 			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
@@ -232,8 +232,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 			if(Unit* Ignis = GetInstanceCreature(TYPE_IGNIS))
 				if(Ignis->isAlive())
 				{
-					uint8 stk = (Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() > 1) ? Ignis->GetAura(SPELL_CREATOR_STRENGH,0)->GetStackAmount() - 1 : 1;
-					SetAuraStack(SPELL_CREATOR_STRENGH,stk,Ignis,Ignis,1);
+					ModifyAuraStack(SPELL_CREATOR_STRENGH,-1,Ignis,Ignis);
 				}
 			Kill(me);
 		}

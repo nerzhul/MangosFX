@@ -306,7 +306,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			//stone grip emote
 			if (Unit* target = GetRandomUnit())
 			{
-				SetAuraStack(SPELL_STONE_GRIP,1,target,me);
+				ModifyAuraStack(SPELL_STONE_GRIP,1,target);
 				if(pGripTarget)
 					Kill(pGripTarget);
 				if(target->GetTypeId() == TYPEID_PLAYER)

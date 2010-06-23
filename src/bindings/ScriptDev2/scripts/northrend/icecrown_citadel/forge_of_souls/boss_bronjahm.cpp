@@ -64,7 +64,7 @@ struct MANGOS_DLL_DECL boss_bronjahmAI : public LibDevFSAI
 					for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 						if (Player* pPlayer = itr->getSource())
 							if(pPlayer->isAlive())
-								SetAuraStack(SPELL_SOULSTORM_AURA,1,pPlayer,me,1);
+								ModifyAuraStack(SPELL_SOULSTORM_AURA,1,pPlayer);
 				CheckAura_Timer = 1500;
 			}
 			else

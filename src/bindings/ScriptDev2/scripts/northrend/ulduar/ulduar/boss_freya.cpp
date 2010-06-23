@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
     {
 		ResetTimers();
 		CleanMyAdds();
-		SetAuraStack(SPELL_ATTUNED_TO_NATURE,150,me,me,1);
+		ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,150);
 		HardMode = false;
 		AskRezNextCycle = RESPAWN_ONE_DAY*1000;
 		TriAdds.clear();
@@ -389,7 +389,7 @@ struct MANGOS_DLL_DECL freya_snaplasherAI : public LibDevFSAI
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
 			if(Freya->isAlive())
-				((boss_freyaAI*)Freya->AI())->UpdateHealStack(10);
+				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
 	void UpdateAI(const uint32 diff)
@@ -421,8 +421,8 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		SetAuraStack(62619,1,me,me,1);
-		SetAuraStack(SPELL_PHOTOSYNTHESIS,1,me,me,1);
+		ModifyAuraStack(62619);
+		ModifyAuraStack(SPELL_PHOTOSYNTHESIS);
 		SetCombatMovement(false);
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.1f);
 		growth_Timer = 1000;

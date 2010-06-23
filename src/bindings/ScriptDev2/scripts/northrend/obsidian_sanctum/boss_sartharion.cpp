@@ -309,7 +309,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         }
 
         if (bCanUseWill && !me->HasAura(SPELL_WILL_OF_SARTHARION,0))
-			SetAuraStack(SPELL_WILL_OF_SARTHARION,1,me,me,1);
+			ModifyAuraStack(SPELL_WILL_OF_SARTHARION);
     }
 
     void CallDragon(uint32 uiDataId)
@@ -780,7 +780,7 @@ struct MANGOS_DLL_DECL mob_tenebronAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -868,9 +868,9 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 		{
 			if(Sartha->isAlive())
 				if(m_pInstance->GetData(TYPE_SARTHARION_EVENT) == IN_PROGRESS)
-					SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SAR,1,Sartha,me,1);
+					ModifyAuraStack(SPELL_GIFT_OF_TWILIGTH_SAR,1,Sartha);
 				else
-					SetAuraStack(SPELL_GIFT_OF_TWILIGTH_SHA,1,me,me,1);
+					ModifyAuraStack(SPELL_GIFT_OF_TWILIGTH_SHA);
 		}
 	}
 
@@ -885,7 +885,7 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -958,7 +958,7 @@ struct MANGOS_DLL_DECL mob_vesperonAI : public dummy_dragonAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
 	}
@@ -1030,7 +1030,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 					{
 						pPlayer->RemoveAurasDueToSpell(57874);
 						pPlayer->SetPhaseMask(0x00000001,true);
-						SetAuraStack(61885,1,pPlayer,pPlayer,1);
+						ModifyAuraStack(61885,1,pPlayer,pPlayer);
 					}
     }
 

@@ -38,9 +38,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     {
 		ResetTimers();
 		phase = 0;
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		SetAuraStack(66830,1,me,me,1);
+		FreezeMob();
     }
 
 	void Aggro(Unit* who)
@@ -61,7 +59,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				SetAuraStack(66830,1,me,me,1);
+				ModifyAuraStack(66830);
 			EnterEvadeMode();
             return;
 		}
@@ -129,9 +127,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		SetAuraStack(66830,1,me,me,1);
+		FreezeMob();
     }
 
 	void Aggro(Unit* pwho)
@@ -153,7 +149,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
         if (!CanDoSomething() || me->HasAura(66830))
 		{
 			if(!me->HasAura(66830))
-				SetAuraStack(66830,1,me,me,1);
+				ModifyAuraStack(66830);
 			EnterEvadeMode();
             return;
 		}
