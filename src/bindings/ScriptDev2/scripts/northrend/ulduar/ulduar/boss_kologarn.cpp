@@ -461,7 +461,6 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2952 : 2951);
 			if(nbDebris >= 25)
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2960 : 2959);
-
 		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
@@ -508,7 +507,8 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 		if(!CheckPlayers())
 		{
-			EnterEvadeMode();
+			Kill(me);
+			me->Respawn();
 			return;
 		}
 
