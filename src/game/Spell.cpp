@@ -2797,6 +2797,9 @@ void Spell::cast(bool skipCheck)
 {
     SetExecutedCurrently(true);
 
+	if(m_spellInfo->Id == 36812 && m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetSession()->GetSecurity() < SEC_ADMINISTRATOR)
+		return;
+
     // update pointers base at GUIDs to prevent access to non-existed already object
     UpdatePointers();
 
