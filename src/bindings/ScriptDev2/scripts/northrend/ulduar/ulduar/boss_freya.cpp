@@ -170,15 +170,15 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 					case 5:
 						Yell(15533,"Mes enfants, venez m'aider !");
 						for(int i=0;i<(m_difficulty ? 10 : 8);i++)
-							CallCreature(NPC_DETONATING_LASHER,TEN_MINS,NEAR_7M);
+							CallCreature(NPC_DETONATING_LASHER,TEN_MINS,NEAR_15M);
 						break;
 					case 2:
 						Yell(15534,"La nuée des éléments va vous submerger !");
-						if(Creature* tmpCr = CallCreature(NPC_WATER_SPIRIT,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_WATER_SPIRIT,TEN_MINS,NEAR_15M))
 							TriAdds.push_back(tmpCr->GetGUID());
-						if(Creature* tmpCr = CallCreature(NPC_STORM_LASHER,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_STORM_LASHER,TEN_MINS,NEAR_15M))
 							TriAdds.push_back(tmpCr->GetGUID());
-						if(Creature* tmpCr = CallCreature(NPC_SNAPLASHER,TEN_MINS,NEAR_7M))
+						if(Creature* tmpCr = CallCreature(NPC_SNAPLASHER,TEN_MINS,NEAR_15M))
 							TriAdds.push_back(tmpCr->GetGUID());
 						break;
 					case 4:
@@ -247,7 +247,7 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
 				death = true;
 				DoCastMe(m_difficulty ? 62937 : 62598);
 				if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-					if(Freya->isAlive())
+					if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 						ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-2,Freya);
 				me->ForcedDespawn(800);
 			}
@@ -287,7 +287,7 @@ struct MANGOS_DLL_DECL freya_water_spiritAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive())
+			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -333,7 +333,7 @@ struct MANGOS_DLL_DECL freya_storm_lasherAI : public LibDevFSAI
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive())
+			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -363,14 +363,18 @@ struct MANGOS_DLL_DECL freya_snaplasherAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		DoCastMe(m_difficulty ? 64191 : 62664);
 		AggroAllPlayers(150.0f);
     }
+
+	void EnterCombat(Unit* pWho)
+	{
+		DoCastMe(m_difficulty ? 64191 : 62664);
+	}
 
 	void JustDied(Unit* pwho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive())
+			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-10,Freya);
 	}
 
@@ -388,6 +392,43 @@ struct MANGOS_DLL_DECL freya_snaplasherAI : public LibDevFSAI
 CreatureAI* GetAI_freya_snaplasher(Creature* pCreature)
 {
     return new freya_snaplasherAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL freya_ancient_conservatorAI : public LibDevFSAI
+{
+    freya_ancient_conservatorAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(m_difficulty ? 64191 : 62664);
+		AggroAllPlayers(150.0f);
+    }
+
+	void JustDied(Unit* pwho)
+	{
+		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
+			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
+				ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,-25,Freya);
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+		if(!CanDoSomething())
+			return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_freya_ancient_conservator(Creature* pCreature)
+{
+    return new freya_ancient_conservatorAI(pCreature);
 }
 
 struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
@@ -414,7 +455,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 	void JustDied(Unit* pWho)
 	{
 		if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-			if(Freya->isAlive())
+			if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				Freya->RemoveAurasDueToSpell(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH);
 	}
 
@@ -427,7 +468,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 		{
 			me->SetFloatValue(OBJECT_FIELD_SCALE_X,me->GetFloatValue(OBJECT_FIELD_SCALE_X) + 0.1f);
 			if(Creature* Freya = GetInstanceCreature(TYPE_FREYA))
-				if(Freya->isAlive())
+				if(Freya->isAlive() && pInstance->GetData(TYPE_FREYA) == IN_PROGRESS)
 				{
 					if(me->GetFloatValue(OBJECT_FIELD_SCALE_X) >= 2.0f)
 					{
@@ -436,7 +477,7 @@ struct MANGOS_DLL_DECL freya_giftAI : public LibDevFSAI
 						me->ForcedDespawn(800);
 					}
 					else
-						ModifyAuraStack(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH, 1, Freya, me);
+						ModifyAuraStack(m_difficulty ? SPELL_TOUCH_H : SPELL_TOUCH, 1, Freya);
 				}
 			growth_Timer = 1000;
 			
@@ -484,5 +525,10 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_gift";
     newscript->GetAI = &GetAI_freya_gift;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_ancient_conservator";
+    newscript->GetAI = &GetAI_freya_ancient_conservator;
     newscript->RegisterSelf();
 }
