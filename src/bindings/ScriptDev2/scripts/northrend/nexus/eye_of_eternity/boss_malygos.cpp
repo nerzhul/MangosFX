@@ -224,17 +224,15 @@ static LocationsXY VortexLoc[]=
 ## boss_malygos
 ######*/
 
-struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
 {
-    boss_malygosAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_malygosAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
+        InitInstance();
+		AddEnrageTimer(TEN_MINS);
+		AddTextEvent(14533,"Rien ne peut m'arrêter !",TEN_MINS,DAY*HOUR);
+		AddEventOnMe(m_difficulty ? SPELL_ARCANE_BREATH_H : SPELL_ARCANE_BREATH,15000,18000,5000,PHASE_FLOOR);
     }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
     
     uint8 m_uiPhase; //Fight Phase
     uint8 m_uiSubPhase; //Subphase if needed
@@ -242,11 +240,9 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
     uint8 m_uiVortexPhase;
     std::list<uint64> m_lSparkGUIDList;
 
-    uint32 m_uiEnrageTimer;
     uint32 m_uiSpeechTimer[5];
     uint32 m_uiTimer;
     uint32 m_uiVortexTimer;
-    uint32 m_uiArcaneBreathTimer;
     uint32 m_uiPowerSparkTimer;
     uint32 m_uiDeepBreathTimer;
     uint32 m_uiShellTimer;
@@ -254,12 +250,12 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
     
     void Reset()
     {
+		ResetTimers();
         m_uiPhase = PHASE_FLOOR;
         m_uiSubPhase = 0;
         m_uiSpeechCount = 0;
         m_uiVortexPhase = 0;
 
-        m_uiEnrageTimer = 600000;
         m_uiSpeechTimer[0] = 2000;
         m_uiSpeechTimer[1] = 10000;
         m_uiSpeechTimer[2] = 11000;
@@ -268,7 +264,6 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
         m_uiSpeechTimer[5] = 7000;
         m_uiTimer = 7000;
         m_uiVortexTimer = 60000;
-        m_uiArcaneBreathTimer = 15000;
         m_uiPowerSparkTimer = 20000;
         m_uiDeepBreathTimer = 60000;
         m_uiShellTimer = 0;
@@ -301,6 +296,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
+		//Yell(
         DoScriptText(SAY_AGGRO1, me);
     }
 
@@ -452,13 +448,13 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
     void DoSpawnAdds()
     {
         //Nexus lords
-        for(int i=0; i < (m_bIsRegularMode ? NEXUS_LORD_COUNT : NEXUS_LORD_COUNT_H);i++)
+        for(int i=0; i < (m_difficulty ? NEXUS_LORD_COUNT : NEXUS_LORD_COUNT_H);i++)
         {
             if(Creature *pLord = me->SummonCreature(NPC_NEXUS_LORD, me->getVictim()->GetPositionX()-5+rand()%10, me->getVictim()->GetPositionY()-5+rand()%10, me->getVictim()->GetPositionZ(), 0, TEMPSUMMON_CORPSE_DESPAWN, 0))
                 pLord->AI()->AttackStart(me->getVictim());
         }
         //Scions of eternity
-        for(int i=0; i < (m_bIsRegularMode ? SCION_OF_ETERNITY_COUNT : SCION_OF_ETERNITY_COUNT_H);i++)
+        for(int i=0; i < (m_difficulty ? SCION_OF_ETERNITY_COUNT : SCION_OF_ETERNITY_COUNT_H);i++)
         {
             uint32 x = urand(SHELL_MIN_X, SHELL_MAX_X);
             uint32 y = urand(SHELL_MIN_Y, SHELL_MAX_Y);    
@@ -551,13 +547,6 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        //Enrage timer.....
-        if(m_uiEnrageTimer <= diff)
-        {
-            DoCast(me, SPELL_BERSERK);
-            m_uiEnrageTimer = 600000;
-        }else m_uiEnrageTimer -= diff;
-
         if(m_uiPhase == PHASE_FLOOR)
         {
             if(m_uiSubPhase == SUBPHASE_VORTEX)
@@ -601,13 +590,6 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
                 DoScriptText(SAY_VORTEX, me);
                 return;
             }else m_uiVortexTimer -= diff;
-
-            //Arcane Breath
-            if(m_uiArcaneBreathTimer <= diff)
-            {
-                DoCast(me, m_bIsRegularMode ? SPELL_ARCANE_BREATH : SPELL_ARCANE_BREATH_H);
-                m_uiArcaneBreathTimer = 15000 + urand(3000, 8000);
-            }else m_uiArcaneBreathTimer -= diff;
 
             //PowerSpark
             if(m_uiPowerSparkTimer<= diff)
@@ -678,7 +660,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
             // Arcane Storm
             if(m_uiArcaneStormTimer <= diff)
             {
-                DoCast(me, m_bIsRegularMode ? SPELL_ARCANE_STORM : SPELL_ARCANE_STORM_H);
+                DoCast(me, m_difficulty ? SPELL_ARCANE_STORM : SPELL_ARCANE_STORM_H);
                 m_uiArcaneStormTimer = 20000;
             }else m_uiArcaneStormTimer -= diff;
 
@@ -718,8 +700,8 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
 
             DoMeleeAttackIfReady();
         }
-
-        
+		UpdateEvent(diff);
+		UpdateEvent(diff,m_uiPhase);
     }
 };
 /*######
@@ -730,12 +712,12 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public ScriptedAI
     mob_power_sparkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
+        m_difficulty = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
     ScriptedInstance* m_pInstance;
-    bool m_bIsRegularMode;
+    bool m_difficulty;
     bool isDead;
     uint32 m_uiCheckTimer;
     Creature *pMalygos;
@@ -810,10 +792,10 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public ScriptedAI
 ######*/
 bool GOHello_go_focusing_iris(Player* pPlayer, GameObject* pGo)
 {
-    bool m_bIsRegularMode = pGo->GetMap()->IsRegularDifficulty();
+    bool m_difficulty = pGo->GetMap()->IsRegularDifficulty();
 
     bool hasItem = false;
-    if (m_bIsRegularMode)
+    if (m_difficulty)
     {
         if(pPlayer->HasItemCount(ITEM_KEY_TO_FOCUSING_IRIS, 1) || pPlayer->HasItemCount(ITEM_KEY_TO_FOCUSING_IRIS_H, 1)) 
             hasItem = true;

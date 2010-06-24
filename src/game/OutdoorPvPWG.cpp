@@ -786,6 +786,7 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 31091:
 		case 32296:
 		case 31053:
+		case 39173:
 			if(m_defender == BG_TEAM_ALLIANCE)
 			{
 				creature->SetPhaseMask(2,true);
@@ -805,6 +806,7 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 31054:
 		case 31051:
 		case 30488:
+		case 39172:
 			if(m_defender == BG_TEAM_HORDE)
 			{
 				creature->SetPhaseMask(2,true);
