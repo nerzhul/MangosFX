@@ -41,6 +41,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		AddTextEvent(15532,"Vous avez voulu aller trop loin, perdre trop de temps !",720000,DAY*HOUR);
 		AddHealEvent(SPELL_PHOTOSYNTHESIS,5000,6000);
 		AddNear15mSummonEvent(33228,20000,30000,0,15000);
+		AddEvent(62283,18000,20000,5000,TARGET_RANDOM,6);
 
 		if(m_difficulty)
 		{
@@ -286,6 +287,8 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 		if(HardMode[0])
 			UpdateEvent(diff,5);
+		if(HardMode[1])
+			UpdateEvent(diff,6);
 		if(HardMode[2])
 			UpdateEvent(diff,7);
 
@@ -623,6 +626,42 @@ CreatureAI* GetAI_freya_mushroom(Creature* pCreature)
     return new freya_mushroomAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL freya_rootAI : public LibDevFSAI
+{
+    freya_rootAI(Creature* pCreature) : LibDevFSAI(pCreature) 
+	{
+		InitInstance();
+	}
+
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+    }
+
+	void JustDied(Unit* pwho)
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+
+			if (!lPlayers.isEmpty())
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					if (Player* pPlayer = itr->getSource())
+					{
+						if(pPlayer->isAlive() && pPlayer->GetDistance2d(me) <= 2.0f && pPlayer->HasAura(62283))
+							pPlayer->RemoveAurasDueToSpell(62283);
+					}
+	}
+
+	void UpdateAI(const uint32 diff)
+    {
+	}
+};
+
+CreatureAI* GetAI_freya_root(Creature* pCreature)
+{
+    return new freya_rootAI(pCreature);
+}
+
 void AddSC_boss_freya()
 {
     Script *newscript;
@@ -659,6 +698,11 @@ void AddSC_boss_freya()
 	newscript = new Script;
     newscript->Name = "freya_mushroom";
     newscript->GetAI = &GetAI_freya_mushroom;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "freya_root";
+    newscript->GetAI = &GetAI_freya_root;
     newscript->RegisterSelf();
 
 	newscript = new Script;

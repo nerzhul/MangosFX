@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 			if(TimeDownSucceed())
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
 			if(HARDMODE)
-				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3059 : 3058);
 			if(NoRepair)
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2932 : 2931);
 

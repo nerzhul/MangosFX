@@ -116,9 +116,13 @@ bool GoHello_wg_engineer( Player *pPlayer, GameObject *pGO )
     ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
     if(!pInstance) return true;
 
-    pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
+	if(pPlayer->isGameMaster())
+	{
+		pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
+		pPlayer->ADD_GOSSIP_ITEM(0, "Construire un demolisseur", GOSSIP_SENDER_MAIN, DEMOLISHER);
+		pPlayer->ADD_GOSSIP_ITEM(0, "Construire un engin de siege", GOSSIP_SENDER_MAIN, SIEGE);
+	}
 	
-
     pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pGO->GetGUID());
 
     return true;

@@ -1050,8 +1050,7 @@ void GameObject::Use(Unit* user)
 				else if(GetEntry() == 181605)
 				{
 					player->HandleEmoteCommand(EMOTE_STATE_DANCE);
-					AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
-					if(pAE)
+					if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(271))
 						player->GetAchievementMgr().DoCompleteAchivement(pAE);
 				}
 

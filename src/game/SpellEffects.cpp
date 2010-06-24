@@ -763,7 +763,7 @@ void Spell::EffectDummy(uint32 i)
     {
         case SPELLFAMILY_GENERIC:
         {
-            switch(m_spellInfo->Id )
+            switch(m_spellInfo->Id)
             {
                 case 8063:                                  // Deviate Fish
                 {
@@ -1257,6 +1257,15 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastSpell(m_caster, 45009, true);
                     return;
                 }
+				case 45819:
+				{
+					m_caster->CastSpell(m_caster, 45638, false);
+					if(m_caster->GetTypeId() == TYPEID_PLAYER)
+						if(((Player*)m_caster)->HasItemCount(23324,1) && ((Player*)m_caster)->HasItemCount(34685,1) && ((Player*)m_caster)->HasItemCount(34683,1))
+							if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(272))
+								((Player*)m_caster)->GetAchievementMgr().DoCompleteAchivement(pAE);
+					return;
+				}
 				case 54191: //fss
 				{
 					if(m_caster->GetTypeId() == TYPEID_PLAYER)
