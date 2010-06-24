@@ -146,8 +146,11 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 				if(uiType == DONE)
 				{
 					if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
-						if (pChest && !pChest->isSpawned())
+						if (!pChest->isSpawned())
+						{
+							pChest->Respawn();
 							pChest->SetRespawnTime(350000000);
+						}
 					if(instance)
 					{
 						switch(instance->GetDifficulty())

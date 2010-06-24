@@ -36,11 +36,13 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 
 	uint32 saronite_timer;
 	uint8 nbsaro;
+	bool SaroniteDown;
 
     void Reset()
     {
 		ResetTimers();
 		CleanMyAdds();
+		SaroniteDown = false;
 		
 		nbsaro = 0;
 		saronite_timer = 45000;
@@ -50,10 +52,19 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
     {
     }
 
+	void SetSaroniteDown()
+	{
+		SaroniteDown = true;
+	}
+
     void JustDied(Unit *victim)
     {
         if (pInstance)
+		{
             pInstance->SetData(TYPE_VEZAX, DONE);
+			if(SaroniteDown)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3188 : 3181);
+		}
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,2);
     }
 
@@ -142,8 +153,9 @@ struct MANGOS_DLL_DECL add2_vezaxAI : public LibDevFSAI
 
 	void JustDied(Unit* pWho)
 	{
-		if (Creature* Vezax = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(TYPE_VEZAX) : 0)))
+		if (Creature* Vezax = GetInstanceCreature(TYPE_VEZAX))
 		{
+			((boss_vezaxAI*)Vezax->AI())->SetSaroniteDown();
 			Vezax->RemoveAurasDueToSpell(SPELL_VOID_BARRER);
 		}
 

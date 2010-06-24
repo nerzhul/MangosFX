@@ -87,15 +87,32 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_FREYA, DONE);
 		Say(15531,"Son emprise sur moi se dissipe. J'y vois de nouveau clair. Merci, héros");
+		uint8 TreeAlive = 0;
 		if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
 			if(IronBranch->isAlive())
-				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
+				TreeAlive++;
 		if(Creature* BrightLeaf = GetInstanceCreature(DATA_FREYA_ANCIENT_2))
 			if(BrightLeaf->isAlive())
-				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
+				TreeAlive++;
 		if(Creature* StoneBark = GetInstanceCreature(DATA_FREYA_ANCIENT_3))
 			if(StoneBark->isAlive())
+				TreeAlive++;
+
+		switch(TreeAlive)
+		{
+			case 1:
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
+				break;
+			case 2:
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3186 : 3178);
+				break;
+			case 3:
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3187 : 3179);
+				break;
+			default:
+				break;
+		}
+		
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
