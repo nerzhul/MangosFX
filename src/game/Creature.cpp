@@ -2171,3 +2171,14 @@ bool Creature::isHostileVehicle()
 			return false;		
 	}
 }
+
+bool Creature::isFlyingVehicle()
+{
+	switch(GetEntry())
+	{
+		case 30161:
+			return true;
+		default:
+			return false;		
+	}
+}

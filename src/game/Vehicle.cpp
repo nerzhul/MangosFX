@@ -415,8 +415,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 				BuildVehicleActionBar((Player*)unit);
 			}
-			if(/*me->canFly() ||*/ me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
+			if((me->GetTypeId() == TYPEID_UNIT && ((Creature*)me)->isFlyingVehicle()) || me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
+				error_log("This Can Fly");
                 WorldPacket data3(SMSG_MOVE_SET_CAN_FLY, 12);
                 data3.append(me->GetPackGUID());
                 data3 << (uint32)(0);
