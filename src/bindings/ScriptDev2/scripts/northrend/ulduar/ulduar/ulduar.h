@@ -7,7 +7,7 @@
 
 enum
 {
-    MAX_ENCOUNTER               = 56,
+    MAX_ENCOUNTER               = 14,
 
     TYPE_LEVIATHAN              = 0,
     TYPE_IGNIS                  = 1,
@@ -51,6 +51,9 @@ enum
 	DATA_LEVIMKII				= 38,
 	DATA_VX001					= 39,
 	DATA_MIMIRONHEAD			= 40,
+	DATA_FREYA_ANCIENT_1		= 41,
+	DATA_FREYA_ANCIENT_2		= 42,
+	DATA_FREYA_ANCIENT_3		= 43,
 
 	DATA_IGNIS_ADDS				= 50,
 	DATA_THORIM_BIGADD			= 51,
@@ -175,6 +178,9 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 m_uiVX001GUID;
 	uint64 m_uiMimironHeadGUID;
 	uint64 FreyaGiftGUID;
+	uint64 freyaFirstAncientGUID;
+	uint64 freyaSecAncientGUID;
+	uint64 freyaThirdAncientGUID;
 
 	uint64 XTDoorGUID;
 	uint64 IronCouncilDoorGUID;
@@ -301,6 +307,12 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 				return m_uiVX001GUID;
 			case DATA_MIMIRONHEAD:
 				return m_uiMimironHeadGUID;
+			case DATA_FREYA_ANCIENT_1:
+				return freyaFirstAncientGUID;
+			case DATA_FREYA_ANCIENT_2:
+				return freyaSecAncientGUID;
+			case DATA_FREYA_ANCIENT_3:
+				return freyaThirdAncientGUID;
         }
 
         return 0;

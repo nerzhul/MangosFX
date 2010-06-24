@@ -13,7 +13,9 @@ enum FreyaSpells
 	SPELL_TOUCH					= 62528,
 	SPELL_TOUCH_H				= 62892,
 	SPELL_PHOTOSYNTHESIS		= 62209,
-	SPELL_UNSTABLE_ENERGY		= 62865,
+	// HM
+	SPELL_UNSTABLE_ENERGY		= 62451,
+	SPELL_UNSTABLE_ENERGY_H		= 62865,
 
 };
 
@@ -42,35 +44,39 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 		if(m_difficulty)
 		{
-			AddEventOnTank(SPELL_GROUND_TREMOR_H,20000,15000,2000,2);
+			AddEventOnTank(SPELL_GROUND_TREMOR_H,20000,15000,2000,7);
 			AddEvent(SPELL_SUNBEAM_H,15000,10000,2000,TARGET_RANDOM,2);
-			
+			AddEventOnMe(SPELL_UNSTABLE_ENERGY_H,8000,20000,5000,5);
 		}
 		else
 		{
-			AddEventOnTank(SPELL_GROUND_TREMOR,20000,15000,2000,2);
+			AddEventOnTank(SPELL_GROUND_TREMOR,20000,15000,2000,7);
 			AddEvent(SPELL_SUNBEAM,15000,10000,2,TARGET_RANDOM,2);
+			AddEventOnMe(SPELL_UNSTABLE_ENERGY,8000,20000,5000,5);
 		}
     }
 
-	bool HardMode;
 	uint8 phase;
 	uint32 Vague_Timer;
 	uint16 Vague_Count;
 	uint32 Check_InLife_Timer;
+	uint32 CheckHardMode_Timer;
 	bool CheckInLife;
 	std::vector<uint64> TriAdds;
+	bool HardMode[3];
 
     void Reset()
     {
 		ResetTimers();
 		CleanMyAdds();
 		ModifyAuraStack(SPELL_ATTUNED_TO_NATURE,150);
-		HardMode = false;
+		for(uint8 i=0;i<3;i++)
+			HardMode[i] = false;
 		TriAdds.clear();
 		phase = 0;
 		Vague_Timer = 5000;
 		Check_InLife_Timer = 1500;
+		CheckHardMode_Timer = 1500;
 		CheckInLife = false;
 		Vague_Count = 0;
     }
@@ -80,6 +86,15 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_FREYA, DONE);
 		Say(15531,"Son emprise sur moi se dissipe. J'y vois de nouveau clair. Merci, héros");
+		if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
+			if(IronBranch->isAlive())
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
+		if(Creature* BrightLeaf = GetInstanceCreature(DATA_FREYA_ANCIENT_2))
+			if(BrightLeaf->isAlive())
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
+		if(Creature* StoneBark = GetInstanceCreature(DATA_FREYA_ANCIENT_3))
+			if(StoneBark->isAlive())
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3185 : 3177);
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
@@ -90,9 +105,38 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_FREYA, IN_PROGRESS);
 
-		Yell(15526,"Le Jardin doit être protégé !");
-		// elder spécial :
-		//15527
+		if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
+		{
+			if(IronBranch->isAlive())
+			{
+				IronBranch->AddThreat(pWho,2500.0f);
+				HardMode[0] = true;
+			}
+		}
+
+		if(Creature* BrightLeaf = GetInstanceCreature(DATA_FREYA_ANCIENT_2))
+		{
+			if(BrightLeaf->isAlive())
+			{
+				BrightLeaf->AddThreat(pWho,2500.0f);
+				HardMode[1] = true;
+			}
+		}
+
+		if(Creature* StoneBark = GetInstanceCreature(DATA_FREYA_ANCIENT_3))
+		{
+			if(StoneBark->isAlive())
+			{
+				StoneBark->AddThreat(pWho,2500.0f);
+				HardMode[2] = true;
+			}
+		}
+
+
+		if(HardMode[0] || HardMode[1] || HardMode[2])
+			Yell(15527,"Anciens, donnez moi votre force !");
+		else
+			Yell(15526,"Le Jardin doit être protégé !");
 		phase = 1;
     }
 
@@ -133,6 +177,26 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(CheckHardMode_Timer <= diff)
+		{
+			for(uint8 i=0;i<3;i++)
+				HardMode[i] = false;
+
+			if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
+				if(IronBranch->isAlive())
+					HardMode[0] = true;
+			if(Creature* BrightLeaf = GetInstanceCreature(DATA_FREYA_ANCIENT_2))
+				if(BrightLeaf->isAlive())
+					HardMode[1] = true;
+			if(Creature* StoneBark = GetInstanceCreature(DATA_FREYA_ANCIENT_3))
+				if(StoneBark->isAlive())
+					HardMode[2] = true;
+
+			CheckHardMode_Timer = 1500;
+		}
+		else
+			CheckHardMode_Timer -= diff;
 
 		if(phase == 1)
 		{
@@ -176,7 +240,6 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 			if(Vague_Timer <= diff)
 			{
-				bool AllAlive = true;
 				Vague_Count++;
 				switch(Vague_Count)
 				{
@@ -205,13 +268,6 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 						CallCreature(NPC_ANCIENT_CONSERVATOR,TEN_MINS,NEAR_15M);
 						break;
 					case 7:
-						for(std::vector<uint64>::iterator itr = TriAdds.begin(); itr!= TriAdds.end(); ++itr)
-							if(Creature* cr = GetGuidCreature(*itr))
-								if(!cr->isAlive())
-									AllAlive = false;
-						if(AllAlive)
-							HardMode = true;
-
 						phase++;
 						break;
 					default:
@@ -227,6 +283,11 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 
 		UpdateEvent(diff);
 		UpdateEvent(diff,phase);
+
+		if(HardMode[0])
+			UpdateEvent(diff,5);
+		if(HardMode[2])
+			UpdateEvent(diff,7);
 
 		DoMeleeAttackIfReady();
     }

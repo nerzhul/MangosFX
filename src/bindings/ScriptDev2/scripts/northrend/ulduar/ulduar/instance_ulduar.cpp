@@ -39,6 +39,9 @@ void instance_ulduar::Initialize()
 	m_uiVX001GUID			= 0;
 	m_uiMimironHeadGUID		= 0;
 	FreyaGiftGUID = 0;
+	freyaFirstAncientGUID = 0;
+	freyaSecAncientGUID = 0;
+	freyaThirdAncientGUID = 0;
 
 	XTDoorGUID = 0;
 	IronCouncilDoorGUID = 0;
@@ -236,6 +239,15 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			break;
 		case 33670:
 			m_uiMimironHeadGUID = pCreature->GetGUID();
+			break;
+		case 32913:
+			freyaFirstAncientGUID = pCreature->GetGUID();
+			break;
+		case 32914:
+			freyaThirdAncientGUID = pCreature->GetGUID();
+			break;
+		case 32915:
+			freyaSecAncientGUID = pCreature->GetGUID();
 			break;
     }
 }

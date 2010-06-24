@@ -47,7 +47,7 @@ void WorldSession::HandleAttackSwingOpcode( WorldPacket & recv_data )
 
     if(_player->IsFriendlyTo(pEnemy) || pEnemy->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE))
     {
-        sLog.outError( "WORLD: Enemy %s %u is friendly",(IS_PLAYER_GUID(guid) ? "player" : "creature"),GUID_LOPART(guid));
+        //sLog.outError( "WORLD: Enemy %s %u is friendly",(IS_PLAYER_GUID(guid) ? "player" : "creature"),GUID_LOPART(guid));
 
         // stop attack state at client
         SendAttackStop(pEnemy);

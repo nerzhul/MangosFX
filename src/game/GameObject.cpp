@@ -1047,6 +1047,13 @@ void GameObject::Use(Unit* user)
 					}
 					break;
 				}
+				else if(GetEntry() == 181605)
+				{
+					player->HandleEmoteCommand(EMOTE_STATE_DANCE);
+					AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
+					if(pAE)
+						player->GetAchievementMgr().DoCompleteAchivement(pAE);
+				}
 
                 if (info->goober.pageId)                    // show page...
                 {
