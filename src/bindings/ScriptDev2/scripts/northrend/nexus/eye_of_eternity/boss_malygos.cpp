@@ -121,16 +121,16 @@ enum
     SCION_OF_ETERNITY_COUNT_H      = 8,
 
     PHASE_NOSTART                  = 0,
-        SUBPHASE_FLY_UP            = 01,
-        SUBPHASE_UP                = 03,
-        SUBPHASE_FLY_DOWN1         = 04,
-        SUBPHASE_FLY_DOWN2         = 05,
+    SUBPHASE_FLY_UP            = 01,
+    SUBPHASE_UP                = 03,
+    SUBPHASE_FLY_DOWN1         = 04,
+    SUBPHASE_FLY_DOWN2         = 05,
     PHASE_FLOOR                    = 1,
-        SUBPHASE_VORTEX            = 11,
+    SUBPHASE_VORTEX            = 11,
     PHASE_ADDS                     = 2,
-        SUBPHASE_TALK              = 21,
+    SUBPHASE_TALK              = 21,
     PHASE_DRAGONS                  = 3,
-        SUBPHASE_DESTROY_PLATFORM  = 31,
+    SUBPHASE_DESTROY_PLATFORM  = 31,
     PHASE_OUTRO                    = 4,
 
 };
@@ -193,6 +193,8 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
 		AddTextEvent(14533,"Rien ne peut m'arrêter !",TEN_MINS,DAY*HOUR);
 		AddEventOnMe(m_difficulty ? SPELL_ARCANE_BREATH_H : SPELL_ARCANE_BREATH,15000,18000,5000,PHASE_FLOOR);
 		AddEventOnMe(m_difficulty ? SPELL_ARCANE_STORM_H : SPELL_ARCANE_STORM,10000,15000,3000,PHASE_FLOOR);
+		AddEvent(60936,12000,30000,0,TARGET_RANDOM,PHASE_DRAGONS); 
+		AddEvent(57430,15000,15000,5000,TARGET_RANDOM,PHASE_DRAGONS);
     }
     
     uint8 m_uiPhase; //Fight Phase
@@ -225,9 +227,15 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
         m_uiSpeechTimer[5] = 7000;
         m_uiTimer = 7000;
         m_uiVortexTimer = 28000;
-        m_uiPowerSparkTimer = 20000;
+        m_uiPowerSparkTimer = 25000;
         m_uiDeepBreathTimer = 60000;
         m_uiShellTimer = 0;
+
+		if(GameObject* go = GetClosestGameObjectWithEntry(me,193070,80.0f))
+		{
+			go->SetUInt32Value(GAMEOBJECT_DISPLAYID,go->GetGOInfo()->displayId);
+			go->Rebuild();
+		}
         
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
     }
@@ -461,10 +469,12 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
 
                 if(Creature *pTemp = CallCreature(NPC_WYRMREST_SKYTALON,TEN_MINS,PREC_COORDS,NOTHING,pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ()))
                     pPlayer->EnterVehicle(pTemp);
-				if(GameObject* go = GetClosestGameObjectWithEntry(me,194158,80.0f))
+				if(GameObject* go = GetClosestGameObjectWithEntry(me,193070,80.0f))
 				{
 					go->DestroyForPlayer(pPlayer,true);
 					go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED | GO_FLAG_NODESPAWN);
+					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,9060);
+					go->SetUInt32Value(GAMEOBJECT_BYTES_1,8449);
 				}
             }
         }
@@ -489,7 +499,9 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
                     if(m_uiSpeechCount == 5){
                         m_uiSubPhase = SUBPHASE_FLY_DOWN1;
                     }
-                }else m_uiSpeechTimer[m_uiSpeechCount] -= diff;
+                }
+				else
+					m_uiSpeechTimer[m_uiSpeechCount] -= diff;
             }
             else if(m_uiSubPhase == SUBPHASE_FLY_DOWN1){
                 if(m_uiTimer <= diff)
@@ -500,7 +512,9 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
                     DoMovement(x, y, z, 0, false);
                     m_uiSubPhase = SUBPHASE_FLY_DOWN2;
                     m_uiTimer = 1500;
-                }else m_uiTimer -= diff;
+                }
+				else 
+					m_uiTimer -= diff;
             }
             else if(m_uiSubPhase == SUBPHASE_FLY_DOWN2){
                 if(m_uiTimer <= diff)
@@ -508,7 +522,9 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     m_uiSubPhase = 0;
                     m_uiPhase = PHASE_FLOOR;
-                }else m_uiTimer -= diff;
+                }
+				else 
+					m_uiTimer -= diff;
             }    
         }
         if (!CanDoSomething())
@@ -564,8 +580,10 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
             if(m_uiPowerSparkTimer<= diff)
             {
                 PowerSpark(1);
-                m_uiPowerSparkTimer = 40000;
-            }else m_uiPowerSparkTimer -= diff;
+                m_uiPowerSparkTimer = 25000;
+            }
+			else 
+				m_uiPowerSparkTimer -= diff;
 
             //Health check
             if(m_uiTimer<= diff)
@@ -683,29 +701,18 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public LibDevFSAI
 
     bool isDead;
     uint32 m_uiCheckTimer;
-    Creature *pMalygos;
 
     void Reset()
     {
         isDead = false;
-        pMalygos = GetClosestCreatureWithEntry(me, NPC_MALYGOS, 150.0f);
         me->SetUInt32Value(UNIT_FIELD_BYTES_0, 50331648);
         me->SetUInt32Value(UNIT_FIELD_BYTES_1, 50331648);
         m_uiCheckTimer = 2500;
     }
-    void AttackStart(Unit *pWho)
-    {
-        return;
-    }
+
     void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
     {
-        if (isDead)
-        {
-            uiDamage = 0;
-            return;
-        }
-
-        if (uiDamage > me->GetHealth())
+        if (uiDamage >= me->GetHealth() && !isDead)
         {
             isDead = true;
 
@@ -721,33 +728,33 @@ struct MANGOS_DLL_DECL mob_power_sparkAI : public LibDevFSAI
 
             uiDamage = 0;
             me->SetHealth(1);
-            me->CastSpell(me, SPELL_POWER_SPARK_PLAYERS, false);
-            m_uiCheckTimer = 10000;
-            if(pMalygos && pMalygos->isAlive())
-                ((boss_malygosAI*)pMalygos->AI())->m_lSparkGUIDList.clear();
+            DoCastMe(SPELL_POWER_SPARK_PLAYERS);
+            me->ForcedDespawn(10000);
+			if(Creature* pMalygos = GetClosestCreatureWithEntry(me, NPC_MALYGOS, 150.0f))
+				if(pMalygos->isAlive())
+					((boss_malygosAI*)pMalygos->AI())->m_lSparkGUIDList.clear();
         }
     }
     void UpdateAI(const uint32 diff)
     {
         if(m_uiCheckTimer <= diff)
         {
-            if(isDead)
-            {
-                me->ForcedDespawn();
-                return;
-            }
-            if(pMalygos && pMalygos->isAlive() && me->GetVisibility() == VISIBILITY_ON)
-            {
-                if(me->IsWithinDist(pMalygos, 3.0f, false))
-                {
-                    
-                    ((boss_malygosAI*)pMalygos->AI())->m_lSparkGUIDList.clear();
-                    me->CastSpell(pMalygos, SPELL_POWER_SPARK, true);
-                    me->SetVisibility(VISIBILITY_OFF);
-                }
-            }
+			if(Creature* pMalygos = GetClosestCreatureWithEntry(me, NPC_MALYGOS, 150.0f))
+				if(pMalygos->isAlive())
+				{
+					if(me->GetDistance2d(pMalygos) <= 5.0f)
+					{
+	                    isDead = true;
+						((boss_malygosAI*)pMalygos->AI())->m_lSparkGUIDList.clear();
+						((boss_malygosAI*)pMalygos->AI())->SpellHit(me,GetSpellStore()->LookupEntry(SPELL_POWER_SPARK));
+						ModifyAuraStack(SPELL_POWER_SPARK,1,pMalygos);
+						me->ForcedDespawn(2000);
+					}
+				}
             m_uiCheckTimer = 2500;
-        }else m_uiCheckTimer -= diff;
+        }
+		else 
+			m_uiCheckTimer -= diff;
     }
 };
 /*######

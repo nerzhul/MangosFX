@@ -252,7 +252,8 @@ enum SpellCastTarget
 	PLAYER_RANDOM = 6,
 	HEAL_MY_FRIEND = 7,
 	NO_TANK = 8,
-	TARGET_OTHER = 9,
+	TARGET_RANDOMXYZ = 9,
+	TARGET_OTHER = 10,
 };
 
 struct EventSh
