@@ -683,9 +683,11 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "lpi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleLookPlayerInventory,		    "", NULL },
 		{ "addpoi",			SEC_GAMEMASTER,		false, &ChatHandler::HandleAddPOI,						"", NULL },
 		{ "entervehicle",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleDebugEnterVehicle,			"", NULL },
-		{ "testpacket",		SEC_ADMINISTRATOR,	false,	&ChatHandler::HandleTestPacketCommand,			"", NULL },
-		{ "worldvar",		SEC_ADMINISTRATOR,	false,	&ChatHandler::HandleSetWorldVar,				"", NULL },
+		{ "testpacket",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleTestPacketCommand,			"", NULL },
+		{ "worldvar",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleSetWorldVar,					"", NULL },
+		{ "achievementadd",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleAchievementAdd,			    "", NULL },
         { NULL,             0,                  false, NULL,											"", NULL }
+
     };
 
     if(load_command_table)

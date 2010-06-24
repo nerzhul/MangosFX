@@ -315,6 +315,12 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 		if(!CheckPlayers())
 		{
 			EnterEvadeMode();
+			if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
+				if(pTemp->isAlive())
+				{
+					me->ExitVehicle();
+					me->EnterVehicle(pTemp->GetVehicleKit(),1);
+				}
 			return;
 		}
 

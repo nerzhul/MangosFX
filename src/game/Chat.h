@@ -516,6 +516,7 @@ class ChatHandler
 		bool HandleWintergraspStartCommand(const char *args);
 		bool HandleWintergraspTimerCommand(const char *args);
 		bool HandleLookPlayerInventory(const char *args);
+		bool HandleAchievementAdd(const char* args);
 		bool HandleAddPOI(const char *args);
 		bool HandleDebugEnterVehicle(const char * args);
 		bool HandleCompleteRecupCommand(const char *args);

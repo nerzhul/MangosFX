@@ -5306,3 +5306,30 @@ bool ChatHandler::HandleLookPlayerInventory(const char* args)
 	}*/
 	return true;
 }
+
+bool ChatHandler::HandleAchievementAdd(const char* args)
+{
+	if (!*args)
+        return false;
+
+    Player *chr = getSelectedPlayer();
+    if (chr == NULL)
+    {
+        SendSysMessage(LANG_NO_CHAR_SELECTED);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+	int32 achId = atoi((char*)args);
+
+	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(achId);
+	if(!pAE)
+	{
+		SendSysMessage("Aucun Haut Fait de cet ID n'existe");
+		SetSentErrorMessage(true);
+        return false;
+	}
+
+	chr->GetAchievementMgr().DoCompleteAchivement(pAE);
+	return true;
+}

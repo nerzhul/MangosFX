@@ -113,6 +113,22 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 			Say(15530,"De votre mort renaîtra la vie !");
 	}
 
+	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth())
+		{
+			if(pInstance)
+			{
+				if(me->HasAura(SPELL_ATTUNED_TO_NATURE))
+					if(me->GetAura(SPELL_ATTUNED_TO_NATURE,0))
+						if(int8 stk = me->GetAura(SPELL_ATTUNED_TO_NATURE,0)->GetStackAmount())
+							if(stk >= 25)
+								pInstance->CompleteAchievementForGroup(m_difficulty ? 2983 : 2982);
+			}
+
+		}
+	}
+
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
@@ -402,7 +418,7 @@ struct MANGOS_DLL_DECL freya_ancient_conservatorAI : public LibDevFSAI
 	{
 		InitInstance();
 		AddEventOnTank(m_difficulty ? 63571 : 62589,8000,6000,2000);
-		AddEventOnMe(62532,3000,120000);
+		//AddEventOnMe(62532,3000,120000);
 	}
 
     void Reset()
