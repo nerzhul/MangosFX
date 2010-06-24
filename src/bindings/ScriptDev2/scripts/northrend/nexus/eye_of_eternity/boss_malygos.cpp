@@ -499,7 +499,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public ScriptedAI
         {
             if (Player* pPlayer = itr->getSource())
             {
-                if(pPlayer->GetVehicle())
+                if(pPlayer->GetVehicleGUID())
                     pPlayer->ExitVehicle();
 
                 if(Creature *pTemp = me->SummonCreature(NPC_WYRMREST_SKYTALON, pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ(), 0,TEMPSUMMON_TIMED_DESPAWN,600000))

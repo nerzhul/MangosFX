@@ -106,10 +106,21 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 		CleanMyAdds();
 		Addcount = 0;
 		DoCastMe(SPELL_ARM_VISUAL);
+
+		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
+			if(pTemp->isAlive())
+				if(!me->GetVehicleGUID())
+					me->EnterVehicle(pTemp->GetVehicleKit(),0);
     }
 
 	void Aggro(Unit* pWho)
     {
+		if(pWho->GetTypeId() == TYPEID_UNIT)
+		{
+			EnterEvadeMode();
+			return;
+		}
+
         if (pInstance)
 		{
 			if (Creature* pTemp = GetInstanceCreature(DATA_RIGHT_ARM))
@@ -208,7 +219,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 	uint32 Addcount;
 	uint32 gripdmg;
 	uint32 freedmg;
-	Unit* pGripTarget;
+	uint64 pGripTarget;
 
 	bool grip;
 
@@ -217,16 +228,27 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 		ResetTimers();
 		Stone_Grip_Timer = 20000;
 		Addcount = 0;
-		pGripTarget = NULL;
+		pGripTarget = 0;
 		gripdmg = 0;
 		freedmg = 0;
 		grip = false;
 		DoCastMe(SPELL_ARM_VISUAL);
 		FreezeMob(false);
+
+		if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
+			if(pTemp->isAlive())
+				if(!me->GetVehicleGUID())
+					me->EnterVehicle(pTemp->GetVehicleKit(),1);
     }
 
 	void Aggro(Unit* pWho)
     {
+		if(pWho->GetTypeId() == TYPEID_UNIT)
+		{
+			EnterEvadeMode();
+			return;
+		}
+
 		if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
 			if (pTemp->isAlive())
 				pTemp->SetInCombatWithZone();
@@ -257,13 +279,13 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			freedmg = m_difficulty ? 480000 : 100000;
 			if (gripdmg > freedmg || uiDamage > me->GetHealth())
 			{
-				if (pGripTarget)
+				if (Unit* pGripTarget_ = GetGuidUnit(pGripTarget))
 				{
-					if (pGripTarget->HasAura(SPELL_STONE_GRIP))
-						pGripTarget->RemoveAurasDueToSpell(SPELL_STONE_GRIP);
+					if (pGripTarget_->HasAura(SPELL_STONE_GRIP))
+						pGripTarget_->RemoveAurasDueToSpell(SPELL_STONE_GRIP);
 
-					pGripTarget->ExitVehicle();
-					pGripTarget->Relocate(1781.764f,-24.704f,449.0f,6.27f);
+					pGripTarget_->ExitVehicle();
+					pGripTarget_->Relocate(1781.764f,-24.704f,449.0f,6.27f);
 				}
 				grip = false;
 				gripdmg = 0;
@@ -275,9 +297,10 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			if (Creature* pTemp = GetInstanceCreature(DATA_KOLOGARN))
 				if (pTemp->isAlive())
 					DealPercentDamage(pTemp,15);
-			if(pGripTarget)
+			if (Unit* pGripTarget_ = GetGuidUnit(pGripTarget))
 			{
-				pGripTarget->ExitVehicle();
+				pGripTarget_->ExitVehicle();
+				pGripTarget_->Relocate(1781.764f,-24.704f,449.0f,6.27f);
 			}
 			me->SetDisplayId(16925);
 			FreezeMob();
@@ -300,15 +323,18 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 			//stone grip emote
 			if (Unit* target = GetRandomUnit())
 			{
-				ModifyAuraStack(SPELL_STONE_GRIP,1,target);
-				if(pGripTarget)
-					Kill(pGripTarget);
 				if(target->GetTypeId() == TYPEID_PLAYER)
-				{	
-					pGripTarget = target;
-					target->EnterVehicle(me->GetVehicleKit());
-					grip = true;
-					gripdmg = 0;
+				{
+					ModifyAuraStack(SPELL_STONE_GRIP,1,target);
+					if(Unit* pGripTarget_ = GetGuidUnit(pGripTarget))
+						Kill(pGripTarget_);
+					if(target->GetTypeId() == TYPEID_PLAYER)
+					{	
+						pGripTarget = target->GetGUID();
+						target->EnterVehicle(me->GetVehicleKit());
+						grip = true;
+						gripdmg = 0;
+					}
 				}
 			}
 			Stone_Grip_Timer = 30000;
@@ -467,6 +493,12 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
 	void Aggro(Unit* pWho)
     {
+		if(pWho->GetTypeId() == TYPEID_UNIT)
+		{
+			EnterEvadeMode();
+			return;
+		}
+
         if (pInstance)
 		{
             pInstance->SetData(TYPE_KOLOGARN, IN_PROGRESS);
