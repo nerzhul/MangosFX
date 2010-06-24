@@ -22413,6 +22413,15 @@ void Player::ActivateSpec(uint8 spec)
 		spec = 1;
 
     _SaveActions();
+
+	if(getClass() == CLASS_DRUID)
+	{
+		RemoveAurasDueToSpell(19255);
+		RemoveAurasDueToSpell(19256);
+		RemoveAurasDueToSpell(19257);
+		RemoveAurasDueToSpell(19258);
+		RemoveAurasDueToSpell(19259);
+	}
     
     UnsummonPetTemporaryIfAny();
     
