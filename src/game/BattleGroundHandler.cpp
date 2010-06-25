@@ -247,7 +247,7 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
     if(!bg)                                                 // can't be received if player not in battleground
         return;
 
-    switch( bg->GetTypeID() )
+    switch( bg->GetTypeID(true) )
     {
         case BATTLEGROUND_WS:
             {

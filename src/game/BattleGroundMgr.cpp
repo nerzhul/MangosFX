@@ -1317,7 +1317,6 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
             *data << uint32(bg->m_ArenaTeamRatingChanges[i]);
             *data << uint32(3999);                          // huge thanks for TOM_RUS for this!
             *data << uint32(0);                             // added again in 3.1
-            sLog.outDebug("rating change: %d", bg->m_ArenaTeamRatingChanges[i]);
         }
         for(int i = 1; i >= 0; --i)
         {
@@ -1365,42 +1364,8 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         }
         *data << (int32)itr->second->DamageDone;             // damage done
         *data << (int32)itr->second->HealingDone;            // healing done
-        switch(bg->GetTypeID())                              // battleground specific things
+        switch(bg->GetTypeID(true))                              // battleground specific things
         {
-			case BATTLEGROUND_RB:
-                switch(bg->GetMapId())
-                {
-                    case 489:
-                        *data << (uint32)0x00000002;        // count of next fields
-                        *data << (uint32)((BattleGroundWGScore*)itr->second)->FlagCaptures;         // flag captures
-                        *data << (uint32)((BattleGroundWGScore*)itr->second)->FlagReturns;          // flag returns
-                        break;
-                    case 566:
-                        *data << (uint32)0x00000001;        // count of next fields
-                        *data << (uint32)((BattleGroundEYScore*)itr->second)->FlagCaptures;         // flag captures
-                        break;
-                    case 529:
-                        *data << (uint32)0x00000002;        // count of next fields
-                        *data << (uint32)((BattleGroundABScore*)itr->second)->BasesAssaulted;       // bases asssulted
-                        *data << (uint32)((BattleGroundABScore*)itr->second)->BasesDefended;        // bases defended
-                        break;
-                    case 30:
-                        *data << (uint32)0x00000005;        // count of next fields
-                        *data << (uint32)((BattleGroundAVScore*)itr->second)->GraveyardsAssaulted;  // GraveyardsAssaulted
-                        *data << (uint32)((BattleGroundAVScore*)itr->second)->GraveyardsDefended;   // GraveyardsDefended
-                        *data << (uint32)((BattleGroundAVScore*)itr->second)->TowersAssaulted;      // TowersAssaulted
-                        *data << (uint32)((BattleGroundAVScore*)itr->second)->TowersDefended;       // TowersDefended
-                        *data << (uint32)((BattleGroundAVScore*)itr->second)->MinesCaptured;        // MinesCaptured
-                        break;
-                    case 607:
-                        *data << uint32(2);
-						*data << uint32(((BattleGroundSAScore*)itr->second)->demolishers_destroyed);
-						*data << uint32(((BattleGroundSAScore*)itr->second)->gates_destroyed);
-                        break;
-                    default:
-                        *data << (int32)0;                  // 0
-                        break;
-                }
             case BATTLEGROUND_AV:
                 *data << (uint32)0x00000005;                // count of next fields
                 *data << (uint32)((BattleGroundAVScore*)itr->second)->GraveyardsAssaulted;  // GraveyardsAssaulted
@@ -1568,6 +1533,22 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
         }
     }
 
+	bool isRandom = false;
+	
+	if(bgTypeId==BATTLEGROUND_RB)
+	{
+		BattleGroundTypeId random_bgs[] = {BATTLEGROUND_WS, BATTLEGROUND_AB, BATTLEGROUND_EY/*, BATTLEGROUND_AV, BATTLEGROUND_SA, BATTLEGROUND_IC*/};
+		uint32 bg_num = urand(0,2/*5*/);
+		bgTypeId = random_bgs[bg_num];
+		bg_template = GetBattleGroundTemplate(bgTypeId);
+		if (!bg_template)
+		{
+			sLog.outError("BattleGround: CreateNewBattleGround - bg template not found for %u", bgTypeId);
+			return NULL;
+		}
+		isRandom = true;
+	}
+
     BattleGround *bg = NULL;
     // create a copy of the BG template
     switch(bgTypeId)
@@ -1609,43 +1590,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
             bg = new BattleGroundIC(*(BattleGroundIC*)bg_template);
             break;
         case BATTLEGROUND_RB:
-			switch(urand(0,2))
-			{
-				case 0:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_WS);
-					bg = new BattleGroundWS(*(BattleGroundWS*)bg_template);
-					break;
-				case 1:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_AB);
-					bg = new BattleGroundAB(*(BattleGroundAB*)bg_template);
-					break;
-				case 2:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_EY);
-					bg = new BattleGroundEY(*(BattleGroundEY*)bg_template);
-					break;
-				case 3:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_AV);
-					bg = new BattleGroundAV(*(BattleGroundAV*)bg_template);
-					break;
-				case 4:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_SA);
-					bg = new BattleGroundSA(*(BattleGroundSA*)bg_template);
-					break;
-				case 5:
-					bg_template = GetBattleGroundTemplate(BATTLEGROUND_IC);
-					bg = new BattleGroundIC(*(BattleGroundIC*)bg_template);
-					break;
-				default:
-					break;
-			}
-			bg->SetRandomBG(true);
-			if(bg_template)
-			{
-				bg->SetMinPlayers(bg_template->GetMinPlayers());
-				bg->SetMaxPlayers(bg_template->GetMaxPlayers());
-				bg->SetMinPlayersPerTeam(bg_template->GetMinPlayersPerTeam());
-				bg->SetMaxPlayersPerTeam(bg_template->GetMaxPlayersPerTeam());
-			}
+			bg = new BattleGroundABG(*(BattleGroundABG*)bg_template);
             break;
         default:
             //error, but it is handled few lines above
@@ -1654,7 +1599,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 
     // generate a new instance id
     bg->SetInstanceID(sMapMgr.GenerateInstanceId()); // set instance id
-    bg->SetClientInstanceID(CreateClientVisibleInstanceId(bgTypeId, bracketEntry->GetBracketId()));
+    bg->SetClientInstanceID(CreateClientVisibleInstanceId(isRandom ? BATTLEGROUND_RB : bgTypeId, bracketEntry->GetBracketId()));
 
     // reset the new bg (set status to status_wait_queue from status_none)
     bg->Reset();
@@ -1664,6 +1609,8 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
     bg->SetBracket(bracketEntry);
     bg->SetArenaType(arenaType);
     bg->SetRated(isRated);
+	bg->SetRandomBG(isRandom);
+    bg->SetTypeID(isRandom ? BATTLEGROUND_RB : bgTypeId);
     bg->SetRandomTypeID(bgTypeId);
 
     return bg;
