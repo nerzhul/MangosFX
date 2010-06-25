@@ -64,6 +64,10 @@ void LFGMgr::InitLFG()
         reward->stackCount = RewardDungeonDoneData[i][4];
         m_RewardDoneList.push_back(reward);
     }
+
+	m_LFGGroupList[0].clear();
+	m_LFGGroupList[1].clear();
+
     // Initialize dungeonMap
     m_DungeonsMap[LFG_ALL_DUNGEONS] = GetAllDungeons();
     /*m_DungeonsMap[LFG_RANDOM_CLASSIC] = GetDungeonsByRandom(LFG_RANDOM_CLASSIC);
@@ -371,7 +375,7 @@ void LFGMgr::AddPlayerToRandomQueue(Player* plr, LFG_Role role)
 	plr->m_lookingForGroup.roles = role;
 	plr->m_lookingForGroup.waited = 0;
 
-	LFGGroup* grp = SearchGroup(role,plr->GetBGTeam());
+	LFGGroup* grp = SearchGroup(role,plr->GetTeam() == ALLIANCE ? 0 : 1);
 	LFG_Role TryiedRole = grp->TryToGiveRole(role);
 	if(grp->SetRole(plr->GetGUID(),TryiedRole))
 	{
@@ -387,19 +391,26 @@ void LFGMgr::AddPlayerToRandomQueue(Player* plr, LFG_Role role)
 
 LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
 {
+	LFGGroup* grp = NULL;
 	if(m_LFGGroupList[team].empty())
-		return new LFGGroup();
+		grp = new LFGGroup();
 	else
 	{
 		for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[team].begin(); itr != m_LFGGroupList[team].end(); ++itr)
 		{
 			if(LFGGroup* tmpGrp = (*itr))
 				if(tmpGrp->TryToGiveRole(role) != ROLE_NONE)
-					return tmpGrp;
+				{
+					grp = tmpGrp;
+					break;
+				}
 		}
-
-		return new LFGGroup();
+		if(!grp)
+			grp = new LFGGroup();
 	}
+
+	m_LFGGroupList[team].push_back(grp);
+	return grp;
 }
 
 uint32 LFGMgr::GenerateRandomDungeon()
@@ -431,6 +442,7 @@ void LFGMgr::Update(uint32 diff)
 						plr->m_lookingForGroup.waited += diff;
 						if(plr->m_lookingForGroup.waited >= 3000000)
 							plr->m_lookingForGroup.waited = 3000000;
+						error_log("TEST");
 						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
 					}
 
