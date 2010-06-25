@@ -568,28 +568,63 @@ void LFGGroup::SendLfgProposalUpdate()
 
 		WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
 		data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
-		data << uint8(1); // state
+		data << uint8(0); // state
 		data << uint32(0); // group id
 		data << uint32(0); // boss killed
 		data << uint8(0);
-		uint8 answers = 0;
-		for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
-			if(groupAnswers[j] != LFG_ANSW_NONE)
-				answers++;
 
-		data << uint8(answers);
-		for(uint8 j=0;i<answers;i++)
-		{
-			data << uint32(GetRoleBySlot(j)); // role
-			if(plr == GetPlayerBySlot(j))
-				data << uint8(1); // if its self
-			else
-				data << uint8(0);
-			data << uint8(0); // if in dungeon
-			data << uint8(0); // same group
-			data << uint8(groupAnswers[j]); // answer
-			data << uint8(0); // accept
-		}
+		data << uint8(5); // loop size
+
+		data << uint32(ROLE_TANK); // role
+		if(plr == GetPlayerBySlot(0))
+			data << uint8(1); // if its self
+		else
+			data << uint8(0);
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(groupAnswers[0] ? 1 : 0); // answer
+		data << uint8(groupAnswers[0]); // accept answer
+
+		data << uint32(ROLE_HEAL); // role
+		if(plr == GetPlayerBySlot(1))
+			data << uint8(1); // if its self
+		else
+			data << uint8(0);
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(groupAnswers[1] ? 1 : 0); // answer
+		data << uint8(groupAnswers[1]); // accept answer
+
+		data << uint32(ROLE_DPS); // role
+		if(plr == GetPlayerBySlot(2))
+			data << uint8(1); // if its self
+		else
+			data << uint8(0);
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(groupAnswers[2] ? 1 : 0); // answer
+		data << uint8(groupAnswers[2]); // accept answer
+
+		data << uint32(ROLE_DPS); // role
+		if(plr == GetPlayerBySlot(3))
+			data << uint8(1); // if its self
+		else
+			data << uint8(0);
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(groupAnswers[3] ? 1 : 0); // answer
+		data << uint8(groupAnswers[3]); // accept answer
+
+		data << uint32(ROLE_DPS); // role
+		if(plr == GetPlayerBySlot(4))
+			data << uint8(1); // if its self
+		else
+			data << uint8(0);
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(groupAnswers[4] ? 1 : 0); // answer
+		data << uint8(groupAnswers[4]); // accept answer
+
 		plr->GetSession()->SendPacket(&data);
 	}
 

@@ -333,8 +333,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
     sLog.outDebug("Unit %s enter vehicle entry %u id %u dbguid %u seat %i, seek seat %i", unit->GetName(), me->GetEntry(), m_vehicleInfo->m_ID, me->GetGUIDLow(), (int32)seat->first,seatId);
 
 	unit->SetVehicleGUID(me->GetGUID());
-	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
-	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
 	seat->second.passenger = unit;
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
@@ -357,7 +355,8 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SendMessageToSet(&data0,true);
     }*/
 
-	
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(unit->GetVehicle()->GetVehicleInfo()->m_ID);
     if(!ve)
