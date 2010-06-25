@@ -1119,8 +1119,9 @@ void WorldObject::Relocate(float x, float y, float z, float orientation)
     if(isType(TYPEMASK_UNIT))
 	{
         ((Unit*)this)->m_movementInfo.ChangePosition(x, y, z, orientation);
-		if(((Creature*)this)->isVehicle())
-			((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
+		if(((Unit*)this)->GetTypeId() == TYPEID_UNIT)
+			if(((Creature*)this)->isVehicle())
+				((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
 	}
 }
 
