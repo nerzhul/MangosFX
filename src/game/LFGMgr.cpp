@@ -76,7 +76,8 @@ void LFGMgr::InitLFG()
     m_DungeonsMap[LFG_RANDOM_LK_NORMAL] = GetDungeonsByRandom(LFG_RANDOM_LK_NORMAL);
     m_DungeonsMap[LFG_RANDOM_LK_HEROIC] = GetDungeonsByRandom(LFG_RANDOM_LK_HEROIC);*/
 
-	middleTime = 600;  
+	middleTime = 600;
+	Update_Timer = 1000;
 }
 
 void LFGMgr::SendLfgPartyInfo(Player *plr)
@@ -429,58 +430,63 @@ uint32 LFGMgr::GenerateRandomDungeon()
 
 void LFGMgr::Update(uint32 diff)
 {
-	for(uint8 i=0;i<BG_TEAMS_COUNT;i++)
+	if(Update_Timer <= diff)
 	{
-		if(!m_LFGGroupList[i].empty())
+		for(uint8 i=0;i<BG_TEAMS_COUNT;i++)
 		{
-			for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[i].begin(); itr != m_LFGGroupList[i].end(); ++itr)
+			if(!m_LFGGroupList[i].empty())
 			{
-				if(LFGGroup* tmpGrp = (*itr))
+				for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[i].begin(); itr != m_LFGGroupList[i].end(); ++itr)
 				{
-					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
+					if(LFGGroup* tmpGrp = (*itr))
 					{
-						plr->m_lookingForGroup.waited += diff;
-						if(plr->m_lookingForGroup.waited >= 3000000)
-							plr->m_lookingForGroup.waited = 3000000;
-						error_log("TEST");
-						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-					}
+						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
+						{
+							plr->m_lookingForGroup.waited += 1;
+							if(plr->m_lookingForGroup.waited > 2390000)
+								plr->m_lookingForGroup.waited = 2390000;
+							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						}
 
-					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
-					{
-						plr->m_lookingForGroup.waited += diff;
-						if(plr->m_lookingForGroup.waited >= 3000000)
-							plr->m_lookingForGroup.waited = 3000000;
-						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-					}
+						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
+						{
+							plr->m_lookingForGroup.waited += 1;
+							if(plr->m_lookingForGroup.waited > 2390000)
+								plr->m_lookingForGroup.waited = 2390000;
+							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						}
 
-					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
-					{
-						plr->m_lookingForGroup.waited += diff;
-						if(plr->m_lookingForGroup.waited >= 3000000)
-							plr->m_lookingForGroup.waited = 3000000;
-						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-					}
+						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
+						{
+							plr->m_lookingForGroup.waited += 1;
+							if(plr->m_lookingForGroup.waited > 2390000)
+								plr->m_lookingForGroup.waited  2390000;
+							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						}
 
-					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
-					{
-						plr->m_lookingForGroup.waited += diff;
-						if(plr->m_lookingForGroup.waited >= 3000000)
-							plr->m_lookingForGroup.waited = 3000000;
-						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-					}
+						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
+						{
+							plr->m_lookingForGroup.waited += 1;
+							if(plr->m_lookingForGroup.waited > 2390000)
+								plr->m_lookingForGroup.waited = 2390000;
+							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						}
 
-					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
-					{
-						plr->m_lookingForGroup.waited += diff;
-						if(plr->m_lookingForGroup.waited >= 3000000)
-							plr->m_lookingForGroup.waited = 3000000;
-						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
+						{
+							plr->m_lookingForGroup.waited += 1;
+							if(plr->m_lookingForGroup.waited > 2390000)
+								plr->m_lookingForGroup.waited = 2390000;
+							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+						}
 					}
 				}
 			}
 		}
+		Update_Timer = 1000;
 	}
+	else
+		Update_Timer -= diff;
 }
 
 void LFGMgr::SendLfgQueueStatusUpdate(Player *plr, LFGGroup* grp)

@@ -227,6 +227,7 @@ class LFGMgr
 		LfgDungeonMap m_DungeonsMap;
 		std::vector<LFGGroup*> m_LFGGroupList[BG_TEAMS_COUNT];
 		uint32 middleTime; // seconds
+		uint32 Update_Timer;
 
 };
 
