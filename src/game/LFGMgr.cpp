@@ -798,3 +798,27 @@ bool LFGGroup::AllAnswer()
 
 	return true;
 }
+
+uint8 LFGGroup::GetSlotForPlayer(Player* plr)
+{
+	if(Tank == plr->GetGUID())
+		return 0;
+
+	if(Heal == plr->GetGUID())
+		return 1;
+
+	for(uint8 i=0;i<MAX_DPS;i++)
+		if(Dps[i] == plr->GetGUID())
+			return (2+i);
+
+	return 5;
+}
+
+void LFGGroup::PlayerAccept(Player* plr, bool accept)
+{
+	uint8 slot = GetSlotForPlayer(plr);
+	if(slot == MAX_GROUP_SIZE)
+		return;
+	
+	groupAnswers[slot] = accept ? LFG_ANSW_ACCEPT : LFG_ANSW_DENY;
+}

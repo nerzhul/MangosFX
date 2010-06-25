@@ -229,9 +229,17 @@ void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 	recv_data >> accept;
 
 	recv_data.hexlike();
+
+	if(GetPlayer()->m_lookingForGroup.group)
+		GetPlayer()->m_lookingForGroup.group->PlayerAccept(GetPlayer(),accept);
+
 	if(!accept)
 	{
 		sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());
 		SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
+	}
+	else
+	{
+		// something here ?
 	}
 }	

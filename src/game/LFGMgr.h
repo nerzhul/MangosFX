@@ -160,6 +160,7 @@ class LFGGroup
 		bool SetRole(uint64 guid, LFG_Role role);
 		LFG_Role TryToGiveRole(LFG_Role role);
 		void RemovePlayer(uint64 guid);
+		void PlayerAccept(Player* plr, bool accept = true);
 		void ResetAnswers();
 
 		uint8 GetTankNb() { return Tank ? 1 : 0; }
@@ -168,6 +169,7 @@ class LFGGroup
 		Player* GetPlayerByRole(LFG_Role role, uint8 place = 0);
 		LFG_Role GetRoleBySlot(uint8 slot);
 		Player* GetPlayerBySlot(uint8 slot);
+		uint8 GetSlotForPlayer(Player* plr);
 		
 		bool IsFull();
 		bool AllAnswer();
