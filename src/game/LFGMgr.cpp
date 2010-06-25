@@ -367,7 +367,7 @@ void LFGMgr::RemovePlayerFromRandomQueue(Player* plr)
 		return;
 
 	plrGrp->RemovePlayer(plr->GetGUID());
-	plrGrp->ResetAnwers();
+	plrGrp->ResetAnswers();
 	plr->m_lookingForGroup.group = NULL;
 	plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
 }
@@ -601,7 +601,7 @@ LFGGroup::LFGGroup()
 	Heal = 0;
 	for(uint8 i=0;i<MAX_DPS;i++)
 		Dps[i] = 0;
-	ResetAnwers();
+	ResetAnswers();
 }
 
 LFGGroup::~LFGGroup()
@@ -760,7 +760,7 @@ bool LFGGroup::IsFull()
 	return true;
 }
 
-void LFGGroup::ResetAnwers()
+void LFGGroup::ResetAnswers()
 {
 	for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
 		groupAnswers[i] = LFG_ANSW_NONE;
