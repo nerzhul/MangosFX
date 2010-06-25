@@ -460,7 +460,7 @@ void LFGMgr::Update(uint32 diff)
 						{
 							plr->m_lookingForGroup.waited += 1;
 							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited  2390000;
+								plr->m_lookingForGroup.waited = 2390000;
 							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
 						}
 
