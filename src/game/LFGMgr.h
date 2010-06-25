@@ -135,29 +135,46 @@ enum LfgUpdateType
 
 #define MAX_DPS 3
 
+enum LFGGroupAnswerType
+{
+	LFG_ANSW_DENY	=	0x0,
+	LFG_ANSW_ACCEPT	=	0x1,
+	LFG_ANSW_NONE	=	0x2,
+};
+
 class LFGGroup
 {
 	public:
 		LFGGroup();
 		~LFGGroup();
 
+		void SendLfgProposalUpdate();
+
 		void SetTank(uint64 guid) { Tank = guid; }
 		void SetHeal(uint64 guid) { Heal = guid; }
 		void SetMaster(uint64 guid) { Master = guid; }
 		void SetDps(uint64 guid);
+
 		bool SetRole(uint64 guid, LFG_Role role);
+		LFG_Role TryToGiveRole(LFG_Role role);
+		void RemovePlayer(uint64 guid);
+		void ResetAnswers();
+
 		uint8 GetTankNb() { return Tank ? 1 : 0; }
 		uint8 GetHealNb() { return Heal ? 1 : 0; }
 		uint8 GetDpsNb();
 		Player* GetPlayerByRole(LFG_Role role, uint8 place = 0);
-		void RemovePlayer(uint64 guid);
-		LFG_Role TryToGiveRole(LFG_Role role);
+		LFG_Role GetRoleBySlot(uint8 slot);
+		Player* GetPlayerBySlot(uint8 slot);
+		
+		bool IsFull();
 
 	private:
 		uint64 Tank;
 		uint64 Heal;
 		uint64 Dps[MAX_DPS];
 		uint64 Master;
+		LFGGroupAnswerType groupAnswers[MAX_GROUP_SIZE];
 };
 
 typedef std::set<uint32> LfgDungeonSet;
@@ -203,7 +220,6 @@ class LFGMgr
 		void RemovePlayerFromRandomQueue(Player* plr);
 		void AddPlayerToRandomQueue(Player* plr, LFG_Role role);
 		void SendLfgRoleCheckResult(Player* plr, bool accept);
-		void SendLfgProposalUpdate(Player* plr);
 	private:
 		void BuildAvailableRandomDungeonList(WorldPacket &data, Player *plr);
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);

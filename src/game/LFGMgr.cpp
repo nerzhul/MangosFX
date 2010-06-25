@@ -367,6 +367,7 @@ void LFGMgr::RemovePlayerFromRandomQueue(Player* plr)
 		return;
 
 	plrGrp->RemovePlayer(plr->GetGUID());
+	plrGrp->ResetAnwers();
 	plr->m_lookingForGroup.group = NULL;
 	plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
 }
@@ -387,6 +388,10 @@ void LFGMgr::AddPlayerToRandomQueue(Player* plr, LFG_Role role)
 	{
 		plr->m_lookingForGroup.roles = 0x00;
 		plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_ROLECHECK_FAILED);
+	}
+	if(grp->IsFull())
+	{
+		// TODO : invitations
 	}
 }
 
@@ -440,45 +445,51 @@ void LFGMgr::Update(uint32 diff)
 				{
 					if(LFGGroup* tmpGrp = (*itr))
 					{
-						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
+						if(!tmpGrp->IsFull())
 						{
-							plr->m_lookingForGroup.waited += 1;
-							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited = 2390000;
-							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-						}
+							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
+							{
+								plr->m_lookingForGroup.waited += 1;
+								if(plr->m_lookingForGroup.waited > 7200)
+									plr->m_lookingForGroup.waited = 7200;
+								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							}
 
-						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
-						{
-							plr->m_lookingForGroup.waited += 1;
-							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited = 2390000;
-							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-						}
+							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
+							{
+								plr->m_lookingForGroup.waited += 1;
+								if(plr->m_lookingForGroup.waited > 7200)
+									plr->m_lookingForGroup.waited = 7200;
+								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							}
 
-						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
-						{
-							plr->m_lookingForGroup.waited += 1;
-							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited = 2390000;
-							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-						}
+							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
+							{
+								plr->m_lookingForGroup.waited += 1;
+								if(plr->m_lookingForGroup.waited > 7200)
+									plr->m_lookingForGroup.waited = 7200;
+								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							}
 
-						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
-						{
-							plr->m_lookingForGroup.waited += 1;
-							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited = 2390000;
-							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
-						}
+							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
+							{
+								plr->m_lookingForGroup.waited += 1;
+								if(plr->m_lookingForGroup.waited > 7200)
+									plr->m_lookingForGroup.waited = 7200;
+								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							}
 
-						if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
-						{
-							plr->m_lookingForGroup.waited += 1;
-							if(plr->m_lookingForGroup.waited > 2390000)
-								plr->m_lookingForGroup.waited = 2390000;
-							SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
+							{
+								plr->m_lookingForGroup.waited += 1;
+								if(plr->m_lookingForGroup.waited > 7200)
+									plr->m_lookingForGroup.waited = 7200;
+								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+							}
 						}
+						else
+							tmpGrp->SendLfgProposalUpdate();
+								
 					}
 				}
 			}
@@ -529,62 +540,59 @@ void LFGMgr::SendLfgRoleCheckResult(Player* plr, bool accept)
 	// Party send packet
 }
 
-void LFGMgr::SendLfgProposalUpdate(Player* plr)
+void LFGGroup::SendLfgProposalUpdate()
 {
-	WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
-	data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
-	data << uint8(0); // state
-	data << uint32(0); // group id
-	data << uint32(0); // boss killed
-	data << uint8(3);
-	uint8 answers = 1;
-	data << uint8(answers);
-	for(uint8 i=0;i<answers;i++)
+	for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
 	{
-		data << uint32(ROLE_DPS); // role
-		data << uint8(1); // if its self
-		data << uint8(0); // if in dungeon
-		data << uint8(0); // same group
-		data << uint8(0); // answer
-		data << uint8(0); // accept
+		Player* plr = NULL;
+		switch(i)
+		{
+			case 0:
+				plr = GetPlayerByRole(ROLE_TANK);
+				break;
+			case 1:
+				plr = GetPlayerByRole(ROLE_HEAL);
+				break;
+			case 2:
+				plr = GetPlayerByRole(ROLE_DPS);
+				break;
+			case 3:
+				plr = GetPlayerByRole(ROLE_DPS,1);
+				break;
+			case 4:
+				plr = GetPlayerByRole(ROLE_DPS,2);
+				break;
+		}
+
+		if(!plr || groupAnswers[i] == LFG_ANSW_NONE)
+			continue;
+
+		WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
+		data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
+		data << uint8(1); // state
+		data << uint32(0); // group id
+		data << uint32(0); // boss killed
+		data << uint8(0);
+		uint8 answers = 5;
+		/*for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
+			if(groupAnswers[j] != LFG_ANSW_NONE)
+				answers++;*/
+
+		data << uint8(answers);
+		for(uint8 j=0;i<answers;i++)
+		{
+			data << uint32(GetRoleBySlot(j)); // role
+			if(plr == GetPlayerBySlot(j))
+				data << uint8(1); // if its self
+			else
+				data << uint8(0);
+			data << uint8(0); // if in dungeon
+			data << uint8(0); // same group
+			data << uint8(groupAnswers[j]); // answer
+			data << uint8(0); // accept
+		}
+		plr->GetSession()->SendPacket(&data);
 	}
-	for(uint8 i=0;i<answers;i++)
-	{
-		data << uint32(ROLE_TANK); // role
-		data << uint8(0); // if its self
-		data << uint8(1); // if in dungeon
-		data << uint8(0); // same group
-		data << uint8(0); // answer
-		data << uint8(0); // accept
-	}
-	for(uint8 i=0;i<answers;i++)
-	{
-		data << uint32(ROLE_HEAL); // role
-		data << uint8(0); // if its self
-		data << uint8(0); // if in dungeon
-		data << uint8(0); // same group
-		data << uint8(1); // answer
-		data << uint8(0); // accept
-	}
-	for(uint8 i=0;i<answers;i++)
-	{
-		data << uint32(ROLE_DPS); // role
-		data << uint8(0); // if its self
-		data << uint8(0); // if in dungeon
-		data << uint8(0); // same group
-		data << uint8(0); // answer
-		data << uint8(1); // accept
-	}
-	for(uint8 i=0;i<answers;i++)
-	{
-		data << uint32(ROLE_TANK); // role
-		data << uint8(0); // if its self
-		data << uint8(1); // if in dungeon
-		data << uint8(1); // same group
-		data << uint8(0); // answer
-		data << uint8(0); // accept
-	}
-	plr->GetSession()->SendPacket(&data);
 }
 
 LFGGroup::LFGGroup()
@@ -593,6 +601,7 @@ LFGGroup::LFGGroup()
 	Heal = 0;
 	for(uint8 i=0;i<MAX_DPS;i++)
 		Dps[i] = 0;
+	ResetAnwers();
 }
 
 LFGGroup::~LFGGroup()
@@ -660,7 +669,6 @@ Player* LFGGroup::GetPlayerByRole(LFG_Role role, uint8 place)
 			return ObjectAccessor::FindPlayer(Heal);
 		case ROLE_DPS:
 			return ObjectAccessor::FindPlayer(Dps[place]);
-			break;
 	}
 
 	return NULL;
@@ -696,4 +704,64 @@ void LFGGroup::RemovePlayer(uint64 guid)
 			Dps[i] = 0;
 			return;
 		}
+}
+
+LFG_Role LFGGroup::GetRoleBySlot(uint8 slot)
+{
+	if(slot >= MAX_GROUP_SIZE)
+		return ROLE_NONE;
+
+	switch(slot)
+	{
+		case 0:
+			return ROLE_TANK;
+		case 1:
+			return ROLE_HEAL;
+		case 2:
+		case 3:
+		case 4:
+			return ROLE_DPS;
+	}
+
+	return ROLE_NONE;
+}
+
+Player* LFGGroup::GetPlayerBySlot(uint8 slot)
+{
+	if(slot >= MAX_GROUP_SIZE)
+		return NULL;
+
+	switch(slot)
+	{
+		case 0:
+			return ObjectAccessor::FindPlayer(Tank);
+		case 1:
+			return ObjectAccessor::FindPlayer(Heal);
+		case 2:
+			return ObjectAccessor::FindPlayer(Dps[0]);
+		case 3:
+			return ObjectAccessor::FindPlayer(Dps[1]);
+		case 4:
+			return ObjectAccessor::FindPlayer(Dps[2]);
+	}
+
+	return NULL;
+}
+
+bool LFGGroup::IsFull()
+{
+	if(Tank == 0 || Heal == 0)
+		return false;
+
+	for(uint8 i=0;i<MAX_DPS;i++)
+		if(Dps[i] == 0)
+			return false;
+
+	return true;
+}
+
+void LFGGroup::ResetAnwers()
+{
+	for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
+		groupAnswers[i] = LFG_ANSW_NONE;
 }

@@ -1015,7 +1015,8 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 		else if(argstr == "lfg4")
 		{
 			error_log("packet 4");
-			sLFGMgr.SendLfgProposalUpdate(m_session->GetPlayer());
+			if(m_session->GetPlayer()->m_lookingForGroup.group)
+				m_session->GetPlayer()->m_lookingForGroup.group->SendLfgProposalUpdate();
 		}
 	}
 	return true;

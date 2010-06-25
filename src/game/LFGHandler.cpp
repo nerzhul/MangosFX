@@ -145,6 +145,7 @@ void WorldSession::SendLfgUpdateParty(uint8 updateType, uint32 dungeonEntry /* =
     SendPacket(&data);
 }
 
+// handle finished
 void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 {
 	sLog.outDebug("CMSG_LFG_JOIN");
@@ -227,6 +228,7 @@ void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 	recv_data >> groupId;
 	recv_data >> accept;
 
+	recv_data.hexlike();
 	if(accept)
 		;
 		// TODO : status update
