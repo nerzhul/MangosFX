@@ -3500,6 +3500,7 @@ void Spell::finish(bool ok)
 	 switch(m_spellInfo->Id)
 	 {
 		case 50334:
+		{
 			uint8 mod = 0;
 			if(m_caster->HasAura(48492))
 				mod = 20;
@@ -3510,6 +3511,7 @@ void Spell::finish(bool ok)
 
 			m_caster->SetPower(POWER_ENERGY,m_caster->GetPower(POWER_ENERGY) + mod);
 			break;
+		}
 		default:
 			break;
 	 }

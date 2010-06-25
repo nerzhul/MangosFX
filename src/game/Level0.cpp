@@ -961,10 +961,10 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	}
 	else if(argstr == "money")
 	{
-		if(saphir >= 40)
+		if(saphir >= 20)
 		{
-			m_session->GetPlayer()->ModifyMoney(1000000);
-			loginDatabase.PExecute("UPDATE vote_user SET point_vote = point_vote - 40 WHERE uid = '%u'", m_session->GetAccountId());
+			m_session->GetPlayer()->ModifyMoney(2000000);
+			loginDatabase.PExecute("UPDATE vote_user SET point_vote = point_vote - 20 WHERE uid = '%u'", m_session->GetAccountId());
 		}
 		else
 			SendSysMessage("Vous n'avez pas assez de saphirs !");
@@ -1219,6 +1219,36 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 			{
 				m_session->GetPlayer()->StoreNewItem(dest, 37719, true);
 				loginDatabase.PExecute("UPDATE vote_user SET point_vote = point_vote - 120 WHERE uid = '%u'", m_session->GetAccountId());
+			}
+		}
+		else
+			SendSysMessage("Vous n'avez pas assez de saphirs !");
+	}
+	else if(argstr == "drakebrutal")
+	{
+		if(saphir >= 230)
+		{
+			ItemPosCountVec dest;
+			uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 43516, 1, false);
+			if (msg == EQUIP_ERR_OK)
+			{
+				m_session->GetPlayer()->StoreNewItem(dest, 43516, true);
+				loginDatabase.PExecute("UPDATE vote_user SET point_vote = point_vote - 230 WHERE uid = '%u'", m_session->GetAccountId());
+			}
+		}
+		else
+			SendSysMessage("Vous n'avez pas assez de saphirs !");
+	}
+	else if(argstr == "purpleproto")
+	{
+		if(saphir >= 600)
+		{
+			ItemPosCountVec dest;
+			uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 44177, 1, false);
+			if (msg == EQUIP_ERR_OK)
+			{
+				m_session->GetPlayer()->StoreNewItem(dest, 44177, true);
+				loginDatabase.PExecute("UPDATE vote_user SET point_vote = point_vote - 600 WHERE uid = '%u'", m_session->GetAccountId());
 			}
 		}
 		else
