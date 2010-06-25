@@ -9,6 +9,7 @@
 
 enum LFG_Role
 {
+	ROLE_NONE	=	0x00,
 	ROLE_MASTER	=	0x01,
 	ROLE_TANK	=	0x02,
 	ROLE_HEAL	=	0x04,
@@ -132,17 +133,30 @@ enum LfgUpdateType
     LFG_UPDATETYPE_GROUP_DISBAND        = 16,
 };
 
-struct LFGGroup
+#define MAX_DPS 3
+
+class LFGGroup
 {
-	LFGGroup(Player* t,Player* h, Player** d)
-	{
-		Tank = t;
-		Heal = h;
-		Dps = d;
-	}
-	Player* Tank;
-	Player* Heal;
-	Player** Dps;
+	public:
+		LFGGroup();
+		~LFGGroup();
+
+		void SetTank(uint64 guid) { Tank = guid; }
+		void SetHeal(uint64 guid) { Heal = guid; }
+		void SetMaster(uint64 guid) { Master = guid; }
+		void SetDps(uint64 guid);
+		bool SetRole(uint64 guid, LFG_Role role);
+		uint8 GetTankNb() { return Tank ? 1 : 0; }
+		uint8 GetHealNb() { return Heal ? 1 : 0; }
+		uint8 GetDpsNb();
+		Player* GetPlayerByRole(LFG_Role role, uint8 place = 0);
+		LFG_Role TryToGiveRole(LFG_Role role);
+
+	private:
+		uint64 Tank;
+		uint64 Heal;
+		uint64 Dps[MAX_DPS];
+		uint64 Master;
 };
 
 typedef std::set<uint32> LfgDungeonSet;
@@ -194,7 +208,7 @@ class LFGMgr
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);
 		void BuildPlayerLockDungeonBlock(WorldPacket &data, LfgLockStatusSet *lockSet);
 		void BuildPartyLockDungeonBlock(WorldPacket &data, LfgLockStatusMap *lockMap);
-		void SendLfgQueueStatusUpdate(Player *plr);
+		void SendLfgQueueStatusUpdate(Player *plr, LFGGroup* grp);
 		LfgLockStatusMap* GetPartyLockStatusDungeons(Player *plr, LfgDungeonSet *dungeons);
 		LfgLockStatusSet* GetPlayerLockStatusDungeons(Player *plr, LfgDungeonSet *dungeons);
 		LfgDungeonSet* GetRandomDungeons(uint8 level, uint8 expansion);
@@ -204,17 +218,13 @@ class LFGMgr
 
 		bool PlayerJoinRandomQueue(Player* plr);
 		uint32 GenerateRandomDungeon();
-		void TryToFormGroups();
-		void RegisterGroup(LFGGroup* grp) { m_LFGGroupSet.insert(grp); }
+
+		LFGGroup* SearchGroup(LFG_Role role, uint8 team);
 
 		LfgRewardList m_RewardList;
 		LfgRewardList m_RewardDoneList;
 		LfgDungeonMap m_DungeonsMap;
-		PlayerSet m_TankSet[2];
-		PlayerSet m_DpsSet[2];
-		PlayerSet m_HealSet[2];
-		PlayerSet m_MasterSet[2];
-		LFGGroupSet m_LFGGroupSet;
+		std::vector<LFGGroup*> m_LFGGroupList[BG_TEAMS_COUNT];
 		uint32 middleTime; // seconds
 
 };

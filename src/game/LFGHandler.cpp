@@ -233,7 +233,9 @@ void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 	recv_data >> accept;
 
 	if(accept)
-		sLFGMgr.TeleportPlayerToInstance(GetPlayer());
+		;
+		// TODO : status update
+		//sLFGMgr.TeleportPlayerToInstance(GetPlayer());
 	else
 	{
 		sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());

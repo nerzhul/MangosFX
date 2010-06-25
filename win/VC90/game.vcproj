@@ -620,18 +620,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\LFGHandler.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\LFGMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\LFGMgr.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\LootHandler.cpp"
 				>
 			</File>
@@ -1116,6 +1104,22 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\ChatHandler.cpp"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="LFG"
+				>
+				<File
+					RelativePath="..\..\src\game\LFGHandler.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\LFGMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\LFGMgr.h"
 					>
 				</File>
 			</Filter>

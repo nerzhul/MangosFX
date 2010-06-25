@@ -29,15 +29,8 @@ LFGMgr::~LFGMgr()
         delete it->second;
     }
     m_DungeonsMap.clear();
-	m_TankSet[0].clear();
-	m_HealSet[0].clear();
-	m_DpsSet[0].clear();
-	m_MasterSet[0].clear();
-	m_TankSet[1].clear();
-	m_HealSet[1].clear();
-	m_DpsSet[1].clear();
-	m_MasterSet[1].clear();
-	m_LFGGroupSet.clear();
+	m_LFGGroupList[0].clear();
+	m_LFGGroupList[1].clear();
 }
 
 void LFGMgr::InitLFG()
@@ -364,47 +357,34 @@ LfgDungeonSet* LFGMgr::GetRandomDungeons(uint8 level, uint8 expansion)
 
 void LFGMgr::RemovePlayerFromRandomQueue(Player* plr)
 {
-	if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-	{
-		m_TankSet[0].erase(plr);
-		m_DpsSet[0].erase(plr);
-		m_HealSet[0].erase(plr);
-		m_MasterSet[0].erase(plr);
-	}
-	else
-	{
-		m_TankSet[1].erase(plr);
-		m_DpsSet[1].erase(plr);
-		m_HealSet[1].erase(plr);
-		m_MasterSet[1].erase(plr);
-	}
+	// TODO
 }
 
 void LFGMgr::AddPlayerToRandomQueue(Player* plr)
 {
-	int8 plrRole = plr->m_lookingForGroup.roles;
+	LFG_Role plrRole = LFG_Role(plr->m_lookingForGroup.roles);
 	plr->m_lookingForGroup.waited = 0;
-	if(plrRole & ROLE_MASTER)
-		if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-			m_MasterSet[0].insert(plr);
-		else
-			m_MasterSet[1].insert(plr);
-	if(plrRole & ROLE_TANK) 
-		if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-			m_TankSet[0].insert(plr);
-		else
-			m_TankSet[1].insert(plr);
-	if(plrRole & ROLE_HEAL) 
-		if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-			m_HealSet[0].insert(plr);
-		else
-			m_HealSet[1].insert(plr);
-	if(plrRole & ROLE_DPS) 
-		if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-			m_DpsSet[0].insert(plr);
-		else
-			m_DpsSet[1].insert(plr);
-	TryToFormGroups();
+
+	LFGGroup* grp = SearchGroup(plrRole,plr->GetBGTeam());
+	LFG_Role role = grp->TryToGiveRole(plrRole);
+	grp->SetRole(plr->GetGUID(),role);
+}
+
+LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
+{
+	if(m_LFGGroupList[team].empty())
+		return new LFGGroup();
+	else
+	{
+		for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[team].begin(); itr != m_LFGGroupList[team].end(); ++itr)
+		{
+			if(LFGGroup* tmpGrp = (*itr))
+				if(tmpGrp->TryToGiveRole(role) != ROLE_NONE)
+					return tmpGrp;
+		}
+
+		return new LFGGroup();
+	}
 }
 
 uint32 LFGMgr::GenerateRandomDungeon()
@@ -421,145 +401,79 @@ uint32 LFGMgr::GenerateRandomDungeon()
 	return 0;
 }
 
-void LFGMgr::TryToFormGroups()
-{
-	for(uint8 i=0;i<2;i++)
-	{
-		Player* Tank,*Heal,*dps[3];
-		for(PlayerSet::iterator itr = m_TankSet[i].begin();itr != m_TankSet[i].end();++itr)
-		{
-			Tank = *itr;
-			break;
-		}
-
-		for(PlayerSet::iterator itr = m_HealSet[i].begin();itr != m_HealSet[i].end();++itr)
-		{
-			if(Tank && (*itr == Tank))
-				continue;
-			Heal = *itr;
-			break;
-		}
-
-		uint8 j=0;
-		for(PlayerSet::iterator itr = m_HealSet[i].begin();itr != m_HealSet[i].end();++itr)
-		{
-			if((Tank && (*itr == Tank)) || (Heal && (*itr == Heal)))
-				continue;
-			dps[j] = *itr;
-			j++;
-			if(j>2)
-				break;
-		}
-
-		/*if(Tank && Heal && dps[0] && dps[1] && dps[2])
-		{
-			LFGGroup* grp = new LFGGroup(Tank,Heal,dps);
-			Tank->m_lookingForGroup.group = grp;
-			Heal->m_lookingForGroup.group = grp;
-			dps[0]->m_lookingForGroup.group = grp;
-			dps[1]->m_lookingForGroup.group = grp;
-			dps[2]->m_lookingForGroup.group = grp;
-			RegisterGroup(grp);
-		}*/
-	}
-}
-
 void LFGMgr::Update(uint32 diff)
 {
 	for(uint8 i=0;i<BG_TEAMS_COUNT;i++)
 	{
-		for(PlayerSet::iterator itr = m_DpsSet[i].begin(); itr != m_DpsSet[i].end(); ++itr)
+		if(!m_LFGGroupList[i].empty())
 		{
-			(*itr)->m_lookingForGroup.waited += diff;
-			if((*itr)->m_lookingForGroup.waited >= 3000000)
-				(*itr)->m_lookingForGroup.waited = 3000000;
-			SendLfgQueueStatusUpdate(*itr);
-		}
+			for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[i].begin(); itr != m_LFGGroupList[i].end(); ++itr)
+			{
+				if(LFGGroup* tmpGrp = (*itr))
+				{
+					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
+					{
+						plr->m_lookingForGroup.waited += diff;
+						if(plr->m_lookingForGroup.waited >= 3000000)
+							plr->m_lookingForGroup.waited = 3000000;
+						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+					}
 
-		for(PlayerSet::iterator itr = m_TankSet[i].begin();itr != m_TankSet[i].end();++itr)
-		{
-			(*itr)->m_lookingForGroup.waited += diff;
-			if((*itr)->m_lookingForGroup.waited >= 3000000)
-				(*itr)->m_lookingForGroup.waited = 3000000;
-			SendLfgQueueStatusUpdate(*itr);
-		}
+					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
+					{
+						plr->m_lookingForGroup.waited += diff;
+						if(plr->m_lookingForGroup.waited >= 3000000)
+							plr->m_lookingForGroup.waited = 3000000;
+						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+					}
 
-		for(PlayerSet::iterator itr = m_HealSet[i].begin();itr != m_HealSet[i].end();++itr)
-		{
-			(*itr)->m_lookingForGroup.waited += diff;
-			if((*itr)->m_lookingForGroup.waited >= 9000000)
-				(*itr)->m_lookingForGroup.waited = 9000000;
-			SendLfgQueueStatusUpdate(*itr);
-		}
-	}
+					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
+					{
+						plr->m_lookingForGroup.waited += diff;
+						if(plr->m_lookingForGroup.waited >= 3000000)
+							plr->m_lookingForGroup.waited = 3000000;
+						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+					}
 
-	for(LFGGroupSet::iterator itr = m_LFGGroupSet.begin();itr != m_LFGGroupSet.end();++itr)
-	{
-		if((*itr)->Dps[0])
-			SendLfgProposalUpdate((*itr)->Dps[0]);
-		if((*itr)->Dps[1])
-			SendLfgProposalUpdate((*itr)->Dps[1]);
-		if((*itr)->Dps[2])
-			SendLfgProposalUpdate((*itr)->Dps[2]);
-		if((*itr)->Heal)
-			SendLfgProposalUpdate((*itr)->Heal);
-		if((*itr)->Tank)
-			SendLfgProposalUpdate((*itr)->Tank);
+					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
+					{
+						plr->m_lookingForGroup.waited += diff;
+						if(plr->m_lookingForGroup.waited >= 3000000)
+							plr->m_lookingForGroup.waited = 3000000;
+						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+					}
+
+					if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
+					{
+						plr->m_lookingForGroup.waited += diff;
+						if(plr->m_lookingForGroup.waited >= 3000000)
+							plr->m_lookingForGroup.waited = 3000000;
+						SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
+					}
+				}
+			}
+		}
 	}
 }
 
-void LFGMgr::SendLfgQueueStatusUpdate(Player *plr)
+void LFGMgr::SendLfgQueueStatusUpdate(Player *plr, LFGGroup* grp)
 {
+	if(!plr || !grp)
+		return;
+
 	WorldPacket data(SMSG_LFG_QUEUE_STATUS,4+4+4+4+4+4+1+1+1+4);
 	data << uint32(1);
 	data << uint32(middleTime); // temps d'attente moyen
 	data << uint32(plr->m_lookingForGroup.waited); // temps d'attente
-	data << uint32(0);
-	data << uint32(0);
-	data << uint32(0);
-	uint8 tanks = 1;
-	if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-	{
-		if(m_TankSet[0].size() > 0)
-			tanks = 0;
-	}
-	else
-	{
-		if(m_TankSet[1].size() > 0)
-			tanks = 0;
-	}
-	data << uint8(tanks); // needed tanks
-	uint8 heal = 1;
-	if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-	{
-		if(m_HealSet[0].size() > 0)
-			heal = 0;
-	}
-	else
-	{
-		if(m_HealSet[1].size() > 0)
-			heal = 0;
-	}
-	data << uint8(heal); // needed heals
-	uint8 dps = 3;
-	if(plr->GetBGTeam() == BG_TEAM_ALLIANCE)
-	{
-		if(m_DpsSet[0].size() > 5)
-			dps = 0;
-		else
-			dps = 2;
-	}
-	else
-	{
-		if(m_DpsSet[1].size() > 5)
-			dps = 0;
-		else
-			dps = 2;
-	}
-	data << uint8(dps); // needed dps
+	data << uint32(0); // tanks wait
+	data << uint32(0); // heal wait
+	data << uint32(0); // dps wait
+	data << uint8(grp->GetTankNb() ? 0 : 1); // needed tanks
+	data << uint8(grp->GetHealNb() ? 0 : 1); // needed heals
+	data << uint8(3 - grp->GetDpsNb()); // needed dps
 	data << uint32(plr->m_lookingForGroup.waited); // repet temps d'attente
-	/*if(plr->GetSession())
-		plr->GetSession()->SendPacket(&data);*/
+	if(plr->GetSession())
+		plr->GetSession()->SendPacket(&data);
 }
 
 void LFGMgr::TeleportPlayerToInstance(Player* plr)
@@ -586,43 +500,145 @@ void LFGMgr::SendLfgProposalUpdate(Player* plr)
 {
 	WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
 	data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
-	data << uint8(1); // state
-	data << uint32(1); //
-	data << uint32(2);
-	data << uint8(0);
-	data << uint8(1);
-	for(uint8 i=0;i<1;i++)
+	data << uint8(0); // state
+	data << uint32(0); // group id
+	data << uint32(0); // boss killed
+	data << uint8(3);
+	uint8 answers = 1;
+	data << uint8(answers);
+	for(uint8 i=0;i<answers;i++)
+	{
+		data << uint32(ROLE_DPS); // role
+		data << uint8(1); // if its self
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(0); // answer
+		data << uint8(0); // accept
+	}
+	for(uint8 i=0;i<answers;i++)
+	{
+		data << uint32(ROLE_TANK); // role
+		data << uint8(0); // if its self
+		data << uint8(1); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(0); // answer
+		data << uint8(0); // accept
+	}
+	for(uint8 i=0;i<answers;i++)
+	{
+		data << uint32(ROLE_HEAL); // role
+		data << uint8(0); // if its self
+		data << uint8(0); // if in dungeon
+		data << uint8(0); // same group
+		data << uint8(1); // answer
+		data << uint8(0); // accept
+	}
+	for(uint8 i=0;i<answers;i++)
 	{
 		data << uint32(ROLE_DPS); // role
 		data << uint8(0); // if its self
 		data << uint8(0); // if in dungeon
-		data << uint8(0);
-		data << uint8(0);
-		data << uint8(0);
+		data << uint8(0); // same group
+		data << uint8(0); // answer
+		data << uint8(1); // accept
 	}
-	data << uint32(ROLE_TANK);
-	data << uint8(1);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint32(ROLE_DPS);
-	data << uint8(0);
-	data << uint8(1);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(0);
-	/*data << uint32(ROLE_DPS);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(1);
-	data << uint8(0);
-	data << uint8(0);*/
-	data << uint32(ROLE_HEAL);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(0);
-	data << uint8(1);
+	for(uint8 i=0;i<answers;i++)
+	{
+		data << uint32(ROLE_TANK); // role
+		data << uint8(0); // if its self
+		data << uint8(1); // if in dungeon
+		data << uint8(1); // same group
+		data << uint8(0); // answer
+		data << uint8(0); // accept
+	}
 	plr->GetSession()->SendPacket(&data);
+}
+
+LFGGroup::LFGGroup()
+{
+	Tank = 0;
+	Heal = 0;
+	for(uint8 i=0;i<MAX_DPS;i++)
+		Dps[i] = 0;
+}
+
+LFGGroup::~LFGGroup()
+{
+}
+
+void LFGGroup::SetDps(uint64 guid)
+{
+	for(uint8 i=0;i<MAX_DPS;i++)
+		if(Dps[i] == 0)
+		{
+			Dps[i] = guid;
+			return;
+		}
+}
+
+LFG_Role LFGGroup::TryToGiveRole(LFG_Role role)
+{
+	if((role & ROLE_TANK) && Tank == 0)
+		return ROLE_TANK;
+
+	if((role & ROLE_HEAL) && Heal == 0)
+		return ROLE_HEAL;
+
+	if((role & ROLE_DPS))
+		for(uint8 i=0;i<MAX_DPS;i++)
+			if(Dps[i] == 0)
+				return ROLE_DPS;
+
+	return ROLE_NONE;
+}
+
+bool LFGGroup::SetRole(uint64 guid, LFG_Role role)
+{
+	switch(role)
+	{
+		case ROLE_TANK:
+			SetTank(guid);
+			break;
+		case ROLE_HEAL:
+			SetHeal(guid);
+			break;
+		case ROLE_DPS:
+			SetDps(guid);
+			break;
+		default:
+			return false;
+	}
+	return true;
+}
+
+Player* LFGGroup::GetPlayerByRole(LFG_Role role, uint8 place)
+{
+	if((role == ROLE_HEAL || role == ROLE_TANK) && place > 0)
+		return NULL;
+
+	if(place >= MAX_DPS)
+		return NULL;
+
+	switch(role)
+	{
+		case ROLE_TANK:
+			return ObjectAccessor::FindPlayer(Tank);
+		case ROLE_HEAL:
+			return ObjectAccessor::FindPlayer(Heal);
+		case ROLE_DPS:
+			return ObjectAccessor::FindPlayer(Dps[place]);
+			break;
+	}
+
+	return NULL;
+}
+
+uint8 LFGGroup::GetDpsNb()
+{
+	uint8 nb = 0;
+	for(uint8 i=0;i<MAX_DPS;i++)
+		if(Dps[i] != 0)
+			nb++;
+
+	return nb;
 }
