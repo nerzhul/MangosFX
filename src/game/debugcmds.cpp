@@ -1018,6 +1018,17 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 			if(m_session->GetPlayer()->m_lookingForGroup.group)
 				m_session->GetPlayer()->m_lookingForGroup.group->SendLfgProposalUpdate();
 		}
+		else if(argstr == "lfg5")
+		{
+			if(m_session->GetPlayer()->m_lookingForGroup.group)
+				m_session->SendLfgUpdatePlayer(LFG_UPDATETYPE_GROUP_FOUND);
+		}
+		else if(argstr == "lfg6")
+		{
+			if(m_session->GetPlayer()->m_lookingForGroup.group)
+				m_session->SendLfgUpdatePlayer(LFG_UPDATETYPE_PROPOSAL_FOUND);
+		}
+
 	}
 	return true;
 }

@@ -229,11 +229,7 @@ void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 	recv_data >> accept;
 
 	recv_data.hexlike();
-	if(accept)
-		;
-		// TODO : status update
-		//sLFGMgr.TeleportPlayerToInstance(GetPlayer());
-	else
+	if(!accept)
 	{
 		sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());
 		SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);

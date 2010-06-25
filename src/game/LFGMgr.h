@@ -170,6 +170,8 @@ class LFGGroup
 		Player* GetPlayerBySlot(uint8 slot);
 		
 		bool IsFull();
+		bool AllAnswer();
+		bool AllAccept();
 
 	private:
 		uint64 Tank;

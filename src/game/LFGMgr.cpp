@@ -571,11 +571,11 @@ void LFGGroup::SendLfgProposalUpdate()
 		data << uint8(1); // state
 		data << uint32(0); // group id
 		data << uint32(0); // boss killed
-		data << uint8(1);
-		uint8 answers = 5;
-		/*for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
+		data << uint8(0);
+		uint8 answers = 0;
+		for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
 			if(groupAnswers[j] != LFG_ANSW_NONE)
-				answers++;*/
+				answers++;
 
 		data << uint8(answers);
 		for(uint8 j=0;i<answers;i++)
@@ -591,6 +591,18 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0); // accept
 		}
 		plr->GetSession()->SendPacket(&data);
+	}
+
+	if(AllAnswer())
+	{
+		if(AllAccept())
+		{
+			// Teleport to instance
+		}
+		else
+		{
+			// Suppression de la queue et rajout
+		}
 	}
 }
 
@@ -763,4 +775,26 @@ void LFGGroup::ResetAnswers()
 {
 	for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
 		groupAnswers[i] = LFG_ANSW_NONE;
+}
+
+bool LFGGroup::AllAccept()
+{
+	uint8 accept = 0;
+	for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
+		if(groupAnswers[j] == LFG_ANSW_ACCEPT)
+			accept++;
+
+	if(accept == MAX_GROUP_SIZE)
+		return true;
+	else
+		return false;
+}
+
+bool LFGGroup::AllAnswer()
+{
+	for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
+		if(groupAnswers[j] == LFG_ANSW_NONE)
+			return false;
+
+	return true;
 }
