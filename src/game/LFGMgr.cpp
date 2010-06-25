@@ -367,7 +367,8 @@ void LFGMgr::AddPlayerToRandomQueue(Player* plr)
 
 	LFGGroup* grp = SearchGroup(plrRole,plr->GetBGTeam());
 	LFG_Role role = grp->TryToGiveRole(plrRole);
-	grp->SetRole(plr->GetGUID(),role);
+	if(grp->SetRole(plr->GetGUID(),role))
+		plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_ADDED_TO_QUEUE);
 }
 
 LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)

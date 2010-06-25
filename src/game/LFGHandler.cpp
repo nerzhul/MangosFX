@@ -169,7 +169,6 @@ void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 	// todo : join player to queue
 	GetPlayer()->m_lookingForGroup.roles = roles;
 	sLFGMgr.AddPlayerToRandomQueue(GetPlayer());
-	SendLfgUpdatePlayer(LFG_UPDATETYPE_ADDED_TO_QUEUE);
 }
 
 void WorldSession::HandleLfgLeave(WorldPacket &recv_data)
