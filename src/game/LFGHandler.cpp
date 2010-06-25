@@ -166,9 +166,7 @@ void WorldSession::HandleLfgJoin(WorldPacket &recv_data)
 	if(!GetPlayer())
 		return;
 
-	// todo : join player to queue
-	GetPlayer()->m_lookingForGroup.roles = roles;
-	sLFGMgr.AddPlayerToRandomQueue(GetPlayer());
+	sLFGMgr.AddPlayerToRandomQueue(GetPlayer(),LFG_Role(roles));
 }
 
 void WorldSession::HandleLfgLeave(WorldPacket &recv_data)
@@ -179,9 +177,7 @@ void WorldSession::HandleLfgLeave(WorldPacket &recv_data)
 	if(!GetPlayer())
 		return;
 
-	// todo : remove player from queue
 	sLFGMgr.RemovePlayerFromRandomQueue(GetPlayer());
-	SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
 }
 
 void WorldSession::HandleLfgSetRoles(WorldPacket &recv_data)

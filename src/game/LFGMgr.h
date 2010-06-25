@@ -150,6 +150,7 @@ class LFGGroup
 		uint8 GetHealNb() { return Heal ? 1 : 0; }
 		uint8 GetDpsNb();
 		Player* GetPlayerByRole(LFG_Role role, uint8 place = 0);
+		void RemovePlayer(uint64 guid);
 		LFG_Role TryToGiveRole(LFG_Role role);
 
 	private:
@@ -200,7 +201,7 @@ class LFGMgr
 		void Update(uint32 diff);
 		void TeleportPlayerToInstance(Player* plr);
 		void RemovePlayerFromRandomQueue(Player* plr);
-		void AddPlayerToRandomQueue(Player* plr);
+		void AddPlayerToRandomQueue(Player* plr, LFG_Role role);
 		void SendLfgRoleCheckResult(Player* plr, bool accept);
 		void SendLfgProposalUpdate(Player* plr);
 	private:

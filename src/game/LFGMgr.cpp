@@ -357,18 +357,32 @@ LfgDungeonSet* LFGMgr::GetRandomDungeons(uint8 level, uint8 expansion)
 
 void LFGMgr::RemovePlayerFromRandomQueue(Player* plr)
 {
-	// TODO
+	LFGGroup* plrGrp = plr->m_lookingForGroup.group;
+	if(!plrGrp)
+		return;
+
+	plrGrp->RemovePlayer(plr->GetGUID());
+	plr->m_lookingForGroup.group = NULL;
+	plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
 }
 
-void LFGMgr::AddPlayerToRandomQueue(Player* plr)
+void LFGMgr::AddPlayerToRandomQueue(Player* plr, LFG_Role role)
 {
-	LFG_Role plrRole = LFG_Role(plr->m_lookingForGroup.roles);
+	plr->m_lookingForGroup.roles = role;
 	plr->m_lookingForGroup.waited = 0;
 
-	LFGGroup* grp = SearchGroup(plrRole,plr->GetBGTeam());
-	LFG_Role role = grp->TryToGiveRole(plrRole);
-	if(grp->SetRole(plr->GetGUID(),role))
+	LFGGroup* grp = SearchGroup(role,plr->GetBGTeam());
+	LFG_Role TryiedRole = grp->TryToGiveRole(role);
+	if(grp->SetRole(plr->GetGUID(),TryiedRole))
+	{
+		plr->m_lookingForGroup.group = grp;
 		plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_ADDED_TO_QUEUE);
+	}
+	else
+	{
+		plr->m_lookingForGroup.roles = 0x00;
+		plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_ROLECHECK_FAILED);
+	}
 }
 
 LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
@@ -642,4 +656,26 @@ uint8 LFGGroup::GetDpsNb()
 			nb++;
 
 	return nb;
+}
+
+void LFGGroup::RemovePlayer(uint64 guid)
+{
+	if(Tank == guid)
+	{
+		Tank = 0;
+		return;
+	}
+
+	if(Heal == guid)
+	{
+		Heal = 0;
+		return;
+	}
+
+	for(uint8 i=0;i<MAX_DPS;i++)
+		if(Dps[i] == guid)
+		{
+			Dps[i] = 0;
+			return;
+		}
 }
