@@ -3495,6 +3495,24 @@ void Spell::finish(bool ok)
 		 if(break_for)
 			break;
 	}
+
+	 // King of the jungle hack
+	 switch(m_spellInfo->Id)
+	 {
+		case 50334:
+			uint8 mod = 0;
+			if(m_caster->HasAura(48492))
+				mod = 20;
+			else if(m_caster->HasAura(48494))
+				mod = 40;
+			else if(m_caster->HasAura(48495))
+				mod = 60;
+
+			m_caster->SetPower(POWER_ENERGY,m_caster->GetPower(POWER_ENERGY) + mod);
+			break;
+		default:
+			break;
+	 }
 }
 
 void Spell::SendCastResult(SpellCastResult result)

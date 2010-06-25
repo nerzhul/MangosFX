@@ -493,7 +493,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 		else
 			SendSysMessage("Vous n'avez pas assez de diamants !");
 	}
-	else if(argstr == "dragonnet")
+	else if(argstr == "palefroiceleste")
 	{
 		if(diamant >= 8)
 		{
