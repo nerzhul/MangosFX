@@ -300,8 +300,8 @@ void WorldSession::LogoutPlayer(bool Save)
     if (_player)
     {
 		sTicketMgr.Delete(_player->GetGUID());
-		if(_player->m_lookingForGroup.group)
-			_player->m_lookingForGroup.group->RemovePlayer(_player->GetGUID());
+		/*if(_player->m_lookingForGroup.group)
+			_player->m_lookingForGroup.group->RemovePlayer(_player->GetGUID());*/
 			
         if (uint64 lguid = GetPlayer()->GetLootGUID())
             DoLootRelease(lguid);
