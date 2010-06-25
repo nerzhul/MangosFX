@@ -6,6 +6,7 @@
 #include "Common.h"
 #include "Policies/Singleton.h"
 #include "BattleGround.h"
+#include "Group.h"
 
 enum LFG_Role
 {
