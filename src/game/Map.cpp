@@ -730,6 +730,9 @@ void Map::Update(const uint32 &t_diff)
 
 void Map::Remove(Player *player, bool remove)
 {
+	if(!player)
+		return;
+
     if(remove)
         player->CleanupsBeforeDelete();
     else
