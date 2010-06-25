@@ -1733,7 +1733,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
         }
     }
 
-    // Call default DealDamage
+	// Call default DealDamage
     CleanDamage cleanDamage(damageInfo->cleanDamage,damageInfo->attackType,damageInfo->hitOutCome);
 	if(HasAura(66725) && GetTypeId() == TYPEID_UNIT)
 	{
