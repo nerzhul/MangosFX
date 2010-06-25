@@ -6,7 +6,6 @@
 #include "Common.h"
 #include "Policies/Singleton.h"
 #include "BattleGround.h"
-#include "Group.h"
 
 enum LFG_Role
 {
@@ -135,6 +134,7 @@ enum LfgUpdateType
 };
 
 #define MAX_DPS 3
+#define MAX_GROUP_SIZE 5
 
 enum LFGGroupAnswerType
 {
