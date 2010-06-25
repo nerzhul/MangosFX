@@ -389,10 +389,9 @@ void LFGMgr::AddPlayerToRandomQueue(Player* plr, LFG_Role role)
 		plr->m_lookingForGroup.roles = 0x00;
 		plr->GetSession()->SendLfgUpdatePlayer(LFG_UPDATETYPE_ROLECHECK_FAILED);
 	}
+
 	if(grp->IsFull())
-	{
-		// TODO : invitations
-	}
+		grp->SendLfgProposalUpdate();	
 }
 
 LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
@@ -564,7 +563,7 @@ void LFGGroup::SendLfgProposalUpdate()
 				break;
 		}
 
-		if(!plr || groupAnswers[i] == LFG_ANSW_NONE)
+		if(!plr)
 			continue;
 
 		WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
@@ -572,7 +571,7 @@ void LFGGroup::SendLfgProposalUpdate()
 		data << uint8(1); // state
 		data << uint32(0); // group id
 		data << uint32(0); // boss killed
-		data << uint8(0);
+		data << uint8(1);
 		uint8 answers = 5;
 		/*for(uint8 j=0;j<MAX_GROUP_SIZE;j++)
 			if(groupAnswers[j] != LFG_ANSW_NONE)

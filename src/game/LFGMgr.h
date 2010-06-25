@@ -138,9 +138,10 @@ enum LfgUpdateType
 
 enum LFGGroupAnswerType
 {
-	LFG_ANSW_DENY	=	0x0,
-	LFG_ANSW_ACCEPT	=	0x1,
-	LFG_ANSW_NONE	=	0x2,
+	LFG_ANSW_NONE		=	0x0,
+	LFG_ANSW_ACCEPT		=	0x1,
+	LFG_ANSW_TOOLATE	=	0x2,
+	LFG_ANSW_DENY		=	0x4,
 };
 
 class LFGGroup
