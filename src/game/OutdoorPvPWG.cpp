@@ -1228,17 +1228,19 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
         }
 
 		BattleGroundTeamId bgTeam = BattleGround::GetTeamIndexByTeamId(plr->GetTeam());
-		if(m_WGGroup[bgTeam])
-		{
-			if(Group* grp = plr->GetGroup())
-				if(!grp->IsWGGroup())
-					grp->RemoveMember(plr->GetGUID(),0);
+		if(Group* grp = plr->GetGroup())
+			if(!grp->IsWGGroup())
+				grp->RemoveMember(plr->GetGUID(),0);
 
-			if(!m_WGGroup[bgTeam]->GetId())
-				m_WGGroup[bgTeam]->Create(plr->GetGUID(),plr->GetName());
-			else
-				m_WGGroup[bgTeam]->AddMember(plr->GetGUID(),plr->GetName());
+		if(!m_WGGroup[bgTeam])
+		{
+			m_WGGroup[bgTeam] = new Group;
+			m_WGGroup[bgTeam]->Create(plr->GetGUID(),plr->GetName());
+			m_WGGroup[bgTeam]->SetWGGroup();
+			m_WGGroup[bgTeam]->ConvertToRaid();
 		}
+		else if(m_WGGroup[bgTeam])
+			m_WGGroup[bgTeam]->AddMember(plr->GetGUID(),plr->GetName());
     }
 
     SendInitWorldStatesTo(plr);
@@ -1298,6 +1300,13 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player * plr, uint32 zone)
         plr->RemoveAurasDueToSpell(SPELL_SPIRITUAL_IMMUNITY);
     }
     plr->RemoveAurasDueToSpell(SPELL_TENACITY);
+
+	if(isWarTime())
+	{
+		BattleGroundTeamId bgTeam = BattleGround::GetTeamIndexByTeamId(plr->GetTeam());
+		if(Group* grp = plr->GetGroup())
+			grp->RemoveMember(plr->GetGUID(),0);
+	}
     OutdoorPvP::HandlePlayerLeaveZone(plr, zone);
     UpdateTenacityStack();
 }
@@ -1432,8 +1441,9 @@ void OutdoorPvPWG::UpdateTenacityStack()
         for (PlayerSet::const_iterator itr = m_players[team].begin(); itr != m_players[team].end(); ++itr)
             if ((*itr)->getLevel() > 69)
 			{
+				float pLife = (*itr)->GetHealth() / (*itr)->GetMaxHealth();
                 (*itr)->SetAuraStack(SPELL_TENACITY, (*itr), newStack);
-				(*itr)->SetHealth((*itr)->GetMaxHealth());
+				(*itr)->SetHealth(pLife*(*itr)->GetMaxHealth());
 			}
 
         /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
@@ -1656,20 +1666,16 @@ void OutdoorPvPWG::StartBattle()
     }
 
 	if(m_WGGroup[BG_TEAM_ALLIANCE])
+	{
 		m_WGGroup[BG_TEAM_ALLIANCE]->Disband();
-		//delete m_WGGroup[BG_TEAM_ALLIANCE]; TO TEST
-
-	m_WGGroup[BG_TEAM_ALLIANCE] = new Group;
-	m_WGGroup[BG_TEAM_ALLIANCE]->SetWGGroup();
-	m_WGGroup[BG_TEAM_ALLIANCE]->ConvertToRaid();
-
+		m_WGGroup[BG_TEAM_ALLIANCE] = NULL;
+	}
+	
 	if(m_WGGroup[BG_TEAM_HORDE])
+	{
 		m_WGGroup[BG_TEAM_HORDE]->Disband();
-		//delete m_WGGroup[BG_TEAM_ALLIANCE]; TO TEST
-	m_WGGroup[BG_TEAM_HORDE] = new Group;
-	m_WGGroup[BG_TEAM_HORDE]->SetWGGroup();
-	m_WGGroup[BG_TEAM_HORDE]->ConvertToRaid();
-
+		m_WGGroup[BG_TEAM_HORDE] = NULL;
+	}
 
     // Remove All Wintergrasp auras. Add Recruit rank and Tower Control
     for (PlayerSet::iterator itr = m_players[getAttackerTeam()].begin(); itr != m_players[getAttackerTeam()].end(); ++itr)
@@ -1685,17 +1691,19 @@ void OutdoorPvPWG::StartBattle()
             (*itr)->CastSpell(*itr, SPELL_RECRUIT, true);
         }
 		
-		if(m_WGGroup[getAttackerTeam()])
-		{
-			if(Group* grp = (*itr)->GetGroup())
-				if(!grp->IsWGGroup())
-					grp->RemoveMember((*itr)->GetGUID(),0);
+		if(Group* grp = (*itr)->GetGroup())
+			if(!grp->IsWGGroup())
+				grp->RemoveMember((*itr)->GetGUID(),0);
 
-			if(!m_WGGroup[getAttackerTeam()]->GetId())
-				m_WGGroup[getAttackerTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
-			else
-				m_WGGroup[getAttackerTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
+		if(!m_WGGroup[getAttackerTeam()])
+		{
+			m_WGGroup[getAttackerTeam()] = new Group;
+			m_WGGroup[getAttackerTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
+			m_WGGroup[getAttackerTeam()]->SetWGGroup();
+			m_WGGroup[getAttackerTeam()]->ConvertToRaid();
 		}
+		else
+			m_WGGroup[getAttackerTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
     }
 
     // Remove All Wintergrasp auras. Add Recruit rank
@@ -1709,17 +1717,19 @@ void OutdoorPvPWG::StartBattle()
         if ((*itr)->getLevel() > 69)
             (*itr)->CastSpell(*itr, SPELL_RECRUIT, true);
 
-		if(m_WGGroup[getDefenderTeam()])
-		{
-			if(Group* grp = (*itr)->GetGroup())
-				if(!grp->IsWGGroup())
-					grp->RemoveMember((*itr)->GetGUID(),0);
+		if(Group* grp = (*itr)->GetGroup())
+			if(!grp->IsWGGroup())
+				grp->RemoveMember((*itr)->GetGUID(),0);
 
-			if(!m_WGGroup[getDefenderTeam()]->GetId())
-				m_WGGroup[getDefenderTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
-			else
-				m_WGGroup[getDefenderTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
+		if(!m_WGGroup[getDefenderTeam()])
+		{
+			m_WGGroup[getDefenderTeam()] = new Group;
+			m_WGGroup[getDefenderTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
+			m_WGGroup[getDefenderTeam()]->SetWGGroup();
+			m_WGGroup[getDefenderTeam()]->ConvertToRaid();
 		}
+		else
+			m_WGGroup[getDefenderTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
     }
     UpdateTenacityStack();
 }
