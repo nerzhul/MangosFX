@@ -49,6 +49,7 @@ Group::Group()
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
 	randomGroup			= false;
+	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
         m_targetIcons[i] = 0;
@@ -1001,7 +1002,10 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-            data << uint8(ROLE_TANK/*citr2->m_lookingForGroup.roles*/);  // 3.3, role? 
+			if(IsRandomInstanceGroup())
+				data << uint8(player->m_lookingForGroup.roles);	// 3.3, role? 
+			else
+				data << uint8(0);
         }
 
         data << uint64(m_leaderGuid);                       // leader guid
@@ -1240,8 +1244,7 @@ void Group::_setLeader(const uint64 &guid)
         Player::ConvertInstancesToGroup(player, this, slot->guid);
 
         // update the group leader
-        CharacterDatabase.PExecute("UPDATE groups SET leaderGuid='%u' WHERE leaderGuid='%u'", GUID_LOPART(slot->guid), GUID_LOPART(m_leaderGuid));
-        CharacterDatabase.PExecute("UPDATE group_member SET leaderGuid='%u' WHERE leaderGuid='%u'", GUID_LOPART(slot->guid), GUID_LOPART(m_leaderGuid));
+        CharacterDatabase.PExecute("UPDATE groups SET leaderGuid='%u' WHERE groupId='%u'", GUID_LOPART(slot->guid), m_Id);
         CharacterDatabase.CommitTransaction();
     }
 

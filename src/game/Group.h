@@ -155,7 +155,6 @@ class MANGOS_DLL_SPEC Group
             std::string name;
             uint8       group;
             bool        assistant;
-			LFG_Role	role;
         };
         typedef std::list<MemberSlot> MemberSlotList;
         typedef MemberSlotList::const_iterator member_citerator;
@@ -182,6 +181,8 @@ class MANGOS_DLL_SPEC Group
         bool   AddMember(const uint64 &guid, const char* name);
 		void   SetRandomInstanceGroup(bool random = true) { randomGroup = random; }
 		bool   IsRandomInstanceGroup() { return randomGroup; }
+		void   SetWGGroup(bool wgg = true) { WGGroup = wgg; }
+		bool   IsWGGroup() { return WGGroup; }
                                                             // method: 0=just remove, 1=kick
         uint32 RemoveMember(const uint64 &guid, const uint8 &method);
         void   ChangeLeader(const uint64 &guid);
@@ -450,5 +451,6 @@ class MANGOS_DLL_SPEC Group
         BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
 		bool				randomGroup;
+		bool				WGGroup;
 };
 #endif

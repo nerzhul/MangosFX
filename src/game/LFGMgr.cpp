@@ -617,6 +617,8 @@ void LFGGroup::SendLfgProposalUpdate()
 		if(AllAccept())
 		{
 			Group* grp = new Group;
+			bool masterIsSet = false;
+			uint8 success = 0;
 			for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
 			{
 				Player* plr = GetPlayerBySlot(i);
@@ -628,11 +630,41 @@ void LFGGroup::SendLfgProposalUpdate()
 					plr->RemoveFromGroup(plrGrp,plr->GetGUID());
 
 				if(!grp->GetId())
-					grp->Create(plr->GetGUID(),plr->GetName());
+				{
+					if(!grp->Create(plr->GetGUID(),plr->GetName()))
+					{
+						delete grp;
+						grp = new Group;
+						continue;
+					}	
+				}
 				else
-					grp->AddMember(plr->GetGUID(),plr->GetName());
-				
-				ChatHandler(plr).SendSysMessage("It Works :D");
+				{
+					if(!grp->AddMember(plr->GetGUID(),plr->GetName()))
+					{
+						RemovePlayer(plr->GetGUID());
+						continue;
+					}
+				}
+
+				uint8 roleToSet = GetRoleBySlot(i);
+				if(!masterIsSet && (plr->m_lookingForGroup.roles & ROLE_MASTER))
+				{
+					roleToSet &= ROLE_MASTER;
+					masterIsSet = true;
+				}
+
+				plr->m_lookingForGroup.roles = roleToSet;
+				success++;
+			}
+
+			if(success == MAX_GROUP_SIZE)
+			{
+				if(!masterIsSet)
+					if(Player* Tankptr = ObjectAccessor::FindPlayer(Tank))
+						Tankptr->m_lookingForGroup.roles &= ROLE_MASTER;
+
+				grp->SetRandomInstanceGroup();
 			}
 		}
 		else
