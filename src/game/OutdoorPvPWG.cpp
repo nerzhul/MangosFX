@@ -458,7 +458,6 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 
 void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 {
-	error_log("Event : %u",eventId);
     if (obj->GetEntry() == 192829) // Titan Relic
     {
         if (/*obj->GetGOInfo()->goober.eventId == eventId && */isWarTime() && m_timer < 1200000/*&& m_gate && m_gate->damageState == DAMAGE_DESTROYED*/)
@@ -1171,13 +1170,12 @@ bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
 
     switch(go->GetGOInfo()->displayId)
     {
-        /*case 8244: // Defender's Portal - Vehicle Teleporter
+        case 8244: // Defender's Portal - Vehicle Teleporter
             go->SetUInt32Value(GAMEOBJECT_FACTION, WintergraspFaction[getDefenderTeam()]);
             return true;
         case 7967: // Titan relic
             go->SetUInt32Value(GAMEOBJECT_FACTION, WintergraspFaction[getAttackerTeam()]);
             return true;
-		*/
         case 8165: // Wintergrasp Keep Door
         case 7877: // Wintergrasp Fortress Wall
         case 7878: // Wintergrasp Keep Tower

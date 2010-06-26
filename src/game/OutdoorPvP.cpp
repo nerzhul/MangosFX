@@ -53,7 +53,7 @@ bool OPvPCapturePoint::HandlePlayerEnter(Player * plr)
 
 void OPvPCapturePoint::HandlePlayerLeave(Player * plr)
 {
-    if(m_capturePoint)
+    if(m_capturePoint && plr)
         plr->SendUpdateWorldState(m_capturePoint->GetGOInfo()->capturePoint.worldState1, 0);
     m_activePlayers[BattleGround::GetTeamIndexByTeamId(plr->GetTeam())].erase(plr);
 }
@@ -246,6 +246,9 @@ void OutdoorPvP::HandlePlayerEnterZone(Player * plr, uint32 zone)
 
 void OutdoorPvP::HandlePlayerLeaveZone(Player * plr, uint32 zone)
 {
+	if(!plr)
+		return;
+
     // inform the objectives of the leaving
     for (OPvPCapturePointMap::iterator itr = m_capturePoints.begin(); itr != m_capturePoints.end(); ++itr)
         itr->second->HandlePlayerLeave(plr);

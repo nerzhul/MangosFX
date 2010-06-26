@@ -145,6 +145,9 @@ void OutdoorPvPMgr::HandlePlayerEnterZone(Player *plr, uint32 zoneid)
 
 void OutdoorPvPMgr::HandlePlayerLeaveZone(Player *plr, uint32 zoneid)
 {
+	if(!plr)
+		return;
+
     OutdoorPvPMap::iterator itr = m_OutdoorPvPMap.find(zoneid);
     if(itr == m_OutdoorPvPMap.end())
         return;
