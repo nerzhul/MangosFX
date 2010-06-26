@@ -842,12 +842,12 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 			break;
 		case 27881:
 		case 28094:
-			if(creature->getFactionTemplateEntry())
+			if(creature->GetCreatureInfo())
 			{
-				if(creature->getFactionTemplateEntry()->IsFriendlyTo(*sFactionTemplateStore.LookupEntry(29)))
-					m_vehicles[BG_TEAM_HORDE].insert(creature);
-				else if(creature->getFactionTemplateEntry()->IsFriendlyTo(*sFactionTemplateStore.LookupEntry(12)))
+				if(creature->GetCreatureInfo()->faction_A == creature->getFaction())
 					m_vehicles[BG_TEAM_ALLIANCE].insert(creature);
+				else if(creature->GetCreatureInfo()->faction_H == creature->getFaction())
+					m_vehicles[BG_TEAM_HORDE].insert(creature);
 			}
 			break;
 		case 28312:
@@ -937,8 +937,8 @@ void OutdoorPvPWG::UpdateAllWorldObject()
     // update cre and go factions
     for (GameObjectSet::iterator itr = m_gobjects.begin(); itr != m_gobjects.end(); ++itr)
         UpdateGameObjectInfo(*itr);
-    for (CreatureSet::iterator itr = m_creatures.begin(); itr != m_creatures.end(); ++itr)
-        UpdateCreatureInfo(*itr);
+    /*for (CreatureSet::iterator itr = m_creatures.begin(); itr != m_creatures.end(); ++itr)
+        UpdateCreatureInfo(*itr);*/
     for (QuestGiverMap::iterator itr = m_questgivers.begin(); itr != m_questgivers.end(); ++itr)
         UpdateQuestGiverPosition((*itr).first, (*itr).second);
 
@@ -1604,15 +1604,16 @@ void OutdoorPvPWG::StartBattle()
 	
 
     // destroyed all vehicles
-    /*for (uint32 team = 0; team < 2; ++team)
+    for (uint32 team = 0; team < 2; ++team)
     {
         while(!m_vehicles[team].empty())
         {
             Creature *veh = *m_vehicles[team].begin();
             m_vehicles[team].erase(m_vehicles[team].begin());
-            veh->setDeathState(JUST_DIED);
+			if(veh->GetVehicleKit())
+				veh->GetVehicleKit()->Dismiss();
         }
-    }*/
+    }
 
     // Remove All Wintergrasp auras. Add Recruit rank and Tower Control
     for (PlayerSet::iterator itr = m_players[getAttackerTeam()].begin(); itr != m_players[getAttackerTeam()].end(); ++itr)
