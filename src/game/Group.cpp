@@ -48,6 +48,7 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
+	randomGroup			= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
         m_targetIcons[i] = 0;
@@ -1000,7 +1001,7 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-            data << uint8(0/*citr2->m_lookingForGroup.roles*/);  // 3.3, role? 
+            data << uint8(ROLE_TANK/*citr2->m_lookingForGroup.roles*/);  // 3.3, role? 
         }
 
         data << uint64(m_leaderGuid);                       // leader guid

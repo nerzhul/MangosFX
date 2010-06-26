@@ -7,6 +7,7 @@
 #include "Group.h"
 #include "ObjectMgr.h"
 #include "World.h"
+#include "Chat.h"
 
 INSTANTIATE_SINGLETON_1(LFGMgr);
 
@@ -544,25 +545,7 @@ void LFGGroup::SendLfgProposalUpdate()
 {
 	for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
 	{
-		Player* plr = NULL;
-		switch(i)
-		{
-			case 0:
-				plr = GetPlayerByRole(ROLE_TANK);
-				break;
-			case 1:
-				plr = GetPlayerByRole(ROLE_HEAL);
-				break;
-			case 2:
-				plr = GetPlayerByRole(ROLE_DPS);
-				break;
-			case 3:
-				plr = GetPlayerByRole(ROLE_DPS,1);
-				break;
-			case 4:
-				plr = GetPlayerByRole(ROLE_DPS,2);
-				break;
-		}
+		Player* plr = GetPlayerBySlot(i);
 
 		if(!plr)
 			continue;
@@ -633,11 +616,36 @@ void LFGGroup::SendLfgProposalUpdate()
 	{
 		if(AllAccept())
 		{
-			// Teleport to instance
+			Group* grp = new Group;
+			for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
+			{
+				Player* plr = GetPlayerBySlot(i);
+
+				if(!plr)
+					continue;
+
+				if(Group* plrGrp = plr->GetGroup())
+					plr->RemoveFromGroup(plrGrp,plr->GetGUID());
+
+				if(!grp->GetId())
+					grp->Create(plr->GetGUID(),plr->GetName());
+				else
+					grp->AddMember(plr->GetGUID(),plr->GetName());
+				
+				ChatHandler(plr).SendSysMessage("It Works :D");
+			}
 		}
 		else
 		{
-			// Suppression de la queue et rajout
+			for(uint8 i=0;i<MAX_GROUP_SIZE;i++)
+			{
+				Player* plr = GetPlayerBySlot(i);
+
+				if(!plr)
+					continue;
+
+				ChatHandler(plr).SendSysMessage("On dirait que qqun n'a pas accepte");
+			}
 		}
 	}
 }
