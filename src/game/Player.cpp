@@ -22722,6 +22722,15 @@ bool Player::IsWintergraspDefender()
 	return false;
 }
 
+bool Player::CanCreateWGVehicle()
+{
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+	if(pvpWG && pvpWG->isWarTime() && pvpWG->CanCreateVehicle(BattleGroundTeamId(GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE)))
+		return true;
+
+	return false;
+}
+
 void Player::AddItem(uint32 entry,uint16 count)
 {
 	ItemPosCountVec dest;

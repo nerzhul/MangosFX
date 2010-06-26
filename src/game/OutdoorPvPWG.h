@@ -54,7 +54,7 @@ enum OutdoorPvPWGSpell
 //    SPELL_VICTORY_AURA                           = 60044,
 };
 
-/* Not used / Not implemented
+// Not used / Not implemented
 
 const uint16 GameEventWintergraspDefender[2] = {50, 51};
 
@@ -83,7 +83,7 @@ enum OutdoorPvP_WG_KeepStatus
     OutdoorPvP_WG_KEEP_STATUS_ALLY_OCCUPIED     = 3,
     OutdoorPvP_WG_KEEP_STATUS_HORDE_OCCUPIED    = 4
 };
-*/
+
 
 enum OutdoorPvPWGWorldStates
 {
@@ -244,6 +244,7 @@ class OutdoorPvPWG : public OutdoorPvP
         void setTimer(uint32 timer) { if (timer >= 0) m_timer = timer; };
         uint32 GetNumPlayersA() const { return m_players[BG_TEAM_ALLIANCE].size(); };
         uint32 GetNumPlayersH() const { return m_players[BG_TEAM_HORDE].size(); };
+		bool CanCreateVehicle(BattleGroundTeamId team);
         BattleGroundTeamId getDefenderTeam() const { return m_defender; };
         BattleGroundTeamId getAttackerTeam() const { return OTHER_TEAM(m_defender); };
         void forceChangeTeam();

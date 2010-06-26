@@ -273,7 +273,7 @@ bool OutdoorPvP::Update(uint32 diff)
 
 bool OPvPCapturePoint::Update(uint32 diff)
 {
-    if(!m_capturePoint)
+    if(!m_capturePoint || !m_capturePoint->GetGOInfo())
         return false;
 
     float radius = m_capturePoint->GetGOInfo()->capturePoint.radius;

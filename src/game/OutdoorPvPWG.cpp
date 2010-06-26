@@ -563,7 +563,7 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                     if (state->GetTeam() == getAttackerTeam())
                     {
                         /*TeamCastSpell(getAttackerTeam(), -SPELL_TOWER_CONTROL);
-                        TeamCastSpell(getDefenderTeam(), -SPELL_TOWER_CONTROL);
+                        TeamCastSpell(getDefenderTeam(), -SPELL_TOWER_CONTROL);*/
                         uint32 attStack = 3 - m_towerDestroyedCount[getAttackerTeam()];
 
                         if (m_towerDestroyedCount[getAttackerTeam()])
@@ -579,7 +579,7 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                                 if ((*itr)->getLevel() > 69)
                                     (*itr)->SetAuraStack(SPELL_TOWER_CONTROL, (*itr), attStack);
                         }
-                        else*/
+                        else
                         {
                             if (m_timer < 600000)
                                 m_timer = 0;
@@ -840,6 +840,22 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 34300:
 			ToDespawnInWarCr.push_back(creature->GetGUID());
 			break;
+		case 27881:
+		case 28094:
+			if(creature->getFactionTemplateEntry())
+			{
+				if(creature->getFactionTemplateEntry()->IsFriendlyTo(*sFactionTemplateStore.LookupEntry(29)))
+					m_vehicles[BG_TEAM_HORDE].insert(creature);
+				else if(creature->getFactionTemplateEntry()->IsFriendlyTo(*sFactionTemplateStore.LookupEntry(12)))
+					m_vehicles[BG_TEAM_ALLIANCE].insert(creature);
+			}
+			break;
+		case 28312:
+			m_vehicles[BG_TEAM_ALLIANCE].insert(creature);
+			break;		
+		case 32627:
+			m_vehicles[BG_TEAM_HORDE].insert(creature);
+			break;
         default:
             break;
   }
@@ -991,6 +1007,14 @@ void OutdoorPvPWG::SendInitWorldStatesTo(Player *player) const
         player->GetSession()->SendPacket(&data);
     else
         BroadcastPacket(data);
+}
+
+bool OutdoorPvPWG::CanCreateVehicle(BattleGroundTeamId team)
+{
+	if(m_vehicles[team].size() < m_workshopCount[team] * MAX_VEHICLE_PER_WORKSHOP)
+		return true;
+
+	return false;
 }
 
 void OutdoorPvPWG::BroadcastStateChange(BuildingState *state) const
@@ -1164,7 +1188,7 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
             if (!plr->HasAura(SPELL_RECRUIT) && !plr->HasAura(SPELL_CORPORAL)
                 && !plr->HasAura(SPELL_LIEUTENANT))
                 plr->CastSpell(plr, SPELL_RECRUIT, true);
-			/*if (BattleGround::GetTeamIndexByTeamId(plr->GetTeam()) == getAttackerTeam())
+			if (BattleGround::GetTeamIndexByTeamId(plr->GetTeam()) == getAttackerTeam())
             {
                 if (m_towerDestroyedCount[getAttackerTeam()] < 3)
                     plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, 3 - m_towerDestroyedCount[getAttackerTeam()]);
@@ -1173,7 +1197,7 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
             {
                 if (m_towerDestroyedCount[getAttackerTeam()])
                     plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, m_towerDestroyedCount[getAttackerTeam()]);
-            }*/
+            }
         }
     }
 
@@ -1203,7 +1227,7 @@ void OutdoorPvPWG::HandlePlayerResurrects(Player * plr, uint32 zone)
             }
 
             // Tower Control
-            /*if (BattleGround::GetTeamIndexByTeamId(plr->GetTeam()) == getAttackerTeam())
+            if (BattleGround::GetTeamIndexByTeamId(plr->GetTeam()) == getAttackerTeam())
             {
                 if (m_towerDestroyedCount[getAttackerTeam()] < 3)
                     plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, 3 - m_towerDestroyedCount[getAttackerTeam()]);
@@ -1212,7 +1236,7 @@ void OutdoorPvPWG::HandlePlayerResurrects(Player * plr, uint32 zone)
             {
                 if (m_towerDestroyedCount[getAttackerTeam()])
                     plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, m_towerDestroyedCount[getAttackerTeam()]);
-            }*/
+            }
         }
     }
     OutdoorPvP::HandlePlayerResurrects(plr, zone);
@@ -1222,7 +1246,11 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player * plr, uint32 zone)
 {
     if (!plr->GetSession()->PlayerLogout())
     {
-		plr->ExitVehicle();
+		if(Unit *vehUnit = Unit::GetUnit(*plr,plr->GetVehicleGUID()))
+		{
+			vehUnit->GetVehicleKit()->Dismiss();
+		}
+		
         plr->RemoveAurasDueToSpell(SPELL_RECRUIT);
         plr->RemoveAurasDueToSpell(SPELL_CORPORAL);
         plr->RemoveAurasDueToSpell(SPELL_LIEUTENANT);
@@ -1497,7 +1525,7 @@ bool OutdoorPvPWG::Update(uint32 diff)
             StartBattle();
         }
 
-        //UpdateAllWorldObject();
+        UpdateAllWorldObject();
         UpdateClock();
 
         SendInitWorldStatesTo();
@@ -1596,7 +1624,7 @@ void OutdoorPvPWG::StartBattle()
         (*itr)->RemoveAurasDueToSpell(SPELL_SPIRITUAL_IMMUNITY);
         if ((*itr)->getLevel() > 69)
         {
-            //(*itr)->SetAuraStack(SPELL_TOWER_CONTROL, (*itr), 3);
+            (*itr)->SetAuraStack(SPELL_TOWER_CONTROL, (*itr), 3);
             (*itr)->CastSpell(*itr, SPELL_RECRUIT, true);
         }
 		

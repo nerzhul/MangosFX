@@ -1594,6 +1594,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void AddWintergraspBuffIfCan(uint32 mapid);
 		bool IsWintergraspPortalActive();
 		bool IsWintergraspDefender();
+		bool CanCreateWGVehicle();
 		void AddItem(uint32 entry,uint16 count=1);
 
         int getCinematic()

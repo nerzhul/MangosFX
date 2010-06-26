@@ -111,24 +111,23 @@ enum VehicleType
 	SIEGE		=	2	// all : 56661 horde : 61408
 };
 
-bool GoHello_wg_engineer( Player *pPlayer, GameObject *pGO )
+bool GoHello_wg_engineer( Player *pPlayer, Creature* pCreature)
 {
-    ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
-    if(!pInstance) return true;
-
-	if(pPlayer->isGameMaster())
+	if(pPlayer->CanCreateWGVehicle())
 	{
-		pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
-		pPlayer->ADD_GOSSIP_ITEM(0, "Construire un demolisseur", GOSSIP_SENDER_MAIN, DEMOLISHER);
-		pPlayer->ADD_GOSSIP_ITEM(0, "Construire un engin de siege", GOSSIP_SENDER_MAIN, SIEGE);
+		if(pPlayer->HasAura(33280) || pPlayer->HasAura(55629))
+		{
+			pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
+			pPlayer->ADD_GOSSIP_ITEM(0, "Construire un demolisseur", GOSSIP_SENDER_MAIN, DEMOLISHER);
+		}
+		if(pPlayer->HasAura(55629) && pPlayer->isGameMaster())
+			pPlayer->ADD_GOSSIP_ITEM(0, "Construire un engin de siege", GOSSIP_SENDER_MAIN, SIEGE);
 	}
-	
-    pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pGO->GetGUID());
-
+	pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pCreature->GetGUID());
     return true;
 }
 
-bool GOSelect_wg_engineer( Player *pPlayer, GameObject *pGO, uint32 sender, uint32 action )
+bool GOSelect_wg_engineer( Player *pPlayer, Creature* pCreature, uint32 sender, uint32 action )
 {
     if(sender != GOSSIP_SENDER_MAIN) 
 		return true;
@@ -138,15 +137,15 @@ bool GOSelect_wg_engineer( Player *pPlayer, GameObject *pGO, uint32 sender, uint
     switch(action)
     {
 		case CATAPULT:
-			pPlayer->CastSpell(pPlayer,56663,true);
+			pPlayer->CastSpell(pPlayer,56663,false);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
 			break;
 		case DEMOLISHER:
-			pPlayer->CastSpell(pPlayer,56575,true);
+			pPlayer->CastSpell(pPlayer,56575,false);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
 			break;
 		case SIEGE:
-			pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, true);
+			pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, false);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
 			break;
     }
@@ -165,7 +164,7 @@ void AddSC_battleground()
 
 	newscript = new Script;
     newscript->Name = "wg_engineer";
-    newscript->pGOHello = &GoHello_wg_engineer;
-    newscript->pGOSelect = &GOSelect_wg_engineer;
+    newscript->pGossipHello = &GoHello_wg_engineer;
+	newscript->pGossipSelect = &GOSelect_wg_engineer;
     newscript->RegisterSelf();
 }

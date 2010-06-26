@@ -877,6 +877,9 @@ bool LFGGroup::AllAnswer()
 
 uint8 LFGGroup::GetSlotForPlayer(Player* plr)
 {
+	if(!plr)
+		return 5;
+
 	if(Tank == plr->GetGUID())
 		return 0;
 

@@ -658,7 +658,8 @@ void Vehicle::Dismiss()
     Uninstall();
     me->SendObjectDeSpawnAnim(me->GetGUID());
     me->CombatStop();
-    me->AddObjectToRemoveList();
+	if(me->GetTypeId() == TYPEID_PLAYER)
+		((Creature*)me)->ForcedDespawn(2000);
 }
 
 int8 Vehicle::GetEmptySeatsCount(bool force)

@@ -276,7 +276,7 @@ void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
 		reason = 3;
 	else if (GetPlayer()->duel || GetPlayer()->HasAura(9454) || GetPlayer()->HasAura(66830)) // is dueling or frozen by GM via freeze command
 		reason = 2;
-	else if(GetPlayer()->GetVehicle() ||		                //...is in vehicle
+	else if(GetPlayer()->GetVehicleGUID() ||		                //...is in vehicle
 		GetPlayer()->HasAura(605,0))						// correct a crash if is controlled by CM
 		reason = 0xC;
 
