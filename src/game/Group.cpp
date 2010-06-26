@@ -1250,7 +1250,6 @@ void Group::_setLeader(const uint64 &guid)
 
     m_leaderGuid = slot->guid;
     m_leaderName = slot->name;
-
 }
 
 void Group::_removeRolls(const uint64 &guid)
