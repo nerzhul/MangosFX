@@ -458,6 +458,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 
 void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 {
+	error_log("Event : %u",eventId);
     if (obj->GetEntry() == 192829) // Titan Relic
     {
         if (/*obj->GetGOInfo()->goober.eventId == eventId && */isWarTime() && m_timer < 1200000/*&& m_gate && m_gate->damageState == DAMAGE_DESTROYED*/)
@@ -473,17 +474,17 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
     }
     else if (obj->GetGoType() == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
     {
-        /*BuildingStateMap::const_iterator itr = m_buildingStates.find(obj->GetDBTableGUIDLow());
+        BuildingStateMap::const_iterator itr = m_buildingStates.find(obj->GetDBTableGUIDLow());
         if (itr == m_buildingStates.end())
-            return;*/
+            return;
 
-        std::string msgStr;
+        std::string msgStr = "";
         switch(eventId)
         { // TODO - Localized msgs of GO names
             case 19672: case 19675: // Flamewatch Tower
                 msgStr = "de Guetteflame";
                 break;
-            case 18553: case 19677: // Shadowsight Tower
+            case 19674: case 19677: // Shadowsight Tower
                 msgStr = "d'Ombrevue";
                 break;
             case 19673: case 19676: // Winter's Edge Tower
@@ -523,14 +524,12 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                 msgStr = "";
         }
 
-        //BuildingState *state = itr->second;
+        BuildingState *state = itr->second;
         if (eventId == obj->GetGOInfo()->building.damagedEvent)
         {
-            //state->damageState = DAMAGE_DAMAGED;
+            state->damageState = DAMAGE_DAMAGED;
 			switch(obj->GetEntry())
-            //switch(state->type)
             {
-                //case BUILDING_WORKSHOP:
 				case 192030:
 				case 192031:
 				case 192032:
@@ -538,25 +537,24 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_WORKSHOP_DAMAGED), msgStr.c_str(), sObjectMgr.GetMangosStringForDBCLocale(getDefenderTeam() == BG_TEAM_ALLIANCE ? LANG_BG_ALLY : LANG_BG_HORDE));
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
-                /*case BUILDING_WALL:
-                    sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
-                    break;*/
-                //case BUILDING_TOWER:
 				case 190356:
 				case 190357:
 				case 190358:
-                    ++m_towerDamagedCount[getAttackerTeam()];
+                    ++m_towerDamagedCount[state->GetTeam()];
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_TOWER_DAMAGED), msgStr.c_str());
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
             }
+
+			if(obj->GetGOInfo()->displayId == 7877)
+				sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
+
         }
         else if (eventId == obj->GetGOInfo()->building.destroyedEvent)
         {
-            /*state->damageState = DAMAGE_DESTROYED;*/
+            state->damageState = DAMAGE_DESTROYED;
 
 			switch(obj->GetEntry())
-			//switch(state->type)
 			{
 				case 192819:
 					sWorld.SendZoneText(ZONE_WINTERGRASP, fmtstring("La porte du joug d'hiver est detruite !"));
@@ -566,29 +564,24 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 					m_changeDefender = true;
 					EndBattle();
 					break;
-                //case BUILDING_WORKSHOP:
 				case 192030:
 				case 192031:
 				case 192032:
 				case 192033:
-                    //ModifyWorkshopCount(state->GetTeam(), false);
+                    ModifyWorkshopCount(state->GetTeam(), false);
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_WORKSHOP_DESTROYED), msgStr.c_str(), sObjectMgr.GetMangosStringForDBCLocale(getDefenderTeam() == BG_TEAM_ALLIANCE ? LANG_BG_ALLY : LANG_BG_HORDE));
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
-                /*case BUILDING_WALL:
-                    sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
-                    break;
-                case BUILDING_TOWER:*/
 				case 190356:
 				case 190357:
 				case 190358:
-                    --m_towerDamagedCount[getAttackerTeam()];
-                    ++m_towerDestroyedCount[getDefenderTeam()];
-                    //if (state->GetTeam() == getAttackerTeam())
+                    --m_towerDamagedCount[state->GetTeam()];
+                    ++m_towerDestroyedCount[state->GetTeam()];
+                    if (state->GetTeam() == getAttackerTeam())
                     {
 						// Update Tower stacks
                         uint32 attStack = 3 - m_towerDestroyedCount[getAttackerTeam()];
-                        if (m_towerDestroyedCount[getAttackerTeam()])
+                        if (m_towerDestroyedCount[state->GetTeam()])
                         {
                             for (PlayerSet::iterator itr = m_players[getDefenderTeam()].begin(); itr != m_players[getDefenderTeam()].end(); ++itr)
                                 if ((*itr)->getLevel() > 69)
@@ -609,11 +602,13 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                                 m_timer = m_timer - 600000; // - 10 mins
                         }
                     }
-                    msgStr = fmtstring("La tour % est detruite !", msgStr.c_str());
+                    msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_TOWER_DESTROYED), msgStr.c_str());
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
             }
-            //BroadcastStateChange(state);
+			if(obj->GetGOInfo()->displayId == 7877)
+				sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
+            BroadcastStateChange(state);
         }
     }
 }
