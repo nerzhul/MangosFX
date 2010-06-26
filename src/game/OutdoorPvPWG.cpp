@@ -547,6 +547,7 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
         {
             state->damageState = DAMAGE_DESTROYED;
 
+			if(obj->GetEntry())
             switch(state->type)
             {
                 case BUILDING_WORKSHOP:
@@ -1376,8 +1377,8 @@ void OutdoorPvPWG::UpdateTenacityStack()
             if ((*itr)->getLevel() > 69)
                 (*itr)->RemoveAurasDueToSpell(SPELL_TENACITY);
 
-        for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
-            (*itr)->RemoveAurasDueToSpell(SPELL_TENACITY_VEHICLE);
+        /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
+            (*itr)->RemoveAurasDueToSpell(SPELL_TENACITY_VEHICLE);*/
     }
 
     // Apply new buff
@@ -1396,8 +1397,8 @@ void OutdoorPvPWG::UpdateTenacityStack()
 				(*itr)->SetHealth((*itr)->GetMaxHealth());
 			}
 
-        for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
-            (*itr)->SetAuraStack(SPELL_TENACITY_VEHICLE, (*itr), newStack);
+        /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
+            (*itr)->SetAuraStack(SPELL_TENACITY_VEHICLE, (*itr), newStack);*/
     }
 }
 
