@@ -473,39 +473,39 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
     }
     else if (obj->GetGoType() == GAMEOBJECT_TYPE_DESTRUCTIBLE_BUILDING)
     {
-        BuildingStateMap::const_iterator itr = m_buildingStates.find(obj->GetDBTableGUIDLow());
+        /*BuildingStateMap::const_iterator itr = m_buildingStates.find(obj->GetDBTableGUIDLow());
         if (itr == m_buildingStates.end())
-            return;
+            return;*/
 
         std::string msgStr;
         switch(eventId)
         { // TODO - Localized msgs of GO names
             case 19672: case 19675: // Flamewatch Tower
-                msgStr = "Flamewatch";
+                msgStr = "de Guetteflame";
                 break;
             case 18553: case 19677: // Shadowsight Tower
-                msgStr = "Shadowsight";
+                msgStr = "d'Ombrevue";
                 break;
             case 19673: case 19676: // Winter's Edge Tower
-                msgStr = "Winter's Edge";
+                msgStr = "Bornehiver";
                 break;
             case 19776: case 19778: // E Workshop damaged
                 msgStr = "Sunken Ring";
                 break;
             case 19777: case 19779: // W Workshop damaged
-                msgStr = "Broken Temple";
+                msgStr = "Temple Brise";
                 break;
             case 19782: case 19786: // NW Workshop damaged
-                msgStr = "north-western";
+                msgStr = "Nord-Ouest";
                 break;
             case 19783: case 19787: // NE Workshop damaged
-                msgStr = "north-eastern";
+                msgStr = "Nord-Est";
                 break;
             case 19784: case 19788: // SW Workshop damaged
-                msgStr = "Westpark";
+                msgStr = "Sud-Ouest";
                 break;
             case 19785: case 19789: // SE Workshop damaged
-                msgStr = "Eastpark";
+                msgStr = "Sud-Est";
                 break;
             case 19657: case 19661: // NW Wintergrasp Keep Tower damaged
                 msgStr = "north-western";
@@ -523,21 +523,29 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                 msgStr = "";
         }
 
-        BuildingState *state = itr->second;
+        //BuildingState *state = itr->second;
         if (eventId == obj->GetGOInfo()->building.damagedEvent)
         {
-            state->damageState = DAMAGE_DAMAGED;
-            switch(state->type)
+            //state->damageState = DAMAGE_DAMAGED;
+			switch(obj->GetEntry())
+            //switch(state->type)
             {
-                case BUILDING_WORKSHOP:
+                //case BUILDING_WORKSHOP:
+				case 192030:
+				case 192031:
+				case 192032:
+				case 192033:
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_WORKSHOP_DAMAGED), msgStr.c_str(), sObjectMgr.GetMangosStringForDBCLocale(getDefenderTeam() == BG_TEAM_ALLIANCE ? LANG_BG_ALLY : LANG_BG_HORDE));
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
-                case BUILDING_WALL:
+                /*case BUILDING_WALL:
                     sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
-                    break;
-                case BUILDING_TOWER:
-                    ++m_towerDamagedCount[state->GetTeam()];
+                    break;*/
+                //case BUILDING_TOWER:
+				case 190356:
+				case 190357:
+				case 190358:
+                    ++m_towerDamagedCount[getAttackerTeam()];
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_TOWER_DAMAGED), msgStr.c_str());
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
@@ -545,28 +553,41 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
         }
         else if (eventId == obj->GetGOInfo()->building.destroyedEvent)
         {
-            state->damageState = DAMAGE_DESTROYED;
+            /*state->damageState = DAMAGE_DESTROYED;*/
 
-			if(obj->GetEntry())
-            switch(state->type)
-            {
-                case BUILDING_WORKSHOP:
-                    ModifyWorkshopCount(state->GetTeam(), false);
+			switch(obj->GetEntry())
+			//switch(state->type)
+			{
+				case 192819:
+					sWorld.SendZoneText(ZONE_WINTERGRASP, fmtstring("La porte du joug d'hiver est detruite !"));
+					m_defender = getAttackerTeam();
+					ChangeFortressSpawns(m_defender);
+					CharacterDatabase.PQuery("UPDATE needed_variables set needed_variables.value = %u where needed_variables.key = '1';",m_defender);
+					m_changeDefender = true;
+					EndBattle();
+					break;
+                //case BUILDING_WORKSHOP:
+				case 192030:
+				case 192031:
+				case 192032:
+				case 192033:
+                    //ModifyWorkshopCount(state->GetTeam(), false);
                     msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_WORKSHOP_DESTROYED), msgStr.c_str(), sObjectMgr.GetMangosStringForDBCLocale(getDefenderTeam() == BG_TEAM_ALLIANCE ? LANG_BG_ALLY : LANG_BG_HORDE));
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
-                case BUILDING_WALL:
+                /*case BUILDING_WALL:
                     sWorld.SendZoneText(ZONE_WINTERGRASP, sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_FORTRESS_UNDER_ATTACK));
                     break;
-                case BUILDING_TOWER:
-                    --m_towerDamagedCount[state->GetTeam()];
-                    ++m_towerDestroyedCount[state->GetTeam()];
-                    if (state->GetTeam() == getAttackerTeam())
+                case BUILDING_TOWER:*/
+				case 190356:
+				case 190357:
+				case 190358:
+                    --m_towerDamagedCount[getAttackerTeam()];
+                    ++m_towerDestroyedCount[getDefenderTeam()];
+                    //if (state->GetTeam() == getAttackerTeam())
                     {
-                        /*TeamCastSpell(getAttackerTeam(), -SPELL_TOWER_CONTROL);
-                        TeamCastSpell(getDefenderTeam(), -SPELL_TOWER_CONTROL);*/
+						// Update Tower stacks
                         uint32 attStack = 3 - m_towerDestroyedCount[getAttackerTeam()];
-
                         if (m_towerDestroyedCount[getAttackerTeam()])
                         {
                             for (PlayerSet::iterator itr = m_players[getDefenderTeam()].begin(); itr != m_players[getDefenderTeam()].end(); ++itr)
@@ -588,11 +609,11 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
                                 m_timer = m_timer - 600000; // - 10 mins
                         }
                     }
-                    msgStr = fmtstring(sObjectMgr.GetMangosStringForDBCLocale(LANG_BG_WG_TOWER_DESTROYED), msgStr.c_str());
+                    msgStr = fmtstring("La tour % est detruite !", msgStr.c_str());
                     sWorld.SendZoneText(ZONE_WINTERGRASP, msgStr.c_str());
                     break;
             }
-            BroadcastStateChange(state);
+            //BroadcastStateChange(state);
         }
     }
 }
@@ -770,9 +791,9 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
                 UpdateCreatureInfo(creature);
         default:
             if (add)
-                m_creatures.insert(creature);
+                m_creatures.insert(creature->GetGUID());
             else
-                m_creatures.erase(creature);
+                m_creatures.erase(creature->GetGUID());
             break;
     }
 
@@ -846,16 +867,19 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 			if(creature->GetCreatureInfo())
 			{
 				if(creature->GetCreatureInfo()->faction_A == creature->getFaction())
-					m_vehicles[BG_TEAM_ALLIANCE].insert(creature);
+					m_vehicles[BG_TEAM_ALLIANCE].insert(creature->GetGUID());
 				else if(creature->GetCreatureInfo()->faction_H == creature->getFaction())
-					m_vehicles[BG_TEAM_HORDE].insert(creature);
+					m_vehicles[BG_TEAM_HORDE].insert(creature->GetGUID());
 			}
+			SendInitWorldStatesTo();
 			break;
 		case 28312:
-			m_vehicles[BG_TEAM_ALLIANCE].insert(creature);
+			m_vehicles[BG_TEAM_ALLIANCE].insert(creature->GetGUID());
+			SendInitWorldStatesTo();
 			break;		
 		case 32627:
-			m_vehicles[BG_TEAM_HORDE].insert(creature);
+			m_vehicles[BG_TEAM_HORDE].insert(creature->GetGUID());
+			SendInitWorldStatesTo();
 			break;
         default:
             break;
@@ -915,6 +939,13 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
 				SWSpawnsGo.push_back(go->GetGUID());
 			else if(go->GetDistance2d(4359.9f,2347.7f) < 70.0f)
 				SESpawnsGo.push_back(go->GetGUID());
+			break;
+		// TOWERS
+		case 190356:
+		case 190357:
+		case 190358:
+			break;
+
 
 	}
 	if(go->GetGOInfo()->displayId == 8257)
@@ -1609,10 +1640,10 @@ void OutdoorPvPWG::StartBattle()
     {
         while(!m_vehicles[team].empty())
         {
-            Creature *veh = *m_vehicles[team].begin();
-            m_vehicles[team].erase(m_vehicles[team].begin());
-			if(veh->GetVehicleKit())
-				veh->GetVehicleKit()->Dismiss();
+            if(Creature *veh = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*m_vehicles[team].begin()))
+				if(veh->GetVehicleKit())
+					veh->GetVehicleKit()->Dismiss();
+			m_vehicles[team].erase(m_vehicles[team].begin());
         }
     }
 
@@ -1655,12 +1686,16 @@ void OutdoorPvPWG::EndBattle()
     for (uint32 team = 0; team < 2; ++team)
     {
         // destroyed all vehicles
-        /*while(!m_vehicles[team].empty())
+        while(!m_vehicles[team].empty())
         {
-            Creature *veh = *m_vehicles[team].begin();
-            m_vehicles[team].erase(m_vehicles[team].begin());
-            veh->setDeathState(JUST_DIED);
-        }*/
+            while(!m_vehicles[team].empty())
+			{
+				if(Creature *veh = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*m_vehicles[team].begin()))
+					if(veh->GetVehicleKit())
+						veh->GetVehicleKit()->Dismiss();
+				m_vehicles[team].erase(m_vehicles[team].begin());
+			}
+        }
 
         if (m_players[team].empty())
             continue;
@@ -1721,15 +1756,14 @@ void OutdoorPvPWG::EndBattle()
                 // TODO - Marks should be given depending on Rank but 3 are given
                 // each time so Won't give any to recruits
                 (*itr)->CastSpell(*itr, spellRewardId, true);
-				// gain d'honneur desactivés !
-                /*for (uint32 i = 0; i < intactNum; ++i)
+                for (uint32 i = 0; i < intactNum; ++i)
                     (*itr)->CastSpell(*itr, SPELL_INTACT_BUILDING, true);
                 for (uint32 i = 0; i < damagedNum; ++i)
                     (*itr)->CastSpell(*itr, SPELL_DAMAGED_BUILDING, true);
                 for (uint32 i = 0; i < m_towerDamagedCount[OTHER_TEAM(team)]; ++i)
                     (*itr)->CastSpell(*itr, SPELL_DAMAGED_TOWER, true);
                 for (uint32 i = 0; i < m_towerDestroyedCount[OTHER_TEAM(team)]; ++i)
-                    (*itr)->CastSpell(*itr, SPELL_DESTROYED_TOWER, true);*/
+                    (*itr)->CastSpell(*itr, SPELL_DESTROYED_TOWER, true);
             }
 
             if (team == getDefenderTeam())

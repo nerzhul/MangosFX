@@ -1510,7 +1510,14 @@ void GameObject::TakenDamage(uint32 damage)
 
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DESTROYED);
             SetUInt32Value(GAMEOBJECT_DISPLAYID, m_goInfo->building.destroyedDisplayId);
-            EventInform(m_goInfo->building.destroyedEvent);
+			if(GetMapId() == 571 && GetZoneId() == 4197)
+			{
+				OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+				if(pvpWG && pvpWG->isWarTime())
+					pvpWG->ProcessEvent(this,m_goInfo->building.destroyedEvent);
+			}
+			else
+				EventInform(m_goInfo->building.destroyedEvent);
         }
     }
     else // from intact to damaged
@@ -1524,7 +1531,14 @@ void GameObject::TakenDamage(uint32 damage)
 
             SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED);
             SetUInt32Value(GAMEOBJECT_DISPLAYID, m_goInfo->building.damagedDisplayId);
-            EventInform(m_goInfo->building.damagedEvent);
+			if(GetMapId() == 571 && GetZoneId() == 4197)
+			{
+				OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+				if(pvpWG && pvpWG->isWarTime())
+					pvpWG->ProcessEvent(this,m_goInfo->building.damagedEvent);
+			}
+			else
+				EventInform(m_goInfo->building.damagedEvent);
         }
     }
 }

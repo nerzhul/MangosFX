@@ -211,7 +211,7 @@ class OutdoorPvPWG : public OutdoorPvP
 {
     protected:
         typedef std::map<uint32, BuildingState *> BuildingStateMap;
-        typedef std::set<Creature*> CreatureSet;
+        typedef std::set<uint64> CreatureSet;
         typedef std::set<GameObject*> GameObjectSet;
         //typedef std::map<std::pair<uint32, bool>, Position> QuestGiverPositionMap;
         typedef std::map<uint32, Creature*> QuestGiverMap;
