@@ -50,6 +50,8 @@ void _RespawnCreatureIfNeeded(Creature *cr, uint32 entry)
 OutdoorPvPWG::OutdoorPvPWG()
 {
     m_TypeId = OUTDOOR_PVP_WG;
+	m_WGGroup[BG_TEAM_ALLIANCE] = NULL;
+	m_WGGroup[BG_TEAM_HORDE] = NULL;
 
     m_LastResurrectTime = 0; // Temporal copy of BG system till 3.2
 }
@@ -1224,6 +1226,19 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
                     plr->SetAuraStack(SPELL_TOWER_CONTROL, plr, m_towerDestroyedCount[getAttackerTeam()]);
             }
         }
+
+		BattleGroundTeamId bgTeam = BattleGround::GetTeamIndexByTeamId(plr->GetTeam());
+		if(m_WGGroup[bgTeam])
+		{
+			if(Group* grp = plr->GetGroup())
+				if(!grp->IsWGGroup())
+					grp->RemoveMember(plr->GetGUID(),0);
+
+			if(!m_WGGroup[bgTeam]->GetId())
+				m_WGGroup[bgTeam]->Create(plr->GetGUID(),plr->GetName());
+			else
+				m_WGGroup[bgTeam]->AddMember(plr->GetGUID(),plr->GetName());
+		}
     }
 
     SendInitWorldStatesTo(plr);
@@ -1640,6 +1655,22 @@ void OutdoorPvPWG::StartBattle()
         }
     }
 
+	if(m_WGGroup[BG_TEAM_ALLIANCE])
+		m_WGGroup[BG_TEAM_ALLIANCE]->Disband();
+		//delete m_WGGroup[BG_TEAM_ALLIANCE]; TO TEST
+
+	m_WGGroup[BG_TEAM_ALLIANCE] = new Group;
+	m_WGGroup[BG_TEAM_ALLIANCE]->SetWGGroup();
+	m_WGGroup[BG_TEAM_ALLIANCE]->ConvertToRaid();
+
+	if(m_WGGroup[BG_TEAM_HORDE])
+		m_WGGroup[BG_TEAM_HORDE]->Disband();
+		//delete m_WGGroup[BG_TEAM_ALLIANCE]; TO TEST
+	m_WGGroup[BG_TEAM_HORDE] = new Group;
+	m_WGGroup[BG_TEAM_HORDE]->SetWGGroup();
+	m_WGGroup[BG_TEAM_HORDE]->ConvertToRaid();
+
+
     // Remove All Wintergrasp auras. Add Recruit rank and Tower Control
     for (PlayerSet::iterator itr = m_players[getAttackerTeam()].begin(); itr != m_players[getAttackerTeam()].end(); ++itr)
     {
@@ -1654,6 +1685,17 @@ void OutdoorPvPWG::StartBattle()
             (*itr)->CastSpell(*itr, SPELL_RECRUIT, true);
         }
 		
+		if(m_WGGroup[getAttackerTeam()])
+		{
+			if(Group* grp = (*itr)->GetGroup())
+				if(!grp->IsWGGroup())
+					grp->RemoveMember((*itr)->GetGUID(),0);
+
+			if(!m_WGGroup[getAttackerTeam()]->GetId())
+				m_WGGroup[getAttackerTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
+			else
+				m_WGGroup[getAttackerTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
+		}
     }
 
     // Remove All Wintergrasp auras. Add Recruit rank
@@ -1666,6 +1708,18 @@ void OutdoorPvPWG::StartBattle()
         (*itr)->RemoveAurasDueToSpell(SPELL_SPIRITUAL_IMMUNITY);
         if ((*itr)->getLevel() > 69)
             (*itr)->CastSpell(*itr, SPELL_RECRUIT, true);
+
+		if(m_WGGroup[getDefenderTeam()])
+		{
+			if(Group* grp = (*itr)->GetGroup())
+				if(!grp->IsWGGroup())
+					grp->RemoveMember((*itr)->GetGUID(),0);
+
+			if(!m_WGGroup[getDefenderTeam()]->GetId())
+				m_WGGroup[getDefenderTeam()]->Create((*itr)->GetGUID(),(*itr)->GetName());
+			else
+				m_WGGroup[getDefenderTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
+		}
     }
     UpdateTenacityStack();
 }
@@ -1773,6 +1827,7 @@ void OutdoorPvPWG::EndBattle()
             (*itr)->RemoveAurasDueToSpell(SPELL_TOWER_CONTROL);
             (*itr)->RemoveAurasDueToSpell(SPELL_SPIRITUAL_IMMUNITY);
         }
+		m_WGGroup[team]->Disband();
     }
 
 	for(std::vector<uint64>::iterator itr = ToDespawnInWarCr.begin(); itr != ToDespawnInWarCr.end();itr++)

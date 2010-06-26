@@ -312,6 +312,7 @@ class OutdoorPvPWG : public OutdoorPvP
         uint32 m_workshopCount[2];
         uint32 m_towerDestroyedCount[2];
         uint32 m_towerDamagedCount[2];
+		Group* m_WGGroup[2];
 
         OPvPCapturePointWG *GetWorkshop(uint32 lowguid) const;
         OPvPCapturePointWG *GetWorkshopByEngGuid(uint32 lowguid) const;
