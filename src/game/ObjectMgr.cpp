@@ -140,6 +140,7 @@ ObjectMgr::ObjectMgr()
     m_mailid            = 1;
     m_equipmentSetGuid  = 1;
     m_guildId           = 1;
+	m_groupId			= 1;
     m_arenaTeamId       = 1;
     m_auctionid         = 1;
 
@@ -164,8 +165,8 @@ ObjectMgr::~ObjectMgr()
             delete[] playerInfo[race][class_].levelInfo;
 
     // free group and guild objects
-    for (GroupSet::iterator itr = mGroupSet.begin(); itr != mGroupSet.end(); ++itr)
-        delete (*itr);
+    for (GroupMap::iterator itr = mGroupMap.begin(); itr != mGroupMap.end(); ++itr)
+        delete itr->second;
 
     for (GuildMap::iterator itr = mGuildMap.begin(); itr != mGuildMap.end(); ++itr)
         delete itr->second;
@@ -178,15 +179,6 @@ ObjectMgr::~ObjectMgr()
 
     for (CacheTrainerSpellMap::iterator itr = m_mCacheTrainerSpellMap.begin(); itr != m_mCacheTrainerSpellMap.end(); ++itr)
         itr->second.Clear();
-}
-
-Group * ObjectMgr::GetGroupByLeader(const uint64 &guid) const
-{
-    for(GroupSet::const_iterator itr = mGroupSet.begin(); itr != mGroupSet.end(); ++itr)
-        if ((*itr)->GetLeaderGUID() == guid)
-            return *itr;
-
-    return NULL;
 }
 
 Guild * ObjectMgr::GetGuildById(uint32 GuildId) const
@@ -233,6 +225,16 @@ void ObjectMgr::AddGuild(Guild* guild)
 void ObjectMgr::RemoveGuild(uint32 Id)
 {
     mGuildMap.erase(Id);
+}
+
+void ObjectMgr::AddGroup( Group* group )
+{
+    mGroupMap[group->GetId()] = group ;
+}
+
+void ObjectMgr::RemoveGroup( Group* group )
+{
+    mGroupMap.erase(group->GetId());
 }
 
 ArenaTeam* ObjectMgr::GetArenaTeamById(uint32 arenateamid) const
@@ -3143,13 +3145,11 @@ void ObjectMgr::LoadArenaTeams()
 void ObjectMgr::LoadGroups()
 {
     // -- loading groups --
-	Group *group = NULL;
-    uint64 leaderGuid = 0;
     uint32 count = 0;
-    //                                                     0         1              2           3           4              5      6      7      8      9      10     11     12     	13      	14         15              16
-    QueryResult *result = CharacterDatabase.Query("SELECT mainTank, mainAssistant, lootMethod, looterGuid, lootThreshold, icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, groupType, difficulty, raiddifficulty, leaderGuid FROM groups");
+    //                                                    0         1              2           3           4              5      6      7      8      9      10     11     12     13         14          15              16          17
+    QueryResult *result = CharacterDatabase.Query("SELECT mainTank, mainAssistant, lootMethod, looterGuid, lootThreshold, icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, groupType, difficulty, raiddifficulty, leaderGuid, groupId FROM groups");
 
-    if( !result )
+    if (!result)
     {
         barGoLink bar( 1 );
 
@@ -3160,17 +3160,15 @@ void ObjectMgr::LoadGroups()
         return;
     }
 
-    barGoLink bar( result->GetRowCount() );
+    barGoLink bar( (int)result->GetRowCount() );
 
     do
     {
         bar.step();
         Field *fields = result->Fetch();
         ++count;
-        leaderGuid = MAKE_NEW_GUID(fields[16].GetUInt32(),0,HIGHGUID_PLAYER);
-
-        group = new Group;
-        if(!group->LoadGroupFromDB(leaderGuid, result, false))
+        Group *group = new Group;
+        if (!group->LoadGroupFromDB(fields))
         {
             group->Disband();
             delete group;
@@ -3185,55 +3183,58 @@ void ObjectMgr::LoadGroups()
     sLog.outString( ">> Loaded %u group definitions", count );
 
     // -- loading members --
-	group = NULL;
-    leaderGuid = 0;
     count = 0;
-    //                                        0           1          2         3
-    result = CharacterDatabase.Query("SELECT memberGuid, assistant, subgroup, leaderGuid FROM group_member ORDER BY leaderGuid");
-    if(!result)
+    //                                       0           1          2         3
+    result = CharacterDatabase.Query("SELECT memberGuid, assistant, subgroup, groupId FROM group_member ORDER BY groupId");
+    if (!result)
     {
         barGoLink bar2( 1 );
         bar2.step();
     }
     else
     {
-        barGoLink bar2( result->GetRowCount() );
+        Group* group = NULL;                                // used as cached pointer for avoid relookup group for each member
+
+        barGoLink bar2( (int)result->GetRowCount() );
         do
         {
             bar2.step();
             Field *fields = result->Fetch();
             count++;
 
-            leaderGuid = MAKE_NEW_GUID(fields[3].GetUInt32(), 0, HIGHGUID_PLAYER);
-            if(!group || group->GetLeaderGUID() != leaderGuid)
+            uint32 memberGuidlow = fields[0].GetUInt32();
+            bool   assistent     = fields[1].GetBool();
+            uint8  subgroup      = fields[2].GetUInt8();
+            uint32 groupId       = fields[3].GetUInt32();
+            if (!group || group->GetId() != groupId)
             {
-                group = GetGroupByLeader(leaderGuid);
-                if(!group)
+                group = GetGroupById(groupId);
+                if (!group)
                 {
-                    sLog.outErrorDb("Incorrect entry in group_member table : no group with leader %d for member %d!", fields[3].GetUInt32(), fields[0].GetUInt32());
-                    CharacterDatabase.PExecute("DELETE FROM group_member WHERE memberGuid = '%d'", fields[0].GetUInt32());
-                     continue;
+                    sLog.outErrorDb("Incorrect entry in group_member table : no group with Id %d for member %d!", groupId, memberGuidlow);
+                    CharacterDatabase.PExecute("DELETE FROM group_member WHERE memberGuid = '%d'", memberGuidlow);
+                    continue;
                 }
             }
 
-            if(!group->LoadMemberFromDB(fields[0].GetUInt32(), fields[2].GetUInt8(), fields[1].GetBool()))
+            if (!group->LoadMemberFromDB(memberGuidlow, subgroup, assistent))
             {
-                sLog.outErrorDb("Incorrect entry in group_member table : member %d cannot be added to player %d's group!", fields[0].GetUInt32(), fields[3].GetUInt32());
-                CharacterDatabase.PExecute("DELETE FROM group_member WHERE memberGuid = '%d'", fields[0].GetUInt32());
-             }
+                sLog.outErrorDb("Incorrect entry in group_member table : member %d cannot be added to player %d's group (Id: %u)!", memberGuidlow, GUID_LOPART(group->GetLeaderGUID()), groupId);
+                CharacterDatabase.PExecute("DELETE FROM group_member WHERE memberGuid = '%d'", memberGuidlow);
+            }
         }while( result->NextRow() );
         delete result;
     }
 
     // clean groups
     // TODO: maybe delete from the DB before loading in this case
-    for(GroupSet::iterator itr = mGroupSet.begin(); itr != mGroupSet.end();)
+    for (GroupMap::iterator itr = mGroupMap.begin(); itr != mGroupMap.end();)
     {
-        if((*itr)->GetMembersCount() < 2)
+        if (itr->second->GetMembersCount() < 2)
         {
-            (*itr)->Disband();
-            delete *itr;
-            mGroupSet.erase(itr++);
+            itr->second->Disband();
+            delete itr->second;
+            mGroupMap.erase(itr++);
         }
         else
             ++itr;
@@ -3241,24 +3242,26 @@ void ObjectMgr::LoadGroups()
 
     // -- loading instances --
     count = 0;
-	group = NULL;
-    leaderGuid = 0;
     result = CharacterDatabase.Query(
-        //      0           1    2         3          4           5
-        "SELECT leaderGuid, map, instance, permanent, difficulty, resettime, "
+        //      0                          1    2         3          4                    5
+        "SELECT group_instance.leaderGuid, map, instance, permanent, instance.difficulty, resettime, "
         // 6
-        "(SELECT COUNT(*) FROM character_instance WHERE guid = leaderGuid AND instance = group_instance.instance AND permanent = 1 LIMIT 1) "
-        "FROM group_instance LEFT JOIN instance ON instance = id ORDER BY leaderGuid"
+        "(SELECT COUNT(*) FROM character_instance WHERE guid = group_instance.leaderGuid AND instance = group_instance.instance AND permanent = 1 LIMIT 1), "
+        // 7
+        " groups.groupId "
+        "FROM group_instance LEFT JOIN instance ON instance = id LEFT JOIN groups ON groups.leaderGUID = group_instance.leaderGUID ORDER BY leaderGuid"
     );
 
-    if(!result)
+    if (!result)
     {
         barGoLink bar2( 1 );
         bar2.step();
     }
     else
     {
-        barGoLink bar2( result->GetRowCount() );
+        Group* group = NULL;                                // used as cached pointer for avoid relookup group for each member
+
+        barGoLink bar2( (int)result->GetRowCount() );
         do
         {
             bar2.step();
@@ -3267,30 +3270,31 @@ void ObjectMgr::LoadGroups()
 
             uint32 leaderGuidLow = fields[0].GetUInt32();
             uint32 mapId = fields[1].GetUInt32();
+            Difficulty diff = (Difficulty)fields[4].GetUInt8();
+            uint32 groupId = fields[7].GetUInt32();
 
-            leaderGuid = MAKE_NEW_GUID(fields[0].GetUInt32(), 0, HIGHGUID_PLAYER);
-			if(!group || group->GetLeaderGUID() != leaderGuid)
+            if (!group || group->GetId() != groupId)
             {
-                group = GetGroupByLeader(leaderGuid);
-                if(!group)
+                // find group id in map by leader low guid
+                group = GetGroupById(groupId);
+                if (!group)
                 {
-                    sLog.outErrorDb("Incorrect entry in group_instance table : no group with leader %d", fields[0].GetUInt32());
+                    sLog.outErrorDb("Incorrect entry in group_instance table : no group with leader %d", leaderGuidLow);
                     continue;
                 }
             }
 
-            MapEntry const* mapEntry = sMapStore.LookupEntry(fields[1].GetUInt32());
-            if(!mapEntry || !mapEntry->IsDungeon())
+            MapEntry const* mapEntry = sMapStore.LookupEntry(mapId);
+            if (!mapEntry || !mapEntry->IsDungeon())
             {
-                sLog.outErrorDb("Incorrect entry in group_instance table : no dungeon map %d", fields[1].GetUInt32());
+                sLog.outErrorDb("Incorrect entry in group_instance table : no dungeon map %d", mapId);
                 continue;
             }
 
-			uint32 diff = fields[4].GetUInt8();
-            if(diff >= (mapEntry->IsRaid() ? MAX_RAID_DIFFICULTY : MAX_DUNGEON_DIFFICULTY))
+            if (diff >= (mapEntry->IsRaid() ? MAX_RAID_DIFFICULTY : MAX_DUNGEON_DIFFICULTY))
             {
                 sLog.outErrorDb("Wrong dungeon difficulty use in group_instance table: %d", diff + 1);
-                diff = 0;                                   // default for both difficaly types
+                diff = REGULAR_DIFFICULTY;                  // default for both difficaly types
             }
 
             InstanceSave *save = sInstanceSaveMgr.AddInstanceSave(mapEntry->MapID, fields[2].GetUInt32(), Difficulty(diff), (time_t)fields[5].GetUInt64(), (fields[6].GetUInt32() == 0), true);
@@ -3304,6 +3308,15 @@ void ObjectMgr::LoadGroups()
 
     sLog.outString();
     sLog.outString( ">> Loaded %u group members total", count );
+}
+
+Group* ObjectMgr::GetGroupById(uint32 id) const
+{
+    GroupMap::const_iterator itr = mGroupMap.find(id);
+    if (itr != mGroupMap.end())
+        return itr->second;
+
+    return NULL;
 }
 
 void ObjectMgr::LoadQuests(bool ClusterIgnore)
@@ -5752,6 +5765,13 @@ void ObjectMgr::SetHighestGuids()
         m_guildId = (*result)[0].GetUInt32()+1;
         delete result;
     }
+
+	result = CharacterDatabase.Query( "SELECT MAX(groupid) FROM groups" );
+    if (result)
+    {
+        m_groupId = (*result)[0].GetUInt32()+1;
+        delete result;
+    }
 }
 
 uint32 ObjectMgr::GenerateArenaTeamId()
@@ -5792,6 +5812,16 @@ uint32 ObjectMgr::GenerateGuildId()
         World::StopNow(ERROR_EXIT_CODE);
     }
     return m_guildId++;
+}
+
+uint32 ObjectMgr::GenerateGroupId()
+{
+    if(m_groupId>=0xFFFFFFFE)
+    {
+        sLog.outError("Guild ids overflow!! Can't continue, shutting down server. ");
+        World::StopNow(ERROR_EXIT_CODE);
+    }
+    return m_groupId++;
 }
 
 uint32 ObjectMgr::GenerateMailID()

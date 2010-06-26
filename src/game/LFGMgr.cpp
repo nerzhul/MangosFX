@@ -6,6 +6,7 @@
 #include "SharedDefines.h"
 #include "Group.h"
 #include "ObjectMgr.h"
+#include "World.h"
 
 INSTANTIATE_SINGLETON_1(LFGMgr);
 
@@ -448,7 +449,7 @@ void LFGMgr::Update(uint32 diff)
 						{
 							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_TANK))
 							{
-								plr->m_lookingForGroup.waited += 1;
+								plr->m_lookingForGroup.waited += 15;
 								if(plr->m_lookingForGroup.waited > 7200)
 									plr->m_lookingForGroup.waited = 7200;
 								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
@@ -456,7 +457,7 @@ void LFGMgr::Update(uint32 diff)
 
 							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_HEAL))
 							{
-								plr->m_lookingForGroup.waited += 1;
+								plr->m_lookingForGroup.waited += 15;
 								if(plr->m_lookingForGroup.waited > 7200)
 									plr->m_lookingForGroup.waited = 7200;
 								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
@@ -464,7 +465,7 @@ void LFGMgr::Update(uint32 diff)
 
 							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS))
 							{
-								plr->m_lookingForGroup.waited += 1;
+								plr->m_lookingForGroup.waited += 15;
 								if(plr->m_lookingForGroup.waited > 7200)
 									plr->m_lookingForGroup.waited = 7200;
 								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
@@ -472,7 +473,7 @@ void LFGMgr::Update(uint32 diff)
 
 							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,1))
 							{
-								plr->m_lookingForGroup.waited += 1;
+								plr->m_lookingForGroup.waited += 15;
 								if(plr->m_lookingForGroup.waited > 7200)
 									plr->m_lookingForGroup.waited = 7200;
 								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
@@ -480,7 +481,7 @@ void LFGMgr::Update(uint32 diff)
 
 							if(Player* plr = tmpGrp->GetPlayerByRole(ROLE_DPS,2))
 							{
-								plr->m_lookingForGroup.waited += 1;
+								plr->m_lookingForGroup.waited += 15;
 								if(plr->m_lookingForGroup.waited > 7200)
 									plr->m_lookingForGroup.waited = 7200;
 								SendLfgQueueStatusUpdate(plr,tmpGrp); // not sure
@@ -493,7 +494,7 @@ void LFGMgr::Update(uint32 diff)
 				}
 			}
 		}
-		Update_Timer = 1000;
+		Update_Timer = 15000;
 	}
 	else
 		Update_Timer -= diff;
@@ -568,10 +569,10 @@ void LFGGroup::SendLfgProposalUpdate()
 
 		WorldPacket data(SMSG_LFG_PROPOSAL_UPDATE,4+1+4+4+1+1+(4+1+1+1+1+1)*5);
 		data << uint32(LFG_RANDOM_LK_HEROIC); // dungeon type
-		data << uint8(0); // state
-		data << uint32(0); // group id
+		data << uint8(1); // state
+		data << uint32(1); // group id
 		data << uint32(0); // boss killed
-		data << uint8(0);
+		data << uint8(0); // silent
 
 		data << uint8(5); // loop size
 
@@ -582,8 +583,8 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0);
 		data << uint8(0); // if in dungeon
 		data << uint8(0); // same group
-		data << uint8(groupAnswers[0] ? 1 : 0); // answer
-		data << uint8(groupAnswers[0]); // accept answer
+		data << uint8(groupAnswers[0]); // answer (real)
+		data << uint8(1); // accept answer
 
 		data << uint32(ROLE_HEAL); // role
 		if(plr == GetPlayerBySlot(1))
@@ -592,7 +593,7 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0);
 		data << uint8(0); // if in dungeon
 		data << uint8(0); // same group
-		data << uint8(groupAnswers[1] ? 1 : 0); // answer
+		data << uint8(groupAnswers[1]); // answer (real)
 		data << uint8(groupAnswers[1]); // accept answer
 
 		data << uint32(ROLE_DPS); // role
@@ -602,7 +603,7 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0);
 		data << uint8(0); // if in dungeon
 		data << uint8(0); // same group
-		data << uint8(groupAnswers[2] ? 1 : 0); // answer
+		data << uint8(groupAnswers[2]); // answer (real)
 		data << uint8(groupAnswers[2]); // accept answer
 
 		data << uint32(ROLE_DPS); // role
@@ -612,7 +613,7 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0);
 		data << uint8(0); // if in dungeon
 		data << uint8(0); // same group
-		data << uint8(groupAnswers[3] ? 1 : 0); // answer
+		data << uint8(groupAnswers[3]); // answer (real)
 		data << uint8(groupAnswers[3]); // accept answer
 
 		data << uint32(ROLE_DPS); // role
@@ -622,7 +623,7 @@ void LFGGroup::SendLfgProposalUpdate()
 			data << uint8(0);
 		data << uint8(0); // if in dungeon
 		data << uint8(0); // same group
-		data << uint8(groupAnswers[4] ? 1 : 0); // answer
+		data << uint8(groupAnswers[4]); // answer (real)
 		data << uint8(groupAnswers[4]); // accept answer
 
 		plr->GetSession()->SendPacket(&data);

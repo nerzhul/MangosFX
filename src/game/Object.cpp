@@ -1119,8 +1119,9 @@ void WorldObject::Relocate(float x, float y, float z, float orientation)
     if(isType(TYPEMASK_UNIT))
 	{
         ((Unit*)this)->m_movementInfo.ChangePosition(x, y, z, orientation);
-		if(((Creature*)this)->isVehicle())
-			((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
+		if(((Unit*)this)->GetTypeId() == TYPEID_UNIT)
+			if(IsInWorld() && ((Creature*)this)->isVehicle())
+				((Unit*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
 	}
 }
 
@@ -1133,8 +1134,9 @@ void WorldObject::Relocate(float x, float y, float z)
     if(isType(TYPEMASK_UNIT))
 	{
         ((Unit*)this)->m_movementInfo.ChangePosition(x, y, z, GetOrientation());
-		if(((Creature*)this)->isVehicle())
-			((Creature*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
+		if(((Unit*)this)->GetTypeId() == TYPEID_UNIT)
+			if(IsInWorld() && ((Creature*)this)->isVehicle())
+				((Unit*)this)->GetVehicleKit()->RelocatePassengers(x,y,z,GetOrientation(),GetMap());
 	}
 }
 

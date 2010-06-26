@@ -4226,13 +4226,12 @@ void Player::DeleteFromDB(uint64 playerguid, uint32 accountId, bool updateRealmC
     LeaveAllArenaTeams(playerguid);
 
     // the player was uninvited already on logout so just remove from group
-    QueryResult *resultGroup = CharacterDatabase.PQuery("SELECT leaderGuid FROM group_member WHERE memberGuid='%u'", guid);
-    if(resultGroup)
+    QueryResult *resultGroup = CharacterDatabase.PQuery("SELECT groupId FROM group_member WHERE memberGuid='%u'", guid);
+    if (resultGroup)
     {
-        uint64 leaderGuid = MAKE_NEW_GUID((*resultGroup)[0].GetUInt32(), 0, HIGHGUID_PLAYER);
+        uint32 groupId = (*resultGroup)[0].GetUInt32();
         delete resultGroup;
-        Group* group = sObjectMgr.GetGroupByLeader(leaderGuid);
-        if(group)
+        if (Group* group = sObjectMgr.GetGroupById(groupId))
             RemoveFromGroup(group, playerguid);
     }
 
@@ -16592,13 +16591,13 @@ void Player::_LoadSpells(QueryResult *result)
 
 void Player::_LoadGroup(QueryResult *result)
 {
-    //QueryResult *result = CharacterDatabase.PQuery("SELECT leaderGuid FROM group_member WHERE memberGuid='%u'", GetGUIDLow());
+    //QueryResult *result = CharacterDatabase.PQuery("SELECT groupId FROM group_member WHERE memberGuid='%u'", GetGUIDLow());
     if (result)
     {
-        uint64 leaderGuid = MAKE_NEW_GUID((*result)[0].GetUInt32(), 0, HIGHGUID_PLAYER);
+        uint32 groupId = (*result)[0].GetUInt32();
         delete result;
 
-        if (Group* group = sObjectMgr.GetGroupByLeader(leaderGuid))
+        if (Group* group = sObjectMgr.GetGroupById(groupId))
         {
             uint8 subgroup = group->GetMemberGroup(GetGUID());
             SetGroup(group, subgroup);
