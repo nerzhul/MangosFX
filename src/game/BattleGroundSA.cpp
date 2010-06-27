@@ -298,6 +298,20 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 	}
 }
 
+void BattleGroundSA::OnGameObjectCreate(GameObject* go)
+{
+	switch(go->GetEntry())
+	{
+		case 193182:
+		case 193185:
+			BoatSet[BG_TEAM_ALLIANCE].insert(go->GetGUID());
+			break;
+		case 193183:
+		case 193184:
+			BoatSet[BG_TEAM_HORDE].insert(go->GetGUID());
+			break;
+	}
+}
 void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId)
 {
 }

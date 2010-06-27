@@ -278,6 +278,7 @@ class BattleGroundSA : public BattleGround
         virtual void StartingEventOpenDoors();
 		virtual bool SetupBattleGround();
 		virtual void OnCreatureCreate(Creature* cr);
+		virtual void OnGameObjectCreate(GameObject* go);
 		virtual void Reset();
 		virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
 		virtual void EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId);
@@ -320,6 +321,6 @@ class BattleGroundSA : public BattleGround
 		GUIDSet NEDemolisherSet;
 		GUIDSet SWDemolisherSet;
 		GUIDSet SEDemolisherSet;
-		GUIDSet BoatSet;
+		GUIDSet BoatSet[2];
 };
 #endif
