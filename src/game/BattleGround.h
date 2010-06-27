@@ -581,6 +581,7 @@ class BattleGround
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
         void PlayerAddedToBGCheckIfBGIsRunning(Player* plr);
+		BattleGroundMap* GetMap() { return m_Map; }
 
         /* Scorekeeping */
 

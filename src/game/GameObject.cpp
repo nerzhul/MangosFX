@@ -791,6 +791,7 @@ void GameObject::Respawn()
         m_respawnTime = time(NULL);
         sObjectMgr.SaveGORespawnTime(m_DBTableGuid,GetInstanceId(),0);
     }
+	Rebuild();
 }
 
 bool GameObject::ActivateToQuest( Player *pTarget)const

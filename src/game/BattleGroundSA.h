@@ -96,41 +96,6 @@ enum BG_SA_WorldStates
     BG_SA_ENABLE_TIMER				= 3564,
   };
 
-enum BG_SA_NPCs
-  {
-    BG_SA_GUN_1 = 0,
-    BG_SA_GUN_2,
-    BG_SA_GUN_3,
-    BG_SA_GUN_4,
-    BG_SA_GUN_5,
-    BG_SA_GUN_6,
-    BG_SA_GUN_7,
-    BG_SA_GUN_8,
-    BG_SA_GUN_9,
-    BG_SA_GUN_10,
-    BG_SA_DEMOLISHER_1,
-    BG_SA_DEMOLISHER_2,
-    BG_SA_DEMOLISHER_3,
-    BG_SA_DEMOLISHER_4,
-    BG_SA_NPC_SPARKLIGHT,
-    BG_SA_NPC_RIGSPARK,
-    BG_SA_MAXNPC
-  };
-
-const uint32 BG_SA_NpcEntries[BG_SA_MAXNPC] =
-  {
-    //Fizzle Sparklight, or whatever his name was
-    29260,
-    29262,
-  };
-
-const float BG_SA_NpcSpawnlocs[BG_SA_MAXNPC + BG_SA_DEMOLISHER_AMOUNT][4] =
-  {
-    //Npcs
-    { 1348.644165, -298.786469, 31.080130, 1.710423},
-    { 1358.191040, 195.527786, 31.018187, 4.171337},
-  };
-
 enum BG_SA_Objects
   {
     BG_SA_GREEN_GATE = 0,
@@ -156,75 +121,24 @@ enum BG_SA_Objects
     BG_SA_MAXOBJ
   };
 
-const float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
-  {
-    { 1411.57f, 108.163f, 28.692f, 5.441f },
-    { 1055.452f, -108.1f, 82.134f, 0.034f },
-    { 1431.3413f, -219.437f, 30.893f, 0.9736f },
-    { 1227.667f, -212.555f, 55.372f, 0.5023f },
-    { 1214.681f, 81.21f, 53.413f, 5.745f },
-    { 878.555f, -108.989f, 119.835f, 0.0565f },
-    { 836.5f, -108.8f, 120.219f, 0.0f },
-    //Ships
-    { 2679.696777, -826.891235, 3.712860, 5.78367f}, //rot2 1 rot3 0.0002
-    { 2574.003662, 981.261475, 2.603424, 0.807696},
-    //Sigils
-    { 1414.054f, 106.72f, 41.442f, 5.441f },
-    { 1060.63f, -107.8f, 94.7f, 0.034f },
-    { 1433.383f, -216.4f, 43.642f, 0.9736f },
-    { 1230.75f, -210.724f, 67.611f, 0.5023f },
-    { 1217.8f, 79.532f, 66.58f, 5.745f },
+const static float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
+{
     //Flagpoles
-    { 1215.114258,-65.711861,70.084267,-3.124123},
-    {1338.863892,-153.336533,30.895121,-2.530723},
-    {1309.124268,9.410645,30.893402,-1.623156},
-    //Flags
-    { 1215.108032,-65.715767,70.084267,-3.124123},
-    { 1338.859253,-153.327316,30.895077,-2.530723},
-    { 1309.192017,9.416233,30.893402,1.518436},
-  };
+    { 1215.114258, -65.711861, 70.084267,-3.124123},
+    {1338.863892, -153.336533, 30.895121,-2.530723},
+    {1309.124268, 9.410645, 30.893402,-1.623156},
+};
 
-/* Ships:
- * 193182 - ally
- * 193183 - horde
- * 193184 - horde
- * 193185 - ally
- * Banners:
- * 191308 - left one,
- * 191306 - right one,
- * 191310 - central,
- * Ally ones, substract 1
- * to get horde ones.
- */
+const static float BG_SA_PlrSpawnLocs[5][4] = 
+{
+	{0.0f,	0.0f,	0.0f,	0.0f},
+	{0.0f,	0.0f,	0.0f,	0.0f},
+	{0.0f,	0.0f,	0.0f,	0.0f},
+	{0.0f,	0.0f,	0.0f,	0.0f},
+	{0.0f,	0.0f,	0.0f,	0.0f},
+};
 
-const uint32 BG_SA_ObjEntries[BG_SA_MAXOBJ + BG_SA_FLAG_AMOUNT] =
-  {
-    190722,
-    190727,
-    190724,
-    190726,
-    190723,
-    192549,
-    192834,
-    193182,
-    193185,
-    192687,
-    192685,
-    192689,
-    192690,
-    192691,
-    191311,
-    191311,
-    191311,
-    191310,
-    191306,
-    191308,
-    191309,
-    191305,
-    191307,
-  };
-
-const uint32 BG_SA_Factions[2] =
+const static uint32 BG_SA_Factions[2] =
   {
     1732,
     1735,
@@ -240,7 +154,7 @@ enum BG_SA_Graveyards
     BG_SA_MAX_GY
   };
 
-const uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
+const static uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
   {
     1350,
     1349,
@@ -249,7 +163,7 @@ const uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
     1348,
   };
 
-const float BG_SA_GYOrientation[BG_SA_MAX_GY] =
+const static float BG_SA_GYOrientation[BG_SA_MAX_GY] =
   {
     6.202f,
     1.926f, //right capturable GY
@@ -293,22 +207,18 @@ class BattleGroundSA : public BattleGround
         void RemovePlayer(Player *plr,uint64 guid);
         void HandleAreaTrigger(Player *Source, uint32 Trigger);
 
-
         /* Scorekeeping */
         void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
 
     private:
-		typedef std::set<uint64> GUIDSet;
+		
 		void StartShips();
 		void SendTime();
 		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
 		void ToggleTimer();
-		BattleGroundTeamId attackers;
 		uint32 TotalTime;
 		uint32 BG_SA_ENDROUNDTIME;
 		bool ShipsStarted;
-		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
-		BG_SA_Status status;
 		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
 		BG_SA_RoundScore RoundScores[2];
 		bool TimerEnabled;
@@ -317,12 +227,31 @@ class BattleGroundSA : public BattleGround
 		bool SignaledRoundTwoHalfMin;
 		bool InitSecondRound;
 
+
+		// All validate private objects
+		void InitAllObjects();
+		void TeleportPlayer(Player* plr);
+
+		BattleGroundTeamId attackers;
+		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
+		BG_SA_Status status;
+
+		// All guid storage
+		typedef std::set<uint64> GUIDSet;
+		// Vehicles
 		GUIDSet	TurretSet;
 		GUIDSet NWDemolisherSet;
 		GUIDSet NEDemolisherSet;
 		GUIDSet SWDemolisherSet;
 		GUIDSet SEDemolisherSet;
 		GUIDSet BoatSet[2];
+		// GameObjects
 		uint64 GatesGUID[BG_SA_MAX_GATES];
+		uint64 SigilGUID[BG_SA_MAX_GATES-1];
+		uint64 TitanRelicGUID;
+		// Npcs
+		uint64 GobelinGUID[2];
+		// Tests
+		bool OnLeftBoat;
 };
 #endif

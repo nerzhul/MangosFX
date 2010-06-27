@@ -40,6 +40,11 @@ BattleGroundSA::BattleGroundSA()
 	SEDemolisherSet.clear();
 	BoatSet[0].clear();
 	BoatSet[1].clear();
+	for(uint8 i=0;i<BG_SA_MAX_GATES-1;i++)
+		SigilGUID[i] = 0;
+
+	TitanRelicGUID = 0;
+	GobelinGUID[0] = GobelinGUID[1] = 0;
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -49,14 +54,107 @@ BattleGroundSA::~BattleGroundSA()
 
 void BattleGroundSA::Reset()
 {
+	BattleGround::Reset();
+
     attackers = ( (urand(0,1)) ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
     for(uint8 i = 0; i <= 5; i++)
     {
         GateStatus[i] = BG_SA_GATE_OK;
     }
     ShipsStarted = false;
+	OnLeftBoat = true;
     status = BG_SA_WARMUP;
 }
+
+void BattleGroundSA::InitAllObjects()
+{
+	uint32 defFaction = (attackers == BG_TEAM_ALLIANCE) ? BG_SA_Factions[BG_TEAM_HORDE] : BG_SA_Factions[BG_TEAM_ALLIANCE];
+	uint32 attFaction = BG_SA_Factions[attackers];
+
+	// Turrets to defender
+	for(GUIDSet::iterator itr = TurretSet.begin(); itr != TurretSet.end(); ++itr)
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			if(!cr->isAlive())
+				cr->Respawn();
+
+			cr->setFaction(defFaction);
+			cr->SetHealth(cr->GetMaxHealth());
+		}
+
+	for(GUIDSet::iterator itr = NWDemolisherSet.begin(); itr != NWDemolisherSet.end(); ++itr)
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			cr->Respawn();
+			cr->SetPhaseMask(1,true);
+		}
+
+	for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			cr->Respawn();
+			cr->SetPhaseMask(1,true);
+		}
+
+	for(GUIDSet::iterator itr = SWDemolisherSet.begin(); itr != SWDemolisherSet.end(); ++itr)
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			cr->Respawn();
+			cr->SetPhaseMask(2,true);
+		}
+
+	for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			cr->Respawn();
+			cr->SetPhaseMask(2,true);
+		}
+
+	for(GUIDSet::iterator itr = BoatSet[BG_TEAM_ALLIANCE].begin(); itr != BoatSet[BG_TEAM_ALLIANCE].end(); ++itr)
+		if(GameObject* go = GetBgMap()->GetGameObject(*itr))
+		{
+			DoorClose(go->GetGUID());
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(1,true);
+			else
+				go->SetPhaseMask(2,true);
+		}
+
+	for(GUIDSet::iterator itr = BoatSet[BG_TEAM_HORDE].begin(); itr != BoatSet[BG_TEAM_HORDE].end(); ++itr)
+		if(GameObject* go = GetBgMap()->GetGameObject(*itr))
+		{
+			DoorClose(go->GetGUID());
+			if(attackers == BG_TEAM_HORDE)
+				go->SetPhaseMask(1,true);
+			else
+				go->SetPhaseMask(2,true);
+		}
+
+	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
+		if(GameObject* go = GetBgMap()->GetGameObject(GatesGUID[i]))
+		{
+			go->Respawn();
+			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+		}
+
+	for(uint8 i=0;i<BG_SA_MAX_GATES-1;i++)
+		if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[i]))
+		{
+			go->Respawn();
+			go->SetPhaseMask(1,true);
+		}
+
+	if(GameObject* go = GetBgMap()->GetGameObject(TitanRelicGUID))
+		go->SetUInt32Value(GAMEOBJECT_FACTION, attFaction);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(GobelinGUID[0]))
+		cr->setFaction(defFaction);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(GobelinGUID[1]))
+		cr->setFaction(defFaction);
+
+}	
+
 void BattleGroundSA::Update(uint32 diff)
 {
     BattleGround::Update(diff);
@@ -71,8 +169,8 @@ void BattleGroundSA::Update(uint32 diff)
             ToggleTimer();
             status = (status == BG_SA_WARMUP) ? BG_SA_ROUND_ONE : BG_SA_ROUND_TWO;
         }
-        //if(TotalTime >= BG_SA_BOAT_START)
-            //StartShips();
+        if(TotalTime >= BG_SA_BOAT_START)
+            StartShips();
         return;
     }
     else if(status == BG_SA_ROUND_ONE)
@@ -86,7 +184,7 @@ void BattleGroundSA::Update(uint32 diff)
             RoundScores[0].winner = attackers;
             status = BG_SA_SECOND_WARMUP;
             ToggleTimer();
-            //ResetObjs();
+            InitAllObjects();
             return;
         }
     }
@@ -114,16 +212,16 @@ void BattleGroundSA::Update(uint32 diff)
         UpdateWorldState(BG_SA_TIMER_SEC_TENS, (end_of_round%60000)/10000);
         UpdateWorldState(BG_SA_TIMER_SEC_DECS, ((end_of_round%60000)%10000)/1000);
     }
-
-    
 }
 
 void BattleGroundSA::StartingEventCloseDoors()
 {
+	InitAllObjects();
 }
 
 void BattleGroundSA::StartingEventOpenDoors()
 {
+	status = BG_SA_ROUND_ONE;
 }
 
 void BattleGroundSA::AddPlayer(Player *plr)
@@ -133,6 +231,23 @@ void BattleGroundSA::AddPlayer(Player *plr)
     BattleGroundSAScore* sc = new BattleGroundSAScore;
 
     m_PlayerScores[plr->GetGUID()] = sc;
+
+	//TeleportPlayer(plr);
+}
+
+void BattleGroundSA::TeleportPlayer(Player* plr)
+{
+	if(plr->GetBGTeam() == attackers)
+	{
+		uint8 boat = OnLeftBoat ? 1 : 0;
+		if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_ONE)
+			plr->TeleportTo(607,BG_SA_PlrSpawnLocs[0+boat][0],BG_SA_PlrSpawnLocs[0+boat][1],BG_SA_PlrSpawnLocs[0+boat][2],BG_SA_PlrSpawnLocs[0+boat][3]);
+		else
+			plr->TeleportTo(607,BG_SA_PlrSpawnLocs[2+boat][0],BG_SA_PlrSpawnLocs[2+boat][1],BG_SA_PlrSpawnLocs[2+boat][2],BG_SA_PlrSpawnLocs[2+boat][3]);
+
+	}
+	else
+		plr->TeleportTo(607,BG_SA_PlrSpawnLocs[5][0],BG_SA_PlrSpawnLocs[5][1],BG_SA_PlrSpawnLocs[5][2],BG_SA_PlrSpawnLocs[5][3]);
 }
 
 void BattleGroundSA::RemovePlayer(Player* /*plr*/,uint64 /*guid*/)
@@ -212,8 +327,8 @@ void BattleGroundSA::StartShips()
 	if(ShipsStarted)
 		return;
 	sLog.outError("SOTA: Starting boats!");
-	DoorOpen(BG_SA_BOAT_ONE);
-	DoorOpen(BG_SA_BOAT_TWO);
+	for(GUIDSet::iterator itr = BoatSet[attackers].begin(); itr != BoatSet[attackers].end(); ++itr)
+		DoorOpen(*itr);
 
 	for(int i = BG_SA_BOAT_ONE; i <= BG_SA_BOAT_TWO; i++)
 	{
@@ -247,6 +362,25 @@ void BattleGroundSA::HandleKillUnit(Creature *unit, Player *killer)
 
 void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target_obj)
 {
+	switch(target_obj->GetEntry())
+	{
+		// titan relic
+		case 192834:
+			break;
+		// graveyards
+		// left
+		case 191307:
+		case 191308:
+			break;
+		// right
+		case 191305:
+		case 191306:
+			break;
+		// central
+		case 191309:
+		case 191310:
+			break;
+	}
 }
 
 void BattleGroundSA::EndBattleGround(uint32 winner)
@@ -300,9 +434,13 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			else if(cr->GetDistance2d(1353.139893,223.745438) < 3.0f || cr->GetDistance2d(1377.583f,182.722f) < 3.0f)
 				SWDemolisherSet.insert(cr->GetGUID());
 			break;
+		// right gobelin
 		case 29260:
+			GobelinGUID[0] = cr->GetGUID();
 			break;
+		// Left Gobelin
 		case 29262:
+			GobelinGUID[1] = cr->GetGUID();
 			break;
 	}
 }
@@ -319,25 +457,42 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 		case 193184:
 			BoatSet[BG_TEAM_HORDE].insert(go->GetGUID());
 			break;
-		case 0:
+		case 190722:
 			GatesGUID[0] = go->GetGUID();
 			break;
-		case 1:
+		case 190727:
 			GatesGUID[1] = go->GetGUID();
 			break;
-		case 2:
+		case 190724:
 			GatesGUID[2] = go->GetGUID();
 			break;
-		case 3:
+		case 190726:
 			GatesGUID[3] = go->GetGUID();
 			break;
-		case 4:
+		case 190723:
 			GatesGUID[4] = go->GetGUID();
 			break;
-		case 5:
+		case 192549:
 			GatesGUID[5] = go->GetGUID();
 			break;
-
+		case 192687:
+			SigilGUID[0] = go->GetGUID();
+			break;
+		case 192685:
+			SigilGUID[1] = go->GetGUID();
+			break;
+		case 192689:
+			SigilGUID[2] = go->GetGUID();
+			break;
+		case 192690:
+			SigilGUID[3] = go->GetGUID();
+			break;
+		case 192691:
+			SigilGUID[4] = go->GetGUID();
+			break;
+		case 192834:
+			TitanRelicGUID = go->GetGUID();
+			break;
 	}
 }
 void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId)
