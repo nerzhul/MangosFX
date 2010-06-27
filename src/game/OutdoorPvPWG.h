@@ -269,6 +269,7 @@ class OutdoorPvPWG : public OutdoorPvP
         // Spirit Guide guid + Player list GUIDS
         std::map<uint64, std::vector<uint64> >  m_ReviveQueue;
 
+		std::vector<uint64> FortressTurrets_Spawns;
 		std::vector<uint64> Horde_Spawns;
 		std::vector<uint64> Alliance_Spawns;
 		std::vector<uint64> FortressLargeBanners;

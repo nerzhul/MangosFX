@@ -137,18 +137,19 @@ bool GOSelect_wg_engineer( Player *pPlayer, Creature* pCreature, uint32 sender, 
     switch(action)
     {
 		case CATAPULT:
-			pPlayer->CastSpell(pPlayer,56663,false);
-			pPlayer->CLOSE_GOSSIP_MENU(); break;
+			if(pPlayer->CanCreateWGVehicle())
+				pPlayer->CastSpell(pPlayer,56663,false);
 			break;
 		case DEMOLISHER:
-			pPlayer->CastSpell(pPlayer,56575,false);
-			pPlayer->CLOSE_GOSSIP_MENU(); break;
+			if(pPlayer->CanCreateWGVehicle())
+				pPlayer->CastSpell(pPlayer,56575,false);
 			break;
 		case SIEGE:
-			pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, false);
-			pPlayer->CLOSE_GOSSIP_MENU(); break;
+			if(pPlayer->CanCreateWGVehicle())
+				pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, false);
 			break;
     }
+	pPlayer->CLOSE_GOSSIP_MENU();
 	return true;
 }
 

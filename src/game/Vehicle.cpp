@@ -820,6 +820,7 @@ bool Vehicle::CanMoveVehicle()
 	{
 		case 28833:
 		case 27894:
+		case 28366:
 			return false;
 		default:
 			return true;

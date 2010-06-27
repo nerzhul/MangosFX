@@ -423,6 +423,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			}
 		}
 	}
+
 	if(!FortressPicBanners.empty())
 	{
 		for (std::vector<uint64>::iterator itr = FortressPicBanners.begin(); itr != FortressPicBanners.end(); ++itr)
@@ -453,6 +454,31 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			{
 				if(GameObject* go = GetMap()->GetGameObject(*itr))
 					go->SetUInt32Value(GAMEOBJECT_DISPLAYID,8257);
+			}
+		}
+	}
+
+	if(!FortressTurrets_Spawns.empty())
+	{
+		for (std::vector<uint64>::iterator itr = FortressTurrets_Spawns.begin(); itr != FortressTurrets_Spawns.end(); ++itr)
+		{
+			if(owner == BG_TEAM_ALLIANCE)
+			{
+				if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					if(cr->IsVehicle())
+					{
+						cr->GetVehicleKit()->RemoveAllPassengers();
+						cr->setFaction(1802);
+					}
+			}
+			else
+			{
+				if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					if(cr->IsVehicle())
+					{
+						cr->GetVehicleKit()->RemoveAllPassengers();
+						cr->setFaction(1801);
+					}
 			}
 		}
 	}
@@ -876,6 +902,9 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 32627:
 			m_vehicles[BG_TEAM_HORDE].insert(creature->GetGUID());
 			SendInitWorldStatesTo();
+			break;
+		case 28366:
+			FortressTurrets_Spawns.push_back(creature->GetGUID());
 			break;
         default:
             break;
