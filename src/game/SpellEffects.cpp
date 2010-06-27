@@ -8284,15 +8284,17 @@ void Spell::EffectWMODamage(uint32 /*i*/)
         // Do not allow to damage GO's of friendly factions (ie: Wintergrasp Walls)
         if (casterft && goft && !casterft->IsFriendlyTo(*goft))
 		{
-            gameObjTarget->TakenDamage(uint32(damage));
+            gameObjTarget->TakenDamage(uint32(damage), caster);
 			WorldPacket data(SMSG_DESTRUCTIBLE_BUILDING_DAMAGE, 8+8+8+4+4);
 			data.append(gameObjTarget->GetPackGUID());
 			if (Unit *who = caster->GetVehicleKit()->GetBase())
+			{
 				data.append(who->GetPackGUID());
-			data.append(caster->GetPackGUID());
-			data << uint32(damage);
-			data << uint32(m_spellInfo->Id);
-			gameObjTarget->SendMessageToSet(&data, false);
+				data.append(caster->GetPackGUID());
+				data << uint32(damage);
+				data << uint32(m_spellInfo->Id);
+				gameObjTarget->SendMessageToSet(&data, false);
+			}
         }
     }
 }

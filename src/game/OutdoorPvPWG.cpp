@@ -1,21 +1,3 @@
-/*
- * Copyright (C) 2008-2009 Trinity <http://www.trinitycore.org/>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USAo
- */
-
 #include "OutdoorPvPWG.h"
 #include "SpellAuras.h"
 #include "Vehicle.h"
@@ -52,6 +34,22 @@ OutdoorPvPWG::OutdoorPvPWG()
     m_TypeId = OUTDOOR_PVP_WG;
 	m_WGGroup[BG_TEAM_ALLIANCE] = NULL;
 	m_WGGroup[BG_TEAM_HORDE] = NULL;
+
+	FortressTurrets_Spawns.clear();
+	Horde_Spawns.clear();
+	Alliance_Spawns.clear();
+	FortressLargeBanners.clear();
+	FortressPicBanners.clear();
+	BuildingDestroyables.clear();
+	NESpawnsCr.clear();
+	SESpawnsCr.clear();
+	NWSpawnsCr.clear();
+	SWSpawnsCr.clear();
+	NESpawnsGo.clear();
+	SESpawnsGo.clear();
+	NWSpawnsGo.clear();
+	SWSpawnsGo.clear();
+	ToDespawnInWarCr.clear();
 
     m_LastResurrectTime = 0; // Temporal copy of BG system till 3.2
 }

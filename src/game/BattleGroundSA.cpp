@@ -243,3 +243,57 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 void BattleGroundSA::EndBattleGround(uint32 winner)
 {
 }
+
+uint32 BattleGroundSA::GetGateIDFromDestroyEventID(uint32 id)
+{
+    uint32 i = 0;
+    switch(id)
+    {
+        case 19046: i = BG_SA_GREEN_GATE;   break; //Green gate destroyed
+        case 19045: i = BG_SA_BLUE_GATE;    break; //blue gate
+        case 19047: i = BG_SA_RED_GATE;     break; //red gate
+        case 19048: i = BG_SA_PURPLE_GATE;  break; //purple gate
+        case 19049: i = BG_SA_YELLOW_GATE;  break; //yellow gate
+        case 19837: i = BG_SA_ANCIENT_GATE; break; //ancient gate
+    }
+    return i;
+}
+
+uint32 BattleGroundSA::GetWorldStateFromGateID(uint32 id)
+{
+	uint32 uws = 0;
+    switch(id)
+    {
+        case BG_SA_GREEN_GATE:   uws = BG_SA_GREEN_GATEWS;   break;
+        case BG_SA_YELLOW_GATE:  uws = BG_SA_YELLOW_GATEWS;  break;
+        case BG_SA_BLUE_GATE:    uws = BG_SA_BLUE_GATEWS;    break;
+        case BG_SA_RED_GATE:     uws = BG_SA_RED_GATEWS;     break;
+        case BG_SA_PURPLE_GATE:  uws = BG_SA_PURPLE_GATEWS;  break;
+        case BG_SA_ANCIENT_GATE: uws = BG_SA_ANCIENT_GATEWS; break;
+    }
+    return uws;
+}
+
+void BattleGroundSA::OnCreatureCreate(Creature* cr)
+{
+	switch(cr->GetEntry())
+	{
+		case 27894:
+			TurretSet.insert(cr->GetGUID());
+			break;
+		case 28781:
+			if(cr->GetDistance2d(1611.597656,-117.270073) < 3.0f || cr->GetDistance2d(1575.562500,-158.421875) < 3.0f)
+				NEDemolisherSet.insert(cr->GetGUID());
+			else if(cr->GetDistance2d(1618.047729,61.424641) < 3.0f || cr->GetDistance2d(1575.103149,98.873344) < 3.0f)
+				NWDemolisherSet.insert(cr->GetGUID());
+			else if(cr->GetDistance2d(1371.055786,-317.071136) < 3.0f || cr->GetDistance2d(1391.213f,-284.105) < 3.0f)
+				SEDemolisherSet.insert(cr->GetGUID());
+			else if(cr->GetDistance2d(1353.139893,223.745438) < 3.0f || cr->GetDistance2d(1377.583f,182.722f) < 3.0f)
+				SWDemolisherSet.insert(cr->GetGUID());
+			break;
+		case 29260:
+			break;
+		case 29262:
+			break;
+	}
+}

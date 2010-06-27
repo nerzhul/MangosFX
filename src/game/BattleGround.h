@@ -309,6 +309,8 @@ class BattleGround
         virtual void Reset();                               // resets all common properties for battlegrounds, must be implemented and called in BG subclass
         virtual void StartingEventCloseDoors() {}
         virtual void StartingEventOpenDoors() {}
+		virtual void OnCreatureCreate(Creature* /*cr*/) {}
+		virtual void EventPlayerDamageGO(Player* /*player*/, GameObject* /*target_obj*/, uint32 /*eventId*/) {}
 
         /* achievement req. */
         virtual bool IsAllNodesConrolledByTeam(uint32 /*team*/) const { return false; }

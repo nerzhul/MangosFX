@@ -118,21 +118,6 @@ enum BG_SA_NPCs
 
 const uint32 BG_SA_NpcEntries[BG_SA_MAXNPC] =
   {
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    27894,
-    //4 beach demolishers
-    28781,
-    28781,
-    28781,
-    28781,
     //Fizzle Sparklight, or whatever his name was
     29260,
     29262,
@@ -140,30 +125,9 @@ const uint32 BG_SA_NpcEntries[BG_SA_MAXNPC] =
 
 const float BG_SA_NpcSpawnlocs[BG_SA_MAXNPC + BG_SA_DEMOLISHER_AMOUNT][4] =
   {
-    //Cannons
-    { 1436.429f, 110.05f, 41.407f, 5.4f },
-    { 1404.9023f, 84.758f, 41.183f, 5.46f },
-    { 1068.693f, -86.951f, 93.81f, 0.02f },
-    { 1068.83f, -127.56f, 96.45f, 0.0912f },
-    { 1422.115f, -196.433f, 42.1825f, 1.0222f },
-    { 1454.887f, -220.454f, 41.956f, 0.9627f },
-    { 1232.345f, -187.517f, 66.945f, 0.45f },
-    { 1249.634f, -224.189f, 66.72f, 0.635f },
-    { 1236.213f, 92.287f, 64.965f, 5.751f },
-    { 1215.11f, 57.772f, 64.739f, 5.78f } ,
-    //Demolishers
-    { 1611.597656,-117.270073,8.719355,2.513274},
-    { 1575.562500,-158.421875,5.024450,2.129302},
-    { 1618.047729,61.424641,7.248210,3.979351},
-    { 1575.103149,98.873344,2.830360,3.752458},
     //Npcs
     { 1348.644165, -298.786469, 31.080130, 1.710423},
     { 1358.191040, 195.527786, 31.018187, 4.171337},
-    //Demolishers2
-    { 1371.055786, -317.071136, 35.007359, 1.947460},
-    { 1424.034912, -260.195190, 31.084425, 2.820013},
-    { 1353.139893, 223.745438, 35.265411, 4.343684},
-    { 1404.809570, 197.027237, 32.046032, 3.605401},
   };
 
 enum BG_SA_Objects
@@ -313,41 +277,16 @@ class BattleGroundSA : public BattleGround
         virtual void StartingEventCloseDoors();
         virtual void StartingEventOpenDoors();
 		virtual bool SetupBattleGround();
+		virtual void OnCreatureCreate(Creature* cr);
 		virtual void Reset();
 		virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
-		//virtual void EventPlayerDamagedGO(Player* plr, GameObject* go, uint8 hitType, uint32 destroyedEvent);
+		virtual void EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId);
 		virtual void HandleKillUnit(Creature* unit, Player* killer);
 		//virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
 		virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
 		//virtual void EventPlayerUsedGO(Player* Source, GameObject* object);
-		uint32 GetGateIDFromDestroyEventID(uint32 id)
-        {
-            uint32 i = 0;
-            switch(id)
-            {
-                case 19046: i = BG_SA_GREEN_GATE;   break; //Green gate destroyed
-                case 19045: i = BG_SA_BLUE_GATE;    break; //blue gate
-                case 19047: i = BG_SA_RED_GATE;     break; //red gate
-                case 19048: i = BG_SA_PURPLE_GATE;  break; //purple gate
-                case 19049: i = BG_SA_YELLOW_GATE;  break; //yellow gate
-                case 19837: i = BG_SA_ANCIENT_GATE; break; //ancient gate
-            }
-            return i;
-        }
-        uint32 GetWorldStateFromGateID(uint32 id)
-        {
-            uint32 uws = 0;
-            switch(id)
-            {
-                case BG_SA_GREEN_GATE:   uws = BG_SA_GREEN_GATEWS;   break;
-                case BG_SA_YELLOW_GATE:  uws = BG_SA_YELLOW_GATEWS;  break;
-                case BG_SA_BLUE_GATE:    uws = BG_SA_BLUE_GATEWS;    break;
-                case BG_SA_RED_GATE:     uws = BG_SA_RED_GATEWS;     break;
-                case BG_SA_PURPLE_GATE:  uws = BG_SA_PURPLE_GATEWS;  break;
-                case BG_SA_ANCIENT_GATE: uws = BG_SA_ANCIENT_GATEWS; break;
-            }
-            return uws;
-        }
+		uint32 GetGateIDFromDestroyEventID(uint32 id);
+        uint32 GetWorldStateFromGateID(uint32 id);
 	    void EndBattleGround(uint32 winner);
         void RemovePlayer(Player *plr,uint64 guid);
         void HandleAreaTrigger(Player *Source, uint32 Trigger);
@@ -357,11 +296,11 @@ class BattleGroundSA : public BattleGround
         void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
 
     private:
+		typedef std::set<uint64> GUIDSet;
 		void StartShips();
 		void SendTime();
 		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
 		void ToggleTimer();
-		void UpdateDemolisherSpawns();
 		BattleGroundTeamId attackers;
 		uint32 TotalTime;
 		uint32 BG_SA_ENDROUNDTIME;
@@ -375,5 +314,11 @@ class BattleGroundSA : public BattleGround
 		bool SignaledRoundTwo;
 		bool SignaledRoundTwoHalfMin;
 		bool InitSecondRound;
+
+		GUIDSet	TurretSet;
+		GUIDSet NWDemolisherSet;
+		GUIDSet NEDemolisherSet;
+		GUIDSet SWDemolisherSet;
+		GUIDSet SEDemolisherSet;
 };
 #endif

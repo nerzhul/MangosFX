@@ -609,6 +609,10 @@ bool Creature::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, 
         //Normally non-players do not teleport to other maps.
         if(map->IsDungeon() && ((InstanceMap*)map)->GetInstanceData())
             ((InstanceMap*)map)->GetInstanceData()->OnCreatureCreate(this);
+
+		if(GetMap()->IsBattleGroundOrArena() && ((BattleGroundMap*)GetMap())->GetBG())
+			(((BattleGroundMap*)GetMap())->GetBG())->OnCreatureCreate(this);
+
 		if(map->GetId() == 571)
 		{
 			if(OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197))

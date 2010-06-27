@@ -1490,7 +1490,7 @@ bool GameObject::IsInRange(float x, float y, float z, float radius) const
         && dz < info->maxZ + radius && dz > info->minZ - radius;
 }
 
-void GameObject::TakenDamage(uint32 damage)
+void GameObject::TakenDamage(uint32 damage, Unit* pKiller)
 {
     if (!m_goValue->building.health)
         return;
@@ -1516,6 +1516,12 @@ void GameObject::TakenDamage(uint32 damage)
 				if(pvpWG && pvpWG->isWarTime())
 					pvpWG->ProcessEvent(this,m_goInfo->building.destroyedEvent);
 			}
+			else if(GetMap()->IsBattleGroundOrArena())
+			{
+				if(BattleGround* bg = ((BattleGroundMap*)GetMap())->GetBG())
+					if(pKiller->GetTypeId() == TYPEID_PLAYER)
+						bg->EventPlayerDamageGO(((Player*)pKiller), this, m_goInfo->building.destroyedEvent);
+			}
 			else
 				EventInform(m_goInfo->building.destroyedEvent);
         }
@@ -1536,6 +1542,12 @@ void GameObject::TakenDamage(uint32 damage)
 				OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
 				if(pvpWG && pvpWG->isWarTime())
 					pvpWG->ProcessEvent(this,m_goInfo->building.damagedEvent);
+			}
+			else if(GetMap()->IsBattleGroundOrArena())
+			{
+				if(BattleGround* bg = ((BattleGroundMap*)GetMap())->GetBG())
+					if(pKiller->GetTypeId() == TYPEID_PLAYER)
+						bg->EventPlayerDamageGO(((Player*)pKiller), this, m_goInfo->building.damageEvent);
 			}
 			else
 				EventInform(m_goInfo->building.damagedEvent);

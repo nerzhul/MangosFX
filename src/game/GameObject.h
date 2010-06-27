@@ -705,7 +705,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
         bool isActiveObject() const { return false; }
         uint64 GetRotation() const { return m_rotation; }
 
-		void TakenDamage(uint32 damage);
+		void TakenDamage(uint32 damage, Unit* pKiller);
         void Rebuild();
 		void EventInform(uint32 eventId);
 		GameObjectValue * GetGOValue() const { return m_goValue; }
