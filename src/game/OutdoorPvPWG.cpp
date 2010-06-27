@@ -1472,7 +1472,7 @@ void OutdoorPvPWG::UpdateTenacityStack()
 			{
 				float pLife = (*itr)->GetHealth() / (*itr)->GetMaxHealth();
                 (*itr)->SetAuraStack(SPELL_TENACITY, (*itr), newStack);
-				(*itr)->SetHealth(pLife*(*itr)->GetMaxHealth());
+				(*itr)->SetHealth((*itr)->GetMaxHealth());
 			}
 
         /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
