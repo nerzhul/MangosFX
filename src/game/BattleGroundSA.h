@@ -121,7 +121,7 @@ enum BG_SA_Objects
     BG_SA_MAXOBJ
   };
 
-const static float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
+const float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
 {
     //Flagpoles
     { 1215.114258, -65.711861, 70.084267,-3.124123},
@@ -129,16 +129,7 @@ const static float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
     {1309.124268, 9.410645, 30.893402,-1.623156},
 };
 
-const static float BG_SA_PlrSpawnLocs[5][4] = 
-{
-	{0.0f,	0.0f,	0.0f,	0.0f},
-	{0.0f,	0.0f,	0.0f,	0.0f},
-	{0.0f,	0.0f,	0.0f,	0.0f},
-	{0.0f,	0.0f,	0.0f,	0.0f},
-	{0.0f,	0.0f,	0.0f,	0.0f},
-};
-
-const static uint32 BG_SA_Factions[2] =
+const uint32 BG_SA_Factions[2] =
   {
     1732,
     1735,
@@ -154,7 +145,7 @@ enum BG_SA_Graveyards
     BG_SA_MAX_GY
   };
 
-const static uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
+const uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
   {
     1350,
     1349,
@@ -163,7 +154,7 @@ const static uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
     1348,
   };
 
-const static float BG_SA_GYOrientation[BG_SA_MAX_GY] =
+const float BG_SA_GYOrientation[BG_SA_MAX_GY] =
   {
     6.202f,
     1.926f, //right capturable GY
@@ -213,14 +204,12 @@ class BattleGroundSA : public BattleGround
     private:
 		
 		void StartShips();
-		void SendTime();
 		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
-		void ToggleTimer();
+		
 		uint32 TotalTime;
 		uint32 BG_SA_ENDROUNDTIME;
 		bool ShipsStarted;
 		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
-		BG_SA_RoundScore RoundScores[2];
 		bool TimerEnabled;
 		uint32 UpdateWaitTimer;//5secs before starting the 1min countdown for second round
 		bool SignaledRoundTwo;
@@ -231,10 +220,15 @@ class BattleGroundSA : public BattleGround
 		// All validate private objects
 		void InitAllObjects();
 		void TeleportPlayer(Player* plr);
+		void EndRound();
+		void RelocatePlayers();
+		void ToggleTimer();
+		void UpdateTimer();
 
 		BattleGroundTeamId attackers;
 		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
 		BG_SA_Status status;
+		BG_SA_RoundScore RoundScores[2];
 
 		// All guid storage
 		typedef std::set<uint64> GUIDSet;
@@ -253,5 +247,6 @@ class BattleGroundSA : public BattleGround
 		uint64 GobelinGUID[2];
 		// Tests
 		bool OnLeftBoat;
+		uint8 round;
 };
 #endif
