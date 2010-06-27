@@ -911,6 +911,20 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
   }
 }
 
+void OutdoorPvPWG::OnKilledCreature(Creature* cr)
+{
+	switch(cr->GetEntry())
+	{
+		case 27881:
+		case 28094:
+		case 28312:
+		case 32627:
+			m_vehicles[BG_TEAM_ALLIANCE].erase(cr->GetGUID());
+			m_vehicles[BG_TEAM_HORDE].erase(cr->GetGUID());
+			break;
+	}
+}
+
 void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
 {
     OutdoorPvP::OnGameObjectCreate(go, add);
@@ -1769,20 +1783,24 @@ void OutdoorPvPWG::EndBattle()
     sWorld.setState(0, getDefenderTeam());
     sWorld.UpdateAreaDependentAuras();
 
+	for(CreatureSet::iterator itr = m_vehicles[BG_TEAM_ALLIANCE].begin(); itr != m_vehicles[BG_TEAM_ALLIANCE].end();itr++)
+		if(GetMap())
+			if(Creature* cr = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*itr))
+				if(cr->isAlive())
+					cr->DealDamage(cr,cr->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+
+	m_vehicles[BG_TEAM_ALLIANCE].clear();
+
+	for(CreatureSet::iterator itr = m_vehicles[BG_TEAM_HORDE].begin(); itr != m_vehicles[BG_TEAM_HORDE].end();itr++)
+		if(GetMap())
+			if(Creature* cr = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*itr))
+				if(cr->isAlive())
+					cr->DealDamage(cr,cr->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+
+	m_vehicles[BG_TEAM_HORDE].clear();
+
     for (uint32 team = 0; team < 2; ++team)
     {
-        // destroyed all vehicles
-        while(!m_vehicles[team].empty())
-        {
-            while(!m_vehicles[team].empty())
-			{
-				if(Creature *veh = (Creature*)GetMap()->GetCreatureOrPetOrVehicle(*m_vehicles[team].begin()))
-					if(veh->GetVehicleKit())
-						veh->GetVehicleKit()->Dismiss();
-				m_vehicles[team].erase(m_vehicles[team].begin());
-			}
-        }
-
         if (m_players[team].empty())
             continue;
 

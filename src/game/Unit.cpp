@@ -49,6 +49,7 @@
 #include "VMapFactory.h"
 #include "OutdoorPvP.h"
 #include "OutdoorPvPMgr.h"
+#include "OutdoorPvPWG.h"
 #include "Vehicle.h"
 
 #include <math.h>
@@ -830,6 +831,10 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         // Call KilledUnit for creatures
         if (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->AI())
             ((Creature*)this)->AI()->KilledUnit(pVictim);
+
+		OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+		if(pvpWG && pvpWG->isWarTime() && pVictim->GetTypeId() == TYPEID_UNIT)
+				pvpWG->OnKilledCreature((Creature*)pVictim);
 
         // achievement stuff
         if (pVictim->GetTypeId() == TYPEID_PLAYER)

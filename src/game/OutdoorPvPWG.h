@@ -223,6 +223,7 @@ class OutdoorPvPWG : public OutdoorPvP
 
         void OnCreatureCreate(Creature *creature, bool add);
         void OnGameObjectCreate(GameObject *go, bool add);
+		void OnKilledCreature(Creature* cr);
 
         void ProcessEvent(GameObject *obj, uint32 eventId, Player* user = NULL);
 
