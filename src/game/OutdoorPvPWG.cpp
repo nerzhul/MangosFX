@@ -921,6 +921,7 @@ void OutdoorPvPWG::OnKilledCreature(Creature* cr)
 		case 32627:
 			m_vehicles[BG_TEAM_ALLIANCE].erase(cr->GetGUID());
 			m_vehicles[BG_TEAM_HORDE].erase(cr->GetGUID());
+			SendInitWorldStatesTo();
 			break;
 	}
 }
@@ -1336,7 +1337,7 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player * plr, uint32 zone)
 			if(vehUnit->isAlive())
 				vehUnit->DealDamage(vehUnit,vehUnit->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 		}
-		
+
         plr->RemoveAurasDueToSpell(SPELL_RECRUIT);
         plr->RemoveAurasDueToSpell(SPELL_CORPORAL);
         plr->RemoveAurasDueToSpell(SPELL_LIEUTENANT);

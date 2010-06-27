@@ -15132,9 +15132,12 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	if(GetTypeId() == TYPEID_PLAYER)
 	{
-		WorldPacket data(SMSG_BREAK_TARGET, 8);
-		data.appendPackGUID(vehicle->GetBase()->GetGUID());
-		((Player*)this)->GetSession()->SendPacket(&data);
+		if(vehicle && vehicle->GetBase())
+		{
+			WorldPacket data(SMSG_BREAK_TARGET, 8);
+			data.appendPackGUID(vehicle->GetBase()->GetGUID());
+			((Player*)this)->GetSession()->SendPacket(&data);
+		}
 	}
 
     if (!m_vehicle->AddPassenger(this, seatId))
