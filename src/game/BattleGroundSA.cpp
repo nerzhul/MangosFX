@@ -297,3 +297,7 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			break;
 	}
 }
+
+void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId)
+{
+}

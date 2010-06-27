@@ -173,6 +173,10 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
         ((InstanceMap*)map)->GetInstanceData()->OnObjectCreate(this);
     }
 
+	if(map->IsBattleGroundOrArena())
+		if(BattleGround* bg = ((BattleGroundMap*)map)->GetBG())
+			bg->OnGameObjectCreate(this);
+
 	if(map->GetId() == 571)
 	{
 		if(OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197))

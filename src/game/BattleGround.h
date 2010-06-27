@@ -310,6 +310,7 @@ class BattleGround
         virtual void StartingEventCloseDoors() {}
         virtual void StartingEventOpenDoors() {}
 		virtual void OnCreatureCreate(Creature* /*cr*/) {}
+		virtual void OnGameObjectCreate(GameObject* /*go*/) {}
 		virtual void EventPlayerDamageGO(Player* /*player*/, GameObject* /*target_obj*/, uint32 /*eventId*/) {}
 
         /* achievement req. */

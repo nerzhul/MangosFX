@@ -320,5 +320,6 @@ class BattleGroundSA : public BattleGround
 		GUIDSet NEDemolisherSet;
 		GUIDSet SWDemolisherSet;
 		GUIDSet SEDemolisherSet;
+		GUIDSet BoatSet;
 };
 #endif
