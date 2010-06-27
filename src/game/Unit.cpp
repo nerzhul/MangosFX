@@ -15076,9 +15076,6 @@ void Unit::ExitVehicle()
 			if(m_vehicle)
 				m_vehicle->RemovePassenger(this);
 
-			m_movementInfo.ClearTransportData();
-			m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
-
 			float x = vehUnit->GetPositionX();
 			float y = vehUnit->GetPositionY();
 			float z = vehUnit->GetPositionZ() + 2.0f;
@@ -15087,15 +15084,16 @@ void Unit::ExitVehicle()
 				GetClosePoint(x, y, z, 2.0f + v_size);
 				SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
 			}
-			SetVehicleGUID(0);
-			m_vehicle = NULL;
-			
-			if(GetTypeId() == TYPEID_PLAYER)
-			{
-				((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
-				((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
-				((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
-			}
+		}
+		SetVehicleGUID(0);
+		m_vehicle = NULL;
+		m_movementInfo.ClearTransportData();
+		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+		if(GetTypeId() == TYPEID_PLAYER)
+		{
+			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
+			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
 		}
     }
 }
