@@ -15120,6 +15120,8 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(m_vehicle)
 		return;
 
+	RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+
 	if(seatId < 0)
 		vehicle = vehicle->FindFreeSeat(&seatId,false);
 
