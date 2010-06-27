@@ -1333,7 +1333,7 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player * plr, uint32 zone)
     {
 		if(Unit *vehUnit = Unit::GetUnit(*plr,plr->GetVehicleGUID()))
 		{
-			vehUnit->GetVehicleKit()->Dismiss();
+			vehUnit->DealDamage(vehUnit,vehUnit->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 		}
 		
         plr->RemoveAurasDueToSpell(SPELL_RECRUIT);
