@@ -582,6 +582,8 @@ class BattleGround
         void EndNow();
         void PlayerAddedToBGCheckIfBGIsRunning(Player* plr);
 		BattleGroundMap* GetMap() { return m_Map; }
+		void SendWarningToAll(int32 entry, ...);
+		void SendWarningToAll(std::string str);
 
         /* Scorekeeping */
 

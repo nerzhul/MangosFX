@@ -189,7 +189,7 @@ class BattleGroundSA : public BattleGround
 		virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
 		virtual void EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId);
 		virtual void HandleKillUnit(Creature* unit, Player* killer);
-		//virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
+		virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
 		virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
 		//virtual void EventPlayerUsedGO(Player* Source, GameObject* object);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
@@ -204,12 +204,10 @@ class BattleGroundSA : public BattleGround
     private:
 		
 		void StartShips();
-		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
 		
-		uint32 TotalTime;
 		uint32 BG_SA_ENDROUNDTIME;
-		bool ShipsStarted;
-		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
+		
+		
 		bool TimerEnabled;
 		uint32 UpdateWaitTimer;//5secs before starting the 1min countdown for second round
 		bool SignaledRoundTwo;
@@ -220,15 +218,20 @@ class BattleGroundSA : public BattleGround
 		// All validate private objects
 		void InitAllObjects();
 		void TeleportPlayer(Player* plr);
+		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
 		void EndRound();
 		void RelocatePlayers();
 		void ToggleTimer();
 		void UpdateTimer();
+		void UpdateCatapults(bool usable);
 
 		BattleGroundTeamId attackers;
 		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
 		BG_SA_Status status;
 		BG_SA_RoundScore RoundScores[2];
+		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
+
+		uint32 TotalTime;
 
 		// All guid storage
 		typedef std::set<uint64> GUIDSet;
@@ -247,6 +250,7 @@ class BattleGroundSA : public BattleGround
 		uint64 GobelinGUID[2];
 		// Tests
 		bool OnLeftBoat;
+		bool ShipsStarted;
 		uint8 round;
 };
 #endif

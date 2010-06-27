@@ -1058,6 +1058,19 @@ void GameObject::Use(Unit* user)
 					if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(271))
 						player->GetAchievementMgr().DoCompleteAchivement(pAE);
 				}
+				else if(GetEntry() == 192834)
+				{
+					if (player->CanUseBattleGroundObject())
+					{
+						// in battleground check
+						BattleGround *bg = player->GetBattleGround();
+						if (!bg)
+							return;
+
+						bg->EventPlayerClickedOnFlag(player, this);
+						return;                                     //we don;t need to delete flag ... it is despawned!
+				}
+				}
 
                 if (info->goober.pageId)                    // show page...
                 {
