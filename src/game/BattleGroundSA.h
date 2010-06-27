@@ -33,6 +33,7 @@ class BattleGroundSAScore : public BattleGroundScore
 
 #define BG_SA_FLAG_AMOUNT 3
 #define BG_SA_DEMOLISHER_AMOUNT 4
+#define BG_SA_MAX_GATES 6
 
 enum BG_SA_Status
   {
@@ -306,7 +307,7 @@ class BattleGroundSA : public BattleGround
 		uint32 TotalTime;
 		uint32 BG_SA_ENDROUNDTIME;
 		bool ShipsStarted;
-		BG_SA_GateState GateStatus[6];
+		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
 		BG_SA_Status status;
 		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
 		BG_SA_RoundScore RoundScores[2];
@@ -322,5 +323,6 @@ class BattleGroundSA : public BattleGround
 		GUIDSet SWDemolisherSet;
 		GUIDSet SEDemolisherSet;
 		GUIDSet BoatSet[2];
+		uint64 GatesGUID[BG_SA_MAX_GATES];
 };
 #endif

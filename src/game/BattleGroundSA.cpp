@@ -31,6 +31,15 @@ BattleGroundSA::BattleGroundSA()
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_SA_HAS_BEGUN;
     TimerEnabled = false;
+	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
+		GatesGUID[i] = 0;
+	TurretSet.clear();
+	NWDemolisherSet.clear();
+	NEDemolisherSet.clear();
+	SWDemolisherSet.clear();
+	SEDemolisherSet.clear();
+	BoatSet[0].clear();
+	BoatSet[1].clear();
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -310,6 +319,25 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 		case 193184:
 			BoatSet[BG_TEAM_HORDE].insert(go->GetGUID());
 			break;
+		case 0:
+			GatesGUID[0] = go->GetGUID();
+			break;
+		case 1:
+			GatesGUID[1] = go->GetGUID();
+			break;
+		case 2:
+			GatesGUID[2] = go->GetGUID();
+			break;
+		case 3:
+			GatesGUID[3] = go->GetGUID();
+			break;
+		case 4:
+			GatesGUID[4] = go->GetGUID();
+			break;
+		case 5:
+			GatesGUID[5] = go->GetGUID();
+			break;
+
 	}
 }
 void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId)

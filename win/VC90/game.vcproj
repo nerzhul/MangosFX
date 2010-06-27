@@ -1152,14 +1152,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\Bag.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Bag.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Calendar.cpp"
 				>
 			</File>
@@ -1256,26 +1248,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\Item.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Item.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ItemEnchantmentMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ItemEnchantmentMgr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\ItemPrototype.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\LootMgr.cpp"
 				>
 			</File>
@@ -1297,14 +1269,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\MovementGenerator.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Object.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Object.h"
 				>
 			</File>
 			<File
@@ -1396,14 +1360,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\Totem.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\Totem.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\Traveller.h"
 				>
 			</File>
@@ -1439,6 +1395,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\Object.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Object.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\Pet.cpp"
 					>
 				</File>
@@ -1452,6 +1416,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\Player.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Totem.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Totem.h"
 					>
 				</File>
 				<File
@@ -1556,6 +1528,38 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\TotemAI.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Items"
+				>
+				<File
+					RelativePath="..\..\src\game\Bag.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Bag.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Item.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\Item.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ItemEnchantmentMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ItemEnchantmentMgr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\ItemPrototype.h"
 					>
 				</File>
 			</Filter>
