@@ -624,7 +624,7 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 		// titan relic
 		case 192834:
 		{
-			std::string teamName = Source->GetTeam() ? "'Alliance" : "a Horde";
+			const char* teamName = Source->GetTeam() ? "'Alliance" : "a Horde";
 			SendWarningToAll(fmtstring("L%s a pris la relique !",teamName));
 			EndRound();
 			break;
