@@ -44,6 +44,9 @@ void WorldSession::HandleMoveWorldportAckOpcode()
     if(!GetPlayer()->IsBeingTeleportedFar())
         return;
 
+	if (_player->GetVehicleKit())
+		_player->GetVehicleKit()->RemoveAllPassengers();
+
     // get the teleport destination
     WorldLocation &loc = GetPlayer()->GetTeleportDest();
 

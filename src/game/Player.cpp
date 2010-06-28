@@ -1746,6 +1746,11 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
         m_movementInfo.ClearTransportData();
     }
 
+	if (GetVehicleKit())
+		GetVehicleKit()->RemoveAllPassengers();
+
+	ExitVehicle();
+
     // The player was ported to another map and looses the duel immediately.
     // We have to perform this check before the teleport, otherwise the
     // ObjectAccessor won't find the flag.
@@ -6077,6 +6082,9 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
         // group update
         if(GetGroup() && (old_x != x || old_y != y))
             SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
+
+		if (IsVehicle())
+			GetVehicleKit()->RelocatePassengers(x,y,z,orientation,GetMap());
     }
 
     // code block for underwater state update
@@ -19815,13 +19823,13 @@ void Player::SendInitialPacketsAfterAddToMap()
         SendMessageToSet(&data2,true);
     }
 
-	if(GetVehicleGUID())
+	/*if(GetVehicleGUID())
 	{
 		WorldPacket data3(SMSG_FORCE_MOVE_ROOT, 10);
 		data3.append(GetPackGUID());
 		data3 << (uint32)((m_movementInfo.GetVehicleSeatFlags() & SF_CAN_CAST) ? 2 : 0);
 		SendMessageToSet(&data3,true);
-	}
+	}*/
 
     SendAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map

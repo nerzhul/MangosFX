@@ -687,9 +687,19 @@ void Vehicle::EmptySeatsCountChanged()
 
     // seats accesibles by players
     if(p_count > 0)
-        me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+	{
+		if(me->GetTypeId() == TYPEID_PLAYER)
+			me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
+		else
+			me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+	}
     else
-        me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+	{
+		if(me->GetTypeId() == TYPEID_PLAYER)
+			me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_PLAYER_VEHICLE);
+		else
+			me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+	}
 
     if(u_count == m_count)
     {

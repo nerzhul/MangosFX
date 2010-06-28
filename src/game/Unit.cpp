@@ -11156,6 +11156,9 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
                 {
                     GetVehicleKit()->Reset();
 
+					m_updateFlag &= UPDATEFLAG_VEHICLE;
+					m_unitTypeMask &= UNIT_MASK_VEHICLE;
+
                     // Send others that we now have a vehicle
                     WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, 8+4);
                     data.appendPackGUID(GetGUID());
@@ -11198,10 +11201,10 @@ void Unit::Unmount()
         data.appendPackGUID(GetGUID());
         data << uint32(0);
         ((Player*)this)->SendMessageToSet(&data, true);
-        if (!m_vehicleKit)
+        if (!GetVehicleKit())
 			return;
 
-		m_vehicleKit->Uninstall();
+		GetVehicleKit()->Uninstall();
 		delete m_vehicleKit;
 
 		m_vehicleKit = NULL;
