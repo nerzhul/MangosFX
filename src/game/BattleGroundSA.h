@@ -225,7 +225,7 @@ class BattleGroundSA : public BattleGround
 		void UpdateTimer();
 		void UpdateCatapults(bool usable);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
-		std::string GetDoorNameFromGateID(uint32 gateid);
+		const char* GetDoorNameFromGateID(uint32 gateid);
 
 		BattleGroundTeamId attackers;
 		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];

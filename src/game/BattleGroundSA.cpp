@@ -30,7 +30,6 @@ BattleGroundSA::BattleGroundSA()
 {
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_SA_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_SA_HAS_BEGUN;
     TimerEnabled = false;
 	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
 		GatesGUID[i] = 0;
@@ -194,6 +193,8 @@ void BattleGroundSA::Update(uint32 diff)
             TotalTime = 0;
             ToggleTimer();
 			UpdateCatapults(true);
+			if(status == BG_SA_WARMUP)
+				SendWarningToAll(LANG_BG_SA_HAS_BEGUN);
             status = (status == BG_SA_WARMUP) ? BG_SA_ROUND_ONE : BG_SA_ROUND_TWO;
         }
         if(TotalTime >= BG_SA_BOAT_START)
@@ -353,7 +354,6 @@ void BattleGroundSA::StartingEventCloseDoors()
 void BattleGroundSA::StartingEventOpenDoors()
 {
 	status = BG_SA_ROUND_ONE;
-	SendWarningToAll("Que la bataille pour le Rivage des Anciens commence !");
 }
 
 void BattleGroundSA::AddPlayer(Player *plr)
@@ -460,8 +460,7 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
 {
     //DelCreature(BG_SA_MAXNPC + i);
     GraveyardStatus[i] = BattleGroundTeamId(Source->GetBGTeam());
-    WorldSafeLocsEntry const *sg = NULL;
-    sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
+    WorldSafeLocsEntry const *sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
     //AddSpiritGuide(i + BG_SA_MAXNPC, sg->x, sg->y, sg->z, BG_SA_GYOrientation[i], (GraveyardStatus[i] == TEAM_ALLIANCE?  ALLIANCE : HORDE));
     //uint32 npc = 0;
     //uint32 flag = 0;
@@ -698,19 +697,18 @@ uint32 BattleGroundSA::GetWorldStateFromGateID(uint32 id)
     return uws;
 }
 
-std::string BattleGroundSA::GetDoorNameFromGateID(uint32 id)
+const char* BattleGroundSA::GetDoorNameFromGateID(uint32 id)
 {
-	std::string name = "";
     switch(id)
     {
-        case BG_SA_GREEN_GATE:   name = "de l'Emeraude Verte";   break;
-        case BG_SA_YELLOW_GATE:  name = "de la Lune Jaune";  break;
-        case BG_SA_BLUE_GATE:    name = "du Saphir Bleu";    break;
-        case BG_SA_RED_GATE:     name = "du Soleil Rouge";     break;
-        case BG_SA_PURPLE_GATE:  name = "de l'Amethyste Violette";  break;
-        case BG_SA_ANCIENT_GATE: name = "de la Chambre des Reliques"; break;
+        case BG_SA_GREEN_GATE:   return "de l'Emeraude Verte";
+        case BG_SA_YELLOW_GATE:  return "de la Lune Jaune";
+        case BG_SA_BLUE_GATE:    return "du Saphir Bleu";
+        case BG_SA_RED_GATE:     return "du Soleil Rouge";
+        case BG_SA_PURPLE_GATE:  return "de l'Amethyste Violette";
+        case BG_SA_ANCIENT_GATE: return "de la Chambre des Reliques";
     }
-    return name;
+    return "";
 }
 
 
@@ -905,40 +903,39 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 					SendWarningToAll("L'ennemi attaque la Salle de la Relique !");
 					break;
 			}
-			break;
+			return;
 	}
 
-	if(uint32 gateId = GetGateIDFromDestroyEventID(eventId))
+	uint32 gateId = GetGateIDFromDestroyEventID(eventId);
+	GateStatus[gateId] = BG_SA_GATE_DESTROYED;
+	uint32 uws = GetWorldStateFromGateID(gateId);
+	if(uws)
+		UpdateWorldState(uws, GateStatus[gateId]);
+	SendWarningToAll(fmtstring("La porte %s est detruite !",GetDoorNameFromGateID(gateId)));
+	UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
+    UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));
+	switch(target_obj->GetEntry())
 	{
-		if(uint32 uws = GetWorldStateFromGateID(gateId))
-			UpdateWorldState(uws, GateStatus[gateId]);
-		std::string doorName = GetDoorNameFromGateID(gateId);
-		SendWarningToAll(fmtstring("La porte %s est detruite !",doorName));
-		UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
-        UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));
-		switch(target_obj->GetEntry())
-		{
-			case 190722:
-				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[0]))
-					go->SetPhaseMask(2,true);
-				break;
-			case 190727:
-				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[1]))
-					go->SetPhaseMask(2,true);
-				break;
-			case 190724:
-				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[2]))
-					go->SetPhaseMask(2,true);
-				break;
-			case 190726:
-				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[3]))
-					go->SetPhaseMask(2,true);
-				break;
-			case 190723:
-				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[4]))
-					go->SetPhaseMask(2,true);
-				break;
-		}
+		case 190722:
+			if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[0]))
+				go->SetPhaseMask(2,true);
+			break;
+		case 190727:
+			if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[1]))
+				go->SetPhaseMask(2,true);
+			break;
+		case 190724:
+			if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[2]))
+				go->SetPhaseMask(2,true);
+			break;
+		case 190726:
+			if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[3]))
+				go->SetPhaseMask(2,true);
+			break;
+		case 190723:
+			if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[4]))
+				go->SetPhaseMask(2,true);
+			break;
 	}
 
 }
