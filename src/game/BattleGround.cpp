@@ -812,6 +812,40 @@ void BattleGround::EndBattleGround(uint32 winner)
             loser_rating = loser_arena_team->GetStats().rating;
             winner_rating = winner_arena_team->GetStats().rating;
             int32 winner_change = winner_arena_team->WonAgainst(loser_rating);
+			
+			switch(winner_arena_team->GetType())
+			{
+				case 2:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,399);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,400);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,401);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1159);
+					break;
+				case 3:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,402);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,403);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,405);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1160);
+					break;
+				case 5:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,406);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,407);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,404);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1161);
+					break;
+			}
             int32 loser_change = loser_arena_team->LostAgainst(winner_rating);
             sLog.outDebug("--- Winner rating: %u, Loser rating: %u, Winner change: %u, Losser change: %u ---", winner_rating, loser_rating, winner_change, loser_change);
             SetArenaTeamRatingChangeForTeam(winner, winner_change);
@@ -1955,9 +1989,15 @@ uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team) const
 void BattleGround::CheckArenaWinConditions()
 {
     if (!GetAlivePlayersCountByTeam(ALLIANCE) && GetPlayersCountByTeam(HORDE))
+	{
+		RewardAchievementToTeam(HORDE,397);
         EndBattleGround(HORDE);
+	}
     else if (GetPlayersCountByTeam(ALLIANCE) && !GetAlivePlayersCountByTeam(HORDE))
+	{
         EndBattleGround(ALLIANCE);
+		RewardAchievementToTeam(ALLIANCE,397);
+	}
 }
 
 void BattleGround::SetBgRaid( uint32 TeamID, Group *bg_raid )
