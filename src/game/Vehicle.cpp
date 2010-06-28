@@ -159,6 +159,8 @@ void Vehicle::InstallAllAccessories()
         case 33418:InstallAccessory(35326,0);break; //Silvermoon Hawkstrider
         case 33299:InstallAccessory(35323,0);break; //Darkspear Raptor
         case 35491:InstallAccessory(35451,0,false);break; //Black Knight
+		case 32633:InstallAccessory(24780,0);break;
+		case 32640:InstallAccessory(24780,0);break;
 		case 28319:
 		case 32629:
 			me->setPowerType(POWER_ENERGY);
@@ -311,13 +313,9 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
         if(minion)
             accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
         accessory->EnterVehicle(this, seatId);
-		
-		/*WorldPacket data;
-		accessory->BuildHeartBeatMsg(&data);
-		accessory->SendMessageToSet(&data, false);*/
+
 		if(accessory->isVehicle())
 			accessory->BuildVehicleInfo(accessory);
-
     }
 }
 
