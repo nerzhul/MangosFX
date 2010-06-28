@@ -1518,6 +1518,13 @@ void GameObject::TakenDamage(uint32 damage, Unit* pKiller)
     else
         m_goValue->building.health = 0;
 
+    if (pKiller)
+    {
+		if (pKiller->GetTypeId() == TYPEID_UNIT && ((Creature*)pKiller)->IsVehicle() && pKiller->GetCharmerOrOwner())
+            pKiller = pKiller->GetCharmerOrOwner();
+    }
+
+
 	uint8 life = (uint8)ceil((double)m_goValue->building.health *255/ (m_goInfo->building.intactNumHits + m_goInfo->building.damagedNumHits));
 	SetGoAnimProgress(life);
     if (HasFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED)) // from damaged to destroyed

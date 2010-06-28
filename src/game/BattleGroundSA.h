@@ -192,7 +192,7 @@ class BattleGroundSA : public BattleGround
 		virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
 		virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
 		//virtual void EventPlayerUsedGO(Player* Source, GameObject* object);
-		uint32 GetGateIDFromDestroyEventID(uint32 id);
+		
         uint32 GetWorldStateFromGateID(uint32 id);
 	    void EndBattleGround(uint32 winner);
         void RemovePlayer(Player *plr,uint64 guid);
@@ -224,6 +224,8 @@ class BattleGroundSA : public BattleGround
 		void ToggleTimer();
 		void UpdateTimer();
 		void UpdateCatapults(bool usable);
+		uint32 GetGateIDFromDestroyEventID(uint32 id);
+		std::string GetDoorNameFromGateID(uint32 gateid);
 
 		BattleGroundTeamId attackers;
 		BG_SA_GateState GateStatus[BG_SA_MAX_GATES];
@@ -246,6 +248,7 @@ class BattleGroundSA : public BattleGround
 		uint64 GatesGUID[BG_SA_MAX_GATES];
 		uint64 SigilGUID[BG_SA_MAX_GATES-1];
 		uint64 TitanRelicGUID;
+		uint64 GraveyardFlag[3][2];
 		// Npcs
 		uint64 GobelinGUID[2];
 		// Tests

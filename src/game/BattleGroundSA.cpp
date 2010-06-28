@@ -46,6 +46,10 @@ BattleGroundSA::BattleGroundSA()
 
 	TitanRelicGUID = 0;
 	GobelinGUID[0] = GobelinGUID[1] = 0;
+
+	for(uint8 i=0;i<3;i++)
+		for(uint8 j=0;j<2;j++)
+			GraveyardFlag[i][j] = BG_TEAM_NEUTRAL;
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -160,6 +164,18 @@ void BattleGroundSA::InitAllObjects()
 	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(GobelinGUID[1]))
 		cr->setFaction(defFaction);
 
+	for(uint8 i=0;i<3;i++)
+		for(uint8 j=0;j<2;j++)
+		{
+			if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[i][j]))
+			{
+				if(attackers == j)
+					go->SetPhaseMask(2,true);
+				else
+					go->SetPhaseMask(1,true);
+			}
+		}
+
 }	
 
 void BattleGroundSA::Update(uint32 diff)
@@ -247,6 +263,8 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 			}
 			else
 				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+
+			cr->SetPhaseMask(2,true);
 		}
 
 	for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
@@ -259,6 +277,8 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 			}
 			else
 				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+
+			cr->SetPhaseMask(2,true);
 		}
 }
 
@@ -316,9 +336,10 @@ void BattleGroundSA::EndRound()
 			RoundScores[round].winner = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
 		// Reinit
+		attackers = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 		InitAllObjects();
 		status = BG_SA_SECOND_WARMUP;
-		attackers = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+		
 		
 	}
 	round++;
@@ -332,6 +353,7 @@ void BattleGroundSA::StartingEventCloseDoors()
 void BattleGroundSA::StartingEventOpenDoors()
 {
 	status = BG_SA_ROUND_ONE;
+	SendWarningToAll("Que la bataille pour le Rivage des Anciens commence !");
 }
 
 void BattleGroundSA::AddPlayer(Player *plr)
@@ -447,16 +469,16 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
     switch(i)
     {
         case BG_SA_LEFT_CAPTURABLE_GY:
-            /*flag = BG_SA_LEFT_FLAG;
-            DelObject(flag);
-            AddObject(flag,BG_SA_ObjEntries[(flag + (Source->GetTeamId() == TEAM_ALLIANCE ? 0:3))],
-            BG_SA_ObjSpawnlocs[flag][0],BG_SA_ObjSpawnlocs[flag][1],
-            BG_SA_ObjSpawnlocs[flag][2],BG_SA_ObjSpawnlocs[flag][3],0,0,0,0,RESPAWN_ONE_DAY);*/
-
-            /*npc = BG_SA_NPC_RIGSPARK;
-            AddCreature(BG_SA_NpcEntries[npc], npc, attackers,
-              BG_SA_NpcSpawnlocs[npc][0], BG_SA_NpcSpawnlocs[npc][1],
-              BG_SA_NpcSpawnlocs[npc][2], BG_SA_NpcSpawnlocs[npc][3]);*/
+			if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(1,true);
+			}
+			else
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(2,true);
+			}
 
             UpdateWorldState(BG_SA_LEFT_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_LEFT_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
@@ -466,16 +488,16 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
                 SendWarningToAll("Le Cimetiere de l'Ouest a ete pris par la Horde");
             break;
         case BG_SA_RIGHT_CAPTURABLE_GY:
-            /*flag = BG_SA_RIGHT_FLAG;
-            DelObject(flag);
-            AddObject(flag,BG_SA_ObjEntries[(flag + (Source->GetTeamId() == TEAM_ALLIANCE ? 0:3))],
-              BG_SA_ObjSpawnlocs[flag][0],BG_SA_ObjSpawnlocs[flag][1],
-              BG_SA_ObjSpawnlocs[flag][2],BG_SA_ObjSpawnlocs[flag][3],0,0,0,0,RESPAWN_ONE_DAY);*/
-
-            /*npc = BG_SA_NPC_SPARKLIGHT;
-            AddCreature(BG_SA_NpcEntries[npc], npc, attackers,
-              BG_SA_NpcSpawnlocs[npc][0], BG_SA_NpcSpawnlocs[npc][1],
-              BG_SA_NpcSpawnlocs[npc][2], BG_SA_NpcSpawnlocs[npc][3]);*/
+            if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(1,true);
+			}
+			else
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(2,true);
+			}
 
             UpdateWorldState(BG_SA_RIGHT_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_RIGHT_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
@@ -485,16 +507,21 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
                 SendWarningToAll("Le Cimetiere de l'Est a ete pris par la Horde");
             break;
         case BG_SA_CENTRAL_CAPTURABLE_GY:
-            /*flag = BG_SA_CENTRAL_FLAG;
-            DelObject(flag);
-            AddObject(flag,BG_SA_ObjEntries[(flag + (Source->GetTeamId() == TEAM_ALLIANCE ? 0:3))],
-              BG_SA_ObjSpawnlocs[flag][0],BG_SA_ObjSpawnlocs[flag][1],
-              BG_SA_ObjSpawnlocs[flag][2],BG_SA_ObjSpawnlocs[flag][3],0,0,0,0,RESPAWN_ONE_DAY);*/
+            if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(1,true);
+			}
+			else
+			{
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_ALLIANCE]))
+					go->SetPhaseMask(2,true);
+			}
 
             UpdateWorldState(BG_SA_CENTER_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_CENTER_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
             if (Source->GetBGTeam() == BG_TEAM_ALLIANCE)
-                SendWarningToAll("Le cimetiere du Sud a ete pris par l'Alliance");
+                SendWarningToAll("Le Cimetiere du Sud a ete pris par l'Alliance");
             else
                 SendWarningToAll("Le Cimetiere du Sud a ete pris par la Horde");
             break;
@@ -597,8 +624,12 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 	{
 		// titan relic
 		case 192834:
+		{
+			std::string teamName = Source->GetTeam() ? "'Alliance" : "a Horde";
+			SendWarningToAll(fmtstring("L%s a pris la relique !",teamName));
 			EndRound();
 			break;
+		}
 		// graveyards
 		// left
 		case 191307:
@@ -666,6 +697,22 @@ uint32 BattleGroundSA::GetWorldStateFromGateID(uint32 id)
     }
     return uws;
 }
+
+std::string BattleGroundSA::GetDoorNameFromGateID(uint32 id)
+{
+	std::string name = "";
+    switch(id)
+    {
+        case BG_SA_GREEN_GATE:   name = "de l'Emeraude Verte";   break;
+        case BG_SA_YELLOW_GATE:  name = "de la Lune Jaune";  break;
+        case BG_SA_BLUE_GATE:    name = "du Saphir Bleu";    break;
+        case BG_SA_RED_GATE:     name = "du Soleil Rouge";     break;
+        case BG_SA_PURPLE_GATE:  name = "de l'Amethyste Violette";  break;
+        case BG_SA_ANCIENT_GATE: name = "de la Chambre des Reliques"; break;
+    }
+    return name;
+}
+
 
 void BattleGroundSA::OnCreatureCreate(Creature* cr)
 {
@@ -775,18 +822,89 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 			TitanRelicGUID = go->GetGUID();
 			go->SetUInt32Value(GAMEOBJECT_FACTION, attFaction);
 			break;
+		case 191308:
+			GraveyardFlag[0][BG_TEAM_ALLIANCE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(2,true);
+			else
+				go->SetPhaseMask(1,true);
+			break;
+		case 191307:
+			GraveyardFlag[0][BG_TEAM_HORDE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(1,true);
+			else
+				go->SetPhaseMask(2,true);
+			break;
+		case 191306:
+			GraveyardFlag[1][BG_TEAM_ALLIANCE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(2,true);
+			else
+				go->SetPhaseMask(1,true);
+			break;
+		case 191305:
+			GraveyardFlag[1][BG_TEAM_HORDE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(1,true);
+			else
+				go->SetPhaseMask(2,true);
+			break;
+		case 191310:
+			GraveyardFlag[2][BG_TEAM_ALLIANCE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(2,true);
+			else
+				go->SetPhaseMask(1,true);
+			break;
+		case 191309:
+			GraveyardFlag[2][BG_TEAM_HORDE] = go->GetGUID();
+			if(attackers == BG_TEAM_ALLIANCE)
+				go->SetPhaseMask(1,true);
+			else
+				go->SetPhaseMask(2,true);
+			break;
 	}
 }
 void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj, uint32 eventId)
 {
-	error_log("eventId %u",eventId);
-	std::string doorName = "";
 	switch(eventId)
 	{
 		// Damage Events
-		case 1:
-		// Destroy event for names
-		case 2:
+		case 21630:
+			switch(target_obj->GetEntry())
+			{
+				case 190722:
+					GateStatus[BG_SA_GREEN_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_GREEN_GATE), GateStatus[BG_SA_GREEN_GATE]);
+					SendWarningToAll("L'ennemi attaque la porte de l'Emeraude Verte !");
+					break;
+				case 190724:
+					GateStatus[BG_SA_BLUE_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_BLUE_GATE), GateStatus[BG_SA_BLUE_GATE]);
+					SendWarningToAll("L'ennemi attaque la porte du Saphir Bleu !");
+					break;
+				case 190726:
+					GateStatus[BG_SA_RED_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_RED_GATE), GateStatus[BG_SA_RED_GATE]);
+					SendWarningToAll("L'ennemi attaque la porte du Soleil Rouge !");
+					break;
+				case 190723:
+					GateStatus[BG_SA_PURPLE_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_PURPLE_GATE), GateStatus[BG_SA_PURPLE_GATE]);
+					SendWarningToAll("L'ennemi attaque la porte de l'Amethyste Violette !");
+					break;
+				case 190727:
+					GateStatus[BG_SA_YELLOW_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_YELLOW_GATE), GateStatus[BG_SA_YELLOW_GATE]);
+					SendWarningToAll("L'ennemi attaque la porte de la Lune Jaune !");
+					break;
+				case 192691:
+					GateStatus[BG_SA_ANCIENT_GATE] = BG_SA_GATE_DAMAGED;
+					UpdateWorldState(GetWorldStateFromGateID(BG_SA_ANCIENT_GATE), GateStatus[BG_SA_ANCIENT_GATE]);
+					SendWarningToAll("L'ennemi attaque la Salle de la Relique !");
+					break;
+			}
 			break;
 	}
 
@@ -794,9 +912,33 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 	{
 		if(uint32 uws = GetWorldStateFromGateID(gateId))
 			UpdateWorldState(uws, GateStatus[gateId]);
+		std::string doorName = GetDoorNameFromGateID(gateId);
 		SendWarningToAll(fmtstring("La porte %s est detruite !",doorName));
 		UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
         UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));
+		switch(target_obj->GetEntry())
+		{
+			case 190722:
+				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[0]))
+					go->SetPhaseMask(2,true);
+				break;
+			case 190727:
+				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[1]))
+					go->SetPhaseMask(2,true);
+				break;
+			case 190724:
+				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[2]))
+					go->SetPhaseMask(2,true);
+				break;
+			case 190726:
+				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[3]))
+					go->SetPhaseMask(2,true);
+				break;
+			case 190723:
+				if(GameObject* go = GetBgMap()->GetGameObject(SigilGUID[4]))
+					go->SetPhaseMask(2,true);
+				break;
+		}
 	}
 
 }
