@@ -2130,3 +2130,47 @@ void BattleGround::SendWarningToAll(std::string msg)
             if (plr->GetSession())
                 plr->GetSession()->SendPacket(&data);
 }
+
+void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
+{
+	if(!plr)
+		return;
+
+	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
+	if (!pAE)
+    {
+        sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
+        return;
+    }
+	
+	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
+}
+
+void BattleGround::RewardAchievementToTeam(BattleGroundTeamId team, uint32 entry)
+{
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        Player *plr = sObjectMgr.GetPlayer(itr->first);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            continue;
+        }
+
+		AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
+		if (!pAE)
+		{
+			sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
+			continue;
+		}
+
+        uint32 TeamID = itr->second.Team;
+        if(!TeamID) TeamID = plr->GetTeam();
+
+        if (team == TeamID)
+            plr->GetAchievementMgr().DoCompleteAchivement(pAE);
+    }
+}
