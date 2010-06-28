@@ -33,6 +33,8 @@ BattleGroundEY::BattleGroundEY()
     m_BuffChange = true;
     m_BgObjects.resize(BG_EY_OBJECT_MAX);
 
+	m_BgTimer = 0;
+
     m_Points_Trigger[FEL_REALVER] = TR_FEL_REALVER_BUFF;
     m_Points_Trigger[BLOOD_ELF] = TR_BLOOD_ELF_BUFF;
     m_Points_Trigger[DRAENEI_RUINS] = TR_DRAENEI_RUINS_BUFF;
@@ -116,6 +118,8 @@ void BattleGroundEY::StartingEventOpenDoors()
         uint8 buff = urand(0, 2);
         SpawnBGObject(m_BgObjects[BG_EY_OBJECT_SPEEDBUFF_FEL_REALVER + buff + i * 3], RESPAWN_IMMEDIATELY);
     }
+
+	m_BgTimer = 0;
 }
 
 void BattleGroundEY::AddPoints(uint32 Team, uint32 Points)
@@ -284,7 +288,14 @@ void BattleGroundEY::EndBattleGround(uint32 winner)
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
 
+	if(GetTeamScore(winner) == 1600)
+	{
+		/*if(GetTeamScore(winner == ALLIANCE ? HORDE : ALLIANCE))
+			RewardAchievementToTeam(winner,683); BAD ID*/ 
+	}
 
+	if(m_BgTimer <= 6 * MINUTE * IN_MILLISECONDS)
+		RewardAchievementToTeam(winner,214);
     
     RewardXpToTeam(0, 0.8, ALLIANCE);
     RewardXpToTeam(0, 0.8, HORDE);
@@ -495,6 +506,12 @@ void BattleGroundEY::HandleKillPlayer(Player *player, Player *killer)
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
+	if(player->HasAura(23505))
+		RewardAchievementToPlayer(killer,1258);
+	
+	if(killer->HasAura(23505))
+		RewardAchievementToPlayer(killer,233);
+
     BattleGround::HandleKillPlayer(player, killer);
     EventPlayerDroppedFlag(player);
 }
@@ -632,6 +649,8 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
     if (GetStatus() != STATUS_IN_PROGRESS || GetFlagPickerGUID() != Source->GetGUID())
         return;
 
+	RewardAchievementToPlayer(Source,212);
+
     SetFlagPicker(0);
     m_FlagState = BG_EY_FLAG_STATE_WAIT_RESPAWN;
     Source->RemoveAurasDueToSpell(BG_EY_NETHERSTORM_FLAG_SPELL);
@@ -661,6 +680,9 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
 
     if (m_TeamPointsCount[team_id] > 0)
         AddPoints(Source->GetTeam(), BG_EY_FlagPoints[m_TeamPointsCount[team_id] - 1]);
+	
+	if (m_TeamPointsCount[team_id] == 4)
+		RewardAchievementToPlayer(Source,211);
 
 	RewardXpToTeam(0, 0.6, Source->GetTeam());
 	
@@ -677,6 +699,9 @@ void BattleGroundEY::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     {
         case SCORE_FLAG_CAPTURES:                           // flags captured
             ((BattleGroundEYScore*)itr->second)->FlagCaptures += value;
+			if(((BattleGroundWGScore*)itr->second)->FlagCaptures == 3)
+				if(((BattleGroundWGScore*)itr->second)->Deaths == 0)
+					RewardAchievementToPlayer(Source,216);
             break;
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
