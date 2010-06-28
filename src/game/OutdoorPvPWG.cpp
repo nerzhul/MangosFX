@@ -581,7 +581,7 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 
 			switch(obj->GetEntry())
 			{
-				case 192819:
+				case 192810:
 					sWorld.SendZoneText(ZONE_WINTERGRASP, fmtstring("La porte du joug d'hiver est detruite !"));
 					m_defender = getAttackerTeam();
 					ChangeFortressSpawns(m_defender);
@@ -983,8 +983,9 @@ void OutdoorPvPWG::OnGameObjectCreate(GameObject *go, bool add)
 		case 190357:
 		case 190358:
 			break;
-
-
+		case 194162:
+			DoorColisionGUID = go->GetGUID();
+			break;
 	}
 	if(go->GetGOInfo()->displayId == 8257)
 	{

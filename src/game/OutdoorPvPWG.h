@@ -285,6 +285,7 @@ class OutdoorPvPWG : public OutdoorPvP
 		std::vector<uint64> NWSpawnsGo;
 		std::vector<uint64> SWSpawnsGo;
 		std::vector<uint64> ToDespawnInWarCr;
+		uint64 DoorColisionGUID;
 		GameObject* TitanRelic;
 		Map* m_map;
 
