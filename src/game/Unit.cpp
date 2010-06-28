@@ -11156,14 +11156,14 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
                 {
                     GetVehicleKit()->Install();
 
-					switch(mount)
+					/*switch(mount)
 					{
 						case 27237:
 						case 27238:
 							GetVehicleKit()->InstallAccessory(24780,-1);
 							break;
 					}
-					GetVehicleKit()->InstallAllAccessories();
+					GetVehicleKit()->InstallAllAccessories();*/
 
                     // Send others that we now have a vehicle
                     WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, 8+4);
