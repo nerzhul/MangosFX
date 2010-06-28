@@ -6920,7 +6920,14 @@ void Spell::EffectAddComboPoints(uint32 /*i*/)
     if(damage < 0)
         return;
 	
-    ((Player*)m_caster)->AddComboPoints(unitTarget, damage);
+	if(m_caster->GetTypeId() == TYPEID_UNIT)
+	{
+		if(((Creature*)m_caster)->isVehicle())
+			if(m_caster->GetCharmer() && m_caster->GetCharmer()->GetTypeId() == TYPEID_PLAYER)
+				((Player*)m_caster->GetCharmer())->AddComboPoints(unitTarget, damage);
+	}
+	else
+		((Player*)m_caster)->AddComboPoints(unitTarget, damage);
 }
 
 void Spell::EffectDuel(uint32 i)

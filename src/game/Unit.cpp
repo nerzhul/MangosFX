@@ -11148,7 +11148,7 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
             }
         }
 
-		/*if(VehicleId !=0)
+		if(VehicleId)
         {
             if(VehicleEntry const *ve = sVehicleStore.LookupEntry(VehicleId))
             {
@@ -11157,7 +11157,7 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
                     GetVehicleKit()->Reset();
 
                     // Send others that we now have a vehicle
-                    WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, GetPackGUID().size()+4);
+                    WorldPacket data( SMSG_PLAYER_VEHICLE_DATA, 8+4);
                     data.appendPackGUID(GetGUID());
                     data << uint32(VehicleId);
                     SendMessageToSet( &data,true );
@@ -11166,7 +11166,7 @@ void Unit::Mount(uint32 mount, uint32 spellId, uint32 VehicleId)
                     ((Player*)this)->GetSession()->SendPacket( &data );
                 }
             }
-        }*/
+        }
     }
 }
 
@@ -15095,6 +15095,7 @@ void Unit::ExitVehicle()
 			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
 			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_FLY_UNK1);
 		}
+		clearUnitState(UNIT_STAT_ON_VEHICLE);
     }
 }
 

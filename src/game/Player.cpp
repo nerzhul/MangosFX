@@ -4053,6 +4053,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(PLAYER_BYTES_3);
     updateVisualBits.SetBit(PLAYER_DUEL_TEAM);
     updateVisualBits.SetBit(PLAYER_GUILD_TIMESTAMP);
+	updateVisualBits.SetBit(UNIT_NPC_FLAGS);
 
     // PLAYER_QUEST_LOG_x also visible bit on official (but only on party/raid)...
     for(uint16 i = PLAYER_QUEST_LOG_1_1; i < PLAYER_QUEST_LOG_25_2; i += MAX_QUEST_OFFSET)
@@ -19632,13 +19633,16 @@ void Player::InitPrimaryProfessions()
 void Player::SendComboPoints()
 {
     Unit *combotarget = ObjectAccessor::GetUnit(*this, m_comboTarget);
-    if (combotarget)
-    {
-        WorldPacket data(SMSG_UPDATE_COMBO_POINTS, combotarget->GetPackGUID().size()+1);
-        data.append(combotarget->GetPackGUID());
-        data << uint8(m_comboPoints);
-        GetSession()->SendPacket(&data);
-    }
+	if (!combotarget)
+		return;
+	
+	WorldPacket data(SMSG_UPDATE_COMBO_POINTS, combotarget->GetPackGUID().size()+1);
+	if(GetVehicleBase())
+		data.append(GetVehicleBase()->GetPackGUID());
+	
+	data.append(combotarget->GetPackGUID());
+	data << uint8(m_comboPoints);
+	GetSession()->SendPacket(&data);
 }
 
 void Player::AddComboPoints(Unit* target, int8 count)
@@ -19807,6 +19811,14 @@ void Player::SendInitialPacketsAfterAddToMap()
         data2 << (uint32)2;
         SendMessageToSet(&data2,true);
     }
+
+	if(GetVehicleGUID())
+	{
+		WorldPacket data3(SMSG_FORCE_MOVE_ROOT, 10);
+		data3.append(GetPackGUID());
+		data3 << (uint32)((m_movementInfo.GetVehicleSeatFlags() & SF_CAN_CAST) ? 2 : 0);
+		SendMessageToSet(&data3,true);
+	}
 
     SendAurasForTarget(this);
     SendEnchantmentDurations();                             // must be after add to map
