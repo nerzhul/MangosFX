@@ -283,6 +283,8 @@ void BattleGroundEY::EndBattleGround(uint32 winner)
     //complete map reward
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+
+
     
     RewardXpToTeam(0, 0.8, ALLIANCE);
     RewardXpToTeam(0, 0.8, HORDE);

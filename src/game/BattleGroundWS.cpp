@@ -606,12 +606,12 @@ void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
             ((BattleGroundWGScore*)itr->second)->FlagCaptures += value;
 			if(((BattleGroundWGScore*)itr->second)->FlagCaptures == 3)
 				if(((BattleGroundWGScore*)itr->second)->Deaths == 0)
-					RewardAchievementToPlayer(204);
+					RewardAchievementToPlayer(Source,204);
             break;
         case SCORE_FLAG_RETURNS:                            // flags returned
             ((BattleGroundWGScore*)itr->second)->FlagReturns += value;
 			if(((BattleGroundWGScore*)itr->second)->FlagReturns == 5)
-				RewardAchievementToPlayer(872);
+				RewardAchievementToPlayer(Source,872);
             break;
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
