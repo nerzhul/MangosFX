@@ -1510,6 +1510,8 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
             break;
         case SCORE_HONORABLE_KILLS:                         // Honorable kills
             itr->second->HonorableKills += value;
+			if(itr->second->HonorableKills >= 0)
+				RewardAchievementToPlayer(Source,229);
             break;
         case SCORE_BONUS_HONOR:                             // Honor bonus
             // do not add honor in arenas

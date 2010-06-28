@@ -119,14 +119,14 @@ enum BG_SA_Objects
     BG_SA_RIGHT_FLAG,
     BG_SA_LEFT_FLAG,
     BG_SA_MAXOBJ
-  };
+};
 
-const float BG_SA_ObjSpawnlocs[BG_SA_MAXOBJ][4] =
+enum BG_SA_Event
 {
-    //Flagpoles
-    { 1215.114258, -65.711861, 70.084267,-3.124123},
-    {1338.863892, -153.336533, 30.895121,-2.530723},
-    {1309.124268, 9.410645, 30.893402,-1.623156},
+	SA_EVENT_INIT_SPAWN	= 0,
+	SA_EVENT_LEFT_GRAVE = 1,
+	SA_EVENT_RIGHT_GRAVE = 2,
+	SA_EVENT_CENTER_GRAVE = 3
 };
 
 const uint32 BG_SA_Factions[2] =
@@ -224,6 +224,8 @@ class BattleGroundSA : public BattleGround
 		void ToggleTimer();
 		void UpdateTimer();
 		void UpdateCatapults(bool usable);
+		void ResetGraveyards();
+		void RelocateAllPlayers(bool reseting);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
 		const char* GetDoorNameFromGateID(uint32 gateid);
 
@@ -251,6 +253,7 @@ class BattleGroundSA : public BattleGround
 		uint64 GraveyardFlag[3][2];
 		// Npcs
 		uint64 GobelinGUID[2];
+		uint64 SpiritGuidesGUID[BG_SA_MAX_GY][2];
 		// Tests
 		bool OnLeftBoat;
 		bool ShipsStarted;

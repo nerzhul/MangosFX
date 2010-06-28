@@ -28,6 +28,7 @@
 
 BattleGroundSA::BattleGroundSA()
 {
+	m_BgCreatures.resize(BG_SA_MAX_GY);
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_SA_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
     TimerEnabled = false;
@@ -49,6 +50,10 @@ BattleGroundSA::BattleGroundSA()
 	for(uint8 i=0;i<3;i++)
 		for(uint8 j=0;j<2;j++)
 			GraveyardFlag[i][j] = BG_TEAM_NEUTRAL;
+
+	for(uint8 i=0;i<3;i++)
+		for(uint8 j=0;j<2;j++)
+			SpiritGuidesGUID[i][j] = 0;
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -192,10 +197,12 @@ void BattleGroundSA::Update(uint32 diff)
         {
             TotalTime = 0;
             ToggleTimer();
+			ResetGraveyards();
 			UpdateCatapults(true);
 			if(status == BG_SA_WARMUP)
 				SendWarningToAll(LANG_BG_SA_HAS_BEGUN);
             status = (status == BG_SA_WARMUP) ? BG_SA_ROUND_ONE : BG_SA_ROUND_TWO;
+			RelocateAllPlayers(false);
         }
         if(TotalTime >= BG_SA_BOAT_START)
             StartShips();
@@ -207,6 +214,7 @@ void BattleGroundSA::Update(uint32 diff)
         {
 			TotalTime = BG_SA_ROUNDLENGTH;
             EndRound();
+			RelocateAllPlayers(true);
 			UpdateCatapults(false);
             return;
         }
@@ -225,45 +233,72 @@ void BattleGroundSA::Update(uint32 diff)
 	UpdateTimer();
 }
 
+void BattleGroundSA::RelocateAllPlayers(bool reseting)
+{
+	for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
+	{
+		if(Player* p = sObjectMgr.GetPlayer(itr->first))
+		{
+			if(reseting || (p->GetTeam() == ALLIANCE && attackers == BG_TEAM_ALLIANCE || 
+				p->GetTeam() == HORDE && attackers == BG_TEAM_HORDE))
+				TeleportPlayer(p);
+			p->ResurrectPlayer(100.0f);
+		}
+	}
+}
+
 void BattleGroundSA::UpdateCatapults(bool usable)
 {
 	for(GUIDSet::iterator itr = NWDemolisherSet.begin(); itr != NWDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{	
-			if(usable)
+			/*if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+			{
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+			}*/
 
 			if(cr->GetVehicleKit())
 				cr->GetVehicleKit()->RemoveAllPassengers();
+
+			cr->SetPhaseMask(1,true);
 		}
 
 	for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			if(usable)
+			/*if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+
+			if(cr->GetVehicleKit())
+				cr->GetVehicleKit()->RemoveAllPassengers();
+
+			cr->SetPhaseMask(1,true);
 		}
 
 	for(GUIDSet::iterator itr = SWDemolisherSet.begin(); itr != SWDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			if(usable)
+			/*if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+
+			if(cr->GetVehicleKit())
+				cr->GetVehicleKit()->RemoveAllPassengers();
 
 			cr->SetPhaseMask(2,true);
 		}
@@ -271,13 +306,16 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 	for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			if(usable)
+			/*if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+
+			if(cr->GetVehicleKit())
+				cr->GetVehicleKit()->RemoveAllPassengers();
 
 			cr->SetPhaseMask(2,true);
 		}
@@ -293,19 +331,6 @@ void BattleGroundSA::UpdateTimer()
         UpdateWorldState(BG_SA_TIMER_SEC_TENS, (end_of_round%60000)/10000);
         UpdateWorldState(BG_SA_TIMER_SEC_DECS, ((end_of_round%60000)%10000)/1000);
     }
-}
-
-void BattleGroundSA::RelocatePlayers()
-{
-	for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
-	{
-		if(Player* p = sObjectMgr.GetPlayer(itr->first))
-		{
-			// TODO : play sound
-			p->ResurrectPlayer(100.0f);
-			TeleportPlayer(p);
-		}
-	}
 }
 
 void BattleGroundSA::EndRound()
@@ -369,8 +394,7 @@ void BattleGroundSA::AddPlayer(Player *plr)
 
 void BattleGroundSA::TeleportPlayer(Player* plr)
 {
-	if(plr->GetTeam() == ALLIANCE && attackers == BG_TEAM_ALLIANCE ||
-		plr->GetTeam() == HORDE && attackers == BG_TEAM_HORDE)
+	if(GetTeamIndexByTeamId(plr->GetTeam()) == attackers)
 	{
 		uint8 boat = OnLeftBoat ? 1 : 0;
 		if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_TWO)
@@ -431,7 +455,7 @@ WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
 
     player->GetPosition(x,y,z);
 
-    if (player->GetBGTeam() == attackers)
+    if (GetTeamIndexByTeamId(player->GetTeam()) == attackers)
         safeloc = BG_SA_GYEntries[BG_SA_BEACH_GY];
     else
         safeloc = BG_SA_GYEntries[BG_SA_DEFENDER_LAST_GY];
@@ -441,7 +465,7 @@ WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
 
     for (uint8 i = BG_SA_RIGHT_CAPTURABLE_GY; i < BG_SA_MAX_GY; i++)
     {
-        if (GraveyardStatus[i] != player->GetBGTeam())
+        if (GraveyardStatus[i] != GetTeamIndexByTeamId(player->GetTeam()))
             continue;
 
         ret = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
@@ -458,68 +482,108 @@ WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
 
 void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
 {
-    //DelCreature(BG_SA_MAXNPC + i);
-    GraveyardStatus[i] = BattleGroundTeamId(Source->GetBGTeam());
+    GraveyardStatus[i] = attackers;
     WorldSafeLocsEntry const *sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
-    //AddSpiritGuide(i + BG_SA_MAXNPC, sg->x, sg->y, sg->z, BG_SA_GYOrientation[i], (GraveyardStatus[i] == TEAM_ALLIANCE?  ALLIANCE : HORDE));
-    //uint32 npc = 0;
-    //uint32 flag = 0;
+	if(GetTeamIndexByTeamId(Source->GetTeam()) != attackers)
+		return;
 
     switch(i)
     {
         case BG_SA_LEFT_CAPTURABLE_GY:
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
+				cr->SetPhaseMask(1,true);
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+				cr->SetPhaseMask(2,true);
+
 			if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(1,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_HORDE]))
+					go->SetPhaseMask(2,true);
 			}
 			else
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(2,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[0][BG_TEAM_HORDE]))
+					go->SetPhaseMask(1,true);
 			}
+			for(GUIDSet::iterator itr = NWDemolisherSet.begin(); itr != NWDemolisherSet.end(); ++itr)
+				if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+					cr->SetPhaseMask(2,true);
+
+			for(GUIDSet::iterator itr = SWDemolisherSet.begin(); itr != SWDemolisherSet.end(); ++itr)
+				if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+					cr->SetPhaseMask(1,true);
 
             UpdateWorldState(BG_SA_LEFT_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_LEFT_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
-            if (Source->GetBGTeam() == BG_TEAM_ALLIANCE)
+            if (Source->GetTeam() == ALLIANCE)
                 SendWarningToAll("Le Cimetiere de l'Ouest a ete pris par l'Alliance");
             else
                 SendWarningToAll("Le Cimetiere de l'Ouest a ete pris par la Horde");
             break;
         case BG_SA_RIGHT_CAPTURABLE_GY:
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
+				cr->SetPhaseMask(1,true);
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+				cr->SetPhaseMask(2,true);
+
+			for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
+				if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+					cr->SetPhaseMask(2,true);
+
+			for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
+				if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+					cr->SetPhaseMask(1,true);
+
             if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(1,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_HORDE]))
+					go->SetPhaseMask(2,true);
 			}
 			else
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(2,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[1][BG_TEAM_HORDE]))
+					go->SetPhaseMask(1,true);
 			}
 
             UpdateWorldState(BG_SA_RIGHT_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_RIGHT_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
-            if (Source->GetBGTeam() == BG_TEAM_ALLIANCE)
+            if (Source->GetTeam() == ALLIANCE)
                 SendWarningToAll("Le Cimetiere de l'Est a ete pris par l'Alliance");
             else
                 SendWarningToAll("Le Cimetiere de l'Est a ete pris par la Horde");
             break;
         case BG_SA_CENTRAL_CAPTURABLE_GY:
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
+				cr->SetPhaseMask(1,true);
+			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+				cr->SetPhaseMask(2,true);
+
             if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(1,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_HORDE]))
+					go->SetPhaseMask(2,true);
 			}
 			else
 			{
 				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_ALLIANCE]))
 					go->SetPhaseMask(2,true);
+				if(GameObject* go = GetBgMap()->GetGameObject(GraveyardFlag[2][BG_TEAM_HORDE]))
+					go->SetPhaseMask(1,true);
 			}
 
             UpdateWorldState(BG_SA_CENTER_GY_ALLIANCE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 1:0));
             UpdateWorldState(BG_SA_CENTER_GY_HORDE, (GraveyardStatus[i] == BG_TEAM_ALLIANCE? 0:1));
-            if (Source->GetBGTeam() == BG_TEAM_ALLIANCE)
+            if (Source->GetTeam() == ALLIANCE)
                 SendWarningToAll("Le Cimetiere du Sud a ete pris par l'Alliance");
             else
                 SendWarningToAll("Le Cimetiere du Sud a ete pris par la Horde");
@@ -605,6 +669,7 @@ void BattleGroundSA::StartShips()
 
 bool BattleGroundSA::SetupBattleGround()
 {
+	ResetGraveyards();
 	return true;
 }
 
@@ -615,6 +680,39 @@ void BattleGroundSA::HandleKillUnit(Creature *unit, Player *killer)
 
     if (unit->GetEntry() == 28781)  //Demolisher
         UpdatePlayerScore(killer, SCORE_DESTROYED_DEMOLISHER, 1);
+}
+
+void BattleGroundSA::ResetGraveyards()
+{
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_BEACH_GY][attackers]))
+		cr->SetPhaseMask(1,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_BEACH_GY][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+		cr->SetPhaseMask(2,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][attackers]))
+		cr->SetPhaseMask(2,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+		cr->SetPhaseMask(1,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][attackers]))
+		cr->SetPhaseMask(2,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+		cr->SetPhaseMask(1,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][attackers]))
+		cr->SetPhaseMask(2,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+		cr->SetPhaseMask(1,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][attackers]))
+		cr->SetPhaseMask(2,true);
+
+	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
+		cr->SetPhaseMask(1,true);
 }
 
 void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target_obj)
@@ -733,10 +831,16 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			else if(cr->GetDistance2d(1353.139893,223.745438) < 6.0f || cr->GetDistance2d(1377.583f,182.722f) < 6.0f)
 				SWDemolisherSet.insert(cr->GetGUID());
 
-			if (status != BG_SA_ROUND_ONE && status != BG_SA_ROUND_TWO)
-                cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+			/*if (status != BG_SA_ROUND_ONE && status != BG_SA_ROUND_TWO)
+			{
+                cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+			}
             else
-                cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+			{
+                cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+			}*/
 
 			cr->setFaction(attFaction);
 			break;
@@ -749,6 +853,20 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 		case 29262:
 			GobelinGUID[1] = cr->GetGUID();
 			cr->setFaction(attFaction);
+			break;
+		// Spirit Guides
+		case 12116:
+		case 12117:
+			if(cr->GetDistance2d(1456.9f,-52.255f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(964.843f,-189.878f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1398.79f,-288.838f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1388.42f,203.042f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1121.95f,4.48f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
 			break;
 	}
 }
