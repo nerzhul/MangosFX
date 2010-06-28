@@ -159,8 +159,8 @@ void Vehicle::InstallAllAccessories()
         case 33418:InstallAccessory(35326,0);break; //Silvermoon Hawkstrider
         case 33299:InstallAccessory(35323,0);break; //Darkspear Raptor
         case 35491:InstallAccessory(35451,0,false);break; //Black Knight
-		case 32633:InstallAccessory(24780,0);break;
-		case 32640:InstallAccessory(24780,0);break;
+		case 32633:InstallAccessory(24780,-1);break;
+		case 32640:InstallAccessory(24780,-1);break;
 		case 28319:
 		case 32629:
 			me->setPowerType(POWER_ENERGY);
@@ -168,7 +168,7 @@ void Vehicle::InstallAllAccessories()
             me->ModifyPower(POWER_ENERGY, 100);
 			break;
 		//case 33293: InstallAccessory(33329,-1); break; // XT002 heart
-		//case 36476:InstallAccessory(36477,0);break; Ick & Krick desactivated
+		//case 36476:InstallAccessory(36477,-1);break; Ick & Krick desactivated
     }
 }
 
@@ -333,7 +333,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 	unit->SetVehicleGUID(me->GetGUID());
 
 	seat->second.passenger = unit;
-	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->isVehicle())
+	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->IsVehicle())
     {
 		if(unit->GetVehicleKit()->GetEmptySeatsCount(true) == 0)
 			ChangeSeatFlag(seatId, SEAT_VEHICLE_FULL);
