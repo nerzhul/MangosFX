@@ -699,8 +699,8 @@ void BattleGroundEY::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     {
         case SCORE_FLAG_CAPTURES:                           // flags captured
             ((BattleGroundEYScore*)itr->second)->FlagCaptures += value;
-			if(((BattleGroundWGScore*)itr->second)->FlagCaptures == 3)
-				if(((BattleGroundWGScore*)itr->second)->Deaths == 0)
+			if(((BattleGroundEYScore*)itr->second)->FlagCaptures == 3)
+				if(((BattleGroundEYScore*)itr->second)->Deaths == 0)
 					RewardAchievementToPlayer(Source,216);
             break;
         default:
