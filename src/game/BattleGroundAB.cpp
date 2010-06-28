@@ -32,6 +32,7 @@ BattleGroundAB::BattleGroundAB()
 {
     m_BuffChange = true;
     m_BgObjects.resize(BG_AB_OBJECT_MAX);
+	m_BgTimer = 0;
 
     m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AB_START_ONE_MINUTE;
@@ -49,6 +50,8 @@ void BattleGroundAB::Update(uint32 diff)
 
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
+		m_BgTimer += diff;
+
         int team_points[BG_TEAMS_COUNT] = { 0, 0 };
 
         for (int node = 0; node < BG_AB_NODES_MAX; ++node)
@@ -181,6 +184,7 @@ void BattleGroundAB::StartingEventOpenDoors()
         SpawnBGObject(m_BgObjects[BG_AB_OBJECT_SPEEDBUFF_STABLES + buff + i * 3], RESPAWN_IMMEDIATELY);
     }
     OpenDoorEvent(BG_EVENT_DOOR);
+	m_BgTimer = 0;
 }
 
 void BattleGroundAB::AddPlayer(Player *plr)
@@ -504,6 +508,16 @@ void BattleGroundAB::EndBattleGround(uint32 winner)
     //complete map_end rewards (even if no team wins)
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
+	if(m_BgTimer <= 6*MINUTE*IN_MILLISECONDS)
+		RewardAchievementToTeam(winner,159);
+
+	if(m_TeamScores[winner] >= 1600)
+	{
+		if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_HORDE ; BG_TEAM_ALLIANCE] == 0)
+			RewardAchievementToTeam(winner,165);
+		if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE] >= 1590)
+			RewardAchievementToTeam(winner,162);
+	}
 
 	RewardXpToTeam(0, 0.8, HORDE);
 	RewardXpToTeam(0, 0.8, ALLIANCE);
@@ -560,9 +574,20 @@ void BattleGroundAB::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     {
         case SCORE_BASES_ASSAULTED:
             ((BattleGroundABScore*)itr->second)->BasesAssaulted += value;
+			if(((BattleGroundABScore*)itr->second)->BasesAssaulted == 3)
+				RewardAchievementToPlayer(Source,73);
+
+			if(((BattleGroundABScore*)itr->second)->BasesAssaulted >= 2)
+				if(((BattleGroundABScore*)itr->second)->BasesDefended >= 2)
+					RewardAchievementToPlayer(Source,583);
             break;
         case SCORE_BASES_DEFENDED:
             ((BattleGroundABScore*)itr->second)->BasesDefended += value;
+			if(((BattleGroundABScore*)itr->second)->BasesDefended == 3)
+				RewardAchievementToPlayer(Source,1153);
+			if(((BattleGroundABScore*)itr->second)->BasesAssaulted >= 2)
+				if(((BattleGroundABScore*)itr->second)->BasesDefended >= 2)
+					RewardAchievementToPlayer(Source,583);
             break;
         default:
             BattleGround::UpdatePlayerScore(Source,type,value);

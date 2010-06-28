@@ -2146,7 +2146,7 @@ void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
 	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
 }
 
-void BattleGround::RewardAchievementToTeam(BattleGroundTeamId team, uint32 entry)
+void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
 {
 	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {

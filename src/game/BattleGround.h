@@ -578,7 +578,7 @@ class BattleGround
 		bool IsRandomBG() { return m_RandomBG; }
 		void SetRandomBG(bool apply) { m_RandomBG = apply; }
 		void RewardAchievementToPlayer(Player* plr, uint32 entry);
-		void RewardAchievementToTeam(BattleGroundTeamId team, uint32 entry);
+		void RewardAchievementToTeam(uint32 team, uint32 entry);
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();

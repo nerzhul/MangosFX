@@ -192,6 +192,8 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
 
     uint32 winner = 0;
 
+	RewardAchievementToPlayer(Source,199);
+
     Source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
     if (Source->GetTeam() == ALLIANCE)
     {
@@ -568,6 +570,10 @@ void BattleGroundWS::EndBattleGround(uint32 winner)
     //complete map_end rewards (even if no team wins)
     RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), HORDE);
+	if(GetRemainingTimeInMinutes() >= 18)
+		RewardAchievementToTeam(winner,201);
+	if(GetTeamScore(winner) == 3 && GetTeamScore(winner == ALLIANCE ? HORDE : ALLIANCE) == 0)
+		RewardAchievementToTeam(winner,168);
     RewardXpToTeam(0, 0.8, ALLIANCE);
     RewardXpToTeam(0, 0.8, HORDE);
 
@@ -580,6 +586,9 @@ void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
         return;
 
     EventPlayerDroppedFlag(player);
+
+	if(player->HasAura(23451))
+		RewardAchievementToPlayer(killer,1259);
 
     BattleGround::HandleKillPlayer(player, killer);
 }
@@ -595,9 +604,14 @@ void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
     {
         case SCORE_FLAG_CAPTURES:                           // flags captured
             ((BattleGroundWGScore*)itr->second)->FlagCaptures += value;
+			if(((BattleGroundWGScore*)itr->second)->FlagCaptures == 3)
+				if(((BattleGroundWGScore*)itr->second)->Deaths == 0)
+					RewardAchievementToPlayer(204);
             break;
         case SCORE_FLAG_RETURNS:                            // flags returned
             ((BattleGroundWGScore*)itr->second)->FlagReturns += value;
+			if(((BattleGroundWGScore*)itr->second)->FlagReturns == 5)
+				RewardAchievementToPlayer(872);
             break;
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
