@@ -72,20 +72,24 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 
 	void DamageDeal(Unit* pWho, uint32 &dmg)
 	{
-		error_log("Multi %f",me->GetPower(POWER_RUNIC_POWER) / 1000);
+		error_log("Multi %u",me->GetPower(POWER_RUNIC_POWER));
 
 		if(dmg > 0)
 		{
 			InflictDamageToMarkedPlayers();
 
 			if(me->HasAura(SPELL_BLOOD_POWER))
-				dmg *= (100 + me->GetPower(POWER_RUNIC_POWER) / 1000);
+				dmg *= (1 + me->GetPower(POWER_RUNIC_POWER) / 1000);
 
 			if(pWho->HasAura(SPELL_BOILING_BLOOD))
 				IncreasePower(2);
 
 			if(pWho->HasAura(SPELL_RUNE_OF_BLOOD))
-				;
+			{
+				uint32 _dmg = urand(5100,6900);
+				DealDamage(pWho,_dmg);
+				me->SetHealth(me->GetHealth() + _dmg * 10);
+			}
 
 			switch(m_difficulty)
 			{
