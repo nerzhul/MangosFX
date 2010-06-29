@@ -3002,6 +3002,8 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 
 	//error_log("attackerWeaponSkill %i, skillDiff %i, GetMaxSkillValueForLevel %u",attackerWeaponSkill,skillDiff,pVictim->GetMaxSkillValueForLevel(this));
     uint32 missChance = uint32(MeleeSpellMissChance(pVictim, attType, fullSkillDiff, spell)*100.0f);
+	if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss())
+		miss_Chance = 0;
     // Roll miss
     if (roll < missChance)
         return SPELL_MISS_MISS;
@@ -3089,6 +3091,10 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
             dodgeChance-=int32(((Player*)this)->GetExpertiseDodgeOrParryReduction(attType) * 100.0f);
         else
             dodgeChance -= GetTotalAuraModifier(SPELL_AURA_MOD_EXPERTISE)*25;
+
+		if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss())
+			dodgeChance -= 700;
+
         if (dodgeChance < 0)
             dodgeChance = 0;
 
@@ -3107,6 +3113,10 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
             parryChance-=int32(((Player*)this)->GetExpertiseDodgeOrParryReduction(attType) * 100.0f);
         else
             parryChance -= GetTotalAuraModifier(SPELL_AURA_MOD_EXPERTISE)*25;
+
+		if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss())
+			parryChance -= 700;
+
         if (parryChance < 0)
             parryChance = 0;
 

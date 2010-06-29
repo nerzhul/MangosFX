@@ -27,18 +27,18 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
         InitInstance();
 		AddEnrageTimer(480000);
 		AddTextEvent(16700,"Redressez vous, mes serviteurs",35000,35000);
-		AddTextEvent(16698,"Je deviens... la mort !",480000,DAY*HOUR);
+		AddTextEvent(16698,"Je deviens... la mort !",480000,TEN_MINS*10);
 		me->setPowerType(POWER_RUNIC_POWER);
-		me->SetMaxPower(POWER_RUNIC_POWER,100);
+		me->SetMaxPower(POWER_RUNIC_POWER,1000);
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				AddNear15mSummonEvent(NPC_BLOOD_BEASTS,35000,35000,0,0,2);
+				AddNear7mSummonEvent(NPC_BLOOD_BEASTS,35000,35000,0,0,2);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				AddNear15mSummonEvent(NPC_BLOOD_BEASTS,35000,35000,0,0,5);
+				AddNear7mSummonEvent(NPC_BLOOD_BEASTS,35000,35000,0,0,5);
 				break;
 		}
 		AddEvent(SPELL_BOILING_BLOOD,15000,30000);
@@ -51,6 +51,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     {
 		ResetTimers();
 		CleanMyAdds();
+		me->SetPower(POWER_RUNIC_POWER,0);
 		checkRunic_Timer = 1000;
     }
 
@@ -76,8 +77,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 
 	void IncreasePower(uint32 val)
 	{
-		uint32 amount = me->GetPower(POWER_RUNIC_POWER) + val;
-		me->SetPower(POWER_RUNIC_POWER,val < 100 ? val : 100);
+		me->ModifyPower(POWER_RUNIC_POWER,val*10);
 	}
 
 	void KilledUnit(Unit* who)
@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				break;
 		}
 
-		Say(16697,"");
+		Say(16697,"Je... suis... libre...");
     }
 
     void JustReachedHome()
@@ -130,11 +130,14 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 		if(checkRunic_Timer <= diff)
 		{
 			uint32 amount = me->GetPower(POWER_RUNIC_POWER);
-			if(amount >= 99)
+			if(amount >= 999)
 			{
 				me->CastStop();
 				me->SetPower(POWER_RUNIC_POWER,0);
-				DoCastVictim(SPELL_MARK);
+				if(me->getVictim() && !me->getVictim()->HasAura(SPELL_MARK))
+					DoCastVictim(SPELL_MARK);
+				else
+					DoCast(GetRandomUnit(1),SPELL_MARK);
 				Yell(16699,"La terre est rouge de votre sang !");
 			}
 			checkRunic_Timer = 1000;
@@ -157,7 +160,14 @@ struct MANGOS_DLL_DECL ver_saurfangAI : public LibDevFSAI
     ver_saurfangAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnMe(SPELL_SCENT_OF_BLOOD,5000,30000);
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				AddEventOnMe(SPELL_SCENT_OF_BLOOD,5000,30000);
+				break;
+		}
+		
     }
 
     void Reset()
@@ -174,10 +184,7 @@ struct MANGOS_DLL_DECL ver_saurfangAI : public LibDevFSAI
 		{
 			if(Creature* Saurfang = GetInstanceCreature(TYPE_SAURFANG))
 				if(Saurfang->isAlive())
-				{
-					uint32 amount = Saurfang->GetPower(POWER_RUNIC_POWER) + 10;
-					Saurfang->SetPower(POWER_RUNIC_POWER,amount > 100 ? 100 : amount);
-				}
+					Saurfang->ModifyPower(POWER_RUNIC_POWER,100);
 		}
 	}
 

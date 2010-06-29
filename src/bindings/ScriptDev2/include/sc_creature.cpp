@@ -1113,7 +1113,7 @@ void LibDevFSAI::ResetTimers()
 {
 	EventShVect.clear();
 	EventSummonVect.clear();
-	SavedEventTexts.clear();
+	EventTextVect.clear();
 	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
 		EventShVect.push_back(*itr);
 		
