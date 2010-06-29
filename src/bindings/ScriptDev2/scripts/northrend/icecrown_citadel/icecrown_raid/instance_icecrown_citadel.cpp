@@ -98,14 +98,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
             case GO_DEATHWHISPER_ELEVATOR:
                 m_uiDeathwhisperElevatorGUID = pGo->GetGUID();
 				if (m_auiEncounter[TYPE_DEATHWHISPER] == DONE)
-					pGo->SetPhaseMask(1,true);
-				else
-					pGo->SetPhaseMask(2,true);
+                    pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
             case GO_SAURFANG_DOOR:
                 m_uiSaurfangDoorGUID = pGo->GetGUID();
-                if (m_auiEncounter[2] == DONE)
-                    pGo->SetGoState(GO_STATE_ACTIVE);
+                /*if (m_auiEncounter[TYPE_SAURFANG] == DONE)
+                    pGo->SetGoState(GO_STATE_ACTIVE);*/
                 break;
 			case GO_MARROWGAR_DOOR:
 				m_uiMarrowgarDoorGUID = pGo->GetGUID();
@@ -142,7 +140,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(uiData == DONE)
 				{
 					if(GameObject* go = GetGoInMap(m_uiDeathwhisperElevatorGUID))
-						go->SetPhaseMask(1,true);
+						go->SetGoState(GO_STATE_ACTIVE);
 				}
                 break;
 			case TYPE_BATTLE_OF_CANNONS:
@@ -150,8 +148,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
             case TYPE_SAURFANG:
                 m_auiEncounter[TYPE_SAURFANG] = uiData;
-                if (uiData == DONE)
-                    DoUseDoorOrButton(m_uiSaurfangDoorGUID);
+                /*if (uiData == DONE)
+                    OpenDoor(m_uiSaurfangDoorGUID);*/
                 break;
         }
 
@@ -160,7 +158,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
             OUT_SAVE_INST_DATA;
 
             std::ostringstream saveStream;
-            saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2];
+            saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2] << " " << m_auiEncounter[3];
 
             strInstData = saveStream.str();
 
@@ -243,6 +241,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 						found = true;
 					
+					if(GetData(TYPE_SAURFANG) != IN_PROGRESS)
+						pPlayer->RemoveAurasDueToSpell(72293);
 				}
 		return found;
 	}

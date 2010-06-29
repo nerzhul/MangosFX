@@ -36,19 +36,19 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25000,35000);
-				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25500,35000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25000,40000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25500,40000);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25000,35000);
-				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25300,35000);
-				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25600,35000);
-				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25900,35000);
-				AddEventOnMe(SPELL_BLOOD_BEASTS_1,26200,35000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25000,40000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25300,40000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_1,25600,40000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_2,25900,40000);
+				AddEventOnMe(SPELL_BLOOD_BEASTS_1,26200,40000);
 				break;
 		}
-		AddEvent(SPELL_BOILING_BLOOD,15000,30000);
+		AddEvent(SPELL_BOILING_BLOOD,15000,18000,4000);
 		AddEvent(SPELL_BLOOD_NOVA,20000,30000);
 		AddEventOnTank(SPELL_RUNE_OF_BLOOD,10000,20000);
     }
@@ -79,10 +79,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			InflictDamageToMarkedPlayers();
 
 			if(me->HasAura(SPELL_BLOOD_POWER))
-				dmg *= (1 + me->GetPower(POWER_RUNIC_POWER) / 1000);
-
-			if(pWho->HasAura(SPELL_BOILING_BLOOD))
-				IncreasePower(2);
+				dmg *= (1 + float(me->GetPower(POWER_RUNIC_POWER)) / 1000);
 
 			if(pWho->HasAura(SPELL_RUNE_OF_BLOOD))
 			{
@@ -97,14 +94,20 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				case RAID_DIFFICULTY_25MAN_NORMAL:
 					if(dmg >= pWho->GetHealth())
 						me->SetHealth(me->GetHealth() + 5 / 100 * me->GetMaxHealth());
+					IncreasePower(5);
+					if(pWho->HasAura(SPELL_BOILING_BLOOD))
+						IncreasePower(3);
 					break;
 				case RAID_DIFFICULTY_10MAN_HEROIC:
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(dmg >= pWho->GetHealth())
 						me->SetHealth(me->GetHealth() + 20 / 100 * me->GetMaxHealth());
+					IncreasePower(3);
+					if(pWho->HasAura(SPELL_BOILING_BLOOD))
+						IncreasePower(2);
 					break;
 			}
-			IncreasePower(3);
+			
 		}
 	}
 	

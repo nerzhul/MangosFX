@@ -1180,7 +1180,7 @@ struct MapEntry
             MapID==209 || MapID==269 || MapID==309 ||       // TanarisInstance, CavernsOfTime, Zul'gurub
             MapID==509 || MapID==534 || MapID==560 ||       // AhnQiraj, HyjalPast, HillsbradPast
             MapID==568 || MapID==580 || MapID==615 ||       // ZulAman, Sunwell Plateau, Obsidian Sanctrum
-            MapID==616 || MapID==595;                       // Eye Of Eternity
+            MapID==616 || MapID==595 || MapID==603;         // Eye Of Eternity
     }
 
     bool IsContinent() const
