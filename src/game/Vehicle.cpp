@@ -481,6 +481,9 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 void Vehicle::BuildVehicleActionBar(Player *plr) const
 {
+	if(me->GetTypeId() != TYPEID_UNIT)
+		return;
+
 	// TODO: player spell if he isn't the master of the vehicle
     WorldPacket data(SMSG_PET_SPELLS, 8+2+4+4+4*10+1+1);
     data << uint64(me->GetGUID());
