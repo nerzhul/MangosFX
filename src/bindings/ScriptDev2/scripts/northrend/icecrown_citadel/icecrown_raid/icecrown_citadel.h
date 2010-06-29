@@ -12,7 +12,7 @@ enum
     TYPE_MARROWGAR              = 0,
     TYPE_DEATHWHISPER           = 1,
 	TYPE_BATTLE_OF_CANNONS		= 2,
-    TYPE_SAURCROC               = 3,
+    TYPE_SAURFANG               = 3,
 
     NPC_MARROWGAR               = 36612,
     NPC_DEATHWHISPER            = 36855,

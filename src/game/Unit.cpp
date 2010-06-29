@@ -15113,6 +15113,9 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
     if (!isAlive() || GetVehicleKit() == vehicle)
         return;
 
+	if(!vehicle)
+		return;
+
 	if(m_vehicle)
 	{
 		if (m_vehicle != vehicle)

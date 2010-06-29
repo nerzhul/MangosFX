@@ -70,8 +70,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				m_uiMarrowgarGUID = pCreature->GetGUID(); 
 				break;
             case NPC_DEATHWHISPER: 
-				/*pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);*/
 				m_uiDeathwhisperGUID = pCreature->GetGUID(); 
 				break;
             case NPC_SAURFANG: 
@@ -150,8 +148,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case TYPE_BATTLE_OF_CANNONS:
 				m_auiEncounter[TYPE_BATTLE_OF_CANNONS] = uiData;
 				break;
-            case TYPE_SAURCROC:
-                m_auiEncounter[TYPE_SAURCROC] = uiData;
+            case TYPE_SAURFANG:
+                m_auiEncounter[TYPE_SAURFANG] = uiData;
                 if (uiData == DONE)
                     DoUseDoorOrButton(m_uiSaurfangDoorGUID);
                 break;
@@ -208,8 +206,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 return m_auiEncounter[TYPE_DEATHWHISPER];
 			case TYPE_BATTLE_OF_CANNONS:
                 return m_auiEncounter[TYPE_BATTLE_OF_CANNONS];
-            case TYPE_SAURCROC:
-                return m_auiEncounter[TYPE_SAURCROC];
+            case TYPE_SAURFANG:
+                return m_auiEncounter[TYPE_SAURFANG];
         }
         return 0;
     }
@@ -222,7 +220,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 return m_uiMarrowgarGUID;
             case TYPE_DEATHWHISPER:
                 return m_uiDeathwhisperGUID;
-            case TYPE_SAURCROC:
+            case TYPE_SAURFANG:
                 return m_uiSaurfangGUID;
 			case GO_MARROWGAR_DOOR:
 				return m_uiMarrowgarDoorGUID;
