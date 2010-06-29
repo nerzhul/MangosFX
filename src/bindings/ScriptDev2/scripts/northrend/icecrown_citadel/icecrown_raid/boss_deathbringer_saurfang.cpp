@@ -26,8 +26,8 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     {
         InitInstance();
 		AddEnrageTimer(480000);
-		AddTextEvent(16700,"",35000,35000);
-		AddTextEvent(16698,"",480000,DAY*HOUR);
+		AddTextEvent(16700,"Redressez vous, mes serviteurs",35000,35000);
+		AddTextEvent(16698,"Je deviens... la mort !",480000,DAY*HOUR);
 		me->setPowerType(POWER_RUNIC_POWER);
 		me->SetMaxPower(POWER_RUNIC_POWER,100);
 		switch(m_difficulty)
@@ -58,15 +58,34 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     {
         if (pInstance)
             pInstance->SetData(TYPE_SAURFANG, IN_PROGRESS);
-		Yell(16694,"");
+		Yell(16694,"Par la puissance du Roi Liche");
     }
+
+	void DamageDeal(Unit* pWho, uint32 &dmg)
+	{
+		if(pWho->HasAura(SPELL_BOILING_BLOOD))
+			IncreasePower(3);
+
+		if(pWho->HasAura(SPELL_MARK))
+			IncreasePower(10);
+
+		if(dmg >= pWho->GetHealth())
+			me->SetHealth(me->GetHealth() + 5 / 100 * me->GetMaxHealth());
+	}
+
+
+	void IncreasePower(uint32 val)
+	{
+		uint32 amount = me->GetPower(POWER_RUNIC_POWER) + val;
+		me->SetPower(POWER_RUNIC_POWER,val < 100 ? val : 100);
+	}
 
 	void KilledUnit(Unit* who)
 	{
 		if(urand(0,1))
-			Yell(16695,"");
+			Yell(16695,"Vous n'êtes rien !");
 		else
-			Yell(16696,"");
+			Yell(16696,"Ici, pas de salut pour les âmes !");
 	}
 
     void JustDied(Unit* pKiller)
@@ -114,8 +133,9 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			if(amount >= 99)
 			{
 				me->CastStop();
+				me->SetPower(POWER_RUNIC_POWER,0);
 				DoCastVictim(SPELL_MARK);
-				Yell(16699,"");
+				Yell(16699,"La terre est rouge de votre sang !");
 			}
 			checkRunic_Timer = 1000;
 		}
@@ -123,6 +143,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			checkRunic_Timer -= diff;
 
 		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
     }
 };
 
@@ -166,6 +187,8 @@ struct MANGOS_DLL_DECL ver_saurfangAI : public LibDevFSAI
             return;
 
 		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
     }
 };
 
@@ -184,6 +207,6 @@ void AddSC_ICC_Saurfang()
 
 	NewScript = new Script;
     NewScript->Name = "ver_saurfang";
-    NewScript->GetAI = &GetAI_boss_saurfang;
+    NewScript->GetAI = &GetAI_ver_saurfang;
     NewScript->RegisterSelf();
 }
