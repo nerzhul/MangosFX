@@ -37,6 +37,7 @@
 #include "Util.h"
 #include "revision_sql.h"
 #include "MaNGOSsoap.h"
+#include "Auth/BigNumber.h"
 
 #include <ace/OS_NS_signal.h>
 #include <ace/TP_Reactor.h>
@@ -186,6 +187,9 @@ Master::~Master()
 /// Main function
 int Master::Run()
 {
+	BigNumber seed1;
+	seed1.SetRand(16 * 8);
+
     /// worldd PID file creation
     std::string pidfile = sConfig.GetStringDefault("PidFile", "");
     if(!pidfile.empty())
