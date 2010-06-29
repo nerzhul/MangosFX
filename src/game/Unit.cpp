@@ -15151,6 +15151,10 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 		}
 	}
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		if(BattleGround *bg = ((Player*)this)->GetBattleGround())
+			bg->EventPlayerDroppedFlag(((Player*)this));
+
     if (!m_vehicle->AddPassenger(this, seatId))
     {
         m_vehicle = NULL;
