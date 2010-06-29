@@ -3003,7 +3003,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 	//error_log("attackerWeaponSkill %i, skillDiff %i, GetMaxSkillValueForLevel %u",attackerWeaponSkill,skillDiff,pVictim->GetMaxSkillValueForLevel(this));
     uint32 missChance = uint32(MeleeSpellMissChance(pVictim, attType, fullSkillDiff, spell)*100.0f);
 	if(GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isWorldBoss())
-		miss_Chance = 0;
+		missChance = 0;
     // Roll miss
     if (roll < missChance)
         return SPELL_MISS_MISS;
