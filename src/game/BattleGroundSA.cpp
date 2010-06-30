@@ -440,8 +440,8 @@ void BattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 value
 		((BattleGroundSAScore*)itr->second)->demolishers_destroyed += value;
     else if(type == SCORE_DESTROYED_WALL)
 		((BattleGroundSAScore*)itr->second)->gates_destroyed += value;
-    
-    BattleGround::UpdatePlayerScore(Source,type,value);
+	else
+		BattleGround::UpdatePlayerScore(Source,type,value);
 
 }
 

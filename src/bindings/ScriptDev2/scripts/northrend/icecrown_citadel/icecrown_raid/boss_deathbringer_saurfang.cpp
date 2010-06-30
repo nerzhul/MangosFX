@@ -149,7 +149,21 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			Yell(16696,"Ici, pas de salut pour les âmes !");
 
 		if(who->HasAura(SPELL_MARK) && me->isAlive())
-			me->SetHealth(me->GetHealth() + 5 * me->GetMaxHealth());
+		{
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_NORMAL:
+					me->SetHealth(me->GetHealth() + 5/100 * me->GetMaxHealth());
+					break;
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+					me->SetHealth(me->GetHealth() + 10/100 * me->GetMaxHealth());
+					break;
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					me->SetHealth(me->GetHealth() + 20/100 * me->GetMaxHealth());
+					break;
+			}
+		}			
 	}
 
     void JustDied(Unit* pKiller)

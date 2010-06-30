@@ -1064,17 +1064,21 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const 
 		vehId = 0;
 
 	if(vehId)
-	{
 		m_subtype = CREATURE_SUBTYPE_VEHICLE;
-		/*if(isHostileVehicle())
-			SetReactState(REACT_PASSIVE);*/
-	}
 
     Object::_Create(guidlow, Entry, vehId ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
 
     if(!UpdateEntry(Entry, team, data))
         return false;
-
+	
+	if(m_subtype == CREATURE_SUBTYPE_VEHICLE)
+		if(!isHostileVehicle())
+		{
+			if(GetVehicleKit())
+				if(!GetVehicleKit()->CanMoveVehicle())
+					addUnitState(UNIT_STAT_ROOT);
+			SetReactState(REACT_PASSIVE);
+		}
     return true;
 }
 
