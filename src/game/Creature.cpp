@@ -1066,8 +1066,8 @@ bool Creature::CreateFromProto(uint32 guidlow, uint32 Entry, uint32 team, const 
 	if(vehId)
 	{
 		m_subtype = CREATURE_SUBTYPE_VEHICLE;
-		if(isHostileVehicle())
-			SetReactState(REACT_PASSIVE);
+		/*if(isHostileVehicle())
+			SetReactState(REACT_PASSIVE);*/
 	}
 
     Object::_Create(guidlow, Entry, vehId ? HIGHGUID_VEHICLE : HIGHGUID_UNIT);
