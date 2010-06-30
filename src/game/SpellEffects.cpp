@@ -4042,12 +4042,10 @@ void Spell::EffectSummonType(uint32 i)
             //1161 - feral spirit - sid 51533
             if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
                 EffectSummonGuardian(i, summon_prop->FactionId);
-            else
-			{
-				if(prop_id == 1161)
-					EffectSummon(i);
+            else if(prop_id == 1161)
+				EffectSummonWild(i);
+			else
                 EffectSummon(i);
-			}
             break;
         }
         case SUMMON_PROP_GROUP_CONTROLLABLE:
@@ -4485,16 +4483,12 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
 					else
 						summon->setFaction(summon->GetCreatureInfo()->faction_A);
 				}
-				if(m_caster->IsPvP())
-					summon->SetPvP(true);
-				if(m_caster->IsFFAPvP())
-					m_caster->SetFFAPvP(true);
+				
                 //m_caster->CastSpell(summon, 45204, false);
                 //m_caster->CastSpell((Unit*)NULL, 58838, true);
                 summon->SetUInt32Value(UNIT_FIELD_FLAGS_2, 2064);
-				summon->GetMotionMaster()->MoveFollow(m_caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+				
 				summon->SetOwnerGUID(m_caster->GetGUID());
-				summon->SetCreatorGUID(m_caster->GetGUID());
 				//summon->SetSpeedRate(MOVE_RUN,1.2f,true);
 				if(m_caster->GetTypeId() == TYPEID_PLAYER)
 					summon->SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
@@ -4505,7 +4499,6 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
 						summon->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID, item->GetProto()->ItemId);
 					if (Item const* item = ((Player *)m_caster)->GetItemByPos(INVENTORY_SLOT_BAG_0, EQUIPMENT_SLOT_OFFHAND))
 						summon->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 1, item->GetProto()->ItemId);
-
 				}
 				else
 				{
@@ -4514,6 +4507,15 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
 					summon->SetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2, m_caster->GetUInt32Value(UNIT_VIRTUAL_ITEM_SLOT_ID + 2));
 				}
             }
+
+			if(creature_entry == 31216 || creature_entry == 29264)
+			{
+				summon->GetMotionMaster()->MoveFollow(m_caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+				if(m_caster->IsPvP())
+					summon->SetPvP(true);
+				if(m_caster->IsFFAPvP())
+					m_caster->SetFFAPvP(true);
+			}
 
             if(forceFaction)
                 summon->setFaction(forceFaction);

@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(dmg >= pWho->GetHealth())
 						me->SetHealth(me->GetHealth() + 20 / 100 * me->GetMaxHealth());
-					IncreasePower(3);
+					IncreasePower(5);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
 						IncreasePower(2);
 					break;
@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			{
 				if(Player* plr = itr->getSource())
 				{
-					if(plr->HasAura(SPELL_BLOOD_POWER))
+					if(plr->HasAura(SPELL_MARK))
 					{
 						switch(m_difficulty)
 						{
@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL ver_saurfangAI : public LibDevFSAI
 		{
 			if(Creature* Saurfang = GetInstanceCreature(TYPE_SAURFANG))
 				if(Saurfang->isAlive())
-					Saurfang->ModifyPower(POWER_RUNIC_POWER,100);
+					Saurfang->ModifyPower(POWER_RUNIC_POWER,50);
 		}
 	}
 
