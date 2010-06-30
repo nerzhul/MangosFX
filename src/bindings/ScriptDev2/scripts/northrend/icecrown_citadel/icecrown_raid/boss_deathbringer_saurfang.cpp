@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			{
 				case RAID_DIFFICULTY_10MAN_NORMAL:
 				case RAID_DIFFICULTY_25MAN_NORMAL:
-					if(dmg >= pWho->GetHealth())
+					if(dmg >= pWho->GetHealth() && me->isAlive())
 						me->SetHealth(me->GetHealth() + 5 / 100 * me->GetMaxHealth());
 					IncreasePower(5);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 					break;
 				case RAID_DIFFICULTY_10MAN_HEROIC:
 				case RAID_DIFFICULTY_25MAN_HEROIC:
-					if(dmg >= pWho->GetHealth())
+					if(dmg >= pWho->GetHealth() && me->isAlive())
 						me->SetHealth(me->GetHealth() + 20 / 100 * me->GetMaxHealth());
 					IncreasePower(3);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
@@ -147,6 +147,9 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			Yell(16695,"Vous n'êtes rien !");
 		else
 			Yell(16696,"Ici, pas de salut pour les âmes !");
+
+		if(who->HasAura(SPELL_MARK) && me->isAlive())
+			me->SetHealth(me->GetHealth() + 5 * me->GetMaxHealth());
 	}
 
     void JustDied(Unit* pKiller)
