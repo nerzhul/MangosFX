@@ -196,6 +196,8 @@ void WorldSession::HandleCharCreateOpcode( WorldPacket & recv_data )
     std::string name;
     uint8 race_, class_;
 
+	recv_data.hexlike();
+
     recv_data >> name;
 
     recv_data >> race_;

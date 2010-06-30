@@ -604,52 +604,6 @@ bool ChatHandler::HandleDebugArenaCommand(const char * /*args*/)
 
 bool ChatHandler::HandleDebugSpawnVehicle(const char* args)
 {
-    /*if (!*args)
-        return false;
-
-    char* e = strtok((char*)args, " ");
-    char* i = strtok(NULL, " ");
-
-    if (!e || !i)
-        return false;
-
-    uint32 entry = (uint32)atoi(e);
-    uint32 id = (uint32)atoi(i);
-
-    CreatureInfo const *ci = ObjectMgr::GetCreatureTemplate(entry);
-
-    if (!ci)
-        return false;
-
-    VehicleEntry const *ve = sVehicleStore.LookupEntry(id);
-
-    if (!ve)
-        return false;
-
-    Vehicle *v = new Vehicle;
-    Map *map = m_session->GetPlayer()->GetMap();
-    if (!v->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_VEHICLE), map, entry, id, m_session->GetPlayer()->GetTeam()))
-    {
-        delete v;
-        return false;
-    }
-
-    float px, py, pz;
-    m_session->GetPlayer()->GetClosePoint(px, py, pz, m_session->GetPlayer()->GetObjectSize());
-
-    v->Relocate(px, py, pz, m_session->GetPlayer()->GetOrientation());
-
-    if (!v->IsPositionValid())
-    {
-        sLog.outError("Vehicle (guidlow %d, entry %d) not created. Suggested coordinates isn't valid (X: %f Y: %f)",
-            v->GetGUIDLow(), v->GetEntry(), v->GetPositionX(), v->GetPositionY());
-        delete v;
-        return false;
-    }
-
-    map->Add((Creature*)v);
-	v->AIM_Initialize();*/
-
     return true;
 }
 

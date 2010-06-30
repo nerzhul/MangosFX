@@ -15220,7 +15220,6 @@ bool Unit::CreateVehicleKit(uint32 id)
         return false;
 
     m_vehicleKit = new Vehicle(this, vehInfo);
-    m_vehicleKit->SetVehicleId(id);
     m_updateFlag |= UPDATEFLAG_VEHICLE;
     m_unitTypeMask |= UNIT_MASK_VEHICLE;
     return true;
