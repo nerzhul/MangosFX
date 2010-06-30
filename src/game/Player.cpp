@@ -16914,6 +16914,8 @@ bool Player::_LoadHomeBind(QueryResult *result)
 
 void Player::SaveToDB()
 {
+	if(!IsInWorld())
+		return;
     // we should assure this: ASSERT((m_nextSave != sWorld.getConfig(CONFIG_INTERVAL_SAVE)));
     // delay auto save at any saves (manual, in code, or autosave)
     m_nextSave = sWorld.getConfig(CONFIG_INTERVAL_SAVE);
