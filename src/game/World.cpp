@@ -1638,6 +1638,7 @@ void World::Update(uint32 diff)
     {
         ResetDailyQuests();
 		ResetBGDaily();
+		SendWorldText(3,"Backup Automatique de la DataBase en cours...");
         m_NextDailyQuestReset += DAY;
     }
 

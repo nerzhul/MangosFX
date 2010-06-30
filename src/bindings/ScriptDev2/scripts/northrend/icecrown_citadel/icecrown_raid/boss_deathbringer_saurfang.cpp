@@ -72,8 +72,6 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 
 	void DamageDeal(Unit* pWho, uint32 &dmg)
 	{
-		error_log("Multi %u",me->GetPower(POWER_RUNIC_POWER));
-
 		if(dmg > 0)
 		{
 			InflictDamageToMarkedPlayers();
@@ -202,7 +200,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				ModifyAuraStack(SPELL_BLOOD_POWER);
 				Yell(16699,"La terre est rouge de votre sang !");
 			}
-			checkRunic_Timer = 1000;
+			checkRunic_Timer = 8000;
 		}
 		else
 			checkRunic_Timer -= diff;

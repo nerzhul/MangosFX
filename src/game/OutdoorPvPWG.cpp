@@ -1885,7 +1885,8 @@ void OutdoorPvPWG::EndBattle()
             (*itr)->RemoveAurasDueToSpell(SPELL_TOWER_CONTROL);
             (*itr)->RemoveAurasDueToSpell(SPELL_SPIRITUAL_IMMUNITY);
         }
-		m_WGGroup[team]->Disband();
+		if(m_WGGroup[team])
+			m_WGGroup[team]->Disband();
     }
 
 	for(std::vector<uint64>::iterator itr = ToDespawnInWarCr.begin(); itr != ToDespawnInWarCr.end();itr++)

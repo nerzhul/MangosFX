@@ -4043,7 +4043,11 @@ void Spell::EffectSummonType(uint32 i)
             if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
                 EffectSummonGuardian(i, summon_prop->FactionId);
             else
+			{
+				if(prop_id == 1161)
+					EffectSummon(i);
                 EffectSummon(i);
+			}
             break;
         }
         case SUMMON_PROP_GROUP_CONTROLLABLE:
