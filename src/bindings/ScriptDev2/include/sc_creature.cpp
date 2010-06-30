@@ -1546,7 +1546,7 @@ void LibDevFSAI::DealDamage(Unit* target,uint32 damage)
 	if(!target || !target->isAlive())
 		return;
 		
-	me->DealDamage(target, damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+	me->DealDamage(target, damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, GetSpellStore()->LookupEntry(0), false);
 }
 
 void LibDevFSAI::DealPercentDamage(Unit* target,float percent)

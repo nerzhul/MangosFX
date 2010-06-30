@@ -100,12 +100,11 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(dmg >= pWho->GetHealth())
 						me->SetHealth(me->GetHealth() + 20 / 100 * me->GetMaxHealth());
-					IncreasePower(5);
+					IncreasePower(3);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
 						IncreasePower(2);
 					break;
 			}
-			
 		}
 	}
 	
@@ -196,7 +195,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 			{
 				me->CastStop();
 				me->SetPower(POWER_RUNIC_POWER,0);
-				DoCastRandom(SPELL_MARK);
+				DoCastPlayer(SPELL_MARK);
 				ModifyAuraStack(SPELL_BLOOD_POWER);
 				Yell(16699,"La terre est rouge de votre sang !");
 			}
