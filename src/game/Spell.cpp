@@ -3494,8 +3494,16 @@ void Spell::finish(bool ok)
 		 }
 		 if(break_for)
 			break;
-	}
+	 }
 
+	 switch(m_spellInfo->SpellIconID)
+	 {
+		case 241:
+			m_caster->RemoveAurasDueToSpell(63731);
+			m_caster->RemoveAurasDueToSpell(63735);
+			m_caster->RemoveAurasDueToSpell(63734);
+			break;
+	 }
 	 // King of the jungle hack
 	 switch(m_spellInfo->Id)
 	 {

@@ -28,7 +28,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     {
         InitInstance();
 		AddEnrageTimer(480000);
-		AddTextEvent(16700,"Redressez vous, mes serviteurs",25000,35000);
+		AddTextEvent(16700,"Redressez vous, mes serviteurs",25000,40000);
 		AddTextEvent(16698,"Je deviens... la mort !",480000,TEN_MINS*10);
 		me->setPowerType(POWER_RUNIC_POWER);
 		me->SetMaxPower(POWER_RUNIC_POWER,1000);

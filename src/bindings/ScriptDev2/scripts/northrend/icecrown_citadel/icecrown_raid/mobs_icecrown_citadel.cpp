@@ -497,7 +497,7 @@ bool GoHello_icc_teleporter( Player *pPlayer, GameObject *pGO )
 		if(pInstance->GetData(TYPE_DEATHWHISPER) == DONE || pPlayer->isGameMaster())
 		{
 			pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Rempart des Cranes", GOSSIP_SENDER_MAIN, DEATHWHISPER);
-			if(pInstance->GetData(TYPE_BATTLE_OF_CANNONS) == DONE || pPlayer->isGameMaster())
+			//if(pInstance->GetData(TYPE_BATTLE_OF_CANNONS) == DONE || pPlayer->isGameMaster())
 			{
 				pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a la Cime du Porte-Mort", GOSSIP_SENDER_MAIN, BATTLECANON);
 				if(/*pInstance->GetData(TYPE_SAURCROC) == DONE || */pPlayer->isGameMaster())
