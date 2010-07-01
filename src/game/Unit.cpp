@@ -985,13 +985,10 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         }
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
         {
-			if(!(pVictim->GetTypeId() == TYPEID_UNIT && !((Creature*)pVictim)->isHostileVehicle()))
-			{
-				if(spellProto && IsDamageToThreatSpell(spellProto))
-					pVictim->AddThreat(this, damage*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
-				else
-					pVictim->AddThreat(this, damage, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
-			}
+			if(spellProto && IsDamageToThreatSpell(spellProto))
+				pVictim->AddThreat(this, damage*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+			else
+				pVictim->AddThreat(this, damage, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
         }
         else                                                // victim is a player
         {
