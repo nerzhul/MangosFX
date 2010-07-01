@@ -620,7 +620,7 @@ void LFGGroup::SendLfgProposalUpdate()
 
 	if(AllAnswer())
 	{
-		if(AllAccept())
+		if(AllAccept() && !RealLFGGroup)
 		{
 			Group* grp = new Group;
 			bool masterIsSet = false;
@@ -642,7 +642,8 @@ void LFGGroup::SendLfgProposalUpdate()
 						delete grp;
 						grp = new Group;
 						continue;
-					}	
+					}
+					RealLFGGroup = grp;
 				}
 				else
 				{
