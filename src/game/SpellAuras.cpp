@@ -4721,6 +4721,12 @@ void Aura::HandleAuraModRoot(bool apply, bool Real)
         if(m_target->HasAuraType(SPELL_AURA_MOD_ROOT))
             return;
 
+		if(m_target->GetTypeId() == TYPEID_UNIT)
+			if(!((Creature*)m_target)->isHostileVehicle())
+				if(m_target->GetVehicleKit())
+					if(!m_target->GetVehicleKit()->CanMoveVehicle())
+						return;
+
         m_target->clearUnitState(UNIT_STAT_ROOT);
 
         if(!m_target->hasUnitState(UNIT_STAT_STUNNED | UNIT_STAT_ON_VEHICLE))      // prevent allow move if have also stun effect

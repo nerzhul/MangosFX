@@ -181,6 +181,7 @@ class LFGGroup
 		uint64 Dps[MAX_DPS];
 		uint64 Master;
 		LFGGroupAnswerType groupAnswers[MAX_GROUP_SIZE];
+		Group* RealLFGGroup;
 };
 
 typedef std::set<uint32> LfgDungeonSet;
@@ -226,6 +227,9 @@ class LFGMgr
 		void RemovePlayerFromRandomQueue(Player* plr);
 		void AddPlayerToRandomQueue(Player* plr, LFG_Role role);
 		void SendLfgRoleCheckResult(Player* plr, bool accept);
+
+		void RemoveLFGGroup(LFGGroup* grp);
+
 	private:
 		void BuildAvailableRandomDungeonList(WorldPacket &data, Player *plr);
 		void BuildRewardBlock(WorldPacket &data, uint32 dungeon, Player *plr);
@@ -247,7 +251,7 @@ class LFGMgr
 		LfgRewardList m_RewardList;
 		LfgRewardList m_RewardDoneList;
 		LfgDungeonMap m_DungeonsMap;
-		std::vector<LFGGroup*> m_LFGGroupList[BG_TEAMS_COUNT];
+		std::set<LFGGroup*> m_LFGGroupList[BG_TEAMS_COUNT];
 		uint32 middleTime; // seconds
 		uint32 Update_Timer;
 

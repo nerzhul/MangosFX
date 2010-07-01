@@ -15144,13 +15144,16 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(m_vehicle)
 		return;
 
-	if(vehicle->GetBase())
-		vehicle->GetBase()->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+	if(Unit* vehBase = vehicle->GetBase())
+		vehBase->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 
 	if(seatId < 0)
 		vehicle = vehicle->FindFreeSeat(&seatId,false);
 
 	m_vehicle = vehicle;
+
+	if(!m_vehicle || seatId < 0)
+		return;
 
 	InterruptNonMeleeSpells(false);
 

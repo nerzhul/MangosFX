@@ -1000,7 +1000,7 @@ void Group::SendUpdate()
             else
                 data << uint8(0);
 			if(IsRandomInstanceGroup())
-				data << uint8(player->m_lookingForGroup.roles);	// 3.3, role? 
+				data << uint8(member->m_lookingForGroup.roles);	// 3.3, role? 
 			else
 				data << uint8(0);
         }

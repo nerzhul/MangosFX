@@ -403,7 +403,7 @@ LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
 		grp = new LFGGroup();
 	else
 	{
-		for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[team].begin(); itr != m_LFGGroupList[team].end(); ++itr)
+		for(std::set<LFGGroup*>::iterator itr = m_LFGGroupList[team].begin(); itr != m_LFGGroupList[team].end(); ++itr)
 		{
 			if(LFGGroup* tmpGrp = (*itr))
 				if(tmpGrp->TryToGiveRole(role) != ROLE_NONE)
@@ -416,7 +416,7 @@ LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
 			grp = new LFGGroup();
 	}
 
-	m_LFGGroupList[team].push_back(grp);
+	m_LFGGroupList[team].insert(grp);
 	return grp;
 }
 
@@ -442,7 +442,7 @@ void LFGMgr::Update(uint32 diff)
 		{
 			if(!m_LFGGroupList[i].empty())
 			{
-				for(std::vector<LFGGroup*>::iterator itr = m_LFGGroupList[i].begin(); itr != m_LFGGroupList[i].end(); ++itr)
+				for(std::set<LFGGroup*>::iterator itr = m_LFGGroupList[i].begin(); itr != m_LFGGroupList[i].end(); ++itr)
 				{
 					if(LFGGroup* tmpGrp = (*itr))
 					{
@@ -539,6 +539,12 @@ void LFGMgr::SendLfgRoleCheckResult(Player* plr, bool accept)
 	data << plr->m_lookingForGroup.roles;
 	plr->GetSession()->SendPacket(&data);
 	// Party send packet
+}
+
+void LFGMgr::RemoveLFGGroup(LFGGroup* grp)
+{
+	m_LFGGroupList[0].erase(grp);
+	m_LFGGroupList[1].erase(grp);
 }
 
 void LFGGroup::SendLfgProposalUpdate()
@@ -689,10 +695,17 @@ LFGGroup::LFGGroup()
 	for(uint8 i=0;i<MAX_DPS;i++)
 		Dps[i] = 0;
 	ResetAnswers();
+	RealLFGGroup = NULL;
 }
 
 LFGGroup::~LFGGroup()
 {
+	sLFGMgr.RemoveLFGGroup(this);
+	if(RealLFGGroup)
+	{
+		RealLFGGroup->Disband();
+		delete RealLFGGroup;
+	}
 }
 
 void LFGGroup::SetDps(uint64 guid)
