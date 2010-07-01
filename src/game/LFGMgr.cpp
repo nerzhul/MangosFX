@@ -670,7 +670,8 @@ void LFGGroup::SendLfgProposalUpdate()
 				if(!masterIsSet)
 					if(Player* Tankptr = ObjectAccessor::FindPlayer(Tank))
 						Tankptr->m_lookingForGroup.roles &= ROLE_MASTER;
-
+				
+				sLFGMgr.RemoveLFGGroup(this);
 				grp->SetRandomInstanceGroup();
 			}
 		}
