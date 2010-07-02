@@ -412,11 +412,13 @@ LFGGroup* LFGMgr::SearchGroup(LFG_Role role, uint8 team)
 					break;
 				}
 		}
+
 		if(!grp)
 			grp = new LFGGroup();
 	}
-
-	m_LFGGroupList[team].insert(grp);
+	
+	if(grp)
+		m_LFGGroupList[team].insert(grp);
 	return grp;
 }
 

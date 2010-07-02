@@ -519,6 +519,32 @@ bool Master::_StartDB()
         return false;
     }
 
+	///- Get Localisation database info from configuration file
+    dbstring = sConfig.GetStringDefault("LocalisationDatabaseInfo", "");
+    if(dbstring.empty())
+    {
+        sLog.outError("Localisation database not specified in configuration file");
+
+        ///- Wait for already started DB delay threads to end
+        WorldDatabase.HaltDelayThread();
+        CharacterDatabase.HaltDelayThread();
+		loginDatabase.HaltDelayThread();
+        return false;
+    }
+
+    ///- Initialise the Localisation database
+    sLog.outString("Lolcalisation Database: %s", dbstring.c_str() );
+    if(!LocalisationDatabase.Initialize(dbstring.c_str()))
+    {
+        sLog.outError("Cannot connect to Localisation database %s",dbstring.c_str());
+
+        ///- Wait for already started DB delay threads to end
+        WorldDatabase.HaltDelayThread();
+        CharacterDatabase.HaltDelayThread();
+		loginDatabase.HaltDelayThread();
+        return false;
+    }
+
     ///- Get the realm Id from the configuration file
     realmID = sConfig.GetIntDefault("RealmID", 0);
     if(!realmID)
