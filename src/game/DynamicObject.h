@@ -46,6 +46,12 @@ class DynamicObject : public WorldObject
         void AddAffected(Unit *unit) { m_affected.insert(unit); }
         void RemoveAffected(Unit *unit) { m_affected.erase(unit); }
         void Delay(int32 delaytime);
+
+		float GetObjectBoundingRadius() const               // overwrite WorldObject version
+		{
+			return 0.0f;                                    // dynamic object not have real interact size
+		}
+
         bool isVisibleForInState(Player const* u, WorldObject const* viewPoint, bool inVisibleList) const;
 
         void Say(int32 textId, uint32 language, uint64 TargetGuid) { MonsterSay(textId,language,TargetGuid); }

@@ -139,7 +139,7 @@ inline CellArea Cell::CalculateCellArea(const WorldObject &obj, float radius)
 	if(radius <= 0.0f)
         return CellArea();
 
-	radius += obj.GetObjectSize();
+	radius += obj.GetObjectBoundingRadius();
 
 	return Cell::CalculateCellArea(obj.GetPositionX(), obj.GetPositionY(), radius);
 }

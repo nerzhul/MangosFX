@@ -517,6 +517,23 @@ void Unit::RemoveSpellsCausingAura(AuraType auraType)
     }
 }
 
+void Unit::RemoveSpellsCausingAuraWithInterruptFlags(AuraType auraType, uint32 flags)
+{
+	if (auraType >= TOTAL_AURAS)
+		return;
+	
+	for (AuraList::iterator itr = m_modAuras[auraType].begin(); itr != m_modAuras[auraType].end();)
+	{
+		if (*itr && ((*itr)->GetSpellProto()->AuraInterruptFlags & flags))
+		{
+			RemoveAurasDueToSpell((*itr)->GetId());
+			itr = m_modAuras[auraType].begin();
+		}
+		else
+			++itr;
+	}
+}
+
 bool Unit::HasAuraType(AuraType auraType) const
 {
     return (!m_modAuras[auraType].empty());
@@ -15089,7 +15106,7 @@ void Unit::ExitVehicle()
 						vehicle->SetSpawnDuration(1);
 					}
 				}
-				v_size = vehicle->GetBase()->GetObjectSize();
+				v_size = vehicle->GetBase()->GetObjectBoundingRadius();
 			}
 
 			if(m_vehicle)
