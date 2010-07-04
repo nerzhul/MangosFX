@@ -2764,7 +2764,7 @@ void Spell::prepare(SpellCastTargets const* targets, Aura* triggeredByAura)
     {
         m_caster->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
         m_caster->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
-		m_caster->RemoveSpellsCausingAuraWithInterruptFlags(SPELL_AURA_MOD_INVISIBILITY, AURA_INTERRUPT_FLAG_UNK11);
+		m_caster->RemoveSpellsCausingAuraWithInterruptFlags(SPELL_AURA_MOD_INVISIBILITY, AURA_INTERRUPT_FLAG_CAST);
     }
 
     // add non-triggered (with cast time and without)
