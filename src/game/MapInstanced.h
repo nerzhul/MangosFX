@@ -39,7 +39,7 @@ class MANGOS_DLL_DECL MapInstanced : public Map
         bool RemoveBones(uint64 guid, float x, float y);
         void UnloadAll(bool pForce);
 
-        Map* CreateInstance(const uint32 mapId, Player * player);
+        Map* CreateInstance(Player* player);
         Map* FindMap(uint32 InstanceId) const { return _FindMap(InstanceId); }
         void DestroyInstance(uint32 InstanceId);
         void DestroyInstance(InstancedMaps::iterator &itr);
@@ -62,7 +62,7 @@ class MANGOS_DLL_DECL MapInstanced : public Map
 
     private:
 
-        InstanceMap* CreateInstance(uint32 InstanceId, InstanceSave *save, Difficulty difficulty);
+        InstanceMap* CreateInstanceMap(uint32 InstanceId, InstanceSave *save, Difficulty difficulty);
         BattleGroundMap* CreateBattleGroundMap(uint32 InstanceId, BattleGround* bg);
 
         InstancedMaps m_InstancedMaps;
