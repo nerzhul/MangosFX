@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
 
             float x,y,z;
 
-            me->GetClosePoint(x,y,z,me->GetObjectSize()/3,10.0f);
+			me->GetClosePoint(x,y,z,me->GetObjectBoundingRadius()/3,10.0f);
 			Tasks.CallCreature(urand(0,1) ? NPC_RAPTOR_1 : NPC_RAPTOR_2,TEN_MINS,NEAR_7M,AGGRESSIVE_RANDOM,x,y,z);
             RaptorCallTimer = urand(20000,25000);
         } 

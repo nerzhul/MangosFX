@@ -335,7 +335,7 @@ struct MANGOS_DLL_DECL mob_dragonmaw_peonAI : public ScriptedAI
             m_bIsTapped = true;
 
             float fX, fY, fZ;
-            pCaster->GetClosePoint(fX, fY, fZ, me->GetObjectSize());
+			pCaster->GetClosePoint(fX, fY, fZ, me->GetObjectBoundingRadius());
 
             me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
             me->GetMotionMaster()->MovePoint(POINT_DEST, fX, fY, fZ);

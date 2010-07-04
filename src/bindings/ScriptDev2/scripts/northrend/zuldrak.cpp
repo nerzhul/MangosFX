@@ -43,7 +43,7 @@ struct MANGOS_DLL_DECL npc_drakuru_shacklesAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         float x, y, z;
         Rageclaw = NULL;
-        me->GetClosePoint(x, y, z, me->GetObjectSize()/3,0.1);
+        me->GetClosePoint(x, y, z, me->GetObjectBoundingRadius()/3,0.1);
         if (Unit* summon = me->SummonCreature(NPC_RAGECLAW,x,y,z,0,TEMPSUMMON_DEAD_DESPAWN,1000))
             DoActionOnRageclaw(true,summon);
     }
