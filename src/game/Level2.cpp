@@ -4676,6 +4676,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 					player->AddItem(39490);
 					break;
 			}
+			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states(guid,bank,bags) VALUES ('%u',1,1)",player->GetGUID());
 		}
 		else if(argstr == "forcedps")
 		{
@@ -4816,6 +4817,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 					player->AddItem(37177);
 					break;
 			}
+			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states(guid,bank,bags) VALUES ('%u',1,1)",player->GetGUID());
 		}
 		else if(argstr == "forceheal")
 		{
@@ -4898,6 +4900,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 					player->AddItem(33502);
 					break;
 			}
+			CharacterDatabase.PQuery("INSERT IGNORE INTO characterprofiler_states(guid,bank,bags) VALUES ('%u',1,1)",player->GetGUID());
 		}
 		else if(argstr == "recupcp")
 		{
