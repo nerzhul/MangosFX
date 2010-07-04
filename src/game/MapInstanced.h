@@ -62,7 +62,7 @@ class MANGOS_DLL_DECL MapInstanced : public Map
 
     private:
 
-        InstanceMap* CreateInstanceMap(uint32 InstanceId, InstanceSave *save, Difficulty difficulty);
+        InstanceMap* CreateInstanceMap(uint32 InstanceId, Difficulty difficulty, InstanceSave *save = NULL);
         BattleGroundMap* CreateBattleGroundMap(uint32 InstanceId, BattleGround* bg);
 
         InstancedMaps m_InstancedMaps;

@@ -135,7 +135,7 @@ Map* MapManager::CreateMap(uint32 id, const WorldObject* obj)
     Map *m = _createBaseMap(id);
 
     if (m && (obj->GetTypeId() == TYPEID_PLAYER) && m->Instanceable())
-		m = ((MapInstanced*)m)->CreateInstance(id, (Player*)obj);
+		m = ((MapInstanced*)m)->CreateInstance((Player*)obj);
 
     return m;
 }
