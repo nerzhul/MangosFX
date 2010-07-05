@@ -1420,42 +1420,42 @@ void Player::Update( uint32 p_time )
 
     //we should execute delayed teleports only for alive(!) players
     //because we don't want player's ghost teleported from graveyard
-    if(IsHasDelayedTeleport() && isAlive())
+    if(IsHasDelayedTeleport() && isAlive() && !GetVehicleGUID())
         TeleportTo(m_teleport_dest, m_teleport_options);
 
-        if (GetMapId() == 571 && IsInWorld())
+    if (GetMapId() == 571 && IsInWorld())
+    {
+        if (GetPositionZ() > 640.0 && GetPositionZ() < 700.0 && GetZoneId() == 4395 && GetAreaId() != 4564 && GetAreaId() != 4598 && CanFly() && !isGameMaster())
         {
-            if (GetPositionZ() > 640.0 && GetPositionZ() < 700.0 && GetZoneId() == 4395 && GetAreaId() != 4564 && GetAreaId() != 4598 && CanFly() && !isGameMaster())
+            if (!HasAura(58600) && !HasAura(61243)) // Check for Restricted Flight Area and Parachute Visual
             {
-                if (!HasAura(58600) && !HasAura(61243)) // Check for Restricted Flight Area and Parachute Visual
+                if (!((GetPositionX()-5886.80f)*(GetPositionX()-5886.80f)+(GetPositionY()-651.28f)*(GetPositionY()-651.28f) < 29.89 ||  // The Well by the North Bank
+                   (GetPositionX()-5711.05f)*(GetPositionX()-5711.05f)+(GetPositionY()-646.02f)*(GetPositionY()-646.02f) < 37.70   ||  // The spinning thing in the middle of The Eventide
+                   (GetPositionX()-5816.89f)*(GetPositionX()-5816.89f)+(GetPositionY()-745.91f)*(GetPositionY()-745.91f) < 548.24  ||  // The grass by The Violet Citadel
+                   GetAreaId() == 4619))                                                                                               // The Violet Citadel
                 {
-                    if (!((GetPositionX()-5886.80f)*(GetPositionX()-5886.80f)+(GetPositionY()-651.28f)*(GetPositionY()-651.28f) < 29.89 ||  // The Well by the North Bank
-                       (GetPositionX()-5711.05f)*(GetPositionX()-5711.05f)+(GetPositionY()-646.02f)*(GetPositionY()-646.02f) < 37.70   ||  // The spinning thing in the middle of The Eventide
-                       (GetPositionX()-5816.89f)*(GetPositionX()-5816.89f)+(GetPositionY()-745.91f)*(GetPositionY()-745.91f) < 548.24  ||  // The grass by The Violet Citadel
-                       GetAreaId() == 4619))                                                                                               // The Violet Citadel
-                    {
-                        /*CastSpell(this, 58600, true);
-                        PlayDirectSound(9417,this);
-                        MonsterWhisper("Attention: vous entrez dans une zone interdite de survol ! Vous serez dismount si vous ne vous posez pas !", GetGUID(), true);*/
-                    }
-                }
-            }
-            else if (HasAura(58600)) // Restricted Flight Area
-            {
-                RemoveAurasDueToSpell(58600);
-            }
-
-            if (HasAura(61243)) // Parachute Visual
-            {
-                float x, y, z;
-                GetPosition(x, y, z);
-                float ground_Z = GetMap()->GetHeight(x, y, z, true);
-                if (fabs(ground_Z - z) < 0.1f)
-                {
-                    RemoveAurasDueToSpell(61243);
+                    /*CastSpell(this, 58600, true);
+                    PlayDirectSound(9417,this);
+                    MonsterWhisper("Attention: vous entrez dans une zone interdite de survol ! Vous serez dismount si vous ne vous posez pas !", GetGUID(), true);*/
                 }
             }
         }
+        else if (HasAura(58600)) // Restricted Flight Area
+        {
+            RemoveAurasDueToSpell(58600);
+        }
+
+        if (HasAura(61243)) // Parachute Visual
+        {
+            float x, y, z;
+            GetPosition(x, y, z);
+            float ground_Z = GetMap()->GetHeight(x, y, z, true);
+            if (fabs(ground_Z - z) < 0.1f)
+            {
+                RemoveAurasDueToSpell(61243);
+            }
+        }
+    }
 }
 
 void Player::setDeathState(DeathState s)
