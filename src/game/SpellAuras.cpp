@@ -3660,6 +3660,8 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             case FORM_CAT:
                 if(Aura* dummy = m_target->GetDummyAura(37315) )
                     m_target->CastSpell(m_target, 37316, true, NULL, dummy);
+				if (Aura *pAura = m_target->GetAura(SPELL_AURA_MOD_INCREASE_SPEED, SPELLFAMILY_DRUID, UI64LIT(0x0), 0x8))
+					m_target->RemoveAura(pAura);
                 break;
             // Nordrassil Regalia - bonus
             case FORM_MOONKIN:
@@ -3679,7 +3681,6 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
             for (uint32 i = 0; i < 8; ++i)
                 if (ssEntry->spellId[i])
                     ((Player*)m_target)->removeSpell(ssEntry->spellId[i], false, false, false);
-
     }
 
     // adding/removing linked auras

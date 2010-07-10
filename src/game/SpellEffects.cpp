@@ -6409,7 +6409,16 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     unitTarget->CastSpell(unitTarget, 66622, true);
                     break;
                 }
-
+				case 66744:                                 // Make Player Destroy Totems
+				{
+					if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					// Totem of the Earthen Ring does not really require or take reagents.
+					// Expecting RewardQuest() to already destroy them or we need additional code here to destroy.
+					unitTarget->CastSpell(unitTarget, 66747, true);
+					return;
+				}
                 case 69377: //Fortitude
                 {
                     if(!unitTarget)
