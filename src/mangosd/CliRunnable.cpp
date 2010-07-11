@@ -64,8 +64,8 @@ bool ChatHandler::HandleAccountDeleteCommand(const char* args)
     if (!*args)
         return false;
 
-    /*std::string account_name;
-    uint32 account_id = extractAccountId((char*)args,&account_name);
+    std::string account_name;
+    /*uint32 account_id = extractAccountId((char*)args,&account_name);
     if (!account_id)
         return false;
 
