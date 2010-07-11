@@ -936,10 +936,6 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 					}
 					case CLASS_DRUID:
 					{
-						uint32 spellpower = int32(owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE));
-						int32 bonusmelee = int32(spellpower * 0.08f);
-						SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
-						SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
 						break;
 					}
 					case CLASS_DEATH_KNIGHT:
@@ -950,12 +946,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
                         break;
                 }
             }
-
-            
-
             //SetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE, float(cinfo->attackpower));
-
-            
             break;
         }
         case HUNTER_PET:
@@ -1000,7 +991,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
 
-            SetCreateMana(28 + 10*petlevel);
+			SetCreateMana(28 + 10*petlevel);
             SetCreateHealth(28 + 30*petlevel);
 
             // FIXME: this is wrong formula, possible each guardian pet have own damage formula
@@ -1010,7 +1001,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             //damage range is then petlevel / 2
             SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)));
 
-			switch(this->GetEntry())
+			switch(GetEntry())
 			{
 				case 27829:
 					SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.4);
@@ -1025,9 +1016,16 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 					SetMaxPower(POWER_ENERGY,100);
 					SetPower(POWER_ENERGY,100);
 					break;
+				case 1964:
+				{
+					uint32 spellpower = int32(owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE));
+					int32 bonusmelee = int32(spellpower * 0.08f);
+					SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
+					SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
+					break;
+				}
 				default:
 					break;
-
 			}
             break;
         default:
@@ -1035,7 +1033,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 			break;
     }
 
-    for (int i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; ++i)
+    for (uint8 i = SPELL_SCHOOL_HOLY; i < MAX_SPELL_SCHOOL; ++i)
         SetModifierValue(UnitMods(UNIT_MOD_RESISTANCE_START + i), BASE_VALUE, float(createResistance[i]));
 
     UpdateAllStats();
