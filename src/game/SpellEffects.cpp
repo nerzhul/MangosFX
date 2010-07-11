@@ -4704,11 +4704,6 @@ void Spell::EffectEnchantItemPerm(uint32 effect_idx)
     if (!itemTarget)
         return;
 
-    Player* p_caster = (Player*)m_caster;
-
-    // not grow at item use at item case
-    p_caster->UpdateCraftSkill(m_spellInfo->Id);
-
     uint32 enchant_id = m_spellInfo->EffectMiscValue[effect_idx];
     if (!enchant_id)
         return;
@@ -4721,6 +4716,25 @@ void Spell::EffectEnchantItemPerm(uint32 effect_idx)
     Player* item_owner = itemTarget->GetOwner();
     if (!item_owner)
         return;
+
+	Player* p_caster = (Player*)m_caster;
+	
+	// Enchanting a vellum requires special handling, as it creates a new item
+	// instead of modifying an existing one.
+	ItemPrototype const* targetProto = itemTarget->GetProto();
+	if(targetProto->IsVellum() && m_spellInfo->EffectItemType[eff_idx])
+	{
+		unitTarget = m_caster;
+		DoCreateItem(eff_idx,m_spellInfo->EffectItemType[eff_idx]);
+		// Vellum target case: Target becomes additional reagent, new scroll item created instead in Spell::EffectEnchantItemPerm()
+		// cannot already delete in TakeReagents() unfortunately
+		p_caster->DestroyItemCount(targetProto->ItemId, 1, true);
+		return;
+	}
+	
+	// not grow at item use at item case, using scrolls does not increase enchanting skill!
+	if (!(m_CastItem && m_CastItem->GetProto()->Flags & ITEM_FLAGS_ENCHANT_SCROLL))
+		p_caster->UpdateCraftSkill(m_spellInfo->Id);
 
     if (item_owner!=p_caster && p_caster->GetSession()->GetSecurity() > SEC_MODERATOR && sWorld.getConfig(CONFIG_GM_LOG_TRADE) )
     {
