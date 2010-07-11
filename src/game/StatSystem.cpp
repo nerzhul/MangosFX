@@ -955,9 +955,22 @@ void Pet::UpdateMaxHealth()
     UnitMods unitMod = UNIT_MOD_HEALTH;
     float stamina = GetStat(STAT_STAMINA) - GetCreateStat(STAT_STAMINA);
 
+	float multiplier;
+	
+	// Some pets don't gain 10 hp per stamina
+	switch(GetEntry())
+	{
+		case 416:   multiplier = 8.4f;  break;  // Imp
+		case 417:   multiplier = 9.5f;  break;  // Felhunter
+		case 1863:  multiplier = 9.1f;  break;  // Succubus
+		case 1860:                              // Voidwalker
+		case 17252: multiplier = 11.0f; break;  // Felguard
+		default:    multiplier = 10.0f; break;
+	}
+
     float value   = GetModifierValue(unitMod, BASE_VALUE) + GetCreateHealth();
     value  *= GetModifierValue(unitMod, BASE_PCT);
-    value  += GetModifierValue(unitMod, TOTAL_VALUE) + stamina * 10.0f;
+    value  += GetModifierValue(unitMod, TOTAL_VALUE) + stamina * multiplier;
     value  *= GetModifierValue(unitMod, TOTAL_PCT);
 
     SetMaxHealth((uint32)value);
@@ -969,9 +982,21 @@ void Pet::UpdateMaxPower(Powers power)
 
     float addValue = (power == POWER_MANA) ? GetStat(STAT_INTELLECT) - GetCreateStat(STAT_INTELLECT) : 0.0f;
 
+	float multiplier;
+	// Some pets don't gain 15 mana per intellect
+	switch(GetEntry())
+	{
+		case 416:   multiplier = 4.95f; break;  // Imp
+		case 417:                               // Felhunter
+		case 1860:                              // Voidwalker
+		case 1863:                              // Succubus
+		case 17252: multiplier = 11.5f; break;  // Felguard
+		default:    multiplier = 15.0f; break;
+	}
+
     float value  = GetModifierValue(unitMod, BASE_VALUE) + GetCreatePowers(power);
     value *= GetModifierValue(unitMod, BASE_PCT);
-    value += GetModifierValue(unitMod, TOTAL_VALUE) +  addValue * 15.0f;
+    value += GetModifierValue(unitMod, TOTAL_VALUE) +  addValue * multiplier;
     value *= GetModifierValue(unitMod, TOTAL_PCT);
 
     SetMaxPower(power, uint32(value));
