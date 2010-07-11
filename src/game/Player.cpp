@@ -2123,6 +2123,8 @@ void Player::Regenerate(Powers power, uint32 diff)
         }   break;
         case POWER_ENERGY:                                  // Regenerate energy (rogue)
             addvalue = 20;
+			if(HasAura(58427))
+				addvalue *= 1.3;
             break;
         case POWER_RUNIC_POWER:
         {
