@@ -1961,8 +1961,8 @@ void Aura::TriggerSpell()
 					case 39105:                             // Activate Nether-wraith Beacon (31742 Nether-wraith Beacon item)
 					{
 						float fX, fY, fZ;
-						triggerTarget->GetClosePoint(fX, fY, fZ, triggerTarget->GetObjectBoundingRadius(), 20.0f);
-						triggerTarget->SummonCreature(22408, fX, fY, fZ, triggerTarget->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0);
+						m_target->GetClosePoint(fX, fY, fZ, m_target->GetObjectBoundingRadius(), 20.0f);
+						m_target->SummonCreature(22408, fX, fY, fZ, m_target->GetOrientation(), TEMPSUMMON_DEAD_DESPAWN, 0);
 						return;
 					}
 //                    // Drain World Tree Visual
@@ -2454,6 +2454,16 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                             m_target->SetFeignDeath(true);
 
                         return;
+					case 32045:                             // Soul Charge
+					case 32051:
+					case 32052:
+					{
+						// max duration is 2 minutes, but expected to be random duration
+						// real time randomness is unclear, using max 30 seconds here
+						// see further down for expire of this aura
+						SetAuraDuration(rand()%30*IN_MILLISECONDS);
+						return;
+					}
                     case 39850:                             // Rocket Blast
                         if(roll_chance_i(20))               // backfire stun
                             m_target->CastSpell(m_target, 51581, true, NULL, this);
@@ -2692,6 +2702,24 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 m_target->CastSpell(m_target, 28240, true, NULL, this);
                 return;
             }
+			case 32045:                                     // Soul Charge
+			{
+				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
+					m_target->CastSpell(target, 32054, true, NULL, this);
+				return;
+			}
+			case 32051:                                     // Soul Charge
+			{
+				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
+					m_target->CastSpell(target, 32057, true, NULL, this);
+				return;
+			}
+			case 32052:                                     // Soul Charge
+			{
+				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
+					m_target->CastSpell(target, 32053, true, NULL, this);
+				return;
+			}
             case 32286:                                     // Focus Target Visual
             {
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT)
