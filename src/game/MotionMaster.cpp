@@ -269,7 +269,7 @@ MotionMaster::MoveTargetedHome()
 
 void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float speedZ)
 {
-    MonsterMovementFlags moveFlag = MonsterMovementFlags(0x00000800 | 0x00001000);
+    SplineFlags moveFlag = SplineFlags(SPLINEFLAG_TRAJECTORY | SPLINEFLAG_WALKMODE);
     uint32 time = speedZ * 100;
 
     i_owner->addUnitState(UNIT_STAT_JUMPING);
@@ -285,7 +285,7 @@ void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float spee
         Mutate(new PointMovementGenerator<Creature>(0,x,y,z));
     }
 
-    i_owner->SendMonsterMove(x, y, z, 0, moveFlag, time);
+    i_owner->SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, moveFlag, time);
 }
 
 void

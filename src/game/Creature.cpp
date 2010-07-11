@@ -776,29 +776,6 @@ bool Creature::isCanTrainingAndResetTalentsOf(Player* pPlayer) const
         && pPlayer->getClass() == GetCreatureInfo()->trainer_class;
 }
 
-void Creature::AI_SendMoveToPacket(float x, float y, float z, uint32 time, MonsterMovementFlags flags, uint8 type)
-{
-    /*    uint32 timeElap = getMSTime();
-        if ((timeElap - m_startMove) < m_moveTime)
-        {
-            oX = (dX - oX) * ( (timeElap - m_startMove) / m_moveTime );
-            oY = (dY - oY) * ( (timeElap - m_startMove) / m_moveTime );
-        }
-        else
-        {
-            oX = dX;
-            oY = dY;
-        }
-
-        dX = x;
-        dY = y;
-        m_orientation = atan2((oY - dY), (oX - dX));
-
-        m_startMove = getMSTime();
-        m_moveTime = time;*/
-    SendMonsterMove(x, y, z, type, flags, time);
-}
-
 Player *Creature::GetLootRecipient() const
 {
     if (!m_lootRecipient) return NULL;
@@ -2116,7 +2093,8 @@ void Creature::SendMonsterMoveWithSpeed(float x, float y, float z, uint32 transi
         }
     }
     //float orientation = (float)atan2((double)dy, (double)dx);
-    SendMonsterMove(x, y, z, 0, GetMonsterMoveFlags(), transitTime, player);
+	SplineFlags flags = GetTypeId() == TYPEID_PLAYER ? SPLINEFLAG_WALKMODE : ((Creature*)this)->GetSplineFlags();
+    SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, flags, transitTime, player);
 }
 
 void Creature::SendAreaSpiritHealerQueryOpcode(Player *pl)

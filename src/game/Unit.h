@@ -1454,7 +1454,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 
 		void MonsterMove(float x, float y, float z, uint32 transitTime);
 
-        void SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, uint8 type, MonsterMovementFlags flags, uint32 Time, Player* player = NULL);
+        void SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineType type, SplineFlags flags, uint32 Time, Player* player = NULL);
         void SendMonsterMoveByPath(Path const& path, uint32 start, uint32 end, MonsterMovementFlags flags);
 
         void SendHighestThreatUpdate(HostileReference* pHostileReference);

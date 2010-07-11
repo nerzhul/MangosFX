@@ -407,7 +407,7 @@ bool Unit::haveOffhandWeapon() const
         return false;
 }
 
-void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, uint8 type, MonsterMovementFlags flags, uint32 Time, Player* player)
+void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineType type, SplineFlags flags, uint32 Time, Player* player)
 {
     float moveTime = Time;
 
@@ -13758,7 +13758,7 @@ void Unit::StopMoving()
 
     // send explicit stop packet
     // player expected for correct work MONSTER_MOVE_WALK
-    SendMonsterMove(GetPositionX(), GetPositionY(), GetPositionZ(), 0, GetTypeId()==TYPEID_PLAYER ? MONSTER_MOVE_WALK : MONSTER_MOVE_NONE, 0);
+    SendMonsterMove(GetPositionX(), GetPositionY(), GetPositionZ(), SPLINETYPE_STOP, GetTypeId()==TYPEID_PLAYER ? SPLINEFLAG_WALKMODE : SPLINEFLAG_NONE, 0);
 
     // update position and orientation for near players
     WorldPacket data;
@@ -14534,8 +14534,8 @@ void Unit::NearTeleportTo( float x, float y, float z, float orientation, bool ca
 
 void Unit::MonsterMove(float x, float y, float z, uint32 transitTime)
 {
-    SplineFlags flags = /*GetTypeId() == TYPEID_PLAYER ?*/ SPLINEFLAG_WALKMODE /*: ((Creature*)this)->GetSplineFlags()*/;
-    SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, MonsterMovementFlags(flags), transitTime);
+    SplineFlags flags = GetTypeId() == TYPEID_PLAYER ? SPLINEFLAG_WALKMODE : ((Creature*)this)->GetSplineFlags();
+    SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, flags, transitTime);
 
     if (GetTypeId() != TYPEID_PLAYER)
     {
@@ -15118,7 +15118,7 @@ void Unit::ExitVehicle()
 			if(IsInWorld())
 			{
 				GetClosePoint(x, y, z, 2.0f + v_size);
-				SendMonsterMove(x, y, z, 0, MONSTER_MOVE_WALK, 0);
+				SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 			}
 		}
 		SetVehicleGUID(0);

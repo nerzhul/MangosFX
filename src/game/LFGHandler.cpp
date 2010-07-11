@@ -228,9 +228,7 @@ void WorldSession::HandleLfgProposalResult(WorldPacket &recv_data)
 	recv_data >> groupId;
 	recv_data >> accept;
 
-	recv_data.hexlike();
-
-	if(!GetPlayer())
+	//if(!GetPlayer())
 		return;
 
 	if(GetPlayer()->m_lookingForGroup.group)
