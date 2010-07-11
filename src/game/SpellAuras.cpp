@@ -1606,8 +1606,22 @@ void Aura::TriggerSpell()
                         ((Player*)target)->ApplyEnchantment(item,TEMP_ENCHANTMENT_SLOT,true);
                         return;
                     }
-//                    // Periodic Mana Burn
-//                    case 812: break;
+					case 812:                               // Periodic Mana Burn
+					{
+						trigger_spell_id = 25779;           // Mana Burn
+						// expected selection current fight target
+						target = GetTarget()->getVictim();
+						if (!target || target->GetMaxPower(POWER_MANA) <= 0)
+							return;
+						triggeredSpellInfo = sSpellStore.LookupEntry(trigger_spell_id);
+						if (!triggeredSpellInfo)
+							return;
+						SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(triggeredSpellInfo->rangeIndex);
+						float max_range = GetSpellMaxRange(srange);
+						if (!target->IsWithinDist(GetTarget(),max_range))
+							return;
+						break;
+					}
 //                    // Polymorphic Ray
 //                    case 6965: break;
                     // Thaumaturgy Channel
@@ -2237,6 +2251,21 @@ void Aura::TriggerSpell()
         // Spell exist but require custom code
         switch(auraId)
         {
+			case 9347:                                      // Mortal Strike
+			{
+				// expected selection current fight target
+				target = GetTarget()->getVictim();
+				if (!target)
+					return;
+				
+				// avoid triggering for far target
+				SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(triggeredSpellInfo->rangeIndex);
+				float max_range = GetSpellMaxRange(srange);
+				if (!target->IsWithinDist(GetTarget(),max_range))
+					return;
+				
+				break;
+			}
             // Curse of Idiocy
             case 1010:
             {
@@ -2705,19 +2734,19 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 			case 32045:                                     // Soul Charge
 			{
 				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
-					m_target->CastSpell(target, 32054, true, NULL, this);
+					m_target->CastSpell(m_target, 32054, true, NULL, this);
 				return;
 			}
 			case 32051:                                     // Soul Charge
 			{
 				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
-					m_target->CastSpell(target, 32057, true, NULL, this);
+					m_target->CastSpell(m_target, 32057, true, NULL, this);
 				return;
 			}
 			case 32052:                                     // Soul Charge
 			{
 				if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
-					m_target->CastSpell(target, 32053, true, NULL, this);
+					m_target->CastSpell(m_target, 32053, true, NULL, this);
 				return;
 			}
             case 32286:                                     // Focus Target Visual
