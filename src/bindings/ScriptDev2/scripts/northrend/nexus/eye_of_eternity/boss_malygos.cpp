@@ -387,7 +387,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
 				SetFlying(true,pSpark);
                 pSpark->CastSpell(pSpark, SPELL_POWER_SPARK_VISUAL, false);
                 pSpark->GetMotionMaster()->MoveFollow(me, 0, 0);
-                me->AddSplineFlag(MONSTER_MOVE_SPLINE_FLY);
+                me->AddSplineFlag(SPLINEFLAG_UNKNOWN7);
                 m_lSparkGUIDList.push_back(pSpark->GetGUID());
             }
         }
