@@ -249,8 +249,8 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
             float fX, fY, fZ;
             pAzkil->GetRandomPoint(pAzkil->GetPositionX(), pAzkil->GetPositionY(), pAzkil->GetPositionZ()+15.0f, 30.0f, fX, fY, fZ);
 
-            if (me->HasMonsterMoveFlag(MONSTER_MOVE_WALK))
-                me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+            if (me->HasSplineFlag(SPLINEFLAG_WALKMODE))
+                me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
 
             me->GetMotionMaster()->MovePoint(POINT_ID_RANDOM, fX, fY, fZ);
 

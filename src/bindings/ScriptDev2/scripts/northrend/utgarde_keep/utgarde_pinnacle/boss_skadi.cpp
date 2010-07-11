@@ -147,8 +147,8 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
             //me->Mount(27043);
             //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             //me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            /*if (me->HasMonsterMoveFlag(MONSTER_MOVE_WALK))
-                me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);*/
+            /*if (me->HasSplineFlag(SPLINEFLAG_WALKMODE))
+                me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);*/
             //me->GetMotionMaster()->MovePoint(m_uiWaypointId, 340.259, -510.541, 120.869);
         	//m_uiphase = 1;
 			m_uiphase = 2;

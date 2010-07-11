@@ -905,13 +905,13 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
     {
 		who->SetReactState(REACT_PASSIVE);
         who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
-        who->AddMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
+        who->AddSplineFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
     }
     else
     {
 		who->SetReactState(REACT_AGGRESSIVE);
         who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
-        who->RemoveMonsterMoveFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
+        who->RemoveSplineFlag(MonsterMovementFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
     }
 }
 

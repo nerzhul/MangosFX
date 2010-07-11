@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_selin_fireheartAI : public ScriptedAI
             float x, y, z;                                  // coords that we move to, close to the crystal.
             CrystalChosen->GetClosePoint(x, y, z, me->GetObjectBoundingRadius(), CONTACT_DISTANCE);
 
-            me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+            me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
             me->GetMotionMaster()->MovePoint(1, x, y, z);
             DrainingCrystal = true;
         }

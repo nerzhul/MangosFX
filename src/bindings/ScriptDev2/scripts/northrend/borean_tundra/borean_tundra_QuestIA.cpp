@@ -20,7 +20,7 @@ struct MANGOS_DLL_DECL cocoon_warsongAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		me->AddMonsterMoveFlag(MONSTER_MOVE_NONE);
+		me->AddSplineFlag(MONSTER_MOVE_NONE);
 	}
 
 	void DamageTaken(Unit *done_by, uint32 &damage)	{}

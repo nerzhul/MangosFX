@@ -177,7 +177,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
 						AnnhyldeGUID = Annhylde->GetGUID();
 						SetFlying(true,Annhylde);
 						DoScriptText(SAY_ANNHYLDE,Annhylde);
-						Annhylde->AddMonsterMoveFlag(MONSTER_MOVE_FLY);
+						Annhylde->AddSplineFlag(MONSTER_MOVE_FLY);
 						Annhylde->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 						Annhylde->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+5.0f);
 					}

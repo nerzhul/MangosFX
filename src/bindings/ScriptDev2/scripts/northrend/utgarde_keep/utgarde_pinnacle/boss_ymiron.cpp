@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
                     pTemp->CastSpell(me, SPELL_CHANNEL_SPIRIT_TO_YMIRON, true);
                     pTemp->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                     pTemp->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    pTemp->SetMonsterMoveFlags(MONSTER_MOVE_LEVITATING);
+                    pTemp->SetMonsterMoveFlags(SPLINEFLAG_NO_SPLINE);
                     switch(m_uiActiveOrder[m_uiActivedNumber])
                     {
                         case 0: m_bIsActiveWithBJORN  = true; break;

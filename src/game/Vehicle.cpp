@@ -353,7 +353,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         unit->SendMessageToSet(&data0,true);
     }*/
 
-	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
+	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
 	VehicleEntry const *ve = sVehicleStore.LookupEntry(unit->GetVehicle()->GetVehicleInfo()->m_ID);

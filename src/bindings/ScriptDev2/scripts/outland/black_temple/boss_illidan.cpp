@@ -346,7 +346,7 @@ struct MANGOS_DLL_DECL demonfireAI : public ScriptedAI
                 {
                     IllidanGUID = m_pInstance->GetData64(DATA_ILLIDANSTORMRAGE);
 
-                    if (!pIllidan->HasMonsterMoveFlag(MONSTER_MOVE_LEVITATING))
+                    if (!pIllidan->HasSplineFlag(SPLINEFLAG_NO_SPLINE))
                         me->setDeathState(JUST_DIED);
                 }
             }
@@ -480,7 +480,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
         IsReturningToIllidan = true;
         WayPoint = WayPointList.begin();
         me->SetSpeedRate(MOVE_RUN, 2.0f);
-        me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+        me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
         IsWalking = true;
     }
 
@@ -665,7 +665,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
                                 IsWalking = true;
                                 WayPoint = WayPointList.begin();
                                 std::advance(WayPoint, 9);
-                                me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                                me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                                 break;
                         }
                     }else TalkTimer -= diff;
@@ -978,7 +978,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
         // Unequip warglaives if needed
         SetEquipmentSlots(false, EQUIP_UNEQUIP, EQUIP_UNEQUIP, EQUIP_NO_CHANGE);
 
-        me->RemoveMonsterMoveFlag(MONSTER_MOVE_LEVITATING);
+        me->RemoveSplineFlag(SPLINEFLAG_NO_SPLINE);
 
         IsTalking = false;
 
@@ -1276,7 +1276,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         // We now hover!
-        me->AddMonsterMoveFlag(MONSTER_MOVE_LEVITATING);
+        me->AddSplineFlag(SPLINEFLAG_NO_SPLINE);
 
         me->GetMotionMaster()->MovePoint(0, CENTER_X, CENTER_Y, CENTER_Z);
         for(uint8 i = 0; i < 2; ++i)
@@ -1720,7 +1720,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
 
                         // anndddd touchdown!
                         me->HandleEmoteCommand(EMOTE_ONESHOT_LAND);
-                        me->RemoveMonsterMoveFlag(MONSTER_MOVE_LEVITATING);
+                        me->RemoveSplineFlag(SPLINEFLAG_NO_SPLINE);
                         Phase = PHASE_NORMAL_2;
 
                         // We should let the raid fight us =)

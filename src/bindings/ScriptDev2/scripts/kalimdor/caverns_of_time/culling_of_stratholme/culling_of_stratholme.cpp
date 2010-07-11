@@ -208,7 +208,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 DoScriptText(SAY_PHASE502, me);
                 break;
             case 3:
-               me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+               me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                DoScriptText(SAY_PHASE505, me);
                 break;
             case 4:
@@ -227,7 +227,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 DoScriptText(SAY_PHASE510, me);
                 break;
             case 11:
-                me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                 break; 
             case 13:
                  DoScriptText(SAY_PHASE508,me);
@@ -264,14 +264,14 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 break;
             case 32:
                 DoScriptText(SAY_PHASE601,me);
-                me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                 break;
             case 34:
                me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                DoScriptText(SAY_PHASE602,me);
 				break;
             case 35:
-				me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+				me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                 DoScriptText(SAY_PHASE603,me);
                 break;
             case 40:
@@ -355,7 +355,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
            switch(phase)
            {
               case 1:
-					  me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+					  me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
 					  me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
 					  me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 					   if(Creature* Uther =me->SummonCreature(26528,1794.357f,1272.183f,141.558f,1.37f,TEMPSUMMON_TIMED_DESPAWN,180000))
@@ -364,7 +364,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 							JainaGUID = pJaina->GetGUID();
 					   if(Creature* Uther = GetGuidCreature(UtherGUID))
 					   {
-						   Uther->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+						   Uther->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
 						  me->GetMotionMaster()->MovePoint(0, 1903.167f, 1291.573f, 143.32f);
 						   Uther->GetMotionMaster()->MovePoint(0, 1897.018f, 1287.487f, 143.481f);
 						  me->SetUInt64Value(UNIT_FIELD_TARGET, Uther->GetGUID());
@@ -504,7 +504,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 10000;
                    break;
              case 47:
-                  me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                  me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                   me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 				   if(Creature* Jaina = GetGuidCreature(JainaGUID))
 						Jaina->SetVisibility(VISIBILITY_OFF);
@@ -683,7 +683,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
            case 87:
 			   if(Creature* TempMalganis = GetGuidCreature(TempMalganisGUID))
                    DoScriptText(SAY_ENTER07, TempMalganis);
-				me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+				me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                ++phase;
                phasetim = 17000;
                break;             
@@ -841,7 +841,7 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
                            Steptim = 5000;
                            break;
                  case 3:
-                           me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+                           me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
                            DoScriptText(SAY_PEOPLE06, me);
                            me->GetMotionMaster()->MovePoint(0, 2395.487f,1203.199f,134.125f); 
                            ++Step;

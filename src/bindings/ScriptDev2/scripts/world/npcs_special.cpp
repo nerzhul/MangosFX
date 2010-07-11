@@ -549,7 +549,7 @@ struct MANGOS_DLL_DECL npc_injured_patientAI : public ScriptedAI
                 case 2: DoScriptText(SAY_DOC3,me); break;
             }
 
-            me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
+            me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
 
             uint32 mobId = me->GetEntry();
 
