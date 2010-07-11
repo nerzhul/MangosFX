@@ -557,7 +557,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                     {
                         m_bIsShadeDead = true;
                         m_uiWayPointId = 0;
-                        me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                        me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                         me->GetMotionMaster()->MovePoint(m_uiWayPointId, m_afAkamaWP[0].m_fX, m_afAkamaWP[0].m_fY, m_afAkamaWP[0].m_fZ);
                     }
                 }

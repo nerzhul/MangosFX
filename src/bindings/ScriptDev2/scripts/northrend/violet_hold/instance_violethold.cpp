@@ -399,7 +399,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
 					{
 						DoScriptText(-2000005,pBossCr);
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					break;
@@ -407,7 +407,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
 					{
 						DoScriptText(-2000025,pBossCr);
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					break;
@@ -415,17 +415,17 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
 					{
 						DoScriptText(-2000032,pBossCr);
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss+1]))
 					{
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss+2]))
 					{
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					break;
@@ -433,7 +433,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
 					{
 						DoScriptText(-2000039,pBossCr);
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
 					break;
@@ -441,7 +441,7 @@ struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
 				case 1:
 					if(Creature* pBossCr = (Creature*)GetUnitInMap(boss[rand_boss]))
 					{
-						pBossCr->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+						pBossCr->AddSplineFlag(SPLINEFLAG_WALKMODE);
 						pBossCr->GetMotionMaster()->MovePoint(0, portal_coords[7].x, portal_coords[7].y, portal_coords[7].z);
 					}
             		break;
@@ -659,7 +659,7 @@ bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSe
 		case GOSSIP_ACTION_INFO_DEF+2:
 			pPlayer->CLOSE_GOSSIP_MENU();
 			m_pInstance->SetData(1,1);
-			pCreature->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+			pCreature->AddSplineFlag(SPLINEFLAG_WALKMODE);
 			pCreature->GetMotionMaster()->MovePoint(0, 1817.122f, 804.02f, 45.01f);
 			break;
     }

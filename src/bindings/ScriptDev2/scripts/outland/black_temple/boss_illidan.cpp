@@ -755,7 +755,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
                         }
 
                         WayPoint = WayPointList.begin();
-                        me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                        me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                         me->GetMotionMaster()->MovePoint(WayPoint->id, WayPoint->x, WayPoint->y, WayPoint->z);
                         IsWalking = true;
                         break;

@@ -475,30 +475,6 @@ class MANGOS_DLL_SPEC Creature : public Unit
                 UpdateWalkMode(this, false);
         }
 
-        void AddMonsterMoveFlag(MonsterMovementFlags f)
-        {
-            bool need_walk_sync = (f & MONSTER_MOVE_WALK) != (m_monsterMoveFlags & MONSTER_MOVE_WALK);
-            m_monsterMoveFlags = MonsterMovementFlags(m_monsterMoveFlags | f);
-            if (need_walk_sync)
-                UpdateWalkMode(this,false);
-        }
-        void RemoveMonsterMoveFlag(MonsterMovementFlags f)
-        {
-            bool need_walk_sync = (f & MONSTER_MOVE_WALK) != (m_monsterMoveFlags & MONSTER_MOVE_WALK);
-            m_monsterMoveFlags = MonsterMovementFlags(m_monsterMoveFlags & ~f);
-            if (need_walk_sync)
-                UpdateWalkMode(this,false);
-        }
-        bool HasMonsterMoveFlag(MonsterMovementFlags f) const { return m_monsterMoveFlags & f; }
-        MonsterMovementFlags GetMonsterMoveFlags() const { return m_monsterMoveFlags; }
-        void SetMonsterMoveFlags(MonsterMovementFlags f)
-        {
-            bool need_walk_sync = (f & MONSTER_MOVE_WALK) != (m_monsterMoveFlags & MONSTER_MOVE_WALK);
-            m_monsterMoveFlags = f;                     // need set before
-            if (need_walk_sync)
-                UpdateWalkMode(this,false);
-        }
-
         void SendMonsterMoveWithSpeed(float x, float y, float z, uint32 transitTime = 0, Player* player = NULL);
         void SendMonsterMoveWithSpeedToCurrentDestination(Player* player = NULL);
 
@@ -714,7 +690,6 @@ class MANGOS_DLL_SPEC Creature : public Unit
         GridReference<Creature> m_gridRef;
         CreatureInfo const* m_creatureInfo;                 // in difficulty mode > 0 can different from ObjMgr::GetCreatureTemplate(GetEntry())
         bool m_isActiveObject;
-        MonsterMovementFlags m_monsterMoveFlags;
 		SplineFlags m_splineFlags;
 };
 

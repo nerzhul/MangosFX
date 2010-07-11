@@ -127,8 +127,8 @@ m_deathTimer(0), m_respawnTime(0), m_respawnDelay(25), m_corpseDelay(60), m_resp
 m_subtype(subtype), m_defaultMovementType(IDLE_MOTION_TYPE), m_DBTableGuid(0), m_equipmentId(0),
 m_AlreadyCallAssistance(false), m_AlreadySearchedAssistance(false),
 m_regenHealth(true), m_AI_locked(false), m_isDeadByDefault(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
-m_creatureInfo(NULL), m_isActiveObject(false), m_monsterMoveFlags(MONSTER_MOVE_WALK)
-, m_reactState(REACT_AGGRESSIVE)
+m_creatureInfo(NULL), m_isActiveObject(false)
+, m_reactState(REACT_AGGRESSIVE), m_splineFlags(SPLINEFLAG_WALKMODE)
 {
     m_regenTimer = 200;
     m_valuesCount = UNIT_END;
@@ -140,7 +140,7 @@ m_creatureInfo(NULL), m_isActiveObject(false), m_monsterMoveFlags(MONSTER_MOVE_W
     m_CreatureCategoryCooldowns.clear();
     m_GlobalCooldown = 0;
 
-    m_monsterMoveFlags = MONSTER_MOVE_WALK;
+    m_splineFlags = SPLINEFLAG_WALKMODE;
 }
 
 Creature::~Creature()
@@ -1285,7 +1285,7 @@ void Creature::setDeathState(DeathState s)
         CreatureInfo const *cinfo = GetCreatureInfo();
         SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
         RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
-        AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+        AddSplineFlag(SPLINEFLAG_WALKMODE);
         SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
         Unit::setDeathState(ALIVE);
         clearUnitState(UNIT_STAT_ALL_STATE);
@@ -1727,7 +1727,7 @@ bool Creature::LoadCreaturesAddon(bool reload)
         SetUInt32Value(UNIT_NPC_EMOTESTATE, cainfo->emote);
 
     if (cainfo->move_flags != 0)
-        SetMonsterMoveFlags(MonsterMovementFlags(cainfo->move_flags));
+		SetSplineFlags(SplineFlags(cainfo->move_flags));
 
     if(cainfo->auras)
     {

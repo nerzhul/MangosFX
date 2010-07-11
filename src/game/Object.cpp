@@ -277,7 +277,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                     if (!((Creature*)unit)->hasUnitState(UNIT_STAT_MOVING))
                     {
                         // (ok) possibly some "hover" mode
-                        unit->m_movementInfo.AddMovementFlag(MOVEFLAG_FLY_UNK1);
+                        unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
                     }
                     else
                     {
@@ -302,7 +302,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                     player->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 
                 // remove unknown, unused etc flags for now
-                player->m_movementInfo.RemoveMovementFlag(MOVEFLAG_SPLINE2);
+                player->m_movementInfo.RemoveMovementFlag(MOVEFLAG_SPLINE_ENABLED);
 				
 				if(((Unit*)this)->GetVehicleGUID())
                     player->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
@@ -311,7 +311,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
                 {
                     ASSERT(player->GetMotionMaster()->GetCurrentMovementGeneratorType() == FLIGHT_MOTION_TYPE);
                     player->m_movementInfo.AddMovementFlag(MOVEFLAG_FORWARD);
-                    player->m_movementInfo.AddMovementFlag(MOVEFLAG_SPLINE2);
+                    player->m_movementInfo.AddMovementFlag(MOVEFLAG_SPLINE_ENABLED);
                 }
             }
             break;
@@ -335,7 +335,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         *data << float(unit->GetSpeed(MOVE_PITCH_RATE));
 
         // 0x08000000
-        if(unit->m_movementInfo.GetMovementFlags() & MOVEFLAG_SPLINE2)
+        if(unit->m_movementInfo.GetMovementFlags() & MOVEFLAG_SPLINE_ENABLED)
         {
             if(GetTypeId() != TYPEID_PLAYER)
             {
@@ -355,7 +355,7 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
 
             FlightPathMovementGenerator *fmg = (FlightPathMovementGenerator*)(player->GetMotionMaster()->top());
 
-            uint32 flags3 = MONSTER_MOVE_SPLINE_FLY;
+            uint32 flags3 = SPLINEFLAG_WALKMODE | SPLINEFLAG_FLYING;
 
             *data << uint32(flags3);                        // splines flag?
 

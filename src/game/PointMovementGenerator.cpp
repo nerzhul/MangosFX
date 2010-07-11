@@ -34,7 +34,7 @@ void PointMovementGenerator<T>::Initialize(T &unit)
     i_destinationHolder.SetDestination(traveller,i_x,i_y,i_z);
 
     if (unit.GetTypeId() == TYPEID_UNIT && ((Creature*)&unit)->canFly())
-        ((Creature&)unit).AddMonsterMoveFlag(MONSTER_MOVE_FLY);
+        ((Creature&)unit).AddSplineFlag(SPLINEFLAG_UNKNOWN7);
 }
 
 template<class T>

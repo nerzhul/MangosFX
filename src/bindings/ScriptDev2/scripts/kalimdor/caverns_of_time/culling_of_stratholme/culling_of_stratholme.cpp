@@ -249,7 +249,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 DoScriptText(SAY_EPOCH, me);
                 break;
             case 20:
-                me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                 break;
             case 23:
                 DoScriptText(SAY_PHASE503,me);
@@ -267,7 +267,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 me->RemoveMonsterMoveFlag(MONSTER_MOVE_WALK);
                 break;
             case 34:
-               me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+               me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                DoScriptText(SAY_PHASE602,me);
 				break;
             case 35:
@@ -385,7 +385,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                    phasetim = 8000;
                    break;
              case 7:
-				  me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+				  me->AddSplineFlag(SPLINEFLAG_WALKMODE);
 				  DoScriptText(SAY_INTRO03, me);
 				  me->GetMotionMaster()->MovePoint(0, 1911.087f, 1314.263f, 150.026f);
 				   ++phase;
@@ -462,7 +462,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
              case 33:
 				 if(Creature* Uther = GetGuidCreature(UtherGUID))
 				 {
-                       Uther->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                       Uther->AddSplineFlag(SPLINEFLAG_WALKMODE);
                        Uther->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
 				 }
                    ++phase;
@@ -556,7 +556,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 				break;
              case 61:
 				me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-				me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+				me->AddSplineFlag(SPLINEFLAG_WALKMODE);
 				me->GetMotionMaster()->MovePoint(0, 2081.447f,1287.770f,141.3241f);
 				++phase;
 				phasetim = 15000;
@@ -566,7 +566,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 				if(Creature* Cityman = GetGuidCreature(CitymanGUID))
 				{
 				   Cityman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-				   Cityman->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+				   Cityman->AddSplineFlag(SPLINEFLAG_WALKMODE);
 				   Cityman->GetMotionMaster()->MovePoint(0, 2088.625f,1279.191f,140.743f);
 				}
 				++phase;

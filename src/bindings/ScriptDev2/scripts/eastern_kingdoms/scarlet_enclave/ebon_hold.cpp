@@ -1452,7 +1452,7 @@ struct MANGOS_DLL_DECL mob_scarlet_courierAI : public ScriptedAI
                 {
                     me->GetMotionMaster()->Clear(false);
                     me->GetMotionMaster()->MoveIdle();
-                    me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    me->AddSplineFlag(SPLINEFLAG_WALKMODE);
 
                     if (GameObject* treeGO = GetClosestGameObjectWithEntry(me, GO_INCONSPICUOUS_TREE, 40.0f))
                     {
@@ -2060,7 +2060,7 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
                 bIsBattle = true;
                 break;
             case 2:
-                me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                 DoCastMe( SPELL_THE_LIGHT_OF_DAWN);
                 break;
             case 3:
@@ -2074,30 +2074,30 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
                 {
                     if (pTemp->HasAura(SPELL_THE_LIGHT_OF_DAWN, 0))
                         pTemp->RemoveAurasDueToSpell(SPELL_THE_LIGHT_OF_DAWN);
-                    pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                     pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[19].x, LightofDawnLoc[19].y, LightofDawnLoc[19].z);
                 }
                 if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiThassarianGUID)))
                 {
                     if (pTemp->HasAura(SPELL_THE_LIGHT_OF_DAWN, 0))
                         pTemp->RemoveAurasDueToSpell(SPELL_THE_LIGHT_OF_DAWN);
-                    pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                     pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[21].x, LightofDawnLoc[21].y, LightofDawnLoc[21].z);
                 }
                 if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiKorfaxGUID)))
                 {
-                    pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                     pTemp->SetUInt32Value(UNIT_NPC_EMOTESTATE, EMOTE_STATE_READY2H);
                     pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[10].x, LightofDawnLoc[10].y, LightofDawnLoc[10].z);
                 }
                 if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiMaxwellGUID)))
                 {
-                    pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                     pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[13].x, LightofDawnLoc[13].y, LightofDawnLoc[13].z);
                 }
                 if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiEligorGUID)))
                 {
-                    pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                    pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                     pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[16].x, LightofDawnLoc[16].y, LightofDawnLoc[16].z);
                 }
                 JumpToNextStep(10000);
@@ -2638,7 +2638,7 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
 
                     case 46: // Darion stand up, "not today"
                         me->SetSpeedRate(MOVE_RUN, 1.0f);
-                        me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                        me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                         ((Unit*)me)->SetStandState(UNIT_STAND_STATE_STAND);
                         DoScriptText(SAY_LIGHT_OF_DAWN53, me);
                         SetHoldState(false); // Darion throws sword
@@ -2715,7 +2715,7 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
                         if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiLichKingGUID)))
                         {
                             pTemp->SetSpeedRate(MOVE_RUN, 1.0f);
-                            me->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                            me->AddSplineFlag(SPLINEFLAG_WALKMODE);
                             pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[29].x, LightofDawnLoc[29].y, LightofDawnLoc[29].z); // 26
                         }
                         JumpToNextStep(4000);
@@ -2775,7 +2775,7 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
                     case 62:
                         if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), uiTirionGUID)))
                         {
-                            pTemp->AddMonsterMoveFlag(MONSTER_MOVE_WALK);
+                            pTemp->AddSplineFlag(SPLINEFLAG_WALKMODE);
                             pTemp->GetMotionMaster()->MovePoint(0, LightofDawnLoc[7].x, LightofDawnLoc[7].y, LightofDawnLoc[7].z);
                         }
                         JumpToNextStep(5500);
