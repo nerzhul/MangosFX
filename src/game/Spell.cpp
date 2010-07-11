@@ -3540,7 +3540,12 @@ void Spell::finish(bool ok)
 	 // King of the jungle hack
 	 switch(m_spellInfo->Id)
 	 {
-		case 50334:
+		case 5217:
+		case 6793:
+		case 9845:
+		case 9846:
+		case 50212:
+		case 50213:
 		{
 			uint8 mod = 0;
 			if(m_caster->HasAura(48492))
