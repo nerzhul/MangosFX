@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 		phase3 = false;
 		ghoul = false;
 		me->RemoveArenaAuras(true);
-		me->SendMonsterMove(746.864441, 660.918762, 411.695465, 4.698700, me->GetMonsterMoveFlags(), 1);
+		me->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, me->GetSplineFlags(), 1);
 		me->GetMap()->CreatureRelocation(me, 754.360779, 660.816162, 412.395996, 4.698700);
 		me->SetHealth(me->GetMaxHealth());
 		phase = 1;

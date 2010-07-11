@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 		me->RemoveAllAttackers();
 		me->DeleteThreatList();
-		me->SendMonsterMove(371.21, -701.72, -5.85, 0, MONSTER_MOVE_LEVITATING, 0); //m_creaure bouge quand méme
+		me->SendMonsterMove(371.21, -701.72, -5.85, SPLINETYPE_NORMAL, SPLINEFLAG_NO_SPLINE, 0); //m_creaure bouge quand méme
 		DoCastMe( 66830);
 	
 		if(add_choice = add_tab[rand() % 16])
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 				add_choice->StopMoving();
 				add_choice->GetMotionMaster()->Clear();
 				add_choice->GetMotionMaster()->MoveIdle();
-				add_choice->SendMonsterMove(me->GetPositionX(), me->GetPositionY(), Z,0, MONSTER_MOVE_NONE, 15000); //mob ne suis pas cette direction si il a une aggro, il se stop car je l'ai bloqué dans son script.
+				add_choice->SendMonsterMove(me->GetPositionX(), me->GetPositionY(), Z,SPLINETYPE_NORMAL, SPLINEFLAG_NONE, 15000); //mob ne suis pas cette direction si il a une aggro, il se stop car je l'ai bloqué dans son script.
 
 				switch(urand(0, 1))
 				{

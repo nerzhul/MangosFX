@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
             if (Teleport_Timer <= diff)
             {
                 me->GetMap()->CreatureRelocation(me, LOCX, LOCY, LOCZ, 0.0f);
-                me->SendMonsterMove(LOCX, LOCY, LOCZ, 0, MONSTER_MOVE_WALK, 0);
+                me->SendMonsterMove(LOCX, LOCY, LOCZ, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 
                 float ranX = LOCX;
                 float ranY = LOCY;

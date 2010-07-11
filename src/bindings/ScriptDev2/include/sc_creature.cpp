@@ -918,7 +918,7 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
 void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
 {
 	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
-	me->SendMonsterMove(x,y,z, 0, (fly ? MONSTER_MOVE_FLY : MONSTER_MOVE_NONE), Time);
+	me->SendMonsterMove(x,y,z, SPLINETYPE_NORMAL, (fly ? SPLINEFLAG_UNKNOWN7 : SPLINEFLAG_NONE), Time);
 }
 
 void ScriptedAI::AggroAllPlayers(float maxdist)

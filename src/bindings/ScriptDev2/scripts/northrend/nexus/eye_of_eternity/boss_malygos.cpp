@@ -306,7 +306,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
             me->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
         }
         me->GetMap()->CreatureRelocation(me, x, y, z, me->GetOrientation());
-        me->SendMonsterMove(x, y, z, 0, me->GetMonsterMoveFlags(), time);
+        me->SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, me->GetSplineFlags(), time);
     }
 
     void DoVortex(uint8 phase)

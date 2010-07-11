@@ -362,7 +362,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
                 me->AttackStop();
                 //me->GetMotionMaster()->MovePoint(0, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveX, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveY, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveZ);
                 me->GetMap()->CreatureRelocation(me, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveX, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveY, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveZ, me->GetOrientation());
-                me->SendMonsterMove(ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveX, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveY, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveZ, 0, me->GetMonsterMoveFlags(), 1);
+				me->SendMonsterMove(ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveX, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveY, ActiveBot[m_uiActiveOrder[m_uiOrder]].MoveZ, SPLINETYPE_NORMAL, me->GetSplineFlags(), 1);
 
                 DespawnBoatGhosts(m_uiActivedCreatureGUID);
                 DespawnBoatGhosts(m_uiOrbGUID);

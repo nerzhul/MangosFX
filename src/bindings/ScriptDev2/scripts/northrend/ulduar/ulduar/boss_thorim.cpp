@@ -245,7 +245,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 			if(phase == 2 && me->getVictim() && me->getVictim()->GetDistance2d(me) > 10.0f)
 			{
 				me->GetMotionMaster()->MovePoint(0,me->getVictim()->GetPositionX(),me->getVictim()->GetPositionY(),me->getVictim()->GetPositionZ());
-				me->SendMonsterMove(me->getVictim()->GetPositionX(),me->getVictim()->GetPositionY(),me->getVictim()->GetPositionZ(), 0, MONSTER_MOVE_NONE, 0);
+				me->SendMonsterMove(me->getVictim()->GetPositionX(),me->getVictim()->GetPositionY(),me->getVictim()->GetPositionZ(), SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 			}
 			CheckDistanceTimer = 2500;
 		}

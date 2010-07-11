@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_ouroAI : public ScriptedAI
             if (Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
             {
                 me->GetMap()->CreatureRelocation(me, target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0.0f);
-                me->SendMonsterMove(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), 0, MONSTER_MOVE_WALK, 1);
+                me->SendMonsterMove(target->GetPositionX(), target->GetPositionY(), target->GetPositionZ(), SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 1);
             }
 
             ChangeTarget_Timer = urand(10000, 20000);

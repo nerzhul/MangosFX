@@ -279,10 +279,10 @@ struct MANGOS_DLL_DECL boss_victor_nefariusAI : public LibDevFSAI
 
                     //Teleport self to a hiding spot (this causes errors in the mangos log but no real issues)
                     me->GetMap()->CreatureRelocation(me, HIDE_X, HIDE_Y, HIDE_Z, 0.0f);
-                    me->SendMonsterMove(HIDE_X, HIDE_Y, HIDE_Z, 0, MONSTER_MOVE_NONE, 0);
+                    me->SendMonsterMove(HIDE_X, HIDE_Y, HIDE_Z, SPLINETYPE_NORMAL, SPLINEFLAG_NONE, 0);
 
                     //Spawn nef and have him attack a random target
-                    Creature* Nefarian = me->SummonCreature(CREATURE_NEFARIAN,NEF_X,NEF_Y,NEF_Z,0,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,120000);
+                    Creature* Nefarian = me->SummonCreature(CREATURE_NEFARIAN,NEF_X,NEF_Y,NEF_Z,SPLINETYPE_NORMAL,TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT,120000);
                     target = SelectUnit(SELECT_TARGET_RANDOM,0);
 
                     if (target && Nefarian)

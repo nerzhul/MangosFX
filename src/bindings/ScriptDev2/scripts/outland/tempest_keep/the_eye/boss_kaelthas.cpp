@@ -861,7 +861,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         me->GetMotionMaster()->MoveIdle();
 
                         me->GetMap()->CreatureRelocation(me, afGravityPos[0], afGravityPos[1], afGravityPos[2], 0.0f);
-                        me->SendMonsterMove(afGravityPos[0], afGravityPos[1], afGravityPos[2], 0, MONSTER_MOVE_NONE, 0);
+                        me->SendMonsterMove(afGravityPos[0], afGravityPos[1], afGravityPos[2], SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 
                         me->InterruptNonMeleeSpells(false);
                         DoCastMe( SPELL_FULLPOWER);
@@ -928,7 +928,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                                 me->GetMotionMaster()->Clear();
                                 me->GetMotionMaster()->MoveIdle();
                                 me->GetMap()->CreatureRelocation(me, afGravityPos[0], afGravityPos[1], afGravityPos[2], 0.0f);
-                                me->SendMonsterMove(afGravityPos[0], afGravityPos[1], afGravityPos[2], 0, MONSTER_MOVE_NONE, 0);
+                                me->SendMonsterMove(afGravityPos[0], afGravityPos[1], afGravityPos[2], SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 
                                 // 1) Kael'thas will portal the whole raid right into his body
                                 for (i = me->getThreatManager().getThreatList().begin(); i!= me->getThreatManager().getThreatList().end();++i)
