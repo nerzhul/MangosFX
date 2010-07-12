@@ -2999,12 +2999,16 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 {
     WeaponAttackType attType = BASE_ATTACK;
 
-	// Hack for Paladin Ranged Spells
-    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && !(spell->Category == SPELLCATEGORY_JUDGEMENT || 
-		GetTypeId() == TYPEID_PLAYER && ((Player*)this)->getClass() == CLASS_PALADIN && 
-		(spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) || spell->Id == 53595)))
-        attType = RANGED_ATTACK;
+	bool isSpecialPaladinSpell = false;
 
+	if(spell->Category == SPELLCATEGORY_JUDGEMENT || 
+		(GetTypeId() == TYPEID_PLAYER && ((Player*)this)->getClass() == CLASS_PALADIN && 
+		(spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) || spell->Id == 53595 || 
+		spell->SpellIconID == 42 || spell->SpellIconID == 2172)))
+		 isSpecialPaladinSpell = true;
+
+    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && !isSpecialPaladinSpell)
+        attType = RANGED_ATTACK;
 	
     // bonus from skills is 0.04% per skill Diff
     int32 attackerWeaponSkill = int32(GetWeaponSkillValue(attType,pVictim));
@@ -3041,6 +3045,12 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 
     bool canDodge = true;
     bool canParry = true;
+
+	if(isSpecialPaladinSpell)
+	{
+		canDodge = false;
+		canParry = false;
+	}
 
     // Same spells cannot be parry/dodge
     if (spell->Attributes & SPELL_ATTR_IMPOSSIBLE_DODGE_PARRY_BLOCK)
