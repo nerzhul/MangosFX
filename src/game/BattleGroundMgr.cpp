@@ -1288,10 +1288,12 @@ void BattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, BattleGro
             break;
         case STATUS_WAIT_JOIN:                              // status_invite
             *data << uint32(bg->GetMapId());                // map id
+			*data << uint64(0);                             // 3.3.5, unknown
             *data << uint32(Time1);                         // time to remove from queue, milliseconds
             break;
         case STATUS_IN_PROGRESS:                            // status_in_progress
             *data << uint32(bg->GetMapId());                // map id
+			*data << uint64(0);                             // 3.3.5, unknown
             *data << uint32(Time1);                         // time to bg auto leave, 0 at bg start, 120000 after bg end, milliseconds
             *data << uint32(Time2);                         // time from bg start, milliseconds
             *data << uint8(0x1);                            // Lua_GetBattlefieldArenaFaction (bool)
