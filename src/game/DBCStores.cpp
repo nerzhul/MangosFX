@@ -170,7 +170,7 @@ typedef std::list<std::string> StoreProblemList;
 // others will not and opposite
 // will only support WoW, WoW:TBC and WoW:WotLK 3.3.0a client build 11159...
 
-#define EXPECTED_MANGOSD_CLIENT_BUILD        {11723, 12340, 0}
+#define EXPECTED_MANGOSD_CLIENT_BUILD        {12340, 12319, 0}
 
 bool IsAcceptableClientBuild(uint32 build)
 {

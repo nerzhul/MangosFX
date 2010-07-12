@@ -244,7 +244,7 @@ int WorldSocket::open (void *a)
     m_Address = remote_addr.get_host_addr ();
 
     // Send startup packet.
-    WorldPacket packet (SMSG_AUTH_CHALLENGE, 24);
+	WorldPacket packet (SMSG_AUTH_CHALLENGE, 24);
     packet << uint32(1);                                    // 1...31
     packet << m_Seed;
     BigNumber seed1;
@@ -686,7 +686,7 @@ int WorldSocket::ProcessIncoming (WorldPacket* new_pct)
                     return -1;
                 }
 
-                return HandleAuthSession (*new_pct);
+                return HandleAuthSession(*new_pct);
             case CMSG_KEEP_ALIVE:
                 DEBUG_LOG ("CMSG_KEEP_ALIVE ,size: %d", new_pct->size ());
 
@@ -728,7 +728,7 @@ int WorldSocket::ProcessIncoming (WorldPacket* new_pct)
     ACE_NOTREACHED (return 0);
 }
 
-int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
+int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 {
     // NOTE: ATM the socket is singlethread, have this in mind ...
     uint8 digest[20];
@@ -741,10 +741,8 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     LocaleConstant locale;
     std::string account;
     Sha1Hash sha1;
-    BigNumber v, s, g, N;
+    BigNumber v, s, g, N, K;
     WorldPacket packet, SendAddonPacked;
-
-    BigNumber K;
 
     // Read the content of the packet
     recvPacket >> ClientBuild;
@@ -754,7 +752,7 @@ int WorldSocket::HandleAuthSession (WorldPacket& recvPacket)
     recvPacket >> clientSeed;
 	recvPacket >> unk5 >> unk6 >> unk7;
     recvPacket >> unk4;
-    recvPacket.read (digest, 20);
+    recvPacket.read(digest, 20);
 
     DEBUG_LOG ("WorldSocket::HandleAuthSession: client %u, unk2 %u, account %s, unk3 %u, clientseed %u",
                 ClientBuild,

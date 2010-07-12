@@ -40,7 +40,7 @@ enum Races
     RACE_TAUREN         = 6,
     RACE_GNOME          = 7,
     RACE_TROLL          = 8,
-    //RACE_GOBLIN         = 9,
+    RACE_GOBLIN         = 9,
     RACE_BLOODELF       = 10,
     RACE_DRAENEI        = 11,
     //RACE_FEL_ORC        = 12,
@@ -53,6 +53,7 @@ enum Races
     //RACE_TAUNKA         = 19,
     //RACE_NORTHREND_SKELETON = 20,
     //RACE_ICE_TROLL      = 21
+	RACE_WORGEN         = 22
 };
 
 // max+1 for player race
@@ -62,7 +63,7 @@ enum Races
     ((1<<(RACE_HUMAN-1))   |(1<<(RACE_ORC-1))          |(1<<(RACE_DWARF-1))   | \
     (1<<(RACE_NIGHTELF-1))|(1<<(RACE_UNDEAD_PLAYER-1))|(1<<(RACE_TAUREN-1))  | \
     (1<<(RACE_GNOME-1))   |(1<<(RACE_TROLL-1))        |(1<<(RACE_BLOODELF-1))| \
-    (1<<(RACE_DRAENEI-1)) )
+    (1<<(RACE_DRAENEI-1)) |(1<<(RACE_GOBLIN-1))       |(1<<(RACE_WORGEN-1)))
 
 // Class value is index in ChrClasses.dbc
 enum Classes
@@ -137,6 +138,8 @@ enum Powers
     POWER_HAPPINESS                     = 4,
     POWER_RUNE                          = 5,
     POWER_RUNIC_POWER                   = 6,
+	POWER_SOUL_SHARDS                   = 7,
+	POWER_ECLIPSE                       = 8,
     POWER_HEALTH                        = 0xFFFFFFFE    // (-2 as signed value)
 };
 
@@ -513,10 +516,12 @@ enum Language
     LANG_ZOMBIE         = 36,
     LANG_GNOMISH_BINARY = 37,
     LANG_GOBLIN_BINARY  = 38,
+	LANG_WORGEN         = 39,
+	 LANG_GOBLIN         = 40,
     LANG_ADDON          = 0xFFFFFFFF                        // used by addons, in 2.4.0 not exit, replaced by messagetype?
 };
 
-#define LANGUAGES_COUNT   19
+#define LANGUAGES_COUNT   21
 
 enum Team
 {
