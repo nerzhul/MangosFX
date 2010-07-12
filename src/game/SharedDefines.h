@@ -2720,12 +2720,6 @@ enum LFGInstanceTypes
 	LFG_RANDOM_HEROIC	=	0x06010000,
 };
 
-// we need to stick to 1 version or half of the stuff will work for someone
-// others will not and opposite
-// will only support WoW, WoW:TBC and WoW:WotLK 3.3.0a client build 11159...
-
-#define EXPECTED_MANGOSD_CLIENT_BUILD        {11723, 12340, 0}
-
 // max supported expansion level in mangosd
 // NOTE: not set it more that supported by targeted client version with all expansions installed
 // account with expansion > client supported will rejected at connection by client

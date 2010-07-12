@@ -166,6 +166,12 @@ DBCStorage <WorldSafeLocsEntry> sWorldSafeLocsStore(WorldSafeLocsEntryfmt);
 
 typedef std::list<std::string> StoreProblemList;
 
+// we need to stick to 1 version or half of the stuff will work for someone
+// others will not and opposite
+// will only support WoW, WoW:TBC and WoW:WotLK 3.3.0a client build 11159...
+
+#define EXPECTED_MANGOSD_CLIENT_BUILD        {11723, 12340, 0}
+
 bool IsAcceptableClientBuild(uint32 build)
 {
     int accepted_versions[] = EXPECTED_MANGOSD_CLIENT_BUILD;
