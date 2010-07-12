@@ -461,7 +461,14 @@ void BattleGround::Update(uint32 diff)
 
                 for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
                     if (Player *plr = sObjectMgr.GetPlayer(itr->first))
-                        plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
+					{
+						WorldPacket status;
+						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
+						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
+						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
+						plr->GetSession()->SendPacket(&status);
+						plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
+					}  
 
                 CheckArenaWinConditions();
             }
@@ -1368,6 +1375,10 @@ void BattleGround::AddPlayer(Player *plr)
             plr->SetHealth(plr->GetMaxHealth());
             plr->SetPower(POWER_MANA, plr->GetMaxPower(POWER_MANA));
         }
+
+		WorldPacket data(SMSG_ARENA_OPPONENT_UPDATE, 8);
+		data << uint64(plr->GetGUID());
+		SendPacketToTeam(team, &data, plr, true);
     }
     else
     {
