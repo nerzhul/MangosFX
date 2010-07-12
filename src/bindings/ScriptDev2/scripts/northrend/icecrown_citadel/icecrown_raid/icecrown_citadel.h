@@ -13,6 +13,9 @@ enum
     TYPE_DEATHWHISPER           = 1,
 	TYPE_BATTLE_OF_CANNONS		= 2,
     TYPE_SAURFANG               = 3,
+	TYPE_FESTERGUT				= 4,
+	TYPE_ROTFACE				= 5,
+	TYPE_PUTRICIDE				= 6,
 
     NPC_MARROWGAR               = 36612,
     NPC_DEATHWHISPER            = 36855,

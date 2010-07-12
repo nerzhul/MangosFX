@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "icecrown_citadel.h"
 
 enum BossSpells
 {
@@ -31,6 +32,78 @@ enum BossSpells
     SPELL_MUTATED_AURA            = 70405,
 };
 
+struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
+{
+    boss_putricideAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void Aggro(Unit* pWho)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_PUTRICIDE, IN_PROGRESS);
+    }
+
+	void KilledUnit(Unit* who)
+	{
+	}
+
+    void JustDied(Unit* pKiller)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_PUTRICIDE, DONE);
+
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,2);
+				GiveEmblemsToGroup(TRIOMPHE,1);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+		}
+    }
+
+    void JustReachedHome()
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_PUTRICIDE, FAIL);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_putricide(Creature* pCreature)
+{
+    return new boss_putricideAI(pCreature);
+}
+
 void AddSC_ICC_Putricide()
 {
+	Script* NewScript;
+    NewScript = new Script;
+    NewScript->Name = "boss_putricide";
+    NewScript->GetAI = &GetAI_boss_putricide;
+    NewScript->RegisterSelf();
 }
