@@ -1680,6 +1680,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
         else
             resilienceReduction = pVictim->GetRangedDamageReduction(damage);
 
+		error_log("resilienceReduction %u",resilienceReduction);
 		damageInfo->damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
@@ -1705,8 +1706,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     }
     else // Umpossible get negative result but....
         damageInfo->damage = 0;
-
-	error_log("Damage End: %u",damageInfo->damage);
 }
 
 void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
