@@ -3000,15 +3000,18 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 {
     WeaponAttackType attType = BASE_ATTACK;
 
-	bool isSpecialPaladinSpell = false;
+	bool isSpecialPlayerSpell = false;
 
 	if(spell->Category == SPELLCATEGORY_JUDGEMENT || 
-		(GetTypeId() == TYPEID_PLAYER && ((Player*)this)->getClass() == CLASS_PALADIN && 
+		(GetTypeId() == TYPEID_PLAYER && 
+		(((Player*)this)->getClass() == CLASS_PALADIN && 
 		(spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) || spell->Id == 53595 || 
-		spell->SpellIconID == 42 || spell->SpellIconID == 2172)))
-		 isSpecialPaladinSpell = true;
+		spell->SpellIconID == 42 || spell->SpellIconID == 2172))) ||
+		(((Player*)this)->getClass() == CLASS_ROGUE && spell->SpellIconID == 2237)
+		)
+		 isSpecialPlayerSpell = true;
 
-    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && !isSpecialPaladinSpell)
+    if (spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED && !isSpecialPlayerSpell)
         attType = RANGED_ATTACK;
 	
     // bonus from skills is 0.04% per skill Diff
@@ -3047,7 +3050,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
     bool canDodge = true;
     bool canParry = true;
 
-	if(isSpecialPaladinSpell)
+	if(isSpecialPlayerSpell)
 	{
 		canDodge = false;
 		canParry = false;

@@ -576,8 +576,16 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 
 								// envenom buff 6sec
 								for(uint8 i=0;i<3;i++)
-									if(m_caster->GetAura(57993,i))
+								{
+									if(m_caster->HasAura(32645))
+										m_caster->GetAura(32645,i)->SetAuraMaxDuration((1+combo)*1000);
+									if(m_caster->HasAura(32684))
+										m_caster->GetAura(32684,i)->SetAuraMaxDuration((1+combo)*1000);
+									if(m_caster->HasAura(57992))
+										m_caster->GetAura(57992,i)->SetAuraMaxDuration((1+combo)*1000);
+									if(m_caster->HasAura(57993))
 										m_caster->GetAura(57993,i)->SetAuraMaxDuration((1+combo)*1000);
+								}
 							}
                             damage *= doses;
                             damage += int32(((Player*)m_caster)->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * doses);
