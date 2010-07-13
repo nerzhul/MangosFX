@@ -1558,9 +1558,9 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             // Resilience - reduce crit damage
             uint32 resilienceReduction;
             if (attackType != RANGED_ATTACK)
-                resilienceReduction = pVictim->GetMeleeCritDamageReduction(damage);
+                resilienceReduction = pVictim->GetMeleeCritDamageReduction(damageInfo->damage);
             else
-                resilienceReduction = pVictim->GetRangedCritDamageReduction(damage);
+                resilienceReduction = pVictim->GetRangedCritDamageReduction(damageInfo->damage);
 
             damageInfo->damage      -= resilienceReduction;
             damageInfo->cleanDamage += resilienceReduction;
@@ -1676,9 +1676,9 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     {
         uint32 resilienceReduction = 0;
 		if (attackType != RANGED_ATTACK)
-            resilienceReduction = pVictim->GetMeleeDamageReduction(damage);
+            resilienceReduction = pVictim->GetMeleeDamageReduction(damageInfo->damage);
         else
-            resilienceReduction = pVictim->GetRangedDamageReduction(damage);
+            resilienceReduction = pVictim->GetRangedDamageReduction(damageInfo->damage);
 
 		error_log("resilienceReduction %u",resilienceReduction);
 		damageInfo->damage      -= resilienceReduction;
