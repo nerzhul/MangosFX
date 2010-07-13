@@ -1365,7 +1365,6 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         damage = 0;
 
 	damageInfo->damage = damage;
-	error_log("SpellDamage7 %u",damage);
 }
 
 void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
@@ -10113,7 +10112,12 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
         return false;
 
     float crit_chance = 0.0f;
-    switch(spellProto->DmgClass)
+	uint32 DmgClass = spellProto->DmgClass;
+	if(GetTypeId() == TYPEID_PLAYER)
+		if(((Player*)this)->getClass() == CLASS_ROGUE)
+			DmgClass = SPELL_DAMAGE_CLASS_MELEE;
+
+    switch(DmgClass)
     {
         case SPELL_DAMAGE_CLASS_NONE:
             return false;
@@ -10132,17 +10136,16 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
             // taken
             if (pVictim)
             {
+				
+
                 if (!IsPositiveSpell(spellProto->Id))
                 {
-					error_log("crit_chance %f",crit_chance);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE, schoolMask);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
                     // Modify by player victim resilience
                     crit_chance -= pVictim->GetSpellCritChanceReduction();
-					error_log("pVictim->GetSpellCritChanceReduction() %f",pVictim->GetSpellCritChanceReduction());
-					error_log("crit_chance %f",crit_chance);
                 }
 
                 // scripted (increase crit chance ... against ... target by x%)
@@ -14690,7 +14693,6 @@ uint32 Unit::GetCombatRatingDamageReduction(CombatRating cr, float rate, float c
     float percent = GetCombatRatingReduction(cr) * rate;
     if (percent > cap)
         percent = cap;
-	error_log("GetCombatRatingDamageReduction %f %u %u",percent,damage,uint32(percent * damage / 100.0f));
     return uint32(percent * damage / 100.0f);
 }
 
