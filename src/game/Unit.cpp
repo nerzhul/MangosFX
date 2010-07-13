@@ -8415,8 +8415,12 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
     }
 	switch(auraSpellInfo->Id)
     {
+		case 1856:
+		case 1857:
 		case 26889:
 			trigger_spell_id = 1784;
+			if(HasAura(58426))
+				CastSpell(this, 58427, true);
 			break;
 	}
     // All ok. Check current trigger spell
