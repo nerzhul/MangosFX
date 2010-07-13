@@ -1436,8 +1436,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     damageInfo->procEx           = PROC_EX_NONE;
     damageInfo->hitOutCome       = MELEE_HIT_EVADE;
 
-	error_log("Damage1 : %u",damageInfo->damage);
-
     if(!this || !pVictim)
         return;
     if(!this->isAlive() || !pVictim->isAlive())
@@ -1495,8 +1493,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 		damageInfo->hitOutCome = MELEE_HIT_NORMAL;
 	else
 		damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);
-
-	error_log("Damage5 : %u",damageInfo->damage);
 
     // Disable parry or dodge for ranged attack
     if (damageInfo->attackType == RANGED_ATTACK)
