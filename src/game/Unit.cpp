@@ -1425,6 +1425,8 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     damageInfo->procEx           = PROC_EX_NONE;
     damageInfo->hitOutCome       = MELEE_HIT_EVADE;
 
+	error_log("Damage1 : %u",damageInfo->damage);
+
     if(!this || !pVictim)
         return;
     if(!this->isAlive() || !pVictim->isAlive())
@@ -1464,8 +1466,10 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
        return;
     }
     damage += CalculateDamage (damageInfo->attackType, false);
+	error_log("Damage2 : %u",damageInfo->damage);
     // Add melee damage bonus
     damage = MeleeDamageBonus(damageInfo->target, damage, damageInfo->attackType);
+	error_log("Damage3 : %u",damageInfo->damage);
     // Calculate armor reduction
 
     uint32 armor_affected_damage = CalcNotIgnoreDamageRedunction(damage,damageInfo->damageSchoolMask);
@@ -1473,12 +1477,15 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 		damageInfo->damage = damage;
 	else
 		damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage);
+	error_log("Damage4 : %u",damageInfo->damage);
     damageInfo->cleanDamage += damage - damageInfo->damage;
 
 	if(HasAura(66725))
 		damageInfo->hitOutCome = MELEE_HIT_NORMAL;
 	else
-		damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);	
+		damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);
+
+	error_log("Damage5 : %u",damageInfo->damage);
 
     // Disable parry or dodge for ranged attack
     if (damageInfo->attackType == RANGED_ATTACK)
@@ -1532,10 +1539,14 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 
             uint32 crTypeMask = damageInfo->target->GetCreatureTypeMask();
 
+			error_log("Damage6 : %u",damageInfo->damage);
+
             // Increase crit damage from SPELL_AURA_MOD_CRIT_PERCENT_VERSUS
             mod += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_CRIT_PERCENT_VERSUS, crTypeMask);
             if (mod!=0)
                 damageInfo->damage = int32((damageInfo->damage) * float((100.0f + mod)/100.0f));
+
+			error_log("Damage7 : %u",damageInfo->damage);
 
             // Resilience - reduce crit damage
             uint32 resilienceReduction;
@@ -1546,6 +1557,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 
             damageInfo->damage      -= resilienceReduction;
             damageInfo->cleanDamage += resilienceReduction;
+			error_log("Damage8 : %u",damageInfo->damage);
             break;
         }
         case MELEE_HIT_PARRY:
@@ -1650,6 +1662,8 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             break;
     }
 
+	error_log("Damage9 : %u",damageInfo->damage);
+
     // only from players
     if (GetTypeId() == TYPEID_PLAYER)
     {
@@ -1662,6 +1676,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 		damageInfo->damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
+	error_log("Damage10 : %u",damageInfo->damage);
 
     // Calculate absorb resist
     if(int32(damageInfo->damage) > 0)
@@ -1683,6 +1698,8 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     }
     else // Umpossible get negative result but....
         damageInfo->damage = 0;
+
+	error_log("Damage End: %u",damageInfo->damage);
 }
 
 void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
