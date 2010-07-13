@@ -14704,9 +14704,10 @@ float Unit::GetCombatRatingReduction(CombatRating cr) const
 uint32 Unit::GetCombatRatingDamageReduction(CombatRating cr, float rate, float cap, uint32 damage) const
 {
     float percent = GetCombatRatingReduction(cr) * rate;
+	error_log("percent %f",GetCombatRatingReduction(cr));
     if (percent > cap)
         percent = cap;
-    return uint32 (percent * damage / 100.0f);
+    return uint32(percent * damage / 100.0f);
 }
 
 void Unit::SendThreatUpdate()
