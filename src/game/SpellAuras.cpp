@@ -4040,7 +4040,10 @@ void Aura::HandleAuraTrackCreatures(bool apply, bool /*Real*/)
 
     if(apply)
         m_target->RemoveNoStackAurasDueToAura(this);
-    m_target->SetUInt32Value(PLAYER_TRACK_CREATURES, apply ? ((uint32)1)<<(m_modifier.m_miscvalue-1) : 0 );
+    if (apply)
+		GetTarget()->SetFlag(PLAYER_TRACK_CREATURES, uint32(1) << (m_modifier.m_miscvalue-1));
+	else
+		GetTarget()->RemoveFlag(PLAYER_TRACK_CREATURES, uint32(1) << (m_modifier.m_miscvalue-1));
 }
 
 void Aura::HandleAuraTrackResources(bool apply, bool /*Real*/)
@@ -4050,7 +4053,10 @@ void Aura::HandleAuraTrackResources(bool apply, bool /*Real*/)
 
     if(apply)
         m_target->RemoveNoStackAurasDueToAura(this);
-    m_target->SetUInt32Value(PLAYER_TRACK_RESOURCES, apply ? ((uint32)1)<<(m_modifier.m_miscvalue-1): 0 );
+    if (apply)
+		GetTarget()->SetFlag(PLAYER_TRACK_RESOURCES, uint32(1) << (m_modifier.m_miscvalue-1));
+	else
+		GetTarget()->RemoveFlag(PLAYER_TRACK_RESOURCES, uint32(1) << (m_modifier.m_miscvalue-1));
 }
 
 void Aura::HandleAuraTrackStealthed(bool apply, bool /*Real*/)
