@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "icecrown_citadel.h"
 
 enum Spells
 {
@@ -60,6 +61,76 @@ enum Spells
 	SPELL_SOUl_SHRIEK					=	69242
 };
 
+struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
+{
+    boss_iccraid_lichkingAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void Aggro(Unit* pWho)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_LICHKING, IN_PROGRESS);
+    }
+
+	void KilledUnit(Unit* who)
+	{
+	}
+
+    void JustDied(Unit* pKiller)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_LICHKING, DONE);
+
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,4);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,4);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,5);
+				break;
+		}
+    }
+
+    void JustReachedHome()
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_LICHKING, FAIL);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
+{
+    return new boss_iccraid_lichkingAI(pCreature);
+}
+
 void AddSC_ICC_LichKing()
 {
+	Script* NewScript;
+    NewScript = new Script;
+    NewScript->Name = "boss_iccraid_lichking";
+    NewScript->GetAI = &GetAI_boss_iccraid_lichking;
+    NewScript->RegisterSelf();
 }

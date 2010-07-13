@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "icecrown_citadel.h"
 
 enum Spells
 {
@@ -27,6 +28,77 @@ enum Spells
 	SPELL_ENRAGE			=	26662,
 };
 
+struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
+{
+    boss_sindragosaAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void Aggro(Unit* pWho)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_SINDRAGOSA, IN_PROGRESS);
+    }
+
+	void KilledUnit(Unit* who)
+	{
+	}
+
+    void JustDied(Unit* pKiller)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_SINDRAGOSA, DONE);
+
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(TRIOMPHE,1);
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,4);
+				break;
+		}
+    }
+
+    void JustReachedHome()
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_SINDRAGOSA, FAIL);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_sindragosa(Creature* pCreature)
+{
+    return new boss_sindragosaAI(pCreature);
+}
+
 void AddSC_ICC_Sindragosa()
 {
+	Script* NewScript;
+    NewScript = new Script;
+    NewScript->Name = "boss_sindragosa";
+    NewScript->GetAI = &GetAI_boss_sindragosa;
+    NewScript->RegisterSelf();
 }

@@ -1,4 +1,5 @@
 #include "precompiled.h"
+#include "icecrown_citadel.h"
 
 enum Spells
 {
@@ -38,6 +39,86 @@ const static float SpawnLoc[6][3]=
     {4239.579102f, 2566.753418f, 364.868439f},  // 4 Valithria Room 4
 };
 
+struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
+{
+    boss_dreamwalkerAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void Aggro(Unit* pWho)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_DREAMWALKER, IN_PROGRESS);
+    }
+
+	void KilledUnit(Unit* who)
+	{
+	}
+
+	void HealBy(Unit* pHealer, uint32 &heal)
+	{
+		if(CheckPercentLife(100) && pInstance && pInstance->GetData(TYPE_DREAMWALKER) == IN_PROGRESS)
+		{
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_NORMAL:
+					GiveEmblemsToGroup(TRIOMPHE,2);
+					GiveEmblemsToGroup(GIVRE,1);
+					break;
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+					GiveEmblemsToGroup(GIVRE,2);
+					break;
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+					GiveEmblemsToGroup(GIVRE,2);
+					GiveEmblemsToGroup(TRIOMPHE,1);
+					break;
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					GiveEmblemsToGroup(GIVRE,3);
+					break;
+			}
+			pInstance->SetData(TYPE_DREAMWALKER, DONE);
+		}
+            
+	}
+
+    void JustDied(Unit* pKiller)
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_DREAMWALKER, FAIL);
+    }
+
+    void JustReachedHome()
+    {
+        if (pInstance)
+            pInstance->SetData(TYPE_DREAMWALKER, FAIL);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_dreamwalker(Creature* pCreature)
+{
+    return new boss_dreamwalkerAI(pCreature);
+}
+
 void AddSC_ICC_DreamWalker()
 {
+	Script* NewScript;
+    NewScript = new Script;
+    NewScript->Name = "boss_dreamwalker";
+    NewScript->GetAI = &GetAI_boss_dreamwalker;
+    NewScript->RegisterSelf();
 }
