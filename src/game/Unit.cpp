@@ -1674,7 +1674,7 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     // only from players
     if (GetTypeId() == TYPEID_PLAYER)
     {
-        uint32 resilienceReduction;
+        uint32 resilienceReduction = 0;
 		if (attackType != RANGED_ATTACK)
             resilienceReduction = pVictim->GetMeleeDamageReduction(damage);
         else
@@ -14704,9 +14704,9 @@ float Unit::GetCombatRatingReduction(CombatRating cr) const
 uint32 Unit::GetCombatRatingDamageReduction(CombatRating cr, float rate, float cap, uint32 damage) const
 {
     float percent = GetCombatRatingReduction(cr) * rate;
-	error_log("percent %f",GetCombatRatingReduction(cr));
     if (percent > cap)
         percent = cap;
+	error_log("GetCombatRatingDamageReduction %f %u %u",percent,damage,uint32(percent * damage / 100.0f));
     return uint32(percent * damage / 100.0f);
 }
 
