@@ -1296,7 +1296,6 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         {
             //Calculate damage bonus
             damage = MeleeDamageBonus(pVictim, damage, attackType, spellInfo, SPELL_DIRECT_DAMAGE);
-			error_log("SpellDamage1 %u",damage);
             // Get blocked status
             blocked = isSpellBlocked(pVictim, spellInfo, attackType);
 
@@ -1311,7 +1310,6 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
                 else
                     damage -= pVictim->GetRangedCritDamageReduction(damage);
             }
-			error_log("SpellDamage2 %u",damage);
         }
         break;
         // Magical Attacks
@@ -1340,8 +1338,6 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         damageInfo->cleanDamage += resilienceReduction;
     }
 
-	error_log("SpellDamage3 %u",damage);
-    
     // damage mitigation
     if (damage > 0)
     {
@@ -1352,8 +1348,6 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
             damage = damage - armor_affected_damage + CalcArmorReducedDamage(pVictim, armor_affected_damage);
         }
 
-		error_log("SpellDamage4 %u",damage);
-
         // block (only for damage class ranged and -melee, also non-physical damage possible)
         if (blocked)
         {
@@ -1363,12 +1357,9 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
             damage -= damageInfo->blocked;
         }
 
-		error_log("SpellDamage5 %u",damage);
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damage,damageSchoolMask,spellInfo);
         CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
         damage -= damageInfo->absorb + damageInfo->resist;
-
-		error_log("SpellDamage6 %u",damage);
     }
     else
         damage = 0;
@@ -1474,11 +1465,9 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
        damageInfo->cleanDamage    = 0;
        return;
     }
-    damage += CalculateDamage (damageInfo->attackType, false);
-	error_log("Damage2 : %u",damageInfo->damage);
+    damage += CalculateDamage(damageInfo->attackType, false);
     // Add melee damage bonus
     damage = MeleeDamageBonus(damageInfo->target, damage, damageInfo->attackType);
-	error_log("Damage3 : %u",damageInfo->damage);
     // Calculate armor reduction
 
     uint32 armor_affected_damage = CalcNotIgnoreDamageRedunction(damage,damageInfo->damageSchoolMask);
@@ -1546,14 +1535,10 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 
             uint32 crTypeMask = damageInfo->target->GetCreatureTypeMask();
 
-			error_log("Damage6 : %u",damageInfo->damage);
-
             // Increase crit damage from SPELL_AURA_MOD_CRIT_PERCENT_VERSUS
             mod += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_CRIT_PERCENT_VERSUS, crTypeMask);
             if (mod!=0)
                 damageInfo->damage = int32((damageInfo->damage) * float((100.0f + mod)/100.0f));
-
-			error_log("Damage7 : %u",damageInfo->damage);
 
             // Resilience - reduce crit damage
             uint32 resilienceReduction;
@@ -1564,7 +1549,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
 
             damageInfo->damage      -= resilienceReduction;
             damageInfo->cleanDamage += resilienceReduction;
-			error_log("Damage8 : %u",damageInfo->damage);
             break;
         }
         case MELEE_HIT_PARRY:
@@ -1669,8 +1653,6 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
             break;
     }
 
-	error_log("Damage9 : %u",damageInfo->damage);
-
     // only from players
     if (GetTypeId() == TYPEID_PLAYER)
     {
@@ -1680,11 +1662,9 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
         else
             resilienceReduction = pVictim->GetRangedDamageReduction(damageInfo->damage);
 
-		error_log("resilienceReduction %u",resilienceReduction);
 		damageInfo->damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
-	error_log("Damage10 : %u",damageInfo->damage);
 
     // Calculate absorb resist
     if(int32(damageInfo->damage) > 0)
@@ -10154,12 +10134,15 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
             {
                 if (!IsPositiveSpell(spellProto->Id))
                 {
+					error_log("crit_chance %f",crit_chance);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE, schoolMask);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
                     // Modify by player victim resilience
                     crit_chance -= pVictim->GetSpellCritChanceReduction();
+					error_log("pVictim->GetSpellCritChanceReduction() %f",pVictim->GetSpellCritChanceReduction());
+					error_log("crit_chance %f",crit_chance);
                 }
 
                 // scripted (increase crit chance ... against ... target by x%)
@@ -10303,6 +10286,7 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
     if(Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRITICAL_CHANCE, crit_chance);
 
+	error_log("crit_chance %f",crit_chance);
     crit_chance = crit_chance > 0.0f ? crit_chance : 0.0f;
     if (roll_chance_f(crit_chance))
         return true;
