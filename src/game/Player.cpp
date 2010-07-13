@@ -5178,7 +5178,6 @@ float Player::GetRatingCoefficient(CombatRating cr) const
 
 float Player::GetRatingBonusValue(CombatRating cr) const
 {
-	error_log("CombatRating %u %u %f",GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr),cr,GetRatingCoefficient(cr));
     return float(GetUInt32Value(PLAYER_FIELD_COMBAT_RATING_1 + cr)) / GetRatingCoefficient(cr);
 }
 
