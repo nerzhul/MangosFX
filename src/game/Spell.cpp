@@ -2842,6 +2842,11 @@ void Spell::cast(bool skipCheck)
         return;
     }
 
+	switch(m_spellInfo->Id)
+	{
+		case 60661:
+			return;
+	}
 	if(m_spellInfo->Id == 36812 && m_caster->GetTypeId() == TYPEID_PLAYER && ((Player*)m_caster)->GetSession()->GetSecurity() < SEC_ADMINISTRATOR)
 		return;
 
