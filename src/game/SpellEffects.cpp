@@ -571,21 +571,13 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 							{
 								if (doses > combo)
 									doses = combo;
-								for (int i=0; i< doses; i++)
+								for (uint8 i=0; i<combo; i++)
 									unitTarget->RemoveSingleSpellAurasByCasterSpell(spellId, m_caster->GetGUID());
 
-								if(doses == 5 && combo == 5)
-								{
-									switch(spellId)
-									{
-										case 57972:
-										case 27186:
-										case 26967:
-											// envenom buff 6sec
-											m_caster->GetAura(57993,0)->SetAuraMaxDuration(6000);
-											break;
-									}
-								}
+								// envenom buff 6sec
+								for(uint8 i=0;i<3;i++)
+									if(m_caster->GetAura(57993,i))
+										m_caster->GetAura(57993,i)->SetAuraMaxDuration((1+combo)*1000);
 							}
                             damage *= doses;
                             damage += int32(((Player*)m_caster)->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * doses);
