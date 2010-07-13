@@ -1286,6 +1286,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     bool crit = isSpellCrit(pVictim, spellInfo, damageSchoolMask, attackType);
     bool blocked = false;
 
+	
     // damage bonus (per damage class)
     switch (spellInfo->DmgClass)
     {
@@ -1295,6 +1296,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         {
             //Calculate damage bonus
             damage = MeleeDamageBonus(pVictim, damage, attackType, spellInfo, SPELL_DIRECT_DAMAGE);
+			error_log("SpellDamage1 %u",damage);
             // Get blocked status
             blocked = isSpellBlocked(pVictim, spellInfo, attackType);
 
@@ -1309,6 +1311,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
                 else
                     damage -= pVictim->GetRangedCritDamageReduction(damage);
             }
+			error_log("SpellDamage2 %u",damage);
         }
         break;
         // Magical Attacks
@@ -1336,6 +1339,8 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
 		damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
     }
+
+	error_log("SpellDamage3 %u",damage);
     
     // damage mitigation
     if (damage > 0)
@@ -1347,23 +1352,29 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
             damage = damage - armor_affected_damage + CalcArmorReducedDamage(pVictim, armor_affected_damage);
         }
 
+		error_log("SpellDamage4 %u",damage);
+
         // block (only for damage class ranged and -melee, also non-physical damage possible)
         if (blocked)
         {
             damageInfo->blocked = uint32(pVictim->GetShieldBlockValue());
             if (damage < damageInfo->blocked)
                 damageInfo->blocked = damage;
-            damage-=damageInfo->blocked;
+            damage -= damageInfo->blocked;
         }
 
+		error_log("SpellDamage5 %u",damage);
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damage,damageSchoolMask,spellInfo);
         CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
-        damage-= damageInfo->absorb + damageInfo->resist;
+        damage -= damageInfo->absorb + damageInfo->resist;
+
+		error_log("SpellDamage6 %u",damage);
     }
     else
         damage = 0;
 
 	damageInfo->damage = damage;
+	error_log("SpellDamage7 %u",damage);
 }
 
 void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
