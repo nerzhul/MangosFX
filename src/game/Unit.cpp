@@ -9827,6 +9827,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 		}
         case SPELLFAMILY_DEATHKNIGHT:
         {
+			error_log("COME THERE ? spell %u",spellProto->Id);
             // Icy Touch, Howling Blast and Frost Strike
             if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
             {
@@ -9855,12 +9856,14 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                     }
                 }
             }
-			// Glyph of Unholy Blight
-			if (spellProto->Id == 50536)
+			
+			switch(spellProto->Id)
 			{
-				if (Aura *glyphAura = GetDummyAura(63332))
-					DoneTotalMod *= (glyphAura->GetModifier()->m_amount + 100.0f)/ 100.0f;
-				break;
+				// Glyph of Unholy Blight
+				case 50536:
+					if (Aura *glyphAura = GetDummyAura(63332))
+						DoneTotalMod *= (glyphAura->GetModifier()->m_amount + 100.0f)/ 100.0f;
+					break;
 			}
             break;
         }

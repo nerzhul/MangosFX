@@ -5665,7 +5665,15 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
 				if (m_spellProto->SpellFamilyFlags & UI64LIT(0x400080000000000))
 				{
 					m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.055f * 1.15f);
-				};
+					// Crypt Fever & Ebony plague mod
+					if(GetTarget()->HasAura(50508))
+						m_modifier.m_amount *= 1.1;
+					else if(GetTarget()->HasAura(50509))
+						m_modifier.m_amount *= 1.2;
+					else if(GetTarget()->HasAura(50510) || GetTarget()->HasAura(51726) || 
+						GetTarget()->HasAura(51734) || GetTarget()->HasAura(51735))
+						m_modifier.m_amount *= 1.3;
+				}
 				break;
 			}
             default:
