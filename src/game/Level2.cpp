@@ -4613,6 +4613,22 @@ bool ChatHandler::HandleTitlesCurrentCommand(const char* args)
     return true;
 }
 
+bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
+{
+	if(!*args)
+		return false;
+
+	int32 spellId = atoi((char*)args);
+
+	const SpellEntry* spell = GetSpellStore()->LookupEntry(spellId);
+	if(!spell)
+		return false;
+
+	PSendSysMessage("Spell %i / Nom : %s / Icone : %u / FamilyFlags1 : " UI64FMTD " / FamilyFlags2 : " UI64FMTD "",spellId,spell->SpellName,spell->SpellIconID,spell->SpellFamilyFlags,
+		spell->SpellFamilyFlags2);
+	return true;
+}
+
 bool ChatHandler::HandleRecuperationCommand(const char* args)
 {
     Player *player = getSelectedPlayer();

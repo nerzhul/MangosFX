@@ -1360,6 +1360,33 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damage,damageSchoolMask,spellInfo);
         CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
         damage -= damageInfo->absorb + damageInfo->resist;
+
+		if(crit)
+		{
+			if(GetTypeId() == TYPEID_PLAYER)
+			{
+				Player* plr = (Player*)this;
+				switch(plr->getClass())
+				{
+					case CLASS_WARLOCK:
+						switch(spellInfo->SpellIconID)
+						{
+							case 12:
+							case 816:
+								if(HasAura(18096))
+									CastSpell(this,18093,true);
+								else if(HasAura(18073))
+									CastSpell(this,63243,true);
+								else if(HasAura(63245))
+									CastSpell(this,63244,true);
+								break;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+		}
     }
     else
         damage = 0;
@@ -8015,38 +8042,8 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
             break;
         case SPELLFAMILY_WARLOCK:
         {
-            // Pyroclasm
-            if (auraSpellInfo->SpellIconID == 1137)
-            {
-                if(!pVictim || !pVictim->isAlive() || pVictim == this || procSpell == NULL)
-                    return false;
-                // Calculate spell tick count for spells
-                uint32 tick = 1; // Default tick = 1
-
-                // Hellfire have 15 tick
-                if (procSpell->SpellFamilyFlags & UI64LIT(0x0000000000000040))
-                    tick = 15;
-                // Rain of Fire have 4 tick
-                else if (procSpell->SpellFamilyFlags & UI64LIT(0x0000000000000020))
-                    tick = 4;
-                else
-                    return false;
-
-                // Calculate chance = baseChance / tick
-                float chance = 0;
-                switch (auraSpellInfo->Id)
-                {
-                    case 18096: chance = 13.0f / tick; break;
-                    case 18073: chance = 26.0f / tick; break;
-                }
-                // Roll chance
-                if (!roll_chance_f(chance))
-                    return false;
-
-                trigger_spell_id = 18093;
-            }
             // Drain Soul
-            else if (auraSpellInfo->SpellFamilyFlags & UI64LIT(0x0000000000004000))
+            if (auraSpellInfo->SpellFamilyFlags & UI64LIT(0x0000000000004000))
             {
                 Unit::AuraList const& mAddFlatModifier = GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
                 for(Unit::AuraList::const_iterator i = mAddFlatModifier.begin(); i != mAddFlatModifier.end(); ++i)

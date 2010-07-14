@@ -6933,6 +6933,20 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                     return;
 				break;
             }
+			else if (m_spellProto->SpellFamilyFlags & 0x1LL && m_spellProto->SpellFamilyFlags2 & 0x8)
+            {
+                // Glyph of Fireball
+                if (Unit * caster = GetCaster())
+                    if (caster->HasAura(56368))
+                        SetAuraDuration(0);
+            }
+            else if (m_spellProto->SpellFamilyFlags & 0x20LL && GetSpellProto()->SpellVisual[0] == 13)
+            {
+                // Glyph of Frostbolt
+                if (Unit * caster = GetCaster())
+                    if (caster->HasAura(56370))
+                        m_target->RemoveAurasByCasterSpell(GetId(), caster->GetGUID());
+            }
             // Combustion (remove triggered aura stack)
             else if (m_spellProto->Id == 11129)
             {
