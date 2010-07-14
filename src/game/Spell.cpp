@@ -3006,8 +3006,12 @@ void Spell::cast(bool skipCheck)
             else if (m_spellInfo->Id == 58875)
 				AddPrecastSpell(58876);
 			else if (m_spellInfo->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA_RAID && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000004000000))
+			{
                 // only for main totem spell cast
                 AddTriggeredSpell(30708);                   // Totem of Wrath
+				if(m_caster->HasAura(63280))
+					AddTriggeredSpell(63283);
+			}
             break;
         }
 		case SPELLFAMILY_DEATHKNIGHT:
@@ -4409,7 +4413,7 @@ void Spell::HandleEffects(Unit *pUnitTarget,Item *pItemTarget,GameObject *pGOTar
 
 void Spell::AddTriggeredSpell( uint32 spellId )
 {
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId );
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
 
     if(!spellInfo)
     {
