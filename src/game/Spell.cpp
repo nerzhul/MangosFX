@@ -3549,28 +3549,26 @@ void Spell::finish(bool ok)
 	 {
 		case SPELLFAMILY_SHAMAN:
 			// Wrath Totem
-			if (m_spellInfo->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA_RAID && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000004000000))
+			if(m_caster->HasAura(63280))
 			{
-				if(m_caster->HasAura(63280))
+				int32 efBP = 0;
+				switch(m_spellInfo->Id)
 				{
-					int32 efBP = 0;
-					switch(m_spellInfo->Id)
-					{
-						case 30706:
-							efBP = 33;
-							break;
-						case 57720:
-							efBP = 40;
-							break;
-						case 57721:
-							efBP = 46;
-							break;
-						case 57722:
-							efBP = 73;
-							break;
-					}
-					m_caster->CastCustomSpell(m_caster,63283,&efBP,&efBP,NULL,false);
+					case 30706:
+						efBP = 33;
+						break;
+					case 57720:
+						efBP = 40;
+						break;
+					case 57721:
+						efBP = 46;
+						break;
+					case 57722:
+						efBP = 73;
+						break;
 				}
+				if(efBP)
+					m_caster->CastCustomSpell(m_caster,63283,&efBP,&efBP,NULL,false);
 			}
 			break;
 	 }
