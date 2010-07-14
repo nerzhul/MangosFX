@@ -2564,7 +2564,6 @@ void Spell::EffectDummy(uint32 i)
                         break;
                     }
                 }
-
                 m_caster->CastCustomSpell(m_caster, 45470, &bp, NULL, NULL, true);
                 return;
             }

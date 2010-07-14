@@ -561,12 +561,12 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	}
 	else if(argstr == "changefaction")
 	{
-		if(diamant >= 4)
+		if(diamant >= 8)
 		{
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
 			PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de faction", m_session->GetPlayer()->GetName());
             CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '64' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
-			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 4 WHERE id = '%u'", m_session->GetAccountId());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 8 WHERE id = '%u'", m_session->GetAccountId());
 		}
 		else
 			SendSysMessage("Vous n'avez pas assez de diamants !");
