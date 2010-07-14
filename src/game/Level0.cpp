@@ -552,7 +552,7 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 		if(diamant >= 3)
 		{
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_RACE);
-			PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de race", m_session->GetPlayer()->GetName());
+			PSendSysMessage("Demande de changement de race pour %s en cours. Veuillez vous reconnecter pour changer de race", m_session->GetPlayer()->GetName());
             CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '128' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
 			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 3 WHERE id = '%u'", m_session->GetAccountId());
 		}
@@ -561,12 +561,31 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 	}
 	else if(argstr == "changefaction")
 	{
-		if(diamant >= 8)
+		uint8 cost = 4;
+		switch(m_session->GetPlayer()->getRace())
+		{
+			case RACE_HUMAN:
+			case RACE_DWARF:
+			case RACE_GNOME:
+			case RACE_NIGHTELF:
+			case RACE_DRAENEI:
+				cost = 8;
+				break;
+			case RACE_ORC:
+			case RACE_TAUREN:
+			case RACE_UNDEAD_PLAYER:
+			case RACE_TROLL:
+			case RACE_BLOODELF:
+				cost = 4;
+				break;
+		}
+
+		if(diamant >= cost)
 		{
 			m_session->GetPlayer()->SetAtLoginFlag(AT_LOGIN_CHANGE_FACTION);
-			PSendSysMessage("Demande de relook pour %s en cours. Veuillez vous reconnecter pour changer de faction", m_session->GetPlayer()->GetName());
+			PSendSysMessage("Demande de changement de faction pour %s en cours. Veuillez vous reconnecter pour changer de faction", m_session->GetPlayer()->GetName());
             CharacterDatabase.PExecute("UPDATE characters SET at_login = at_login | '64' WHERE guid = '%u'", m_session->GetPlayer()->GetGUIDLow());
-			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - 8 WHERE id = '%u'", m_session->GetAccountId());
+			loginDatabase.PExecute("UPDATE account SET credit_diamond = credit_diamond - %u WHERE id = '%u'", cost, m_session->GetAccountId());
 		}
 		else
 			SendSysMessage("Vous n'avez pas assez de diamants !");
