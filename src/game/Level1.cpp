@@ -864,8 +864,8 @@ bool ChatHandler::HandleModifyRunicPowerCommand(const char* args)
     if (needReportToTarget(chr))
         ChatHandler(chr).PSendSysMessage(LANG_YOURS_RUNIC_POWER_CHANGED, GetNameLink().c_str(), rune/10, runem/10);
 
-    chr->SetMaxPower(POWER_RUNIC_POWER,runem );
-    chr->SetPower(POWER_RUNIC_POWER, rune );
+    chr->SetMaxPower(POWER_RUNIC_POWER,runem);
+    chr->SetPower(POWER_RUNIC_POWER, rune);
 
     return true;
 }

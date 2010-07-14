@@ -1473,13 +1473,13 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     // Calculate armor reduction
 
     uint32 armor_affected_damage = CalcNotIgnoreDamageRedunction(damage,damageInfo->damageSchoolMask);
-	if(HasAura(66725))
+	if(HasAura(66725) || GetEntry() == 19668)
 		damageInfo->damage = damage;
 	else
 		damageInfo->damage = damage - armor_affected_damage + CalcArmorReducedDamage(damageInfo->target, armor_affected_damage);
     damageInfo->cleanDamage += damage - damageInfo->damage;
 
-	if(HasAura(66725))
+	if(HasAura(66725) || GetEntry() == 19668)
 		damageInfo->hitOutCome = MELEE_HIT_NORMAL;
 	else
 		damageInfo->hitOutCome = RollMeleeOutcomeAgainst(damageInfo->target, damageInfo->attackType);
@@ -9827,7 +9827,6 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 		}
         case SPELLFAMILY_DEATHKNIGHT:
         {
-			error_log("COME THERE ? spell %u",spellProto->Id);
             // Icy Touch, Howling Blast and Frost Strike
             if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
             {
