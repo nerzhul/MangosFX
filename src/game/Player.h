@@ -2262,6 +2262,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool HasDoneRandomBattleGround() { return daily_random_BG_done; }
 		void SetRandomBGDone(bool done) { daily_random_BG_done = done; }
 		
+		// Special Proc for Critic
+		void ForceProcOnDamage(Unit* victim, SpellEntry const * spell, bool isCrit);
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2493,6 +2495,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         DeclinedName *m_declinedname;
         Runes *m_runes;
         EquipmentSets m_EquipmentSets;
+
     private:
         // internal common parts for CanStore/StoreItem functions
         uint8 _CanStoreItem_InSpecificSlot( uint8 bag, uint8 slot, ItemPosCountVec& dest, ItemPrototype const *pProto, uint32& count, bool swap, Item *pSrcItem ) const;

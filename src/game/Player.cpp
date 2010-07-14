@@ -22799,3 +22799,41 @@ void Player::AddItem(uint32 entry,uint16 count)
 		}
 	}
 }
+
+void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCrit)
+{
+	switch(getClass())
+	{
+		case CLASS_WARLOCK:
+			switch(spell->SpellIconID)
+			{
+				// Pyroclasm
+				case 12:
+				case 816:
+					if(isCrit)
+					{
+						if(HasAura(18096))
+							CastSpell(this,18093,true);
+						else if(HasAura(18073))
+							CastSpell(this,63243,true);
+						else if(HasAura(63245))
+							CastSpell(this,63244,true);
+					}
+					break;
+				// Decimation for Hellfire
+				case 184:
+				{
+					if ((victim->GetHealth() * 100 / victim->GetMaxHealth()) < 35)
+					{
+						if(HasAura(63156))
+							CastSpell(this,63165,true);
+						else if(HasAura(63158))
+							CastSpell(this,63167,true);
+					}
+				}
+			}
+			break;
+		default:
+			break;
+	}
+}

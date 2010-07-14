@@ -3014,18 +3014,42 @@ void Spell::cast(bool skipCheck)
         }
 		case SPELLFAMILY_DEATHKNIGHT:
 		{
-			// Chains of Ice
-			if (m_spellInfo->Id == 45524)
-				AddTriggeredSpell(55095);                   // Frost Fever
-			else if(m_spellInfo->Id == 47568)
+			switch(m_spellInfo->Id)
 			{
-				if(m_caster->GetTypeId() == TYPEID_PLAYER)
+				// Chains of Ice
+				case 45524:
+					AddTriggeredSpell(55095);                   // Frost Fever
+					break;
+				case 47568:
 				{
-					Player* plr = ((Player*)m_caster);
-					// Empower Rune Weapon
-					for(uint32 j = 0; j < MAX_RUNES; ++j)
-						plr->SetRuneCooldown(j, 0);
+					if(m_caster->GetTypeId() == TYPEID_PLAYER)
+					{
+						Player* plr = ((Player*)m_caster);
+						// Empower Rune Weapon
+						for(uint32 j = 0; j < MAX_RUNES; ++j)
+							plr->SetRuneCooldown(j, 0);
+					}
+					break;
 				}
+				case 55095:
+				case 55078:
+					if(m_caster->HasAura(49032))
+						AddTriggeredSpell(50508);
+					else if(m_caster->HasAura(49631))
+						AddTriggeredSpell(50509);
+					else if(m_caster->HasAura(49632))
+					{
+						if(m_caster->HasAura(51099))
+							AddTriggeredSpell(51726);
+						else if(m_caster->HasAura(51160))
+							AddTriggeredSpell(51734);
+						else if(m_caster->HasAura(51161))
+							AddTriggeredSpell(51735);
+						else
+							AddTriggeredSpell(50510);
+					}
+					break;
+				break;
 			}
 			break;
 		}

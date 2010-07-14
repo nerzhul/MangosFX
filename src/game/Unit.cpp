@@ -1360,34 +1360,10 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damage,damageSchoolMask,spellInfo);
         CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
         damage -= damageInfo->absorb + damageInfo->resist;
-
-		if(crit)
-		{
-			if(GetTypeId() == TYPEID_PLAYER)
-			{
-				Player* plr = (Player*)this;
-				switch(plr->getClass())
-				{
-					case CLASS_WARLOCK:
-						switch(spellInfo->SpellIconID)
-						{
-							case 12:
-							case 816:
-								if(HasAura(18096))
-									CastSpell(this,18093,true);
-								else if(HasAura(18073))
-									CastSpell(this,63243,true);
-								else if(HasAura(63245))
-									CastSpell(this,63244,true);
-								break;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-		}
-    }
+		
+		if(GetTypeId() == TYPEID_PLAYER)
+			((Player*)this)->ForceProcOnDamage(pVictim,spellInfo,crit);
+   }
     else
         damage = 0;
 
