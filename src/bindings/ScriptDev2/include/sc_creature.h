@@ -317,8 +317,8 @@ struct EventSummon
 
 enum Emblem_Types
 {
-	HEROISME	= 40753, // relace pve
-	VAILLANCE	= 40753,
+	HEROISME	= 45624, // relace pve
+	VAILLANCE	= 45624,
 	CONQUETE	= 45624,
 	TRIOMPHE	= 47241,
 	GIVRE		= 49426,	
