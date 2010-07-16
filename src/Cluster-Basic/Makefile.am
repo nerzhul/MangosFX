@@ -40,7 +40,7 @@ mangosFX_BasicCluster_LDADD = \
 	../../dep/src/g3dlite/libg3dlite.a \
 	../framework/libmangosframework.a 
 
-mangosFX_BasicCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
+mangosFX_BasicCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -lomnithread -lomniORB4 -lomniDynamic4 -lomniCodeSets4 -lomnisslTP -lCOS4 -lCOSDynamic4 -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
