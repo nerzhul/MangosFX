@@ -15090,7 +15090,9 @@ void Unit::ExitVehicle()
 {
 	if(uint64 vehicleGUID = GetVehicleGUID())
     {
-        float v_size = 0.0f;
+		clearUnitState(UNIT_STAT_ON_VEHICLE);
+		m_movementInfo.ClearTransportData();
+		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
@@ -15103,7 +15105,6 @@ void Unit::ExitVehicle()
 						vehicle->SetSpawnDuration(1);
 					}
 				}
-				v_size = vehicle->GetBase()->GetObjectBoundingRadius();
 			}
 
 			if(m_vehicle)
@@ -15112,23 +15113,23 @@ void Unit::ExitVehicle()
 			float x = vehUnit->GetPositionX();
 			float y = vehUnit->GetPositionY();
 			float z = vehUnit->GetPositionZ() + 2.0f;
+			error_log("x : %f y : %f z : %f",x,y,z);
 			if(IsInWorld())
 			{
-				GetClosePoint(x, y, z, 2.0f + v_size);
+				GetClosePoint(x, y, z, 2.0f);
+				error_log("x : %f y : %f z : %f",x,y,z);
 				SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 			}
 		}
 		SetVehicleGUID(0);
 		m_vehicle = NULL;
-		m_movementInfo.ClearTransportData();
-		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 		if(GetTypeId() == TYPEID_PLAYER)
 		{
 			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
 			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
 			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
 		}
-		clearUnitState(UNIT_STAT_ON_VEHICLE);
+		
     }
 }
 

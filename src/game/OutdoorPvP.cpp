@@ -256,6 +256,7 @@ void OutdoorPvP::HandlePlayerLeaveZone(Player * plr, uint32 zone)
     if(!plr->GetSession()->PlayerLogout())
         SendRemoveWorldStates(plr);
     m_players[BattleGround::GetTeamIndexByTeamId(plr->GetTeam())].erase(plr);
+	assert(false);
     sLog.outDebug("Player %s left an outdoorpvp zone", plr->GetName());
 }
 
