@@ -1331,6 +1331,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		{
 			player->AddItem(21843,4);
 			SendSysMessage("Veuillez equiper ces sacs puis retaper la commande afin de recuperer votre stuff principal.");
+			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set bags_given = 1 WHERE guid = '%u'",player->GetGUID());
 			return true;
 		}
 	}
