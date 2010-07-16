@@ -407,9 +407,12 @@ bool Unit::haveOffhandWeapon() const
         return false;
 }
 
-void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineType type, SplineFlags flags, uint32 Time, Player* player)
+void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineType type, SplineFlags flags, uint32 Time, Player* player, ...)
 {
-    float moveTime = Time;
+    va_list vargs;
+    va_start(vargs,player);
+
+    float moveTime = (float)Time;
 
     WorldPacket data( SMSG_MONSTER_MOVE, (41 + GetPackGUID().size()) );
     data.append(GetPackGUID());
@@ -420,28 +423,33 @@ void Unit::SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineTy
     data << uint8(type);                                    // unknown
     switch(type)
     {
-        case 0:                                             // normal packet
+        case SPLINETYPE_NORMAL:                             // normal packet
             break;
-        case 1:                                             // stop packet (raw pos?)
+        case SPLINETYPE_STOP:                               // stop packet (raw pos?)
+            va_end(vargs);
             SendMessageToSet( &data, true );
             return;
-        case 2:                                             // facing spot, not used currently
-            data << float(0);
-            data << float(0);
-            data << float(0);
+        case SPLINETYPE_FACINGSPOT:                         // facing spot, not used currently
+        {
+            data << float(va_arg(vargs,double));
+            data << float(va_arg(vargs,double));
+            data << float(va_arg(vargs,double));
             break;
-        case 3:                                             // not used currently
-            data << uint64(0);                              // probably target guid (facing target?)
+        }
+        case SPLINETYPE_FACINGTARGET:
+            data << uint64(va_arg(vargs,uint64));
             break;
-        case 4:                                             // not used currently
-            data << float(0);                               // facing angle
+        case SPLINETYPE_FACINGANGLE:                        // not used currently
+            data << float(va_arg(vargs,double));            // facing angle
             break;
     }
 
-    data << uint32(flags);
+    data << uint32(flags);                                  // splineflags
     data << uint32(moveTime);                               // Time in between points
     data << uint32(1);                                      // 1 single waypoint
     data << NewPosX << NewPosY << NewPosZ;                  // the single waypoint Point B
+
+    va_end(vargs);
 
     if(player)
         player->GetSession()->SendPacket(&data);
@@ -3833,6 +3841,22 @@ void Unit::SetFacingTo(float ori)
     WorldPacket data;
     BuildHeartBeatMsg(&data);
     SendMessageToSet(&data, false);
+}
+
+// Consider move this to Creature:: since only creature appear to be able to use this
+void Unit::SetFacingToObject(WorldObject* pObject)
+{
+    if (GetTypeId() != TYPEID_UNIT)
+        return;
+
+    // never face when already moving
+    if (!IsStopped())
+        return;
+
+    // TODO: figure out under what conditions creature will move towards object instead of facing it where it currently is.
+
+    SetOrientation(GetAngle(pObject));
+    SendMonsterMove(GetPositionX(), GetPositionY(), GetPositionZ(), SPLINETYPE_FACINGTARGET, ((Creature*)this)->GetSplineFlags(), 0, NULL, pObject->GetGUID());
 }
 
 bool Unit::isInAccessablePlaceFor(Creature const* c) const
@@ -15110,10 +15134,6 @@ void Unit::ExitVehicle()
 			if(m_vehicle)
 				m_vehicle->RemovePassenger(this);
 
-			clearUnitState(UNIT_STAT_ON_VEHICLE);
-			m_movementInfo.ClearTransportData();
-			m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
-
 			float x = vehUnit->GetPositionX();
 			float y = vehUnit->GetPositionY();
 			float z = vehUnit->GetPositionZ() + 2.0f;
@@ -15122,6 +15142,9 @@ void Unit::ExitVehicle()
 				GetClosePoint(x, y, z, 2.0f);
 				SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 			}
+			clearUnitState(UNIT_STAT_ON_VEHICLE);
+			m_movementInfo.ClearTransportData();
+			m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 		}
 		SetVehicleGUID(0);
 		m_vehicle = NULL;

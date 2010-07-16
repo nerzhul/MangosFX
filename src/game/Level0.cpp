@@ -1316,7 +1316,48 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		SendSysMessage("Votre recuperation n'a pas ete validee ou a deja ete effectuee ou est invalide. Consultez le site pour plus de details");
 		return true;
 	}
+
+	if(player->getLevel() > 15)
+	{
+		SendSysMessage("Ce personnage ne repond pas aux criteres de recuperation : votre niveau est trop eleve.");
+		return true;
+	}
+
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT bags_given FROM characterprofiler_recupstate where guid = '%u'",player->GetGUID()))
+	{
+		Field *fields = result->Fetch();
+		bool bagsGiven = fields[0].GetUInt8() > 0 ? true : false;
+		if(!bagsGiven)
+		{
+			player->AddItem(21843,4);
+			SendSysMessage("Veuillez equiper ces sacs puis retaper la commande afin de recuperer votre stuff principal.");
+			return true;
+		}
+	}
+
+	bool isReroll = false;
+	uint16 diamond = 0;
+	if(QueryResult* result = CharacterDatabase.PQuery("SELECT count(guid) FROM characters WHERE account = '%u' AND level >= 68", m_session->GetAccountId()))
+	{
+		Field *fields = result->Fetch();
+		if(fields[0].GetUInt16() > 0)
+			isReroll = true;
+	}
+
+	if(QueryResult *result = loginDatabase.PQuery("SELECT credit_diamond FROM account WHERE id = '%u'", m_session->GetAccountId()))
+	{
+		Field *fields = result->Fetch();
+		diamond = fields[0].GetUInt16();
+	}
+
+	if(isReroll && diamond < 1)
+	{
+		SendSysMessage("Ce personnage est un reroll, de fait vous ne pouvez pas recuperer sans posseder au prealable un diamant sur votre compte.");
+		return true;
+	}
 		
+	HandleCharacterLevel(player,player->GetGUID(),player->getLevel(),80);
+
 	if(QueryResult *result = CharacterDatabase.PQuery("SELECT item FROM characterprofiler_items where guid = '%u'",player->GetGUID()))
 	{
 		do
@@ -1349,7 +1390,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 			if(const FactionEntry* fac = sFactionStore.LookupEntry(faction))
 				player->GetReputationMgr().SetReputation(fac,value);
 		}
-		while( result->NextRow() );
+		while(result->NextRow());
 	}
 	CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
 	CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
@@ -1570,6 +1611,16 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(1011),24000);
 	
 	player->UpdateSkillsToMaxSkillsForLevel();
+
+	if(isReroll)
+	{
+		if(loginDatabase.PExecute("Update account set credit_diamond = credit_diamond - 1 where id = %u", m_session->GetAccountId()))
+			SendSysMessage("1 diamant vous a ete facture pour la recuperation de ce reroll");
+	}
 	player->SaveToDB();
+
+	SendSysMessage("Recuperation principale terminee. Tapez desormais '.completerecup sacs' ou '.completerecup bank' afin de recuperer vos sacs "
+		"et votre banque. Chaque fois que vous tapez cette commande vous recupererez 10 piles.");
+	SendSysMessage("Bon jeu sur Black Diamond !");
 	return true;
 }
