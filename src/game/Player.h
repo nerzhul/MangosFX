@@ -2264,6 +2264,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		
 		// Special Proc for Critic
 		void ForceProcOnDamage(Unit* victim, SpellEntry const * spell, bool isCrit);
+		void SetIsCanDelayTeleport(bool setting) { m_bHasDelayedTeleport = setting; }
     protected:
 
         uint32 m_contestedPvPTimer;

@@ -15088,9 +15088,11 @@ void Unit::SetAuraStack(uint32 spellId, Unit *target, uint32 stack)
 
 void Unit::ExitVehicle()
 {
+	if(GetTypeId() == TYPEID_PLAYER)
+		((Player*)this)->SetIsCanDelayTeleport(false);
+
 	if(uint64 vehicleGUID = GetVehicleGUID())
     {
-		
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
@@ -15129,7 +15131,6 @@ void Unit::ExitVehicle()
 			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
 			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
 		}
-		
     }
 }
 
