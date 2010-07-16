@@ -352,12 +352,11 @@ class OPvPCapturePointWG : public OPvPCapturePoint
         void SetTeamByBuildingState();
         void ChangeState() {}
         void ChangeTeam(BattleGroundTeamId oldteam);
+		void UpdateEngineerData();
 
-        uint32 *m_spiEntry;
         uint32 m_spiGuid;
         Creature *m_spiritguide;
 
-        uint32 *m_engEntry;
         uint32 m_engGuid;
         Creature *m_engineer;
         uint32 m_workshopGuid;

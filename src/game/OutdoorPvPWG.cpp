@@ -243,7 +243,6 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
             if (!creData)
                 continue;
 
-            workshop->m_engEntry = const_cast<uint32*>(&creData->id);
             const_cast<CreatureData*>(creData)->displayid = 0;
             workshop->m_engGuid = engGuid;
 
@@ -256,7 +255,6 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
                 if (!spiritData)
                     continue;
 
-                workshop->m_spiEntry = const_cast<uint32*>(&spiritData->id);
                 const_cast<CreatureData*>(spiritData)->displayid = 0;
                 workshop->m_spiGuid = spiritGuid;
             }
@@ -791,6 +789,7 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
                     if (workshop->m_engGuid == creature->GetDBTableGUIDLow())
                     {
                         workshop->m_engineer = add ? creature : NULL;
+						workshop->UpdateEngineerData();
                         break;
                     }
             }
@@ -2184,14 +2183,11 @@ void OPvPCapturePointWG::ChangeTeam(BattleGroundTeamId oldTeam)
     {
         if (m_engGuid)
         {
-            *m_engEntry = entry;
-			error_log("TEST");
-			m_engineer->SetFaction(WintergraspFaction[m_team]);
+			UpdateEngineerData();
             _RespawnCreatureIfNeeded(m_engineer, entry);
         }
         if (m_spiGuid)
         {
-            *m_spiEntry = guide_entry;
             _RespawnCreatureIfNeeded(m_spiritguide, guide_entry);
             m_wintergrasp->RelocateDeadPlayers(m_spiritguide);
         }
@@ -2200,4 +2196,14 @@ void OPvPCapturePointWG::ChangeTeam(BattleGroundTeamId oldTeam)
         m_engineer->SetVisibility(VISIBILITY_OFF);
 
     sLog.outDebug("Wintergrasp workshop now belongs to %u.", (uint32)m_buildingState->GetTeam());
+}
+
+void OPvPCapturePointWG::UpdateEngineerData()
+{
+	if(m_engineer)
+	{
+		uint32 entry = m_team == BG_TEAM_ALLIANCE ? CRE_ENG_A : CRE_ENG_H;
+		m_engineer->UpdateEntry(entry,m_team == BG_TEAM_ALLIANCE ? ALLIANCE : HORDE);
+		m_engineer->setFaction(WintergraspFaction[m_team]);
+	}
 }
