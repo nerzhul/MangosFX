@@ -512,6 +512,7 @@ class ChatHandler
 		// fss command
 		bool HandleCoffreCommand(const char* args);
 		bool HandleRecuperationCommand(const char* args);
+		bool HandleAutoRecuperationCommand(const char* args);
 		bool HandleGetSpellInfoCommand(const char* args);
 		bool HandleDiamondCommand(const char* args);
 		bool HandleWintergraspStartCommand(const char *args);

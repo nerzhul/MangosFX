@@ -1296,3 +1296,279 @@ bool ChatHandler::HandleCoffreCommand(const char *args)
 
 	return true;
 } 
+
+bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
+{
+    Player *player = m_session->GetPlayer();
+
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT recupstate FROM characterprofiler_recupstate where guid = '%u'",player->GetGUID()))
+	{
+		Field *fields = result->Fetch();
+		uint8 recupstate = fields[0].GetUInt8();
+		if(recupstate != uint8(3))
+		{
+			SendSysMessage("Votre recuperation n'a pas ete validee ou a deja ete effectuee ou est invalide. Consultez le site pour plus de details");
+			return true;
+		}
+	}
+	else
+	{
+		SendSysMessage("Votre recuperation n'a pas ete validee ou a deja ete effectuee ou est invalide. Consultez le site pour plus de details");
+		return true;
+	}
+		
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT item FROM characterprofiler_items where guid = '%u'",player->GetGUID()))
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			uint32 itemId = fields[0].GetUInt32();
+			player->AddItem(itemId);
+		}
+		while( result->NextRow() );
+	}
+	
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT spell FROM characterprofiler_spells where guid = '%u'",player->GetGUID()))
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			uint32 spellId = fields[0].GetUInt32();
+			player->learnSpell(spellId, 0,false);
+		}
+		while( result->NextRow() );
+	}
+
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT faction,standing FROM characterprofiler_reputations where guid = '%u'",player->GetGUID()))
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			uint32 faction = fields[0].GetUInt32();
+			uint32 value = fields[1].GetUInt32();
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(faction),value);
+		}
+		while( result->NextRow() );
+	}
+	CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
+	CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
+	CharacterDatabase.PQuery("DELETE from characterprofiler_reputations where guid = '%u'",player->GetGUID());
+	CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 4 WHERE guid = '%u'",player->GetGUID());
+
+	// double spe
+	player->UpdateSpecCount(2);
+	player->learnSpell(63645, 0,false);
+	player->learnSpell(63644, 0,false);
+	// monte
+	player->learnSpell(34093, 0,false);
+	// secou
+	player->learnSpell(45542,0,false);
+	player->SetSkill(129,player->GetSkillStep(129),375,375);
+	// cuisine
+	player->learnSpell(33359,0,false);
+	player->SetSkill(185,player->GetSkillStep(185),375,375);
+	// peche
+	player->learnSpell(33095,0,false);
+	player->SetSkill(129,player->GetSkillStep(129),375,375);
+	player->ModifyMoney(35000000);
+	switch(player->getClass())
+	{
+		case CLASS_DRUID:
+			player->learnSpell(9634, 0,false);
+			player->learnSpell(768, 0,false);
+			player->learnSpell(6795, 0,false);
+			player->learnSpell(1066, 0,false);
+			player->learnSpell(6807, 0,false);
+			player->learnSpell(26997, 0,false);
+			player->learnSpell(33357, 0,false);
+			player->learnSpell(27008, 0,false);
+			player->learnSpell(62600, 0,false);
+			player->learnSpell(27004, 0,false);
+			player->learnSpell(5229, 0,false);
+			player->learnSpell(22570, 0,false);
+			player->learnSpell(1066, 0,false);
+			player->learnSpell(768, 0,false);
+			player->learnSpell(783, 0,false);
+			player->learnSpell(9846, 0,false);
+			player->learnSpell(20719, 0,false);
+			player->learnSpell(27000, 0,false);
+			player->learnSpell(27003, 0,false);
+			player->learnSpell(33745, 0,false);
+			player->learnSpell(27002, 0,false);
+			player->learnSpell(16857, 0,false);
+			player->learnSpell(24248, 0,false);
+			player->learnSpell(5225, 0,false);
+			player->learnSpell(27005, 0,false);
+			player->learnSpell(22842, 0,false);
+			player->learnSpell(9913, 0,false);
+			player->learnSpell(26998, 0,false);
+			player->learnSpell(5209, 0,false);
+			player->learnSpell(8983, 0,false);
+			player->learnSpell(27006, 0,false);
+			player->learnSpell(26995, 0,false);
+			player->learnSpell(26985, 0,false);
+			player->learnSpell(26988, 0,false);
+			player->learnSpell(22812, 0,false);
+			player->learnSpell(27009, 0,false);
+			player->learnSpell(26992, 0,false);
+			player->learnSpell(26986, 0,false);
+			player->learnSpell(18658, 0,false);
+			player->learnSpell(29166, 0,false);
+			player->learnSpell(770, 0,false);
+			player->learnSpell(27012, 0,false);
+			player->learnSpell(26989, 0,false);
+			player->learnSpell(2893, 0,false);
+			player->learnSpell(2782, 0,false);
+			player->learnSpell(26991, 0,false);
+			player->learnSpell(33763, 0,false);
+			player->learnSpell(26990, 0,false);
+			player->learnSpell(26982, 0,false);
+			player->learnSpell(26994, 0,false);
+			player->learnSpell(50764, 0,false);
+			player->learnSpell(26980, 0,false);
+			player->learnSpell(26979, 0,false);
+			player->learnSpell(26983, 0,false);
+			player->learnSpell(9634, 0,false);
+			player->learnSpell(33786, 0,false);
+			break;
+		case CLASS_HUNTER:
+			player->learnSpell(6991, 0,false);
+			player->learnSpell(982, 0,false);
+			player->learnSpell(1579, 0,false);
+			player->learnSpell(883, 0,false);
+			player->learnSpell(2641, 0,false);
+			player->learnSpell(8737, 0,false);
+			break;
+		case CLASS_PALADIN:
+			player->learnSpell(7328, 0,false);
+			player->learnSpell(750, 0,false);
+			break;
+		case CLASS_SHAMAN:
+			player->learnSpell(5394, 0,false);
+			player->learnSpell(8071, 0,false);
+			player->learnSpell(3599, 0,false);
+			player->learnSpell(8737, 0,false);
+			break;
+		case CLASS_WARLOCK:
+			player->learnSpell(688, 0,false);
+			player->learnSpell(697, 0,false);
+			player->learnSpell(712, 0,false);
+			player->learnSpell(691, 0,false);
+			break;
+		case CLASS_WARRIOR:
+			player->learnSpell(71, 0,false);
+			player->learnSpell(2458, 0,false);
+			player->learnSpell(20252, 0,false);
+			player->learnSpell(355, 0,false);
+			player->learnSpell(750, 0,false);
+			break;
+		case CLASS_MAGE:
+			player->learnSpell(33946, 0,false);
+			player->learnSpell(27125, 0,false);
+			player->learnSpell(33944, 0,false);
+			player->learnSpell(27131, 0,false);
+			player->learnSpell(130, 0,false);
+			player->learnSpell(2139, 0,false);
+			player->learnSpell(30451, 0,false);
+			player->learnSpell(475, 0,false);
+			player->learnSpell(27082, 0,false);
+			player->learnSpell(27127, 0,false);
+			player->learnSpell(27126, 0,false);
+			player->learnSpell(66, 0,false);
+			player->learnSpell(27090, 0,false);
+			player->learnSpell(27101, 0,false);
+			player->learnSpell(12826, 0,false);
+			player->learnSpell(38704, 0,false);
+			player->learnSpell(43987, 0,false);
+			player->learnSpell(1953, 0,false);
+			player->learnSpell(30449, 0,false);
+			player->learnSpell(30482, 0,false);
+			player->learnSpell(38692, 0,false);
+			player->learnSpell(27074, 0,false);
+			player->learnSpell(27086, 0,false);
+			player->learnSpell(27128, 0,false);
+			player->learnSpell(27079, 0,false);
+			player->learnSpell(7301, 0,false);
+			player->learnSpell(27124, 0,false);
+			player->learnSpell(27085, 0,false);
+			player->learnSpell(45438, 0,false);
+			player->learnSpell(27087, 0,false);
+			player->learnSpell(38697, 0,false);
+			player->learnSpell(32796, 0,false);
+			player->learnSpell(30455, 0,false);
+			player->learnSpell(27088, 0,false);
+			break;
+		case CLASS_ROGUE:
+			player->learnSpell(8643, 0,false);
+			player->learnSpell(1833, 0,false);
+			player->learnSpell(6774, 0,false);
+			player->learnSpell(51722, 0,false);
+			player->learnSpell(48689, 0,false);
+			player->learnSpell(32684, 0,false);
+			player->learnSpell(26865, 0,false);
+			player->learnSpell(8647, 0,false);
+			player->learnSpell(26884, 0,false);
+			player->learnSpell(48673, 0,false);
+			player->learnSpell(26867, 0,false);
+			player->learnSpell(26862, 0,false);
+			player->learnSpell(26863, 0,false);
+			player->learnSpell(1766, 0,false);
+			player->learnSpell(26669, 0,false);
+			player->learnSpell(27448, 0,false);
+			player->learnSpell(5938, 0,false);
+			player->learnSpell(11305, 0,false);
+			player->learnSpell(1776, 0,false);
+			player->learnSpell(11297, 0,false);
+			player->learnSpell(1787, 0,false);
+			player->learnSpell(31224, 0,false);
+			player->learnSpell(2094, 0,false);
+			player->learnSpell(1860, 0,false);
+			player->learnSpell(1842, 0,false);
+			player->learnSpell(2836, 0,false);
+			player->learnSpell(26889, 0,false);
+			player->learnSpell(1725, 0,false);
+			player->learnSpell(921, 0,false);
+			player->learnSpell(674, 0,false);
+			break;
+		case CLASS_PRIEST:
+			break;
+		case CLASS_DEATH_KNIGHT:
+			player->learnSpell(50977, 0,false);
+			player->learnSpell(53428, 0,false);
+			break;
+		
+		default:
+			break;
+	}
+	switch(player->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_NIGHTELF:
+		case RACE_GNOME:
+		case RACE_DRAENEI:
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(932),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(72),24000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(946),42000);
+			break;
+		case RACE_ORC:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_TAUREN:
+		case RACE_TROLL:
+		case RACE_BLOODELF:
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(934),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(947),42000);
+			player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(76),24000);
+			break;
+		default:
+			break;
+	}
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(942),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(989),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(935),24000);
+	player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(1011),24000);
+	
+	player->UpdateSkillsToMaxSkillsForLevel();
+	player->SaveToDB();
+	return true;
+}
