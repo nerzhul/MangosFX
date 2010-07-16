@@ -677,7 +677,7 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "coffre",			SEC_PLAYER,			false, &ChatHandler::HandleCoffreCommand,				"",	NULL },
 		{ "completerecup",	SEC_PLAYER,			false, &ChatHandler::HandleCompleteRecupCommand,		"",	NULL },
 		{ "recuperation",	SEC_GAMEMASTER,		false, &ChatHandler::HandleRecuperationCommand,			"",	NULL },
-		{ "recuperation",	SEC_PLAYER,			false, &ChatHandler::HandleAutoRecuperationCommand,		"",	NULL },
+		{ "autorecup",		SEC_PLAYER,			false, &ChatHandler::HandleAutoRecuperationCommand,		"",	NULL },
 		{ "spellinfo"	,	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleGetSpellInfoCommand,			"",	NULL },
 		{ "diamond",		SEC_GAMEMASTER,		false, &ChatHandler::HandleDiamondCommand,				"",	NULL },
 		{ "wgstart",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspStartCommand,     "", NULL },

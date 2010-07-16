@@ -4959,7 +4959,8 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 					Field *fields = result->Fetch();
 					uint32 faction = fields[0].GetUInt32();
 					uint32 value = fields[1].GetUInt32();
-					player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(faction),value);
+					if(&player->GetReputationMgr())
+						player->GetReputationMgr().SetReputation(sFactionStore.LookupEntry(faction),value);
 				}
 				while( result->NextRow() );
 			}
