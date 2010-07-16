@@ -5010,7 +5010,8 @@ void Aura::HandleAuraModIncreaseFlightSpeed(bool apply, bool Real)
 		}
 	}
 
-    m_target->UpdateSpeed(MOVE_FLIGHT, true);
+	if(m_target)
+		m_target->UpdateSpeed(MOVE_FLIGHT, true);
 }
 
 void Aura::HandleAuraModIncreaseSwimSpeed(bool /*apply*/, bool Real)

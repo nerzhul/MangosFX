@@ -1381,6 +1381,65 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		while( result->NextRow() );
 	}
 
+	if(QueryResult *result = CharacterDatabase.PQuery("SELECT job FROM characterprofiler_jobs where guid = '%u'",player->GetGUID()))
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			uint32 job = fields[0].GetUInt32();
+			switch(job)
+			{
+				case 1:
+					player->learnSpell(50300, 0, false);
+					player->SetSkill(SKILL_HERBALISM,player->GetSkillStep(SKILL_HERBALISM),450,450);
+					break;
+				case 2:
+					player->learnSpell(51304, 0, false);
+					player->SetSkill(SKILL_ALCHEMY,player->GetSkillStep(SKILL_ALCHEMY),450,450);
+					break;
+				case 3:
+					player->learnSpell(50310, 0, false);
+					player->SetSkill(SKILL_MINING,player->GetSkillStep(SKILL_MINING),450,450);
+					break;
+				case 4:
+					player->learnSpell(51309, 0, false);
+					player->SetSkill(SKILL_TAILORING,player->GetSkillStep(SKILL_TAILORING),450,450);
+					break;
+				case 5:
+					player->learnSpell(51300, 0, false);
+					player->SetSkill(SKILL_BLACKSMITHING,player->GetSkillStep(SKILL_BLACKSMITHING),450,450);
+					break;
+				case 6:
+					player->learnSpell(51306, 0, false);
+					player->SetSkill(SKILL_ENGINERING,player->GetSkillStep(SKILL_ENGINERING),450,450);
+					break;
+				case 7:
+					player->learnSpell(51311, 0, false);
+					player->SetSkill(SKILL_JEWELCRAFTING,player->GetSkillStep(SKILL_JEWELCRAFTING),450,450);
+					break;
+				case 8:
+					player->learnSpell(50305, 0, false);
+					player->SetSkill(SKILL_SKINNING,player->GetSkillStep(SKILL_SKINNING),450,450);
+					break;
+				case 9:
+					player->learnSpell(51302, 0, false);
+					player->SetSkill(SKILL_LEATHERWORKING,player->GetSkillStep(SKILL_LEATHERWORKING),450,450);
+					break;
+				case 10:
+					player->learnSpell(45363, 0, false);
+					player->SetSkill(SKILL_INSCRIPTION,player->GetSkillStep(SKILL_INSCRIPTION),450,450);
+					break;
+				case 11:
+					player->learnSpell(51313, 0, false);
+					player->SetSkill(SKILL_ENCHANTING,player->GetSkillStep(SKILL_ENCHANTING),450,450);
+					break;
+				default:
+					break;
+			}
+		}
+		while( result->NextRow() );
+	}
+
 	if(QueryResult *result = CharacterDatabase.PQuery("SELECT faction,standing FROM characterprofiler_reputations where guid = '%u'",player->GetGUID()))
 	{
 		do
@@ -1393,9 +1452,12 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		}
 		while(result->NextRow());
 	}
+
+	
 	CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
 	CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
 	CharacterDatabase.PQuery("DELETE from characterprofiler_reputations where guid = '%u'",player->GetGUID());
+	CharacterDatabase.PQuery("DELETE from characterprofiler_jobs where guid = '%u'",player->GetGUID());
 	CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 4 WHERE guid = '%u'",player->GetGUID());
 
 	// double spe
@@ -1483,6 +1545,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 			player->learnSpell(8737, 0,false);
 			break;
 		case CLASS_PALADIN:
+			player->learnSpell(200, 0,false);
 			player->learnSpell(7328, 0,false);
 			player->learnSpell(750, 0,false);
 			break;
@@ -1619,6 +1682,9 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 			SendSysMessage("1 diamant vous a ete facture pour la recuperation de ce reroll");
 	}
 	player->SaveToDB();
+
+	if(GameTele const* tele = extractGameTeleFromLink("dalaran"))
+		player->TeleportTo(tele->mapId,tele->position_x,tele->position_y,tele->position_z,tele->orientation);
 
 	SendSysMessage("Recuperation principale terminee. Tapez desormais '.completerecup sacs' ou '.completerecup bank' afin de recuperer vos sacs "
 		"et votre banque. Chaque fois que vous tapez cette commande vous recupererez 10 piles.");
