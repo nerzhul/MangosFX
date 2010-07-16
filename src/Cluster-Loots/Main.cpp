@@ -1,6 +1,6 @@
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
-#include "Config/ConfigEnv.h"
+#include "Config/Config.h"
 #include "Log.h"
 #include "Cluster.h"
 #include "SystemConfig.h"
@@ -27,6 +27,7 @@ int m_ServiceStatus = -1;
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
 DatabaseType CharacterDatabase;                             ///< Accessor to the character database
 DatabaseType loginDatabase;                                 ///< Accessor to the realm/login database
+DatabaseType LocalisationDatabase;
 
 /// Print out the usage string for this program on the console.
 void usage(const char *prog)

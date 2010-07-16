@@ -254,7 +254,7 @@ Global
 		{06761B24-4922-48D7-A676-16CCC9521223}.Debug|x64.Build.0 = Debug|x64
 		{06761B24-4922-48D7-A676-16CCC9521223}.Release|Win32.ActiveCfg = Release|Win32
 		{06761B24-4922-48D7-A676-16CCC9521223}.Release|Win32.Build.0 = Release|Win32
-		{06761B24-4922-48D7-A676-16CCC9521223}.Release|x64.ActiveCfg = Release|x64
+		{06761B24-4922-48D7-A676-16CCC9521223}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

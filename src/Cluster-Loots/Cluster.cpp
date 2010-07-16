@@ -3,7 +3,7 @@
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
-#include <Config/ConfigEnv.h>
+#include <Config/Config.h>
 #include <Policies/SingletonImp.h>
 #include <Database/DatabaseEnv.h>
 #include <ace/OS_NS_signal.h>

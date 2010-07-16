@@ -1,6 +1,6 @@
 #include "ClusterSpec.h"
 #include <Timer.h>
-#include <Config/ConfigEnv.h>
+#include <Config/Config.h>
 #include <Database/DatabaseEnv.h>
 #include <Policies/SingletonImp.h>
 #include <ObjectMgr.h>
