@@ -525,7 +525,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			{
 				if(GetMap())
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
-						if(cr->GetDistance2d(5391.609f,2707.791f) < 50.0f || cr->GetDistance2d(5392.910f,2975.26) < 50.0f)
+						if(cr->GetPositionX() > 5073.0f && cr->GetPositionX() < 5392.0f && cr->GetPositionY() > 2550.0f && cr->GetPositionY() < 3100.0f)
 						{
 							cr->UpdateEntry(CRE_ENG_H,HORDE);
 							cr->setFaction(WintergraspFaction[owner]);
@@ -535,7 +535,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			{
 				if(GetMap())
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
-						if(cr->GetDistance2d(5391.609f,2707.791f) < 50.0f || cr->GetDistance2d(5392.910f,2975.26) < 50.0f)
+						if(cr->GetPositionX() > 5073.0f && cr->GetPositionX() < 5392.0f && cr->GetPositionY() > 2550.0f && cr->GetPositionY() < 3100.0f)
 						{
 							cr->UpdateEntry(CRE_ENG_A,ALLIANCE);
 							cr->setFaction(WintergraspFaction[owner]);
