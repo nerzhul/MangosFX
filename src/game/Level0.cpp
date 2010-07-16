@@ -31,6 +31,7 @@
 #include "Util.h"
 #include "WorldSession.h"
 #include "GossipDef.h"
+#include "ObjectMgr.h"
 
 bool ChatHandler::HandleHelpCommand(const char* args)
 {

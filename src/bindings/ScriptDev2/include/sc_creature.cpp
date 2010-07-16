@@ -904,13 +904,13 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
 	if (fly)
     {
 		who->SetReactState(REACT_PASSIVE);
-        who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+        who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x03);
         who->AddSplineFlag(SplineFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
     }
     else
     {
 		who->SetReactState(REACT_AGGRESSIVE);
-        who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+        who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x00);
         who->RemoveSplineFlag(SplineFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
     }
 }
