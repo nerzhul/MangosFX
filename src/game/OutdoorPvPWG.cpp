@@ -50,6 +50,8 @@ OutdoorPvPWG::OutdoorPvPWG()
 	NWSpawnsGo.clear();
 	SWSpawnsGo.clear();
 	ToDespawnInWarCr.clear();
+	FortressGuards.clear();
+	FortressEngineer.clear();
 
     m_LastResurrectTime = 0; // Temporal copy of BG system till 3.2
 }
@@ -480,6 +482,69 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 			}
 		}
 	}
+
+	if(!FortressGuards.empty())
+	{
+		for (std::vector<uint64>::iterator itr = FortressGuards.begin(); itr != FortressGuards.end(); ++itr)
+		{
+			if(owner == BG_TEAM_HORDE)
+			{
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						if(cr->GetPositionX() > 5073.0f && cr->GetPositionX() < 5392.0f && cr->GetPositionY() > 2550.0f && cr->GetPositionY() < 3100.0f)
+						{
+							cr->UpdateEntry(30739,HORDE);
+							cr->setFaction(WintergraspFaction[owner]);
+						}
+					}
+				}
+			}
+			else
+			{
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						if(cr->GetPositionX() > 5073.0f && cr->GetPositionX() < 5392.0f && cr->GetPositionY() > 2550.0f && cr->GetPositionY() < 3100.0f)
+						{
+							cr->UpdateEntry(30740,ALLIANCE);
+							cr->setFaction(WintergraspFaction[owner]);
+						}
+					}
+				}
+			}
+		}
+	}
+	if(!FortressEngineer.empty())
+	{
+		for (std::vector<uint64>::iterator itr = FortressEngineer.begin(); itr != FortressEngineer.end(); ++itr)
+		{
+			if(owner == BG_TEAM_HORDE)
+			{
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						cr->UpdateEntry(CRE_ENG_H,HORDE);
+						cr->setFaction(WintergraspFaction[owner]);
+					}
+				}
+			}
+			else
+			{
+				if(GetMap())
+				{
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					{
+						cr->UpdateEntry(CRE_ENG_A,ALLIANCE);
+						cr->setFaction(WintergraspFaction[owner]);
+					}
+				}
+			}
+		}
+	}
 }
 
 void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
@@ -859,6 +924,7 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 				creature->Respawn();
 			Alliance_Spawns.push_back(creature->GetGUID());
 			break;
+		case 30499:
 		case 30400:
 			if(creature->GetDistance2d(4945.7f,2389.8f) < 70.0f)
 				NESpawnsCr.push_back(creature->GetGUID());
@@ -868,6 +934,8 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 				SWSpawnsCr.push_back(creature->GetGUID());
 			else if(creature->GetDistance2d(4359.9f,2347.7f) < 70.0f)
 				SESpawnsCr.push_back(creature->GetGUID());
+			else if(creature->GetDistance2d(5391.609f,2707.791f) < 50.0f || creature->GetDistance2d(5392.910f,2975.26) < 50.0f)
+				FortressEngineer.push_back(creature->GetGUID());
 			break;
 		case 30872:
 		case 30873:
@@ -904,6 +972,17 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 			break;
 		case 28366:
 			FortressTurrets_Spawns.push_back(creature->GetGUID());
+			break;
+		case 30739:
+		case 30740:
+			{
+				FortressGuards.push_back(creature->GetGUID());
+				if(getDefenderTeam() == BG_TEAM_ALLIANCE)
+					creature->UpdateEntry(30740,ALLIANCE);
+				else
+					creature->UpdateEntry(30739,HORDE);
+				creature->setFaction(WintergraspFaction[getDefenderTeam()]);
+			}
 			break;
         default:
             break;
