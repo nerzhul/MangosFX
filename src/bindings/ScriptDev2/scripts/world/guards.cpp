@@ -101,7 +101,7 @@ void SendDefaultMenu_guard_azuremyst(Player* pPlayer, Creature* pCreature, uint3
     switch(uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF + 1:                    //Bank
-            pPlayer->SEND_POI(-3918.95, -11544.7, 7, 6, 0, "Bank");
+            pPlayer->SEND_POI(-3918.95, -11544.7, 7, 6, 0, GOSSIP_TEXT_BANK);
             pPlayer->SEND_GOSSIP_MENU(10067, pCreature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF + 2:                    //Hippogryph Master
