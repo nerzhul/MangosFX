@@ -467,6 +467,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 					{
 						cr->GetVehicleKit()->RemoveAllPassengers();
 						cr->setFaction(1802);
+						cr->SetVisibility(VISIBILITY_ON);
 					}
 			}
 			else
@@ -476,6 +477,7 @@ void OutdoorPvPWG::ChangeFortressSpawns(BattleGroundTeamId owner)
 					{
 						cr->GetVehicleKit()->RemoveAllPassengers();
 						cr->setFaction(1801);
+						cr->SetVisibility(VISIBILITY_ON);
 					}
 			}
 		}
@@ -2183,6 +2185,8 @@ void OPvPCapturePointWG::ChangeTeam(BattleGroundTeamId oldTeam)
         if (m_engGuid)
         {
             *m_engEntry = entry;
+			error_log("TEST");
+			m_engineer->SetFaction(WintergraspFaction[m_team]);
             _RespawnCreatureIfNeeded(m_engineer, entry);
         }
         if (m_spiGuid)

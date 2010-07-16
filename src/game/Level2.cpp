@@ -4924,7 +4924,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			{
 				Field *fields = result->Fetch();
 				uint8 recupstate = fields[0].GetUInt8();
-				if(recupstate != uint8(2))
+				if(recupstate != uint8(3))
 					return false;
 			}
 			else
@@ -4966,7 +4966,7 @@ bool ChatHandler::HandleRecuperationCommand(const char* args)
 			CharacterDatabase.PQuery("DELETE from characterprofiler_items where guid = '%u'",player->GetGUID());
 			CharacterDatabase.PQuery("DELETE from characterprofiler_spells where guid = '%u'",player->GetGUID());
 			CharacterDatabase.PQuery("DELETE from characterprofiler_reputations where guid = '%u'",player->GetGUID());
-			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 3 WHERE guid = '%u'",player->GetGUID());
+			CharacterDatabase.PQuery("UPDATE characterprofiler_recupstate set recupstate = 4 WHERE guid = '%u'",player->GetGUID());
 		}
 	}
 

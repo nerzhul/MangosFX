@@ -12077,8 +12077,8 @@ void Unit::setDeathState(DeathState s)
         // remove aurastates allowing special moves
         ClearAllReactives();
         ClearDiminishings();
-		if (m_vehicleKit)
-            m_vehicleKit->Die();
+		if (GetVehicleKit())
+            GetVehicleKit()->Die();
     }
     else if(s == JUST_ALIVED)
     {

@@ -323,8 +323,6 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     movementInfo.UpdateTime(getMSTime());
 
     WorldPacket data(opcode, recv_data.size());
-	if(!mover)
-		return;
     data.appendPackGUID(mover->GetGUID());                  // write guid
     movementInfo.Write(data);                               // write data
     GetPlayer()->SendMessageToSet(&data, false);

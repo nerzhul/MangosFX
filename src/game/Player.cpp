@@ -22833,6 +22833,26 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 				}
 			}
 			break;
+		case CLASS_PRIEST:
+			switch(spell->SpellIconID)
+			{
+				// Shadow tissage proc fix
+				case 548:
+				case 1980:
+				case 3789:
+				case 8092:
+				case 2895:
+					uint8 chance = 0;
+					if(HasAura(15257))
+						chance = 33;
+					else if(HasAura(15331))
+						chance = 66;
+					else if(HasAura(15332))
+						chance = 100;
+					if(chance && chance >= urand(0,100))
+						CastSpell(this,15258,true);
+					break;
+			}
 		default:
 			break;
 	}
