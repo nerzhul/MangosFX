@@ -15117,6 +15117,7 @@ void Unit::ExitVehicle()
 
 	if(uint64 vehicleGUID = GetVehicleGUID())
     {
+		float x = 0.0f, y = 0.0f, z = 0.0f;
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
@@ -15134,18 +15135,11 @@ void Unit::ExitVehicle()
 			if(m_vehicle)
 				m_vehicle->RemovePassenger(this);
 
-			float x = vehUnit->GetPositionX();
-			float y = vehUnit->GetPositionY();
-			float z = vehUnit->GetPositionZ() + 2.0f;
-			if(IsInWorld())
-			{
-				GetClosePoint(x, y, z, 2.0f);
-				SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
-			}
-			clearUnitState(UNIT_STAT_ON_VEHICLE);
-			m_movementInfo.ClearTransportData();
-			m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+			x = vehUnit->GetPositionX();
+			y = vehUnit->GetPositionY();
+			z = vehUnit->GetPositionZ() + 2.0f;
 		}
+
 		SetVehicleGUID(0);
 		m_vehicle = NULL;
 		if(GetTypeId() == TYPEID_PLAYER)
@@ -15154,6 +15148,17 @@ void Unit::ExitVehicle()
 			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
 			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
 		}
+
+		m_movementInfo.ClearTransportData();
+		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+		clearUnitState(UNIT_STAT_ON_VEHICLE);
+
+		if(IsInWorld())
+		{
+			GetClosePoint(x, y, z, 2.0f);
+			SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
+		}
+		
     }
 }
 

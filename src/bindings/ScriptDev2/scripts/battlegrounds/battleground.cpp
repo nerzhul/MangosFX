@@ -146,7 +146,7 @@ bool GOSelect_wg_engineer( Player *pPlayer, Creature* pCreature, uint32 sender, 
 			break;
 		case SIEGE:
 			if(pPlayer->CanCreateWGVehicle())
-				pPlayer->CastSpell(pPlayer,pPlayer->GetBGTeam() == BG_TEAM_ALLIANCE ? 56661 : 61408, false);
+				pPlayer->CastSpell(pPlayer,pPlayer->GetTeam() == ALLIANCE ? 56661 : 61408, false);
 			break;
     }
 	pPlayer->CLOSE_GOSSIP_MENU();
