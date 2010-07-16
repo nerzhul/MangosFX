@@ -45,7 +45,7 @@ alter table creature_movement add `wpguid` int(11) default '0';
 //-----------------------------------------------//
 void WaypointMovementGenerator<Creature>::LoadPath(Creature &c)
 {
-    sLog.outDetail("LoadPath: loading waypoint path for creature %u, %u", c.GetGUIDLow(), c.GetDBTableGUIDLow());
+    //sLog.outDetail("LoadPath: loading waypoint path for creature %u, %u", c.GetGUIDLow(), c.GetDBTableGUIDLow());
 
     i_path = sWaypointMgr.GetPath(c.GetDBTableGUIDLow());
 

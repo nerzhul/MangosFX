@@ -15090,9 +15090,7 @@ void Unit::ExitVehicle()
 {
 	if(uint64 vehicleGUID = GetVehicleGUID())
     {
-		clearUnitState(UNIT_STAT_ON_VEHICLE);
-		m_movementInfo.ClearTransportData();
-		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+		
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
@@ -15110,14 +15108,16 @@ void Unit::ExitVehicle()
 			if(m_vehicle)
 				m_vehicle->RemovePassenger(this);
 
+			clearUnitState(UNIT_STAT_ON_VEHICLE);
+			m_movementInfo.ClearTransportData();
+			m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+
 			float x = vehUnit->GetPositionX();
 			float y = vehUnit->GetPositionY();
 			float z = vehUnit->GetPositionZ() + 2.0f;
-			error_log("x : %f y : %f z : %f",x,y,z);
 			if(IsInWorld())
 			{
 				GetClosePoint(x, y, z, 2.0f);
-				error_log("x : %f y : %f z : %f",x,y,z);
 				SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 			}
 		}

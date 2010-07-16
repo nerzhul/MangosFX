@@ -1420,7 +1420,7 @@ void Player::Update( uint32 p_time )
 
     //we should execute delayed teleports only for alive(!) players
     //because we don't want player's ghost teleported from graveyard
-    if(IsHasDelayedTeleport() && isAlive() && !GetVehicleGUID())
+    if(IsHasDelayedTeleport() && isAlive() && !GetVehicle())
         TeleportTo(m_teleport_dest, m_teleport_options);
 
     if (GetMapId() == 571 && IsInWorld())

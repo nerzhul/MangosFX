@@ -394,7 +394,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		unit->SendMessageToSet(&data, true);
 	}
 
-	if(seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0)
+	if((seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0) && (me->GetTypeId() == TYPEID_UNIT && !((Creature*)me)->isHostileVehicle()))
     {
         if(!(GetVehicleFlags() & VF_MOVEMENT))
 		{
