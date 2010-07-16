@@ -15142,12 +15142,6 @@ void Unit::ExitVehicle()
 
 		SetVehicleGUID(0);
 		m_vehicle = NULL;
-		if(GetTypeId() == TYPEID_PLAYER)
-		{
-			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
-			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
-			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
-		}
 
 		m_movementInfo.ClearTransportData();
 		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
@@ -15158,7 +15152,13 @@ void Unit::ExitVehicle()
 			GetClosePoint(x, y, z, 2.0f);
 			SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
 		}
-		
+
+		if(GetTypeId() == TYPEID_PLAYER)
+		{
+			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
+			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+		}
     }
 }
 
