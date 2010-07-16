@@ -966,11 +966,11 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 		case 30740:
 			{
 				FortressGuards.push_back(creature->GetGUID());
-				if(getDefenderTeam() == BG_TEAM_ALLIANCE)
+				/*if(getDefenderTeam() == BG_TEAM_ALLIANCE)
 					creature->UpdateEntry(30740,ALLIANCE);
 				else
 					creature->UpdateEntry(30739,HORDE);
-				creature->setFaction(WintergraspFaction[getDefenderTeam()]);
+				creature->setFaction(WintergraspFaction[getDefenderTeam()]);*/
 			}
 			break;
         default:
@@ -1745,6 +1745,7 @@ void OutdoorPvPWG::StartBattle()
     sWorld.UpdateAreaDependentAuras();
 	sWorld.UpdateBuffForAll(false);
 	sWorld.ForceLeaveArchavonVault();
+	ChangeFortressSpawns(m_defender);
 
 	for(std::vector<uint64>::iterator itr = BuildingDestroyables.begin(); itr != BuildingDestroyables.end();itr++)
 	{
