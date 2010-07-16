@@ -2498,7 +2498,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 					case 37096:                             // Blood Elf Illusion
 					case 46354:                             // Blood Elf Illusion
 					{
-						uint8 gender = target->getGender();
+						uint8 gender = m_target->getGender();
 						uint32 spellId;
 						switch (GetId())
 						{
@@ -2507,7 +2507,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 							case 46354: spellId = (gender == GENDER_MALE ? 46355 : 46356); break;
 							default: return;
 						}
-						target->CastSpell(target, spellId, true, NULL, this);
+						m_target->CastSpell(m_target, spellId, true, NULL, this);
 						return;
 					}
                     case 39850:                             // Rocket Blast
