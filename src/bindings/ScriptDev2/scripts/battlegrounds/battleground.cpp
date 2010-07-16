@@ -115,12 +115,12 @@ bool GoHello_wg_engineer( Player *pPlayer, Creature* pCreature)
 {
 	if(pPlayer->CanCreateWGVehicle())
 	{
-		if(pPlayer->HasAura(33280) || pPlayer->HasAura(55629))
+		if(pPlayer->HasAura(33280) || pPlayer->HasAura(55629) || pPlayer->isGameMaster())
 		{
 			pPlayer->ADD_GOSSIP_ITEM(0, "Construire une catapulte", GOSSIP_SENDER_MAIN, CATAPULT);
 			pPlayer->ADD_GOSSIP_ITEM(0, "Construire un demolisseur", GOSSIP_SENDER_MAIN, DEMOLISHER);
 		}
-		if(pPlayer->HasAura(55629) && pPlayer->isGameMaster())
+		if(pPlayer->HasAura(55629) || pPlayer->isGameMaster())
 			pPlayer->ADD_GOSSIP_ITEM(0, "Construire un engin de siege", GOSSIP_SENDER_MAIN, SIEGE);
 	}
 	pPlayer->SEND_GOSSIP_MENU(DEFAULT_GOSSIP_MESSAGE, pCreature->GetGUID());

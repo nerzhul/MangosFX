@@ -15166,6 +15166,10 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 	if(!m_vehicle || seatId < 0)
 		return;
 
+	// Temp crashfix
+	if(seatId == 7 && GetTypeId() == TYPEID_PLAYER)
+		return;
+
 	InterruptNonMeleeSpells(false);
 
 	if(Pet *pet = GetPet())
