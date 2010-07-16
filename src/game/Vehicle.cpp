@@ -112,13 +112,13 @@ void Vehicle::InstallAllAccessories()
 			me->setPowerType(POWER_ENERGY);
             me->SetMaxPower(POWER_ENERGY, 100);
             me->ModifyPower(POWER_ENERGY, 100);
-			InstallAccessory(28319,7);
+			//InstallAccessory(28319,7);
 			break;
         case 32627:
 			me->setPowerType(POWER_ENERGY);
             me->SetMaxPower(POWER_ENERGY, 100);
             me->ModifyPower(POWER_ENERGY, 100);
-			InstallAccessory(32629,7);
+			//InstallAccessory(32629,7);
 			break;
         case 32930:
             InstallAccessory(32933,0);
