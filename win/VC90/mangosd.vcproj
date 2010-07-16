@@ -49,7 +49,7 @@
 				AdditionalOptions="/MP"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\dep\include\gsoap;..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\game;..\..\src\mangosd;..\..\dep\ACE_wrappers"
-				PreprocessorDefinitions="VERSION=&quot;0.16.0-DEV&quot;;WIN32;NDEBUG;_CONSOLE;ENABLE_CLI;_SECURE_SCL=0"
+				PreprocessorDefinitions="VERSION=&quot;0.16.0-DEV&quot;;WIN32;NDEBUG;_CONSOLE;ENABLE_CLI;_SECURE_SCL=0;__WIN32__;__x86__;_WIN32_WINNT=0x0400;__NT__;__OSVERSION__=4"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -80,7 +80,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrt.lib"
+				AdditionalDependencies="libmySQL.lib libeay32.lib ws2_32.lib winmm.lib odbc32.lib odbccp32.lib advapi32.lib dbghelp.lib framework.lib msvcrt.lib mswsock.lib omniORB414_rt.lib omniDynamic414_rt.lib omnithread34_rt.lib"
 				OutputFile="..\..\bin\$(PlatformName)_$(ConfigurationName)\mangosd.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
