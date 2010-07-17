@@ -393,7 +393,7 @@ void BattleGroundSA::EndRound()
 	{
 		// define time & winner of the round
 		TotalTime = 0;
-		RoundLenght = BG_SA_ROUNDLENGTH - RoundScores[round].time;
+		RoundLenght = RoundScores[round].time;
 		if(RoundScores[round].time < BG_SA_ROUNDLENGTH)
 			RoundScores[round].winner = attackers;
 		else
@@ -524,19 +524,14 @@ WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
 void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
 {
     GraveyardStatus[i] = attackers;
-	error_log("TEST1");
     WorldSafeLocsEntry const *sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
 	if(GetTeamIndexByTeamId(Source->GetTeam()) != attackers)
 		return;
-	error_log("TEST2");
     switch(i)
     {
         case BG_SA_LEFT_CAPTURABLE_GY:
-			error_log("TEST3");
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
 				cr->SetPhaseMask(1,true);
-			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
-				cr->SetPhaseMask(2,true);
 
 			if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
 			{
@@ -568,11 +563,8 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
                 SendWarningToAll("Le Cimetiere de l'Ouest a ete pris par la Horde");
             break;
         case BG_SA_RIGHT_CAPTURABLE_GY:
-			error_log("TEST4");
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
 				cr->SetPhaseMask(1,true);
-			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
-				cr->SetPhaseMask(2,true);
 
 			for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
 				if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
@@ -607,8 +599,6 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
         case BG_SA_CENTRAL_CAPTURABLE_GY:
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
 				cr->SetPhaseMask(1,true);
-			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
-				cr->SetPhaseMask(2,true);
 
             if(GraveyardStatus[i] == BG_TEAM_ALLIANCE)
 			{
