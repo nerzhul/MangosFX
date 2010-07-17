@@ -524,13 +524,15 @@ WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
 void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
 {
     GraveyardStatus[i] = attackers;
+	error_log("TEST1");
     WorldSafeLocsEntry const *sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
 	if(GetTeamIndexByTeamId(Source->GetTeam()) != attackers)
 		return;
-
+	error_log("TEST2");
     switch(i)
     {
         case BG_SA_LEFT_CAPTURABLE_GY:
+			error_log("TEST3");
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
 				cr->SetPhaseMask(1,true);
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
@@ -566,6 +568,7 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
                 SendWarningToAll("Le Cimetiere de l'Ouest a ete pris par la Horde");
             break;
         case BG_SA_RIGHT_CAPTURABLE_GY:
+			error_log("TEST4");
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers]))
 				cr->SetPhaseMask(1,true);
 			if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[i][attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE]))
@@ -870,15 +873,15 @@ void BattleGroundSA::LoadSpiritGuids()
 	{
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			if(cr->GetDistance2d(1456.9f,-52.255f) < 15.0f)
+			if(cr->GetDistance2d(1456.9f,-52.255f) < 25.0f)
 				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(964.843f,-189.878f) < 15.0f)
+			else if(cr->GetDistance2d(964.843f,-189.878f) < 25.0f)
 				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1398.79f,-288.838f) < 15.0f)
+			else if(cr->GetDistance2d(1398.79f,-288.838f) < 25.0f)
 				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1388.42f,203.042f) < 15.0f)
+			else if(cr->GetDistance2d(1388.42f,203.042f) < 25.0f)
 				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1121.95f,4.48f) < 15.0f)
+			else if(cr->GetDistance2d(1121.95f,4.48f) < 25.0f)
 				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 		}
 	}
