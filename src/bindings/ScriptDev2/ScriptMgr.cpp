@@ -437,9 +437,11 @@ InstanceData* CreateInstanceData(Map *map)
 {
     if (!map->IsDungeon()) return NULL;
 
+	error_log("TEST2");
     Script *tmpscript = m_scripts[((InstanceMap*)map)->GetScriptId()];
     if (!tmpscript || !tmpscript->GetInstanceData) return NULL;
 
+	error_log("TEST3");
     return tmpscript->GetInstanceData(map);
 }
 

@@ -2588,9 +2588,11 @@ void InstanceMap::CreateInstanceData(bool load)
     if(i_data != NULL)
         return;
 
+	error_log("TEST");
     InstanceTemplate const* mInstance = ObjectMgr::GetInstanceTemplate(GetId());
     if (mInstance)
     {
+		error_log("TEST2");
         i_script_id = mInstance->script_id;
         i_data = Script->CreateInstanceData(this);
     }

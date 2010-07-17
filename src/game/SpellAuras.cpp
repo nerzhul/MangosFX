@@ -9466,7 +9466,14 @@ void Aura::HandleAuraLinked(bool apply, bool Real)
 	SpellEntry const *spellInfo = sSpellStore.LookupEntry(linkedSpell);
 	if (!spellInfo)
 	{
-		sLog.outError("HandleAuraLinked for spell %u effect %u: triggering unknown spell %u", GetId(), m_effIndex, linkedSpell);
+		switch(linkedSpell)
+		{
+			case 65142:
+				break;
+			default:
+				sLog.outError("HandleAuraLinked for spell %u effect %u: triggering unknown spell %u", GetId(), m_effIndex, linkedSpell);
+				break;
+		}		
 		return;
 	}
 	
