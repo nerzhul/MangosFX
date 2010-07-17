@@ -404,7 +404,6 @@ bool GOHello_go_trouble_int(Player* pPlayer, GameObject* pGo)
     return true;
 }
 
-
 bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 {
 	if(pPlayer->IsWintergraspPortalActive() || !pPlayer->IsWintergraspPortalActive() && pPlayer->IsWintergraspDefender())
