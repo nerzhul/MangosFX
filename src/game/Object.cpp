@@ -1691,6 +1691,44 @@ void WorldObject::AddObjectToRemoveList()
     GetMap()->AddObjectToRemoveList(this);
 }
 
+GameObject* WorldObject::GetClosestGameObjectWithEntry(uint32 uiEntry, float fMaxSearchRange)
+{
+    GameObject* pGo = NULL;
+
+    CellPair pair(MaNGOS::ComputeCellPair(GetPositionX(), GetPositionY()));
+    Cell cell(pair);
+    cell.data.Part.reserved = ALL_DISTRICT;
+    cell.SetNoCreate();
+
+    MaNGOS::NearestGameObjectEntryInObjectRangeCheck go_check(*this, uiEntry, fMaxSearchRange);
+    MaNGOS::GameObjectLastSearcher<MaNGOS::NearestGameObjectEntryInObjectRangeCheck> searcher(this, pGo, go_check);
+
+    TypeContainerVisitor<MaNGOS::GameObjectLastSearcher<MaNGOS::NearestGameObjectEntryInObjectRangeCheck>, GridTypeMapContainer> go_searcher(searcher);
+
+    cell.Visit(pair, go_searcher,*(GetMap()));
+
+    return pGo;
+}
+
+Creature* WorldObject::GetClosestCreatureWithEntry(uint32 uiEntry, float fMaxSearchRange)
+{
+    Creature* pCreature = NULL;
+
+    CellPair pair(MaNGOS::ComputeCellPair(GetPositionX(), GetPositionY()));
+    Cell cell(pair);
+    cell.data.Part.reserved = ALL_DISTRICT;
+    cell.SetNoCreate();
+
+    MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck creature_check(*this, uiEntry, true, fMaxSearchRange);
+    MaNGOS::CreatureLastSearcher<MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck> searcher(this, pCreature, creature_check);
+
+    TypeContainerVisitor<MaNGOS::CreatureLastSearcher<MaNGOS::NearestCreatureEntryWithLiveStateInObjectRangeCheck>, GridTypeMapContainer> creature_searcher(searcher);
+
+    cell.Visit(pair, creature_searcher,*(GetMap()));
+
+    return pCreature;
+}
+
 Creature* WorldObject::SummonCreature(uint32 id, float x, float y, float z, float ang,TempSummonType spwtype,uint32 despwtime)
 {
     TemporarySummon* pCreature = new TemporarySummon(GetGUID());

@@ -61,6 +61,8 @@ GameObject::GameObject() : WorldObject(), m_goValue(new GameObjectValue)
 
 	m_groupLootTimer = 0;
 	lootingGroupLeaderGUID = 0;
+
+	Event_Timer = DAY*IN_MILLISECONDS;
 }
 
 GameObject::~GameObject()
@@ -194,6 +196,13 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 
 	SetZoneScript();
 
+	switch(GetEntry())
+	{
+		case 190752:
+			Event_Timer = 10000;
+			break;
+	}
+
 	return true;
 }
 
@@ -204,6 +213,25 @@ void GameObject::Update(uint32 p_time)
         //((Transport*)this)->Update(p_time);
         return;
     }
+
+	if(Event_Timer <= p_time)
+	{
+		switch(GetEntry())
+		{
+			case 190752:
+				if(GetMap())
+				{
+					if(Unit* u = GetClosestCreatureWithEntry(0,75.0f))
+					{
+						error_log("TEST");
+						u->CastSpell(u,66676,false);
+					}
+				}
+				break;
+		}
+	}
+	else
+		Event_Timer -= p_time;
 
     switch (m_lootState)
     {
@@ -1510,7 +1538,6 @@ bool GameObject::IsInRange(float x, float y, float z, float radius) const
 
 void GameObject::TakenDamage(uint32 damage, Unit* pKiller)
 {
-	error_log("TAKENDAMAGE");
     if (!m_goValue->building.health)
         return;
 

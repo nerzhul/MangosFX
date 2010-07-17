@@ -733,6 +733,8 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
     private:
         void SwitchDoorOrButton(bool activate, bool alternative = false);
 
+		uint32 Event_Timer;
+
         GridReference<GameObject> m_gridRef;
 };
 #endif

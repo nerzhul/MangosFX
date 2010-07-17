@@ -501,6 +501,8 @@ class MANGOS_DLL_SPEC WorldObject : public Object, public WorldLocation
         void AddToClientUpdateList();
         void RemoveFromClientUpdateList();
         void BuildUpdateData(UpdateDataMapType &);
+		Creature* GetClosestCreatureWithEntry(uint32 uiEntry, float fMaxSearchRange);
+		GameObject* GetClosestGameObjectWithEntry(uint32 uiEntry, float fMaxSearchRange);
 
         Creature* SummonCreature(uint32 id, float x, float y, float z, float ang,TempSummonType spwtype,uint32 despwtime);
 		GameObject* SummonGameobject(uint32 id, float x, float y, float z, float angle, uint32 despwtime);

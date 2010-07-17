@@ -549,7 +549,7 @@ void OutdoorPvPWG::ProcessEvent(GameObject *obj, uint32 eventId, Player* user)
 {
     if (obj->GetEntry() == 192829) // Titan Relic
     {
-        if (/*obj->GetGOInfo()->goober.eventId == eventId && */isWarTime() && m_timer < 1200000/*&& m_gate && m_gate->damageState == DAMAGE_DESTROYED*/)
+        if (/*obj->GetGOInfo()->goober.eventId == eventId && */isWarTime()/*&& m_gate && m_gate->damageState == DAMAGE_DESTROYED*/)
         {
 			if(user)
 				sWorld.SendZoneText(ZONE_WINTERGRASP, fmtstring("%s a pris l'Orbe !", user->GetName()));
