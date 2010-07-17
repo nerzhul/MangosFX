@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL HoR_LichKing_EscapeAI : public LibDevFSAI
 
     void Reset()
     {
-		if(pInstance->GetData(DATA_FACTION) == ALLIANCE)
+		if(pInstance && pInstance->GetData(DATA_FACTION) == ALLIANCE)
 			ModifyAuraStack(SPELL_ICEBLOCK);
 		else
 			ModifyAuraStack(SPELL_DARK_ARROW);
