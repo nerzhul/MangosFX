@@ -10940,7 +10940,8 @@ uint8 Player::CanUseItem( ItemPrototype const *pProto ) const
             return EQUIP_ERR_NO_REQUIRED_PROFICIENCY;
         if( getLevel() < pProto->RequiredLevel )
             return EQUIP_ERR_CANT_EQUIP_LEVEL_I;
-        return true;
+
+        return EQUIP_ERR_OK;
     }
     return EQUIP_ERR_ITEM_NOT_FOUND;
 }

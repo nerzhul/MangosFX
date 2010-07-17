@@ -72,6 +72,10 @@ void BattleGroundSA::Reset()
     attackers = ( (urand(0,1)) ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
     for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
 		GateStatus[i] = BG_SA_GATE_OK;
+	GraveyardStatus[BG_SA_BEACH_GY] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+	for(uint8 i=BG_SA_DEFENDER_LAST_GY;i<BG_SA_MAX_GY;i++)
+		GraveyardStatus[i] = attackers;
+
 	TotalTime = 0;
 	round = 0;
     ShipsStarted = false;
