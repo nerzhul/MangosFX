@@ -25,7 +25,6 @@
 #include "Chat.h"
 #include "Vehicle.h"
 
-
 BattleGroundSA::BattleGroundSA()
 {
 	m_BgCreatures.resize(BG_SA_MAX_GY);
@@ -40,6 +39,8 @@ BattleGroundSA::BattleGroundSA()
 	NEDemolisherSet.clear();
 	SWDemolisherSet.clear();
 	SEDemolisherSet.clear();
+	AllDemolishersSet.clear();
+	AllSpiritGuidsSet.clear();
 	BoatSet[0].clear();
 	BoatSet[1].clear();
 	for(uint8 i=0;i<BG_SA_MAX_GATES-1;i++)
@@ -200,7 +201,9 @@ void BattleGroundSA::Update(uint32 diff)
         {
             TotalTime = 0;
             ToggleTimer();
+			LoadSpiritGuids();
 			ResetGraveyards();
+			LoadDemolishers();
 			UpdateCatapults(true);
 			SendWarningToAll(LANG_BG_SA_HAS_BEGUN);
             status = (status == BG_SA_WARMUP) ? BG_SA_ROUND_ONE : BG_SA_ROUND_TWO;
@@ -262,6 +265,7 @@ void BattleGroundSA::ApplyStuckBuffOnPlayers()
 		{
 			p->ResurrectPlayer(100.0f);
 			p->CastStop();
+			p->ExitVehicle();
 			p->CastSpell(p,BG_SA_END_ROUND,false);
 		}
 	}
@@ -285,7 +289,7 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 	for(GUIDSet::iterator itr = NWDemolisherSet.begin(); itr != NWDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{	
-			/*if(usable)
+			if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -294,7 +298,7 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 			{
 				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-			}*/
+			}
 
 			if(cr->GetVehicleKit())
 				cr->GetVehicleKit()->RemoveAllPassengers();
@@ -305,13 +309,13 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 	for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			/*if(usable)
+			if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 
 			if(cr->GetVehicleKit())
 				cr->GetVehicleKit()->RemoveAllPassengers();
@@ -322,13 +326,13 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 	for(GUIDSet::iterator itr = SWDemolisherSet.begin(); itr != SWDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			/*if(usable)
+			if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 
 			if(cr->GetVehicleKit())
 				cr->GetVehicleKit()->RemoveAllPassengers();
@@ -339,13 +343,13 @@ void BattleGroundSA::UpdateCatapults(bool usable)
 	for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			/*if(usable)
+			if(usable)
 			{
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 			}
 			else
-				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);*/
+				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 
 			if(cr->GetVehicleKit())
 				cr->GetVehicleKit()->RemoveAllPassengers();
@@ -480,7 +484,6 @@ void BattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 value
 		((BattleGroundSAScore*)itr->second)->gates_destroyed += value;
 	else
 		BattleGround::UpdatePlayerScore(Source,type,value);
-
 }
 
 WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)
@@ -683,24 +686,7 @@ void BattleGroundSA::StartShips()
 		return;
 
 	for(GUIDSet::iterator itr = BoatSet[attackers].begin(); itr != BoatSet[attackers].end(); ++itr)
-	{
 		DoorOpen(*itr);
-		/*for(BattleGroundPlayerMap::const_iterator itr2 = GetPlayers().begin(); itr2 != GetPlayers().end();++itr2)
-		{
-			if(Player* p = sObjectMgr.GetPlayer(itr2->first))
-			{
-				if(p->GetBGTeam() != attackers)
-					continue;
-
-				UpdateData data;
-				WorldPacket pkt;
-				if(GameObject* go = GetBgMap()->GetGameObject(*itr))
-					go->BuildValuesUpdateBlockForPlayer(&data, p);
-				data.BuildPacket(&pkt);
-				p->GetSession()->SendPacket(&pkt);
-			}
-		}*/
-	}
 	  
 	ShipsStarted = true;
 }
@@ -848,6 +834,72 @@ const char* BattleGroundSA::GetDoorNameFromGateID(uint32 id)
     return "";
 }
 
+void BattleGroundSA::LoadDemolishers()
+{
+	for(GUIDSet::iterator itr = AllDemolishersSet.begin(); itr != AllDemolishersSet.end(); ++itr)
+	{
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			error_log("TEST");
+			if(cr->GetDistance2d(1611.597656,-117.270073) < 6.0f || cr->GetDistance2d(1575.562500,-158.421875) < 6.0f)
+			{
+				error_log("TTTTT");
+				NEDemolisherSet.insert(cr->GetGUID());
+			}
+			else if(cr->GetDistance2d(1618.047729,61.424641) < 6.0f || cr->GetDistance2d(1575.103149,98.873344) < 6.0f)
+			{
+				NWDemolisherSet.insert(cr->GetGUID());
+				error_log("TTTTT");
+			}
+			else if(cr->GetDistance2d(1371.055786,-317.071136) < 6.0f || cr->GetDistance2d(1391.213f,-284.105) < 6.0f)
+			{
+				SEDemolisherSet.insert(cr->GetGUID());
+				error_log("TTTTT");
+			}
+			else if(cr->GetDistance2d(1353.139893,223.745438) < 6.0f || cr->GetDistance2d(1377.583f,182.722f) < 6.0f)
+			{
+				SWDemolisherSet.insert(cr->GetGUID());
+				error_log("TTTTT");
+			}
+		}
+	}
+
+	for(GUIDSet::iterator itr = NWDemolisherSet.begin(); itr != NWDemolisherSet.end(); ++itr)
+		AllDemolishersSet.erase(*itr);
+
+	for(GUIDSet::iterator itr = NEDemolisherSet.begin(); itr != NEDemolisherSet.end(); ++itr)
+		AllDemolishersSet.erase(*itr);
+
+	for(GUIDSet::iterator itr = SWDemolisherSet.begin(); itr != SWDemolisherSet.end(); ++itr)
+		AllDemolishersSet.erase(*itr);
+
+	for(GUIDSet::iterator itr = SEDemolisherSet.begin(); itr != SEDemolisherSet.end(); ++itr)
+		AllDemolishersSet.erase(*itr);
+}
+
+void BattleGroundSA::LoadSpiritGuids()
+{
+	for(GUIDSet::iterator itr = AllSpiritGuidsSet.begin(); itr != AllSpiritGuidsSet.end(); ++itr)
+	{
+		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
+		{
+			if(cr->GetDistance2d(1456.9f,-52.255f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(964.843f,-189.878f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1398.79f,-288.838f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1388.42f,203.042f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			else if(cr->GetDistance2d(1121.95f,4.48f) < 15.0f)
+				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+		}
+	}
+
+	for(uint8 i=0;i<5;i++)
+		for(uint8 j=0;j<2;j++)
+			AllSpiritGuidsSet.erase(SpiritGuidesGUID[i][j]);
+}
 
 void BattleGroundSA::OnCreatureCreate(Creature* cr)
 {
@@ -861,16 +913,8 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			cr->setFaction(defFaction);
 			break;
 		case 28781:
-			if(cr->GetDistance2d(1611.597656,-117.270073) < 6.0f || cr->GetDistance2d(1575.562500,-158.421875) < 6.0f)
-				NEDemolisherSet.insert(cr->GetGUID());
-			else if(cr->GetDistance2d(1618.047729,61.424641) < 6.0f || cr->GetDistance2d(1575.103149,98.873344) < 6.0f)
-				NWDemolisherSet.insert(cr->GetGUID());
-			else if(cr->GetDistance2d(1371.055786,-317.071136) < 6.0f || cr->GetDistance2d(1391.213f,-284.105) < 6.0f)
-				SEDemolisherSet.insert(cr->GetGUID());
-			else if(cr->GetDistance2d(1353.139893,223.745438) < 6.0f || cr->GetDistance2d(1377.583f,182.722f) < 6.0f)
-				SWDemolisherSet.insert(cr->GetGUID());
-
-			/*if (status != BG_SA_ROUND_ONE && status != BG_SA_ROUND_TWO)
+			AllDemolishersSet.insert(cr->GetGUID());
+			if (status != BG_SA_ROUND_ONE && status != BG_SA_ROUND_TWO)
 			{
                 cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -879,7 +923,7 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			{
                 cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-			}*/
+			}
 
 			cr->setFaction(attFaction);
 			break;
@@ -896,16 +940,7 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 		// Spirit Guides
 		case 12116:
 		case 12117:
-			if(cr->GetDistance2d(1456.9f,-52.255f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(964.843f,-189.878f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1398.79f,-288.838f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1388.42f,203.042f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
-			else if(cr->GetDistance2d(1121.95f,4.48f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+			AllSpiritGuidsSet.insert(cr->GetGUID());
 			break;
 	}
 }
@@ -929,6 +964,7 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 		case 193183:
 		case 193184:
 			BoatSet[BG_TEAM_HORDE].insert(go->GetGUID());
+			DoorClose(go->GetGUID());
 			if(attackers == BG_TEAM_ALLIANCE)
 				go->SetPhaseMask(2,true);
 			else

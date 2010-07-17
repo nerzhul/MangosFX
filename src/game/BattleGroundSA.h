@@ -240,6 +240,8 @@ class BattleGroundSA : public BattleGround
 		void UpdateTimer();
 		void UpdateCatapults(bool usable);
 		void ResetGraveyards();
+		void LoadDemolishers();
+		void LoadSpiritGuids();
 		void ApplyStuckBuffOnPlayers();
 		void RelocateAllPlayers(bool reseting);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
@@ -263,6 +265,8 @@ class BattleGroundSA : public BattleGround
 		GUIDSet NEDemolisherSet;
 		GUIDSet SWDemolisherSet;
 		GUIDSet SEDemolisherSet;
+		GUIDSet AllDemolishersSet;
+		GUIDSet AllSpiritGuidsSet;
 		GUIDSet BoatSet[2];
 		// GameObjects
 		uint64 GatesGUID[BG_SA_MAX_GATES];

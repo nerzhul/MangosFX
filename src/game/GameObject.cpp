@@ -214,6 +214,7 @@ void GameObject::Update(uint32 p_time)
         return;
     }
 
+	// For bombs
 	if(Event_Timer <= p_time)
 	{
 		switch(GetEntry())
@@ -225,7 +226,7 @@ void GameObject::Update(uint32 p_time)
 					{
 						u->CastSpell(GetPositionX(),GetPositionY(),GetPositionZ(),66676,false);
 						Event_Timer = DAY * IN_MILLISECONDS;
-						RemoveFromWorld();
+						SetPhaseMask(0x02,true);
 					}
 				}
 				break;
