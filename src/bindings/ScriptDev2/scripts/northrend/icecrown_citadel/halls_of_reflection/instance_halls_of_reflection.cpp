@@ -871,7 +871,7 @@ struct instance_halls_of_reflection : public ScriptedInstance
 				LichKing->GetMotionMaster()->Clear();
 				if(Creature* target = GetClosestCreatureWithEntry(LichKing,37014,250.0f))
 					target->ForcedDespawn();
-				if(GameObject* wall = GetClosestGameObjectWithEntry(LichKing,201385,150.0f))
+				if(GameObject* wall = LichKing->GetClosestGameObjectWithEntry(201385,150.0f))
 					OpenDoor(wall->GetGUID());
 
 				Wall++;

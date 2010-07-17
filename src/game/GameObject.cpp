@@ -223,8 +223,9 @@ void GameObject::Update(uint32 p_time)
 				{
 					if(Unit* u = Unit::GetUnit(*this,GetOwnerGUID()))
 					{
-						error_log("TEST");
 						u->CastSpell(GetPositionX(),GetPositionY(),GetPositionZ(),66676,false);
+						Event_Timer = DAY * IN_MILLISECONDS;
+						RemoveFromWorld();
 					}
 				}
 				break;

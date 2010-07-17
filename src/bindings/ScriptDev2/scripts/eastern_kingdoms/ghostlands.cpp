@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL npc_ranger_lilathaAI : public npc_escortAI
         switch(i)
         {
             case 0:
-                if (GameObject* pGoTemp = GetClosestGameObjectWithEntry(me, GO_CAGE, 10.0f))
+                if (GameObject* pGoTemp = me->GetClosestGameObjectWithEntry( GO_CAGE, 10.0f))
                 {
                     m_uiGoCageGUID = pGoTemp->GetGUID();
                     pGoTemp->SetGoState(GO_STATE_ACTIVE);

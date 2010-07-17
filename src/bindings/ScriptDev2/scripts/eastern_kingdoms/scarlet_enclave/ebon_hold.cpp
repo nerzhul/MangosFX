@@ -1492,7 +1492,7 @@ struct MANGOS_DLL_DECL mob_scarlet_courier_controllerAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff) 
     {
-        GameObject* treeGO = GetClosestGameObjectWithEntry(me, GO_INCONSPICUOUS_TREE, 40.0f);
+        GameObject* treeGO = me->GetClosestGameObjectWithEntry(GO_INCONSPICUOUS_TREE, 40.0f);
         if(treeGO && bAmbush_overlook == false)
         {
             Creature* pCourier = me->SummonCreature(NPC_SCARLET_COURIER, 1461.65, -6010.34, 116.369, 0, TEMPSUMMON_TIMED_DESPAWN, 180000);
@@ -2025,7 +2025,7 @@ struct MANGOS_DLL_DECL npc_highlord_darion_mograineAI : public npc_escortAI
             case 1:
                 SetHoldState(true);
 
-                if (GameObject* pGo = GetClosestGameObjectWithEntry(me, GO_LIGHT_OF_DAWN, 100.0f)) // make dawn of light effect off
+                if (GameObject* pGo = me->GetClosestGameObjectWithEntry(GO_LIGHT_OF_DAWN, 100.0f)) // make dawn of light effect off
                 {
                     uiDawnofLightGUID = pGo->GetGUID();
                     pGo->SetPhaseMask(0, true);

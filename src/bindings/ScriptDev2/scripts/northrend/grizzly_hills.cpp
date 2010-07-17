@@ -128,7 +128,7 @@ struct npc_tallhorn_stagAI : public ScriptedAI
 	void Reset(){};
     void UpdateAI(const uint32 diff)
     {
-        if (GameObject* haunch = GetClosestGameObjectWithEntry(me,OBJECT_HAUNCH, 2.0f))
+        if (GameObject* haunch = me->GetClosestGameObjectWithEntry(OBJECT_HAUNCH, 2.0f))
         {
             me->SetStandState(UNIT_STAND_STATE_DEAD);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);

@@ -624,7 +624,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 
         //using a grid search here seem to be more efficient than caching all four guids
         //in instance script and calculate range to each.
-        GameObject* pPortal = GetClosestGameObjectWithEntry(me,GO_TWILIGHT_PORTAL,50.0f);
+        GameObject* pPortal = me->GetClosestGameObjectWithEntry(GO_TWILIGHT_PORTAL,50.0f);
 
         switch(me->GetEntry())
         {

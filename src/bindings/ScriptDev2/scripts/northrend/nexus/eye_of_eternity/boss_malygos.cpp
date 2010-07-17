@@ -231,7 +231,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
         m_uiDeepBreathTimer = 60000;
         m_uiShellTimer = 0;
 
-		if(GameObject* go = GetClosestGameObjectWithEntry(me,193070,80.0f))
+		if(GameObject* go = me->GetClosestGameObjectWithEntry(193070,80.0f))
 		{
 			go->SetUInt32Value(GAMEOBJECT_DISPLAYID,go->GetGOInfo()->displayId);
 			go->Rebuild();
@@ -469,7 +469,7 @@ struct MANGOS_DLL_DECL boss_malygosAI : public LibDevFSAI
 
                 if(Creature *pTemp = CallCreature(NPC_WYRMREST_SKYTALON,TEN_MINS,PREC_COORDS,NOTHING,pPlayer->GetPositionX(), pPlayer->GetPositionY(), pPlayer->GetPositionZ()))
                     pPlayer->EnterVehicle(pTemp);
-				if(GameObject* go = GetClosestGameObjectWithEntry(me,193070,80.0f))
+				if(GameObject* go = me->GetClosestGameObjectWithEntry(193070,80.0f))
 				{
 					go->DestroyForPlayer(pPlayer,true);
 					go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_DAMAGED | GO_FLAG_NODESPAWN);

@@ -316,7 +316,7 @@ bool QuestAccept_npc_rinji(Player* pPlayer, Creature* pCreature, const Quest* pQ
 {
     if (pQuest->GetQuestId() == QUEST_RINJI_TRAPPED)
     {
-        if (GameObject* pGo = GetClosestGameObjectWithEntry(pCreature, GO_RINJI_CAGE, INTERACTION_DISTANCE))
+        if (GameObject* pGo = pCreature->GetClosestGameObjectWithEntry(GO_RINJI_CAGE, INTERACTION_DISTANCE))
             pGo->UseDoorOrButton();
 
         if (npc_rinjiAI* pEscortAI = dynamic_cast<npc_rinjiAI*>(pCreature->AI()))

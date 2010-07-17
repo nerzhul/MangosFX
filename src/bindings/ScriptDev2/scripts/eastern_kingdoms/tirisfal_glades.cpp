@@ -47,7 +47,7 @@ bool GOHello_go_mausoleum_door(Player* pPlayer, GameObject* pGo)
     if (pPlayer->GetQuestStatus(QUEST_ULAG) != QUEST_STATUS_INCOMPLETE)
         return false;
 
-    if (GameObject* pTrigger = GetClosestGameObjectWithEntry(pPlayer, GO_TRIGGER, 30.0f))
+    if (GameObject* pTrigger = pPlayer->GetClosestGameObjectWithEntry(GO_TRIGGER, 30.0f))
     {
         pTrigger->SetGoState(GO_STATE_READY);
         pPlayer->SummonCreature(NPC_ULAG, 2390.26, 336.47, 40.01, 2.26, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 300000);
@@ -62,7 +62,7 @@ bool GOHello_go_mausoleum_trigger(Player* pPlayer, GameObject* pGo)
     if (pPlayer->GetQuestStatus(QUEST_ULAG) != QUEST_STATUS_INCOMPLETE)
         return false;
 
-    if (GameObject* pDoor = GetClosestGameObjectWithEntry(pPlayer, GO_DOOR, 30.0f))
+    if (GameObject* pDoor = pPlayer->GetClosestGameObjectWithEntry(GO_DOOR, 30.0f))
     {
         pGo->SetGoState(GO_STATE_ACTIVE);
         pDoor->RemoveFlag(GAMEOBJECT_FLAGS,GO_FLAG_INTERACT_COND);

@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL npc_muglashAI : public npc_escortAI
                 if (Player* pPlayer = GetPlayerForEscort())
                     DoScriptText(SAY_MUG_BRAZIER, me, pPlayer);
 
-                if (GameObject* pGo = GetClosestGameObjectWithEntry(me, GO_NAGA_BRAZIER, INTERACTION_DISTANCE*2))
+                if (GameObject* pGo = me->GetClosestGameObjectWithEntry( GO_NAGA_BRAZIER, INTERACTION_DISTANCE*2))
                 {
                     //some kind of event flag? Update to player/group only?
                     pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
