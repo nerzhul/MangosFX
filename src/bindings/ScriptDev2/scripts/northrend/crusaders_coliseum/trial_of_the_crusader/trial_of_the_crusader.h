@@ -124,6 +124,9 @@ struct MANGOS_DLL_DECL npc_toc10_announcerAI : public ScriptedAI
 		if(!HeroicMode)
 			return;
 
+		if(!pInstance)
+			return;
+
 		pInstance->DoUpdateWorldState(4390,1);
 		Try_Heroic--;
 		pInstance->DoUpdateWorldState(4389,Try_Heroic);

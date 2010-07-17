@@ -253,6 +253,9 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 	if(!EventStarted)
 	        return;
 
+	if(!pInstance)
+		return;
+
 	if(pInstance->GetData(TYPE_TRY) <= 0)
 		return;
 
