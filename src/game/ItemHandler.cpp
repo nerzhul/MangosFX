@@ -744,8 +744,22 @@ void WorldSession::SendListInventory(uint64 vendorguid)
         {
             if(ItemPrototype const *pProto = ObjectMgr::GetItemPrototype(crItem->item))
             {
-                if((pProto->AllowableClass & _player->getClassMask()) == 0 && pProto->Bonding == BIND_WHEN_PICKED_UP && !_player->isGameMaster())
-                    continue;
+                if (!_player->isGameMaster())
+				{
+					// class wrong item skip only for bindable case
+					if ((pProto->AllowableClass & _player->getClassMask()) == 0 && pProto->Bonding == BIND_WHEN_PICKED_UP)
+						continue;
+					
+					// race wrong item skip always
+					if ((pProto->Flags2 & ITEM_FLAGS2_HORDE_ONLY) && _player->GetTeam() != HORDE)
+						continue;
+					
+					if ((pProto->Flags2 & ITEM_FLAGS2_ALLIANCE_ONLY) && _player->GetTeam() != ALLIANCE)
+						continue;
+					
+					if ((pProto->AllowableRace & _player->getRaceMask()) == 0)
+						continue;
+				}
 
                 ++count;
 
