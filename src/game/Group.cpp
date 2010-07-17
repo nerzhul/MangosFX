@@ -964,6 +964,7 @@ void Group::SendUpdate()
 {
     Player *player;
 
+	uint32 packet_sent = 0;
     for(member_citerator citr = m_memberSlots.begin(); citr != m_memberSlots.end(); ++citr)
     {
         player = sObjectMgr.GetPlayer(citr->guid);
@@ -977,11 +978,11 @@ void Group::SendUpdate()
         data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
         if(m_groupType & GROUPTYPE_LFD)
         {
-            data << uint8(0);
-            data << uint32(0);
+            data << uint8(0);								// dungeon status
+            data << uint32(0);								// LFG entry
         }
         data << uint64(0x50000000FFFFFFFELL);               // related to voice chat?
-        data << uint32(0);                                  // 3.3, this value increments every time SMSG_GROUP_LIST is sent
+        data << uint32(packet_sent);                        // 3.3, this value increments every time SMSG_GROUP_LIST is sent
         data << uint32(GetMembersCount()-1);
         for(member_citerator citr2 = m_memberSlots.begin(); citr2 != m_memberSlots.end(); ++citr2)
         {
@@ -1016,6 +1017,7 @@ void Group::SendUpdate()
             data << uint8(0);                               // 3.3, dynamic difficulty?
         }
         player->GetSession()->SendPacket( &data );
+		packet_sent++;
     }
 }
 

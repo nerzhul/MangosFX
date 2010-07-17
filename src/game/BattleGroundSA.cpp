@@ -75,6 +75,7 @@ void BattleGroundSA::Reset()
     ShipsStarted = false;
 	OnLeftBoat = true;
     status = BG_SA_WARMUP;
+	WarmupTimer = BG_SA_WARMUPFIRSTROUND;
 }
 
 void BattleGroundSA::InitAllObjects()
@@ -193,7 +194,7 @@ void BattleGroundSA::Update(uint32 diff)
 
     if(status == BG_SA_WARMUP || status == BG_SA_SECOND_WARMUP)
     {
-        if(TotalTime >= BG_SA_WARMUPLENGTH)
+        if(TotalTime >= WarmupTimer)
         {
             TotalTime = 0;
             ToggleTimer();
@@ -212,9 +213,8 @@ void BattleGroundSA::Update(uint32 diff)
     {
         if(TotalTime >= BG_SA_ROUNDLENGTH)
         {
-			TotalTime = BG_SA_ROUNDLENGTH;
+			TotalTime = 0;
             EndRound();
-			RelocateAllPlayers(true);
 			UpdateCatapults(false);
             return;
         }
@@ -229,10 +229,39 @@ void BattleGroundSA::Update(uint32 diff)
             return;
         }
     }
+	else if(status == BG_SA_STUCK)
+	{
+		if(TotalTime >= 5000)
+		{
+			status = BG_SA_TELEPORT;
+			TotalTime = 0;
+			ApplyStuckBuffOnPlayers();
+			return;
+		}
+	}
+	else if(status == BG_SA_TELEPORT)
+	{
+		status = BG_SA_SECOND_WARMUP;
+		TotalTime = 0;
+		RelocateAllPlayers(true);
+		return;
+	}
 
 	UpdateTimer();
 }
 
+void BattleGroundSA::ApplyStuckBuffOnPlayers()
+{
+	for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
+	{
+		if(Player* p = sObjectMgr.GetPlayer(itr->first))
+		{
+			p->ResurrectPlayer(100.0f);
+			p->CastStop();
+			p->CastSpell(p,BG_SA_END_ROUND,false);
+		}
+	}
+}
 void BattleGroundSA::RelocateAllPlayers(bool reseting)
 {
 	for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
@@ -355,7 +384,7 @@ void BattleGroundSA::EndRound()
 	else
 	{
 		// define time & winner of the round
-		TotalTime = 0;
+		TotalTime = BG_SA_ROUNDLENGTH - TotalTime;
 		if(RoundScores[round].time < BG_SA_ROUNDLENGTH)
 			RoundScores[round].winner = attackers;
 		else
@@ -364,9 +393,8 @@ void BattleGroundSA::EndRound()
 		// Reinit
 		attackers = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 		InitAllObjects();
-		status = BG_SA_SECOND_WARMUP;
-		
-		
+		status = BG_SA_STUCK;
+		WarmupTimer = BG_SA_WARMUPSECONDROUND;		
 	}
 	round++;
 }
@@ -379,6 +407,7 @@ void BattleGroundSA::StartingEventCloseDoors()
 void BattleGroundSA::StartingEventOpenDoors()
 {
 	status = BG_SA_ROUND_ONE;
+	WarmupTimer = BG_SA_WARMUPFIRSTROUND;
 }
 
 void BattleGroundSA::AddPlayer(Player *plr)
@@ -647,7 +676,7 @@ void BattleGroundSA::StartShips()
 	for(GUIDSet::iterator itr = BoatSet[attackers].begin(); itr != BoatSet[attackers].end(); ++itr)
 	{
 		DoorOpen(*itr);
-		for(BattleGroundPlayerMap::const_iterator itr2 = GetPlayers().begin(); itr2 != GetPlayers().end();++itr2)
+		/*for(BattleGroundPlayerMap::const_iterator itr2 = GetPlayers().begin(); itr2 != GetPlayers().end();++itr2)
 		{
 			if(Player* p = sObjectMgr.GetPlayer(itr2->first))
 			{
@@ -661,7 +690,7 @@ void BattleGroundSA::StartShips()
 				data.BuildPacket(&pkt);
 				p->GetSession()->SendPacket(&pkt);
 			}
-		}
+		}*/
 	}
 	  
 	ShipsStarted = true;

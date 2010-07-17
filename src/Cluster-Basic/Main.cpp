@@ -12,7 +12,7 @@
 
 #ifdef WIN32
 #include "ServiceWin32.h"
-char serviceName[] = "LootClusterFX";
+char serviceName[] = "BasicClusterFX";
 char serviceLongName[] = "MaNGOSFX loot service";
 char serviceDescription[] = "Massive Network Game Object Server";
 /*

@@ -40,6 +40,8 @@ enum BG_SA_Status
     BG_SA_NOTSTARTED = 0,
     BG_SA_WARMUP,
     BG_SA_ROUND_ONE,
+	BG_SA_STUCK,
+	BG_SA_TELEPORT,
     BG_SA_SECOND_WARMUP,
     BG_SA_ROUND_TWO,
     BG_SA_BONUS_ROUND
@@ -55,7 +57,8 @@ enum BG_SA_GateState
 enum BG_SA_Timers
   {
     BG_SA_BOAT_START  =  60000,
-    BG_SA_WARMUPLENGTH = 120000,
+    BG_SA_WARMUPFIRSTROUND = 120000,
+	BG_SA_WARMUPSECONDROUND = 70000,
     BG_SA_ROUNDLENGTH = 600000
   };
 
@@ -136,14 +139,19 @@ const uint32 BG_SA_Factions[2] =
   };
 
 enum BG_SA_Graveyards
-  {
+{
     BG_SA_BEACH_GY = 0,
     BG_SA_DEFENDER_LAST_GY,
     BG_SA_RIGHT_CAPTURABLE_GY,
     BG_SA_LEFT_CAPTURABLE_GY,
     BG_SA_CENTRAL_CAPTURABLE_GY,
     BG_SA_MAX_GY
-  };
+};
+
+enum BG_SA_Miscellaneous
+{
+	BG_SA_END_ROUND		=	52459,
+};
 
 const uint32 BG_SA_GYEntries[BG_SA_MAX_GY] =
   {
@@ -225,6 +233,7 @@ class BattleGroundSA : public BattleGround
 		void UpdateTimer();
 		void UpdateCatapults(bool usable);
 		void ResetGraveyards();
+		void ApplyStuckBuffOnPlayers();
 		void RelocateAllPlayers(bool reseting);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
 		const char* GetDoorNameFromGateID(uint32 gateid);
@@ -236,6 +245,7 @@ class BattleGroundSA : public BattleGround
 		BattleGroundTeamId GraveyardStatus[BG_SA_MAX_GY];
 
 		uint32 TotalTime;
+		uint32 WarmupTimer;
 
 		// All guid storage
 		typedef std::set<uint64> GUIDSet;
