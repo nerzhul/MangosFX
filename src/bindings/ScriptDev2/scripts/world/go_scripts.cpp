@@ -418,9 +418,9 @@ bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 		if(bg->GetTypeID(true) == BATTLEGROUND_SA)
 			if(BattleGroundSA* bgSA = ((BattleGroundSA*)bg))
 			{
-				if((bgSA->getAttackers() == BG_TEAM_ALLIANCE && pPlayer->GetTeam() != ALLIANCE || 
+				if(/*(bgSA->getAttackers() == BG_TEAM_ALLIANCE && pPlayer->GetTeam() != ALLIANCE || 
 					bgSA->getAttackers() == BG_TEAM_HORDE && pPlayer->GetTeam() != HORDE)
-					&& !pPlayer->HasAura(54643))
+					&& */!pPlayer->HasAura(54643))
 				{
 					if(pGO->GetDistance2d(1468.119f,-225.901f) < 3.0f)
 						pPlayer->TeleportTo(607,1440.9f,-240.493f,35.263f,4.01f);

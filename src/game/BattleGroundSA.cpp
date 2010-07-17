@@ -773,7 +773,7 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 		// titan relic
 		case 192834:
 		{
-			if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_TWO)
+			if(status != BG_SA_ROUND_ONE && status != BG_SA_ROUND_TWO)
 				return;
 
 			const char* teamName = Source->GetTeam() == ALLIANCE ? "'Alliance" : "a Horde";
