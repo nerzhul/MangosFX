@@ -1454,7 +1454,7 @@ struct MANGOS_DLL_DECL mob_scarlet_courierAI : public ScriptedAI
                     me->GetMotionMaster()->MoveIdle();
                     me->AddSplineFlag(SPLINEFLAG_WALKMODE);
 
-                    if (GameObject* treeGO = GetClosestGameObjectWithEntry(me, GO_INCONSPICUOUS_TREE, 40.0f))
+                    if (GameObject* treeGO = me->GetClosestGameObjectWithEntry(GO_INCONSPICUOUS_TREE, 40.0f))
                     {
                         DoScriptText(SAY_TREE1, me);
                         me->GetMotionMaster()->MovePoint(1, treeGO->GetPositionX(), treeGO->GetPositionY(), treeGO->GetPositionZ());

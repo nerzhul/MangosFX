@@ -221,10 +221,10 @@ void GameObject::Update(uint32 p_time)
 			case 190752:
 				if(GetMap())
 				{
-					if(Unit* u = GetClosestCreatureWithEntry(0,75.0f))
+					if(Unit* u = Unit::GetUnit(*this,GetOwnerGUID()))
 					{
 						error_log("TEST");
-						u->CastSpell(u,66676,false);
+						u->CastSpell(GetPositionX(),GetPositionY(),GetPositionZ(),66676,false);
 					}
 				}
 				break;

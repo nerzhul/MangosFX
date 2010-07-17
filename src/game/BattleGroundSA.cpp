@@ -1073,7 +1073,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 	else
 		SendWarningToAll("La relique des titans est vulnerable !");
 
-	BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,player->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
+	BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
 
 	UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
     UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));
