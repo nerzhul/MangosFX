@@ -982,7 +982,7 @@ void Group::SendUpdate()
             data << uint32(0);								// LFG entry
         }
         data << uint64(0x50000000FFFFFFFELL);               // related to voice chat?
-        data << uint32(GetMembersCount());                  // 3.3, this value increments every time SMSG_GROUP_LIST is sent
+        data << uint32(packet_sent);									// 3.3, this value increments every time SMSG_GROUP_LIST is sent
         data << uint32(GetMembersCount()-1);
         for(member_citerator citr2 = m_memberSlots.begin(); citr2 != m_memberSlots.end(); ++citr2)
         {
