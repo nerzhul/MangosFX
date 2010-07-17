@@ -246,6 +246,7 @@ class BattleGroundSA : public BattleGround
 
 		uint32 TotalTime;
 		uint32 WarmupTimer;
+		uint32 RoundLenght;
 
 		// All guid storage
 		typedef std::set<uint64> GUIDSet;

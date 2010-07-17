@@ -31,6 +31,7 @@ BattleGroundSA::BattleGroundSA()
 	m_BgCreatures.resize(BG_SA_MAX_GY);
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_SA_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
+	m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_SA_HAS_BEGUN;
     TimerEnabled = false;
 	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
 		GatesGUID[i] = 0;
@@ -54,6 +55,7 @@ BattleGroundSA::BattleGroundSA()
 	for(uint8 i=0;i<3;i++)
 		for(uint8 j=0;j<2;j++)
 			SpiritGuidesGUID[i][j] = 0;
+	RoundLenght = 0;
 }
 
 BattleGroundSA::~BattleGroundSA()
@@ -76,6 +78,7 @@ void BattleGroundSA::Reset()
 	OnLeftBoat = true;
     status = BG_SA_WARMUP;
 	WarmupTimer = BG_SA_WARMUPFIRSTROUND;
+	RoundLenght = BG_SA_ROUNDLENGTH;
 }
 
 void BattleGroundSA::InitAllObjects()
@@ -211,9 +214,9 @@ void BattleGroundSA::Update(uint32 diff)
     }
     else if(status == BG_SA_ROUND_ONE)
     {
-        if(TotalTime >= BG_SA_ROUNDLENGTH)
+        if(TotalTime >= RoundLenght)
         {
-			TotalTime = 0;
+			TotalTime = RoundLenght;
             EndRound();
 			UpdateCatapults(false);
             return;
@@ -221,9 +224,9 @@ void BattleGroundSA::Update(uint32 diff)
     }
     else if(status == BG_SA_ROUND_TWO)
     {
-        if(TotalTime >= BG_SA_ROUNDLENGTH)
+        if(TotalTime >= RoundLenght)
         {
-			TotalTime = BG_SA_ROUNDLENGTH;
+			TotalTime = RoundLenght;
 			EndRound();
 			UpdateCatapults(false);
             return;
@@ -241,10 +244,13 @@ void BattleGroundSA::Update(uint32 diff)
 	}
 	else if(status == BG_SA_TELEPORT)
 	{
-		status = BG_SA_SECOND_WARMUP;
-		TotalTime = 0;
-		RelocateAllPlayers(true);
-		return;
+		if(TotalTime > 3000)
+		{
+			status = BG_SA_SECOND_WARMUP;
+			TotalTime = 0;
+			RelocateAllPlayers(true);
+			return;
+		}
 	}
 
 	UpdateTimer();
@@ -355,7 +361,7 @@ void BattleGroundSA::UpdateTimer()
 	if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_TWO)
     {
         //Send Time
-        uint32 end_of_round = (BG_SA_ROUNDLENGTH - TotalTime);
+        uint32 end_of_round = (RoundLenght - TotalTime);
         UpdateWorldState(BG_SA_TIMER_MINS, end_of_round/60000);
         UpdateWorldState(BG_SA_TIMER_SEC_TENS, (end_of_round%60000)/10000);
         UpdateWorldState(BG_SA_TIMER_SEC_DECS, ((end_of_round%60000)%10000)/1000);
@@ -384,7 +390,8 @@ void BattleGroundSA::EndRound()
 	else
 	{
 		// define time & winner of the round
-		TotalTime = BG_SA_ROUNDLENGTH - TotalTime;
+		TotalTime = 0;
+		RoundLenght = BG_SA_ROUNDLENGTH - RoundScores[round].time;
 		if(RoundScores[round].time < BG_SA_ROUNDLENGTH)
 			RoundScores[round].winner = attackers;
 		else
@@ -392,6 +399,10 @@ void BattleGroundSA::EndRound()
 
 		// Reinit
 		attackers = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+
+		UpdateWorldState(BG_SA_HORDE_ATTACKS, uint32(attackers == BG_TEAM_HORDE ? 1 : 0));
+		UpdateWorldState(BG_SA_ALLY_ATTACKS, uint32(attackers == BG_TEAM_ALLIANCE ? 1 : 0));
+
 		InitAllObjects();
 		status = BG_SA_STUCK;
 		WarmupTimer = BG_SA_WARMUPSECONDROUND;		
@@ -1058,7 +1069,11 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 	uint32 uws = GetWorldStateFromGateID(gateId);
 	if(uws)
 		UpdateWorldState(uws, GateStatus[gateId]);
-	SendWarningToAll(fmtstring("La porte %s est detruite !",GetDoorNameFromGateID(gateId)));
+	if(gateId != BG_SA_ANCIENT_GATE)
+		SendWarningToAll(fmtstring("La porte %s est detruite !",GetDoorNameFromGateID(gateId)));
+	else
+		SendWarningToAll("La relique des titans est vulnerable !");
+
 	UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
     UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));
 	switch(target_obj->GetEntry())

@@ -1684,8 +1684,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 	}
 	player->SaveToDB();
 
-	/*if(GameTele const* tele = extractGameTeleFromLink("dalaran"))
-		player->TeleportTo(tele->mapId,tele->position_x,tele->position_y,tele->position_z,tele->orientation);*/
+	player->TeleportTo(571,5814.492f,471.964f,658.79f,1.77f);
 
 	SendSysMessage("Recuperation principale terminee. Tapez desormais '.completerecup sacs' ou '.completerecup bank' afin de recuperer vos sacs "
 		"et votre banque. Chaque fois que vous tapez cette commande vous recupererez 10 piles.");
