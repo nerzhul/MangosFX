@@ -74,7 +74,12 @@ void BattleGroundSA::Reset()
 		GateStatus[i] = BG_SA_GATE_OK;
 	GraveyardStatus[BG_SA_BEACH_GY] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 	for(uint8 i=BG_SA_DEFENDER_LAST_GY;i<BG_SA_MAX_GY;i++)
-		GraveyardStatus[i] = attackers;
+		GraveyardStatus[i] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+
+	LoadSpiritGuids();
+	ResetGraveyards();
+	LoadDemolishers();
+	UpdateCatapults(true);
 
 	TotalTime = 0;
 	round = 0;
@@ -729,7 +734,7 @@ void BattleGroundSA::ResetGraveyards()
 {
 	GraveyardStatus[BG_SA_BEACH_GY] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 	for(uint8 i=BG_SA_DEFENDER_LAST_GY;i<BG_SA_MAX_GY;i++)
-		GraveyardStatus[i] = attackers;
+		GraveyardStatus[i] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
 	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_BEACH_GY][attackers]))
 		cr->SetPhaseMask(1,true);
