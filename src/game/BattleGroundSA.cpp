@@ -527,6 +527,7 @@ void BattleGroundSA::CaptureGraveyard(BG_SA_Graveyards i, Player *Source)
     WorldSafeLocsEntry const *sg = sWorldSafeLocsStore.LookupEntry(BG_SA_GYEntries[i]);
 	if(GetTeamIndexByTeamId(Source->GetTeam()) != attackers)
 		return;
+
     switch(i)
     {
         case BG_SA_LEFT_CAPTURABLE_GY:
