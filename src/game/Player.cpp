@@ -6705,8 +6705,6 @@ uint32 Player::GetLevelFromDB(uint64 guid)
 
 void Player::UpdateArea(uint32 newArea)
 {
-    // FFA_PVP flags are area and not zone id dependent
-    // so apply them accordingly
     m_areaUpdateId    = newArea;
 
     AreaTableEntry const* area = GetAreaEntryByAreaID(newArea);
@@ -6723,6 +6721,17 @@ void Player::UpdateArea(uint32 newArea)
         if(IsFFAPvP() && !sWorld.IsFFAPvPRealm())
             SetFFAPvP(false);
     }
+
+	if (area)
+	{
+		// Dalaran restricted flight zone
+		if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster())
+			CastSpell(this, 58600, true);
+		
+		// TODO: implement wintergrasp parachute when battle in progress
+		/* if ((area->flags & AREA_FLAG_OUTDOOR_PVP) && IsFreeFlying() && <WINTERGRASP_BATTLE_IN_PROGRESS> && !isGameMaster())
+		CastSpell(this, 58730, true); */
+	}
 
     UpdateAreaDependentAuras(newArea);
 }
@@ -21282,11 +21291,24 @@ uint32 Player::CalculateTalentsPoints() const
     return uint32(talentPointsForLevel * sWorld.getRate(RATE_TALENT));
 }
 
-bool Player::IsKnowHowFlyIn(uint32 mapid, uint32 zone) const
+bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone) const
 {
+	if (isGameMaster())
+		return true;
+
     // continent checked in SpellMgr::GetSpellAllowedInLocationError at cast and area update
     uint32 v_map = GetVirtualMapForMapAndZone(mapid, zone);
-    return v_map != 571 || HasSpell(54197);                 // Cold Weather Flying
+    if (v_map == 571 && !HasSpell(54197))   // Cold Weather Flying
+		return false;
+	
+	// don't allow flying in Dalaran restricted areas
+	// (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
+	if (AreaTableEntry const* atEntry = GetAreaEntryByAreaID(area))
+		return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
+	
+	// TODO: disallow mounting in wintergrasp too when battle is in progress
+	// forced dismount part in Player::UpdateArea()
+	return true;
 }
 
 struct DoPlayerLearnSpell
