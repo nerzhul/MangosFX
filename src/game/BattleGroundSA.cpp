@@ -840,27 +840,14 @@ void BattleGroundSA::LoadDemolishers()
 	{
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
-			error_log("TEST");
 			if(cr->GetDistance2d(1611.597656,-117.270073) < 6.0f || cr->GetDistance2d(1575.562500,-158.421875) < 6.0f)
-			{
-				error_log("TTTTT");
 				NEDemolisherSet.insert(cr->GetGUID());
-			}
 			else if(cr->GetDistance2d(1618.047729,61.424641) < 6.0f || cr->GetDistance2d(1575.103149,98.873344) < 6.0f)
-			{
 				NWDemolisherSet.insert(cr->GetGUID());
-				error_log("TTTTT");
-			}
 			else if(cr->GetDistance2d(1371.055786,-317.071136) < 6.0f || cr->GetDistance2d(1391.213f,-284.105) < 6.0f)
-			{
 				SEDemolisherSet.insert(cr->GetGUID());
-				error_log("TTTTT");
-			}
 			else if(cr->GetDistance2d(1353.139893,223.745438) < 6.0f || cr->GetDistance2d(1377.583f,182.722f) < 6.0f)
-			{
 				SWDemolisherSet.insert(cr->GetGUID());
-				error_log("TTTTT");
-			}
 		}
 	}
 
@@ -884,15 +871,15 @@ void BattleGroundSA::LoadSpiritGuids()
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
 			if(cr->GetDistance2d(1456.9f,-52.255f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 			else if(cr->GetDistance2d(964.843f,-189.878f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 			else if(cr->GetDistance2d(1398.79f,-288.838f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 			else if(cr->GetDistance2d(1388.42f,203.042f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 			else if(cr->GetDistance2d(1121.95f,4.48f) < 15.0f)
-				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 12116 ? 0 : 1] = cr->GetGUID();
+				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
 		}
 	}
 
@@ -924,7 +911,6 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
                 cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				cr->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 			}
-
 			cr->setFaction(attFaction);
 			break;
 		// right gobelin
@@ -938,8 +924,8 @@ void BattleGroundSA::OnCreatureCreate(Creature* cr)
 			cr->setFaction(attFaction);
 			break;
 		// Spirit Guides
-		case 12116:
-		case 12117:
+		case 13116:
+		case 13117:
 			AllSpiritGuidsSet.insert(cr->GetGUID());
 			break;
 	}
