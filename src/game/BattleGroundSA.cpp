@@ -76,11 +76,6 @@ void BattleGroundSA::Reset()
 	for(uint8 i=BG_SA_DEFENDER_LAST_GY;i<BG_SA_MAX_GY;i++)
 		GraveyardStatus[i] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
-	LoadSpiritGuids();
-	ResetGraveyards();
-	LoadDemolishers();
-	UpdateCatapults(true);
-
 	TotalTime = 0;
 	round = 0;
     ShipsStarted = false;
@@ -445,6 +440,10 @@ void BattleGroundSA::ResetWorldStates()
 void BattleGroundSA::StartingEventCloseDoors()
 {	
 	InitAllObjects();
+	LoadSpiritGuids();
+	ResetGraveyards();
+	LoadDemolishers();
+	UpdateCatapults(true);
 }
 
 void BattleGroundSA::StartingEventOpenDoors()
