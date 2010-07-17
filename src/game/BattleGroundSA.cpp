@@ -56,6 +56,7 @@ BattleGroundSA::BattleGroundSA()
 	for(uint8 i=0;i<3;i++)
 		for(uint8 j=0;j<2;j++)
 			SpiritGuidesGUID[i][j] = 0;
+
 	RoundLenght = 0;
 }
 
@@ -69,10 +70,8 @@ void BattleGroundSA::Reset()
 	BattleGround::Reset();
 
     attackers = ( (urand(0,1)) ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
-    for(uint8 i = 0; i <= 5; i++)
-    {
-        GateStatus[i] = BG_SA_GATE_OK;
-    }
+    for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
+		GateStatus[i] = BG_SA_GATE_OK;
 	TotalTime = 0;
 	round = 0;
     ShipsStarted = false;
@@ -402,14 +401,36 @@ void BattleGroundSA::EndRound()
 		// Reinit
 		attackers = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
-		UpdateWorldState(BG_SA_HORDE_ATTACKS, uint32(attackers == BG_TEAM_HORDE ? 1 : 0));
-		UpdateWorldState(BG_SA_ALLY_ATTACKS, uint32(attackers == BG_TEAM_ALLIANCE ? 1 : 0));
-
 		InitAllObjects();
+		ResetGraveyards();
+
+		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
+			GateStatus[i] = BG_SA_GATE_OK;
+
+		ResetWorldStates();
+
 		status = BG_SA_STUCK;
 		WarmupTimer = BG_SA_WARMUPSECONDROUND;		
 	}
 	round++;
+}
+
+void BattleGroundSA::ResetWorldStates()
+{
+	UpdateWorldState(BG_SA_HORDE_ATTACKS, uint32(attackers == BG_TEAM_HORDE ? 1 : 0));
+	UpdateWorldState(BG_SA_ALLY_ATTACKS, uint32(attackers == BG_TEAM_ALLIANCE ? 1 : 0));
+	UpdateWorldState(BG_SA_PURPLE_GATEWS, uint32(GateStatus[BG_SA_PURPLE_GATE]));
+	UpdateWorldState(BG_SA_RED_GATEWS, uint32(GateStatus[BG_SA_RED_GATE]));
+	UpdateWorldState(BG_SA_BLUE_GATEWS, uint32(GateStatus[BG_SA_BLUE_GATE]));
+	UpdateWorldState(BG_SA_GREEN_GATEWS, uint32(GateStatus[BG_SA_GREEN_GATE]));
+	UpdateWorldState(BG_SA_YELLOW_GATEWS, uint32(GateStatus[BG_SA_YELLOW_GATE]));
+	UpdateWorldState(BG_SA_ANCIENT_GATEWS, uint32(GateStatus[BG_SA_ANCIENT_GATE]));
+	UpdateWorldState(BG_SA_RIGHT_GY_HORDE, uint32(GraveyardStatus[BG_SA_RIGHT_CAPTURABLE_GY] == BG_TEAM_HORDE?1:0 ));
+	UpdateWorldState(BG_SA_LEFT_GY_HORDE, uint32(GraveyardStatus[BG_SA_LEFT_CAPTURABLE_GY] == BG_TEAM_HORDE?1:0 ));
+	UpdateWorldState(BG_SA_ANCIENT_GATEWS, uint32(GraveyardStatus[BG_SA_CENTRAL_CAPTURABLE_GY] == BG_TEAM_HORDE?1:0 ));
+	UpdateWorldState(BG_SA_RIGHT_GY_ALLIANCE, uint32(GraveyardStatus[BG_SA_RIGHT_CAPTURABLE_GY] == BG_TEAM_ALLIANCE?1:0 ));
+	UpdateWorldState(BG_SA_LEFT_GY_ALLIANCE, uint32(GraveyardStatus[BG_SA_LEFT_CAPTURABLE_GY] == BG_TEAM_ALLIANCE?1:0 ));
+	UpdateWorldState(BG_SA_CENTER_GY_ALLIANCE, uint32(GraveyardStatus[BG_SA_CENTRAL_CAPTURABLE_GY] == BG_TEAM_ALLIANCE?1:0 ));
 }
 
 void BattleGroundSA::StartingEventCloseDoors()
@@ -702,6 +723,10 @@ void BattleGroundSA::HandleKillUnit(Creature *unit, Player *killer)
 
 void BattleGroundSA::ResetGraveyards()
 {
+	GraveyardStatus[BG_SA_BEACH_GY] = attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
+	for(uint8 i=BG_SA_DEFENDER_LAST_GY;i<BG_SA_MAX_GY;i++)
+		GraveyardStatus[i] = attackers;
+
 	if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(SpiritGuidesGUID[BG_SA_BEACH_GY][attackers]))
 		cr->SetPhaseMask(1,true);
 
@@ -865,15 +890,95 @@ void BattleGroundSA::LoadSpiritGuids()
 		if(Creature* cr = GetBgMap()->GetCreatureOrPetOrVehicle(*itr))
 		{
 			if(cr->GetDistance2d(1456.9f,-52.255f) < 25.0f)
+			{
 				SpiritGuidesGUID[BG_SA_BEACH_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
+				if(GraveyardStatus[BG_SA_BEACH_GY] == BG_TEAM_ALLIANCE)
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(1,true);
+					else
+						cr->SetPhaseMask(2,true);
+				}
+				else
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(2,true);
+					else
+						cr->SetPhaseMask(1,true);
+				}	
+			}
 			else if(cr->GetDistance2d(964.843f,-189.878f) < 25.0f)
+			{
 				SpiritGuidesGUID[BG_SA_DEFENDER_LAST_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
+				if(GraveyardStatus[BG_SA_DEFENDER_LAST_GY] == BG_TEAM_ALLIANCE)
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(1,true);
+					else
+						cr->SetPhaseMask(2,true);
+				}
+				else
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(2,true);
+					else
+						cr->SetPhaseMask(1,true);
+				}
+			}
 			else if(cr->GetDistance2d(1398.79f,-288.838f) < 25.0f)
+			{
 				SpiritGuidesGUID[BG_SA_LEFT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
+				if(GraveyardStatus[BG_SA_LEFT_CAPTURABLE_GY] == BG_TEAM_ALLIANCE)
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(1,true);
+					else
+						cr->SetPhaseMask(2,true);
+				}
+				else
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(2,true);
+					else
+						cr->SetPhaseMask(1,true);
+				}
+			}
 			else if(cr->GetDistance2d(1388.42f,203.042f) < 25.0f)
+			{
 				SpiritGuidesGUID[BG_SA_RIGHT_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
+				if(GraveyardStatus[BG_SA_RIGHT_CAPTURABLE_GY] == BG_TEAM_ALLIANCE)
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(1,true);
+					else
+						cr->SetPhaseMask(2,true);
+				}
+				else
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(2,true);
+					else
+						cr->SetPhaseMask(1,true);
+				}
+			}
 			else if(cr->GetDistance2d(1121.95f,4.48f) < 25.0f)
+			{
 				SpiritGuidesGUID[BG_SA_CENTRAL_CAPTURABLE_GY][cr->GetEntry() == 13116 ? 0 : 1] = cr->GetGUID();
+				if(GraveyardStatus[BG_SA_CENTRAL_CAPTURABLE_GY] == BG_TEAM_ALLIANCE)
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(1,true);
+					else
+						cr->SetPhaseMask(2,true);
+				}
+				else
+				{
+					if(cr->GetEntry() == 13116)
+						cr->SetPhaseMask(2,true);
+					else
+						cr->SetPhaseMask(1,true);
+				}
+			}
 		}
 	}
 

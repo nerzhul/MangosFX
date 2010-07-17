@@ -1344,6 +1344,7 @@ void BattleGround::AddPlayer(Player *plr)
 
 	plr->CastSpell(plr, SPELL_AURA_PVP_HEALING,true); 
 	plr->Unmount();
+	plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
 
     // add arena specific auras
     if (isArena())

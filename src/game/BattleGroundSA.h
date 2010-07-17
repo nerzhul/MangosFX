@@ -243,6 +243,7 @@ class BattleGroundSA : public BattleGround
 		void LoadDemolishers();
 		void LoadSpiritGuids();
 		void ApplyStuckBuffOnPlayers();
+		void ResetWorldStates();
 		void RelocateAllPlayers(bool reseting);
 		uint32 GetGateIDFromDestroyEventID(uint32 id);
 		const char* GetDoorNameFromGateID(uint32 gateid);
