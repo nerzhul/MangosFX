@@ -773,6 +773,9 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 		// titan relic
 		case 192834:
 		{
+			if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_TWO)
+				return;
+
 			const char* teamName = Source->GetTeam() == ALLIANCE ? "'Alliance" : "a Horde";
 			SendWarningToAll(fmtstring("L%s a pris la relique !",teamName));
 			BattleGround::RewardHonorToTeam(BG_SA_HONOR_RELIC_CAPTURED,Source->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
