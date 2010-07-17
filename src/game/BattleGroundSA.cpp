@@ -194,7 +194,6 @@ void BattleGroundSA::Update(uint32 diff)
 		return;
 
     TotalTime += diff;
-
     if(status == BG_SA_WARMUP || status == BG_SA_SECOND_WARMUP)
     {
         if(TotalTime >= WarmupTimer)
@@ -203,8 +202,7 @@ void BattleGroundSA::Update(uint32 diff)
             ToggleTimer();
 			ResetGraveyards();
 			UpdateCatapults(true);
-			if(status == BG_SA_WARMUP)
-				SendWarningToAll(LANG_BG_SA_HAS_BEGUN);
+			SendWarningToAll(LANG_BG_SA_HAS_BEGUN);
             status = (status == BG_SA_WARMUP) ? BG_SA_ROUND_ONE : BG_SA_ROUND_TWO;
 			RelocateAllPlayers(false);
         }
@@ -762,8 +760,9 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 		// titan relic
 		case 192834:
 		{
-			const char* teamName = Source->GetTeam() ? "'Alliance" : "a Horde";
+			const char* teamName = Source->GetTeam() == ALLIANCE ? "'Alliance" : "a Horde";
 			SendWarningToAll(fmtstring("L%s a pris la relique !",teamName));
+			BattleGround::RewardHonorToTeam(BG_SA_HONOR_RELIC_CAPTURED,Source->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
 			EndRound();
 			break;
 		}
@@ -1073,6 +1072,8 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 		SendWarningToAll(fmtstring("La porte %s est detruite !",GetDoorNameFromGateID(gateId)));
 	else
 		SendWarningToAll("La relique des titans est vulnerable !");
+
+	BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,player->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
 
 	UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
     UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));

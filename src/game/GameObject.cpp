@@ -1510,6 +1510,7 @@ bool GameObject::IsInRange(float x, float y, float z, float radius) const
 
 void GameObject::TakenDamage(uint32 damage, Unit* pKiller)
 {
+	error_log("TAKENDAMAGE");
     if (!m_goValue->building.health)
         return;
 
@@ -1523,7 +1524,6 @@ void GameObject::TakenDamage(uint32 damage, Unit* pKiller)
 		if (pKiller->GetTypeId() == TYPEID_UNIT && ((Creature*)pKiller)->IsVehicle() && pKiller->GetCharmerOrOwner())
             pKiller = pKiller->GetCharmerOrOwner();
     }
-
 
 	uint8 life = (uint8)ceil((double)m_goValue->building.health *255/ (m_goInfo->building.intactNumHits + m_goInfo->building.damagedNumHits));
 	SetGoAnimProgress(life);

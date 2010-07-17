@@ -1666,7 +1666,11 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 z = m_targets.m_destZ;
             }
             else
-                break;
+			{
+				x = m_caster->GetPositionX();
+				y = m_caster->GetPositionY();
+				z = m_caster->GetPositionZ();
+			}
 
             MaNGOS::GameObjectInRangeCheck check(x, y, z, radius + 30); //By default 50, but this value too big seemed to me (all walls fell at the left and on the right though shot directly!
             std::list<GameObject*> goList;

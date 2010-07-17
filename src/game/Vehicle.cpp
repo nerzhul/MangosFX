@@ -234,7 +234,6 @@ void Vehicle::Reset()
 
 void Vehicle::RemoveAllPassengers()
 {
-    sLog.outDebug("Vehicle::RemoveAllPassengers");
     for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
         if(Unit *passenger = itr->second.passenger)
         {

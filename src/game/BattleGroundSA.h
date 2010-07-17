@@ -48,22 +48,28 @@ enum BG_SA_Status
   };
 
 enum BG_SA_GateState
-  {
+{
     BG_SA_GATE_OK = 1,
     BG_SA_GATE_DAMAGED = 2,
     BG_SA_GATE_DESTROYED = 3
-  };
+};
 
 enum BG_SA_Timers
-  {
+{
     BG_SA_BOAT_START  =  60000,
     BG_SA_WARMUPFIRSTROUND = 120000,
 	BG_SA_WARMUPSECONDROUND = 70000,
     BG_SA_ROUNDLENGTH = 600000
-  };
+};
+
+enum BG_SA_Honor_Rewards
+{
+	BG_SA_HONOR_GATE_DESTROYED		=	124,
+	BG_SA_HONOR_RELIC_CAPTURED		=	497,
+};
 
 enum BG_SA_WorldStates
-  {
+{
     BG_SA_TIMER_MINS				= 3559,
     BG_SA_TIMER_SEC_TENS			= 3560,
     BG_SA_TIMER_SEC_DECS			= 3561,
@@ -97,7 +103,7 @@ enum BG_SA_WorldStates
 
     BG_SA_BONUS_TIMER				= 3571,
     BG_SA_ENABLE_TIMER				= 3564,
-  };
+};
 
 enum BG_SA_Objects
   {
@@ -208,6 +214,7 @@ class BattleGroundSA : public BattleGround
 
         /* Scorekeeping */
         void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
+		BattleGroundTeamId getAttackers() { return attackers; }
 
     private:
 		

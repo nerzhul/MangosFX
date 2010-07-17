@@ -1343,6 +1343,7 @@ void BattleGround::AddPlayer(Player *plr)
     SendPacketToTeam(team, &data, plr, false);
 
 	plr->CastSpell(plr, SPELL_AURA_PVP_HEALING,true); 
+	plr->Unmount();
 
     // add arena specific auras
     if (isArena())
