@@ -176,6 +176,9 @@ void npc_toc10_announcerAI::StartEvent(Unit* pwho, uint32 type)
 	EventStarted = true;
 	Event_phase = 1;
 
+	if(!pInstance)
+		return;
+
 	if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FORDRING))))
 		Fordring = tmp;
 	if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_VARIAN))))
