@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 				GiveEmblemsToGroup(TRIOMPHE,2);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(CONQUETE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
 				GiveEmblemsToGroup(TRIOMPHE,3);

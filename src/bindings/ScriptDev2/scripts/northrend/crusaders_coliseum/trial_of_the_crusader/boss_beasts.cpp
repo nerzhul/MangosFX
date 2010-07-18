@@ -657,7 +657,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 				GiveEmblemsToGroup(TRIOMPHE,2);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(CONQUETE,3);
+				GiveEmblemsToGroup(TRIOMPHE,3);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
 				GiveEmblemsToGroup(TRIOMPHE,3);

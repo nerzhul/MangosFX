@@ -24,13 +24,13 @@ void CORBAThread::run()
 
 	int argc = 0;
 	char** argv = NULL;
-	sLog.outDetail("Initializing CORBA...");
+	sLog.outBasic("Initializing CORBA...");
 	CORBA::ORB_ptr orb = CORBA::ORB_init(argc,argv,"omniORB4");
 
-	sLog.outDetail("Initializing CORBA POA...");
+	sLog.outBasic("Initializing CORBA POA...");
 	CORBA::Object_var obj = orb->resolve_initial_references("RootPOA");
 
-	sLog.outDetail("CORBA Thread launched successfuly !");
+	sLog.outBasic("CORBA Thread launched successfuly !");
 	while(!MustStop())
 	{
 		// Updates
