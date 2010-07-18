@@ -399,7 +399,7 @@ void BattleGroundSA::EndRound()
 				WallLoose = true;
 
 		if(!WallLoose)
-			RewardAchievementToTeam(attackers,1757);
+			RewardAchievementToTeam(attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE,1757);
 
 		// define the winter of the BG
 		if(RoundScores[0].time < RoundScores[1].time)
