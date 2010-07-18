@@ -294,6 +294,9 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     recvPacket >> spellId;
     recvPacket >> unk_flags;                                // flags (if 0x02 - some additional data are received)
 
+	if(!GetPlayer())
+		return;
+
     // ignore for remote control state (for player case)
     Unit* mover = _player->m_mover;
     if(mover != _player && mover->GetTypeId()==TYPEID_PLAYER)
