@@ -975,7 +975,6 @@ void Group::SendUpdate()
 {
     Player *player;
 
-	uint32 packet_sent = 0;
     for(member_citerator citr = m_memberSlots.begin(); citr != m_memberSlots.end(); ++citr)
     {
         player = sObjectMgr.GetPlayer(citr->guid);
@@ -994,7 +993,7 @@ void Group::SendUpdate()
         }
         data << uint64(0x50000000FFFFFFFELL);               // related to voice chat?
 		if(!isBGGroup())
-			data << uint32(GetMembersCount());									// 3.3, this value increments every time SMSG_GROUP_LIST is sent
+			data << uint32(GetMembersCount());				// 3.3, this value increments every time SMSG_GROUP_LIST is sent
 		else
 			data << uint32(0);
         data << uint32(GetMembersCount()-1);
@@ -1031,7 +1030,6 @@ void Group::SendUpdate()
             data << uint8(0);                               // 3.3, dynamic difficulty?
         }
         player->GetSession()->SendPacket( &data );
-		packet_sent++;
     }
 }
 

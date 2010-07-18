@@ -56,7 +56,7 @@ void npc_toc10_announcerAI::SpawnChampions()
 	{
 		for(uint8 i=0;i<nb_mobs;i++)
 		{
-			if(Creature* tmp = Tasks.CallCreature(ID[i],TEN_MINS,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
+			if(Creature* tmp = Tasks.CallCreature(ID[i],TEN_MINS*1.5,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
 			Champion_spawn[i][popZone][1],Champion_spawn[i][popZone][2]))
 			{
 				/*if(team == ALLIANCE)
@@ -274,7 +274,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						break;
 					case 2:
 						Yell(16037,"Que les jeux commencent!",Fordring);
-						if(Creature* Gormok = Tasks.CallCreature(34796,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
+						if(Creature* Gormok = Tasks.CallCreature(34796,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
 						{
 							Gormok->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}
@@ -308,7 +308,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						Yell(16039,"Apprêtez vous héros car voici que les terreurs jumelles, Gueule d'Acide et Ecaille d'effroi pénètrent dans l'arène !",Fordring);
-						if(Creature* Acidmaw = Tasks.CallCreature(35144,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,572.243f,244.680f,395.0f))
+						if(Creature* Acidmaw = Tasks.CallCreature(35144,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,572.243f,244.680f,395.0f))
 						{
 							Acidmaw->GetMotionMaster()->MovePoint(0, 574.376f,180.478f,396.0f);
 							Acidmaw->SetSpeedRate(MOVE_RUN,1.3f,true);
@@ -343,7 +343,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						Yell(16040,"L'air se gèle à l'entrée de notre prochain combattant : Glace-Hurlante ! Tuez ou soyez tués, champions !",Fordring);
-						if(Creature* Icehowl = Tasks.CallCreature(34797,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
+						if(Creature* Icehowl = Tasks.CallCreature(34797,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
 						{
 							Icehowl->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}
@@ -402,7 +402,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						break;
 					case 7:
 						Yell(16270,"Haha ! J'ai réussi ! Comtemplez l'absolue puissante de Wielfried Flopboum, Maître invocateur. Tu es mon esclave démon",Flopboum ? Flopboum : NULL);
-						if(Creature* Jaraxxus = Tasks.CallCreature(34780,TEN_MINS,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f))
+						if(Creature* Jaraxxus = Tasks.CallCreature(34780,TEN_MINS*1.5,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f))
 						{
 							Jaraxxus->setFaction(35);
 							ModifyAuraStack(67924,1,Jaraxxus);
@@ -507,11 +507,11 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						UpdateWStates();
-						if(Creature* Darkbane = Tasks.CallCreature(34496,TEN_MINS,PREC_COORDS,NOTHING,572.243f,244.680f,395.0f))
+						if(Creature* Darkbane = Tasks.CallCreature(34496,TEN_MINS*1.5,PREC_COORDS,NOTHING,572.243f,244.680f,395.0f))
 						{
 							Darkbane->GetMotionMaster()->MovePoint(0, 574.376f,180.478f,396.0f);
 						}
-						if(Creature* Lightbane = Tasks.CallCreature(34497,TEN_MINS,PREC_COORDS,NOTHING,554.910f,244.888f,395.0f))
+						if(Creature* Lightbane = Tasks.CallCreature(34497,TEN_MINS*1.5,PREC_COORDS,NOTHING,554.910f,244.888f,395.0f))
 						{
 							Lightbane->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}

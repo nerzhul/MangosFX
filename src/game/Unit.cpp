@@ -602,6 +602,9 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 	if(!pVictim)
 		return 0;
 
+	if(pVictim->GetVehicle())
+		pVictim = pVictim->GetVehicle()->GetBase();
+
     // remove affects from victim (including from 0 damage and DoTs)
     if(pVictim != this)
         pVictim->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
