@@ -34,6 +34,17 @@ struct MapEntry;
 class Player;
 class Group;
 
+enum ResetEventType
+{
+	RESET_EVENT_DUNGEON      = 0,                           // no fixed reset time
+	RESET_EVENT_INFORM_1     = 1,                           // raid/heroic warnings
+	RESET_EVENT_INFORM_2     = 2,
+	RESET_EVENT_INFORM_3     = 3,
+	RESET_EVENT_INFORM_LAST  = 4,
+};
+
+#define MAX_RESET_EVENT_TYPE   5
+
 /*
     Holds the information necessary for creating a new map for an existing instance
     Is referenced in three cases:
@@ -126,13 +137,13 @@ class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSav
            all instances of that map reset at the same time */
         struct InstResetEvent
         {
-            uint8 type;
+            ResetEventType type;
             Difficulty difficulty:8;
             uint16 mapid;
-            uint16 instanceId;
+            uint32 instanceId;
 
-            InstResetEvent() : type(0), difficulty(DUNGEON_DIFFICULTY_NORMAL), mapid(0), instanceId(0) {}
-            InstResetEvent(uint8 t, uint32 _mapid, Difficulty d, uint16 _instanceid)
+            InstResetEvent() : type(RESET_EVENT_DUNGEON), difficulty(DUNGEON_DIFFICULTY_NORMAL), mapid(0), instanceId(0) {}
+            InstResetEvent(ResetEventType t, uint32 _mapid, Difficulty d, uint16 _instanceid)
                 : type(t), difficulty(d), mapid(_mapid), instanceId(_instanceid) {}
             bool operator == (const InstResetEvent& e) { return e.instanceId == instanceId; }
         };

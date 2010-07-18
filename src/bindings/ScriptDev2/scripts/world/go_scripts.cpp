@@ -416,7 +416,7 @@ bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 	else if(BattleGround* bg = pPlayer->GetBattleGround())
 	{
 		if(bg->GetTypeID(true) == BATTLEGROUND_SA)
-			if(BattleGroundSA* bgSA = ((BattleGroundSA*)bg))
+			//if(BattleGroundSA* bgSA = ((BattleGroundSA*)bg))
 			{
 				if(/*(bgSA->getAttackers() == BG_TEAM_ALLIANCE && pPlayer->GetTeam() != ALLIANCE || 
 					bgSA->getAttackers() == BG_TEAM_HORDE && pPlayer->GetTeam() != HORDE)

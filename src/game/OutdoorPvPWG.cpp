@@ -1352,7 +1352,17 @@ void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
 			m_WGGroup[bgTeam]->ConvertToRaid();
 		}
 		else if(m_WGGroup[bgTeam])
-			m_WGGroup[bgTeam]->AddMember(plr->GetGUID(),plr->GetName());
+		{
+			if(m_WGGroup[bgTeam]->GetMemberSlots().empty())
+			{
+				m_WGGroup[bgTeam] = new Group;
+				m_WGGroup[bgTeam]->Create(plr->GetGUID(),plr->GetName());
+				m_WGGroup[bgTeam]->SetWGGroup();
+				m_WGGroup[bgTeam]->ConvertToRaid();
+			}
+			else
+				m_WGGroup[bgTeam]->AddMember(plr->GetGUID(),plr->GetName());
+		}
     }
 
     SendInitWorldStatesTo(plr);

@@ -39,6 +39,8 @@
 
 INSTANTIATE_SINGLETON_1( InstanceSaveManager );
 
+static uint32 resetEventTypeDelay[MAX_RESET_EVENT_TYPE] = { 0, 3600, 900, 300, 60 };
+
 InstanceSaveManager::InstanceSaveManager() : lock_instLists(false)
 {
 }
@@ -105,7 +107,7 @@ InstanceSave* InstanceSaveManager::AddInstanceSave(uint32 mapId, uint32 instance
         {
             resetTime = time(NULL) + 2 * HOUR;
             // normally this will be removed soon after in InstanceMap::Add, prevent error
-            ScheduleReset(true, resetTime, InstResetEvent(0, mapId, difficulty, instanceId));
+            ScheduleReset(true, resetTime, InstResetEvent(RESET_EVENT_DUNGEON, mapId, difficulty, instanceId));
         }
     }
 
@@ -425,7 +427,7 @@ void InstanceSaveManager::LoadResetTimes()
         // schedule the reset times
         for(InstResetTimeMapDiffType::iterator itr = instResetTime.begin(); itr != instResetTime.end(); ++itr)
             if(itr->second.second > now)
-                ScheduleReset(true, itr->second.second, InstResetEvent(0, PAIR32_LOPART(itr->second.first),Difficulty(PAIR32_HIPART(itr->second.first)),itr->first));
+                ScheduleReset(true, itr->second.second, InstResetEvent(RESET_EVENT_DUNGEON, PAIR32_LOPART(itr->second.first),Difficulty(PAIR32_HIPART(itr->second.first)),itr->first));
     }
 
     // load the global respawn times for raid/heroic instances
@@ -496,18 +498,15 @@ void InstanceSaveManager::LoadResetTimes()
         SetResetTimeFor(mapid,difficulty,t);
 
         // schedule the global reset/warning
-        uint8 type = 1;
-        static int tim[4] = {3600, 900, 300, 60};
-        for(; type < 4; type++)
-            if(t - tim[type-1] > now)
+        ResetEventType type = RESET_EVENT_INFORM_1;
+		for(; type < RESET_EVENT_INFORM_LAST; type = ResetEventType(type+1))
+			if(t - resetEventTypeDelay[type] > now)
                 break;
-
-		ScheduleReset(true, t - tim[type-1], InstResetEvent(type, mapid, difficulty, -1));
 
         for(ResetTimeMapDiffInstances::const_iterator in_itr = mapDiffResetInstances.lower_bound(map_diff_pair);
             in_itr != mapDiffResetInstances.upper_bound(map_diff_pair); ++in_itr)
         {
-            ScheduleReset(true, t - tim[type-1], InstResetEvent(type, mapid, difficulty, in_itr->second));
+            ScheduleReset(true, t - resetEventTypeDelay[type], InstResetEvent(type, mapid, difficulty, in_itr->second));
         }
     }
 }
@@ -550,13 +549,12 @@ void InstanceSaveManager::Update()
         {
             // global reset/warning for a certain map
             time_t resetTime = GetResetTimeFor(event.mapid,event.difficulty);
-            _ResetOrWarnAll(event.mapid, event.difficulty, event.type != 4, resetTime - now);
-            if(event.type != 4)
+            _ResetOrWarnAll(event.mapid, event.difficulty, event.type != RESET_EVENT_INFORM_LAST, resetTime - now);
+            if(event.type != RESET_EVENT_INFORM_LAST)
             {
                 // schedule the next warning/reset
-                event.type++;
-                static int tim[4] = {3600, 900, 300, 60};
-                ScheduleReset(true, resetTime - tim[event.type-1], event);
+                event.type = ResetEventType(event.type+1);
+				ScheduleReset(true, resetTime - resetEventTypeDelay[event.type], event);
             }
             m_resetTimeQueue.erase(m_resetTimeQueue.begin());
         }
@@ -644,7 +642,7 @@ void InstanceSaveManager::_ResetOrWarnAll(uint32 mapid, Difficulty difficulty, b
         CharacterDatabase.PExecute("UPDATE instance_reset SET resettime = '"UI64FMTD"' WHERE mapid = '%d' AND difficulty = '%d'", next_reset, mapid, difficulty);
 
 		SetResetTimeFor(mapid,difficulty,(uint64)next_reset);
-		ScheduleReset(true, next_reset-3600, InstResetEvent(1, mapid, difficulty, -1));
+		ScheduleReset(true, next_reset-3600, InstResetEvent(RESET_EVENT_INFORM_1, mapid, difficulty, -1));
     }
 
     // note: this isn't fast but it's meant to be executed very rarely
