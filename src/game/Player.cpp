@@ -6691,7 +6691,7 @@ void Player::UpdateArea(uint32 newArea)
 	if (area)
 	{
 		// Dalaran restricted flight zone
-		if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster())
+		if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster() && !HasAura(58600))
 		{
 			CastSpell(this, 58600, true);
 			PlayDirectSound(9417,this);
@@ -6701,7 +6701,7 @@ void Player::UpdateArea(uint32 newArea)
 		// TODO: implement wintergrasp parachute when battle in progress
 		OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
         if (pvpWG && pvpWG->isWarTime())
-			if ((area->flags & AREA_FLAG_OUTDOOR_PVP) && IsFreeFlying() && !isGameMaster())
+			if ((area->flags & AREA_FLAG_OUTDOOR_PVP) && IsFreeFlying() && !isGameMaster() && !HasAura(58730))
 			{
 				CastSpell(this, 58730, true); 
 				PlayDirectSound(9417,this);
