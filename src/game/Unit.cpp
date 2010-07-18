@@ -683,7 +683,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     DEBUG_LOG("DealDamageStart");
 
     uint32 health = pVictim->GetHealth();
-    sLog.outDetail("deal dmg:%d to health:%d ",damage,health);
+    //sLog.outDetail("deal dmg:%d to health:%d ",damage,health);
 
     // duel ends when player has 1 or less hp
     bool duel_hasEnded = false;
@@ -705,8 +705,30 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             SetContestedPvP(attackedPlayer);
     }
 
+	if (damagetype != NODAMAGE)
+    {
+		// copy damage to casters of this aura
+        AuraList const& vCopyDamage = pVictim->GetAurasByType(SPELL_AURA_SHARE_DAMAGE_PCT);
+        for (AuraList::const_iterator i = vCopyDamage.begin(); i != vCopyDamage.end(); ++i)
+        {
+            // check damage school mask
+            if (((*i)->GetMiscValue() & damageSchoolMask) == 0)
+                continue;
+
+            Unit * shareDamageTarget = (*i)->GetCaster();
+            if (!shareDamageTarget)
+                continue;
+            SpellEntry const * spell = (*i)->GetSpellProto();
+
+            uint32 share = damage * (float((*i)->GetStackAmount()) / 100.0f);
+            // TODO: check packets if damage is done by pVictim, or by attacker of pVicitm
+            DealDamageMods(shareDamageTarget, share, NULL);
+            DealDamage(shareDamageTarget, share, NULL, NODAMAGE, GetSpellSchoolMask(spell), spell, false);
+        }
+	}
+
     // Rage from Damage made (only from direct weapon damage)
-    if( cleanDamage && damagetype==DIRECT_DAMAGE && this != pVictim && GetTypeId() == TYPEID_PLAYER && (getPowerType() == POWER_RAGE))
+    if(cleanDamage && damagetype == DIRECT_DAMAGE && this != pVictim && GetTypeId() == TYPEID_PLAYER && (getPowerType() == POWER_RAGE))
     {
         uint32 weaponSpeedHitFactor;
 
