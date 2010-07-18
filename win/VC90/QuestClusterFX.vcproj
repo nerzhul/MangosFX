@@ -672,6 +672,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\Cluster-Quests\CORBAThread.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\Cluster-Quests\CORBAThread.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\Cluster-Quests\icon1.ico"
 			>
 		</File>

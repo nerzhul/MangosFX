@@ -680,6 +680,14 @@
 			>
 		</File>
 		<File
+			RelativePath="..\..\src\Cluster-Loots\CORBAThread.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\Cluster-Loots\CORBAThread.h"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\Cluster-Loots\icon1.ico"
 			>
 		</File>

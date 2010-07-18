@@ -1,5 +1,6 @@
 #include "Cluster.h"
 #include "ClusterSpec.h"
+#include "CORBAThread.h"
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
@@ -39,6 +40,10 @@ int Cluster::Run()
 
     ///- Initialize the World
     sClusterLoot.SetInitialSettings();
+
+	///- Launch CORBA thread
+    ACE_Based::Thread corba_thread(new CORBAThread);
+    corba_thread.setPriority(ACE_Based::Highest);
 
     ///- Catch termination signals
     _HookSignals();
@@ -126,6 +131,10 @@ int Cluster::Run()
     }*/
 
 	sClusterLoot.Wait();
+
+	// Stop CORBA Thread
+	CORBAThread::StopNOW();
+	corba_thread.wait();
 
     ///- Remove signal handling before leaving
     _UnhookSignals();
