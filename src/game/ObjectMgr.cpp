@@ -7462,8 +7462,12 @@ bool PlayerCondition::Meets(Player const * player) const
             return player->HasItemCount(value1, value2);
         case CONDITION_ITEM_EQUIPPED:
             return player->HasItemOrGemWithIdEquipped(value1,1);
-        case CONDITION_ZONEID:
-            return player->GetZoneId() == value1;
+        case CONDITION_AREAID:
+		{
+			uint32 zone, area;
+			player->GetZoneAndAreaId(zone,area);
+			return (zone == value1 || area == value1) == (value2 == 0);
+		}
         case CONDITION_REPUTATION_RANK:
         {
             FactionEntry const* faction = sFactionStore.LookupEntry(value1);
@@ -7562,12 +7566,13 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if(!sSpellStore.LookupEntry(value1))
             {
-                sLog.outErrorDb("Aura condition requires to have non existing spell (Id: %d), skipped", value1);
+                sLog.outErrorDb("Aura condition (%u) requires to have non existing spell (Id: %d), skipped", condition, value1);
                 return false;
             }
-            if(value2 > 2)
+            if(value2 > MAX_EFFECT_INDEX)
             {
-                sLog.outErrorDb("Aura condition requires to have non existing effect index (%u) (must be 0..2), skipped", value2);
+                sLog.outErrorDb("Aura condition (%u) requires to have non existing effect index (%u) (must be 0..%u), skipped",
+					condition, value2, MAX_EFFECT_INDEX-1);
                 return false;
             }
             break;
@@ -7578,9 +7583,15 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             ItemPrototype const *proto = ObjectMgr::GetItemPrototype(value1);
             if(!proto)
             {
-                sLog.outErrorDb("Item condition requires to have non existing item (%u), skipped", value1);
+                sLog.outErrorDb("Item condition (%u) requires to have non existing item (%u), skipped", condition, value1);
                 return false;
             }
+
+			if (value2 < 1)
+			{
+				sLog.outErrorDb("Item condition (%u) useless with count < 1, skipped", condition);
+				return false;
+			}
             break;
         }
         case CONDITION_ITEM_EQUIPPED:
@@ -7588,22 +7599,23 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             ItemPrototype const *proto = ObjectMgr::GetItemPrototype(value1);
             if(!proto)
             {
-                sLog.outErrorDb("ItemEquipped condition requires to have non existing item (%u) equipped, skipped", value1);
+                sLog.outErrorDb("ItemEquipped condition (%u) requires to have non existing item (%u) equipped, skipped", condition, value1);
                 return false;
             }
             break;
         }
-        case CONDITION_ZONEID:
+        case CONDITION_AREAID:
         {
             AreaTableEntry const* areaEntry = GetAreaEntryByAreaID(value1);
             if(!areaEntry)
             {
-                sLog.outErrorDb("Zone condition requires to be in non existing area (%u), skipped", value1);
+                sLog.outErrorDb("Zone condition (%u) requires to be in non existing area (%u), skipped", condition, value1);
                 return false;
             }
-            if(areaEntry->zone != 0)
+
+            if (value2 > 1)
             {
-                sLog.outErrorDb("Zone condition requires to be in area (%u) which is a subzone but zone expected, skipped", value1);
+                sLog.outErrorDb("Zone condition (%u) has invalid argument %u (must be 0..1), skipped", condition, value2);
                 return false;
             }
             break;
@@ -7613,7 +7625,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             FactionEntry const* factionEntry = sFactionStore.LookupEntry(value1);
             if(!factionEntry)
             {
-                sLog.outErrorDb("Reputation condition requires to have reputation non existing faction (%u), skipped", value1);
+                sLog.outErrorDb("Reputation condition (%u) requires to have reputation non existing faction (%u), skipped", condition, value1);
                 return false;
             }
             break;
@@ -7622,7 +7634,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if (value1 != ALLIANCE && value1 != HORDE)
             {
-                sLog.outErrorDb("Team condition specifies unknown team (%u), skipped", value1);
+                sLog.outErrorDb("Team condition (%u) specifies unknown team (%u), skipped", condition, value1);
                 return false;
             }
             break;
@@ -7632,12 +7644,12 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             SkillLineEntry const *pSkill = sSkillLineStore.LookupEntry(value1);
             if (!pSkill)
             {
-                sLog.outErrorDb("Skill condition specifies non-existing skill (%u), skipped", value1);
+                sLog.outErrorDb("Skill condition (%u) specifies non-existing skill (%u), skipped", condition, value1);
                 return false;
             }
             if (value2 < 1 || value2 > sWorld.GetConfigMaxSkillValue() )
             {
-                sLog.outErrorDb("Skill condition specifies invalid skill value (%u), skipped", value2);
+                sLog.outErrorDb("Skill condition (%u) specifies invalid skill value (%u), skipped", condition, value2);
                 return false;
             }
             break;
@@ -7649,31 +7661,31 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             Quest const *Quest = sObjectMgr.GetQuestTemplate(value1);
             if (!Quest)
             {
-                sLog.outErrorDb("Quest condition specifies non-existing quest (%u), skipped", value1);
+                sLog.outErrorDb("Quest condition (%u) specifies non-existing quest (%u), skipped", condition, value1);
                 return false;
             }
             if(value2)
-                sLog.outErrorDb("Quest condition has useless data in value2 (%u)!", value2);
+                sLog.outErrorDb("Quest condition (%u) has useless data in value2 (%u)!", condition, value2);
             break;
         }
         case CONDITION_AD_COMMISSION_AURA:
         {
             if(value1)
-                sLog.outErrorDb("Quest condition has useless data in value1 (%u)!", value1);
+                sLog.outErrorDb("Quest condition (%u) has useless data in value1 (%u)!", condition, value1);
             if(value2)
-                sLog.outErrorDb("Quest condition has useless data in value2 (%u)!", value2);
+                sLog.outErrorDb("Quest condition (%u) has useless data in value2 (%u)!", condition, value2);
             break;
         }
         case CONDITION_NO_AURA:
         {
             if(!sSpellStore.LookupEntry(value1))
             {
-                sLog.outErrorDb("Aura condition requires to have non existing spell (Id: %d), skipped", value1);
+                sLog.outErrorDb("Aura condition (%u) requires to have non existing spell (Id: %d), skipped", condition, value1);
                 return false;
             }
             if(value2 > 2)
             {
-                sLog.outErrorDb("Aura condition requires to have non existing effect index (%u) (must be 0..2), skipped", value2);
+                sLog.outErrorDb("Aura condition (%u) requires to have non existing effect index (%u) (must be 0..%u), skipped", condition, value2, MAX_EFFECT_INDEX-1);
                 return false;
             }
             break;
@@ -7692,7 +7704,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if (!value1 && !value2)
             {
-                sLog.outErrorDb("Area flag condition has both values like 0, skipped");
+                sLog.outErrorDb("Area flag (%u) condition has both values like 0, skipped", condition);
                 return false;
             }
             break;
@@ -7701,19 +7713,19 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if (!value1 && !value2)
             {
-                sLog.outErrorDb("Race_class condition has both values like 0, skipped");
+                sLog.outErrorDb("Race_class condition (%u) has both values like 0, skipped", condition);
                 return false;
             }
 
             if (value1 && !(value1 & RACEMASK_ALL_PLAYABLE))
             {
-                sLog.outErrorDb("Race_class condition has invalid player class %u, skipped", value1);
+                sLog.outErrorDb("Race_class condition (%u) has invalid player class %u, skipped", condition, value1);
                 return false;
             }
 
             if (value2 && !(value2 & CLASSMASK_ALL_PLAYABLE))
             {
-                sLog.outErrorDb("Race_class condition has invalid race mask %u, skipped", value2);
+                sLog.outErrorDb("Race_class condition (%u) has invalid race mask %u, skipped", condition, value2);
                 return false;
             }
             break;
@@ -7722,13 +7734,13 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if (!value1 || value1 > sWorld.getConfig(CONFIG_MAX_PLAYER_LEVEL))
             {
-                sLog.outErrorDb("Level condition has invalid level %u, skipped", value1);
+                sLog.outErrorDb("Level condition (%u) has invalid level %u, skipped", condition, value1);
                 return false;
             }
 
             if (value2 > 2)
             {
-                sLog.outErrorDb("Level condition has invalid argument %u (must be 0..2), skipped", value2);
+                sLog.outErrorDb("Level condition (%u) has invalid argument %u (must be 0..2), skipped", condition, value2);
                 return false;
             }
 
@@ -7738,13 +7750,13 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
         {
             if(!sSpellStore.LookupEntry(value1))
             {
-                sLog.outErrorDb("Spell condition requires to have non existing spell (Id: %d), skipped", value1);
+                sLog.outErrorDb("Spell condition (%u) requires to have non existing spell (Id: %d), skipped", condition, value1);
                 return false;
             }
 
             if (value2 > 1)
             {
-                sLog.outErrorDb("Spell condition has invalid argument %u (must be 0..1), skipped", value2);
+                sLog.outErrorDb("Spell condition (%u) has invalid argument %u (must be 0..1), skipped", condition, value2);
                 return false;
             }
 
@@ -7755,7 +7767,7 @@ bool PlayerCondition::IsValid(ConditionType condition, uint32 value1, uint32 val
             MapEntry const* mapEntry = sMapStore.LookupEntry(value1);
             if (!mapEntry || !mapEntry->IsDungeon())
             {
-                sLog.outErrorDb("Instance script condition has not existed map id %u as first arg, skipped", value1);
+                sLog.outErrorDb("Instance script condition (%u) has not existed map id %u as first arg, skipped", condition, value1);
                 return false;
             }
 
