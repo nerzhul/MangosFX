@@ -376,8 +376,14 @@ void BattleGroundSA::UpdateTimer()
 void BattleGroundSA::EndRound()
 {
 	RoundScores[round].time = TotalTime;
+
+	if(TotalTime <= 240000)
+		RewardAchievementToTeam(attackers,1310);
     
     ToggleTimer();
+
+	bool WallLoose = false;
+
 	if(round)
 	{
 		// define winner
@@ -389,6 +395,11 @@ void BattleGroundSA::EndRound()
 		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
 			if(GateStatus[i] == BG_SA_GATE_OK)
 				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE);
+			else
+				WallLoose = true;
+
+		if(!WallLoose)
+			RewardAchievementToTeam(attackers,1757);
 
 		// define the winter of the BG
 		if(RoundScores[0].time < RoundScores[1].time)
@@ -416,7 +427,13 @@ void BattleGroundSA::EndRound()
 			if(GateStatus[i] == BG_SA_GATE_OK)
 				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
 			else
+			{
 				GateStatus[i] = BG_SA_GATE_OK;
+				WallLoose = true;
+			}
+
+		if(!WallLoose)
+			RewardAchievementToTeam(attackers,1757);
 
 		ResetWorldStates();
 
