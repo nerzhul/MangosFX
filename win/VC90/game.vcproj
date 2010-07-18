@@ -1724,6 +1724,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="CORBA"
+			>
+			<File
+				RelativePath="..\..\src\game\CORBAThread.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\CORBAThread.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"
 			>

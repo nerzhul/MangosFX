@@ -20,24 +20,25 @@
     \ingroup mangosd
 */
 
-#include "WorldSocketMgr.h"
-#include "Common.h"
+#include <WorldSocketMgr.h>
+#include <Common.h>
 #include "Master.h"
-#include "WorldSocket.h"
+#include <WorldSocket.h>
 #include "WorldRunnable.h"
-#include "World.h"
-#include "Log.h"
-#include "Timer.h"
-#include "Policies/SingletonImp.h"
-#include "Config/Config.h"
-#include "Database/DatabaseEnv.h"
+#include "CORBAThread.h"
+#include <World.h>
+#include <Log.h>
+#include <Timer.h>
+#include <Policies/SingletonImp.h>
+#include <Config/Config.h>
+#include <Database/DatabaseEnv.h>
 #include "CliRunnable.h"
 #include "RASocket.h"
 #include "ScriptCalls.h"
-#include "Util.h"
+#include <Util.h>
 #include "revision_sql.h"
 #include "MaNGOSsoap.h"
-#include "Auth/BigNumber.h"
+#include <Auth/BigNumber.h>
 
 #include <ace/OS_NS_signal.h>
 #include <ace/TP_Reactor.h>
@@ -215,6 +216,12 @@ int Master::Run()
     ///- Initialize the World
     sWorld.SetInitialWorldSettings();
 
+	///- Launch CORBA thread
+	sLog.outDetail("Launching CORBA thread...");
+    ACE_Based::Thread corba_thread(new CORBAThread);
+    corba_thread.setPriority(ACE_Based::Highest);
+	sLog.outDetail("CORBA Thread launched successfuly !");
+
     ///- Catch termination signals
     _HookSignals();
 
@@ -362,6 +369,8 @@ int Master::Run()
         rar_thread->destroy();
         delete rar_thread;
     }
+
+	corba_thread.wait();
 
     ///- Clean account database before leaving
     clearOnlineAccounts();
