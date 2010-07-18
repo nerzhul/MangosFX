@@ -293,8 +293,8 @@ bool CreatureEventAI::ProcessEvent(CreatureEventAIHolder& pHolder, Unit* pAction
         {
             //Note: checked only aura for effect 0, if need check aura for effect 1/2 then
             // possible way: pack in event.buffed.amount 2 uint16 (ammount+effectIdx)
-            Aura* aura = me->GetAura(event.buffed.spellId,0);
-            if (!aura || aura->GetStackAmount() < event.buffed.amount)
+            Aura* aura = me->GetAura(event.buffed.spellId, EFFECT_INDEX_0);
+			if (!aura || aura->GetStackAmount() < event.buffed.amount)
                 return false;
 
             //Repeat Timers
@@ -309,8 +309,8 @@ bool CreatureEventAI::ProcessEvent(CreatureEventAIHolder& pHolder, Unit* pAction
 
             //Note: checked only aura for effect 0, if need check aura for effect 1/2 then
             // possible way: pack in event.buffed.amount 2 uint16 (ammount+effectIdx)
-            Aura* aura = pActionInvoker->GetAura(event.buffed.spellId,0);
-            if(!aura || aura->GetStackAmount() < event.buffed.amount)
+            Aura* aura = pActionInvoker->GetAura(event.buffed.spellId, EFFECT_INDEX_0);
+			if(!aura || aura->GetStackAmount() < event.buffed.amount)
                 return false;
 
             //Repeat Timers

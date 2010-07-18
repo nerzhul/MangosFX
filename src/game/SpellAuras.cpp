@@ -676,7 +676,7 @@ void Aura::Update(uint32 diff)
 
             if(!caster->IsWithinDistInMap(m_target, max_range))
             {
-                m_target->RemoveAurasByCasterSpell(GetId(), GetEffIndex(), GetCasterGUID());
+                caster->InterruptSpell(CURRENT_CHANNELED_SPELL);
                 return;
             }
         }
@@ -4129,7 +4129,6 @@ void Aura::HandleModPossess(bool apply, bool Real)
         m_target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
 
         m_target->SetCharmerGUID(0);
-        p_caster->InterruptSpell(CURRENT_CHANNELED_SPELL);  // the spell is not automatically canceled when interrupted, do it now
 
         if(m_target->GetTypeId() == TYPEID_PLAYER)
         {

@@ -2793,6 +2793,9 @@ void Spell::cancel()
     if(m_spellState == SPELL_STATE_FINISHED)
         return;
 
+	// channeled spells don't display interrupted message even if they are interrupted, possible other cases with no "Interrupted" message 
+	bool sendInterrupt = IsChanneledSpell(m_spellInfo) ? false : true;
+
     m_autoRepeat = false;
     switch (m_spellState)
     {
@@ -2800,7 +2803,8 @@ void Spell::cancel()
         case SPELL_STATE_DELAYED:
         {
             SendInterrupted(0);
-            SendCastResult(SPELL_FAILED_INTERRUPTED);
+			if (sendInterrupt)
+				SendCastResult(SPELL_FAILED_INTERRUPTED);
         } break;
 
         case SPELL_STATE_CASTING:
@@ -2817,7 +2821,8 @@ void Spell::cancel()
 
             SendChannelUpdate(0);
             SendInterrupted(0);
-            SendCastResult(SPELL_FAILED_INTERRUPTED);
+			if (sendInterrupt)
+				SendCastResult(SPELL_FAILED_INTERRUPTED);
         } break;
 
         default:
