@@ -368,6 +368,7 @@ int Master::Run()
         delete rar_thread;
     }
 
+	// Stop CORBA Thread
 	CORBAThread::StopNOW();
 	corba_thread.wait();
 
