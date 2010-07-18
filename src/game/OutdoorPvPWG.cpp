@@ -1273,6 +1273,8 @@ bool OutdoorPvPWG::UpdateQuestGiverPosition(uint32 guid, Creature *creature)
 //        true  = no need to rebuild (ie: Banners or teleporters)
 bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
 {
+	if(!go)
+		return false;
     uint32 attFaction = 14;
     uint32 defFaction = 14;
 

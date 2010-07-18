@@ -92,6 +92,8 @@ libmangosgame_a_SOURCES = \
 	CombatHandler.cpp \
 	ConfusedMovementGenerator.cpp \
 	ConfusedMovementGenerator.h \
+	CORBAThread.cpp \
+	CORBAThread.h \
 	Corpse.cpp \
 	Corpse.h \
 	CreatureAI.cpp \

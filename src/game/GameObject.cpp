@@ -180,12 +180,10 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 			bg->OnGameObjectCreate(this);
 
 	if(map->GetId() == 571)
-	{
 		if(OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197))
 		{
 			pvpWG->OnGameObjectCreate(this,true);
 		}
-	}
 
 	if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
 	{

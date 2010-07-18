@@ -4448,7 +4448,7 @@ void Spell::HandleEffects(Unit *pUnitTarget,Item *pItemTarget,GameObject *pGOTar
 
     damage = int32(CalculateDamage((uint8)i, unitTarget) * DamageMultiplier);
 
-    sLog.outDebug( "Spell %u Effect%d : %u", m_spellInfo->Id, i, eff);
+	sLog.outDebug( "HandleEffects:: Spell %u Effect%d : %u", m_spellInfo->Id, i, eff);
 
     if(eff<TOTAL_SPELL_EFFECTS)
     {
