@@ -21278,16 +21278,16 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
     if (v_map == 571 && !HasSpell(54197))   // Cold Weather Flying
 		return false;
 	
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+    if (pvpWG && pvpWG->isWarTime() && zone == 4197)
+		return false;
+
 	// don't allow flying in Dalaran restricted areas
 	// (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
 	if (AreaTableEntry const* atEntry = GetAreaEntryByAreaID(area))
 		if(area != 4598) // Krasus Landing
 			return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
 	
-	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
-    if (pvpWG && pvpWG->isWarTime())
-		return false;
-
 	// forced dismount part in Player::UpdateArea()
 	return true;
 }
