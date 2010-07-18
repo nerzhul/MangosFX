@@ -1431,7 +1431,7 @@ struct MANGOS_DLL_DECL ghoul_army_of_the_deadAI : public LibDevFSAI
         InitIA();
 		AddEventOnTank(70266,urand(1000,3000),1000,500);
 		AddEventOnTank(47468,2500,2500,1000);
-		AddEventOnTank(47481,4000,15000,2000);
+		me->setPowerType(POWER_ENERGY);
     }
 
     void Reset()
@@ -1470,9 +1470,6 @@ struct MANGOS_DLL_DECL gargoyle_DK_AI : public LibDevFSAI
 	    
     void UpdateAI(const uint32 diff)
 	{	
-		if(!CanDoSomething())
-			return;
-
 		UpdateEvent(diff);
 	}
 };
@@ -1480,7 +1477,55 @@ struct MANGOS_DLL_DECL gargoyle_DK_AI : public LibDevFSAI
 CreatureAI* GetAI_gargoyle_DK(Creature* pCreature)
 {
     return new gargoyle_DK_AI(pCreature);
-} 
+}
+
+struct MANGOS_DLL_DECL venomous_snake_hunt_AI : public LibDevFSAI
+{	
+	venomous_snake_hunt_AI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {	
+        InitIA();
+		AddEventOnTank(30981,urand(1000,3000),15000,1000);
+    }
+
+    void Reset()
+	{
+	}
+	    
+    void UpdateAI(const uint32 diff)
+	{	
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_venomous_snake_hunt(Creature* pCreature)
+{
+    return new venomous_snake_hunt_AI(pCreature);
+}
+
+struct MANGOS_DLL_DECL viper_hunt_AI : public LibDevFSAI
+{	
+	viper_hunt_AI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {	
+        InitIA();
+		AddEventOnTank(67710,urand(1000,4000),5000,2000);
+    }
+
+    void Reset()
+	{
+	}
+	    
+    void UpdateAI(const uint32 diff)
+	{	
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+	}
+};
+
+CreatureAI* GetAI_viper_hunt(Creature* pCreature)
+{
+    return new viper_hunt_AI(pCreature);
+}
 
 void AddSC_npcs_special()
 {
@@ -1573,5 +1618,15 @@ void AddSC_npcs_special()
 	newscript = new Script;
     newscript->Name = "dk_gargoyle";
     newscript->GetAI = &GetAI_gargoyle_DK;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "venomous_snake_hunt";
+    newscript->GetAI = &GetAI_venomous_snake_hunt;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "viper_hunt";
+    newscript->GetAI = &GetAI_viper_hunt;
     newscript->RegisterSelf();
 }

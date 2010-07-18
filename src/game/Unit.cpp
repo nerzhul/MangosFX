@@ -1159,9 +1159,6 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 
     DEBUG_LOG("DealDamageEnd returned %d damage", damage);
 
-	if(pVictim->GetVehicle())
-		return 0;
-
     return damage;
 }
 
