@@ -386,11 +386,15 @@ void BattleGroundSA::EndRound()
 		else
 			RoundScores[round].winner = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
+		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
+			if(GateStatus[i] == BG_SA_GATE_OK)
+				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE);
+
 		// define the winter of the BG
 		if(RoundScores[0].time < RoundScores[1].time)
 			EndBattleGround(RoundScores[0].winner == BG_TEAM_ALLIANCE ? ALLIANCE : HORDE);
 		else
-			EndBattleGround(RoundScores[1].winner == BG_TEAM_ALLIANCE ? ALLIANCE : HORDE);
+			EndBattleGround(RoundScores[1].winner == BG_TEAM_ALLIANCE ? ALLIANCE : HORDE);		
 	}
 	else
 	{
@@ -409,7 +413,10 @@ void BattleGroundSA::EndRound()
 		ResetGraveyards();
 
 		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
-			GateStatus[i] = BG_SA_GATE_OK;
+			if(GateStatus[i] == BG_SA_GATE_OK)
+				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
+			else
+				GateStatus[i] = BG_SA_GATE_OK;
 
 		ResetWorldStates();
 
