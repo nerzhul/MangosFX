@@ -1,5 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include <omniORB4/CORBA.h>
+#include <Log.h>
+#include <Timer.h>
 #include "CORBAThread.h"
 
 INSTANTIATE_SINGLETON_1( CORBAThread );
