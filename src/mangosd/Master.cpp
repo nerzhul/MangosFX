@@ -216,14 +216,12 @@ int Master::Run()
     ///- Initialize the World
     sWorld.SetInitialWorldSettings();
 
+	///- Catch termination signals
+    _HookSignals();
+
 	///- Launch CORBA thread
-	sLog.outDetail("Launching CORBA thread...");
     ACE_Based::Thread corba_thread(new CORBAThread);
     corba_thread.setPriority(ACE_Based::Highest);
-	sLog.outDetail("CORBA Thread launched successfuly !");
-
-    ///- Catch termination signals
-    _HookSignals();
 
     ///- Launch WorldRunnable thread
     ACE_Based::Thread world_thread(new WorldRunnable);
