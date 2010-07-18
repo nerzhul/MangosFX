@@ -18798,7 +18798,7 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
         }
     }
 
-    uint32 price  = pProto->BuyPrice * count;
+    uint32 price  = (crItem->ExtendedCost == 0 || pProto->Flags2 & ITEM_FLAGS2_EXT_COST_REQUIRES_GOLD) ? pProto->BuyPrice * count : 0;
 
     // reputation discount
     price = uint32(floor(price * GetReputationPriceDiscount(pCreature)));

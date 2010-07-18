@@ -764,7 +764,7 @@ void WorldSession::SendListInventory(uint64 vendorguid)
                 ++count;
 
                 // reputation discount
-                uint32 price = uint32(floor(pProto->BuyPrice * discountMod));
+                uint32 price = (crItem->ExtendedCost == 0 || pProto->Flags2 & ITEM_FLAGS2_EXT_COST_REQUIRES_GOLD) ? uint32(floor(pProto->BuyPrice * discountMod)) : 0;
 
                 data << uint32(count);
                 data << uint32(crItem->item);
