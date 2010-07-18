@@ -368,6 +368,7 @@ int Master::Run()
         delete rar_thread;
     }
 
+	CORBAThread::StopNOW();
 	corba_thread.wait();
 
     ///- Clean account database before leaving

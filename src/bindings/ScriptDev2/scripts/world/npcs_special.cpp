@@ -1485,10 +1485,14 @@ struct MANGOS_DLL_DECL venomous_snake_hunt_AI : public LibDevFSAI
     {	
         InitIA();
 		AddEventOnTank(30981,urand(1000,3000),15000,1000);
+		me->ForcedDespawn(15000);
     }
 
     void Reset()
 	{
+		if(Unit* owner = me->GetCharmerOrOwner())
+			if(owner->GetTypeId() == TYPEID_PLAYER)
+				me->SetLevel(((Player*)owner)->getLevel());
 	}
 	    
     void UpdateAI(const uint32 diff)
@@ -1509,10 +1513,14 @@ struct MANGOS_DLL_DECL viper_hunt_AI : public LibDevFSAI
     {	
         InitIA();
 		AddEventOnTank(67710,urand(1000,4000),5000,2000);
+		me->ForcedDespawn(15000);
     }
 
     void Reset()
 	{
+		if(Unit* owner = me->GetCharmerOrOwner())
+			if(owner->GetTypeId() == TYPEID_PLAYER)
+				me->SetLevel(((Player*)owner)->getLevel());
 	}
 	    
     void UpdateAI(const uint32 diff)

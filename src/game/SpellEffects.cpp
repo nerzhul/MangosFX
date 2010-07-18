@@ -4513,6 +4513,15 @@ void Spell::EffectSummonWild(uint32 i, uint32 forceFaction)
 				}
             }
 
+			if(creature_entry == 19921 || creature_entry == 19833)
+			{
+				if(m_caster->IsPvP())
+					summon->SetPvP(true);
+				if(m_caster->IsFFAPvP())
+					m_caster->SetFFAPvP(true);
+				summon->SetLevel(m_caster->getLevel());
+			}
+
 			if(creature_entry == 31216 || creature_entry == 29264)
 			{
 				summon->GetMotionMaster()->MoveFollow(m_caster, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
