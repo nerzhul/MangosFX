@@ -2794,6 +2794,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 				}
 				return;
 			}
+			case 58730:
 			case 58600:                                     // Restricted Flight Area
             {
 				AreaTableEntry const* area = GetAreaEntryByAreaID(m_target->GetAreaId());
@@ -7353,7 +7354,6 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                         {
                             int32 bp = 5;
                             m_target->CastCustomSpell(m_target, 63622, &bp, &bp, &bp, true, NULL, this);
-                            m_target->CastCustomSpell(m_target, 65095, &bp, NULL, NULL, true, NULL, this);
                         }
                         else
                         {
@@ -9467,6 +9467,7 @@ void Aura::HandleAuraLinked(bool apply, bool Real)
 		switch(linkedSpell)
 		{
 			case 65142:
+			case 69357:
 				break;
 			default:
 				sLog.outError("HandleAuraLinked for spell %u effect %u: triggering unknown spell %u", GetId(), m_effIndex, linkedSpell);

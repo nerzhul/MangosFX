@@ -43,6 +43,17 @@ enum RollVote
     NOT_VALID         = 5
 };
 
+enum RollVoteMask
+{
+	ROLL_VOTE_MASK_PASS       = 0x01,
+	ROLL_VOTE_MASK_NEED       = 0x02,
+	ROLL_VOTE_MASK_GREED      = 0x04,
+	ROLL_VOTE_MASK_DISENCHANT = 0x08,
+	
+	ROLL_VOTE_MASK_ALL        = 0x0F,
+	ROLL_VOTE_MASK_NO_NEED    = ROLL_VOTE_MASK_ALL & ~ROLL_VOTE_MASK_NEED,
+};
+
 enum GroupMemberOnlineStatus
 {
     MEMBER_STATUS_OFFLINE   = 0x0000,
@@ -345,7 +356,7 @@ class MANGOS_DLL_SPEC Group
             return RollId.end();
         }
         void CountTheRoll(Rolls::iterator roll, uint32 NumberOfPlayers);
-        void CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 NumberOfPlayers, uint8 Choise);
+        bool CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 NumberOfPlayers, uint8 vote);
         void EndRoll();
 
         void LinkMember(GroupReference *pRef) { m_memberMgr.insertFirst(pRef); }

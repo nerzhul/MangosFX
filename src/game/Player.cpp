@@ -6691,7 +6691,7 @@ void Player::UpdateArea(uint32 newArea)
 	if (area)
 	{
 		// Dalaran restricted flight zone
-		if ((area->flags & AREA_FLAG_CANNOT_FLY) && IsFreeFlying() && !isGameMaster() && !HasAura(58600))
+		if ((area->flags & AREA_FLAG_CANNOT_FLY) && area->ID != 4598 && IsFreeFlying() && !isGameMaster() && !HasAura(58600))
 		{
 			CastSpell(this, 58600, true);
 			PlayDirectSound(9417,this);
@@ -21281,9 +21281,13 @@ bool Player::CanStartFlyInArea(uint32 mapid, uint32 zone, uint32 area) const
 	// don't allow flying in Dalaran restricted areas
 	// (no other zones currently has areas with AREA_FLAG_CANNOT_FLY)
 	if (AreaTableEntry const* atEntry = GetAreaEntryByAreaID(area))
-		return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
+		if(area != 4598) // Krasus Landing
+			return (!(atEntry->flags & AREA_FLAG_CANNOT_FLY));
 	
-	// TODO: disallow mounting in wintergrasp too when battle is in progress
+	OutdoorPvPWG *pvpWG = (OutdoorPvPWG*)sOutdoorPvPMgr.GetOutdoorPvPToZoneId(4197);
+    if (pvpWG && pvpWG->isWarTime())
+		return false;
+
 	// forced dismount part in Player::UpdateArea()
 	return true;
 }

@@ -462,6 +462,9 @@ void Group::Disband(bool hideDestroy)
 
 void Group::SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r)
 {
+	ItemPrototype const* pProto = ObjectMgr::GetItemPrototype(r.itemid);
+	uint8 voteMask = pProto->Flags2 & ITEM_FLAGS2_NEED_ROLL_DISABLED ? ROLL_VOTE_MASK_NO_NEED : ROLL_VOTE_MASK_ALL;
+
     WorldPacket data(SMSG_LOOT_START_ROLL, (8+4+4+4+4+4+4+4+1));
     data << uint64(r.itemGUID);                             // guid of rolled item
 	data << uint32(mapid);                                  // 3.3.3 mapid
@@ -471,7 +474,7 @@ void Group::SendLootStartRoll(uint32 CountDown, uint32 mapid, const Roll &r)
     data << uint32(r.itemRandomPropId);                     // item random property ID
     data << uint32(r.itemCount);                            // items in stack
     data << uint32(CountDown);                              // the countdown time to choose "need" or "greed"
-    data << uint8(ALL_ROLL_TYPE_MASK);                      // roll type mask
+    data << uint8(voteMask);					            // roll type mask
 
     for (Roll::PlayerVote::const_iterator itr = r.playerVote.begin(); itr != r.playerVote.end(); ++itr)
     {
@@ -703,11 +706,17 @@ void Group::MasterLoot(const uint64& playerGUID, Loot* /*loot*/, WorldObject *ob
     }
 }
 
-void Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 NumberOfPlayers, uint8 Choise)
+bool Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 NumberOfPlayers, uint8 vote)
 {
     Rolls::iterator rollI = GetRoll(Guid);
     if (rollI == RollId.end())
-        return;
+        return false;
+
+	// possible cheating
+	ItemPrototype const* pProto = ObjectMgr::GetItemPrototype((*rollI)->itemid);
+	if ((pProto->Flags2 & ITEM_FLAGS2_NEED_ROLL_DISABLED) && vote == ROLL_NEED)
+		return false;
+
     Roll* roll = *rollI;
 
     Roll::PlayerVote::iterator itr = roll->playerVote.find(playerGUID);
@@ -719,7 +728,7 @@ void Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 N
         if (roll->getLoot()->items.empty())
             return;
 
-    switch (Choise)
+    switch (vote)
     {
         case ROLL_PASS:                                     // Player choose pass
         {
@@ -754,6 +763,8 @@ void Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 N
     {
         CountTheRoll(rollI, NumberOfPlayers);
     }
+
+	return true;
 }
 
 //called when roll timer expires

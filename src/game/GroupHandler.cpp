@@ -403,8 +403,9 @@ void WorldSession::HandleLootRoll( WorldPacket &recv_data )
     if(!group)
         return;
 
-    // everything's fine, do it
-    group->CountRollVote(GetPlayer()->GetGUID(), Guid, NumberOfPlayers, rollType);
+    // everything is fine, do it, if false then some cheating problem found
+	if(!group->CountRollVote(GetPlayer()->GetObjectGuid(), lootedTarget, itemSlot, RollVote(rollType)))
+		return;
 
     switch (rollType)
     {
