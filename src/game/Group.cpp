@@ -722,11 +722,11 @@ bool Group::CountRollVote(const uint64& playerGUID, const uint64& Guid, uint32 N
     Roll::PlayerVote::iterator itr = roll->playerVote.find(playerGUID);
     // this condition means that player joins to the party after roll begins
     if (itr == roll->playerVote.end())
-        return;
+        return false;
 
     if (roll->getLoot())
         if (roll->getLoot()->items.empty())
-            return;
+            return false;
 
     switch (vote)
     {
