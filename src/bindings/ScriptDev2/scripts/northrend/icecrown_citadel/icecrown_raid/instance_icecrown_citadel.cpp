@@ -41,6 +41,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiPrinceKelesethGUID;
 	uint64 m_uiPrinceValanarGUID;
 	uint64 m_uiPrinceTaldaramGUID;
+	uint64 m_uiLanathelGUID;
 	// Other IAs
 	uint64 m_uiLichKingGUID;
 
@@ -52,8 +53,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiFestergutDoorGUID;
 	uint64 m_uiRotfaceDoorGUID;
 	uint64 m_uiPutricideDoorGUID;
+	uint64 m_uiBloodWingDoorGUID;
 	uint64 m_uiPrinceCouncilDoorGUID;
-
+	uint64 m_uiLanathelDoorGUID_1;
+	uint64 m_uiLanathelDoorGUID_2;
+	
 	uint32 checkPlayer_Timer;
 
     void Initialize()
@@ -70,6 +74,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiPrinceKelesethGUID			= 0;
 		m_uiPrinceValanarGUID			= 0;
 		m_uiPrinceTaldaramGUID			= 0;
+		m_uiLanathelGUID				= 0;
 		// Other IAs
 		m_uiLichKingGUID				= 0;
 
@@ -82,6 +87,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiRotfaceDoorGUID				= 0;
 		m_uiPutricideDoorGUID			= 0;
 		m_uiPrinceCouncilDoorGUID		= 0;
+		m_uiBloodWingDoorGUID			= 0;
+		m_uiPrinceCouncilDoorGUID		= 0;
+		m_uiLanathelDoorGUID_1			= 0;
+		m_uiLanathelDoorGUID_2			= 0;
 
 		checkPlayer_Timer = 500;
     }
@@ -119,6 +128,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_PRINCE_TALDARAM:
 				m_uiPrinceTaldaramGUID = pCreature->GetGUID();
+				AutoFreeze(pCreature);
+				break;
+			case NPC_LANATHEL:
+				m_uiLanathelGUID = pCreature->GetGUID();
 				AutoFreeze(pCreature);
 				break;
 			// Others IAs
@@ -170,6 +183,25 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case GO_PUTRICIDE_DOOR:
 				m_uiPutricideDoorGUID = pGo->GetGUID();
 				OpenDoor(m_uiPutricideDoorGUID);
+				break;
+			case GO_BLOODWING_DOOR:
+				m_uiBloodWingDoorGUID = pGo->GetGUID();
+				if (m_auiEncounter[TYPE_PUTRICIDE] == DONE)
+					OpenDoor(m_uiBloodWingDoorGUID);
+				break;
+			case GO_PRINCECOUNCIL_DOOR:
+				m_uiPrinceCouncilDoorGUID = pGo->GetGUID();
+				OpenDoor(m_uiPrinceCouncilDoorGUID);
+				break;
+			case GO_LANATHEL_DOOR_1:
+				m_uiLanathelDoorGUID_1 = pGo->GetGUID();
+				if (m_auiEncounter[TYPE_PRINCE_COUNCIL] == DONE)
+                    OpenDoor(m_uiLanathelDoorGUID_1);
+				break;
+			case GO_LANATHEL_DOOR_2:
+				m_uiLanathelDoorGUID_2 = pGo->GetGUID();
+				if (m_auiEncounter[TYPE_PRINCE_COUNCIL] == DONE)
+                    OpenDoor(m_uiLanathelDoorGUID_2);
 				break;
 
         }
@@ -238,10 +270,36 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(uiData == DONE)
 				{
 					OpenDoor(m_uiPutricideDoorGUID);
+					OpenDoor(m_uiBloodWingDoorGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiPutricideDoorGUID);
 				break;
+			case TYPE_PRINCE_COUNCIL:
+				m_auiEncounter[TYPE_PRINCE_COUNCIL] = uiData;
+				if(uiData == DONE)
+				{
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
+					OpenDoor(m_uiLanathelDoorGUID_1);
+					OpenDoor(m_uiLanathelDoorGUID_2);
+				}
+				else if(uiData == IN_PROGRESS)
+					CloseDoor(m_uiPrinceCouncilDoorGUID);
+				break;
+			case TYPE_LANATHEL:
+				m_auiEncounter[TYPE_LANATHEL] = uiData;
+				if(uiData == DONE)
+				{
+					OpenDoor(m_uiLanathelDoorGUID_1);
+					OpenDoor(m_uiLanathelDoorGUID_2);
+				}
+				else if(uiData == IN_PROGRESS)
+				{
+					CloseDoor(m_uiLanathelDoorGUID_1);
+					CloseDoor(m_uiLanathelDoorGUID_2);
+				}
+				break;
+
         }
 
         if (uiData == DONE)
@@ -307,6 +365,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 return m_auiEncounter[TYPE_ROTFACE];
 			case TYPE_PUTRICIDE:
                 return m_auiEncounter[TYPE_PUTRICIDE];
+			case TYPE_PRINCE_COUNCIL:
+				return m_auiEncounter[TYPE_PRINCE_COUNCIL];
+			case TYPE_LANATHEL:
+				return m_auiEncounter[TYPE_LANATHEL];
 			// Other ias
 			case TYPE_LICHKING:
                 return m_auiEncounter[TYPE_LICHKING];
@@ -327,11 +389,15 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case GO_MARROWGAR_DOOR:
 				return m_uiMarrowgarDoorGUID;
 			case TYPE_FESTERGUT:
-				return m_uiMarrowgarDoorGUID;
+				return m_uiFestergutGUID;
 			case TYPE_ROTFACE:
-				return m_uiMarrowgarDoorGUID;
+				return m_uiRotfaceGUID;
 			case TYPE_PUTRICIDE:
-				return m_uiMarrowgarDoorGUID;
+				return m_uiPutricideGUID;
+			// TODO : Princes
+			case TYPE_LANATHEL:
+				return m_uiLanathelGUID;;
+			// TODO : Other IAs
 			case TYPE_LICHKING:
 				return m_uiMarrowgarDoorGUID;
         }
@@ -369,6 +435,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				CloseDoor(m_uiFestergutDoorGUID);
 				CloseDoor(m_uiRotfaceDoorGUID);
 				OpenDoor(m_uiPutricideDoorGUID);
+				OpenDoor(m_uiPrinceCouncilDoorGUID);
+				if(GetData(TYPE_PRINCE_COUNCIL) == DONE)
+				{
+					OpenDoor(m_uiLanathelDoorGUID_1);
+					OpenDoor(m_uiLanathelDoorGUID_2);
+				}
 			}
 			checkPlayer_Timer = 500;
 		}
