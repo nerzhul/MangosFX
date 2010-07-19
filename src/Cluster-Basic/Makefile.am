@@ -29,6 +29,8 @@ mangosFX_BasicCluster_SOURCES = \
 	ClusterSpec.h \
 	CORBAThread.cpp \
 	CORBAThread.h \
+	FirstCallBack.cc \
+	FirstCallBack.hh \
 	Main.cpp
 
 ## Link world daemon against the shared library
