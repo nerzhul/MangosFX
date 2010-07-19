@@ -110,3 +110,12 @@ void ScriptedInstance::DoSpeak(Unit* pwho, uint32 soundid, std::string text, uin
             break;
 	}
 }
+
+void ScriptedInstance::AutoFreeze(Creature* cr)
+{
+	if(!cr)
+		return;
+	cr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+	cr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+	cr->CastSpell(cr,66830,false);
+}
