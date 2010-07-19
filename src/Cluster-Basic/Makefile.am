@@ -29,7 +29,7 @@ mangosFX_BasicCluster_SOURCES = \
 	ClusterSpec.h \
 	CORBAThread.cpp \
 	CORBAThread.h \
-	FirstCallBack.cc \
+	FirstCallBackSK.cc \
 	FirstCallBack.hh \
 	Main.cpp
 
