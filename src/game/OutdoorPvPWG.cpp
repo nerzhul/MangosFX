@@ -1322,6 +1322,9 @@ bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
 
 void OutdoorPvPWG::HandlePlayerEnterZone(Player * plr, uint32 zone)
 {
+	if(plr->isGameMaster())
+		return;
+
     if (isWarTime())
     {
         if (plr->getLevel() > 69)
@@ -1412,6 +1415,9 @@ void OutdoorPvPWG::HandlePlayerLeaveZone(Player * plr, uint32 zone)
 {
     if (!plr->GetSession()->PlayerLogout())
     {
+		if(plr->isGameMaster())
+			return;
+
 		if(Unit *vehUnit = Unit::GetUnit(*plr,plr->GetVehicleGUID()))
 		{
 			if(vehUnit->isAlive())

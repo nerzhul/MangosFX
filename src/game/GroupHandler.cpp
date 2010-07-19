@@ -790,7 +790,7 @@ void WorldSession::BuildPartyMemberStatsChangedPacket(Player *player, WorldPacke
     
     if (mask & GROUP_UPDATE_FLAG_VEHICLE_SEAT)
     {
-        *data << (uint32) player->m_movementInfo.GetTransportDBCSeat();
+        *data << uint32(player->m_movementInfo.GetTransportDBCSeat());
     }
 }
 
