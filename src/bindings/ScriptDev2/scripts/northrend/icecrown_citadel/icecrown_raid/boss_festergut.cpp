@@ -7,9 +7,9 @@ enum BossSpells
     SPELL_GASEOUS_BLIGHT_1			= 69161, //
     SPELL_GASEOUS_BLIGHT_2			= 70468, //
     SPELL_INHALE_BLIGHT				= 69165, //
-    SPELL_PUNGENT_BLIGHT			= 69195,
+    SPELL_PUNGENT_BLIGHT			= 69195, //
     SPELL_PUNGENT_BLIGHT_VISUAL		= 69126, //
-    SPELL_GAS_SPORE					= 69278,
+    SPELL_GAS_SPORE					= 69279,
     SPELL_INOCULATE					= 72103,
     SPELL_GASTRIC_BLOAT				= 72219, //
     SPELL_GASTRIC_EXPLOSION			= 72227, //
@@ -29,6 +29,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 
 	uint32 Inhale_Timer;
 	uint8 Inhale_Count;
+	uint32 Spore_Timer;
 
     void Reset()
     {
@@ -38,6 +39,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
 		Inhale_Timer = 46500;
 		Inhale_Count = 0;
+		Spore_Timer = 12500;
     }
 
     void Aggro(Unit* pWho)
@@ -118,6 +120,34 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(Spore_Timer <= diff)
+		{
+			uint8 antiFreeze = 0;
+			uint8 nbspore = 2;
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					nbspore = 3;
+					break;
+			}
+			for(uint8 i=0;i<nbspore;i++)
+			{
+				antiFreeze++;
+				if(Unit* u = GetRandomUnit(0/*2*/))
+				{
+					if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
+						ModifyAuraStack(SPELL_GAS_SPORE,1,u);
+					else
+						i--;
+				}
+				if(antiFreeze > 50)
+					break;
+			}
+		}
+		else
+			Spore_Timer -= diff;
 
 		if(Inhale_Timer <= diff)
 		{

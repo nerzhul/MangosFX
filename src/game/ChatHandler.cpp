@@ -102,6 +102,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
         }
     }
 
+	bool CanSpeak = true;
     if(lang == LANG_ADDON)
     {
         // Disabled addon channel?
@@ -146,11 +147,13 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 lang = ModLangAuras.front()->GetModifier()->m_miscvalue;
         }
 
-        if (!_player->CanSpeak())
+		if (!_player->CanSpeak() && !_player->isGameMaster())
         {
             std::string timeStr = secsToTimeString(m_muteTime - time(NULL));
             SendNotification(GetMangosString(LANG_WAIT_BEFORE_SPEAKING), timeStr.c_str());
-            return;
+            CanSpeak = false;
+			if(type != CHAT_MSG_WHISPER)
+				return;
         }
 
         if (type != CHAT_MSG_AFK && type != CHAT_MSG_DND)
@@ -223,6 +226,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                     return;
                 }
             }
+
+			if(!CanSpeak && player->GetSession()->GetSecurity() < SEC_GAMEMASTER)
+				return;
 
             GetPlayer()->Whisper(msg, lang, player->GetGUID());
         } break;
