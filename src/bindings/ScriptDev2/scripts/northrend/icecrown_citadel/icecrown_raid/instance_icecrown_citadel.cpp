@@ -63,6 +63,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiDreamWalkerExitDoorGUID;
 	uint64 m_uiSindragosaDoorGUID;
 	
+	uint64 m_uiPlagueSigilGUID;
+	uint64 m_uiBloodSigilGUID;
+	uint64 m_uiFrostSigilGUID;
+
 	uint32 checkPlayer_Timer;
 
     void Initialize()
@@ -102,6 +106,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiDreamWalkerDoorGUID			= 0;
 		m_uiDreamWalkerExitDoorGUID		= 0;
 		m_uiSindragosaDoorGUID			= 0;
+
+		m_uiPlagueSigilGUID				= 0;
+		m_uiBloodSigilGUID				= 0;
+		m_uiFrostSigilGUID				= 0;
 
 		checkPlayer_Timer = 500;
     }
@@ -241,6 +249,21 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(m_auiEncounter[TYPE_DREAMWALKER] == DONE)
                     OpenDoor(m_uiSindragosaDoorGUID);
 				break;
+			case GO_PLAGUE_SIGIL:
+				m_uiPlagueSigilGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_PUTRICIDE] == DONE)
+                    OpenDoor(m_uiPlagueSigilGUID);
+				break;
+			case GO_BLOOD_SIGIL:
+				m_uiBloodSigilGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_LANATHEL] == DONE)
+                    OpenDoor(m_uiBloodSigilGUID);
+				break;
+			case GO_FROST_SIGIL:
+				m_uiFrostSigilGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_SINDRAGOSA] == DONE)
+                    OpenDoor(m_uiFrostSigilGUID);
+				break;
         }
     }
 
@@ -308,6 +331,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				{
 					OpenDoor(m_uiPutricideDoorGUID);
 					OpenDoor(m_uiBloodWingDoorGUID);
+					OpenDoor(m_uiPlagueSigilGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiPutricideDoorGUID);
@@ -331,6 +355,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiLanathelDoorGUID_2);
 					OpenDoor(m_uiFrostWingDoorGUID);
 					OpenDoor(m_uiDreamWalkerDoorGUID);
+					OpenDoor(m_uiBloodSigilGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 				{
@@ -354,7 +379,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case TYPE_SINDRAGOSA:
 				m_auiEncounter[TYPE_SINDRAGOSA] = uiData;
 				if(uiData == DONE)
+				{
 					OpenDoor(m_uiSindragosaDoorGUID);
+					OpenDoor(m_uiFrostSigilGUID);
+				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiSindragosaDoorGUID);
 				break;

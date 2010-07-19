@@ -484,6 +484,7 @@ enum TpDest
 	DEATHWHISPER	=	2,
 	BATTLECANON		=	3,
 	SAURCROC		=	4,
+	LICHKING		=	5,
 };
 bool GoHello_icc_teleporter( Player *pPlayer, GameObject *pGO )
 {
@@ -500,9 +501,13 @@ bool GoHello_icc_teleporter( Player *pPlayer, GameObject *pGO )
 			//if(pInstance->GetData(TYPE_BATTLE_OF_CANNONS) == DONE || pPlayer->isGameMaster())
 			{
 				pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a la Cime du Porte-Mort", GOSSIP_SENDER_MAIN, BATTLECANON);
-				if(/*pInstance->GetData(TYPE_SAURCROC) == DONE || */pPlayer->isGameMaster())
+				if(pInstance->GetData(TYPE_SAURFANG) == DONE || pPlayer->isGameMaster())
 				{
 					pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation a La Fleche (partie haute)", GOSSIP_SENDER_MAIN, SAURCROC);
+					if(pInstance->GetData(TYPE_SINDRAGOSA) == DONE || pPlayer->isGameMaster())
+					{
+						pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Trone de Glace", GOSSIP_SENDER_MAIN, LICHKING);
+					}
 				}
 			}
 		}
@@ -536,6 +541,9 @@ bool GOSelect_icc_teleporter( Player *pPlayer, GameObject *pGO, uint32 sender, u
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
 		case SAURCROC:
 			pPlayer->TeleportTo(631, 4199.126f, 2769.197f, 351.06f, 0.07f);
+			pPlayer->CLOSE_GOSSIP_MENU(); break;
+		case LICHKING:
+			pPlayer->TeleportTo(631, 529.299f, -2124.699f, 1045.0f, 3.14f);
 			pPlayer->CLOSE_GOSSIP_MENU(); break;
     }
 
