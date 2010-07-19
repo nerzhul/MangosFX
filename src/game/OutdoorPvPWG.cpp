@@ -1587,7 +1587,10 @@ void OutdoorPvPWG::UpdateTenacityStack()
 				if(GetMap())
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 						if(cr->isAlive())
+						{
 							cr->SetAuraStack(SPELL_TENACITY_VEHICLE, cr, newStack);
+							cr->SetHealth(cr->GetMaxHealth());
+						}
     }
 }
 

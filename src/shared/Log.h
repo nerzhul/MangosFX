@@ -96,6 +96,8 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
         void outString( const char * str, ... )      ATTR_PRINTF(2,3);
                                                             // any log level
         void outError( const char * err, ... )       ATTR_PRINTF(2,3);
+
+		void outDebugSpell( const char * err, ... )       ATTR_PRINTF(2,3);
                                                             // log level >= 1
         void outBasic( const char * str, ... )       ATTR_PRINTF(2,3);
                                                             // log level >= 2
@@ -140,6 +142,7 @@ class Log : public MaNGOS::Singleton<Log, MaNGOS::ClassLevelLockable<Log, ACE_Th
 
         // log/console control
         uint32 m_logLevel;
+		uint32 m_spellLog;
         uint32 m_logFileLevel;
         bool m_colored;
         bool m_includeTime;

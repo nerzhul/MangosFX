@@ -233,6 +233,7 @@ void Log::Initialize()
     // Main log file settings
     m_includeTime  = sConfig.GetBoolDefault("LogTime", false);
     m_logLevel     = sConfig.GetIntDefault("LogLevel", 0);
+	m_spellLog	   = sConfig.GetIntDefault("SpellLog", 0);
     m_logFileLevel = sConfig.GetIntDefault("LogFileLevel", 0);
     InitColors(sConfig.GetStringDefault("LogColors", ""));
 
@@ -431,6 +432,33 @@ void Log::outError( const char * err, ... )
         fprintf(logfile, "\n" );
         fflush(logfile);
     }
+    fflush(stderr);
+}
+
+void Log::outDebugSpell( const char * err, ... )
+{
+    if( !err )
+        return;
+
+	if(m_spellLog > 0)
+	{
+		if(m_colored)
+			SetColor(false,m_colors[LogError]);
+
+		if(m_includeTime)
+			outTime();
+
+		va_list ap;
+
+		va_start(ap, err);
+		vutf8printf(stderr, err, &ap);
+		va_end(ap);
+
+		if(m_colored)
+			ResetColor(false);
+
+		fprintf( stderr, "\n" );
+	}
     fflush(stderr);
 }
 
