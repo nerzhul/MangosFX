@@ -950,14 +950,17 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 					m_vehicles[BG_TEAM_HORDE].insert(creature->GetGUID());
 			}
 			SendInitWorldStatesTo();
+			UpdateTenacityStack();
 			break;
 		case 28312:
 			m_vehicles[BG_TEAM_ALLIANCE].insert(creature->GetGUID());
 			SendInitWorldStatesTo();
+			UpdateTenacityStack();
 			break;		
 		case 32627:
 			m_vehicles[BG_TEAM_HORDE].insert(creature->GetGUID());
 			SendInitWorldStatesTo();
+			UpdateTenacityStack();
 			break;
 		case 28366:
 			FortressTurrets_Spawns.push_back(creature->GetGUID());
