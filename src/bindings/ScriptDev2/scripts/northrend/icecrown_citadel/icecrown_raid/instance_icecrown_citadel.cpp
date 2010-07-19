@@ -42,7 +42,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiPrinceValanarGUID;
 	uint64 m_uiPrinceTaldaramGUID;
 	uint64 m_uiLanathelGUID;
-	// Other IAs
+	uint64 m_uiDreamWalkerGUID;
+	uint64 m_uiSindragosaGUID;
 	uint64 m_uiLichKingGUID;
 
     uint64 m_uiMarrowgarIce1GUID;
@@ -57,6 +58,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiPrinceCouncilDoorGUID;
 	uint64 m_uiLanathelDoorGUID_1;
 	uint64 m_uiLanathelDoorGUID_2;
+	uint64 m_uiFrostWingDoorGUID;
+	uint64 m_uiDreamWalkerDoorGUID;
+	uint64 m_uiDreamWalkerExitDoorGUID;
+	uint64 m_uiSindragosaDoorGUID;
 	
 	uint32 checkPlayer_Timer;
 
@@ -75,6 +80,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiPrinceValanarGUID			= 0;
 		m_uiPrinceTaldaramGUID			= 0;
 		m_uiLanathelGUID				= 0;
+		m_uiDreamWalkerGUID				= 0;
+		m_uiSindragosaGUID				= 0;
 		// Other IAs
 		m_uiLichKingGUID				= 0;
 
@@ -91,6 +98,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiPrinceCouncilDoorGUID		= 0;
 		m_uiLanathelDoorGUID_1			= 0;
 		m_uiLanathelDoorGUID_2			= 0;
+		m_uiFrostWingDoorGUID			= 0;
+		m_uiDreamWalkerDoorGUID			= 0;
+		m_uiDreamWalkerExitDoorGUID		= 0;
+		m_uiSindragosaDoorGUID			= 0;
 
 		checkPlayer_Timer = 500;
     }
@@ -134,7 +145,14 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				m_uiLanathelGUID = pCreature->GetGUID();
 				AutoFreeze(pCreature);
 				break;
-			// Others IAs
+			case NPC_DREAMWALKER:
+				m_uiDreamWalkerGUID = pCreature->GetGUID();
+				AutoFreeze(pCreature);
+				break;
+			case NPC_SINDRAGOSA:
+				m_uiSindragosaGUID = pCreature->GetGUID();
+				AutoFreeze(pCreature);
+				break;
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
 				AutoFreeze(pCreature);
@@ -203,7 +221,26 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if (m_auiEncounter[TYPE_PRINCE_COUNCIL] == DONE)
                     OpenDoor(m_uiLanathelDoorGUID_2);
 				break;
-
+			case GO_FROSTWING_DOOR:
+				m_uiFrostWingDoorGUID = pGo->GetGUID();
+				if (m_auiEncounter[TYPE_LANATHEL] == DONE)
+                    OpenDoor(m_uiFrostWingDoorGUID);
+				break;
+			case GO_DREAMWALKER_DOOR:
+				m_uiDreamWalkerDoorGUID = pGo->GetGUID();
+				if (m_auiEncounter[TYPE_LANATHEL] == DONE)
+                    OpenDoor(m_uiDreamWalkerDoorGUID);
+				break;
+			case GO_DREAMWALKER_EXIT_DOOR:
+				m_uiDreamWalkerExitDoorGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_DREAMWALKER] == DONE)
+                    OpenDoor(m_uiDreamWalkerExitDoorGUID);
+				break;
+			case GO_SINDRAGOSA_DOOR:
+				m_uiSindragosaDoorGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_DREAMWALKER] == DONE)
+                    OpenDoor(m_uiSindragosaDoorGUID);
+				break;
         }
     }
 
@@ -292,6 +329,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				{
 					OpenDoor(m_uiLanathelDoorGUID_1);
 					OpenDoor(m_uiLanathelDoorGUID_2);
+					OpenDoor(m_uiFrostWingDoorGUID);
+					OpenDoor(m_uiDreamWalkerDoorGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 				{
@@ -299,7 +338,26 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					CloseDoor(m_uiLanathelDoorGUID_2);
 				}
 				break;
-
+			case TYPE_DREAMWALKER:
+				m_auiEncounter[TYPE_DREAMWALKER] = uiData;
+				if(uiData == DONE)
+				{
+					OpenDoor(m_uiDreamWalkerDoorGUID);
+					OpenDoor(m_uiDreamWalkerExitDoorGUID);
+					OpenDoor(m_uiSindragosaDoorGUID);
+				}
+				else if(uiData == IN_PROGRESS)
+				{
+					CloseDoor(m_uiDreamWalkerDoorGUID);
+				}
+				break;
+			case TYPE_SINDRAGOSA:
+				m_auiEncounter[TYPE_SINDRAGOSA] = uiData;
+				if(uiData == DONE)
+					OpenDoor(m_uiSindragosaDoorGUID);
+				else if(uiData == IN_PROGRESS)
+					CloseDoor(m_uiSindragosaDoorGUID);
+				break;
         }
 
         if (uiData == DONE)
@@ -369,7 +427,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				return m_auiEncounter[TYPE_PRINCE_COUNCIL];
 			case TYPE_LANATHEL:
 				return m_auiEncounter[TYPE_LANATHEL];
-			// Other ias
+			case TYPE_DREAMWALKER:
+				return m_auiEncounter[TYPE_DREAMWALKER];
+			case TYPE_SINDRAGOSA:
+				return m_auiEncounter[TYPE_SINDRAGOSA];
 			case TYPE_LICHKING:
                 return m_auiEncounter[TYPE_LICHKING];
         }
@@ -396,8 +457,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				return m_uiPutricideGUID;
 			// TODO : Princes
 			case TYPE_LANATHEL:
-				return m_uiLanathelGUID;;
-			// TODO : Other IAs
+				return m_uiLanathelGUID;
+			case TYPE_DREAMWALKER:
+				return m_uiDreamWalkerGUID;
+			case TYPE_SINDRAGOSA:
+				return m_uiSindragosaGUID;
 			case TYPE_LICHKING:
 				return m_uiMarrowgarDoorGUID;
         }
@@ -441,6 +505,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiLanathelDoorGUID_1);
 					OpenDoor(m_uiLanathelDoorGUID_2);
 				}
+				if(GetData(TYPE_LANATHEL) == DONE)
+				{
+					OpenDoor(m_uiFrostWingDoorGUID);
+					OpenDoor(m_uiDreamWalkerDoorGUID);
+				}
+				if(GetData(TYPE_DREAMWALKER) == DONE)
+					OpenDoor(m_uiSindragosaDoorGUID);
 			}
 			checkPlayer_Timer = 500;
 		}
