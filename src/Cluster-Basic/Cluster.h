@@ -9,9 +9,8 @@ class Cluster
     public:
         Cluster();
         ~Cluster();
-        int Run();
+        int Run(int argc, char** argv);
         static volatile uint32 m_masterLoopCounter;
-
     private:
         bool _StartDB();
         void _HookSignals();

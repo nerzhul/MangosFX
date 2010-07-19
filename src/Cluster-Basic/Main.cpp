@@ -3,6 +3,7 @@
 #include "Config/Config.h"
 #include "Log.h"
 #include "Cluster.h"
+#include "CORBAThread.h"
 #include "SystemConfig.h"
 #include "revision.h"
 #include "revision_nr.h"
@@ -55,7 +56,7 @@ extern int main(int argc, char **argv)
     ///- Command line parsing to get the configuration file name
     char const* cfg_file = _MANGOSD_CONFIG;
     int c=1;
-    while( c < argc )
+	while( c < argc )
     {
         if( strcmp(argv[c],"-c") == 0)
         {
@@ -147,9 +148,8 @@ extern int main(int argc, char **argv)
 
     ///- and run the 'Master'
     /// \todo Why do we need this 'Master'? Can't all of this be in the Main as for Realmd?
-    
 	
-	 return sCluster.Run(); // TODO
+	 return sCluster.Run(argc,argv); // TODO
 
     // at sMaster return function exist with codes
     // 0 - normal shutdown

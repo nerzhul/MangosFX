@@ -1,6 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include <Log.h>
 #include <Timer.h>
+#include "Cluster.h"
 #include "CORBAThread.h"
 #include "FirstCallBack.hh"
 
@@ -24,6 +25,8 @@ char* FirstCallBack_i::nerzhulCB(const char* mesg)
 
 CORBAThread::CORBAThread()
 {
+	argtab = NULL;
+	argnb = 0;
 }
 
 CORBAThread::~CORBAThread()
@@ -36,13 +39,11 @@ void CORBAThread::run()
     uint32 realPrevTime = getMSTime();
 	uint32 prevSleepTime = 0;                               // used for balanced full tick time length near WORLD_SLEEP_CONST
 
-	int argc = 0;
-	char** argv = NULL;
 	CosNaming::NamingContext_var rootContext;
 	try
 	{
 		sLog.outBasic("Initializing CORBA...");
-		CORBA::ORB_ptr orb = CORBA::ORB_init(argc,argv,"omniORB4");
+		CORBA::ORB_ptr orb = CORBA::ORB_init(argnb,argtab,"omniORB4");
 
 		sLog.outBasic("Initializing CORBA POA...");
 		CORBA::Object_var obj = orb->resolve_initial_references("NameService");

@@ -29,7 +29,7 @@ Cluster::~Cluster()
 }
 
 /// Main function
-int Cluster::Run()
+int Cluster::Run(int argc, char** argv)
 {
     ///- Start the databases
     if (!_StartDB())
@@ -40,6 +40,8 @@ int Cluster::Run()
 
     ///- Initialize the World
     sClusterBasic.SetInitialSettings();
+	sCORBAThread.setArgNb(argc);
+	sCORBAThread.setArgTab(argv);
 
 	///- Launch CORBA thread
     ACE_Based::Thread corba_thread(new CORBAThread);

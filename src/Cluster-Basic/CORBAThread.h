@@ -14,11 +14,15 @@ class CORBAThread : public ACE_Based::Runnable
 		void run();
 		static void Wait();
 		static void StopNOW() { m_stopEvent = true; }
+		void setArgNb(int nb) { argnb = nb; }
+		void setArgTab(char** tab) { argtab = tab; }
 	private:
 		static bool MustStop() { return m_stopEvent; }
-
 		static volatile bool m_stopEvent;
 		static uint8 m_ExitCode;
+		int argnb;
+		char** argtab;
+		
 };
 
 #define sCORBAThread MaNGOS::Singleton<CORBAThread>::Instance()
