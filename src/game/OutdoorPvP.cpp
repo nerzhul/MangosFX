@@ -241,6 +241,9 @@ OutdoorPvP::~OutdoorPvP()
 
 void OutdoorPvP::HandlePlayerEnterZone(Player * plr, uint32 zone)
 {
+	if(plr->isGameMaster())
+		return;
+
 	m_players[BattleGround::GetTeamIndexByTeamId(plr->GetTeam())].insert(plr);
 }
 
