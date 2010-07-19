@@ -302,7 +302,7 @@ class OutdoorPvPWG : public OutdoorPvP
         BuildingState *m_gate;
 
         CreatureSet m_creatures;
-        CreatureSet m_vehicles[2];
+		std::set<uint64> m_vehicles[2];
         GameObjectSet m_gobjects;
         QuestGiverMap m_questgivers;
 

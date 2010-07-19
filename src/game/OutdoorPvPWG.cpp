@@ -1556,8 +1556,11 @@ void OutdoorPvPWG::UpdateTenacityStack()
             if ((*itr)->getLevel() > 69)
                 (*itr)->RemoveAurasDueToSpell(SPELL_TENACITY);
 
-        /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
-            (*itr)->RemoveAurasDueToSpell(SPELL_TENACITY_VEHICLE);*/
+		for (std::set<uint64>::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
+			if(GetMap())
+				if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+					if(cr->isAlive())
+						cr->RemoveAurasDueToSpell(SPELL_TENACITY_VEHICLE);
     }
 
     // Apply new buff
@@ -1577,8 +1580,11 @@ void OutdoorPvPWG::UpdateTenacityStack()
 				(*itr)->SetHealth((*itr)->GetMaxHealth());
 			}
 
-        /*for (CreatureSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
-            (*itr)->SetAuraStack(SPELL_TENACITY_VEHICLE, (*itr), newStack);*/
+			for (std::set<uint64>::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
+				if(GetMap())
+					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
+						if(cr->isAlive())
+							cr->SetAuraStack(SPELL_TENACITY_VEHICLE, cr, newStack);
     }
 }
 
