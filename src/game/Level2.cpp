@@ -84,7 +84,10 @@ bool ChatHandler::HandleMuteCommand(const char* args)
     time_t mutetime = time(NULL) + notspeaktime*60;
 
     if (target)
+	{
         target->GetSession()->m_muteTime = mutetime;
+		target->SetAuraStack(1852,target,1);
+	}
 
     loginDatabase.PExecute("UPDATE account SET mutetime = " UI64FMTD " WHERE id = '%u'",uint64(mutetime), account_id );
 

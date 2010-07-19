@@ -19834,6 +19834,8 @@ void Player::SendInitialPacketsAfterAddToMap()
 	}
 	
  	AddWintergraspBuffIfCan(GetMapId());
+	if(!CanSpeak())
+		SetAuraStack(1852,this,1);
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
