@@ -646,6 +646,14 @@
 				RelativePath="..\..\src\Cluster-Basic\CORBAThread.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\Cluster-Basic\FirstCallBack.hh"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-Basic\FirstCallBackSK.cc"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Replicat"
