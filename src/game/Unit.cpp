@@ -8032,6 +8032,13 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 target = pVictim;
                 trigger_spell_id = 26470;
             }
+			else if(auraSpellInfo->Id == 71761)             // Deep Freeze Immunity State
+			{
+				// spell applied only to permanent immunes to stun targets (bosses)
+				if(pVictim->GetTypeId() != TYPEID_UNIT ||
+					(((Creature*)pVictim)->GetCreatureInfo()->MechanicImmuneMask & (1 << (MECHANIC_STUN - 1))) == 0)
+					return false;
+			}
             break;
         case SPELLFAMILY_WARRIOR:
             // Deep Wounds (replace triggered spells to directly apply DoT), dot spell have finilyflags
