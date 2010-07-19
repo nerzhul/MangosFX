@@ -147,7 +147,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 lang = ModLangAuras.front()->GetModifier()->m_miscvalue;
         }
 
-		if (!_player->CanSpeak() && !_player->isGameMaster())
+		if (!_player->CanSpeak())
         {
             std::string timeStr = secsToTimeString(m_muteTime - time(NULL));
             SendNotification(GetMangosString(LANG_WAIT_BEFORE_SPEAKING), timeStr.c_str());
@@ -159,6 +159,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
         if (type != CHAT_MSG_AFK && type != CHAT_MSG_DND)
             GetPlayer()->UpdateSpeakTime();
     }
+
+	if(GetPlayer()->CanSpeak() && GetPlayer()->HasAura(1852))
+		GetPlayer()->RemoveAurasDueToSpell(1852);
 
     switch(type)
     {

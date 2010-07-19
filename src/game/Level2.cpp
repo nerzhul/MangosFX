@@ -130,6 +130,7 @@ bool ChatHandler::HandleUnmuteCommand(const char* args)
             SetSentErrorMessage(true);
             return false;
         }
+		target->RemoveAurasDueToSpell(1852);
 
         target->GetSession()->m_muteTime = 0;
     }
