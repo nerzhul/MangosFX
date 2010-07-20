@@ -68,7 +68,7 @@ void CORBAThread::run()
 		// Decrement the reference count of the object implementation, so
 		// that it will be properly cleaned up when the POA has determined
 		// that it is no longer needed.
-		//FCB->_remove_ref();
+		FCB->_remove_ref();
 		
 		/** TODO : activate objects there
 
