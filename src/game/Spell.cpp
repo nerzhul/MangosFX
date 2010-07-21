@@ -2912,7 +2912,12 @@ void Spell::cast(bool skipCheck)
 				case 71904:
 					AddTriggeredSpell(73422);
 					break;
-
+				/*case 69290:
+				case 71222:
+				case 73033:
+				case 73034:
+					AddTriggeredSpell(72103);
+					break;*/
 			}
             break;
         }

@@ -4918,6 +4918,17 @@ Aura* Unit::GetAura(uint32 spellId, uint32 effindex)
     return NULL;
 }
 
+Aura* Unit::GetAura(uint32 spellId)
+{
+    for (int i = 0; i < 3 ; ++i)
+    {
+        AuraMap::const_iterator iter = m_Auras.find(spellEffectPair(spellId, i));
+        if (iter != m_Auras.end())
+            return iter->second;
+    }
+    return NULL;
+}
+
 Aura* Unit::GetAura(AuraType type, uint32 family, uint64 familyFlag, uint32 familyFlag2, uint64 casterGUID)
 {
     AuraList const& auras = GetAurasByType(type);

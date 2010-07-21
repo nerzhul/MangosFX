@@ -9,11 +9,12 @@ enum BossSpells
     SPELL_INHALE_BLIGHT				= 69165, //
     SPELL_PUNGENT_BLIGHT			= 69195, //
     SPELL_PUNGENT_BLIGHT_VISUAL		= 69126, //
-    SPELL_GAS_SPORE					= 69279,
-    SPELL_INOCULATE					= 72103,
+	SPELL_PUNGENT_SPORE				= 69290, //
+    SPELL_GAS_SPORE					= 69279, // 
+    SPELL_INOCULATE					= 72103, // 
     SPELL_GASTRIC_BLOAT				= 72219, //
     SPELL_GASTRIC_EXPLOSION			= 72227, //
-    SPELL_VILE_GAS					= 72272,
+    SPELL_VILE_GAS					= 72273, //
 };
 
 struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
@@ -23,13 +24,14 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
         InitInstance();
 		AddEnrageTimer(300000);
 		AddTextEvent(16905,"On arrête, de jouer !",300000,60000);
-		AddEventOnTank(SPELL_GASTRIC_BLOAT,6000,11500);
-		AddEventOnMe(SPELL_INHALE_BLIGHT,45000,60000);
+		AddEventOnTank(SPELL_GASTRIC_BLOAT,6000,10000);
+		AddEvent(SPELL_VILE_GAS,30000,60000,0);
     }
 
 	uint32 Inhale_Timer;
 	uint8 Inhale_Count;
 	uint32 Spore_Timer;
+	uint32 check_Timer;
 
     void Reset()
     {
@@ -37,9 +39,11 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_0);
 		me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_1);
 		me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
-		Inhale_Timer = 46500;
+		me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
+		Inhale_Timer = 25000;
 		Inhale_Count = 0;
 		Spore_Timer = 12500;
+		check_Timer = 1000;
     }
 
     void Aggro(Unit* pWho)
@@ -92,34 +96,56 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
             pInstance->SetData(TYPE_FESTERGUT, FAIL);
     }
 
-	void CheckPlayersConditions()
+	void CheckPlayerConditions()
 	{
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
-		{
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-			{
 				if(Player* pPlayer = itr->getSource())
-				{
 					if(pPlayer->isAlive())
 						if(pPlayer->HasAura(SPELL_GASTRIC_BLOAT))
 						{
-							uint8 stk = pPlayer->GetAura(SPELL_GASTRIC_BLOAT,0)->GetStackAmount();
+							uint8 stk = pPlayer->GetAura(SPELL_GASTRIC_BLOAT)->GetStackAmount();
 							if(stk == 10)
 							{
 								pPlayer->CastStop();
 								pPlayer->CastSpell(pPlayer,SPELL_GASTRIC_EXPLOSION,true);
+								break;
 							}
 						}
-				}
-			}
+	}
+
+	void SpellHitTarget(Unit* u, const SpellEntry* sp)
+	{
+		if(u->HasAura(SPELL_INOCULATE) && sp->Id == SPELL_PUNGENT_BLIGHT)
+			u->RemoveAurasDueToSpell(SPELL_INOCULATE);
+
+		if(sp->Id == SPELL_PUNGENT_SPORE)
+		{
+			uint8 stk = 1;
+			if(u->HasAura(SPELL_INOCULATE))
+				stk = u->GetAura(SPELL_INOCULATE)->GetStackAmount() + 1;
+			ModifyAuraStack(SPELL_INOCULATE,stk > 3 ? 3 : stk,u);
 		}
+	}
+
+	void SpellHit(Unit* u,const SpellEntry* sp)
+	{
+		if(sp->Id == SPELL_PUNGENT_SPORE)
+			me->RemoveAurasDueToSpell(SPELL_PUNGENT_SPORE);
 	}
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+
+		if(check_Timer <= diff)
+		{
+			CheckPlayerConditions();
+		}
+		else
+			check_Timer -= diff;
 
 		if(Spore_Timer <= diff)
 		{
@@ -135,7 +161,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 			for(uint8 i=0;i<nbspore;i++)
 			{
 				antiFreeze++;
-				if(Unit* u = GetRandomUnit(0/*2*/))
+				if(Unit* u = GetRandomUnit(2))
 				{
 					if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
 						ModifyAuraStack(SPELL_GAS_SPORE,1,u);
@@ -145,6 +171,8 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				if(antiFreeze > 50)
 					break;
 			}
+
+			Spore_Timer = 30000;
 		}
 		else
 			Spore_Timer -= diff;
@@ -157,16 +185,21 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				case 1:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_0);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_1);
+					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 2:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_1);
-					me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_2);
+					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 3:
+					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
+					me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
+					DoCastVictim(SPELL_INHALE_BLIGHT);
+					break;
+				case 4:
 					me->CastStop();
 					DoCastVictim(SPELL_PUNGENT_BLIGHT);
-					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_0);
 					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
 					Inhale_Count = 0;
@@ -174,7 +207,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				default:
 					break;
 			}
-			Inhale_Timer = 60000;
+			Inhale_Timer = 33000;
 		}
 		else
 			Inhale_Timer -= diff;
