@@ -249,6 +249,14 @@ bool WorldSession::Update(uint32 /*diff*/)
                 packet->hexlike();
             }
         }
+		catch(std::exception &e)
+		{
+			error_log("FATAL STD ERROR : %s",e.what());
+		}
+		/*catch(...)
+		{
+			error_log("UNHANDLED FATAL ERROR !");
+		}*/
 
         delete packet;
     }
