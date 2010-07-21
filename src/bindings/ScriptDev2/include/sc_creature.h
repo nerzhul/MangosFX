@@ -102,6 +102,9 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     // Called when hit by a spell
     void SpellHit(Unit*, const SpellEntry*) {}
 
+	// Call when hit with a spell
+	void SpellHitTarget(Unit*, const SpellEntry*) {}
+
     // Called when creature is spawned or respawned (for reseting variables)
     void JustRespawned();
 
