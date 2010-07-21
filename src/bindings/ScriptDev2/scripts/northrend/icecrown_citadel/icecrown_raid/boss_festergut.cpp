@@ -14,7 +14,7 @@ enum BossSpells
     SPELL_INOCULATE					= 72103, // 
     SPELL_GASTRIC_BLOAT				= 72219, //
     SPELL_GASTRIC_EXPLOSION			= 72227, //
-    SPELL_VILE_GAS					= 72273, //
+    SPELL_VILE_GAS					= 72272, //
 };
 
 struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
@@ -25,7 +25,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		AddEnrageTimer(300000);
 		AddTextEvent(16905,"On arrête, de jouer !",300000,60000);
 		AddEventOnTank(SPELL_GASTRIC_BLOAT,6000,10000);
-		AddEvent(SPELL_VILE_GAS,30000,60000,0);
+		AddEvent(SPELL_VILE_GAS,urand(7000,10000),18000,5000);
     }
 
 	uint32 Inhale_Timer;

@@ -477,6 +477,166 @@ CreatureAI* GetAI_deathspeaker_priest(Creature* pCreature)
     return new deathspeaker_priestAI (pCreature);
 }
 
+struct MANGOS_DLL_DECL blighted_abominationAI : public LibDevFSAI
+{
+    blighted_abominationAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(71140,1000,15000,5000);
+		AddEventOnTank(40504,2000,3000);
+		AddEvent(71150,4000,10000,2000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_blighted_abomination(Creature* pCreature)
+{
+    return new blighted_abominationAI (pCreature);
+}
+
+struct MANGOS_DLL_DECL vengeful_fleshreaperAI : public LibDevFSAI
+{
+    vengeful_fleshreaperAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(71164,1000,5000,2000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_vengeful_fleshreaper(Creature* pCreature)
+{
+    return new vengeful_fleshreaperAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL plague_scientistAI : public LibDevFSAI
+{
+    plague_scientistAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(73079,3000,10000,2000);
+		AddEvent(69871,12000,15000,2000);
+		AddEvent(71103,6000,6000,1000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_plague_scientist(Creature* pCreature)
+{
+    return new plague_scientistAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL decaying_colossusAI : public LibDevFSAI
+{
+    decaying_colossusAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(71114,3000,8000,2000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth() && pWho != me)
+		{
+			dmg = 0;
+			DoCastMe(SPELL_SOUL_FEAST);
+			Kill(me);
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_decaying_colossus(Creature* pCreature)
+{
+    return new decaying_colossusAI(pCreature);
+}
+
 enum TpDest
 {
 	BASE			=	0,
@@ -554,10 +714,25 @@ void AddSC_ICC10_mobs()
 {
 	Script *newscript;
 
+	newscript = new Script;
+    newscript->Name = "icc_decaying_colossus";
+    newscript->GetAI = &GetAI_decaying_colossus;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_plague_scientist";
+    newscript->GetAI = &GetAI_plague_scientist;
+    newscript->RegisterSelf();
+
     newscript = new Script;
-    newscript->Name = "icc_deathbound_ward";
-    newscript->GetAI = &GetAI_Deathbound_Ward;
+    newscript->Name = "icc_vengeful_fleshreaper";
+    newscript->GetAI = &GetAI_vengeful_fleshreaper;
 	newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_the_damned";
+    newscript->GetAI = &GetAI_icc_the_damned;
+    newscript->RegisterSelf();
 
 	newscript = new Script;
     newscript->Name = "icc_the_damned";
@@ -607,6 +782,11 @@ void AddSC_ICC10_mobs()
 	newscript = new Script;
     newscript->Name = "icc_deathspeaker_priest";
     newscript->GetAI = &GetAI_deathspeaker_priest;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "icc_blighted_abomination";
+    newscript->GetAI = &GetAI_blighted_abomination;
     newscript->RegisterSelf();
 
 	newscript = new Script;

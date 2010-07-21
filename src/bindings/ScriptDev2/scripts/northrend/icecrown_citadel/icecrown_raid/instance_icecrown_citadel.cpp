@@ -67,6 +67,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiBloodSigilGUID;
 	uint64 m_uiFrostSigilGUID;
 
+	uint64 m_uiOrangeTubeGUID;
+	uint64 m_uiOrangeDoorGUID;
+
 	uint32 checkPlayer_Timer;
 
     void Initialize()
@@ -110,6 +113,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiPlagueSigilGUID				= 0;
 		m_uiBloodSigilGUID				= 0;
 		m_uiFrostSigilGUID				= 0;
+
+		m_uiOrangeTubeGUID				= 0;
+		m_uiOrangeDoorGUID				= 0;
 
 		checkPlayer_Timer = 500;
     }
@@ -265,6 +271,16 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(m_auiEncounter[TYPE_SINDRAGOSA] == DONE)
                     OpenDoor(m_uiFrostSigilGUID);
 				break;
+			case GO_PLAGUE_ORANGE_TUBE:
+				m_uiOrangeTubeGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_FESTERGUT] == DONE)
+                    OpenDoor(m_uiOrangeTubeGUID);
+				break;
+			case GO_PLAGUE_ORANGE_DOOR:
+				m_uiOrangeDoorGUID = pGo->GetGUID();
+				if(m_auiEncounter[TYPE_FESTERGUT] == DONE)
+                    OpenDoor(m_uiOrangeDoorGUID);
+				break;
         }
     }
 
@@ -313,6 +329,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(uiData == DONE)
 				{
 					CloseDoor(m_uiFestergutDoorGUID);
+					OpenDoor(m_uiOrangeTubeGUID);
+					OpenDoor(m_uiOrangeDoorGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 					OpenDoor(m_uiFestergutDoorGUID);
