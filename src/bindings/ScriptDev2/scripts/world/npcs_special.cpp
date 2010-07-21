@@ -1512,7 +1512,7 @@ struct MANGOS_DLL_DECL viper_hunt_AI : public LibDevFSAI
 	viper_hunt_AI(Creature* pCreature) : LibDevFSAI(pCreature)
     {	
         InitIA();
-		AddEventOnTank(67710,urand(1000,4000),5000,2000);
+		AddEventOnTank(57970,urand(1000,4000),5000,2000);
 		me->ForcedDespawn(15000);
     }
 

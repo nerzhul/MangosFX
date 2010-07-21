@@ -503,6 +503,8 @@ void InstanceSaveManager::LoadResetTimes()
 			if(t - resetEventTypeDelay[type] > now)
                 break;
 
+		ScheduleReset(true, t - resetEventTypeDelay[type], InstResetEvent(type, mapid, difficulty, -1));
+
         for(ResetTimeMapDiffInstances::const_iterator in_itr = mapDiffResetInstances.lower_bound(map_diff_pair);
             in_itr != mapDiffResetInstances.upper_bound(map_diff_pair); ++in_itr)
         {
@@ -549,7 +551,7 @@ void InstanceSaveManager::Update()
         {
             // global reset/warning for a certain map
             time_t resetTime = GetResetTimeFor(event.mapid,event.difficulty);
-            _ResetOrWarnAll(event.mapid, event.difficulty, event.type != RESET_EVENT_INFORM_LAST, resetTime - now);
+            _ResetOrWarnAll(event.mapid, event.difficulty, event.type != RESET_EVENT_INFORM_LAST, uint32(resetTime - now));
             if(event.type != RESET_EVENT_INFORM_LAST)
             {
                 // schedule the next warning/reset

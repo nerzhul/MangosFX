@@ -132,6 +132,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_ROTFACE:
 				m_uiRotfaceGUID = pCreature->GetGUID();
+				AutoFreeze(pCreature);
 				break;
 			case NPC_PUTRICIDE:
 				m_uiPutricideGUID = pCreature->GetGUID();

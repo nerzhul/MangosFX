@@ -137,8 +137,8 @@ class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSav
            all instances of that map reset at the same time */
         struct InstResetEvent
         {
-            ResetEventType type;
-            Difficulty difficulty:8;
+			ResetEventType type		:8;
+            Difficulty difficulty	:8;
             uint16 mapid;
             uint32 instanceId;
 
