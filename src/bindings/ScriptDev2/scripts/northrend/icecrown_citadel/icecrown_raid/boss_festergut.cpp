@@ -3,10 +3,11 @@
 
 enum BossSpells
 {
-    SPELL_GASEOUS_BLIGHT_0			= 70138, //
-    SPELL_GASEOUS_BLIGHT_1			= 69161, //
-    SPELL_GASEOUS_BLIGHT_2			= 70468, //
+    SPELL_GASEOUS_BLIGHT_0			= 69157, //
+    SPELL_GASEOUS_BLIGHT_1			= 69162, // 
+    SPELL_GASEOUS_BLIGHT_2			= 69164, //
     SPELL_INHALE_BLIGHT				= 69165, //
+	SPELL_INHALE_BLIGHT_BUFF		= 69166, //
     SPELL_PUNGENT_BLIGHT			= 69195, //
     SPELL_PUNGENT_BLIGHT_VISUAL		= 69126, //
 	SPELL_PUNGENT_SPORE				= 69290, //
@@ -202,6 +203,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 					DoCastVictim(SPELL_PUNGENT_BLIGHT);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_0);
 					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
+					me->RemoveAurasDueToSpell(SPELL_INHALE_BLIGHT_BUFF);
 					Inhale_Count = 0;
 					break;
 				default:
