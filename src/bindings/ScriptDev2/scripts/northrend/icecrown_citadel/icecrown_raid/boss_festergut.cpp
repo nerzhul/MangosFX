@@ -130,7 +130,8 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 							{
 								uint8 stk = 1;
 								if(pPlayer->HasAura(SPELL_INOCULATE))
-									stk = pPlayer->GetAura(SPELL_INOCULATE)->GetStackAmount() + 1;
+									stk = pPlayer->GetAura(SPELL_INOCULATE)->GetStackAmount();
+								stk++;
 								ModifyAuraStack(SPELL_INOCULATE,stk > 3 ? 3 : stk,pPlayer);
 							}
 						}
@@ -175,22 +176,13 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				{
 					if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
 					{
-						u->CastStop();
-						u->CastSpell(u,SPELL_GAS_SPORE,true);
+						ModifyAuraStack(SPELL_GAS_SPORE,1,u);
 					}
 					else
 						i--;
 				}
 				if(antiFreeze > 50)
-				{
-					if(Unit* u = me->getVictim())
-						if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
-						{
-							u->CastStop();
-							u->CastSpell(u,SPELL_GAS_SPORE,true);
-						}
 					break;
-				}
 			}
 
 			Spore_Timer = 30000;
