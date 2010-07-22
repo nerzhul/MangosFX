@@ -363,7 +363,7 @@ void WorldSession::HandleBattleFieldPortOpcode( WorldPacket &recv_data )
     
 	if (!_player->InBattleGroundQueue())
     {
-        sLog.outError("BattlegroundHandler: Invalid CMSG_BATTLEFIELD_PORT received from player (%u), he is not in bg_queue.", _player->GetGUIDLow());
+        sLog.outDebug("BattlegroundHandler: Invalid CMSG_BATTLEFIELD_PORT received from player (%u), he is not in bg_queue.", _player->GetGUIDLow());
         return;
     }
 

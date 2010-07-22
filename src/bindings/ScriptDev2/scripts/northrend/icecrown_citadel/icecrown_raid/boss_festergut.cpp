@@ -182,7 +182,15 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 						i--;
 				}
 				if(antiFreeze > 50)
+				{
+					if(Unit* u = me->getVictim())
+						if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
+						{
+							u->CastStop();
+							u->CastSpell(u,SPELL_GAS_SPORE,true);
+						}
 					break;
+				}
 			}
 
 			Spore_Timer = 30000;
