@@ -10165,7 +10165,8 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
         return false;
 
     float crit_chance = 0.0f;
-	sLog.outDebugSpell("Init Crit Chance : %f",crit_chance);
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Init Crit Chance : %f",crit_chance);
 	uint32 DmgClass = spellProto->DmgClass;
 
 	// Hack for rogue spells which are spells no skills
@@ -10189,8 +10190,9 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                 crit_chance = m_baseSpellCritChance;
                 crit_chance += GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL, schoolMask);
             }
-
-			sLog.outDebugSpell("Crit Chance Init for SPELL_DAMAGE_CLASS_MAGIC: %f",crit_chance);
+			
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance Init for SPELL_DAMAGE_CLASS_MAGIC: %f",crit_chance);
             // taken
             if (pVictim)
             {
@@ -10199,15 +10201,18 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE, schoolMask);
 
-					sLog.outDebugSpell("Crit Chance add SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE: %f",crit_chance);
+					if(GetTypeId() == TYPEID_PLAYER)
+						sLog.outDebugSpell("Crit Chance add SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE: %f",crit_chance);
                     // Modify critical chance by victim SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE
                     crit_chance += pVictim->GetTotalAuraModifier(SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
 
-					sLog.outDebugSpell("Crit Chance add SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE: %f",crit_chance);
+					if(GetTypeId() == TYPEID_PLAYER)
+						sLog.outDebugSpell("Crit Chance add SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE: %f",crit_chance);
                     // Modify by player victim resilience
                     crit_chance -= pVictim->GetSpellCritChanceReduction();
 
-					sLog.outDebugSpell("Crit Chance reduced by resilience: %f",crit_chance);
+					if(GetTypeId() == TYPEID_PLAYER)
+						sLog.outDebugSpell("Crit Chance reduced by resilience: %f",crit_chance);
                 }
 
                 // scripted (increase crit chance ... against ... target by x%)
@@ -10236,7 +10241,8 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                     }
                 }
 
-				sLog.outDebugSpell("Crit Chance add special auras CLASS_SCRIPTS : %f",crit_chance);
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Crit Chance add special auras CLASS_SCRIPTS : %f",crit_chance);
                 // Custom crit by class
                 switch(spellProto->SpellFamilyName)
                 {
@@ -10303,13 +10309,15 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                         }
                         break;
                 }
-				sLog.outDebugSpell("Crit Chance add special crits by CLASS : %f",crit_chance);
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Crit Chance add special crits by CLASS : %f",crit_chance);
             }
             break;
         }
         case SPELL_DAMAGE_CLASS_MELEE:
         {
-			sLog.outDebugSpell("Crit Chance Init for SPELL_DAMAGE_CLASS_MELEE: %f",crit_chance);
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance Init for SPELL_DAMAGE_CLASS_MELEE: %f",crit_chance);
             // Judgement of Command proc always crits on stunned target
             if(spellProto->SpellFamilyName == SPELLFAMILY_PALADIN)
             {
@@ -10338,19 +10346,25 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                     }
                 }
             }
-			sLog.outDebugSpell("Crit Chance MELEE modified by CLASS scripts: %f",crit_chance);
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance MELEE modified by CLASS scripts: %f",crit_chance);
 			break;
         }
         case SPELL_DAMAGE_CLASS_RANGED:
         {
-			sLog.outDebugSpell("Crit Chance init for SPELL_DAMAGE_CLASS_RANGED: %f",crit_chance);
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance init for SPELL_DAMAGE_CLASS_RANGED: %f",crit_chance);
             if (pVictim)
                 crit_chance = GetUnitCriticalChance(attackType, pVictim);
 
-			sLog.outDebugSpell("Crit Chance reinit by GetUnitCriticalChance: %f",crit_chance);
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance reinit by GetUnitCriticalChance: %f",crit_chance);
 
             crit_chance+= GetTotalAuraModifierByMiscMask(SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL, schoolMask);
-			sLog.outDebugSpell("Crit Chance modified by SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL : %f",crit_chance);
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Crit Chance modified by SPELL_AURA_MOD_SPELL_CRIT_CHANCE_SCHOOL : %f",crit_chance);
             break;
         }
         default:
@@ -10361,11 +10375,13 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
     if(Player* modOwner = GetSpellModOwner())
         modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_CRITICAL_CHANCE, crit_chance);
 
-	sLog.outDebugSpell("Crit Chance modified by SPELLMOD_CRITICAL_CHANCE : %f",crit_chance);
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Crit Chance modified by SPELLMOD_CRITICAL_CHANCE : %f",crit_chance);
 
     crit_chance = crit_chance > 0.0f ? crit_chance : 0.0f;
 
-	sLog.outDebugSpell("Final crit_chance : %f",crit_chance);
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Final crit_chance : %f",crit_chance);
     if (roll_chance_f(crit_chance))
         return true;
     return false;
