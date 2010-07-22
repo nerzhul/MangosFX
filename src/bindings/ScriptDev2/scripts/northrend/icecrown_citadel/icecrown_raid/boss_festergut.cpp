@@ -26,7 +26,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		AddEnrageTimer(300000);
 		AddTextEvent(16905,"On arrête, de jouer !",300000,60000);
 		AddEventOnTank(SPELL_GASTRIC_BLOAT,6000,10000);
-		AddEvent(SPELL_VILE_GAS,urand(7000,10000),18000,5000);
+		AddEvent(SPELL_VILE_GAS,urand(7000,10000),14000,5000);
     }
 
 	uint32 Inhale_Timer;
