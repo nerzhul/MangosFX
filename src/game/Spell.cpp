@@ -2926,6 +2926,14 @@ void Spell::cast(bool skipCheck)
             // Ice Block
             if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000008000000000))
                 AddPrecastSpell(41425);                     // Hypothermia
+
+			if(m_spellInfo->Id == 12536 || m_spellInfo->Id == 12043)
+			{
+				if(m_caster->HasAura(31571))
+					AddPrecastSpell(57529);
+				else if(m_caster->HasAura(31572))
+					AddPrecastSpell(57531);
+			}
             break;
         }
         case SPELLFAMILY_PRIEST:

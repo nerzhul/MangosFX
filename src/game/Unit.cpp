@@ -5929,24 +5929,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 break;
             }
 
-            // Arcane Potency
-            if (dummySpell->SpellIconID == 2120)
-            {
-                if(!procSpell)
-                    return false;
-
-                target = this;
-                switch (dummySpell->Id)
-                {
-                    case 31571: triggered_spell_id = 57529; break;
-                    case 31572: triggered_spell_id = 57531; break;
-                    default:
-                        sLog.outError("Unit::HandleDummyAuraProc: non handled spell id: %u",dummySpell->Id);
-                        return false;
-                }
-                break;
-            }
-
             // Hot Streak
             if (dummySpell->SpellIconID == 2999)
             {
