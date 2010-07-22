@@ -3707,9 +3707,11 @@ void Unit::_UpdateAutoRepeatSpell()
     {
         // cancel wand shoot
         if(m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id != SPELL_ID_AUTOSHOT)
+		{
             InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
-        m_AutoRepeatFirstCast = true;
-        return;
+			m_AutoRepeatFirstCast = true;
+			return;
+		}
     }
 
     //apply delay
