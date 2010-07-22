@@ -1303,6 +1303,7 @@ bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
             go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
             return false;
         case 7900: // Flamewatch Tower - Shadowsight Tower - Winter's Edge Tower
+		case 7898:
             go->SetUInt32Value(GAMEOBJECT_FACTION, attFaction);
             return false;
         case 8208: // Goblin Workshop
@@ -1579,8 +1580,9 @@ void OutdoorPvPWG::UpdateTenacityStack()
             if ((*itr)->getLevel() > 69)
 			{
 				float pLife = (*itr)->GetHealth() / (*itr)->GetMaxHealth();
+				uint32 Life = pLife * (*itr)->GetMaxHealth();
                 (*itr)->SetAuraStack(SPELL_TENACITY, (*itr), newStack);
-				(*itr)->SetHealth((*itr)->GetMaxHealth());
+				(*itr)->SetHealth(Life > (*itr)->GetMaxHealth() / 10 ? Life : (*itr)->GetMaxHealth() / 10);
 			}
 
 			for (std::set<uint64>::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)
@@ -1588,8 +1590,10 @@ void OutdoorPvPWG::UpdateTenacityStack()
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 						if(cr->isAlive())
 						{
+							float pLife = cr->GetHealth() / cr->GetMaxHealth();
+							uint32 Life = pLife * cr->GetMaxHealth();
 							cr->SetAuraStack(SPELL_TENACITY_VEHICLE, cr, newStack);
-							cr->SetHealth(cr->GetMaxHealth());
+							cr->SetHealth(Life > cr->GetMaxHealth() / 10 ? Life : cr->GetMaxHealth() / 10);
 						}
     }
 }
