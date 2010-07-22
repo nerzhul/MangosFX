@@ -1319,6 +1319,8 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     bool crit = isSpellCrit(pVictim, spellInfo, damageSchoolMask, attackType);
     bool blocked = false;
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Initial Spell Damage %i",damage);
 	
     // damage bonus (per damage class)
     switch (spellInfo->DmgClass)
@@ -1329,6 +1331,10 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         {
             //Calculate damage bonus
             damage = MeleeDamageBonus(pVictim, damage, attackType, spellInfo, SPELL_DIRECT_DAMAGE);
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Spell Damage with MeleeDamageBonus %i",damage);
+
             // Get blocked status
             blocked = isSpellBlocked(pVictim, spellInfo, attackType);
 
@@ -1337,11 +1343,18 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
             {
                 damageInfo->HitInfo|= SPELL_HIT_TYPE_CRIT;
                 damage = SpellCriticalDamageBonus(spellInfo, damage, pVictim);
+
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Spell Damage with SpellCriticalDamageBonus %i",damage);
+
                 // Resilience - reduce crit damage
                 if (attackType != RANGED_ATTACK)
                     damage -= pVictim->GetMeleeCritDamageReduction(damage);
                 else
                     damage -= pVictim->GetRangedCritDamageReduction(damage);
+
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Spell Damage with resilience on crit %i",damage);
             }
         }
         break;
@@ -1351,13 +1364,23 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         {
             // Calculate damage bonus
             damage = SpellDamageBonus(pVictim, spellInfo, damage, SPELL_DIRECT_DAMAGE);
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Spell Damage with SpellDamageBonus %i",damage);
+
             // If crit add critical bonus
             if (crit)
             {
                 damageInfo->HitInfo|= SPELL_HIT_TYPE_CRIT;
                 damage = SpellCriticalDamageBonus(spellInfo, damage, pVictim);
+
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Spell Damage with SpellCriticalDamageBonus %i",damage);
                 // Resilience - reduce crit damage
                 damage -= pVictim->GetSpellCritDamageReduction(damage);
+
+				if(GetTypeId() == TYPEID_PLAYER)
+					sLog.outDebugSpell("Spell Damage with resilience %i",damage);
             }
         }
         break;
@@ -1369,6 +1392,9 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         uint32 resilienceReduction = pVictim->GetSpellDamageReduction(damage);
 		damage      -= resilienceReduction;
         damageInfo->cleanDamage += resilienceReduction;
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("Spell Damage with Global resilience %i",damage);
     }
 
     // damage mitigation
@@ -1379,6 +1405,9 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
         {
             uint32 armor_affected_damage = CalcNotIgnoreDamageRedunction(damage,damageSchoolMask);
             damage = damage - armor_affected_damage + CalcArmorReducedDamage(pVictim, armor_affected_damage);
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Spell Damage with armor %i",damage);
         }
 
         // block (only for damage class ranged and -melee, also non-physical damage possible)
@@ -1388,17 +1417,26 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
             if (damage < damageInfo->blocked)
                 damageInfo->blocked = damage;
             damage -= damageInfo->blocked;
+
+			if(GetTypeId() == TYPEID_PLAYER)
+				sLog.outDebugSpell("Spell Damage with Block %i",damage);
         }
 
         uint32 absorb_affected_damage = CalcNotIgnoreAbsorbDamage(damage,damageSchoolMask,spellInfo);
         CalcAbsorbResist(pVictim, damageSchoolMask, SPELL_DIRECT_DAMAGE, absorb_affected_damage, &damageInfo->absorb, &damageInfo->resist, !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
         damage -= damageInfo->absorb + damageInfo->resist;
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("Spell Damage with absorb %i",damage);
 		
 		if(GetTypeId() == TYPEID_PLAYER)
 			((Player*)this)->ForceProcOnDamage(pVictim,spellInfo,crit);
    }
     else
         damage = 0;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Spell Damage final %i",damage);
 
 	damageInfo->damage = damage;
 }
@@ -10265,25 +10303,25 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                             }
                         }
                         break;
-						case SPELLFAMILY_DRUID:
-							// Improved Insect Swarm (Starfire part)
-							if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+					case SPELLFAMILY_DRUID:
+						// Improved Insect Swarm (Starfire part)
+						if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+						{
+							// search for Moonfire on target
+							if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x000000000000002), 0, GetGUID()))
 							{
-								// search for Moonfire on target
-								if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x000000000000002), 0, GetGUID()))
+								Unit::AuraList const& improvedSwarm = GetAurasByType(SPELL_AURA_DUMMY);
+								for(Unit::AuraList::const_iterator iter = improvedSwarm.begin(); iter != improvedSwarm.end(); ++iter)
 								{
-									Unit::AuraList const& improvedSwarm = GetAurasByType(SPELL_AURA_DUMMY);
-									for(Unit::AuraList::const_iterator iter = improvedSwarm.begin(); iter != improvedSwarm.end(); ++iter)
+									if ((*iter)->GetSpellProto()->SpellIconID == 1771)
 									{
-										if ((*iter)->GetSpellProto()->SpellIconID == 1771)
-										{
-											crit_chance += (*iter)->GetModifier()->m_amount;
-											break;
-										}
+										crit_chance += (*iter)->GetModifier()->m_amount;
+										break;
 									}
 								}
 							}
-							break;
+						}
+						break;
                     case SPELLFAMILY_PALADIN:
                         // Sacred Shield
                         if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000040000000))
@@ -10308,6 +10346,16 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
                                 return true;
                         }
                         break;
+					case SPELLFAMILY_MAGE:
+						// Arcane potency
+						if(HasAura(12536) || HasAura(12043))
+						{
+							if(HasAura(31571))
+								crit_chance += 15.0f;
+							else if(HasAura(31572))
+								crit_chance += 30.0f;
+						}
+						break;
                 }
 				if(GetTypeId() == TYPEID_PLAYER)
 					sLog.outDebugSpell("Crit Chance add special crits by CLASS : %f",crit_chance);
