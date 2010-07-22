@@ -62,7 +62,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiDreamWalkerDoorGUID;
 	uint64 m_uiDreamWalkerExitDoorGUID;
 	uint64 m_uiSindragosaDoorGUID;
-	
+
+	uint64 m_uiSaurfangCacheGUID;
+
 	uint64 m_uiPlagueSigilGUID;
 	uint64 m_uiBloodSigilGUID;
 	uint64 m_uiFrostSigilGUID;
@@ -109,6 +111,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiDreamWalkerDoorGUID			= 0;
 		m_uiDreamWalkerExitDoorGUID		= 0;
 		m_uiSindragosaDoorGUID			= 0;
+
+		m_uiSaurfangCacheGUID			= 0;
 
 		m_uiPlagueSigilGUID				= 0;
 		m_uiBloodSigilGUID				= 0;
@@ -281,6 +285,18 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				if(m_auiEncounter[TYPE_FESTERGUT] == DONE)
                     OpenDoor(m_uiOrangeDoorGUID);
 				break;
+			case GO_SAURFANG_CACHE_10:
+				m_uiSaurfangCacheGUID = pGo->GetGUID();
+				break;
+            case GO_SAURFANG_CACHE_25:
+				m_uiSaurfangCacheGUID = pGo->GetGUID();
+				break;
+            case GO_SAURFANG_CACHE_10_H:
+				m_uiSaurfangCacheGUID = pGo->GetGUID();
+				break;
+            case GO_SAURFANG_CACHE_25_H:
+				m_uiSaurfangCacheGUID = pGo->GetGUID();
+				break;
         }
     }
 
@@ -322,7 +338,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
             case TYPE_SAURFANG:
                 m_auiEncounter[TYPE_SAURFANG] = uiData;
                 if (uiData == DONE)
+				{
                     OpenDoor(m_uiSaurfangDoorGUID);
+					if (GameObject* pChest = instance->GetGameObject(m_uiSaurfangCacheGUID))
+						if (!pChest->isSpawned())
+							pChest->SetRespawnTime(7*DAY);
+				}
                 break;
 			case TYPE_FESTERGUT:
 				m_auiEncounter[TYPE_FESTERGUT] = uiData;

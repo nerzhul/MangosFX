@@ -783,7 +783,8 @@ void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
 	if (!lPlayers.isEmpty())
 		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 			if (Player* pPlayer = itr->getSource())
-				GiveEmblems(type,pPlayer,nb, group5);
+				if(pPlayer->GetDistance2d(me) < 120.0f)
+					GiveEmblems(type,pPlayer,nb, group5);
 }
 
 void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)

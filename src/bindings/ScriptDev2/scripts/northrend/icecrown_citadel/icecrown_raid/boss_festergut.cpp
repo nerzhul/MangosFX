@@ -186,16 +186,19 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				case 1:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_0);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_1);
+					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
 					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 2:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_1);
 					ModifyAuraStack(SPELL_GASEOUS_BLIGHT_2);
+					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
 					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 3:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
 					me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
+					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
 					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 4:
