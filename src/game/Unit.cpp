@@ -10411,7 +10411,6 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
 
 			if(GetTypeId() == TYPEID_PLAYER)
 				sLog.outDebugSpell("Crit Chance MELEE modified by CLASS scripts: %f",crit_chance);
-			break;
         }
         case SPELL_DAMAGE_CLASS_RANGED:
         {
