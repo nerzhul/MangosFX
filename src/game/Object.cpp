@@ -1088,7 +1088,7 @@ void Object::RemoveFromClientUpdateList()
 void Object::BuildUpdateData( UpdateDataMapType& update_players )
 {
     sLog.outError("Unexpected call of Object::BuildUpdateData for object (TypeId: %u Update fields: %u)",GetTypeId(), m_valuesCount);
-    ASSERT(false);
+    //ASSERT(false);
 }
 
 WorldObject::WorldObject()
