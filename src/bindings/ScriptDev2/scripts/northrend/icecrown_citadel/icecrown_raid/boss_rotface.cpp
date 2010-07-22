@@ -31,7 +31,7 @@ enum BossSpells
     MAX_INFECTION_TARGETS			= 5,
 };
 
-static Locations SpawnLoc[]=
+static float SpawnLoc[4][3]=
 {
     {4471.821289f, 3162.986084f, 360.38501f}, // 0
     {4471.821289f, 3110.452148f, 360.38501f}, // 1
