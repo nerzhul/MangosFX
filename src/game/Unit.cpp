@@ -7353,6 +7353,34 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 target = this;
                 break;
             }
+			// Flametongue Weapon (Passive), Ranks
+			if (dummySpell->SpellFamilyFlags & UI64LIT(0x0000000000200000))
+			{
+				if (GetTypeId()!=TYPEID_PLAYER || !castItem)
+					return false;
+				
+				// Only proc for enchanted weapon
+				Item *usedWeapon = ((Player *)this)->GetWeaponForAttack(procFlag & PROC_FLAG_SUCCESSFUL_OFFHAND_HIT ? OFF_ATTACK : BASE_ATTACK, true, true);
+				if (usedWeapon != castItem)
+					return false;
+
+				switch (dummySpell->Id)
+				{
+					case 10400: triggered_spell_id =  8026; break; // Rank 1
+					case 15567: triggered_spell_id =  8028; break; // Rank 2
+					case 15568: triggered_spell_id =  8029; break; // Rank 3
+					case 15569: triggered_spell_id = 10445; break; // Rank 4
+					case 16311: triggered_spell_id = 16343; break; // Rank 5
+					case 16312: triggered_spell_id = 16344; break; // Rank 6
+					case 16313: triggered_spell_id = 25488; break; // Rank 7
+					case 58784: triggered_spell_id = 58786; break; // Rank 8
+					case 58791: triggered_spell_id = 58787; break; // Rank 9
+					case 58792: triggered_spell_id = 58788; break; // Rank 10
+					default:
+						return false;
+				}
+				break;
+			}
             // Earth Shield
             if (dummySpell->SpellFamilyFlags & UI64LIT(0x0000040000000000))
             {
