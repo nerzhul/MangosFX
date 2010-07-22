@@ -152,7 +152,6 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		if(check_Timer <= diff)
 		{
 			CheckPlayerConditions();
-
 			check_Timer = 1000;
 		}
 		else

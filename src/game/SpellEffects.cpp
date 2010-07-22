@@ -8520,7 +8520,7 @@ void Spell::EffectRedirectThreat(uint32 /*i*/)
 {
 	if(unitTarget)
 	{
-		if(this->m_spellInfo->Id==59665) // Vigilance
+		if(m_spellInfo->Id==59665) // Vigilance
 			unitTarget->SetReducedThreatPercent((uint32)damage, m_caster->GetGUID());
 		else
 			m_caster->SetReducedThreatPercent((uint32)damage, unitTarget->GetGUID());
