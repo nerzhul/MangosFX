@@ -116,10 +116,10 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
     {
 		switch(pGo->GetEntry())
 		{
-			case 195631:
-			case 195632:
-			case 195633:
-			case 195635:
+			case GO_CRUSADERS_CACHE_10:
+			case GO_CRUSADERS_CACHE_25:
+			case GO_CRUSADERS_CACHE_10_H:
+			case GO_CRUSADERS_CACHE_25_H:
 				ChampionChest_guid = pGo->GetGUID();
 				break;
 			case 195527:
@@ -147,10 +147,8 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 				{
 					if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
 						if (!pChest->isSpawned())
-						{
-							pChest->Respawn();
-							pChest->SetRespawnTime(350000000);
-						}
+							pChest->SetRespawnTime(7*DAY);
+
 					if(instance)
 					{
 						switch(instance->GetDifficulty())

@@ -33,7 +33,12 @@ enum Boss
 	TYPE_JARAXXUS				= 1,
 	TYPE_CHAMPIONS				= 2,
 	TYPE_VALKYRS				= 3,
-	TYPE_ANUBARAK				= 4
+	TYPE_ANUBARAK				= 4,
+
+	GO_CRUSADERS_CACHE_10		= 195631,
+    GO_CRUSADERS_CACHE_25		= 195632,
+    GO_CRUSADERS_CACHE_10_H		= 195633,
+    GO_CRUSADERS_CACHE_25_H		= 195635,
 };
 
 static const uint32 Champion_Entries[14][2] = {

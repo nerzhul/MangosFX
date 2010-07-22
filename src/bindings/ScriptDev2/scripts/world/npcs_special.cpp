@@ -1337,20 +1337,19 @@ bool GossipSelect_npc_sayge(Player* pPlayer, Creature* pCreature, uint32 uiSende
     return true;
 }
 
-struct MANGOS_DLL_DECL npc_mirror_image : public ScriptedAI
+struct MANGOS_DLL_DECL npc_mirror_image : public LibDevFSAI
 {
-    npc_mirror_image(Creature* pCreature) : ScriptedAI(pCreature) 
+    npc_mirror_image(Creature* pCreature) : LibDevFSAI(pCreature) 
 	{
-		Reset();
+		InitIA();
+		AddEventOnTank(38697,1000,3000,200);
+		AddEventMaxPrioOnTank(27079,500,8000,1000);
 	}
 
-	MobEventTasks Tasks;
+
 	uint32 Depop_Timer;
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(38697,1000,3000,200,TARGET_MAIN);
-		Tasks.AddEvent(27079,500,8000,1000,TARGET_MAIN,0,0,true);
 		SetCombatMovement(false);
 		Depop_Timer = 30000;
     }
@@ -1367,7 +1366,8 @@ struct MANGOS_DLL_DECL npc_mirror_image : public ScriptedAI
 		}
 		else
 			Depop_Timer -= diff;
-		Tasks.UpdateEvent(diff);
+		
+		UpdateEvent(diff);
 	}
 
 };
