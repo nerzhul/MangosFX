@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		Inhale_Timer = 25000;
 		Inhale_Count = 0;
 		Spore_Timer = 12500;
-		check_Timer = 1000;
+		check_Timer = 700;
     }
 
     void Aggro(Unit* pWho)
@@ -89,6 +89,14 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				GiveEmblemsToGroup(GIVRE,3);
 				break;
 		}
+
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if(Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive())
+						if(pPlayer->HasAura(SPELL_PUNGENT_BLIGHT_VISUAL))
+							pPlayer->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
     }
 
     void JustReachedHome()
@@ -104,6 +112,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if(Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
+					{
 						if(pPlayer->HasAura(SPELL_GASTRIC_BLOAT))
 						{
 							uint8 stk = pPlayer->GetAura(SPELL_GASTRIC_BLOAT)->GetStackAmount();
@@ -114,26 +123,24 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 								break;
 							}
 						}
+
+						if(pPlayer->HasAura(SPELL_PUNGENT_SPORE))
+						{
+							if(pPlayer->GetAura(SPELL_PUNGENT_SPORE)->GetAuraDuration() < 1000)
+							{
+								uint8 stk = 1;
+								if(pPlayer->HasAura(SPELL_INOCULATE))
+									stk = pPlayer->GetAura(SPELL_INOCULATE)->GetStackAmount() + 1;
+								ModifyAuraStack(SPELL_INOCULATE,stk > 3 ? 3 : stk,pPlayer);
+							}
+						}
+					}
 	}
 
 	void SpellHitTarget(Unit* u, const SpellEntry* sp)
 	{
-		if(u->HasAura(SPELL_INOCULATE) && sp->Id == SPELL_PUNGENT_BLIGHT)
+		if(sp->Id == SPELL_PUNGENT_BLIGHT)
 			u->RemoveAurasDueToSpell(SPELL_INOCULATE);
-
-		if(sp->Id == SPELL_PUNGENT_SPORE)
-		{
-			uint8 stk = 1;
-			if(u->HasAura(SPELL_INOCULATE))
-				stk = u->GetAura(SPELL_INOCULATE)->GetStackAmount() + 1;
-			ModifyAuraStack(SPELL_INOCULATE,stk > 3 ? 3 : stk,u);
-		}
-	}
-
-	void SpellHit(Unit* u,const SpellEntry* sp)
-	{
-		if(sp->Id == SPELL_PUNGENT_SPORE)
-			me->RemoveAurasDueToSpell(SPELL_PUNGENT_SPORE);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -144,6 +151,8 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		if(check_Timer <= diff)
 		{
 			CheckPlayerConditions();
+
+			check_Timer = 1000;
 		}
 		else
 			check_Timer -= diff;
@@ -165,7 +174,10 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				if(Unit* u = GetRandomUnit(2))
 				{
 					if(u->GetTypeId() == TYPEID_PLAYER && !u->HasAura(SPELL_GAS_SPORE))
-						ModifyAuraStack(SPELL_GAS_SPORE,1,u);
+					{
+						u->CastStop();
+						u->CastSpell(u,SPELL_GAS_SPORE,true);
+					}
 					else
 						i--;
 				}
