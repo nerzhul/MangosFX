@@ -515,6 +515,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
     m_lastFallZ = 0;
 
 	XpAllowed = 0;
+
+	m_calendarEvents.clear();
 	
 	SetRandomBGDone(false);
 }
@@ -15850,6 +15852,18 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     m_achievementMgr.CheckAllAchievementCriteria();
 
     _LoadEquipmentSets(holder->GetResult(PLAYER_LOGIN_QUERY_LOADEQUIPMENTSETS));
+
+	if(QueryResult* result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS))
+	{
+		cEventMap cEM = sCalendarMgr.getAllCalendarEvents();
+		do
+        {
+			if(Field *fields = result->Fetch())
+				if(CalendarEvent* cEvent = sCalendarMgr.getEventById(fields[0].GetUInt64()))
+					RegisterCalendarEvent(cEvent);
+		}
+		while(result->NextRow());
+	}
 	
 	QueryResult *result2 = loginDatabase.PQuery("SELECT gmlevel from account where id = '%u' and vip_end < NOW()",m_session->GetAccountId());
 	if(result2)

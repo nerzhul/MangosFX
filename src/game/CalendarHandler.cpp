@@ -24,87 +24,15 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "Opcodes.h"
-#include "InstanceSaveMgr.h"
 
 void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 {
+	if(!GetPlayer())
+		return;
+
     sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
-
-    time_t cur_time = time(NULL);
-
-    WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,4+4*0+4+4*0+4+4);
-
-	uint32 invite_count = 0;
-	uint32 event_count = 0;
-	uint32 raid_reset_count = 0;
-	uint32 holiday_count = 0;
-    data << (uint32) invite_count;                           //invite node count
-    for (int i = 0; i < invite_count; i++)
-    {
-		uint64 inviteId=0,eventId=0;
-		uint8 unk1=0,unk2=0,unk3=0;
-		uint64 creatorGuid=0;
-		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
-	}
-
-    data << (uint32) event_count;                            //event count
+	sCalendarMgr.Send(GetPlayer());
     
-    for (int i = 0; i < event_count; i++)
-    {
-		uint64 eventId = 0,creatorGuid = 0;
-		std::string title = "";
-		uint32 type = 0,occurrence = 1,flags = 1,unk1 = 0;
-		data << eventId << title << type << occurrence << flags << unk1 << creatorGuid;
-	}
-
-    data << (uint32) 0;                                     //wtf??
-    data << (uint32) secsToTimeBitFields(cur_time);         // current time
-
-    uint32 counter = 0;
-    size_t p_counter = data.wpos();
-    data << uint32(counter);                                // instance save count
-
-    for(int i = 0; i < MAX_DIFFICULTY; ++i)
-    {
-        for (Player::BoundInstancesMap::const_iterator itr = _player->m_boundInstances[i].begin(); itr != _player->m_boundInstances[i].end(); ++itr)
-        {
-            if(itr->second.perm)
-            {
-                InstanceSave *save = itr->second.save;
-                data << uint32(save->GetMapId());
-                data << uint32(save->GetDifficulty());
-                data << uint32(save->GetResetTime() - cur_time);
-                data << uint64(save->GetInstanceId());      // instance save id as unique instance copy id
-                ++counter;
-            }
-        }
-    }
-    data.put<uint32>(p_counter,counter);
-
-    data << (uint32) 1135753200;                            //wtf?? (28.12.2005 12:00)
-    data << (uint32) raid_reset_count;                      //  unk counter 4
-    for (int i = 0; i < raid_reset_count; i++)
-    {
-		uint32 mapId = 530,resetTime = 0,unkTime = 0;
-		data << mapId << resetTime << unkTime;
-	}
-    data << (uint32) holiday_count;                   // unk counter 5
-    for (int i = 0; i < holiday_count; i++)
-    {
-		uint32 unk1=0,unk2=0,unk3=0,unk4=0,unk5=0;
-		std::string holidayName ="";
-		data << unk1 << unk2 << unk3 << unk4 << unk5;
-		for (int j = 0; j < 26; j++)
-			data << uint32(0);
-		for (int j = 0; j < 10; j++)
-			data << uint32(0);
-		for (int j = 0; j < 10; j++)
-			data << uint32(0);
-			
-		data << holidayName;
-	}
-    sLog.outDebug("Sending calendar");
-    SendPacket(&data);
 }
 
 void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
@@ -113,7 +41,35 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
     recv_data.hexlike();
     uint64 eventId = 0;
     recv_data >> eventId;
-    // TODO: answer
+
+	CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId);
+	if(!cEvent)
+	{
+		sLog.outError("Player tries to get non existing calendar event !");
+		return;
+	}
+
+	uint32 maxInvites = 1;
+	// window to show event details when click on it
+	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
+	data << uint8(1); // unk
+	data << maxInvites;
+	for(int i = 0; i < maxInvites; i++)
+	{
+		uint64 inviteId = 1;
+		uint8 unk1 = 0,unk2 = 0,unk3 = 0 ,unk4 = 0;
+		std::string title = "Coucou";
+		uint32 unk5 = 0;
+		data.appendPackGUID(cEvent->getCreator()); // change this
+		data << unk1; 
+		data << unk2;
+		data << unk3;
+		data << unk4;
+		data << inviteId;
+		data << unk5;
+		data << title;
+	}
+	SendPacket(&data);
 }
 
 void WorldSession::HandleCalendarGuildFilter(WorldPacket &recv_data)
@@ -136,59 +92,49 @@ void WorldSession::HandleCalendarArenaTeam(WorldPacket &recv_data)
 
 void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 {
+	if(!GetPlayer())
+		return;
     sLog.outDebug("WORLD: CMSG_CALENDAR_ADD_EVENT");
     recv_data.hexlike();
     
 	std::string title,description;
 	uint8 type,unk1;
-	uint32 maxInvites,unk2,unk3,unk4,flags;
+	uint32 maxInvites,pve_type,date,unk4,flags;
 
 	recv_data >> title;
 	recv_data >> description;
 	recv_data >> type;
 	recv_data >> unk1;
 	recv_data >> maxInvites;
-	recv_data >> unk2;
-	recv_data >> unk3;
+	recv_data >> pve_type;
+	recv_data >> date;
 	recv_data >> unk4;
 	recv_data >> flags;
 
-	error_log("Title %s desc %s type %u unk1 %u maxInvites %u unk2 %u unk3 %u unk4 %u flags %u",title.c_str(),description.c_str(),type,unk1,maxInvites,unk2,unk3,unk4,flags);
+	error_log("Title %s unk1 %u maxInvites %u pve_type %u unk4 %u flags %u",title.c_str(),unk1,maxInvites,pve_type,unk4,flags);
 
-	CalendarEvent* e = new CalendarEvent(title,description);
+	if(CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GUID_LOPART(GetPlayer()->GetGUID())))
+		GetPlayer()->RegisterCalendarEvent(cEvent);
+
 	if (((flags >> 6) & 1) != 0)
 		return;
 	
 	uint32 count;
-
 	recv_data >> count;
+
+	error_log("count %u",count);
 
 	if(count <= 0)
 		return;
 
-	uint64 guid;
-	uint8 status,rank;
-	recv_data >> guid;
-	recv_data >> status;
-	recv_data >> rank;
-		
-	/*uint8 unk1 = 0;
-	uint32 maxInvites = 1;
-	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
-	data << unk1;
-	data << maxInvites;
-	for(int i = 0; i < maxInvites; i++)
-	{
-		uint64 guid2 = _player->GetGUID(),inviteId = 1;
-		uint8 unk10 = 0,unk11 = 0,unk12 = 0 ,unk13 = 0;
-		uint32 unk14 = 0;
-		std::string text = "Salut";
-		data << guid2;
-		data << unk10 << unk11 << unk12 << unk13 << inviteId << unk14 << text;
-	}*/
+	uint32 unk5;
+	recv_data >> unk5;
+
+	error_log("unk5 %u",unk5);
+	sCalendarMgr.Send(GetPlayer());
 }
 
-uint32 Calendar::ReadCalendarEventCreationValues(WorldPacket& data)
+uint32 CalendarMgr::ReadCalendarEventCreationValues(WorldPacket& data)
 {
 	if(data.GetOpcode() != CMSG_CALENDAR_ADD_EVENT)
 	{
@@ -217,7 +163,7 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_UPDATE_EVENT");
     recv_data.hexlike();
 
-	Calendar::ReadCalendarEventCreationValues(recv_data);
+	sCalendarMgr.ReadCalendarEventCreationValues(recv_data);
 }
 
 void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
@@ -263,11 +209,12 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	debug_log("Guid : %u Event Id : %u unk1 : %u unk2 : %u",guid,eventId,unk1,unk2);
 	
 	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
-	//if(Player* pl = sObjectMgr.GetPlayer(invitedPlayerGuid))
+	if(Player* pl = sObjectMgr.GetPlayer(invitedPlayerGuid))
 	{
 		uint64 inviteId = 0;
 		bool unk3 = false;
 		uint32 unk4 = 0;
+		uint8 unk5 = 0;
 
 		WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
 		data << _player->GetGUID();
@@ -280,10 +227,9 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 		{
 			data << uint32(unk4);
 		}
-		uint8 unk5 = 0;
 		data << unk5;
-		//pl->GetSession()->SendPacket(&data);
-		SendPacket(&data);
+		pl->GetSession()->SendPacket(&data);
+		//SendPacket(&data);
 	}
 }
 

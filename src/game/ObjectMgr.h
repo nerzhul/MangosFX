@@ -681,6 +681,7 @@ class ObjectMgr
         uint32 GenerateLowGuid(HighGuid guidhigh);
         uint32 GenerateArenaTeamId();
         uint32 GenerateAuctionID();
+		uint32 GenerateCalendarEventId();
         uint64 GenerateEquipmentSetGuid();
         uint32 GenerateGuildId();
 		uint32 GenerateGroupId();
@@ -939,6 +940,7 @@ class ObjectMgr
         // first free id for selected id type
         uint32 m_arenaTeamId;
         uint32 m_auctionid;
+		uint32 m_calendareventid;
         uint64 m_equipmentSetGuid;
         uint32 m_guildId;
 		uint32 m_groupId;

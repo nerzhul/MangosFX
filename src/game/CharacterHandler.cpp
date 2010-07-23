@@ -101,6 +101,7 @@ bool LoginQueryHolder::Initialize()
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADTALENTS,         "SELECT spell, spec FROM character_talent WHERE guid='%u'", GUID_LOPART(m_guid));     
 	res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADACCOUNTDATA,     "SELECT type, time, data FROM character_account_data WHERE guid='%u'", GUID_LOPART(m_guid));
     res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADSKILLS,          "SELECT skill, value, max FROM character_skills WHERE guid = '%u'", GUID_LOPART(m_guid));
+	res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS,  "SELECT eventid FROM character_calendar_events WHERE guid = '%u'", GUID_LOPART(m_guid));
 
     return res;
 }

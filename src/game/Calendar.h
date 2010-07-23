@@ -21,22 +21,75 @@
 
 #include "WorldPacket.h"
 
-class Calendar
+class CalendarEvent;
+
+enum EventType
+{
+	EVENT_RAID			= 0,
+	EVENT_DUNGEON		= 1,
+	EVENT_PVP			= 2,
+	EVENT_MEETING		= 3,
+	EVENT_OTHER			= 4,
+};
+
+enum CalendarEventFlags
+{
+	EVENT_UNK1			= 1,
+	EVENT_LOCK			= 16,
+};
+
+enum PveType
+{
+	PVETYPE_RUBIS_SANCTUM_10	= 293,
+	PVETYPE_RUBIS_SANCTUM_25	= 294,
+};
+
+typedef std::map<uint32,CalendarEvent*> cEventMap;
+class CalendarMgr
 {
 	public:
-		static uint32 ReadCalendarEventCreationValues(WorldPacket& data);
+
+		CalendarEvent* CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid);
+		
+		uint32 ReadCalendarEventCreationValues(WorldPacket& data);
+		void Send(Player* plr);
+
+		cEventMap getAllCalendarEvents() { return m_calendarEvents; }
+		CalendarEvent* getEventById(uint64 id);
+		void LoadCalendarEvents();
+	private:
+		cEventMap m_calendarEvents;
 };
 
 class CalendarEvent
 {
 	public:
-		CalendarEvent(std::string title, std::string desc) : m_title(title), m_desc(desc) 
+		CalendarEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid) : m_title(title), m_desc(desc), 
+			m_type(type), m_ptype(ptype), m_creatorGUID(guid), m_Id(0), m_date(date), m_flags(flags)
 		{
 		}
+
+		void setId(uint32 id) { m_Id = id; }
+
+		const char* getTitle() { return m_title.c_str(); }
+		const char* getDescription() { return m_desc.c_str(); }
+		EventType getType() { return m_type; }
+		PveType getPveType() { return m_ptype; }
+		uint64 getCreator() { return m_creatorGUID; }
+		uint8 getFlags() { return m_flags; }
+		uint32 getId() { return m_Id; }
+		uint32 getDate() { return m_date; }
 
 	private:
 		std::string m_title;
 		std::string m_desc;
+		EventType m_type;
+		PveType m_ptype;
+		uint64 m_creatorGUID;
+		uint32 m_Id;
+		CalendarEventFlags m_flags;
+		uint32 m_date;
 };
 
+#define sCalendarMgr MaNGOS::Singleton<CalendarMgr>::Instance()
 #endif

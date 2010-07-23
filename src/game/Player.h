@@ -37,6 +37,7 @@
 #include "ReputationMgr.h"
 #include "BattleGround.h"
 #include "DBCEnums.h"
+#include "Calendar.h"
 #include "LFGMgr.h"
 
 #include<string>
@@ -819,7 +820,8 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADTALENTS              = 24,
     PLAYER_LOGIN_QUERY_LOADSKILLS               = 25,
 	PLAYER_LOGIN_QUERY_LOADWEKLYQUESTSTATUS     = 26,
-    MAX_PLAYER_LOGIN_QUERY                      = 27
+	PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS		= 27,
+    MAX_PLAYER_LOGIN_QUERY                      = 28
 };
 
 enum PlayerDelayedOperations
@@ -945,6 +947,8 @@ struct TradeData
 		return false;
 	}
 };
+
+typedef std::set<CalendarEvent*> CalendarEventSet;
 
 class MANGOS_DLL_SPEC Player : public Unit
 {
@@ -2266,6 +2270,10 @@ class MANGOS_DLL_SPEC Player : public Unit
 		// Special Proc for Critic
 		void ForceProcOnDamage(Unit* victim, SpellEntry const * spell, bool isCrit);
 		void SetIsCanDelayTeleport(bool setting) { m_bHasDelayedTeleport = setting; }
+
+		void RegisterCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents.insert(cEvent); }
+		CalendarEventSet GetCalendarEvents() { return m_calendarEvents; }
+		void RemoveCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents.erase(cEvent); }
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2576,6 +2584,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_timeSyncServer;
 		uint8 XpAllowed;
 		bool daily_random_BG_done;
+
+		CalendarEventSet m_calendarEvents;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

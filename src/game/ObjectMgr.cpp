@@ -145,6 +145,7 @@ ObjectMgr::ObjectMgr()
 	m_groupId			= 1;
     m_arenaTeamId       = 1;
     m_auctionid         = 1;
+	m_calendareventid	= 1;
 
     // Only zero condition left, others will be added while loading DB tables
     mConditions.resize(1);
@@ -5783,6 +5784,13 @@ void ObjectMgr::SetHighestGuids()
         delete result;
     }
 
+	result = CharacterDatabase.Query("SELECT MAX(id) FROM calendar_events" );
+    if( result )
+    {
+        m_calendareventid = (*result)[0].GetUInt32()+1;
+        delete result;
+    }
+
     result = CharacterDatabase.Query( "SELECT MAX(id) FROM mail" );
     if( result )
     {
@@ -5844,6 +5852,16 @@ uint32 ObjectMgr::GenerateAuctionID()
         World::StopNow(ERROR_EXIT_CODE);
     }
     return m_auctionid++;
+}
+
+uint32 ObjectMgr::GenerateCalendarEventId()
+{
+    if(m_calendareventid>=0xFFFFFFFE)
+    {
+        sLog.outError("Calendar Event ids overflow!! Can't continue, shutting down server. ");
+        World::StopNow(ERROR_EXIT_CODE);
+    }
+    return m_calendareventid++;
 }
 
 uint64 ObjectMgr::GenerateEquipmentSetGuid()
