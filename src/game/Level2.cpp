@@ -2366,7 +2366,6 @@ bool ChatHandler::HandleTicketCommand(const char* args)
 
     ShowTicket(target_guid, ticket->GetText(), time.c_str());
 	
-
 	if(ticket->HasResponse())
 		SendSysMessage("Ticket traite par un Maitre de Jeu");
 	else

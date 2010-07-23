@@ -139,26 +139,40 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_ADD_EVENT");
     recv_data.hexlike();
     
-	uint32 flags = Calendar::ReadCalendarEventCreationValues(recv_data);
+	std::string title,description;
+	uint8 type,unk1;
+	uint32 maxInvites,unk2,unk3,unk4,flags;
 
-    if (!((flags >> 6) & 1))
-    {
-		uint32 count = 0;
-        recv_data >> count;
-        if (count > 0)
-        {
-            uint8 status,rank;
-            uint64 guid;
-            for (int i=0;i<count;i++)
-            {
-                recv_data.readPackGUID(guid);
-                recv_data >> status;
-                recv_data >> rank;
-           }
-        }
-    }
+	recv_data >> title;
+	recv_data >> description;
+	recv_data >> type;
+	recv_data >> unk1;
+	recv_data >> maxInvites;
+	recv_data >> unk2;
+	recv_data >> unk3;
+	recv_data >> unk4;
+	recv_data >> flags;
+
+	error_log("Title %s desc %s type %u unk1 %u maxInvites %u unk2 %u unk3 %u unk4 %u flags %u",title.c_str(),description.c_str(),type,unk1,maxInvites,unk2,unk3,unk4,flags);
+
+	CalendarEvent* e = new CalendarEvent(title,description);
+	if (((flags >> 6) & 1) != 0)
+		return;
+	
+	uint32 count;
+
+	recv_data >> count;
+
+	if(count <= 0)
+		return;
+
+	uint64 guid;
+	uint8 status,rank;
+	recv_data >> guid;
+	recv_data >> status;
+	recv_data >> rank;
 		
-	uint8 unk1 = 0;
+	/*uint8 unk1 = 0;
 	uint32 maxInvites = 1;
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
 	data << unk1;
@@ -171,7 +185,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 		std::string text = "Salut";
 		data << guid2;
 		data << unk10 << unk11 << unk12 << unk13 << inviteId << unk14 << text;
-	}
+	}*/
 }
 
 uint32 Calendar::ReadCalendarEventCreationValues(WorldPacket& data)

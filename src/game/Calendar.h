@@ -26,4 +26,17 @@ class Calendar
 	public:
 		static uint32 ReadCalendarEventCreationValues(WorldPacket& data);
 };
+
+class CalendarEvent
+{
+	public:
+		CalendarEvent(std::string title, std::string desc) : m_title(title), m_desc(desc) 
+		{
+		}
+
+	private:
+		std::string m_title;
+		std::string m_desc;
+};
+
 #endif
