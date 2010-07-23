@@ -2335,16 +2335,18 @@ bool ChatHandler::HandleTicketCommand(const char* args)
         uint32 guid = fields[0].GetUInt32();
         char const* text = fields[1].GetString();
         char const* time = fields[2].GetString();
-		uint64 gm_guid = fields[3].GetUInt64();
 
         ShowTicket(MAKE_NEW_GUID(guid, 0, HIGHGUID_PLAYER),text,time);
 		
-		if(gm_guid)
-			SendSysMessage("Ticket traite par un Maitre de Jeu");
-		else
+		if(GMTicket* ticket = sTicketMgr.GetGMTicket(GUID_LOPART(guid)))
 		{
-			if(Player* pl = sObjectMgr.GetPlayer(guid))
-				pl->GetSession()->SendGMTicketGetTicket(0x6,text,true);
+			if(ticket->HasResponse())
+				SendSysMessage("Ticket traite par un Maitre de Jeu");
+			else
+			{
+				if(Player* pl = sObjectMgr.GetPlayer(guid))
+					pl->GetSession()->SendGMTicketGetTicket(0x6,text,true);
+			}
 		}
 
         delete result;
