@@ -32,7 +32,6 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 
     sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
 	sCalendarMgr.Send(GetPlayer());
-    
 }
 
 void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
@@ -52,14 +51,14 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
 	uint32 maxInvites = 1;
 	// window to show event details when click on it
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
-	data << uint8(1); // unk
+	data << uint8(0); // 1: close panel 0: open panel
 	data << maxInvites;
 	for(int i = 0; i < maxInvites; i++)
 	{
 		uint64 inviteId = 1;
-		uint8 unk1 = 0,unk2 = 0,unk3 = 0 ,unk4 = 0;
-		std::string title = "Coucou";
-		uint32 unk5 = 0;
+		uint8 unk1 = 1,unk2 = 0,unk3 = 1 ,unk4 = 1;
+		const char* title = "Coucou";
+		uint32 unk5 = 1;
 		data.appendPackGUID(cEvent->getCreator()); // change this
 		data << unk1; 
 		data << unk2;
@@ -68,8 +67,9 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
 		data << inviteId;
 		data << unk5;
 		data << title;
+		SendPacket(&data);
 	}
-	SendPacket(&data);
+	
 }
 
 void WorldSession::HandleCalendarGuildFilter(WorldPacket &recv_data)
@@ -111,26 +111,45 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	recv_data >> unk4;
 	recv_data >> flags;
 
-	error_log("Calendar Event unk1 %u maxInvites %u pve_type %u unk4 %u flags %u",unk1,maxInvites,pve_type,unk4,flags);
+	error_log("Calendar Event unk1 %u maxInvites %u pve_type %u unk4 %u flags %u date %u",unk1,maxInvites,pve_type,unk4,flags,date);
 	if (((flags >> 6) & 1) != 0)
 		return;
 
 	uint32 count;
 	recv_data >> count;
 
-	error_log("count %u",count);
+	for(uint16 i=0;i<count;i++)
+	{
+		uint64 invitedGUID;
+		uint8 unk6,unk7;
+		recv_data.readPackGUID(invitedGUID);
+		recv_data >> unk6;
+		recv_data >> unk7;
+		error_log("unk6 %u %u",unk6,unk7);
+	}	
 
-	if(count <= 0)
-		return;
-
-	uint32 unk5;
-	recv_data >> unk5;
-
-	error_log("unk5 %u",unk5);
-
-	if(CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID()))
+	CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID());
+	if(cEvent)
+	{
 		GetPlayer()->RegisterCalendarEvent(cEvent);
-	sCalendarMgr.Send(GetPlayer());
+		sCalendarMgr.Send(GetPlayer());
+
+		WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
+		data << uint8(0); // 0: open window 1: close window to choose role
+		data << uint32(1/*maxInvites*/);
+		for(int i = 0; i < 3/*maxInvites*/; i++)
+		{
+			data.appendPackGUID(GetPlayer()->GetGUID()); // change this
+			data << uint8(0); 
+			data << uint8(0);
+			data << uint8(0);
+			data << uint8(0);
+			data << uint64(1);
+			data << uint32(0); // Resp date ?
+			data << "help";
+		}
+		SendPacket(&data);
+	}
 }
 
 uint32 CalendarMgr::ReadCalendarEventCreationValues(WorldPacket& data)
@@ -210,23 +229,23 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
 	if(Player* pl = sObjectMgr.GetPlayer(invitedPlayerGuid))
 	{
-		uint64 inviteId = 0;
+		uint64 inviteId = 1;
 		bool unk3 = false;
 		uint32 unk4 = 0;
 		uint8 unk5 = 0;
 
 		WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
-		data << _player->GetGUID();
-		data << inviteId;
-		data << eventId;
-		data << unk1;
-		data << unk2;
-		data << unk3;
+		data.appendPackGUID(guid);
+		data << uint64(inviteId);
+		data << uint64(eventId);
+		data << uint8(unk1);
+		data << uint8(unk2);
+		data << uint8(unk3);
 		if(unk3)
 		{
 			data << uint32(unk4);
 		}
-		data << unk5;
+		data << uint8(unk5);
 		pl->GetSession()->SendPacket(&data);
 		//SendPacket(&data);
 	}
@@ -311,7 +330,6 @@ void WorldSession::HandleCalendarGetNumPending(WorldPacket & /*recv_data*/)
 {
     sLog.outDebug("WORLD: CMSG_CALENDAR_GET_NUM_PENDING");  // empty
 
-    WorldPacket data(SMSG_CALENDAR_SEND_NUM_PENDING, 4);
-    data << uint32(0);                                      // 0 - no pending invites, 1 - some pending invites
-    SendPacket(&data);
+	// if updates
+	sCalendarMgr.SendCalendarFlash(GetPlayer());
 }

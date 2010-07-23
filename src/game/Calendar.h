@@ -53,6 +53,7 @@ class CalendarMgr
 		
 		uint32 ReadCalendarEventCreationValues(WorldPacket& data);
 		void Send(Player* plr);
+		void SendCalendarFlash(Player* plr);
 
 		cEventMap getAllCalendarEvents() { return m_calendarEvents; }
 		CalendarEvent* getEventById(uint64 id);
@@ -70,7 +71,7 @@ class CalendarEvent
 		{
 		}
 
-		void setId(uint32 id) { m_Id = id; }
+		void setId(uint64 id) { m_Id = id; }
 
 		const char* getTitle() { return m_title.c_str(); }
 		const char* getDescription() { return m_desc.c_str(); }
@@ -78,7 +79,7 @@ class CalendarEvent
 		PveType getPveType() { return m_ptype; }
 		uint64 getCreator() { return m_creatorGUID; }
 		CalendarEventFlags getFlags() { return m_flags; }
-		uint32 getId() { return m_Id; }
+		uint64 getId() { return m_Id; }
 		uint32 getDate() { return m_date; }
 
 	private:
@@ -87,7 +88,7 @@ class CalendarEvent
 		EventType m_type;
 		PveType m_ptype;
 		uint64 m_creatorGUID;
-		uint32 m_Id;
+		uint64 m_Id;
 		CalendarEventFlags m_flags;
 		uint32 m_date;
 };

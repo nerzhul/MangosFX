@@ -1160,7 +1160,7 @@ struct MapEntry
     float   entrance_y;                                     // 61 entrance y coordinate (if exist single entry)
     //uint32  timeOfDayOverride;                            // 62 time of day override
     uint32  addon;                                          // 63 expansion
-                                                            // 64 some kind of time?
+    uint32	reset_time;                                     // 64 some kind of time?
     //uint32 maxPlayers;                                    // 65 max players
 
     // Helpers

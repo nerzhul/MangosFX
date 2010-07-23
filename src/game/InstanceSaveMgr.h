@@ -123,6 +123,8 @@ class InstanceSave
         bool m_canReset;
 };
 
+typedef UNORDERED_MAP<uint32 /*PAIR32(map,difficulty)*/,time_t /*resetTime*/> ResetTimeByMapDifficultyMap;
+
 class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSaveManager, MaNGOS::ClassLevelLockable<InstanceSaveManager, ACE_Thread_Mutex> >
 {
     friend class InstanceSave;
@@ -147,8 +149,7 @@ class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSav
                 : type(t), difficulty(d), mapid(_mapid), instanceId(_instanceid) {}
             bool operator == (const InstResetEvent& e) { return e.instanceId == instanceId; }
         };
-        typedef std::multimap<time_t /*resetTime*/, InstResetEvent> ResetTimeQueue;
-        typedef UNORDERED_MAP<uint32 /*PAIR32(map,difficulty)*/,time_t /*resetTime*/> ResetTimeByMapDifficultyMap;
+        typedef std::multimap<time_t /*resetTime*/, InstResetEvent> ResetTimeQueue; 
 
         void CleanupInstances();
         void PackInstances();
@@ -163,6 +164,9 @@ class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSav
         {
             m_resetTimeByMapDifficulty[MAKE_PAIR32(mapid,d)] = t;
         }
+
+		ResetTimeByMapDifficultyMap GetResetTimeMap() { return m_resetTimeByMapDifficulty; }
+
         void ScheduleReset(bool add, time_t time, InstResetEvent event);
 
         void Update();

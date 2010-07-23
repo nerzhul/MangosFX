@@ -26,12 +26,13 @@ void CalendarMgr::Send(Player* plr)
 {
 	time_t cur_time = time(NULL);
 
-    WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,4+4*0+4+4*0+4+4);
+	CalendarEventSet cEventSet = plr->GetCalendarEvents();
+
+    WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,600);
 
 	uint32 invite_count = 0;
-	uint32 event_count = plr->GetCalendarEvents().size();
-	uint32 raid_reset_count = 0;
 	uint32 holiday_count = 0;
+
     data << (uint32) invite_count;                           //invite node count
     for (int i = 0; i < invite_count; i++)
     {
@@ -41,24 +42,22 @@ void CalendarMgr::Send(Player* plr)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-	CalendarEventSet cEventSet = plr->GetCalendarEvents();
     data << uint32(cEventSet.size());                            //event count
 
 	for (CalendarEventSet::iterator itr = cEventSet.begin(); itr != cEventSet.end(); ++itr)
     {
-		uint32 unk1 = 0;
 		data << uint64((*itr)->getId());
 		data << std::string((*itr)->getTitle());
 		data << uint32((*itr)->getType());
-		data << uint32((*itr)->getDate());
+		data << uint32((*itr)->getDate()-secsToTimeBitFields(cur_time));
 		data << uint32((*itr)->getFlags());
-		data << uint32(unk1);
+		data << uint32((*itr)->getPveType());
 		data.appendPackGUID((*itr)->getCreator());
 	}
 
     data << (uint32) 0;                                     //wtf??
     data << (uint32) secsToTimeBitFields(cur_time);         // current time
-
+	
     uint32 counter = 0;
     size_t p_counter = data.wpos();
     data << uint32(counter);                                // instance save count
@@ -81,12 +80,27 @@ void CalendarMgr::Send(Player* plr)
     data.put<uint32>(p_counter,counter);
 
     data << (uint32) 1135753200;                            //wtf?? (28.12.2005 12:00)
-    data << (uint32) raid_reset_count;                      //  unk counter 4
-    for (int i = 0; i < raid_reset_count; i++)
+
+	counter = 0;
+    p_counter = data.wpos();
+    data << uint32(counter);  
+
+    ResetTimeByMapDifficultyMap const& resets = sInstanceSaveMgr.GetResetTimeMap();
+    for (ResetTimeByMapDifficultyMap::const_iterator itr = resets.begin(); itr != resets.end(); ++itr)
     {
-		uint32 mapId = 530,resetTime = 0,unkTime = 0;
-		data << mapId << resetTime << unkTime;
-	}
+        uint32 mapid = PAIR32_LOPART(itr->first);
+        MapEntry const* mapEnt = sMapStore.LookupEntry(mapid);
+        if (!mapEnt || !mapEnt->IsRaid())
+            continue;
+
+        data << uint32(mapid);
+        data << uint32(itr->second - cur_time);
+        data << uint32(mapEnt->reset_time);
+        ++counter;
+    }
+
+    data.put<uint32>(p_counter, counter);
+
     data << (uint32) holiday_count;                   // unk counter 5
     for (int i = 0; i < holiday_count; i++)
     {
@@ -104,6 +118,16 @@ void CalendarMgr::Send(Player* plr)
 	}
     sLog.outDebug("Sending calendar");
     plr->GetSession()->SendPacket(&data);
+}
+
+void CalendarMgr::SendCalendarFlash(Player* plr)
+{
+	if(!plr || !plr->GetSession())
+		return;
+
+	WorldPacket data(SMSG_CALENDAR_SEND_NUM_PENDING, 4);
+    data << uint32(1);
+	plr->GetSession()->SendPacket(&data);
 }
 
 void CalendarMgr::LoadCalendarEvents()

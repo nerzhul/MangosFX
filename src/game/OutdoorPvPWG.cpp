@@ -1579,7 +1579,7 @@ void OutdoorPvPWG::UpdateTenacityStack()
         for (PlayerSet::const_iterator itr = m_players[team].begin(); itr != m_players[team].end(); ++itr)
             if ((*itr)->getLevel() > 69)
 			{
-				float pLife = (*itr)->GetHealth() / (*itr)->GetMaxHealth();
+				float pLife = float((*itr)->GetHealth()) / float((*itr)->GetMaxHealth());
 				uint32 Life = pLife * (*itr)->GetMaxHealth();
                 (*itr)->SetAuraStack(SPELL_TENACITY, (*itr), newStack);
 				(*itr)->SetHealth(Life > (*itr)->GetMaxHealth() / 10 ? Life : (*itr)->GetMaxHealth() / 10);
@@ -1590,7 +1590,7 @@ void OutdoorPvPWG::UpdateTenacityStack()
 					if(Creature* cr = GetMap()->GetCreatureOrPetOrVehicle(*itr))
 						if(cr->isAlive())
 						{
-							float pLife = cr->GetHealth() / cr->GetMaxHealth();
+							float pLife = float(cr->GetHealth()) / float(cr->GetMaxHealth());
 							uint32 Life = pLife * cr->GetMaxHealth();
 							cr->SetAuraStack(SPELL_TENACITY_VEHICLE, cr, newStack);
 							cr->SetHealth(Life > cr->GetMaxHealth() / 10 ? Life : cr->GetMaxHealth() / 10);
