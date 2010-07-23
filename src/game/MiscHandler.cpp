@@ -1627,15 +1627,15 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
 
 void WorldSession::HandleGMReportLag(WorldPacket &recv_data)
 {
-	recv_data.hexlike();
-
-	uint8 lag_type;
+	uint8 lag_type; // 0: Loot 1: AH 2: Mail 3: Speak 4: Moving 5: Spells & Skills
 	uint8 unk1;
-	uint32 mapId;
+	uint16 unk2,unk3;
+	uint16 mapId;
 	float x,y,z;
 	recv_data >> lag_type;
-	recv_data >> unk1;
+	recv_data >> unk1 >> unk2;
 	recv_data >> mapId;
+	recv_data >> unk3;
 	recv_data >> x >> y >> z;
 
 	sLog.outDebug("Lag problem type: %u / map: %u / x: %f / y: %f / z: %f",lag_type,mapId,x,y,z);
