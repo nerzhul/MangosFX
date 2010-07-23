@@ -41,17 +41,18 @@ void CalendarMgr::Send(Player* plr)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-    data << (uint32) event_count;                            //event count
-    
 	CalendarEventSet cEventSet = plr->GetCalendarEvents();
+    data << uint32(cEventSet.size());                            //event count
+
 	for (CalendarEventSet::iterator itr = cEventSet.begin(); itr != cEventSet.end(); ++itr)
     {
+		uint32 unk1 = 0;
 		data << uint64((*itr)->getId());
-		data << (*itr)->getTitle();
+		data << std::string((*itr)->getTitle());
 		data << uint32((*itr)->getType());
 		data << uint32((*itr)->getDate());
-		data << uint32(0);
-		data << uint32((*itr)->getPveType());
+		data << uint32((*itr)->getFlags());
+		data << uint32(unk1);
 		data.appendPackGUID((*itr)->getCreator());
 	}
 
@@ -111,6 +112,7 @@ void CalendarMgr::LoadCalendarEvents()
 	if(!result)
 		return;
 
+	uint32 nb = 0;
 	do
 	{
 		Field *fields = result->Fetch();
@@ -126,8 +128,11 @@ void CalendarMgr::LoadCalendarEvents()
 		CalendarEvent* cEvent = new CalendarEvent(title,desc,EventType(type),PveType(ptype),date,CalendarEventFlags(flags),creator);
 		cEvent->setId(eventId);
 		m_calendarEvents[eventId] = cEvent;
+		nb++;
 	}
 	while(result->NextRow());
+
+	sLog.outString("Loaded %u Calendar Events",nb);
 }
 
 CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid)

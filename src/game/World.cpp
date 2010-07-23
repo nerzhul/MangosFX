@@ -64,6 +64,7 @@
 #include "Util.h"
 #include "LFGMgr.h"
 #include "AuctionHouseBot.h"
+#include "Calendar.h"
 #include "OutdoorPvPMgr.h"
 
 INSTANTIATE_SINGLETON_1( World );
@@ -1441,6 +1442,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();
+
+	sLog.outString("Loading Calendar Events...");
+	sCalendarMgr.LoadCalendarEvents();
 
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );

@@ -111,14 +111,10 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	recv_data >> unk4;
 	recv_data >> flags;
 
-	error_log("Title %s unk1 %u maxInvites %u pve_type %u unk4 %u flags %u",title.c_str(),unk1,maxInvites,pve_type,unk4,flags);
-
-	if(CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GUID_LOPART(GetPlayer()->GetGUID())))
-		GetPlayer()->RegisterCalendarEvent(cEvent);
-
+	error_log("Calendar Event unk1 %u maxInvites %u pve_type %u unk4 %u flags %u",unk1,maxInvites,pve_type,unk4,flags);
 	if (((flags >> 6) & 1) != 0)
 		return;
-	
+
 	uint32 count;
 	recv_data >> count;
 
@@ -131,6 +127,9 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	recv_data >> unk5;
 
 	error_log("unk5 %u",unk5);
+
+	if(CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID()))
+		GetPlayer()->RegisterCalendarEvent(cEvent);
 	sCalendarMgr.Send(GetPlayer());
 }
 

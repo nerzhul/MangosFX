@@ -34,8 +34,8 @@ enum EventType
 
 enum CalendarEventFlags
 {
-	EVENT_UNK1			= 1,
-	EVENT_LOCK			= 16,
+	EVENT_UNK1			= 0x1,
+	EVENT_LOCK			= 0x10,
 };
 
 enum PveType
@@ -64,8 +64,9 @@ class CalendarMgr
 class CalendarEvent
 {
 	public:
-		CalendarEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid) : m_title(title), m_desc(desc), 
-			m_type(type), m_ptype(ptype), m_creatorGUID(guid), m_Id(0), m_date(date), m_flags(flags)
+		CalendarEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid) : 
+					 m_title(title),	m_desc(desc),		m_type(type),	m_ptype(ptype), m_date(date), m_flags(flags), m_creatorGUID(guid), 
+							 m_Id(0)
 		{
 		}
 
@@ -76,7 +77,7 @@ class CalendarEvent
 		EventType getType() { return m_type; }
 		PveType getPveType() { return m_ptype; }
 		uint64 getCreator() { return m_creatorGUID; }
-		uint8 getFlags() { return m_flags; }
+		CalendarEventFlags getFlags() { return m_flags; }
 		uint32 getId() { return m_Id; }
 		uint32 getDate() { return m_date; }
 
