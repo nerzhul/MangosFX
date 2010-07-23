@@ -2308,7 +2308,8 @@ bool ChatHandler::HandleTicketCommand(const char* args)
             return false;
         }
 
-        ticket->SetResponseText(response);
+		ticket->SetResponseText(response);
+		CharacterDatabase.PExecute("INSERT INTO gm_stats values ('%u','-1','-1','-1','-1','-1','-1','-1','','%u')",m_session->GetAccountId(),guid);
 
         if(Player* pl = sObjectMgr.GetPlayer(guid))
             pl->GetSession()->SendGMResponse(ticket);
@@ -2320,7 +2321,7 @@ bool ChatHandler::HandleTicketCommand(const char* args)
     int num = atoi(px);
     if(num > 0)
     {
-        QueryResult *result = CharacterDatabase.PQuery("SELECT guid,ticket_text,ticket_lastchange FROM character_ticket ORDER BY ticket_id ASC "_OFFSET_, num-1);
+        QueryResult *result = CharacterDatabase.PQuery("SELECT guid,ticket_text,ticket_lastchange, gm_guid FROM character_ticket ORDER BY ticket_id ASC "_OFFSET_, num-1);
 
         if(!result)
         {
@@ -2334,18 +2335,16 @@ bool ChatHandler::HandleTicketCommand(const char* args)
         uint32 guid = fields[0].GetUInt32();
         char const* text = fields[1].GetString();
         char const* time = fields[2].GetString();
+		uint64 gm_guid = fields[3].GetUInt64();
 
         ShowTicket(MAKE_NEW_GUID(guid, 0, HIGHGUID_PLAYER),text,time);
 		
-		if(GMTicket* ticket = sTicketMgr.GetGMTicket(GUID_LOPART(guid)))
+		if(gm_guid)
+			SendSysMessage("Ticket traite par un Maitre de Jeu");
+		else
 		{
-			if(ticket->HasResponse())
-				SendSysMessage("Ticket traite par un Maitre de Jeu");
-			else
-			{
-				if(Player* pl = sObjectMgr.GetPlayer(guid))
-					pl->GetSession()->SendGMTicketGetTicket(0x6,text,true);
-			}
+			if(Player* pl = sObjectMgr.GetPlayer(guid))
+				pl->GetSession()->SendGMTicketGetTicket(0x6,text,true);
 		}
 
         delete result;

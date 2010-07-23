@@ -1624,3 +1624,8 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
     _player->ResurrectPlayer(100);
     _player->TeleportToHomebind();
 }
+
+void WorldSession::HandleGMReportLag(WorldPacket &recv_data)
+{
+	recv_data.hexlike();
+}

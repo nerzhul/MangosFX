@@ -151,6 +151,8 @@ void WorldSession::HandleGMTicketSystemStatusOpcode( WorldPacket & /*recv_data*/
 
 void WorldSession::HandleGMSurveySubmit( WorldPacket & recv_data)
 {
+	if(!GetPlayer())
+		return;
     // GM survey is shown after SMSG_GM_TICKET_STATUS_UPDATE with status = 3
     uint32 x;
     recv_data >> x;                                         // answer range? (6 = 0-5?)
@@ -171,14 +173,16 @@ void WorldSession::HandleGMSurveySubmit( WorldPacket & recv_data)
         recv_data >> unk_text;                              // always empty?
 
         result[i] = value;
-        sLog.outDebug("SURVEY: ID %u, value %u, text %s", questionID, value, unk_text.c_str());
+        sLog.outDebug("SURVEY: ID %u, value %u, text %s", questionID, result[i], unk_text.c_str());
     }
 
     std::string comment;
     recv_data >> comment;                                   // addional comment
     sLog.outDebug("SURVEY: comment %s", comment.c_str());
 
-    // TODO: chart this data in some way
+	CharacterDatabase.PExecute("UPDATE gm_stats SET friend_recommand = '%u', pb_resolved = '%u', experience = '%u', delay = '%u', quality = '%u', speaking = '%u',"
+		"help = '%u', comments = '%s' WHERE pl_guid = '%u' AND experience = '-1' LIMIT 1",
+		result[0],result[1],result[2],result[3],result[4],result[5],result[6],comment.c_str(),GetPlayer()->GetGUID());
 }
 
 void WorldSession::HandleGMResponseResolve(WorldPacket & recv_data)

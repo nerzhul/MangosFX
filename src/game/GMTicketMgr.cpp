@@ -59,7 +59,7 @@ void GMTicketMgr::LoadGMTickets()
         Field* fields = result->Fetch();
 
         uint32 guid = fields[0].GetUInt32();
-        m_GMTicketMap[guid] = GMTicket(guid, fields[1].GetCppString(), fields[2].GetCppString(), time_t(fields[3].GetUInt64()));
+		m_GMTicketMap[guid] = GMTicket(guid, fields[1].GetCppString(), fields[2].GetCppString(), time_t(fields[3].GetUInt64()));
         ++count;
 
     } while (result->NextRow());

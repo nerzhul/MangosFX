@@ -372,6 +372,8 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleGMSurveySubmit(WorldPacket& recvPacket);
         void HandleGMResponseResolve(WorldPacket& recv_data);
 
+		void HandleGMReportLag(WorldPacket& recv_data);
+
         void HandleTogglePvP(WorldPacket& recvPacket);
 
         void HandleZoneUpdateOpcode(WorldPacket& recvPacket);
