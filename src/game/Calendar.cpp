@@ -46,12 +46,11 @@ void CalendarMgr::Send(Player* plr)
 	CalendarEventSet cEventSet = plr->GetCalendarEvents();
 	for (CalendarEventSet::iterator itr = cEventSet.begin(); itr != cEventSet.end(); ++itr)
     {
-		uint32 unk1 = 0;
 		data << uint64((*itr)->getId());
 		data << (*itr)->getTitle();
 		data << uint32((*itr)->getType());
 		data << uint32((*itr)->getDate());
-		data << uint32((*itr)->getFlags());
+		data << uint32(0);
 		data << uint32((*itr)->getPveType());
 		data.appendPackGUID((*itr)->getCreator());
 	}
@@ -133,7 +132,7 @@ void CalendarMgr::LoadCalendarEvents()
 
 CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid)
 {
-	CalendarEvent* cEvent = new CalendarEvent(title,desc,type,ptype,date,guid);
+	CalendarEvent* cEvent = new CalendarEvent(title,desc,type,ptype,date,flags,guid);
 	uint32 eventId = sObjectMgr.GenerateCalendarEventId();
 	cEvent->setId(eventId);
 	m_calendarEvents[eventId] = cEvent;
@@ -141,10 +140,10 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.escape_string(title);
 	CharacterDatabase.escape_string(desc);
 	CharacterDatabase.PExecute("INSERT INTO calendar_events(`id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`) VALUES "
-		"('%u','%s','%s','%u','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype,flags, guid);
+		"('%u','%s','%s','%u','%u','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
 
-	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`) VALUES "
-		"('" UI64FMTD "','%u')", guid, eventId);
+	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`) VALUES "
+		"('" UI64FMTD "','%u',1)", guid, eventId);
 	return cEvent;
 }
 
