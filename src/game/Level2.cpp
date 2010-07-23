@@ -2321,7 +2321,7 @@ bool ChatHandler::HandleTicketCommand(const char* args)
     int num = atoi(px);
     if(num > 0)
     {
-        QueryResult *result = CharacterDatabase.PQuery("SELECT guid,ticket_text,ticket_lastchange, gm_guid FROM character_ticket ORDER BY ticket_id ASC "_OFFSET_, num-1);
+        QueryResult *result = CharacterDatabase.PQuery("SELECT guid,ticket_text,ticket_lastchange FROM character_ticket ORDER BY ticket_id ASC "_OFFSET_, num-1);
 
         if(!result)
         {
