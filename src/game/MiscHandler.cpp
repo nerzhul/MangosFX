@@ -1628,4 +1628,15 @@ void WorldSession::HandleHearthandResurrect(WorldPacket & /*recv_data*/)
 void WorldSession::HandleGMReportLag(WorldPacket &recv_data)
 {
 	recv_data.hexlike();
+
+	uint8 lag_type;
+	uint8 unk1;
+	uint32 mapId;
+	float x,y,z;
+	recv_data >> lag_type;
+	recv_data >> unk1;
+	recv_data >> mapId;
+	recv_data >> x >> y >> z;
+
+	sLog.outDebug("Lag problem type: %u / map: %u / x: %f / y: %f / z: %f",lag_type,mapId,x,y,z);
 }

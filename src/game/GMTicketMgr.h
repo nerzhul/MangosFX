@@ -24,10 +24,6 @@
 #include "Util.h"
 #include <map>
 
-enum TicketStatus
-{
-};
-
 class GMTicket
 {
     public:
