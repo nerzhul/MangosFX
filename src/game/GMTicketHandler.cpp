@@ -151,8 +151,7 @@ void WorldSession::HandleGMTicketSystemStatusOpcode( WorldPacket & /*recv_data*/
 
 void WorldSession::HandleGMSurveySubmit( WorldPacket & recv_data)
 {
-	if(!GetPlayer())
-		return;
+	
     // GM survey is shown after SMSG_GM_TICKET_STATUS_UPDATE with status = 3
     uint32 x;
     recv_data >> x;                                         // answer range? (6 = 0-5?)
@@ -180,6 +179,8 @@ void WorldSession::HandleGMSurveySubmit( WorldPacket & recv_data)
     recv_data >> comment;                                   // addional comment
     sLog.outDebug("SURVEY: comment %s", comment.c_str());
 
+	if(!GetPlayer() || !GetPlayer()->IsInWorld())
+		return;
 	CharacterDatabase.escape_string(comment);
 	CharacterDatabase.PExecute("UPDATE gm_stats SET friend_recommand = '%u', pb_resolved = '%u', experience = '%u', delay = '%u', quality = '%u', speaking = '%u',"
 		"help = '%u', comments = '%s' WHERE pl_guid = '%u' AND experience = '-1' LIMIT 1",
