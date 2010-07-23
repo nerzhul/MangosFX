@@ -932,6 +932,7 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
     char* arg2 = strtok(NULL, " ");
     char* arg3 = strtok(NULL, " ");
     char* arg4 = strtok(NULL, " ");
+	char* arg5 = strtok(NULL, " ");
 
 	if(!*args)
 		return false;
@@ -981,6 +982,25 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 		{
 			if(m_session->GetPlayer()->m_lookingForGroup.group)
 				m_session->SendLfgUpdatePlayer(LFG_UPDATETYPE_PROPOSAL_FOUND);
+		}
+		else if(argstr == "ticket")
+		{
+			uint8 val1 = (uint32)atoi(arg2);
+			uint8 val2 = (uint32)atoi(arg3);
+			uint8 val3 = (uint32)atoi(arg4);
+			uint8 val4 = (uint32)atoi(arg5);
+
+			WorldPacket data( SMSG_GMTICKET_GETTICKET, (4+8+1+4+2+4+4) );
+			data << uint32(0x6);                                 // standard 0x0A, 0x06 if text present
+			data << uint32(123);                                // unk
+			data << "cocotutu";                                 // ticket text
+			data << uint8(val1);                                 // ticket category 0x7 defaut
+			data << float(0);                                   // tickets in queue?
+			data << float(0);                                   // if > "tickets in queue" then "We are currently experiencing a high volume of petitions."
+			data << float(val2);                                   // 0 - "Your ticket will be serviced soon", 1 - "Wait time currently unavailable"
+			data << uint8(val3);                                   // if == 2 and next field == 1 then "Your ticket has been escalated"
+			data << uint8(val4);                                   // const
+			m_session->SendPacket( &data );
 		}
 
 	}

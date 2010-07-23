@@ -25,7 +25,7 @@
 #include "Player.h"
 #include "Chat.h"
 
-void WorldSession::SendGMTicketGetTicket(uint32 status, char const* text)
+void WorldSession::SendGMTicketGetTicket(uint32 status, char const* text, bool read)
 {
     int len = text ? strlen(text) : 0;
     WorldPacket data( SMSG_GMTICKET_GETTICKET, (4+len+1+4+2+4+4) );
@@ -38,8 +38,8 @@ void WorldSession::SendGMTicketGetTicket(uint32 status, char const* text)
         data << float(0);                                   // tickets in queue?
         data << float(0);                                   // if > "tickets in queue" then "We are currently experiencing a high volume of petitions."
         data << float(0);                                   // 0 - "Your ticket will be serviced soon", 1 - "Wait time currently unavailable"
-        data << uint8(0);                                   // if == 2 and next field == 1 then "Your ticket has been escalated"
-        data << uint8(0);                                   // const
+		data << uint8(read ? 2 : 0);                        // if == 2 and next field == 1 then "Your ticket has been escalated"
+		data << uint8(read ? 1 : 0);                        // const
     }
     SendPacket( &data );
 }
@@ -189,6 +189,6 @@ void WorldSession::HandleGMResponseResolve(WorldPacket & recv_data)
     sTicketMgr.Delete(GetPlayer()->GetGUIDLow());
 
     WorldPacket data(SMSG_GMRESPONSE_STATUS_UPDATE, 1);
-    data << uint8(0);                                       // ask to fill out gm survey = 1
+    data << uint8(1);                                       // ask to fill out gm survey = 1
     SendPacket(&data);
 }
