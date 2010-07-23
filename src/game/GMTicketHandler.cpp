@@ -181,6 +181,7 @@ void WorldSession::HandleGMSurveySubmit( WorldPacket & recv_data)
 
 	if(!GetPlayer() || !GetPlayer()->IsInWorld())
 		return;
+
 	CharacterDatabase.escape_string(comment);
 	CharacterDatabase.PExecute("UPDATE gm_stats SET friend_recommand = '%u', pb_resolved = '%u', experience = '%u', delay = '%u', quality = '%u', speaking = '%u',"
 		"help = '%u', comments = '%s' WHERE pl_guid = '%u' AND experience = '-1' LIMIT 1",
