@@ -124,6 +124,12 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 							}
 						}
 
+						if(pPlayer->HasAura(SPELL_GAS_SPORE))
+						{
+							if(pPlayer->GetAura(SPELL_GAS_SPORE)->GetAuraDuration() < 1000)
+								ModifyAuraStack(SPELL_PUNGENT_SPORE,1,pPlayer);
+						}
+
 						if(pPlayer->HasAura(SPELL_PUNGENT_SPORE))
 						{
 							if(pPlayer->GetAura(SPELL_PUNGENT_SPORE)->GetAuraDuration() < 1000)
@@ -209,7 +215,6 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 				case 3:
 					me->RemoveAurasDueToSpell(SPELL_GASEOUS_BLIGHT_2);
 					me->RemoveAurasDueToSpell(SPELL_PUNGENT_BLIGHT_VISUAL);
-					ModifyAuraStack(SPELL_PUNGENT_BLIGHT_VISUAL);
 					DoCastVictim(SPELL_INHALE_BLIGHT);
 					break;
 				case 4:
