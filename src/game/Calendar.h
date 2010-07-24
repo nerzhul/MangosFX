@@ -21,6 +21,7 @@
 
 #include "WorldPacket.h"
 
+class Player;
 class CalendarEvent;
 
 enum EventType

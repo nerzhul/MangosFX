@@ -18,6 +18,8 @@
 
 #include <Policies/SingletonImp.h>
 #include "InstanceSaveMgr.h"
+#include "Player.h"
+#include "Opcodes.h"
 #include "Calendar.h"
 
 INSTANTIATE_SINGLETON_1( CalendarMgr );
