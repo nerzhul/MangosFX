@@ -21,6 +21,7 @@
 #include "Player.h"
 #include "Opcodes.h"
 #include "Calendar.h"
+#include "ObjectMgr.h"
 
 INSTANTIATE_SINGLETON_1( CalendarMgr );
 
