@@ -49,7 +49,7 @@ void CalendarMgr::Send(Player* plr)
 		data << uint64((*itr)->getId());
 		data << std::string((*itr)->getTitle());
 		data << uint32((*itr)->getType());
-		data << uint32((*itr)->getDate()-secsToTimeBitFields(cur_time));
+		data << uint32((*itr)->getDate());
 		data << uint32((*itr)->getFlags());
 		data << uint32((*itr)->getPveType());
 		data.appendPackGUID((*itr)->getCreator());
@@ -85,7 +85,8 @@ void CalendarMgr::Send(Player* plr)
     p_counter = data.wpos();
     data << uint32(counter);  
 
-    ResetTimeByMapDifficultyMap const& resets = sInstanceSaveMgr.GetResetTimeMap();
+	// FAIL
+    /*ResetTimeByMapDifficultyMap const& resets = sInstanceSaveMgr.GetResetTimeMap();
     for (ResetTimeByMapDifficultyMap::const_iterator itr = resets.begin(); itr != resets.end(); ++itr)
     {
         uint32 mapid = PAIR32_LOPART(itr->first);
@@ -97,7 +98,7 @@ void CalendarMgr::Send(Player* plr)
         data << uint32(itr->second - cur_time);
         data << uint32(mapEnt->reset_time);
         ++counter;
-    }
+    }*/
 
     data.put<uint32>(p_counter, counter);
 
@@ -117,6 +118,7 @@ void CalendarMgr::Send(Player* plr)
 		data << holidayName;
 	}
     sLog.outDebug("Sending calendar");
+	data.hexlike();
     plr->GetSession()->SendPacket(&data);
 }
 

@@ -34,12 +34,13 @@ enum EventType
 
 enum CalendarEventFlags
 {
-	EVENT_UNK1			= 0x1,
-	EVENT_LOCK			= 0x10,
+	EVENT_UNK1			= 0x00000001,
+	EVENT_LOCK			= 0x00000010,
 };
 
 enum PveType
 {
+	PVETYPE_ARCHAVON_25			= 240,
 	PVETYPE_RUBIS_SANCTUM_10	= 293,
 	PVETYPE_RUBIS_SANCTUM_25	= 294,
 };

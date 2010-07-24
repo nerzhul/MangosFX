@@ -31,6 +31,9 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 		return;
 
     sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
+	for(uint8 i=0;i<10;i++){
+	WorldPacket data(CMSG_CALENDAR_GET_CALENDAR);
+	SendPacket(&data);}
 	sCalendarMgr.Send(GetPlayer());
 }
 
@@ -59,7 +62,10 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
 		uint8 unk1 = 1,unk2 = 0,unk3 = 1 ,unk4 = 1;
 		const char* title = "Coucou";
 		uint32 unk5 = 1;
-		data.appendPackGUID(cEvent->getCreator()); // change this
+		if(i == 0)
+			data.appendPackGUID(cEvent->getCreator()); // change this
+		else
+			data.appendPackGUID(0);
 		data << unk1; 
 		data << unk2;
 		data << unk3;
@@ -136,16 +142,19 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 
 		WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
 		data << uint8(0); // 0: open window 1: close window to choose role
-		data << uint32(1/*maxInvites*/);
-		for(int i = 0; i < 3/*maxInvites*/; i++)
+		data << uint32(maxInvites);
+		for(int i = 0; i < maxInvites; i++)
 		{
-			data.appendPackGUID(GetPlayer()->GetGUID()); // change this
+			if(!i)
+				data.appendPackGUID(GetPlayer()->GetGUID()); // change this
+			else
+				data.appendPackGUID(0);
 			data << uint8(0); 
 			data << uint8(0);
 			data << uint8(0);
 			data << uint8(0);
 			data << uint64(1);
-			data << uint32(0); // Resp date ?
+			data << uint32(5); // Resp date ?
 			data << "help";
 		}
 		SendPacket(&data);
