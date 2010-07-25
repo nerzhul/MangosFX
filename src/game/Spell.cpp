@@ -3084,14 +3084,6 @@ void Spell::cast(bool skipCheck)
 				case 64382:
 					AddPrecastSpell(64380);
 					break;
-				// sanguinaire
-				case 23881:
-					for(int i=0;i<3;i++)
-					{
-						Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(55970),i,NULL,m_caster,m_caster);
-						m_caster->AddAura(aur);
-					}
-					break;
 			}
             break;
         }
