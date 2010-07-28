@@ -418,8 +418,8 @@ void AuctionHouseMgr::LoadAuctions()
         }
 
         // always return pointer
-		auction->auctionHouseEntry = AuctionHouseMgr::GetAuctionHouseEntry(auctioneerInfo->faction_A);
-		GetAuctionsMap(auction->auctionHouseEntry)->AddAuction(auction);
+		aItem->auctionHouseEntry = AuctionHouseMgr::GetAuctionHouseEntry(auctioneerInfo->faction_A);
+		GetAuctionsMap(aItem->auctionHouseEntry)->AddAuction(aItem);
 
     } while (result->NextRow());
     delete result;

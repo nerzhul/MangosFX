@@ -420,7 +420,7 @@ void WorldSession::HandleAuctionRemoveItem( WorldPacket & recv_data )
     recv_data >> auctionId;
     //sLog.outDebug( "Cancel AUCTION AuctionID: %u", auctionId);
 
-    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(auctioneerGuid);
+    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(auctioneer);
 	if (!auctionHouseEntry)
         return;
 
@@ -499,7 +499,7 @@ void WorldSession::HandleAuctionListBidderItems( WorldPacket & recv_data )
         outbiddedCount = 0;
     }
 
-    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(auctioneerGuid);
+    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(guid);
     if (!auctionHouseEntry)
         return;
 
@@ -543,7 +543,7 @@ void WorldSession::HandleAuctionListOwnerItems( WorldPacket & recv_data )
     recv_data >> guid;
     recv_data >> listfrom;                                  // not used in fact (this list not have page control in client)
 
-    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(auctioneerGuid);
+    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(guid);
     if (!auctionHouseEntry)
         return;
 
@@ -584,7 +584,7 @@ void WorldSession::HandleAuctionListItems( WorldPacket & recv_data )
 
     recv_data.read_skip(16);                                // unknown 16 bytes: 00 07 01 00 00 01 05 00 06 00 09 01 08 00 03 00
 
-    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(auctioneerGuid);
+    AuctionHouseEntry const* auctionHouseEntry = GetCheckedAuctionHouseForAuctioneer(guid);
 	if (!auctionHouseEntry)
 		return;
 

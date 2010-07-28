@@ -36,7 +36,10 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
     if (!AHBSeller)
         return;
     AuctionHouseEntry const* ahEntry = sAuctionMgr.GetAuctionHouseEntry(config->GetAHFID());
-    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(config->GetAHFID());
+	if(!ahEntry)
+		return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     uint32 items = 0;
     uint32 minItems = MINITEMS;
     uint32 maxItems = MAXITEMS;
@@ -349,7 +352,11 @@ void AuctionHouseBot::addNewAuctionBuyerBotBid(Player *AHBplayer, AHBConfig *con
         return;
 
     // Fetches content of selected AH
-    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(config->GetAHFID());
+	AuctionHouseEntry const* ahEntry = sAuctionMgr.GetAuctionHouseEntry(config->GetAHFID());
+	if(!ahEntry)
+		return;
+
+    AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     vector<uint32> possibleBids;
 
     for (AuctionHouseObject::AuctionEntryMap::const_iterator itr = auctionHouse->GetAuctionsBegin();itr != auctionHouse->GetAuctionsEnd();++itr)
