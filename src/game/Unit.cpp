@@ -6675,7 +6675,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
         {
             switch(dummySpell->Id)
             {
-				// Glyph of Backstab FSS
+				// Glyph of Backstab
                 case 56800:
                 {
                     triggered_spell_id = 63975;

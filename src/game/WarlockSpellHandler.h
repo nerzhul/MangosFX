@@ -8,6 +8,7 @@ class MANGOS_DLL_SPEC WarlockSpellHandler
 {
 	public:
 		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
+		//void HandleDummyAuraProc(Unit* u, Spell* dummy, uint32 &trig_sp_id);
 };
 
 #define sWarlockSpellHandler MaNGOS::Singleton<WarlockSpellHandler>::Instance()

@@ -1,4 +1,5 @@
 #include <Policies/SingletonImp.h>
+#include "Spell.h"
 #include "PriestSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(PriestSpellHandler);

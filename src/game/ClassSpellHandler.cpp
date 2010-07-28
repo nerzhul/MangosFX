@@ -57,3 +57,43 @@ void ClassSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 			break;
 	}
 }
+
+void ClassSpellHandler::HandleDummyAuraProc(Unit *u, Spell *dummy, uint32 &trig_sp_id)
+{
+	if(!dummy || !u)
+		return;
+
+	switch(dummy->m_spellInfo->SpellFamilyName)
+	{
+		/*case SPELLFAMILY_DEATHKNIGHT:
+			sDeathknightSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_DRUID:
+			sDruidSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_HUNTER:
+			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_MAGE:
+			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PALADIN:
+			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_ROGUE:
+			sRogueSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_SHAMAN:
+			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARRIOR:
+			sWarriorSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;*/
+	}
+}
