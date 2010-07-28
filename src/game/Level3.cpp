@@ -550,8 +550,9 @@ bool ChatHandler::HandleReloadSpellLearnSpellCommand(const char*)
 bool ChatHandler::HandleReloadSpellProcEventCommand(const char*)
 {
     sLog.outString( "Re-Loading Spell Proc Event conditions..." );
+	SendGlobalSysMessage("Rechargement de la table des chances de proc...");
     sSpellMgr.LoadSpellProcEvents();
-    SendGlobalSysMessage("DB table `spell_proc_event` (spell proc trigger requirements) reloaded.");
+    SendGlobalSysMessage("Fini !");
     return true;
 }
 

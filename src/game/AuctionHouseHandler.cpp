@@ -53,7 +53,7 @@ void WorldSession::HandleAuctionHelloOpcode( WorldPacket & recv_data )
 }
 
 //this void causes that auction window is opened
-void WorldSession::SendAuctionHello(Creature* unit)
+void WorldSession::SendAuctionHello(Unit* unit)
 {
     AuctionHouseEntry const* ahEntry = AuctionHouseMgr::GetAuctionHouseEntry(unit->getFaction());
 
