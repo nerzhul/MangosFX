@@ -7,7 +7,7 @@
 class MANGOS_DLL_SPEC PaladinSpellHandler
 {
 	public:
-		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod);
+		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
 };
 
 #define sPaladinSpellHandler MaNGOS::Singleton<PaladinSpellHandler>::Instance()

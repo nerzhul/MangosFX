@@ -321,7 +321,11 @@ libmangosgame_a_SOURCES = \
 	HunterSpellHandler.cpp \
 	HunterSpellHandler.h \
 	PaladinSpellHandler.cpp \
-	PaladinSpellHandler.h
+	PaladinSpellHandler.h \
+	DruidSpellHandler.cpp \
+	DruidSpellHandler.h \
+	DeathknightSpellHandler.cpp \
+	DeathknightSpellHandler.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN

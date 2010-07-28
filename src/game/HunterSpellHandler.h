@@ -7,7 +7,7 @@
 class MANGOS_DLL_SPEC HunterSpellHandler
 {
 	public:
-		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod);
+		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
 };
 
 #define sHunterSpellHandler MaNGOS::Singleton<HunterSpellHandler>::Instance()

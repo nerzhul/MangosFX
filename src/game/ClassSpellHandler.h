@@ -8,7 +8,7 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 	public:
 		ClassSpellHandler() {};
 		~ClassSpellHandler() {};
-		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod);
+		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
 };
 
 #define sClassSpellHandler MaNGOS::Singleton<ClassSpellHandler>::Instance()

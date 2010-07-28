@@ -7,7 +7,7 @@ INSTANTIATE_SINGLETON_1(HunterSpellHandler);
 
 #define	FLAGS_KILL_SHOT	UI64LIT(0x80000000000000)
 
-void HunterSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod)
+void HunterSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Kill Shot
 	if(spell->m_spellInfo->SpellFamilyFlags & FLAGS_KILL_SHOT)

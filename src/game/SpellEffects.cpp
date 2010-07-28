@@ -5367,35 +5367,10 @@ void Spell::EffectWeaponDmg(uint32 i)
             break;
         }
         case SPELLFAMILY_DRUID:
-        {
-			// Rend and Tear ( on Maul / Shred )
-            if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008800))
-            {
-                if(unitTarget && unitTarget->HasAuraState(AURA_STATE_BLEEDING))
-                {
-                    Unit::AuraList const& aura = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
-                    for(Unit::AuraList::const_iterator itr = aura.begin(); itr != aura.end(); ++itr)
-                    {
-                        if ((*itr)->GetSpellProto()->SpellIconID == 2859 && (*itr)->GetEffIndex() == 0)
-                        {
-                            totalDamagePercentMod += (totalDamagePercentMod * (*itr)->GetModifier()->m_amount) / 100;
-                            break;
-                        }
-                    }
-                }
-            }
-            // Shred
-            if( m_spellInfo->SpellFamilyFlags2 & 0x40000 )
-            {
-                    spellBonusNeedWeaponDamagePercentMod = true;
-                    spell_bonus += m_spellInfo->EffectBasePoints[0];
-            }
-            break;
-        }
         case SPELLFAMILY_HUNTER:
         case SPELLFAMILY_PALADIN:
         {
-            sClassSpellHandler.HandleEffectWeaponDamage(this,spell_bonus,spellBonusNeedWeaponDamagePercentMod);
+            sClassSpellHandler.HandleEffectWeaponDamage(this,spell_bonus,spellBonusNeedWeaponDamagePercentMod,totalDamagePercentMod);
             break;
         }
         case SPELLFAMILY_SHAMAN:
@@ -5419,61 +5394,7 @@ void Spell::EffectWeaponDmg(uint32 i)
         }
         case SPELLFAMILY_DEATHKNIGHT:
         {
-            // Blood Strike, Heart Strike, Obliterate
-            // Blood-Caked Strike
-            if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0002000001400000) ||
-                m_spellInfo->SpellIconID == 1736)
-            {
-                uint32 count = 0;
-                Unit::AuraMap const& auras = unitTarget->GetAuras();
-                for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                {
-                    if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
-                        itr->second->GetCasterGUID() == m_caster->GetGUID() &&
-                        IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
-                        ++count;
-                }
-
-                if (count)
-                {
-                    // Effect 1(for Blood-Caked Strike)/3(other) damage is bonus
-                    float bonus = count * CalculateDamage(m_spellInfo->SpellIconID == 1736 ? 0 : 2, unitTarget) / 100.0f;
-                    // Blood Strike, Blood-Caked Strike and Obliterate store bonus*2
-                    if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0002000000400000) ||
-                        m_spellInfo->SpellIconID == 1736)
-                        bonus /= 2.0f;
-
-                    totalDamagePercentMod *= 1.0f + bonus;
-                }
-            }
-            // Glyph of Blood Strike
-            if( m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000400000) &&
-                m_caster->HasAura(59332) &&
-                unitTarget->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
-            {
-                totalDamagePercentMod *= 1.2f;              // 120% if snared
-            }
-			// Rune strike
-			if( m_spellInfo->SpellIconID == 3007)
-			{
-				int32 count = CalculateDamage(2, unitTarget);
-				spell_bonus += int32(count * m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
-			}
-            // Glyph of Death Strike
-            if( m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000010) &&
-                m_caster->HasAura(59336))
-            {
-                int32 rp = m_caster->GetPower(POWER_RUNIC_POWER) / 10;
-                if(rp > 25)
-                    rp = 25;
-                totalDamagePercentMod *= 1.0f + rp / 100.0f;
-            }
-            // Glyph of Plague Strike
-            if( m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000001) &&
-                m_caster->HasAura(58657) )
-            {
-                totalDamagePercentMod *= 1.2f;
-            }
+            
             break;
         }
     }

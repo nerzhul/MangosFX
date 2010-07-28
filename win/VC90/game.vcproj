@@ -874,6 +874,22 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\DeathknightSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DeathknightSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DruidSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\DruidSpellHandler.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\HunterSpellHandler.cpp"
 						>
 					</File>

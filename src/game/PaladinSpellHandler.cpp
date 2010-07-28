@@ -7,7 +7,7 @@ INSTANTIATE_SINGLETON_1(PaladinSpellHandler);
 
 #define	FLAGS_JUDGEMENT_COMMAND		UI64LIT(0x00020000000000)
 
-void PaladinSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod)
+void PaladinSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Judgement of Command
     if(spell->m_spellInfo->SpellFamilyFlags & FLAGS_JUDGEMENT_COMMAND)
