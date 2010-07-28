@@ -344,7 +344,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleUnused,                                    //289 unused (3.2.2a)
     &Aura::HandleAuraModAllCritChance,                      //290 SPELL_AURA_MOD_ALL_CRIT_CHANCE
     &Aura::HandleNoImmediateEffect,                         //291 SPELL_AURA_MOD_QUEST_XP_PCT           implemented in Player::GiveXP
-    &Aura::HandleNULL,                                      //292 call stabled pet
+    &Aura::HandleAuraOpenStable,                            //292 call stabled pet
     &Aura::HandleNULL,                                      //293 3 spells
     &Aura::HandleNULL,                                      //294 2 spells, possible prevent mana regen
     &Aura::HandleUnused,                                    //295 unused (3.2.2a)
@@ -9090,6 +9090,17 @@ void Aura::HandleAuraControlVehicle(bool apply, bool Real)
         caster->RemoveAurasDueToSpell(GetId());
 		//caster->ExitVehicle();
     }
+}
+
+void Aura::HandleAuraOpenStable(bool apply, bool Real)
+{
+	if(!Real || GetTarget()->GetTypeId() != TYPEID_PLAYER || !GetTarget()->IsInWorld())
+		return;
+	
+	Player* player = (Player*)GetTarget();
+	if (apply)
+		player->GetSession()->SendStablePet(player->GetGUID());
+	// client auto close stable dialog at !apply aura
 }
 
 void Aura::HandleAuraConvertRune(bool apply, bool Real)

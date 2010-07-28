@@ -221,6 +221,8 @@ class MANGOS_DLL_SPEC WorldSession
         void SendCancelTrade();
 
         void SendStablePet(uint64 guid );
+		void SendStableResult(uint8 res);
+		bool CheckStableMaster(uint64 guid);
         void SendPetitionQueryOpcode( uint64 petitionguid);
         void SendUpdateTrade();
 

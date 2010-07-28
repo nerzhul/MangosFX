@@ -243,6 +243,9 @@ class AchievementMgr
 		bool IsCompletedAchievement(uint32 entry) { return IsCompletedAchievement(sAchievementStore.LookupEntry(entry)); }
         void SendRespondInspectAchievements(Player* player);
         Player* GetPlayer() { return m_player;}
+
+		bool HasAchievement(uint32 achievement_id) const { return m_completedAchievements.find(achievement_id) != m_completedAchievements.end(); }
+
 		void DoCompleteAchivement(AchievementEntry const* entry) { CompletedAchievement(entry); }
 
     private:
