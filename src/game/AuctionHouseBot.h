@@ -60,18 +60,12 @@ private:
     uint32 maxStackWhite;
     uint32 minPriceGreen;
     uint32 maxPriceGreen;
-    uint32 minBidPriceGreen;
-    uint32 maxBidPriceGreen;
     uint32 maxStackGreen;
     uint32 minPriceBlue;
     uint32 maxPriceBlue;
-    uint32 minBidPriceBlue;
-    uint32 maxBidPriceBlue;
     uint32 maxStackBlue;
     uint32 minPricePurple;
     uint32 maxPricePurple;
-    uint32 minBidPricePurple;
-    uint32 maxBidPricePurple;
     uint32 maxStackPurple;
     uint32 minPriceOrange;
     uint32 maxPriceOrange;
@@ -373,15 +367,6 @@ public:
         case AHB_WHITE:
             minBidPriceWhite = value;
             break;
-        case AHB_GREEN:
-            minBidPriceGreen = value;
-            break;
-        case AHB_BLUE:
-            minBidPriceBlue = value;
-            break;
-        case AHB_PURPLE:
-            minBidPricePurple = value;
-            break;
         default:
             break;
         }
@@ -406,30 +391,6 @@ public:
                     return minBidPriceWhite;
                 break;
             }
-        case AHB_GREEN:
-            {
-                if (minBidPriceGreen > 100)
-                    return 100;
-                else
-                    return minBidPriceGreen;
-                break;
-            }
-        case AHB_BLUE:
-            {
-                if (minBidPriceBlue > 100)
-                    return 100;
-                else
-                    return minBidPriceBlue;
-                break;
-            }
-        case AHB_PURPLE:
-            {
-                if (minBidPricePurple > 100)
-                    return 100;
-                else
-                    return minBidPricePurple;
-                break;
-            }
         default:
             {
                 return 0;
@@ -446,15 +407,6 @@ public:
             break;
         case AHB_WHITE:
             maxBidPriceWhite = value;
-            break;
-        case AHB_GREEN:
-            maxBidPriceGreen = value;
-            break;
-        case AHB_BLUE:
-            maxBidPriceBlue = value;
-            break;
-        case AHB_PURPLE:
-            maxBidPricePurple = value;
             break;
         default:
             break;
@@ -478,30 +430,6 @@ public:
                     return 100;
                 else
                     return maxBidPriceWhite;
-                break;
-            }
-        case AHB_GREEN:
-            {
-                if (maxBidPriceGreen > 100)
-                    return 100;
-                else
-                    return maxBidPriceGreen;
-                break;
-            }
-        case AHB_BLUE:
-            {
-                if (maxBidPriceBlue > 100)
-                    return 100;
-                else
-                    return maxBidPriceBlue;
-                break;
-            }
-        case AHB_PURPLE:
-            {
-                if (maxBidPricePurple > 100)
-                    return 100;
-                else
-                    return maxBidPricePurple;
                 break;
             }
         default:

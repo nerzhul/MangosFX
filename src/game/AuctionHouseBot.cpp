@@ -39,27 +39,12 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 	if(!ahEntry)
 		return;
 
+	error_log("Adding new auctions...");
     AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     uint32 items = 0;
     uint32 minItems = MINITEMS;
     uint32 maxItems = MAXITEMS;
     uint32 auctions = auctionHouse->Getcount();
-    uint32 AuctioneerGUID = 0;
-    switch (config->GetAHID()){
-        case 2:
-            AuctioneerGUID = 79707; //Human in stormwind.
-            break;
-        case 6:
-            AuctioneerGUID = 4656; //orc in Orgrimmar
-            break;
-        case 7:
-            AuctioneerGUID = 23442; //goblin in GZ
-            break;
-        default:
-            sLog.outError("GetAHID() - Default switch reached");
-            AuctioneerGUID = 23442; //default to neutral 7
-            break;
-    }
 
     if (auctions >= minItems)
         return;
@@ -103,43 +88,43 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
         if (item)
         {
             ItemPrototype const *prototype = item->GetProto();
-            if (prototype)
+			if (prototype)
             {
                 switch (prototype->Quality)
                 {
-                case 0:
-                    if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
-                        ++greyTGoods;
-                    else
-                        ++greyItems;
-                    break;
-                case 1:
-                    if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
-                        ++whiteTGoods;
-                    else
-                        ++whiteItems;
-                    break;
-                case 2:
-                    if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
-                        ++greenTGoods;
-                    else
-                        ++greenItems;
-                    break;
-                case 3:
-                    if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
-                        ++blueTGoods;
-                    else
-                        ++blueItems;
-                    break;
-                case 4:
-                    if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
-                        ++purpleTGoods;
-                    else
-                        ++purpleItems;
-                    break;
-				default:
-					//qualité non demandée
-					break;
+					case 0:
+						if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
+							++greyTGoods;
+						else
+							++greyItems;
+						break;
+					case 1:
+						if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
+							++whiteTGoods;
+						else
+							++whiteItems;
+						break;
+					case 2:
+						if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
+							++greenTGoods;
+						else
+							++greenItems;
+						break;
+					case 3:
+						if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
+							++blueTGoods;
+						else
+							++blueItems;
+						break;
+					case 4:
+						if (prototype->Class == ITEM_CLASS_TRADE_GOODS)
+							++purpleTGoods;
+						else
+							++purpleItems;
+						break;
+					default:
+						//qualité non demandée
+						break;
                 }
             }
         }
@@ -257,7 +242,7 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 
         switch (prototype->Quality)
         {
-        case 0:
+        case ITEM_QUALITY_POOR:
             if (config->GetMaxStack(AHB_GREY) != 0)
             {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_GREY)));
@@ -267,7 +252,7 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
             bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_GREY), config->GetMaxBidPrice(AHB_GREY));
             bidPrice /= 100;
             break;
-        case 1:
+        case ITEM_QUALITY_NORMAL:
             if (config->GetMaxStack(AHB_WHITE) != 0)
             {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_WHITE)));
@@ -277,47 +262,89 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
             bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_WHITE), config->GetMaxBidPrice(AHB_WHITE));
             bidPrice /= 100;
             break;
-        case 2:
+        case ITEM_QUALITY_UNCOMMON:
             if (config->GetMaxStack(AHB_GREEN) != 0)
-            {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_GREEN)));
-            }
-            buyoutPrice *= urand(config->GetMinPrice(AHB_GREEN), config->GetMaxPrice(AHB_GREEN)) * stackCount;
-            buyoutPrice /= 100;
-            bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_GREEN), config->GetMaxBidPrice(AHB_GREEN));
-            bidPrice /= 100;
+
+            if(prototype->ItemLevel > 120) // 75+
+				buyoutPrice *= urand(30, 55) * stackCount * prototype->ItemLevel / 115;
+			else if(prototype->ItemLevel > 45) // 63+
+				buyoutPrice *= urand(15, 30) * stackCount * prototype->ItemLevel / 40;
+			else if(prototype->ItemLevel > 0) 
+				buyoutPrice *= urand(3, 6) * stackCount * prototype->ItemLevel / 10;
+			else
+			{
+				if(prototype->GemProperties == 0)
+					buyoutPrice *= urand(config->GetMinPrice(AHB_GREEN), config->GetMaxPrice(AHB_GREEN)) * stackCount;
+				else
+					buyoutPrice *= urand(15,20) * stackCount;
+			}
+			buyoutPrice /= 100 ;
+			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice /= 100;
             break;
-        case 3:
+        case ITEM_QUALITY_RARE:
             if (config->GetMaxStack(AHB_BLUE) != 0)
-            {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_BLUE)));
-            }
-            buyoutPrice *= urand(config->GetMinPrice(AHB_BLUE), config->GetMaxPrice(AHB_BLUE)) * stackCount;
-            buyoutPrice /= 100;
-            bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_BLUE), config->GetMaxBidPrice(AHB_BLUE));
-            bidPrice /= 100;
+
+            if(prototype->ItemLevel > 160) // 75+
+				buyoutPrice *= urand(120, 150) * stackCount * prototype->ItemLevel / 160;
+			else if(prototype->ItemLevel > 60) // 63+
+				buyoutPrice *= urand(70, 90) * stackCount * prototype->ItemLevel / 75;
+			else if(prototype->ItemLevel > 0) 
+				buyoutPrice *= urand(30, 60) * stackCount * prototype->ItemLevel / 20;
+			else
+			{
+				if(prototype->GemProperties == 0)
+					buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
+				else
+					buyoutPrice *= urand(30,60) * stackCount;
+			}
+			buyoutPrice /= 100;
+			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice /= 100;
             break;
-        case 4:
+        case ITEM_QUALITY_EPIC:
             if (config->GetMaxStack(AHB_PURPLE) != 0)
-            {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_PURPLE)));
-            }
+
 			switch(prototype->ItemId)
 			{
 				case 44413:
 				case 41508:
 					buyoutPrice *= urand(15000, 22000) * stackCount;
-					buyoutPrice /= 100;
-					bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_PURPLE), config->GetMaxBidPrice(AHB_PURPLE)) * urand(13,15);
-					bidPrice /= 100;
 					break;
 				default:
-					buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
-					buyoutPrice /= 100 ;
-					bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_PURPLE), config->GetMaxBidPrice(AHB_PURPLE));
-					bidPrice /= 100;
+					if(prototype->ItemLevel > 190) // 75+
+					{
+						buyoutPrice *= urand(350, 550) * stackCount * prototype->ItemLevel / 186;
+						if(prototype->InventoryType == INVTYPE_TRINKET)
+							buyoutPrice *= 5;
+					}
+					else if(prototype->ItemLevel > 80) // 63+
+					{
+						buyoutPrice *= urand(150, 200) * stackCount * prototype->ItemLevel / 90;
+						if(prototype->InventoryType == INVTYPE_TRINKET)
+							buyoutPrice *= 5;
+					}
+					else if(prototype->ItemLevel > 0) 
+					{
+						buyoutPrice *= urand(150, 200) * stackCount * prototype->ItemLevel / 32;
+						if(prototype->InventoryType == INVTYPE_TRINKET)
+							buyoutPrice *= 5;
+					}
+					else
+					{
+						if(prototype->GemProperties == 0)
+							buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
+						else
+							buyoutPrice *= urand(120,250) * stackCount;
+					}
 					break;
 			}
+			buyoutPrice /= 100 ;
+			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice /= 100;
             break;
 		default:
 			break;
@@ -548,7 +575,6 @@ void AuctionHouseBot::addNewAuctionBuyerBotBid(Player *AHBplayer, AHBConfig *con
 
 void AuctionHouseBot::Update()
 {
-	/*
     time_t _newrun = time(NULL);
     if ((!AHBSeller) && (!AHBBuyer))
         return;
@@ -583,7 +609,7 @@ void AuctionHouseBot::Update()
     }
 
     ObjectAccessor::Instance().RemoveObject(&_AHBplayer);
-	*/
+	
 }
 
 void AuctionHouseBot::Initialize()
@@ -660,8 +686,14 @@ void AuctionHouseBot::Initialize()
         {
             ItemPrototype const* prototype = sObjectMgr.GetItemPrototype(itemID);
 
-            if (prototype == NULL)
+            if (!prototype)
                 continue;
+
+			if(prototype->ItemLevel >= 245)
+				continue;
+
+			if(prototype->ItemId > 47000)
+				continue;
 
             switch (prototype->Bonding)
             {
@@ -849,13 +881,8 @@ void AuctionHouseBot::LoadValues(AHBConfig *config)
         config->SetMaxBidPrice(AHB_GREY, CharacterDatabase.PQuery("SELECT maxbidpricegrey FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
         config->SetMinBidPrice(AHB_WHITE, CharacterDatabase.PQuery("SELECT minbidpricewhite FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
         config->SetMaxBidPrice(AHB_WHITE, CharacterDatabase.PQuery("SELECT maxbidpricewhite FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMinBidPrice(AHB_GREEN, CharacterDatabase.PQuery("SELECT minbidpricegreen FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMaxBidPrice(AHB_GREEN, CharacterDatabase.PQuery("SELECT maxbidpricegreen FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMinBidPrice(AHB_BLUE, CharacterDatabase.PQuery("SELECT minbidpriceblue FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMaxBidPrice(AHB_BLUE, CharacterDatabase.PQuery("SELECT maxbidpriceblue FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMinBidPrice(AHB_PURPLE, CharacterDatabase.PQuery("SELECT minbidpricepurple FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        config->SetMaxBidPrice(AHB_PURPLE, CharacterDatabase.PQuery("SELECT maxbidpricepurple FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
-        //load max stacks
+
+		//load max stacks
         config->SetMaxStack(AHB_GREY, CharacterDatabase.PQuery("SELECT maxstackgrey FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
         config->SetMaxStack(AHB_WHITE, CharacterDatabase.PQuery("SELECT maxstackwhite FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
         config->SetMaxStack(AHB_GREEN, CharacterDatabase.PQuery("SELECT maxstackgreen FROM auctionhousebot WHERE auctionhouse = %u",config->GetAHID())->Fetch()->GetUInt32());
