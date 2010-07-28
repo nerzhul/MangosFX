@@ -9979,7 +9979,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                     }
                 }
             }
-			
+
 			switch(spellProto->Id)
 			{
 				// Glyph of Unholy Blight
@@ -10137,9 +10137,6 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         modOwner->ApplySpellMod(spellProto->Id, damagetype == DOT ? SPELLMOD_DOT : SPELLMOD_DAMAGE, tmpDamage);
 
     tmpDamage = (tmpDamage + TakenTotal) * TakenTotalMod;
-
-	if(damagetype != DOT)
-		tmpDamage += BDSpellDamageHacks();
 	
     return tmpDamage > 0 ? uint32(tmpDamage) : 0;
 }
