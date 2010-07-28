@@ -482,6 +482,7 @@ class Spell
 		bool isCausingAura(AuraType aura);
 
 		Unit* getUnitTarget() { return unitTarget; }
+		WeaponAttackType getAttackType() { return m_attackType; }
 
 	protected:
 

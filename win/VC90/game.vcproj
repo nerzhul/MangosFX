@@ -905,6 +905,30 @@
 						RelativePath="..\..\src\game\PaladinSpellHandler.h"
 						>
 					</File>
+					<File
+						RelativePath="..\..\src\game\RogueSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\RogueSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\WarlockSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\WarlockSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\WarriorSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\WarriorSpellHandler.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

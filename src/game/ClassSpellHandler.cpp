@@ -9,6 +9,8 @@
 #include "DruidSpellHandler.h"
 #include "HunterSpellHandler.h"
 #include "PaladinSpellHandler.h"
+#include "WarlockSpellHandler.h"
+#include "WarriorSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(ClassSpellHandler);
 
@@ -30,6 +32,15 @@ void ClassSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 			break;
 		case SPELLFAMILY_PALADIN:
 			sPaladinSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
+		case SPELLFAMILY_ROGUE:
+			sRogueSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
+		case SPELLFAMILY_WARRIOR:
+			sWarriorSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
 			break;
 	}
 }

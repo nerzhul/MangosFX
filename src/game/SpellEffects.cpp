@@ -5282,93 +5282,13 @@ void Spell::EffectWeaponDmg(uint32 i)
 			}
 			break;
 		}
-        case SPELLFAMILY_WARRIOR:
-        {
-            // Devastate bonus and sunder armor refresh
-            if(m_spellInfo->SpellVisual[0] == 12295 && m_spellInfo->SpellIconID == 1508)
-            {
-                uint32 stack = 0;
-                // Need refresh all Sunder Armor auras from this caster
-                Unit::AuraMap& suAuras = unitTarget->GetAuras();
-                SpellEntry const *spellInfo;
-                for(Unit::AuraMap::iterator itr = suAuras.begin(); itr != suAuras.end(); ++itr)
-                {
-                    spellInfo = (*itr).second->GetSpellProto();
-                    if( spellInfo->SpellFamilyName == SPELLFAMILY_WARRIOR &&
-                        (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000004000)) &&
-                        (*itr).second->GetCasterGUID() == m_caster->GetGUID())
-                    {
-                        (*itr).second->RefreshAura();
-                        stack = (*itr).second->GetStackAmount();
-                        break;
-                    }
-                }
-                if (stack)
-                    spell_bonus += stack * CalculateDamage(2, unitTarget);
-                if (!stack || stack < spellInfo->StackAmount)
-                    // Devastate causing Sunder Armor Effect
-                    // and no need to cast over max stack amount
-                    m_caster->CastSpell(unitTarget, 58567, true);
-				// glyph of devastate
-				if(m_caster->HasAura(58388))
-					m_caster->CastSpell(unitTarget, 58567, true);
-
-            }
-            break;
-        }
-        case SPELLFAMILY_ROGUE:
-        {
-            // Mutilate (for each hand)
-            if(m_spellInfo->SpellFamilyFlags & UI64LIT(0x600000000))
-            {
-                bool found = false;
-                // fast check
-                if(unitTarget->HasAuraState(AURA_STATE_DEADLY_POISON))
-                    found = true;
-                // full aura scan
-                else
-                {
-                    Unit::AuraMap const& auras = unitTarget->GetAuras();
-                    for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                    {
-                        if(itr->second->GetSpellProto()->Dispel == DISPEL_POISON)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if(found)
-                    totalDamagePercentMod *= 1.2f;          // 120% if poisoned
-            }
-            // Fan of Knives
-            else if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0004000000000000)))
-            {
-                Item* weapon = ((Player*)m_caster)->GetWeaponForAttack(m_attackType,true,true);
-                if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
-                    totalDamagePercentMod *= 1.5f;          // 150% to daggers
-            }
-			// Hemorrhage
-			else if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x2000000)))
-			{
-				((Player*)m_caster)->AddComboPoints(unitTarget, 1);
-				Item* weapon = ((Player*)m_caster)->GetWeaponForAttack(m_attackType,true,true);
-				if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
-					totalDamagePercentMod *= 1.45f;         // 145% with dagger
-			}
-			// Ghostly Strike
-			else if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->Id == 14278))
-			{
-				Item* weapon = ((Player*)m_caster)->GetWeaponForAttack(m_attackType,true,true);
-				if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
-					totalDamagePercentMod *= 1.44f;         // 144% with dagger 
-			}
-            break;
-        }
+		case SPELLFAMILY_DEATHKNIGHT:
         case SPELLFAMILY_DRUID:
         case SPELLFAMILY_HUNTER:
         case SPELLFAMILY_PALADIN:
+		case SPELLFAMILY_ROGUE:
+		case SPELLFAMILY_WARRIOR:
+		case SPELLFAMILY_WARLOCK:
         {
             sClassSpellHandler.HandleEffectWeaponDamage(this,spell_bonus,spellBonusNeedWeaponDamagePercentMod,totalDamagePercentMod);
             break;
@@ -5390,11 +5310,6 @@ void Spell::EffectWeaponDmg(uint32 i)
                     }
                 }
             }
-            break;
-        }
-        case SPELLFAMILY_DEATHKNIGHT:
-        {
-            
             break;
         }
     }
