@@ -481,6 +481,8 @@ class Spell
 		bool IsValidSingleTargetSpell(Unit const* target) const;
 		bool isCausingAura(AuraType aura);
 
+		Unit* getUnitTarget() { return unitTarget; }
+
 	protected:
 
         void SendLoot(uint64 guid, LootType loottype);

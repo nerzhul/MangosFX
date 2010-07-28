@@ -315,7 +315,13 @@ libmangosgame_a_SOURCES = \
 	FollowerRefManager.h \
 	GroupReference.cpp \
 	GroupReference.h \
-	GroupRefManager.h
+	GroupRefManager.h \
+	ClassSpellHandler.cpp \
+	ClassSpellHandler.h \
+	HunterSpellHandler.cpp \
+	HunterSpellHandler.h \
+	PaladinSpellHandler.cpp \
+	PaladinSpellHandler.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN

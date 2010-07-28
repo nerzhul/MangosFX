@@ -55,6 +55,7 @@
 #include "SkillDiscovery.h"
 #include "Formulas.h"
 #include "GridNotifiers.h"
+#include "ClassSpellHandler.h"
 #include "Vehicle.h"
 #include "OutdoorPvPMgr.h"
 
@@ -2099,7 +2100,7 @@ void Spell::EffectDummy(uint32 i)
             }
             break;
         case SPELLFAMILY_ROGUE:
-            switch(m_spellInfo->Id )
+            switch(m_spellInfo->Id)
             {
                 case 5938:                                  // Shiv
                 {
@@ -5392,26 +5393,9 @@ void Spell::EffectWeaponDmg(uint32 i)
             break;
         }
         case SPELLFAMILY_HUNTER:
-        {
-			// Kill Shot
-            if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x80000000000000))
-            {
-                // 0.4*RAP added to damage (that is 0.2 if we apply PercentMod (200%) to spell_bonus, too)
-                spellBonusNeedWeaponDamagePercentMod = true;
-                spell_bonus += int32( 0.2f * m_caster->GetTotalAttackPowerValue(RANGED_ATTACK) );
-            }
-			break;
-        }
         case SPELLFAMILY_PALADIN:
         {
-            // Judgement of Command - receive benefit from Spell Damage and Attack Power
-            if(m_spellInfo->SpellFamilyFlags & UI64LIT(0x00020000000000))
-            {
-                float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-                int32 holy = m_caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)) +
-                             m_caster->SpellBaseDamageBonusForVictim(GetSpellSchoolMask(m_spellInfo), unitTarget);
-                spell_bonus += int32(ap * 0.08f) + int32(holy * 13 / 100);
-            }
+            sClassSpellHandler.HandleEffectWeaponDamage(this,spell_bonus,spellBonusNeedWeaponDamagePercentMod);
             break;
         }
         case SPELLFAMILY_SHAMAN:

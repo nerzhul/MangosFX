@@ -862,6 +862,34 @@
 					RelativePath="..\..\src\game\SpellHandler.cpp"
 					>
 				</File>
+				<Filter
+					Name="ClassSpell"
+					>
+					<File
+						RelativePath="..\..\src\game\ClassSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\ClassSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HunterSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\HunterSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\PaladinSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\PaladinSpellHandler.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="BGs"
