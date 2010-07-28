@@ -325,7 +325,19 @@ libmangosgame_a_SOURCES = \
 	DruidSpellHandler.cpp \
 	DruidSpellHandler.h \
 	DeathknightSpellHandler.cpp \
-	DeathknightSpellHandler.h
+	DeathknightSpellHandler.h \
+	RogueSpellHandler.cpp \
+	RogueSpellHandler.h \
+	WarriorSpellHandler.cpp \
+	WarriorSpellHandler.h \
+	WarlockSpellHandler.cpp \
+	WarlockSpellHandler.h \
+	MageSpellHandler.cpp \
+	MageSpellHandler.h \
+	PriestSpellHandler.cpp \
+	PriestSpellHandler.h \
+	ShamanSpellHandler.cpp \
+	ShamanSpellHandler.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN

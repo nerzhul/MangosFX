@@ -898,6 +898,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\MageSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\MageSpellHandler.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\PaladinSpellHandler.cpp"
 						>
 					</File>
@@ -906,11 +914,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\src\game\PriestSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\PriestSpellHandler.h"
+						>
+					</File>
+					<File
 						RelativePath="..\..\src\game\RogueSpellHandler.cpp"
 						>
 					</File>
 					<File
 						RelativePath="..\..\src\game\RogueSpellHandler.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\ShamanSpellHandler.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\..\src\game\ShamanSpellHandler.h"
 						>
 					</File>
 					<File

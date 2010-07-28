@@ -1,0 +1,25 @@
+#include <Policies/SingletonImp.h>
+#include "Spell.h"
+#include "SpellAuras.h"
+#include "ShamanSpellHandler.h"
+
+INSTANTIATE_SINGLETON_1(ShamanSpellHandler);
+
+void ShamanSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
+{
+	// Skyshatter Harness item set bonus
+    // Stormstrike
+    if(spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x001000000000))
+    {
+        Unit::AuraList const& m_OverrideClassScript = spell->GetCaster()->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+        for(Unit::AuraList::const_iterator citr = m_OverrideClassScript.begin(); citr != m_OverrideClassScript.end(); ++citr)
+        {
+            // Stormstrike AP Buff
+            if ( (*citr)->GetModifier()->m_miscvalue == 5634 )
+            {
+                spell->GetCaster()->CastSpell(spell->GetCaster(), 38430, true, NULL, *citr);
+                break;
+            }
+        }
+    }
+}

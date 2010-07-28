@@ -5285,7 +5285,9 @@ void Spell::EffectWeaponDmg(uint32 i)
 		case SPELLFAMILY_DEATHKNIGHT:
         case SPELLFAMILY_DRUID:
         case SPELLFAMILY_HUNTER:
+		case SPELLFAMILY_MAGE:
         case SPELLFAMILY_PALADIN:
+		case SPELLFAMILY_PRIEST:
 		case SPELLFAMILY_ROGUE:
 		case SPELLFAMILY_WARRIOR:
 		case SPELLFAMILY_WARLOCK:
@@ -5295,21 +5297,7 @@ void Spell::EffectWeaponDmg(uint32 i)
         }
         case SPELLFAMILY_SHAMAN:
         {
-            // Skyshatter Harness item set bonus
-            // Stormstrike
-            if(m_spellInfo->SpellFamilyFlags & UI64LIT(0x001000000000))
-            {
-                Unit::AuraList const& m_OverrideClassScript = m_caster->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
-                for(Unit::AuraList::const_iterator citr = m_OverrideClassScript.begin(); citr != m_OverrideClassScript.end(); ++citr)
-                {
-                    // Stormstrike AP Buff
-                    if ( (*citr)->GetModifier()->m_miscvalue == 5634 )
-                    {
-                        m_caster->CastSpell(m_caster, 38430, true, NULL, *citr);
-                        break;
-                    }
-                }
-            }
+            
             break;
         }
     }

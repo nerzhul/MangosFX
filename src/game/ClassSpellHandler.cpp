@@ -8,7 +8,11 @@
 #include "DeathknightSpellHandler.h"
 #include "DruidSpellHandler.h"
 #include "HunterSpellHandler.h"
+#include "MageSpellHandler.h"
 #include "PaladinSpellHandler.h"
+#include "PriestSpellHandler.h"
+#include "RogueSpellHandler.h"
+#include "ShamanSpellHandler.h"
 #include "WarlockSpellHandler.h"
 #include "WarriorSpellHandler.h"
 
@@ -30,11 +34,20 @@ void ClassSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		case SPELLFAMILY_HUNTER:
 			sHunterSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
 			break;
+		case SPELLFAMILY_MAGE:
+			sMageSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
 		case SPELLFAMILY_PALADIN:
 			sPaladinSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
 			break;
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
 		case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
+			break;
+		case SPELLFAMILY_SHAMAN:
+			sShamanSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
 			break;
 		case SPELLFAMILY_WARRIOR:
 			sWarriorSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
