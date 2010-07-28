@@ -48,21 +48,18 @@ AuctionHouseMgr::~AuctionHouseMgr()
         delete itr->second;
 }
 
-AuctionHouseObject * AuctionHouseMgr::GetAuctionsMap( uint32 factionTemplateId )
+AuctionHouseObject * AuctionHouseMgr::GetAuctionsMap(AuctionHouseEntry const* house)
 {
     if(sWorld.getConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_AUCTION))
         return &mNeutralAuctions;
 
     // team have linked auction houses
-    FactionTemplateEntry const* u_entry = sFactionTemplateStore.LookupEntry(factionTemplateId);
-    if(!u_entry)
-        return &mNeutralAuctions;
-    else if(u_entry->ourMask & FACTION_MASK_ALLIANCE)
-        return &mAllianceAuctions;
-    else if(u_entry->ourMask & FACTION_MASK_HORDE)
-        return &mHordeAuctions;
-    else
-        return &mNeutralAuctions;
+    switch(GetAuctionHouseTeam(house))
+	{
+		case ALLIANCE: return &mAllianceAuctions;
+		case HORDE:    return &mHordeAuctions;
+		default:       return &mNeutralAuctions;
+	}
 }
 
 uint32 AuctionHouseMgr::GetAuctionDeposit(AuctionHouseEntry const* entry, uint32 time, Item *pItem)
@@ -420,7 +417,9 @@ void AuctionHouseMgr::LoadAuctions()
             continue;
         }
 
-        GetAuctionsMap( auctioneerInfo->faction_A )->AddAuction(aItem);
+        // always return pointer
+		auction->auctionHouseEntry = AuctionHouseMgr::GetAuctionHouseEntry(auctioneerInfo->faction_A);
+		GetAuctionsMap(auction->auctionHouseEntry)->AddAuction(auction);
 
     } while (result->NextRow());
     delete result;
@@ -454,6 +453,23 @@ void AuctionHouseMgr::Update()
     mNeutralAuctions.Update();
 }
 
+uint32 AuctionHouseMgr::GetAuctionHouseTeam(AuctionHouseEntry const* house)
+{
+	// auction houses have faction field pointing to PLAYER,* factions,
+	// but player factions not have filled team field, and hard go from faction value to faction_template value,
+	// so more easy just sort by auction house ids
+	switch(house->houseId)
+	{
+		case 1: case 2: case 3:
+			return ALLIANCE;
+		case 4: case 5: case 6:
+			return HORDE;
+		case 7:
+		default:
+			return 0;                                       // neutral
+	}
+}
+
 AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint32 factionTemplateId)
 {
     uint32 houseid = 1;                                     // dwarf auction house (used for normal cut/etc percents)
@@ -473,8 +489,10 @@ AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint32 factionTem
             case  104: houseid = 5; break;                  // trolls
             case  120: houseid = 7; break;                  // booty bay, neutral
             case  474: houseid = 7; break;                  // gadgetzan, neutral
+			case  534: houseid = 2; break;                  // Alliance Generic
             case  855: houseid = 7; break;                  // everlook, neutral
             case 1604: houseid = 6; break;                  // b-elfs,
+			case 1638: houseid = 2; break;                  // exodar, alliance
             default:                                        // for unknown case
             {
                 FactionTemplateEntry const* u_entry = sFactionTemplateStore.LookupEntry(factionTemplateId);
