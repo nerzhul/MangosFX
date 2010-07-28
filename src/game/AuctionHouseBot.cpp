@@ -39,7 +39,6 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 	if(!ahEntry)
 		return;
 
-	error_log("Adding new auctions...");
     AuctionHouseObject* auctionHouse = sAuctionMgr.GetAuctionsMap(ahEntry);
     uint32 items = 0;
     uint32 minItems = MINITEMS;
@@ -256,8 +255,13 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
             if (config->GetMaxStack(AHB_WHITE) != 0)
             {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_WHITE)));
+				if(prototype->BagFamily & BAG_FAMILY_MASK_INSCRIPTION_SUPP)
+					stackCount = 1;
             }
-            buyoutPrice *= urand(config->GetMinPrice(AHB_WHITE), config->GetMaxPrice(AHB_WHITE)) * stackCount;
+			if(prototype->ItemLevel == 45 && prototype->Spells[0].SpellId > 0 && (prototype->BagFamily & BAG_FAMILY_MASK_INSCRIPTION_SUPP))
+				buyoutPrice *= urand(35,40) * prototype->RequiredLevel / 50;
+			else
+				buyoutPrice *= urand(config->GetMinPrice(AHB_WHITE), config->GetMaxPrice(AHB_WHITE)) * stackCount;
             buyoutPrice /= 100;
             bidPrice = buyoutPrice * urand(config->GetMinBidPrice(AHB_WHITE), config->GetMaxBidPrice(AHB_WHITE));
             bidPrice /= 100;
@@ -270,17 +274,18 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 				buyoutPrice *= urand(30, 55) * stackCount * prototype->ItemLevel / 115;
 			else if(prototype->ItemLevel > 45) // 63+
 				buyoutPrice *= urand(15, 30) * stackCount * prototype->ItemLevel / 40;
-			else if(prototype->ItemLevel > 0) 
-				buyoutPrice *= urand(3, 6) * stackCount * prototype->ItemLevel / 10;
-			else
+			else if(prototype->ItemLevel > 0)
 			{
 				if(prototype->GemProperties == 0)
-					buyoutPrice *= urand(config->GetMinPrice(AHB_GREEN), config->GetMaxPrice(AHB_GREEN)) * stackCount;
+					buyoutPrice *= urand(3, 6) * stackCount * prototype->ItemLevel / 10;
 				else
-					buyoutPrice *= urand(15,20) * stackCount;
+					buyoutPrice *= urand(10,20) * stackCount;
 			}
+			else
+				buyoutPrice *= urand(config->GetMinPrice(AHB_GREEN), config->GetMaxPrice(AHB_GREEN)) * stackCount;
+
 			buyoutPrice /= 100 ;
-			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice = buyoutPrice * urand(80, 100);
 			bidPrice /= 100;
             break;
         case ITEM_QUALITY_RARE:
@@ -291,17 +296,21 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 				buyoutPrice *= urand(120, 150) * stackCount * prototype->ItemLevel / 160;
 			else if(prototype->ItemLevel > 60) // 63+
 				buyoutPrice *= urand(70, 90) * stackCount * prototype->ItemLevel / 75;
-			else if(prototype->ItemLevel > 0) 
-				buyoutPrice *= urand(30, 60) * stackCount * prototype->ItemLevel / 20;
-			else
+			else if(prototype->ItemLevel > 0)
 			{
 				if(prototype->GemProperties == 0)
-					buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
+					buyoutPrice *= urand(30, 60) * stackCount * prototype->ItemLevel / 32;
 				else
-					buyoutPrice *= urand(30,60) * stackCount;
+					buyoutPrice *= urand(30, 60) * stackCount;
 			}
+			else
+				buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
+
+			if(prototype->BagFamily & BAG_FAMILY_MASK_LEATHERWORKING_SUPP)
+				buyoutPrice *= 5;
+
 			buyoutPrice /= 100;
-			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice = buyoutPrice * urand(80, 100);
 			bidPrice /= 100;
             break;
         case ITEM_QUALITY_EPIC:
@@ -329,21 +338,24 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
 					}
 					else if(prototype->ItemLevel > 0) 
 					{
-						buyoutPrice *= urand(150, 200) * stackCount * prototype->ItemLevel / 32;
+						
+						if(prototype->GemProperties == 0)
+							buyoutPrice *= urand(150, 200) * stackCount * prototype->ItemLevel / 32;
+						else
+							buyoutPrice *= urand(120, 250) * stackCount;
+
 						if(prototype->InventoryType == INVTYPE_TRINKET)
 							buyoutPrice *= 5;
 					}
 					else
-					{
-						if(prototype->GemProperties == 0)
-							buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
-						else
-							buyoutPrice *= urand(120,250) * stackCount;
-					}
+						buyoutPrice *= urand(config->GetMinPrice(AHB_PURPLE), config->GetMaxPrice(AHB_PURPLE)) * stackCount;
+
+					if(prototype->BagFamily & BAG_FAMILY_MASK_LEATHERWORKING_SUPP)
+						buyoutPrice *= 5;
 					break;
 			}
 			buyoutPrice /= 100 ;
-			bidPrice = buyoutPrice * urand(100, 130);
+			bidPrice = buyoutPrice * urand(80, 100);
 			bidPrice /= 100;
             break;
 		default:
@@ -359,6 +371,7 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
         auctionEntry->owner = AHBplayer->GetGUIDLow();
         auctionEntry->startbid = bidPrice;
         auctionEntry->buyout = buyoutPrice;
+		error_log("%u %u %u",auctionEntry->item_template,auctionEntry->startbid,auctionEntry->buyout);
         auctionEntry->bidder = 0;
         auctionEntry->bid = 0;
         auctionEntry->deposit = 0;
@@ -693,6 +706,12 @@ void AuctionHouseBot::Initialize()
 				continue;
 
 			if(prototype->ItemId > 47000)
+				continue;
+
+			if(prototype->Quality == 2)
+				continue;
+
+			if(prototype->InventoryType == INVTYPE_BODY)
 				continue;
 
             switch (prototype->Bonding)
