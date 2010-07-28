@@ -255,11 +255,12 @@ void AuctionHouseBot::addNewAuctions(Player *AHBplayer, AHBConfig *config)
             if (config->GetMaxStack(AHB_WHITE) != 0)
             {
                 stackCount = urand(1, minValue(item->GetMaxStackCount(), config->GetMaxStack(AHB_WHITE)));
-				if(prototype->BagFamily & BAG_FAMILY_MASK_INSCRIPTION_SUPP)
-					stackCount = 1;
             }
-			if(prototype->ItemLevel == 45 && prototype->Spells[0].SpellId > 0 && (prototype->BagFamily & BAG_FAMILY_MASK_INSCRIPTION_SUPP))
+			if(prototype->ItemLevel == 45 && prototype->Spells[0].SpellId > 0)
+			{
+				stackCount = 1;
 				buyoutPrice *= urand(35,40) * prototype->RequiredLevel / 50;
+			}
 			else
 				buyoutPrice *= urand(config->GetMinPrice(AHB_WHITE), config->GetMaxPrice(AHB_WHITE)) * stackCount;
             buyoutPrice /= 100;

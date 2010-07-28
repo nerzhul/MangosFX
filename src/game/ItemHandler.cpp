@@ -283,7 +283,7 @@ void WorldSession::HandleItemQuerySingleOpcode( WorldPacket & recv_data )
     uint32 item;
     recv_data >> item;
 
-    sLog.outDetail("STORAGE: Item Query = %u", item);
+    //sLog.outDetail("STORAGE: Item Query = %u", item);
 
     ItemPrototype const *pProto = ObjectMgr::GetItemPrototype( item );
     if( pProto )

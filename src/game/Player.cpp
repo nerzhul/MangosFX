@@ -4892,7 +4892,7 @@ void Player::CleanupChannels()
             cMgr->LeftChannel(ch->GetName());               // deleted channel if empty
 
     }
-    sLog.outDebug("Player: channels cleaned up!");
+    //sLog.outDebug("Player: channels cleaned up!");
 }
 
 void Player::UpdateLocalChannels(uint32 newZone )
@@ -16475,7 +16475,7 @@ void Player::_LoadQuestStatus(QueryResult *result)
                         m_questRewardTalentCount += pQuest->GetBonusTalents();
                 }
 
-                sLog.outDebug("Quest status is {%u} for quest {%u} for player (GUID: %u)", questStatusData.m_status, quest_id, GetGUIDLow());
+                //sLog.outDebug("Quest status is {%u} for quest {%u} for player (GUID: %u)", questStatusData.m_status, quest_id, GetGUIDLow());
             }
         }
         while( result->NextRow() );
