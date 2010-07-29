@@ -4174,6 +4174,11 @@ void Spell::EffectDispel(uint32 i)
                 if (positive == unitTarget->IsFriendlyTo(m_caster))
                     continue;
             }
+			else if(aur->GetSpellProto()->Dispel == DISPEL_DISEASE)
+			{
+				if(unitTarget->HasAura(50536))
+					continue;
+			}
             // Add aura to dispel list (all stack cases)
             for(int k = 0; k < aur->GetStackAmount(); ++k)
                 dispel_list.push_back(aur);
