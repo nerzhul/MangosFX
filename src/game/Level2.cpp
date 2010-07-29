@@ -4648,8 +4648,8 @@ bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
 	if(!spell)
 		return false;
 
-	PSendSysMessage("Spell %i / Nom : %s / Icone : %u / FamilyFlags1 : " UI64FMTD " / FamilyFlags2 : " UI64FMTD "",spellId,spell->SpellName,spell->SpellIconID,spell->SpellFamilyFlags,
-		spell->SpellFamilyFlags2);
+	PSendSysMessage("Spell %i / Nom : %s / Icone : %u / SpellVisual[0] %u / activeIconId %u / SpellVisual[1] %u / FamilyFlags1 : " UI64FMTD " / FamilyFlags2 : " UI64FMTD "",
+		spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->SpellFamilyFlags,spell->SpellFamilyFlags2);
 	return true;
 }
 

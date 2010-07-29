@@ -7247,7 +7247,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
             switch (GetId())
             {
 				case 49039: spellId1 = 50397; break;        // Lichborne	
-					case 48263:                                 // Frost Presence
+				case 48263:                                 // Frost Presence
                 case 48265:                                 // Unholy Presence
                 case 48266:                                 // Blood Presence
                 {
