@@ -6647,8 +6647,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
 					// check for "Master of Ghouls", id's stored in basepoints
 					uint32 spId = 46585;
-					PlayerSpellMap::const_iterator itr = p_caster->GetSpellMap().find(52143);
-					if (itr != p_caster->GetSpellMap().end())
+					if(p_caster->HasSpell(52143))
                         spId = 52150;
 
 					m_caster->CastSpell(m_caster,spId,true);

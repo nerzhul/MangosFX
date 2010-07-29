@@ -854,7 +854,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
         createResistance[SPELL_SCHOOL_ARCANE] = cinfo->resistance6;
     }
 
-    switch(getPetType())
+	switch(getPetType())
     {
         case SUMMON_PET:
         {
@@ -940,6 +940,18 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 					}
 					case CLASS_DEATH_KNIGHT:
 					{
+						if(GetEntry() == 26125)
+						{
+							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
+							int32 bonusmelee = int32(attackPower * 0.25f);
+							SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
+							SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
+							SetAttackTime(BASE_ATTACK, 1500);
+							setPowerType(POWER_ENERGY);
+							SetMaxPower(POWER_ENERGY,100);
+							SetPower(POWER_ENERGY,100);
+							SetCreateHealth(GetMaxHealth() + owner->GetHealth() * 0.15);
+						}
 						break;
 					}
                     default:
