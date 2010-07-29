@@ -9665,6 +9665,9 @@ void Unit::EnergizeBySpell(Unit *pVictim, uint32 SpellID, uint32 Damage, Powers 
 
 uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint32 pdamage, DamageEffectType damagetype, uint32 stack)
 {
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Initial SpellDamageBonus %i",pdamage);
+
     if(!spellProto || !pVictim || damagetype==DIRECT_DAMAGE )
         return pdamage;
 
@@ -9709,6 +9712,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     for(AuraList::const_iterator i = mDamageDoneVersus.begin();i != mDamageDoneVersus.end(); ++i)
         if(creatureTypeMask & uint32((*i)->GetModifier()->m_miscvalue))
             DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f)/100.0f;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneTotalMod with SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS %f",DoneTotalMod);
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
@@ -9826,6 +9832,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         }
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneTotalMod with SPELL_AURA_OVERRIDE_CLASS_SCRIPTS %f",DoneTotalMod);
+
 	// custom scripted mod from dummy
     AuraList const& mDummy = owner->GetAurasByType(SPELL_AURA_DUMMY);
     for(AuraList::const_iterator i = mDummy.begin(); i != mDummy.end(); ++i)
@@ -9841,6 +9850,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             }
         }
     }
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneTotalMod with SPELL_AURA_DUMMY %f",DoneTotalMod);
 
     // Custom scripted damage
     switch(spellProto->SpellFamilyName)
@@ -9994,6 +10006,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             break;
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneTotalMod final %f",DoneTotalMod);
+
 
     // ..taken
     AuraList const& mModDamagePercentTaken = pVictim->GetAurasByType(SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN);
@@ -10002,6 +10017,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         if ((*i)->GetModifier()->m_miscvalue & GetSpellSchoolMask(spellProto))
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
     }
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN %f",TakenTotalMod);
 
     // .. taken pct: dummy auras
     if (pVictim->GetTypeId() == TYPEID_PLAYER)
@@ -10027,6 +10045,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         }
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with dummys %f",TakenTotalMod);
+
     // From caster spells
     AuraList const& mOwnerTaken = pVictim->GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);
     for(AuraList::const_iterator i = mOwnerTaken.begin(); i != mOwnerTaken.end(); ++i)
@@ -10035,8 +10056,14 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with SPELL_AURA_MOD_DAMAGE_FROM_CASTER %f",TakenTotalMod);
+
     // Mod damage from spell mechanic
     TakenTotalMod *= pVictim->GetTotalAuraMultiplierByMiscValueForMask(SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT,GetAllSpellMechanicMask(spellProto));
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with SPELL_AURA_MOD_MECHANIC_DAMAGE_TAKEN_PERCENT %f",TakenTotalMod);
 
     // Mod damage taken from AoE spells
     if(IsAreaOfEffectSpell(spellProto))
@@ -10050,17 +10077,29 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             TakenTotalMod *= ((*itr)->GetModifier()->m_amount + 100.0f) / 100.0f;
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with AOE mod %f",TakenTotalMod);
+
     // Taken/Done fixed damage bonus auras
     int32 DoneAdvertisedBenefit  = SpellBaseDamageBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseDamageBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
 
     // Pets just add their bonus damage to their spell damage
     // note that their spell damage is just gain of their own auras
     if (GetTypeId() == TYPEID_UNIT && ((Creature*)this)->isPet())
         DoneAdvertisedBenefit += ((Pet*)this)->GetBonusDamage();
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
+
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("LvlPenalty %f",LvlPenalty);
+
 	Player* modOwner = GetSpellModOwner();
 
     // Check for table values
