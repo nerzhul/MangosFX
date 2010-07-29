@@ -3056,6 +3056,17 @@ void Spell::cast(bool skipCheck)
 					break;
 				}
 				case 55095:
+					// Icy Talons
+					if(m_caster->HasAura(50880))
+						AddTriggeredSpell(50882);
+					else if(m_caster->HasAura(50884))
+						AddTriggeredSpell(58575);
+					else if(m_caster->HasAura(50885))
+						AddTriggeredSpell(58576);
+					else if(m_caster->HasAura(50886))
+						AddTriggeredSpell(58577);
+					else if(m_caster->HasAura(50887))
+						AddTriggeredSpell(58578);
 				case 55078:
 					if(m_caster->HasAura(49032))
 						AddTriggeredSpell(50508);
