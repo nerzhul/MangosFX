@@ -10085,7 +10085,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     int32 TakenAdvertisedBenefit = SpellBaseDamageBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
 
 	if(GetTypeId() == TYPEID_PLAYER)
-		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
+		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit %i",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
 
     // Pets just add their bonus damage to their spell damage
     // note that their spell damage is just gain of their own auras
@@ -10093,7 +10093,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         DoneAdvertisedBenefit += ((Pet*)this)->GetBonusDamage();
 
 	if(GetTypeId() == TYPEID_PLAYER)
-		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
+		sLog.outDebugSpell("SpellDamageBonus DoneAdvertisedBenefit %i TakenAdvertisedBenefit %i",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
 
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
@@ -10105,14 +10105,22 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     // Check for table values
     if (SpellBonusEntry const* bonus = sSpellMgr.GetSpellBonusData(spellProto->Id))
     {
-        float coeff;
+        float coeff = 0.0f;
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
         if (damagetype == DOT)
             coeff = bonus->dot_damage * LvlPenalty * stack;
         else
             coeff = bonus->direct_damage * LvlPenalty * stack;
 
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
+
         if (bonus->ap_bonus)
             DoneTotal += int32(bonus->ap_bonus * GetTotalAttackPowerValue(BASE_ATTACK) * stack);
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
 
         // Spellmod SpellBonusDamage
 		if (modOwner)
@@ -10121,13 +10129,22 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			modOwner->ApplySpellMod(spellProto->Id,SPELLMOD_SPELL_BONUS_DAMAGE,coeff);
 			coeff /= 100.0f;
 		}
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
 		
 		DoneTotal  += int32(DoneAdvertisedBenefit * coeff);
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
+
         TakenTotal += int32(TakenAdvertisedBenefit * coeff);
     }
     // Default calculation
     else if (DoneAdvertisedBenefit || TakenAdvertisedBenefit)
     {
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus Default calculation");
         // Damage over Time spells bonus calculation
         float DotFactor = 1.0f;
         if (damagetype == DOT)
@@ -10157,6 +10174,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         }
         
 		float coeff = (CastingTime / 3500.0f) * DotFactor;
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
 		
 		// Spellmod SpellBonusDamage
 		if (modOwner)
@@ -10165,6 +10185,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			modOwner->ApplySpellMod(spellProto->Id,SPELLMOD_SPELL_BONUS_DAMAGE,coeff);
 			coeff /= 100.0f;
 		}
+
+		if(GetTypeId() == TYPEID_PLAYER)
+			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
 		
 		DoneTotal += int32(DoneAdvertisedBenefit * coeff * LvlPenalty);
 		TakenTotal+= int32(TakenAdvertisedBenefit * coeff * LvlPenalty);

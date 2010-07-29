@@ -479,8 +479,13 @@ void LoadDBCStores(const std::string& dataPath)
     }
 
 	//Lifebloom final heal
-	SpellEntry *sfix6 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33778));
-	sfix6->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+	SpellEntry *sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33778));
+	sfix->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+
+
+	// Visuals
+	SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(55610));
+	sfix2->activeIconID = sfix2->SpellIconID;
 
     for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
     {
