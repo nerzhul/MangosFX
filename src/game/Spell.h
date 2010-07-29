@@ -483,6 +483,7 @@ class Spell
 
 		Unit* getUnitTarget() { return unitTarget; }
 		WeaponAttackType getAttackType() { return m_attackType; }
+		int32 getDamage() { return damage; }
 
 	protected:
 

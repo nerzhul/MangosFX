@@ -6,6 +6,91 @@
 
 INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 
+#define FLAG_DEATH_COIL			UI64LIT(0x002000)
+#define FLAG_HUNGERING_COLD		UI64LIT(0x0000100000000000)
+#define FLAG_DEATH_STRIKE		UI64LIT(0x0000000000000010)
+
+bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
+{
+	 // Death Coil
+    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_COIL)
+    {
+        if (spell->GetCaster()->IsFriendlyTo(spell->getUnitTarget()))
+        {
+            if (!spell->getUnitTarget() || spell->getUnitTarget()->GetCreatureType() != CREATURE_TYPE_UNDEAD)
+                return false;
+
+            int32 bp = spell->getDamage() * 1.5f;
+            spell->GetCaster()->CastCustomSpell(spell->getUnitTarget(), 47633, &bp, NULL, NULL, true);
+        }
+        else
+        {
+            int32 bp = spell->getDamage();
+            spell->GetCaster()->CastCustomSpell(spell->getUnitTarget(), 47632, &bp, NULL, NULL, true);
+        }
+        return false;
+    }
+    // Hungering Cold
+    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_COIL)
+    {
+        spell->GetCaster()->CastSpell(spell->GetCaster(), 51209, true);
+        return false;
+    }
+    // Death Strike
+    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_STRIKE)
+    {
+        uint32 count = 0;
+        Unit::AuraMap const& auras = spell->getUnitTarget()->GetAuras();
+        for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+        {
+            if (itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
+                itr->second->GetCasterGUID() == spell->GetCaster()->GetGUID() &&
+                IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
+            {
+                ++count;
+                // max. 15%
+                if (count == 3)
+                    break;
+            }
+        }
+
+        int32 bp = count * spell->GetCaster()->GetMaxHealth() * spell->m_spellInfo->DmgMultiplier[0] / 100;
+
+		 // Improved Death Strike
+        Unit::AuraList const& auraMod = spell->GetCaster()->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
+        for(Unit::AuraList::const_iterator iter = auraMod.begin(); iter != auraMod.end(); ++iter)
+        {
+            if ((*iter)->GetSpellProto()->SpellIconID == 2751 && (*iter)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT)
+            {
+                bp += (*iter)->GetSpellProto()->CalculateSimpleValue(2) * bp / 100;
+                break;
+            }
+        }
+        spell->GetCaster()->CastCustomSpell(spell->GetCaster(), 45470, &bp, NULL, NULL, true);
+        return false;
+    }
+	// Death Grip
+    else if (spell->m_spellInfo->Id == 49576)
+    {
+        if (!spell->getUnitTarget())
+            return false;
+
+        spell->GetCaster()->CastSpell(spell->getUnitTarget(), 49560, true);
+        return false;
+    }
+    else if (spell->m_spellInfo->Id == 49560)
+    {
+        if (!spell->getUnitTarget())
+            return false;
+
+        uint32 spellId = spell->m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_0);
+        spell->getUnitTarget()->CastSpell(spell->GetCaster()->GetPositionX(), spell->GetCaster()->GetPositionY(), spell->GetCaster()->GetPositionZ()+1, spellId, true);
+        return false;
+    }
+
+	return true;
+}
+
 void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Blood Strike, Heart Strike, Obliterate

@@ -2528,82 +2528,8 @@ void Spell::EffectDummy(uint32 i)
             }
             break;
         case SPELLFAMILY_DEATHKNIGHT:
-            // Death Coil
-            if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x002000))
-            {
-                if (m_caster->IsFriendlyTo(unitTarget))
-                {
-                    if (!unitTarget || unitTarget->GetCreatureType() != CREATURE_TYPE_UNDEAD)
-                        return;
-
-                    int32 bp = damage * 1.5f;
-                    m_caster->CastCustomSpell(unitTarget, 47633, &bp, NULL, NULL, true);
-                }
-                else
-                {
-                    int32 bp = damage;
-                    m_caster->CastCustomSpell(unitTarget, 47632, &bp, NULL, NULL, true);
-                }
-                return;
-            }
-            // Hungering Cold
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000100000000000))
-            {
-                m_caster->CastSpell(m_caster, 51209, true);
-                return;
-            }
-            // Death Strike
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000010))
-            {
-                uint32 count = 0;
-                Unit::AuraMap const& auras = unitTarget->GetAuras();
-                for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                {
-                    if (itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
-                        itr->second->GetCasterGUID() == m_caster->GetGUID() &&
-                        IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
-                    {
-                        ++count;
-                        // max. 15%
-                        if (count == 3)
-                            break;
-                    }
-                }
-
-                int32 bp = count * m_caster->GetMaxHealth() * m_spellInfo->DmgMultiplier[0] / 100;
-
-				 // Improved Death Strike
-                Unit::AuraList const& auraMod = m_caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
-                for(Unit::AuraList::const_iterator iter = auraMod.begin(); iter != auraMod.end(); ++iter)
-                {
-                    if ((*iter)->GetSpellProto()->SpellIconID == 2751 && (*iter)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT)
-                    {
-                        bp += (*iter)->GetSpellProto()->CalculateSimpleValue(2) * bp / 100;
-                        break;
-                    }
-                }
-                m_caster->CastCustomSpell(m_caster, 45470, &bp, NULL, NULL, true);
-                return;
-            }
-			// Death Grip
-            else if (m_spellInfo->Id == 49576)
-            {
-                if (!unitTarget)
-                    return;
-
-                m_caster->CastSpell(unitTarget, 49560, true);
-                return;
-            }
-            else if (m_spellInfo->Id == 49560)
-            {
-                if (!unitTarget)
-                    return;
-
-                uint32 spellId = m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_0);
-                unitTarget->CastSpell(m_caster->GetPositionX(), m_caster->GetPositionY(), m_caster->GetPositionZ()+1, spellId, true);
-                return;
-            }
-
+			if(!sClassSpellHandler.HandleEffectDummy(this))
+				return;
             break;
     }
 

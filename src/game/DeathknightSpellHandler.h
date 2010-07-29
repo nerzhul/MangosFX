@@ -9,6 +9,7 @@ class MANGOS_DLL_SPEC DeathknightSpellHandler
 	public:
 		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
 		//void HandleDummyAuraProc(Unit* u, Spell* dummy, uint32 &trig_sp_id);
+		bool HandleEffectDummy(Spell* spell);
 };
 
 #define sDeathknightSpellHandler MaNGOS::Singleton<DeathknightSpellHandler>::Instance()
