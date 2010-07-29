@@ -487,6 +487,16 @@ void LoadDBCStores(const std::string& dataPath)
 	SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(55610));
 	sfix2->activeIconID = sfix2->SpellIconID;
 
+	// Costs
+	SpellEntry *sfix3 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(52150));
+	sfix3->manaCost = 0;
+
+	SpellEntry *sfix4 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(46585));
+	sfix4->manaCost = 0;
+
+	SpellEntry *sfix5 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(46584));
+	sfix5->manaCost = 0;
+
     for (uint32 j = 0; j < sSkillLineAbilityStore.GetNumRows(); ++j)
     {
         SkillLineAbilityEntry const *skillLine = sSkillLineAbilityStore.LookupEntry(j);

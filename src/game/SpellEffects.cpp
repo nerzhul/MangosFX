@@ -6645,11 +6645,13 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         return;
                     }
 
-                    // check for "Master of Ghouls", id's stored in basepoints
-                    if (p_caster->HasAura(52143))
-                        p_caster->CastSpell(m_caster,m_currentBasePoints[2]+1,true);
-                    else
-                        p_caster->CastSpell(m_caster,m_currentBasePoints[1]+1,true);
+					// check for "Master of Ghouls", id's stored in basepoints
+					uint32 spId = 46585;
+					PlayerSpellMap::const_iterator itr = p_caster->GetSpellMap().find(52143);
+					if (itr != p_caster->GetSpellMap().end())
+                        spId = 52150;
+
+					m_caster->CastSpell(m_caster,spId,true);
 
                     break;
                 }
