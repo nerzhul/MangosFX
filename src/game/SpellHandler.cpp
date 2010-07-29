@@ -481,7 +481,7 @@ void WorldSession::HandlePetCancelAuraOpcode( WorldPacket& recvPacket)
 
     if(!pet)
     {
-        sLog.outError( "Pet %u not exist.", uint32(GUID_LOPART(guid)) );
+        //sLog.outError( "Pet %u not exist.", uint32(GUID_LOPART(guid)) );
         return;
     }
 

@@ -3126,7 +3126,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
     bool canDodge = true;
     bool canParry = true;
 
-	if(isSpecialPlayerSpell)
+	if(isSpecialPlayerSpell || spell->Id == 7384)
 	{
 		canDodge = false;
 		canParry = false;
