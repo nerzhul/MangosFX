@@ -837,6 +837,8 @@ void BattleGroundSA::EndBattleGround(uint32 winner)
     else if (winner == HORDE)
         RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
 
+	RewardHonorTeamDaily(winner);
+
     //complete map_end rewards (even if no team wins)
     RewardHonorToTeam(GetBonusHonorFromKill(2), ALLIANCE);
     RewardHonorToTeam(GetBonusHonorFromKill(2), HORDE);

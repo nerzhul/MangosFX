@@ -3683,7 +3683,16 @@ void Spell::SendLoot(uint64 guid, LootType loottype)
                 gameObjTarget->Use(m_caster);
                 // Don't return, let loots been taken
                 break;
-
+			case GAMEOBJECT_TYPE_TRAP:
+				// SOTA bombs
+				if(gameObjTarget->GetEntry() == 190752)
+				{
+					gameObjTarget->SetOwnerGUID(0);
+					gameObjTarget->SetPhaseMask(0x2,true);
+				}
+				else
+					sLog.outError("Spell::SendLoot unhandled entry %u.", gameObjTarget->GetEntry());
+				break;
             default:
                 sLog.outError("Spell::SendLoot unhandled GameObject type %u (entry %u).", gameObjTarget->GetGoType(), gameObjTarget->GetEntry());
                 return;
