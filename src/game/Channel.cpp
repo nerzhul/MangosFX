@@ -551,7 +551,7 @@ void Channel::Say(uint64 p, const char *what, uint32 lang)
         MakeNotMember(&data);
         SendToOne(&data, p);
     }
-    else if(players[p].IsMuted())
+	else if(players[p].IsMuted() || plr->GetSession()->GetSecurity() < SEC_MODERATOR && plr->getLevel() < 10)
     {
         WorldPacket data;
         MakeMuted(&data);

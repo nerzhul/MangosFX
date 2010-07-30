@@ -20,6 +20,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "World.h"
+#include "Chat.h"
 #include "ObjectAccessor.h"
 #include "Log.h"
 #include "Opcodes.h"
@@ -453,6 +454,15 @@ void WorldSession::HandleBeginTradeOpcode(WorldPacket& /*recvPacket*/)
     TradeData* my_trade = _player->m_trade;
 	if (!my_trade)
         return;
+
+	if(GetPlayer() && my_trade->m_tradeWith)
+	{
+		if(GetPlayer()->getLevel() < 15 || my_trade->m_tradeWith->getLevel() < 15)
+		{
+			ChatHandler(GetPlayer()).SendSysMessage("Un des personnages ne remplit pas les conditions d'Echange (niveau 15 requis)");
+			ChatHandler(my_trade->m_tradeWith->GetSession()).SendSysMessage("Un des personnages ne remplit pas les conditions d'Echange (niveau 15 requis)");
+		}
+	}
 
     my_trade->m_tradeWith->GetSession()->SendTradeStatus(TRADE_STATUS_OPEN_WINDOW);
 

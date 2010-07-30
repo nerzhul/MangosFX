@@ -184,6 +184,12 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			if(GetPlayer()->getLevel() < 10 && type == CHAT_MSG_YELL)
+			{
+				ChatHandler(this).SendSysMessage("Vous ne respectez pas les conditions requises pour pouvoir parler en /crier");
+				return;
+			}
+
             if(type == CHAT_MSG_SAY)
                 GetPlayer()->Say(msg, lang);
             else if(type == CHAT_MSG_EMOTE)
@@ -232,6 +238,12 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(!CanSpeak && player->GetSession()->GetSecurity() < SEC_GAMEMASTER)
 				return;
+
+			if(GetPlayer()->getLevel() < 10 && player->GetSession()->GetSecurity() < SEC_GAMEMASTER && GetSecurity() < SEC_MODERATOR)
+			{
+				ChatHandler(this).SendSysMessage("Vous ne respectez pas les conditions requises pour pouvoir parler en /chuchoter");
+				return;
+			}
 
             GetPlayer()->Whisper(msg, lang, player->GetGUID());
         } break;

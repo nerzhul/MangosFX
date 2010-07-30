@@ -28,6 +28,7 @@
 #include "Mail.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
+#include "Chat.h"
 #include "Opcodes.h"
 #include "Log.h"
 #include "World.h"
@@ -171,6 +172,12 @@ void WorldSession::HandleSendMail(WorldPacket & recv_data )
         pl->SendMailResult(0, MAIL_SEND, MAIL_ERR_NOT_YOUR_TEAM);
         return;
     }
+
+	if(pl->getLevel() < 15 && pl->GetSession()->GetSecurity() < SEC_GAMEMASTER)
+	{
+		ChatHandler(this).SendSysMessage("Vous ne respectez pas les conditions minimales d'echanges");
+		return;
+	}
 
     uint32 rc_account = receive
         ? receive->GetSession()->GetAccountId()
