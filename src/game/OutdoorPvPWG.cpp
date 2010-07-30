@@ -924,6 +924,7 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 			break;
 		case 30499:
 		case 30400:
+			creature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 			FortressEngineer.push_back(creature->GetGUID());
 			break;
 		case 30872:
