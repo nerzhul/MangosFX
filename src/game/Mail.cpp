@@ -28,7 +28,6 @@
 #include "Mail.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
-#include "Chat.h"
 #include "Opcodes.h"
 #include "Log.h"
 #include "World.h"
@@ -41,6 +40,7 @@
 #include "DBCStores.h"
 #include "BattleGroundMgr.h"
 #include "Item.h"
+#include "Chat.h"
 #include "AuctionHouseMgr.h"
 
 /**
