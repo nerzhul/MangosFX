@@ -20,12 +20,12 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "World.h"
-#include "Chat.h"
 #include "ObjectAccessor.h"
 #include "Log.h"
 #include "Opcodes.h"
 #include "Player.h"
 #include "Item.h"
+#include "Chat.h"
 #include "SocialMgr.h"
 #include "Language.h"
 
