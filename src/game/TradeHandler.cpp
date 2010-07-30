@@ -461,6 +461,7 @@ void WorldSession::HandleBeginTradeOpcode(WorldPacket& /*recvPacket*/)
 		{
 			ChatHandler(GetPlayer()).SendSysMessage("Un des personnages ne remplit pas les conditions d'Echange (niveau 15 requis)");
 			ChatHandler(my_trade->m_tradeWith->GetSession()).SendSysMessage("Un des personnages ne remplit pas les conditions d'Echange (niveau 15 requis)");
+			return;
 		}
 	}
 
