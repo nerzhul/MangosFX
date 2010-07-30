@@ -723,7 +723,7 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
             {
                 uint32 value = m_uint32Values[index];
 
-                if (index == ITEM_FIELD_FLAGS && GetGuidValue(ITEM_FIELD_GIFTCREATOR).IsEmpty())
+                if (index == ITEM_FIELD_FLAGS && !GetUInt32Value(ITEM_FIELD_GIFTCREATOR))
                     value &= ~ITEM_FLAGS_HEROIC;
 
                 *data << value;
