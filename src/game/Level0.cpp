@@ -1318,7 +1318,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		return true;
 	}
 
-	if(player->getLevel() > 15 || player->getLevel() < 60 && player->getClass() == CLASS_DEATH_KNIGHT)
+	if(player->getLevel() > 15 || player->getLevel() < 65 && player->getClass() == CLASS_DEATH_KNIGHT)
 	{
 		SendSysMessage("Ce personnage ne repond pas aux criteres de recuperation : votre niveau est trop eleve.");
 		return true;
@@ -1344,6 +1344,18 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		Field *fields = result->Fetch();
 		if(fields[0].GetUInt16() > 0)
 			isReroll = true;
+	}
+
+	if(QueryResult* result = loginDatabase.PQuery("SELECT id FROM account WHERE last_ip = (SELECT last_ip from account where id = '%u')", m_session->GetAccountId()))
+	{
+		Field* fields = result->Fetch();
+		uint32 accId = fields[0].GetUInt32();
+		if(QueryResult* chars = CharacterDatabase.PQuery("SELECT count(guid) FROM characters WHERE account = '%u' AND level >= 68", accId))
+		{
+			Field *fields2 = chars->Fetch();
+			if(fields2[0].GetUInt16() > 0)
+				isReroll = true;
+		}
 	}
 
 	if(QueryResult *result = loginDatabase.PQuery("SELECT credit_diamond FROM account WHERE id = '%u'", m_session->GetAccountId()))
