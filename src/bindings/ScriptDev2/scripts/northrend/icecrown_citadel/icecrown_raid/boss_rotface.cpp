@@ -5,8 +5,7 @@ enum BossSpells
 {
     SPELL_OOZE_FLOOD				= 69783, // use this
     SPELL_SLIME_SPRAY				= 69508, // ok
-    SPELL_MUTATED_INFECTION_AURA	= 69674,
-    SPELL_MUTATED_INFECTION			= 70003, // 12sec intervalle
+    SPELL_MUTATED_INFECTION			= 69674,
 
 	// Little
     SPELL_STICKY_OOZE				= 69774, // ok
@@ -15,8 +14,8 @@ enum BossSpells
     SPELL_RADIATING_OOZE			= 69750, // ok
 
 	// Big
-    SPELL_UNSTABLE_OOZE				= 69644,
-    SPELL_UNSTABLE_OOZE_AURA		= 69558,
+    SPELL_UNSTABLE_OOZE				= 69644, // TODO : on fusion
+    SPELL_UNSTABLE_OOZE_AURA		= 69558, // ok
     SPELL_OOZE_EXPLODE				= 69839, // ok
 	SPELL_BIG_RADIATING_OOZE		= 69760, // ok
 
@@ -50,9 +49,14 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		AddEvent(SPELL_SLIME_SPRAY,10000,15000,2000); // TODO : review that
     }
 
+	uint8 first_pool;
+	uint32 pool_Timer;
+
     void Reset()
     {
 		ResetTimers();
+		first_pool = urand(0,3);
+		pool_Timer = 30000;
     }
 
     void Aggro(Unit* pWho)
@@ -99,6 +103,14 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(pool_Timer <= diff)
+		{
+
+			pool_Timer = 20000;
+		}
+		else
+			pool_Timer -= diff;
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
@@ -211,6 +223,32 @@ CreatureAI* GetAI_sticky_ooze(Creature* pCreature)
     return new sticky_oozeAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL ooze_stalkerAI : public LibDevFSAI
+{
+    ooze_stalkerAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+		MakeHostileInvisibleStalker();
+		ModifyAuraStack(SPELL_OOZE_FLOOD);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_ooze_stalker(Creature* pCreature)
+{
+    return new ooze_stalkerAI(pCreature);
+}
+
 void AddSC_ICC_Rotface()
 {
 	Script* NewScript;
@@ -232,5 +270,10 @@ void AddSC_ICC_Rotface()
 	NewScript = new Script;
     NewScript->Name = "rotface_sticky_ooze";
     NewScript->GetAI = &GetAI_sticky_ooze;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "rotface_ooze_stalker";
+    NewScript->GetAI = &GetAI_ooze_stalker;
     NewScript->RegisterSelf();
 }

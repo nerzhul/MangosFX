@@ -2529,7 +2529,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 						Spell::SelectMountByAreaAndSkill(m_target, 42680, 42683, 42667, 42668, 0);
 						return;
 					case 47190:                             // Toalu'u's Spiritual Incense
-						target->CastSpell(target, 47189, true, NULL, this);
+						m_target->CastSpell(m_target, 47189, true, NULL, this);
 						// allow script to process further (text)
 						break;
                     case 48025:                             // Headless Horseman's Mount

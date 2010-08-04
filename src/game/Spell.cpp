@@ -1491,6 +1491,23 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							unMaxTargets = 3;
 					}
 					break;
+				case 69674:
+					switch(m_caster->GetMap()->GetDifficulty())
+					{
+						case RAID_DIFFICULTY_10MAN_NORMAL:
+							unMaxTargets = 1;
+							break;
+						case RAID_DIFFICULTY_10MAN_HEROIC:
+							unMaxTargets = urand(1,2);
+							break;
+						case RAID_DIFFICULTY_25MAN_NORMAL:
+							unMaxTargets = urand(2,3);
+							break;
+						case RAID_DIFFICULTY_25MAN_HEROIC:
+							unMaxTargets = urand(3,4);
+							break;
+					}
+					break;
 				case 72378:
 				case 72385:
 					switch(m_caster->GetMap()->GetDifficulty())
