@@ -4,8 +4,8 @@
 enum BossSpells
 {
     SPELL_OOZE_FLOOD				= 69783, // use this
-    SPELL_SLIME_SPRAY				= 69508, // ok
-    SPELL_MUTATED_INFECTION			= 69674,
+    SPELL_SLIME_SPRAY				= 69508,
+    SPELL_MUTATED_INFECTION			= 69674, // ok
 
 	// Little
     SPELL_STICKY_OOZE				= 69774, // ok
@@ -25,20 +25,18 @@ enum BossSpells
     NPC_OOZE_SPRAY_STALKER			= 37986,
     NPC_OOZE_STALKER				= 37013,
     NPC_OOZE_EXPLODE_STALKER		= 38107,
-
-    MAX_INFECTION_TARGETS			= 5,
 };
 
 static float SpawnLoc[8][3]=
 {
 	{4466.14f,	3095.25f,	360.39f}, // 1st
-	{4486.6f,	3115.12f,	360.39f},
 	{4488.458f,	3158.43f,	360.39f}, // 2nd
-	{4467.59f,	3178.11f,	360.39f},
 	{4425.33f,	3178.61f,	360.39f}, // 3rd
-	{4405.00f,	3158.76f,	360.39f},
-	{4404.26f,	3115.89f,	360.39f}, // 4the
-	{4423.86f,	3096.41f,	360.39f}
+	{4404.26f,	3115.89f,	360.39f}, // 4th
+	{4486.6f,	3115.12f,	360.39f}, // 1st
+	{4467.59f,	3178.11f,	360.39f}, // 2nde
+	{4405.00f,	3158.76f,	360.39f}, // 3rd
+	{4423.86f,	3096.41f,	360.39f}, // 4th
 };
 
 struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
@@ -46,27 +44,48 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     boss_rotfaceAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEvent(SPELL_SLIME_SPRAY,10000,15000,2000); // TODO : review that
+		AddEvent(SPELL_MUTATED_INFECTION,11000,14000);
+		AddTextEvent(16991,"Ah c'est tout englué.",11000,14000);
     }
 
-	uint8 first_pool;
+	uint8 pool;
 	uint32 pool_Timer;
+	uint32 check_Timer;
+	std::set<uint64> PlayerSet;
 
     void Reset()
     {
 		ResetTimers();
-		first_pool = urand(0,3);
+		CleanMyAdds();
+		PlayerSet.clear();
+		pool = urand(0,3);
 		pool_Timer = 30000;
+		check_Timer = 1000;
     }
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
             pInstance->SetData(TYPE_ROTFACE, IN_PROGRESS);
+
+		Yell(16986,"Ouiiiiiiiiiii ! Hahahaha !");
     }
+
+	void SpellHitTarget(Unit* who, const SpellEntry* sp)
+	{
+		if(sp->Id == SPELL_MUTATED_INFECTION)
+		{
+			check_Timer = 700;
+			PlayerSet.insert(who->GetGUID());
+		}
+	}
 
 	void KilledUnit(Unit* who)
 	{
+		if(urand(0,1))
+			Say(16987,"Oh c'est cassé !");
+		else
+			Say(16988,"Papa va faire des nouveaux jouets avec toi !");
 	}
 
     void JustDied(Unit* pKiller)
@@ -91,6 +110,8 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 				GiveEmblemsToGroup(GIVRE,3);
 				break;
 		}
+
+		Say(16989,"Mauvaises nouvelles papa...");
     }
 
     void JustReachedHome()
@@ -104,8 +125,49 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(check_Timer <= diff)
+		{
+			std::set<uint64> removableGuids;
+			removableGuids.clear();
+			for(std::set<uint64>::iterator itr = PlayerSet.begin(); itr != PlayerSet.end(); ++itr)
+			{
+				if(Unit* u = GetGuidUnit(*itr))
+				{
+					bool spawn = false;
+					if(u->isAlive())
+					{
+						if(!u->HasAura(SPELL_MUTATED_INFECTION))
+							spawn = true;
+					}
+					else
+						spawn = true;
+
+					if(spawn)
+					{
+						CallCreature(NPC_SMALL_OOZE,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ());
+						removableGuids.insert(*itr);
+					}
+				}
+			}
+
+				for(std::set<uint64>::iterator itr = removableGuids.begin(); itr != removableGuids.end(); ++itr)
+					PlayerSet.erase(*itr);
+
+			check_Timer = 300;
+		}
+		else
+			check_Timer = diff;
+
 		if(pool_Timer <= diff)
 		{
+			if(Creature* cr = GetInstanceCreature(TYPE_PUTRICIDE))
+				Yell(17126,"Merveille nouvelle mes amis, la gelée coule à flots !");
+
+			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool][0],SpawnLoc[pool][1],SpawnLoc[pool][2]);
+			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool+4][0],SpawnLoc[pool+4][1],SpawnLoc[pool+4][2]);
+			pool++;
+			if(pool >= 4)
+				pool = 0;
 
 			pool_Timer = 20000;
 		}
