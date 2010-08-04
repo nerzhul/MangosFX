@@ -57,14 +57,14 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     boss_rotfaceAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEvent(SPELL_MUTATED_INFECTION,11000,14000);
-		AddTextEvent(16991,"Ah c'est tout englué.",11000,14000);
     }
 
 	uint8 pool;
 	uint32 pool_Timer;
 	uint32 check_Timer;
 	uint32 spray_Timer;
+	uint32 infection_Timer;
+	uint8 infection_nb;
 	bool HF;
 	std::set<uint64> PlayerSet;
 
@@ -77,6 +77,8 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		pool_Timer = 30000;
 		check_Timer = 1000;
 		spray_Timer = 17000;
+		infection_nb = 0;
+		infection_Timer = 11000;
 		HF = true;
     }
 
@@ -166,6 +168,25 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(infection_Timer <= diff)
+		{
+			Yell(16991,"Ah c'est tout englué.");
+			DoCastRandom(SPELL_MUTATED_INFECTION);
+			infection_nb++;
+			if(infection_nb > 12)
+				infection_Timer = 8000;
+			else if(infection_nb > 8)
+				infection_Timer = 10000;
+			else if(infection_nb > 5)
+				infection_Timer = 11000;
+			else if(infection_nb > 2)
+				infection_Timer = 12500;
+			else
+				infection_Timer = 14000;
+		}
+		else
+			infection_Timer -= diff;
 
 		if(check_Timer <= diff)
 		{
