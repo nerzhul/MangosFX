@@ -94,8 +94,8 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
     uint32 maxQueuedClientsNum = sWorld.GetMaxQueuedSessionCount();
     std::string str = secsToTimeString(sWorld.GetUptime());
 
-    PSendSysMessage("MangosFX rev 1068 based on Mangos 9313 developped by Ner'zhul");
-    PSendSysMessage(LANG_USING_SCRIPT_LIB,"LibDevFS rev 120, ICC 4.0");
+    PSendSysMessage("MangosFX rev 1101 based on Mangos 9313 developped by Ner'zhul");
+    PSendSysMessage(LANG_USING_SCRIPT_LIB,"LibDevFS rev 122, ICC 5.0");
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());
 

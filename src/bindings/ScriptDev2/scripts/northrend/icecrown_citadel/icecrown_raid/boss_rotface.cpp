@@ -65,6 +65,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 	uint32 pool_Timer;
 	uint32 check_Timer;
 	uint32 spray_Timer;
+	bool HF;
 	std::set<uint64> PlayerSet;
 
     void Reset()
@@ -76,6 +77,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		pool_Timer = 30000;
 		check_Timer = 1000;
 		spray_Timer = 17000;
+		HF = true;
     }
 
     void Aggro(Unit* pWho)
@@ -126,6 +128,21 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 				break;
 		}
 
+		if(pInstance && HF)
+		{
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_NORMAL:
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+					pInstance->CompleteAchievementForGroup(4538);
+					break;
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+					pInstance->CompleteAchievementForGroup(4614);
+					break;
+			}
+		}
+
 		Say(16989,"Mauvaises nouvelles papa...");
     }
 
@@ -138,6 +155,11 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 	void CallBigOne(Unit* u)
 	{
 		CallAggressiveCreature(NPC_BIG_OOZE,TEN_MINS,PREC_COORDS,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ() + 0.5f);
+	}
+
+	void HFFail()
+	{
+		HF = false;
 	}
 
     void UpdateAI(const uint32 diff)
@@ -203,9 +225,18 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		if(spray_Timer <= diff)
 		{
 			if(Unit* u = GetRandomUnit(0))
-				if(Creature* cr = CallCreature(NPC_OOZE_SPRAY_STALKER,20000,PREC_COORDS,NOTHING,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ()))
-					DoCast(u,SPELL_SLIME_SPRAY);
-			spray_Timer = 16000;
+			{
+				if(Creature* cr = CallCreature(NPC_OOZE_SPRAY_STALKER,15000,PREC_COORDS,NOTHING,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ()))
+				{
+					cr->SetDisplayId(16925);
+					cr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					cr->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+					cr->setFaction(14);
+					ModifyAuraStack(66830,1,cr,cr);
+				}
+				DoCast(u,SPELL_SLIME_SPRAY);
+			}
+			spray_Timer = 18000;
 		}
 		else
 			spray_Timer -= diff;
@@ -257,14 +288,16 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
 					if(!inDespawn)
 					{
 						me->CastStop();
+						if(Creature* cr = GetInstanceCreature(TYPE_ROTFACE))
+						{
+							((boss_rotfaceAI*)cr->AI())->HFFail();
+						}
 						DoCastMe(SPELL_OOZE_EXPLODE);
-						me->ForcedDespawn(5500);
+						me->ForcedDespawn(7500);
 						inDespawn = true;
 					}
 				}
 			}
-			if(spawn_explode > 4000)
-				CallCreature(NPC_STICKY_OOZE,30000,NEAR_15M);
 			check_Timer = 500;
 		}
 		else
