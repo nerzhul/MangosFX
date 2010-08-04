@@ -232,7 +232,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
-				AdditionalDependencies="D:\mangos\win\VC90\mangosd__Win32_Release\mangosd.lib ACE.lib"
+				AdditionalDependencies="E:\mangos\win\VC90\mangosd__Win32_Release\mangosd.lib ACE.lib"
 				OutputFile="$(OutDir)/MaNGOSScript.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\win\VC90\mangosd__Win32_Release;..\..\..\..\dep\lib\win32_release\"
