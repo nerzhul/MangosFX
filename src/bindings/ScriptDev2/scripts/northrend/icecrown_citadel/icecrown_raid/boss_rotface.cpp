@@ -64,6 +64,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 	uint8 pool;
 	uint32 pool_Timer;
 	uint32 check_Timer;
+	uint32 spray_Timer;
 	std::set<uint64> PlayerSet;
 
     void Reset()
@@ -74,6 +75,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		pool = urand(0,3);
 		pool_Timer = 30000;
 		check_Timer = 1000;
+		spray_Timer = 17000;
     }
 
     void Aggro(Unit* pWho)
@@ -198,6 +200,16 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 		else
 			pool_Timer -= diff;
 
+		if(spray_Timer <= diff)
+		{
+			if(Unit* u = GetRandomUnit(0))
+				if(Creature* cr = CallCreature(NPC_OOZE_SPRAY_STALKER,20000,PREC_COORDS,NOTHING,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ()))
+					DoCast(u,SPELL_SLIME_SPRAY);
+			spray_Timer = 16000;
+		}
+		else
+			spray_Timer -= diff;
+
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
     }
@@ -217,6 +229,7 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
     }
 
 	uint32 check_Timer;
+	uint32 spawn_explode;
 	bool inDespawn;
 
     void Reset()
@@ -226,6 +239,7 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
 
 		check_Timer = 1000;
 		inDespawn = false;
+		spawn_explode = 0;
     }
 
     void UpdateAI(const uint32 diff)
@@ -237,13 +251,20 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
 		{
 			if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
 			{
-				if(aur->GetStackAmount() >= 5 && !inDespawn)
+				if(aur->GetStackAmount() >= 5)
 				{
-					DoCastMe(SPELL_OOZE_EXPLODE);
-					me->ForcedDespawn(5500);
-					inDespawn = true;
+					spawn_explode += 500;
+					if(!inDespawn)
+					{
+						me->CastStop();
+						DoCastMe(SPELL_OOZE_EXPLODE);
+						me->ForcedDespawn(5500);
+						inDespawn = true;
+					}
 				}
 			}
+			if(spawn_explode > 4000)
+				CallCreature(NPC_STICKY_OOZE,30000,NEAR_15M);
 			check_Timer = 500;
 		}
 		else
@@ -293,9 +314,7 @@ struct MANGOS_DLL_DECL small_limonAI : public LibDevFSAI
 					if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
 						stk += aur->GetStackAmount();
 					
-					ModifyAuraStack(SPELL_UNSTABLE_OOZE_AURA,stk,cr);
-
-					DoCast(cr,SPELL_UNSTABLE_OOZE);
+					ModifyAuraStack(SPELL_UNSTABLE_OOZE_AURA,stk,cr,cr);
 					me->ForcedDespawn(500);
 					found = true;
 				}
@@ -342,6 +361,17 @@ struct MANGOS_DLL_DECL sticky_oozeAI : public LibDevFSAI
 		SetCombatMovement(false);
 		MakeHostileInvisibleStalker();
 		DoCastMe(SPELL_STICKY_AURA);
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				me->ForcedDespawn(60000);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				me->ForcedDespawn(300000);
+				break;
+		}
     }
 
     void UpdateAI(const uint32 diff)
