@@ -216,32 +216,38 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
 		AddEventOnTank(SPELL_STICKY_OOZE,8000,12000,1500);
     }
 
+	uint32 check_Timer;
+	bool inDespawn;
+
     void Reset()
     {
 		ResetTimers();
 		DoCastMe(SPELL_BIG_RADIATING_OOZE);
+
+		check_Timer = 1000;
+		inDespawn = false;
     }
-
-	void SpellHit(Unit* pWho, const SpellEntry* sp)
-	{
-		if(!sp)
-			return;
-
-		if(sp->Id == SPELL_UNSTABLE_OOZE_AURA)
-			if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
-			{
-				if(aur->GetStackAmount() >= 5)
-				{
-					DoCastMe(SPELL_OOZE_EXPLODE);
-					me->ForcedDespawn(5000);
-				}
-			}
-	}
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+
+		if(check_Timer <= diff)
+		{
+			if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
+			{
+				if(aur->GetStackAmount() >= 5 && !inDespawn)
+				{
+					DoCastMe(SPELL_OOZE_EXPLODE);
+					me->ForcedDespawn(5500);
+					inDespawn = true;
+				}
+			}
+			check_Timer = 500;
+		}
+		else
+			check_Timer -= diff;
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
@@ -283,7 +289,12 @@ struct MANGOS_DLL_DECL small_limonAI : public LibDevFSAI
 			{
 				if(cr->isAlive())
 				{
-					//DoCast(cr,SPELL_MERGE_OOZE);
+					uint8 stk = 1;
+					if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
+						stk += aur->GetStackAmount();
+					
+					ModifyAuraStack(SPELL_UNSTABLE_OOZE_AURA,stk,cr);
+
 					DoCast(cr,SPELL_UNSTABLE_OOZE);
 					me->ForcedDespawn(500);
 					found = true;
