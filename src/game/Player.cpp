@@ -19848,6 +19848,7 @@ void Player::SendInitialPacketsAfterAddToMap()
 	}
 	
  	AddWintergraspBuffIfCan(GetMapId());
+	ExitVehicle();
 	if(!CanSpeak())
 		SetAuraStack(1852,this,1);
 }

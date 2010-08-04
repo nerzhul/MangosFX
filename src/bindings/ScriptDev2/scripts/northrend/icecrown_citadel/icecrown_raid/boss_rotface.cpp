@@ -25,9 +25,10 @@ enum BossSpells
     NPC_OOZE_SPRAY_STALKER			= 37986,
     NPC_OOZE_STALKER				= 37013,
     NPC_OOZE_EXPLODE_STALKER		= 38107,
+	NPC_OOZE_ROBINET				= 31245,
 };
 
-static float SpawnLoc[8][3]=
+static float SpawnLoc[8][3] =
 {
 	{4466.14f,	3095.25f,	360.39f}, // 1st
 	{4488.458f,	3158.43f,	360.39f}, // 2nd
@@ -37,6 +38,18 @@ static float SpawnLoc[8][3]=
 	{4467.59f,	3178.11f,	360.39f}, // 2nde
 	{4405.00f,	3158.76f,	360.39f}, // 3rd
 	{4423.86f,	3096.41f,	360.39f}, // 4th
+};
+
+static float RobinetLoc[8][3] =
+{
+	{4467.836f,	3095.145f,	369.4f},
+	{4488.21f,	3159.03f,	369.4f},
+	{4424.134f,	3176.317f,	369.4f},
+	{4403.838f,	3115.386f,	369.4f},
+	{4486.983f,	3115.19f,	369.4f},
+	{4467.707f,	3178.774f,	369.4f},
+	{4404.147f,	3158.814f,	369.4f},
+	{4423.889f,	3095.881f,	369.4f}
 };
 
 struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
@@ -150,8 +163,8 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 				}
 			}
 
-				for(std::set<uint64>::iterator itr = removableGuids.begin(); itr != removableGuids.end(); ++itr)
-					PlayerSet.erase(*itr);
+			for(std::set<uint64>::iterator itr = removableGuids.begin(); itr != removableGuids.end(); ++itr)
+				PlayerSet.erase(*itr);
 
 			check_Timer = 300;
 		}
@@ -165,6 +178,9 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 
 			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool][0],SpawnLoc[pool][1],SpawnLoc[pool][2]);
 			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool+4][0],SpawnLoc[pool+4][1],SpawnLoc[pool+4][2]);
+
+			CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool][0],RobinetLoc[pool][1],RobinetLoc[pool][2]);
+			CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool+4][0],RobinetLoc[pool+4][1],RobinetLoc[pool+4][2]);
 			pool++;
 			if(pool >= 4)
 				pool = 0;
@@ -311,6 +327,36 @@ CreatureAI* GetAI_ooze_stalker(Creature* pCreature)
     return new ooze_stalkerAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL ooze_flyingAI : public LibDevFSAI
+{
+    ooze_flyingAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		SetFlying(true);
+		SetCombatMovement(false);
+		MakeHostileInvisibleStalker();
+		me->setFaction(35);
+		if(Unit* Rotface = GetInstanceCreature(TYPE_ROTFACE))
+			me->SetFacingToObject(Rotface);
+		DoCastMe(SPELL_OOZE_FLOOD);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_ooze_flying(Creature* pCreature)
+{
+    return new ooze_flyingAI(pCreature);
+}
+
 void AddSC_ICC_Rotface()
 {
 	Script* NewScript;
@@ -337,5 +383,10 @@ void AddSC_ICC_Rotface()
 	NewScript = new Script;
     NewScript->Name = "rotface_ooze_stalker";
     NewScript->GetAI = &GetAI_ooze_stalker;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "rotface_ooze_flying";
+    NewScript->GetAI = &GetAI_ooze_flying;
     NewScript->RegisterSelf();
 }
