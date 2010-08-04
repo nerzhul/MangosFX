@@ -32,6 +32,13 @@ enum BossSpells
     SPELL_MUTATED_AURA            = 70405,
 };
 
+enum Phases
+{
+	PHASE_INIT	= 1,
+	PHASE_80	= 2,
+	PHASE_35	= 3,
+};
+
 struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 {
     boss_putricideAI(Creature* pCreature) : LibDevFSAI(pCreature)
@@ -39,9 +46,12 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
         InitInstance();
     }
 
+	Phases phase;
+
     void Reset()
     {
 		ResetTimers();
+		phase = PHASE_INIT;
     }
 
     void Aggro(Unit* pWho)
@@ -84,10 +94,27 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
             pInstance->SetData(TYPE_PUTRICIDE, FAIL);
     }
 
+	void StunAndGo()
+	{
+		// Todo : cast stun, timed text, special flags...
+	}
+
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+
+		if(CheckPercentLife(80) && phase == PHASE_INIT)
+		{
+			StunAndGo();
+			return;
+		}
+
+		if(CheckPercentLife(35) && phase == PHASE_80)
+		{
+			StunAndGo();
+			return;
+		}
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
