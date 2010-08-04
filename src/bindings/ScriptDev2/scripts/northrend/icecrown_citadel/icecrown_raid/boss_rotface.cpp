@@ -106,11 +106,75 @@ CreatureAI* GetAI_boss_rotface(Creature* pCreature)
     return new boss_rotfaceAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
+{
+    big_limonAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_big_limon(Creature* pCreature)
+{
+    return new big_limonAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL small_limonAI : public LibDevFSAI
+{
+    small_limonAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_small_limon(Creature* pCreature)
+{
+    return new small_limonAI(pCreature);
+}
+
 void AddSC_ICC_Rotface()
 {
 	Script* NewScript;
     NewScript = new Script;
     NewScript->Name = "boss_rotface";
     NewScript->GetAI = &GetAI_boss_rotface;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "rotface_small_limon";
+    NewScript->GetAI = &GetAI_small_limon;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "rotface_big_limon";
+    NewScript->GetAI = &GetAI_big_limon;
     NewScript->RegisterSelf();
 }
