@@ -46,6 +46,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiSindragosaGUID;
 	uint64 m_uiLichKingGUID;
 
+	std::vector<uint64> rotfacePoolsGUIDs;
+
     uint64 m_uiMarrowgarIce1GUID;
     uint64 m_uiMarrowgarIce2GUID;
     uint64 m_uiDeathwhisperGateGUID;
@@ -93,6 +95,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiSindragosaGUID				= 0;
 		// Other IAs
 		m_uiLichKingGUID				= 0;
+
+		rotfacePoolsGUIDs.clear();
 
         m_uiMarrowgarIce1GUID           = 0;
         m_uiMarrowgarIce2GUID           = 0;
@@ -142,7 +146,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_ROTFACE:
 				m_uiRotfaceGUID = pCreature->GetGUID();
-				AutoFreeze(pCreature);
 				break;
 			case NPC_PUTRICIDE:
 				m_uiPutricideGUID = pCreature->GetGUID();
@@ -175,6 +178,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
 				AutoFreeze(pCreature);
+				break;
+			case 37006:
+				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());
 				break;
         }
     }
@@ -364,6 +370,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				}
 				else if(uiData == IN_PROGRESS)
 					OpenDoor(m_uiRotfaceDoorGUID);
+				else if(uiData == FAIL)
+				{
+					for(std::vector<uint64>::iterator itr = rotfacePoolsGUIDs.begin(); itr != rotfacePoolsGUIDs.end(); ++itr)
+						if(Creature* cr = GetCreatureInMap(*itr))
+							cr->ForcedDespawn(1000);
+					rotfacePoolsGUIDs.clear();
+				}
 				break;
 			case TYPE_PUTRICIDE:
 				m_auiEncounter[TYPE_PUTRICIDE] = uiData;

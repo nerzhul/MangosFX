@@ -10,11 +10,11 @@ enum BossSpells
 	// Little
     SPELL_STICKY_OOZE				= 69774, // ok
     SPELL_STICKY_AURA				= 69776, // ok
-    SPELL_MERGE_OOZE				= 69889,
+    SPELL_MERGE_OOZE				= 69889, // ok
     SPELL_RADIATING_OOZE			= 69750, // ok
 
 	// Big
-    SPELL_UNSTABLE_OOZE				= 69644, // TODO : on fusion
+    SPELL_UNSTABLE_OOZE				= 69644, // ok
     SPELL_UNSTABLE_OOZE_AURA		= 69558, // ok
     SPELL_OOZE_EXPLODE				= 69839, // ok
 	SPELL_BIG_RADIATING_OOZE		= 69760, // ok
@@ -30,14 +30,14 @@ enum BossSpells
 
 static float SpawnLoc[8][3] =
 {
-	{4466.14f,	3095.25f,	360.39f}, // 1st
-	{4488.458f,	3158.43f,	360.39f}, // 2nd
-	{4425.33f,	3178.61f,	360.39f}, // 3rd
-	{4404.26f,	3115.89f,	360.39f}, // 4th
-	{4486.6f,	3115.12f,	360.39f}, // 1st
-	{4467.59f,	3178.11f,	360.39f}, // 2nde
-	{4405.00f,	3158.76f,	360.39f}, // 3rd
-	{4423.86f,	3096.41f,	360.39f}, // 4th
+	{4464.04,	3098.95f,	360.39f}, // 1st
+	{4485.12f,	3155.27f,	360.39f}, // 2nd
+	{4429.07f,	3175.10f,	360.39f}, // 3rd
+	{4408.15f,	3119.775f,	360.39f}, // 4th
+	{4482.756f,	3117.05f,	360.39f}, // 1st
+	{4465.52f,	3174.39f,	360.39f}, // 2nde
+	{4409.20f,	3156.56f,	360.39f}, // 3rd
+	{4426.61f,	3101.08f,	360.39f}, // 4th
 };
 
 static float RobinetLoc[8][3] =
@@ -133,6 +133,11 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
             pInstance->SetData(TYPE_ROTFACE, FAIL);
     }
 
+	void CallBigOne(Unit* u)
+	{
+		CallAggressiveCreature(NPC_BIG_OOZE,TEN_MINS,PREC_COORDS,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ() + 0.5f);
+	}
+
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
@@ -157,7 +162,8 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 
 					if(spawn)
 					{
-						CallCreature(NPC_SMALL_OOZE,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ());
+						if(Creature* cr = CallAggressiveCreature(NPC_SMALL_OOZE,TEN_MINS,PREC_COORDS,u->GetPositionX(),u->GetPositionY(),u->GetPositionZ()))
+							u->AddThreat(cr,100000.0f);
 						removableGuids.insert(*itr);
 					}
 				}
@@ -176,11 +182,13 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 			if(Creature* cr = GetInstanceCreature(TYPE_PUTRICIDE))
 				Yell(17126,"Merveille nouvelle mes amis, la gelée coule à flots !");
 
-			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool][0],SpawnLoc[pool][1],SpawnLoc[pool][2]);
-			CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool+4][0],SpawnLoc[pool+4][1],SpawnLoc[pool+4][2]);
+			if(Creature* cr1 = CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool][0],SpawnLoc[pool][1],SpawnLoc[pool][2]))
+				if(Creature* cr3 = CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool][0],RobinetLoc[pool][1],RobinetLoc[pool][2]))
+					cr1->AddThreat(cr3,100000.0f);
 
-			CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool][0],RobinetLoc[pool][1],RobinetLoc[pool][2]);
-			CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool+4][0],RobinetLoc[pool+4][1],RobinetLoc[pool+4][2]);
+			if(Creature* cr2 = CallCreature(NPC_OOZE_STALKER,25000,PREC_COORDS,NOTHING,SpawnLoc[pool+4][0],SpawnLoc[pool+4][1],SpawnLoc[pool+4][2]))
+				if(Creature* cr4 = CallCreature(NPC_OOZE_ROBINET,8000,PREC_COORDS,NOTHING,RobinetLoc[pool+4][0],RobinetLoc[pool+4][1],RobinetLoc[pool+4][2]))
+					cr2->AddThreat(cr4,100000.0f);
 			pool++;
 			if(pool >= 4)
 				pool = 0;
@@ -219,10 +227,10 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
 		if(!sp)
 			return;
 
-		if(sp->Id == SPELL_STICKY_AURA)
-			if(Aura* aur = me->GetAura(SPELL_STICKY_AURA))
+		if(sp->Id == SPELL_UNSTABLE_OOZE_AURA)
+			if(Aura* aur = me->GetAura(SPELL_UNSTABLE_OOZE_AURA))
 			{
-				if(aur->GetStackAmount() == 5)
+				if(aur->GetStackAmount() >= 5)
 				{
 					DoCastMe(SPELL_OOZE_EXPLODE);
 					me->ForcedDespawn(5000);
@@ -235,7 +243,7 @@ struct MANGOS_DLL_DECL big_limonAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
-	UpdateEvent(diff);
+		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
     }
 };
@@ -253,17 +261,52 @@ struct MANGOS_DLL_DECL small_limonAI : public LibDevFSAI
 		AddEventOnTank(SPELL_STICKY_OOZE,8000,12000,1500);
     }
 
+	uint32 check_Timer;
+
     void Reset()
     {
 		ResetTimers();
 		DoCastMe(SPELL_RADIATING_OOZE);
 		CanBeTaunt(false);
+		check_Timer = 1000;
     }
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
+
+		if(check_Timer <= diff)
+		{
+			bool found = false;
+			if(Creature* cr = me->GetClosestCreatureWithEntry(NPC_BIG_OOZE,10.0f))
+			{
+				if(cr->isAlive())
+				{
+					//DoCast(cr,SPELL_MERGE_OOZE);
+					DoCast(cr,SPELL_UNSTABLE_OOZE);
+					me->ForcedDespawn(500);
+					found = true;
+				}
+			}
+
+			if(Creature* cr = me->GetClosestCreatureWithEntry(NPC_SMALL_OOZE,10.0f))
+			{
+				if(cr->isAlive() && cr != me && !found)
+				{
+					//DoCast(cr,SPELL_MERGE_OOZE);
+					if(Creature* Rotface = GetInstanceCreature(TYPE_ROTFACE))
+					{
+						((boss_rotfaceAI*)Rotface->AI())->CallBigOne(me);
+					}
+					Kill(me);
+					Kill(cr);
+				}
+			}
+			check_Timer = 1000;
+		}
+		else
+			check_Timer -= diff;
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
@@ -341,8 +384,6 @@ struct MANGOS_DLL_DECL ooze_flyingAI : public LibDevFSAI
 		SetCombatMovement(false);
 		MakeHostileInvisibleStalker();
 		me->setFaction(35);
-		if(Unit* Rotface = GetInstanceCreature(TYPE_ROTFACE))
-			me->SetFacingToObject(Rotface);
 		DoCastMe(SPELL_OOZE_FLOOD);
     }
 
