@@ -184,6 +184,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
             continue;
 
         uint32 pzoneid = itr->second->GetZoneId();
+		uint8 gender = itr->second->getGender();
 
         bool z_show = true;
         for(uint32 i = 0; i < zones_count; ++i)
@@ -241,11 +242,11 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 
         data << pname;                                      // player name
         data << gname;                                      // guild name
-        data << uint32( lvl );                              // player level
-        data << uint32( class_ );                           // player class
-        data << uint32( race );                             // player race
-        data << uint8(0);                                   // new 2.4.0
-        data << uint32( pzoneid );                          // player zone id
+        data << uint32(lvl);                              // player level
+        data << uint32(class_);                           // player class
+        data << uint32(race);                             // player race
+        data << uint8(gender);                                   // new 2.4.0
+        data << uint32(pzoneid);                          // player zone id
 
         // 49 is maximum player count sent to client
         if ((++clientcount) == 50)
@@ -258,7 +259,7 @@ void WorldSession::HandleWhoOpcode( WorldPacket & recv_data )
 
 
     SendPacket(&data);
-    sLog.outDebug( "WORLD: Send SMSG_WHO Message" );
+    //sLog.outDebug( "WORLD: Send SMSG_WHO Message" );
 }
 
 void WorldSession::HandleLogoutRequestOpcode( WorldPacket & /*recv_data*/ )
