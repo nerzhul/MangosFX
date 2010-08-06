@@ -15570,11 +15570,15 @@ bool Unit::CanStackAuraWithAnother(uint32 spellId)
 
 bool Unit::IsInSanctuaryZone()
 {
+	if(GetTypeId() != TYPEID_PLAYER)
+		return false;
+
 	const AreaTableEntry *area = GetAreaEntryByAreaID(GetAreaId());
 	uint32 AreaIdForDalaran = GetMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ());
     if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
 		|| GetDistance2d(5635.0f,2030.5f) < 70.0f && GetPositionZ() < 820.0f  // ICC5
 		|| HasAura(64373) // EDC
+		|| GetMapId() == 609 && !((Player*)this)->duel
 	)       // sanctuary
 		return true;
 
