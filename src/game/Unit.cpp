@@ -570,13 +570,7 @@ void Unit::DealDamageMods(Unit *pVictim, uint32 &damage, uint32* absorb)
     //You still see it in the combat log though
     if(pVictim != this && GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
     {
-        const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
-		// correction sur la zone de duel de dalaran
-		uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
-			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
-			|| pVictim->HasAura(64373) // EDC
-		)       // sanctuary
+        if(pVictim->IsInSanctuaryZone())
 		{
             if(absorb)
                 *absorb += damage;
@@ -1467,13 +1461,7 @@ void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
     //You still see it in the combat log though
     if(pVictim != this && GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
     {
-        const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
-		// correction sur la zone de duel de dalaran
-		uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
-			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
-			|| pVictim->HasAura(64373) // EDC
-		)       // sanctuary
+        if(pVictim->IsInSanctuaryZone())
             return;
     }
 
@@ -1777,12 +1765,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
     //You still see it in the combat log though
     if(pVictim != this && GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
     {
-        const AreaTableEntry *area = GetAreaEntryByAreaID(pVictim->GetAreaId());
-        uint32 AreaIdForDalaran = pVictim->GetMap()->GetAreaFlag(pVictim->GetPositionX(),pVictim->GetPositionY(),pVictim->GetPositionZ());
-        if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
-			|| pVictim->GetDistance2d(5635.0f,2030.5f) < 70.0f && pVictim->GetPositionZ() < 820.0f  // ICC5
-			|| pVictim->HasAura(64373) // EDC
-		)       // sanctuary
+        if(pVictim->IsInSanctuaryZone())
             return;
     }
 
@@ -10873,15 +10856,22 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo)
 		}
 	}
 
-	if(spellInfo->Id == 64382)
+	switch(spellInfo->Id)
 	{
-		RemoveAurasDueToSpell(642);
-		RemoveAurasDueToSpell(1022);
-		RemoveAurasDueToSpell(5599);
-		RemoveAurasDueToSpell(10278);
-		RemoveAurasDueToSpell(45438);
-		RemoveAurasDueToSpell(19752);
-		return false;
+		case 64382:
+			RemoveAurasDueToSpell(642);
+			RemoveAurasDueToSpell(1022);
+			RemoveAurasDueToSpell(5599);
+			RemoveAurasDueToSpell(10278);
+			RemoveAurasDueToSpell(45438);
+			RemoveAurasDueToSpell(19752);
+			return false;
+	}
+
+	if(!IsPositiveSpell(spellInfo->Id))
+	{
+		if(IsInSanctuaryZone())
+            return true;
 	}
 
     //TODO add spellEffect immunity checks!, player with flag in bg is imune to imunity buffs from other friendly players!
@@ -15576,4 +15566,17 @@ bool Unit::CanStackAuraWithAnother(uint32 spellId)
 	}
 
 	return true;
+}
+
+bool Unit::IsInSanctuaryZone()
+{
+	const AreaTableEntry *area = GetAreaEntryByAreaID(GetAreaId());
+	uint32 AreaIdForDalaran = GetMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ());
+    if(area && area->flags & AREA_FLAG_SANCTUARY && AreaIdForDalaran != 2549
+		|| GetDistance2d(5635.0f,2030.5f) < 70.0f && GetPositionZ() < 820.0f  // ICC5
+		|| HasAura(64373) // EDC
+	)       // sanctuary
+		return true;
+
+	return false;
 }

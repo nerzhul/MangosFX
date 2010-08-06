@@ -1875,6 +1875,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
 		bool IsInPartyWith(Unit* unit);
 		void AddAura(uint32 spellId, Unit *target);
         void SetAuraStack(uint32 spellId, Unit *target, uint32 stack);
+		bool IsInSanctuaryZone();
 
 		Vehicle *GetVehicleKit()const { return m_vehicleKit; }
         Vehicle *GetVehicle()   const { return m_vehicle; }
