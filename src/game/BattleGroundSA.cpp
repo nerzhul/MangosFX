@@ -57,6 +57,7 @@ BattleGroundSA::BattleGroundSA()
 		for(uint8 j=0;j<2;j++)
 			SpiritGuidesGUID[i][j] = 0;
 
+	status = BG_SA_NOTSTARTED;
 	RoundLenght = 0;
 }
 
@@ -152,6 +153,10 @@ void BattleGroundSA::InitAllObjects()
 			else
 				go->SetPhaseMask(1,true);
 		}
+
+	for(GUIDSet::iterator itr = TeleportSet.begin(); itr != TeleportSet.end(); ++itr)
+		if(GameObject* go = GetBgMap()->GetGameObject(*itr))
+			go->SetFaction(defFaction);
 
 	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
 		if(GameObject* go = GetBgMap()->GetGameObject(GatesGUID[i]))
@@ -511,6 +516,32 @@ void BattleGroundSA::TeleportPlayer(Player* plr)
 	}
 	else
 		plr->TeleportTo(607,1198.54f,-66.007f,70.084f,3.194f);
+}
+
+WorldLocation BattleGroundSA::GetTPDest(Player* plr)
+{
+	if(GetTeamIndexByTeamId(plr->GetTeam()) == attackers)
+	{
+		uint8 boat = OnLeftBoat ? 1 : 0;
+		if(status == BG_SA_ROUND_ONE || status == BG_SA_ROUND_TWO)
+		{
+			if(OnLeftBoat)
+				return WorldLocation(607,1602.27f,-99.248f,8.873f,4.109f);
+			else
+				return WorldLocation(607,1612.16f,44.134f,7.579f,2.352f);
+		}
+		else
+		{
+			if(OnLeftBoat)
+				return WorldLocation(607,2686.42f,-829.99f,18.092f,2.630f);
+			else
+				return WorldLocation(607,2578.95f,986.802f,16.991f,4.001f);
+		}
+
+		OnLeftBoat = !OnLeftBoat;
+	}
+	else
+		return WorldLocation(607,1198.54f,-66.007f,70.084f,3.194f);
 }
 
 void BattleGroundSA::RemovePlayer(Player* /*plr*/,uint64 /*guid*/)
@@ -1094,27 +1125,27 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 			break;
 		case 190722:
 			GatesGUID[0] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 190727:
 			GatesGUID[1] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 190724:
 			GatesGUID[2] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 190726:
 			GatesGUID[3] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 190723:
 			GatesGUID[4] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 192549:
 			GatesGUID[5] = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, defFaction);
+			go->SetFaction(defFaction);
 			break;
 		case 192687:
 			SigilGUID[0] = go->GetGUID();
@@ -1133,7 +1164,7 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 			break;
 		case 192834:
 			TitanRelicGUID = go->GetGUID();
-			go->SetUInt32Value(GAMEOBJECT_FACTION, attFaction);
+			go->SetFaction(attFaction);
 			break;
 		case 191308:
 			GraveyardFlag[0][BG_TEAM_ALLIANCE] = go->GetGUID();
@@ -1176,6 +1207,10 @@ void BattleGroundSA::OnGameObjectCreate(GameObject* go)
 				go->SetPhaseMask(1,true);
 			else
 				go->SetPhaseMask(2,true);
+			break;
+		case 192819:
+			go->SetFaction(defFaction);
+			TeleportSet.insert(go->GetGUID());
 			break;
 	}
 }

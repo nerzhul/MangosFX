@@ -406,7 +406,7 @@ bool GOHello_go_trouble_int(Player* pPlayer, GameObject* pGo)
 
 bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 {
-	if(pPlayer->IsWintergraspPortalActive() || !pPlayer->IsWintergraspPortalActive() && pPlayer->IsWintergraspDefender())
+	if(!pPlayer->GetBattleGround() && (pPlayer->IsWintergraspPortalActive() || !pPlayer->IsWintergraspPortalActive() && pPlayer->IsWintergraspDefender()))
 	{
 		if(pGO->GetDistance2d(5406.0f,2853.0f) < 2.0f)
 			pPlayer->TeleportTo(571,5392.407f,2853.970f,419.675f,3.0f);
@@ -415,27 +415,21 @@ bool GoHello_wintergrasp_teleporter( Player *pPlayer, GameObject *pGO )
 	}
 	else if(BattleGround* bg = pPlayer->GetBattleGround())
 	{
-		if(bg->GetTypeID(true) == BATTLEGROUND_SA)
-			//if(BattleGroundSA* bgSA = ((BattleGroundSA*)bg))
-			{
-				if(/*(bgSA->getAttackers() == BG_TEAM_ALLIANCE && pPlayer->GetTeam() != ALLIANCE || 
-					bgSA->getAttackers() == BG_TEAM_HORDE && pPlayer->GetTeam() != HORDE)
-					&& */!pPlayer->HasAura(54643))
-				{
-					if(pGO->GetDistance2d(1468.119f,-225.901f) < 3.0f)
-						pPlayer->TeleportTo(607,1440.9f,-240.493f,35.263f,4.01f);
-					else if(pGO->GetDistance2d(1394.31f,72.42f) < 3.0f)
-						pPlayer->TeleportTo(607,1389.052f,103.263f,34.489f,2.27f);
-					else if(pGO->GetDistance2d(1255.78f,-233.718f) < 3.0f)
-						pPlayer->TeleportTo(607,1228.03f,-235.357f,60.04f,3.59f);
-					else if(pGO->GetDistance2d(1216.14f,47.77f) < 3.0f)
-						pPlayer->TeleportTo(607,1215.262f,104.663f,58.27f,2.57f);
-					else if(pGO->GetDistance2d(1065.05f,-89.948f) < 3.0f)
-						pPlayer->TeleportTo(607,1043.56f,-87.98f,87.12f,3.18f);
+		if(bg->GetTypeID(false) == BATTLEGROUND_SA && !pPlayer->HasAura(54643))
+		{
+			if(pGO->GetDistance2d(1468.119f,-225.901f) < 3.0f)
+				pPlayer->TeleportTo(607,1440.9f,-240.493f,35.263f,4.01f);
+			else if(pGO->GetDistance2d(1394.31f,72.42f) < 3.0f)
+				pPlayer->TeleportTo(607,1389.052f,103.263f,34.489f,2.27f);
+			else if(pGO->GetDistance2d(1255.78f,-233.718f) < 3.0f)
+				pPlayer->TeleportTo(607,1228.03f,-235.357f,60.04f,3.59f);
+			else if(pGO->GetDistance2d(1216.14f,47.77f) < 3.0f)
+				pPlayer->TeleportTo(607,1215.262f,104.663f,58.27f,2.57f);
+			else if(pGO->GetDistance2d(1065.05f,-89.948f) < 3.0f)
+				pPlayer->TeleportTo(607,1043.56f,-87.98f,87.12f,3.18f);
 
-					pPlayer->SetAuraStack(54643,pPlayer,1);
-				}
-			}
+			pPlayer->SetAuraStack(54643,pPlayer,1);
+		}
 	}
     return true;
 }

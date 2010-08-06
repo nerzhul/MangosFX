@@ -706,6 +706,7 @@ class MANGOS_DLL_SPEC GameObject : public WorldObject
 
         bool isActiveObject() const { return false; }
         uint64 GetRotation() const { return m_rotation; }
+		void SetFaction(uint32 faction) { SetUInt32Value(GAMEOBJECT_FACTION, faction); }
 
 		void TakenDamage(uint32 damage, Unit* pKiller);
         void Rebuild();

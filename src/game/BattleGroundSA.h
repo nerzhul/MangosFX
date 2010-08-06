@@ -211,6 +211,7 @@ class BattleGroundSA : public BattleGround
 	    void EndBattleGround(uint32 winner);
         void RemovePlayer(Player *plr,uint64 guid);
         void HandleAreaTrigger(Player *Source, uint32 Trigger);
+		WorldLocation GetTPDest(Player* plr);
 
         /* Scorekeeping */
         void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
@@ -233,6 +234,7 @@ class BattleGroundSA : public BattleGround
 		// All validate private objects
 		void InitAllObjects();
 		void TeleportPlayer(Player* plr);
+		
 		void CaptureGraveyard(BG_SA_Graveyards i, Player *Source);
 		void EndRound();
 		void RelocatePlayers();
@@ -269,6 +271,7 @@ class BattleGroundSA : public BattleGround
 		GUIDSet AllDemolishersSet;
 		GUIDSet AllSpiritGuidsSet;
 		GUIDSet BoatSet[2];
+		GUIDSet TeleportSet;
 		// GameObjects
 		uint64 GatesGUID[BG_SA_MAX_GATES];
 		uint64 SigilGUID[BG_SA_MAX_GATES-1];
