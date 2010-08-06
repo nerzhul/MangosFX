@@ -3344,7 +3344,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
         return SPELL_MISS_NONE;
 
     // Check for immune
-    if (pVictim->IsImmunedToDamage(GetSpellSchoolMask(spell)))
+    if (pVictim->IsImmunedToDamage(GetSpellSchoolMask(spell)) && spell->Id != 64382)
         return SPELL_MISS_IMMUNE;
 
     // Try victim reflect spell
@@ -10871,6 +10871,17 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo)
 			default:
 				break;
 		}
+	}
+
+	if(spellInfo->Id == 64382)
+	{
+		RemoveAurasDueToSpell(642);
+		RemoveAurasDueToSpell(1022);
+		RemoveAurasDueToSpell(5599);
+		RemoveAurasDueToSpell(10278);
+		RemoveAurasDueToSpell(45438);
+		RemoveAurasDueToSpell(19752);
+		return false;
 	}
 
     //TODO add spellEffect immunity checks!, player with flag in bg is imune to imunity buffs from other friendly players!
