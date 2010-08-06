@@ -15385,6 +15385,10 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 			ExitVehicle();
 	}
 
+	// Preparation in BGs
+	if(HasAura(44521))
+		return;
+
     if (GetTypeId() == TYPEID_PLAYER)
     {
         ((Player*)this)->Unmount();

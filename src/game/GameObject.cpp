@@ -222,7 +222,11 @@ void GameObject::Update(uint32 p_time)
 				{
 					if(Unit* u = Unit::GetUnit(*this,GetOwnerGUID()))
 					{
-						u->CastSpell(GetPositionX(),GetPositionY(),GetPositionZ(),66676,false);
+						if(u->GetTypeId() == TYPEID_PLAYER)
+							if(Player* p = (Player*)u)
+								if(BattleGround* bg = p->GetBattleGround())
+									if(bg->GetStatus() == STATUS_IN_PROGRESS)
+										p->CastSpell(GetPositionX(),GetPositionY(),GetPositionZ(),66676,false);
 						Event_Timer = DAY * IN_MILLISECONDS;
 						SetPhaseMask(0x02,true);
 					}

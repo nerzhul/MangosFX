@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			FlameSpawn_Timer = DAY*HOUR;
 		}
 		else
-			FlameSpawn_Timer = 150;
+			FlameSpawn_Timer = 160;
 	}
 
 	void DoStormDamage()
@@ -196,9 +196,9 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 				if(Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 					{
-						uint32 FullDamage = 20000;
+						uint32 FullDamage = 15000;
 						if(m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC)
-							FullDamage = 30000;
+							FullDamage = 25000;
 
 						if(pPlayer->GetDistance2d(me) < 5.0f)
 							FullDamage /= 2;
