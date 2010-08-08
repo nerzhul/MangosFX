@@ -1305,13 +1305,13 @@ void Pet::_SaveAuras()
                 {
                     // skip all auras from spell that apply at cast SPELL_AURA_MOD_SHAPESHIFT or pet area auras.
                     uint8 i;
-                    for (i = 0; i < 3; ++i)
+                    for (i = 0; i < MAX_EFFECT_INDEX; ++i)
                         if (spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_STEALTH ||
                             spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
                             spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA_PET )
                             break;
 
-                    if (i == 3)
+                    if (i == MAX_EFFECT_INDEX)
                     {
                         CharacterDatabase.PExecute("INSERT INTO pet_aura (guid,caster_guid,spell,effect_index,stackcount,amount,maxduration,remaintime,remaincharges) "
                             "VALUES ('%u', '" UI64FMTD "', '%u', '%u', '%u', '%d', '%d', '%d', '%d')",

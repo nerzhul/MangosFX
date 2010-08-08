@@ -8425,42 +8425,6 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_GENERIC:
             switch (spell->Id)
             {
-                // Drink
-                case 430:
-                case 431:
-                case 432:
-                case 1133:
-                case 1135:
-                case 1137:
-                case 10250:
-                case 22734:
-                case 27089:
-                case 34291:
-                case 43182:
-                case 43183:
-                case 43706:
-                case 46755:
-                case 49472: // Drink Coffee
-                case 57073:
-                case 61830:
-                {
-                    if (m_target->GetTypeId() != TYPEID_PLAYER)
-                        return;
-                    // Search SPELL_AURA_MOD_POWER_REGEN aura for this spell and add bonus
-                    Unit::AuraList const& aura = m_target->GetAurasByType(SPELL_AURA_MOD_POWER_REGEN);
-                    for(Unit::AuraList::const_iterator i = aura.begin(); i != aura.end(); ++i)
-                    {
-                        if ((*i)->GetId() == GetId())
-                        {
-                            (*i)->GetModifier()->m_amount = m_modifier.m_amount;
-                            ((Player*)m_target)->UpdateManaRegen();
-                            // Disable continue
-                            m_isPeriodic = false;
-                            return;
-                        }
-                    }
-                    return;
-                }
                 // Forsaken Skills
                 case 7054:
                 {
@@ -8742,6 +8706,28 @@ void Aura::PeriodicDummyTick()
                 default:
                     break;
             }
+
+			// Drink (item drink spells)
+			if (GetEffIndex() > EFFECT_INDEX_0 && spell->EffectApplyAuraName[GetEffIndex()-1] == SPELL_AURA_MOD_POWER_REGEN)
+			{
+				if(m_target->GetTypeId() != TYPEID_PLAYER)
+					return;
+				
+				// Search SPELL_AURA_MOD_POWER_REGEN aura for this spell and add bonus
+				Unit::AuraList const& aura = m_target->GetAurasByType(SPELL_AURA_MOD_POWER_REGEN);
+				for(Unit::AuraList::const_iterator i = aura.begin(); i != aura.end(); ++i)
+				{
+					if ((*i)->GetId() == GetId())
+					{
+						(*i)->GetModifier()->m_amount = m_modifier.m_amount;
+						((Player*)m_target)->UpdateManaRegen();
+						// Disable continue
+						m_isPeriodic = false;
+						return;
+					}
+				}
+				return;
+			}
             // Prey on the Weak
             if (spell->SpellIconID == 2983)
             {
