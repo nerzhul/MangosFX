@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 			FlameSpawn_Timer = DAY*HOUR;
 		}
 		else
-			FlameSpawn_Timer = 160;
+			FlameSpawn_Timer = 150;
 	}
 
 	void DoStormDamage()
@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL flame_marrowgarAI : public LibDevFSAI
     flame_marrowgarAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-        AddEventOnMe(SPELL_COLDFLAME,500,3000);
+        AddEventOnMe(SPELL_COLDFLAME,1200,3000);
 		me->setFaction(2212);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		MakeInvisibleStalker();
