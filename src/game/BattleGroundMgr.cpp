@@ -1540,7 +1540,7 @@ BattleGround * BattleGroundMgr::CreateNewBattleGround(BattleGroundTypeId bgTypeI
 	if(bgTypeId==BATTLEGROUND_RB)
 	{
 		BattleGroundTypeId random_bgs[] = {BATTLEGROUND_WS, BATTLEGROUND_AB, BATTLEGROUND_EY, /*BATTLEGROUND_AV,*/ BATTLEGROUND_SA/*, BATTLEGROUND_IC*/};
-		uint32 bg_num = urand(0,3/*5*/);
+		uint32 bg_num = urand(0,2/*5*/);
 		bgTypeId = random_bgs[bg_num];
 		bg_template = GetBattleGroundTemplate(bgTypeId);
 		if (!bg_template)
