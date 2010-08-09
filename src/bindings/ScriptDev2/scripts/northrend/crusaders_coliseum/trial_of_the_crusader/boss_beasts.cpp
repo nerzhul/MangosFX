@@ -498,10 +498,14 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 					if(pPlayer->isAlive())
 						if(pPlayer->HasAura(SPELL_PARALYTIC_TOXIN))
 						{
-							if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0))
+							Aura* aur = pPlayer->GetAura(SPELL_PARALYTIC_TOXIN);
+							if(aur)
 							{
-								float rate = float(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration()) / 60000;
+								int32 duration = aur->GetAuraDuration();
+								float rate = float(duration) / 60000;
 								pPlayer->SetSpeedRate(MOVE_RUN,rate,true);
+								if(duration < 10000)
+									ModifyAuraStack(66830,1,pPlayer);
 							}
 
 							if(me->getVictim() && me->getVictim()->HasAura(SPELL_BURNING_BILE) && pPlayer->GetDistance2d(me->getVictim()) < 5.0f)
@@ -509,8 +513,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 								pPlayer->RemoveAurasDueToSpell(SPELL_PARALYTIC_TOXIN);
 								pPlayer->RemoveAurasDueToSpell(66830);
 							}
-							else if(pPlayer->GetAura(SPELL_PARALYTIC_TOXIN,0)->GetAuraDuration() < 10000)
-								ModifyAuraStack(66830,1,pPlayer);
+								
 						}
 						else
 							pPlayer->SetSpeedRate(MOVE_RUN,1.0f,true);						
