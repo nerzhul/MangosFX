@@ -399,7 +399,7 @@ bool OPvPCapturePoint::Update(uint32 diff)
 void OutdoorPvP::SendUpdateWorldState(uint32 field, uint32 value)
 {
     if(m_sendUpdate)
-        for (int i = 0; i < 2; ++i)
+        for (uint8 i = 0; i < 2; ++i)
             for (PlayerSet::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
 				if((*itr)->GetSession())
 					(*itr)->SendUpdateWorldState(field, value);
