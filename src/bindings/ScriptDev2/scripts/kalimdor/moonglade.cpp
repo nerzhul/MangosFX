@@ -172,7 +172,7 @@ struct MANGOS_DLL_DECL npc_clintar_dw_spiritAI : public npc_escortAI
         //we handle the triggered spell to get a "hook" to our guy so he can be escorted on quest accept
 
         if (CreatureInfo const* pTemp = GetCreatureTemplateStore(me->GetEntry()))
-            me->SetDisplayId(pTemp->DisplayID_H[0]);
+			me->SetDisplayId(pTemp->ModelId[2]);
 
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetVisibility(VISIBILITY_OFF);
@@ -214,7 +214,7 @@ bool EffectDummyCreature_npc_clintar_dw_spirit(Unit *pCaster, uint32 spellId, ui
             return true;
 
         if (CreatureInfo const* pTemp = GetCreatureTemplateStore(NPC_CLINTAR_SPIRIT))
-            pCreatureTarget->SetDisplayId(pTemp->DisplayID_H[0]);
+			pCreatureTarget->SetDisplayId(pTemp->ModelId[2]);
         else
             return true;
 

@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_left_armAI : public LibDevFSAI
 		DoResetThreat();
 		FreezeMob(false);
 		me->RemoveAllAuras();
-		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
+		me->SetDisplayId(me->GetCreatureInfo()->ModelId[0]);
 	}
 
 	bool CheckPlayers()
@@ -357,7 +357,7 @@ struct MANGOS_DLL_DECL boss_right_armAI : public LibDevFSAI
 		DoResetThreat();
 		FreezeMob(false);
 		me->RemoveAllAuras();
-		me->SetDisplayId(me->GetCreatureInfo()->DisplayID_A[0]);
+		me->SetDisplayId(me->GetCreatureInfo()->ModelId[0]);
 	}
 
 	bool CheckPlayers()

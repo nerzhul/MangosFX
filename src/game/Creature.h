@@ -64,8 +64,7 @@ struct CreatureInfo
     uint32  Entry;
     uint32  DifficultyEntry[MAX_DIFFICULTY - 1];
     uint32  KillCredit[MAX_KILL_CREDIT];
-    uint32  DisplayID_A[2];
-    uint32  DisplayID_H[2];
+    uint32  ModelId[4];
     char*   Name;
     char*   SubName;
     char*   IconName;
@@ -188,7 +187,7 @@ struct CreatureData
     uint32 id;                                              // entry in creature_template
     uint16 mapid;
     uint16 phaseMask;
-    uint32 displayid;
+    uint32 modelid_override;                                // overrides any model defined in creature_template
     int32 equipmentId;
     float posX;
     float posY;
@@ -237,7 +236,9 @@ struct CreatureModelInfo
     float bounding_radius;
     float combat_reach;
     uint8 gender;
-    uint32 modelid_other_gender;
+    uint32 modelid_other_gender;                            // The oposite gender for this modelid (male/female)
+	uint32 modelid_alternative;                             // An alternative model. Generally same gender(2)
+	uint32 modelid_other_team;                              // The oposite team. Generally for alliance totem
 };
 
 enum InhabitTypeValues

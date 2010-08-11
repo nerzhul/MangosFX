@@ -111,6 +111,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if(Player* pPlayer = itr->getSource())
+				{
 					if(pPlayer->isAlive())
 					{
 						if(pPlayer->HasAura(SPELL_GASTRIC_BLOAT))
@@ -142,6 +143,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 							}
 						}
 					}
+				}
 	}
 
 	void SpellHitTarget(Unit* u, const SpellEntry* sp)
@@ -158,7 +160,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
 		if(check_Timer <= diff)
 		{
 			CheckPlayerConditions();
-			check_Timer = 1000;
+			check_Timer = 500;
 		}
 		else
 			check_Timer -= diff;

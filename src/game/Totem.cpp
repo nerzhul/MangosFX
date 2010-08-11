@@ -64,17 +64,6 @@ void Totem::Summon(Unit* owner)
 
     owner->GetMap()->Add((Creature*)this);
 
-    // select totem model in dependent from owner team
-    CreatureInfo const *cinfo = GetCreatureInfo();
-    if(owner->GetTypeId() == TYPEID_PLAYER && cinfo)
-    {
-        uint32 display_id = sObjectMgr.ChooseDisplayId(((Player*)owner)->GetTeam(), cinfo);
-        CreatureModelInfo const *minfo = sObjectMgr.GetCreatureModelRandomGender(display_id);
-        if (minfo)
-            display_id = minfo->modelid;
-        SetDisplayId(display_id);
-    }
-
     AIM_Initialize();
 
     // there are some totems, which exist just for their visual appeareance

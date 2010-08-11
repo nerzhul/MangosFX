@@ -245,7 +245,7 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
             if (!creData)
                 continue;
 
-            const_cast<CreatureData*>(creData)->displayid = 0;
+			const_cast<CreatureData*>(creData)->modelid_override = 0;
             workshop->m_engGuid = engGuid;
 
             // Back spirit is linked to one of the inside workshops, 1 workshop wont have spirit
@@ -257,7 +257,7 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
                 if (!spiritData)
                     continue;
 
-                const_cast<CreatureData*>(spiritData)->displayid = 0;
+				const_cast<CreatureData*>(spiritData)->modelid_override = 0;
                 workshop->m_spiGuid = spiritGuid;
             }
             else
@@ -730,7 +730,7 @@ uint32 OutdoorPvPWG::GetCreatureEntry(uint32 guidlow, const CreatureData *data)
         TeamPairMap::const_iterator itr = m_creEntryPair.find(data->id);
         if (itr != m_creEntryPair.end())
         {
-            const_cast<CreatureData*>(data)->displayid = 0;
+			const_cast<CreatureData*>(data)->modelid_override = 0;
             return itr->second;
         }
     }

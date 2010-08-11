@@ -405,6 +405,12 @@ scripts/northrend/nexus/eye_of_eternity/boss_malygos.cpp \
 scripts/northrend/obsidian_sanctum/boss_sartharion.cpp \
 scripts/northrend/obsidian_sanctum/instance_obsidian_sanctum.cpp \
 scripts/northrend/obsidian_sanctum/obsidian_sanctum.h \
+scripts/northrend/rubis_sanctum/boss_halion.cpp \
+scripts/northrend/rubis_sanctum/instance_rubis_sanctum.cpp \
+scripts/northrend/rubis_sanctum/rubis_sanctum.h \
+scripts/northrend/rubis_sanctum/trashboss_baltarus_the_warborn.cpp \
+scripts/northrend/rubis_sanctum/trashboss_ragefire.cpp \
+scripts/northrend/rubis_sanctum/trashboss_zarithrian.cpp \
 scripts/northrend/ulduar/halls_of_lightning/boss_bjarngrim.cpp \
 scripts/northrend/ulduar/halls_of_lightning/boss_ionar.cpp \
 scripts/northrend/ulduar/halls_of_lightning/boss_loken.cpp \

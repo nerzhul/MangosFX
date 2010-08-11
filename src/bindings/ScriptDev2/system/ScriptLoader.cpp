@@ -478,6 +478,11 @@ extern void AddSC_instance_pit_of_saron();
 extern void AddSC_instance_halls_of_reflection();
 extern void AddSC_boss_falric_marwyn();
 extern void AddSC_halls_of_reflection();
+extern void AddSC_trashboss_zarithrian();
+extern void AddSC_trashboss_baltarus();
+extern void AddSC_trashboss_ragefire();
+extern void AddSC_boss_halion();
+extern void AddSC_instance_rubis_sanctum();
 
 void AddScripts()
 {
@@ -955,4 +960,9 @@ void AddScripts()
 	AddSC_instance_halls_of_reflection();
 	AddSC_halls_of_reflection();
 	AddSC_boss_falric_marwyn();
+	AddSC_trashboss_zarithrian();
+	AddSC_trashboss_baltarus();
+	AddSC_trashboss_ragefire();
+	AddSC_boss_halion();
+	AddSC_instance_rubis_sanctum();
 }
