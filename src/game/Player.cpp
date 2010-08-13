@@ -516,6 +516,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
 	XpAllowed = 0;
 
+	lastPck = WorldPacket();
+
 	m_calendarEvents.clear();
 	
 	SetRandomBGDone(false);
@@ -6019,6 +6021,10 @@ uint32 Player::GetActionByActionButton(uint8 button)
 bool Player::SetPosition(float x, float y, float z, float orientation, bool teleport)
 {
     // prevent crash when a bad coord is sent by the client
+
+	if(!Unit::SetPosition(x, y, z, orientation, teleport))
+        return false;
+
     if(!MaNGOS::IsValidMapCoord(x,y,z,orientation))
     {
         sLog.outDebug("Player::SetPosition(%f, %f, %f, %f, %d) .. bad coordinates for player %d!",x,y,z,orientation,teleport,GetGUIDLow());

@@ -3444,6 +3444,18 @@ bool ChatHandler::HandleDieCommand(const char* /*args*/)
     return true;
 }
 
+bool ChatHandler::HandleGetLastPacketCommand(const char* args)
+{
+    Player* target;
+    uint64 target_guid;
+    std::string target_name;
+    if(!extractPlayerTarget((char*)args,&target,&target_guid,&target_name))
+        return false;
+
+
+    return true;
+}
+
 bool ChatHandler::HandleDamageCommand(const char * args)
 {
     if (!*args)

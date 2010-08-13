@@ -383,7 +383,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		data << me->GetPositionZ();
 		data << uint32(getMSTime());
 		data << uint8(4);
-		data << unit->GetTransOffsetO();
+		data << float(0);
 		data << uint32(SPLINEFLAG_UNKNOWN5);
 		data << uint32(0);// move time
 		data << uint32(1);

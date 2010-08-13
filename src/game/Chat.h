@@ -526,6 +526,8 @@ class ChatHandler
 		bool HandleTestPacketCommand(const char *args);
 		bool HandleSetWorldVar(const char *args);
 
+		bool HandleGetLastPacketCommand(const char* args);
+
         Player*   getSelectedPlayer();
         Creature* getSelectedCreature();
         Unit*     getSelectedUnit();
