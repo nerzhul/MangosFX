@@ -3452,7 +3452,10 @@ bool ChatHandler::HandleGetLastPacketCommand(const char* args)
     if(!extractPlayerTarget((char*)args,&target,&target_guid,&target_name))
         return false;
 
+	if(!target)
+		return false;
 
+	error_log("Player %s has recv last packet : %u",target->GetName(),target->getLastPck().GetOpcode());
     return true;
 }
 
