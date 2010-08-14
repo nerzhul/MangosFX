@@ -2372,7 +2372,7 @@ void World::setLastPckFor(uint64 guid, const WorldPacket *pck)
 	if(!pck)
 		return;
 
-	switch(pck->getOpcode())
+	switch(pck->GetOpcode())
 	{
 		default:
 			lastPckMap[guid] = new WorldPacket(*pck);
