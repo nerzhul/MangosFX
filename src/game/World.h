@@ -596,6 +596,8 @@ class World
 		 uint64 getWorldVar() { return worldVar; }
 		 bool IsLocked() { return worldLocked; }
 		 void LockWorld(bool lock) { worldLocked = lock; }
+		 WorldPacket* getLastPckFrom(uint64 guid);
+		 void setLastPckFor(uint64 guid, WorldPacket* pck) { lastPckMap[guid] = pck; }
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters
@@ -673,6 +675,7 @@ class World
 		uint32 m_states[1];
 		bool worldLocked;
 		uint64 worldVar;
+		std::map<uint64,WorldPacket*> lastPckMap;
 };
 
 extern uint32 realmID;

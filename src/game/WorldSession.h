@@ -788,10 +788,6 @@ class MANGOS_DLL_SPEC WorldSession
 		void HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data);
 		void HandleEjectPasenger(WorldPacket &data);
         void HandleEnterPlayerVehicle(WorldPacket &data);
-
-		void setLastPck(WorldPacket packet) { lastPck = packet; }
-		WorldPacket getLastPck() { return lastPck; }
-
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);
@@ -825,8 +821,6 @@ class MANGOS_DLL_SPEC WorldSession
         bool   m_TutorialsChanged;
         AddonsList m_addonsList;
         ACE_Based::LockedQueue<WorldPacket*, ACE_Thread_Mutex> _recvQueue;
-
-		WorldPacket lastPck;
 };
 #endif
 /// @}

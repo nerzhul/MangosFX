@@ -1579,6 +1579,7 @@ void World::SetInitialWorldSettings()
 	}
 
 	sWorld.LockWorld(false);
+	sWorld.lastPckMap.clear();
 }
 
 void World::DetectDBCLang()
@@ -2355,4 +2356,13 @@ void World::UpdateAreaDependentAuras()
             itr->second->GetPlayer()->UpdateAreaDependentAuras(itr->second->GetPlayer()->GetAreaId());
             itr->second->GetPlayer()->UpdateZoneDependentAuras(itr->second->GetPlayer()->GetZoneId());
         }
+}
+
+WorldPacket* World::getLastPckFrom(uint64 guid)
+{
+	std::map<uint64,WorldPacket*>::iterator itr = lastPckMap.find(guid);
+	if(itr != lastPckMap.end())
+		return itr->second;
+	
+	return NULL;
 }

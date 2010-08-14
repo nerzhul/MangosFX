@@ -516,8 +516,6 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
 	XpAllowed = 0;
 
-	lastPck = WorldPacket();
-
 	m_calendarEvents.clear();
 	
 	SetRandomBGDone(false);
