@@ -1437,6 +1437,8 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 case 38794:                                 // Murmur's Touch (h)
 				case 50988:                                 // Glare of the Tribunal (Halls of Stone)
 				case 59870:                                 // Glare of the Tribunal (h) (Halls of Stone)
+				case 69248:
+				case 72274:
                     unMaxTargets = 1;
                     break;
                 case 28542:                                 // Life Drain

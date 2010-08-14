@@ -3452,12 +3452,12 @@ bool ChatHandler::HandleGetLastPacketCommand(const char* args)
     if(!extractPlayerTarget((char*)args,&target,&target_guid,&target_name))
         return false;
 
-	if(!target_guid)
+	if(!target_guid || !target)
 		return false;
 
 	WorldPacket* pck = sWorld.getLastPckFrom(target_guid);
 	if(pck)
-		PSendSysMessage("Player %s has recv last packet : %u",target_name,pck->GetOpcode());
+		PSendSysMessage("Player %s (GUID : %u) has recv last packet : %u",target_name.c_str(),target->GetGUIDLow(),pck->GetOpcode());
 	else
 		SendSysMessage("Aucun packet enregistre pour ce personnage");
     return true;

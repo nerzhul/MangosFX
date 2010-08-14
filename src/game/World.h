@@ -27,6 +27,7 @@
 #include "Timer.h"
 #include "Policies/Singleton.h"
 #include "SharedDefines.h"
+#include "WorldPacket.h"
 #include "ace/Atomic_Op.h"
 
 #include <map>
@@ -597,7 +598,7 @@ class World
 		 bool IsLocked() { return worldLocked; }
 		 void LockWorld(bool lock) { worldLocked = lock; }
 		 WorldPacket* getLastPckFrom(uint64 guid);
-		 void setLastPckFor(uint64 guid, WorldPacket* pck) { lastPckMap[guid] = pck; }
+		 void setLastPckFor(uint64 guid, const WorldPacket* pck);
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

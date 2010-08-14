@@ -2366,3 +2366,16 @@ WorldPacket* World::getLastPckFrom(uint64 guid)
 	
 	return NULL;
 }
+
+void World::setLastPckFor(uint64 guid, const WorldPacket *pck)
+{
+	if(!pck)
+		return;
+
+	switch(pck->getOpcode())
+	{
+		default:
+			lastPckMap[guid] = new WorldPacket(*pck);
+			break;
+	}
+}
