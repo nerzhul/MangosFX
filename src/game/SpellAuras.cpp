@@ -6708,11 +6708,26 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                 if (itr->second->state == PLAYERSPELL_REMOVED) continue;
                 if (itr->first==spellId1 || itr->first==spellId2) continue;
                 SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
-                if (!spellInfo || !(spellInfo->Attributes & (SPELL_ATTR_PASSIVE | (1<<7))))
+                if (!spellInfo || !(spellInfo->Attributes & (SPELL_ATTR_PASSIVE | SPELL_ATTR_UNK7)))
                     continue;
-                if (spellInfo->Stances & (1<<(form-1)))
+                if (spellInfo->Stances & (1<<(form-1)) && !(spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT))
                     m_target->CastSpell(m_target, itr->first, true, NULL, this);
             }
+
+			// remove auras that do not require shapeshift, but are not active in this specific form (like Improved Barkskin)
+			Unit::AuraMap &tAuras = m_target->GetAuras();
+			for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end();)
+			{
+				SpellEntry const *spellInfo = itr->second->GetSpellProto();
+				if(itr->second->IsPassive() && (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT)
+					&& (spellInfo->StancesNot & (1<<(form-1))))
+				{
+					m_target->RemoveAurasDueToSpell(itr->second->GetId());
+					itr = tAuras.begin();
+				}
+				else
+					++itr;
+			}
 
             // Master Shapeshifter
             if (MasterShaperSpellId)
@@ -6881,6 +6896,19 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             m_target->RemoveAurasDueToSpell(spellId2);
         if(MasterShaperSpellId)
             m_target->RemoveAurasDueToSpell(MasterShaperSpellId);
+
+		// re-apply passive spells that don't need shapeshift but were inactive in current form:
+		const PlayerSpellMap& sp_list = ((Player *)m_target)->GetSpellMap();
+		for(PlayerSpellMap::const_iterator itr = sp_list.begin(); itr != sp_list.end(); ++itr)
+		{
+			if (itr->second->state == PLAYERSPELL_REMOVED) continue;
+			if (itr->first==spellId1 || itr->first==spellId2) continue;
+			SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
+			if (!spellInfo || !IsPassiveSpell(spellInfo))
+				continue;
+			if((spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT) && spellInfo->StancesNot & (1<<(form-1)))
+				m_target->CastSpell(m_target, itr->first, true, NULL, this);
+		}
 
         Unit::AuraMap& tAuras = m_target->GetAuras();
         for (Unit::AuraMap::iterator itr = tAuras.begin(); itr != tAuras.end();)
