@@ -97,8 +97,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
 		if (!m_Socket)
 			return;
 
-		if(GetPlayer())
-			GetPlayer()->setLastPck(*packet);
+		setLastPck(*packet);
 
 		#ifdef MANGOS_DEBUG
 

@@ -2276,8 +2276,6 @@ class MANGOS_DLL_SPEC Player : public Unit
 		CalendarEventSet GetCalendarEvents() { return m_calendarEvents; }
 		void RemoveCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents.erase(cEvent); }
 
-		void setLastPck(WorldPacket packet) { lastPck = packet; }
-		WorldPacket getLastPck() { return lastPck; }
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2588,8 +2586,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_timeSyncServer;
 		uint8 XpAllowed;
 		bool daily_random_BG_done;
-
-		WorldPacket lastPck;
 
 		CalendarEventSet m_calendarEvents;
 };
