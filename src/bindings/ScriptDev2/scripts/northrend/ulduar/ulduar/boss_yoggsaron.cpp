@@ -37,7 +37,7 @@ EndScriptData */
 #define SPELL_SHADOWY_BARRIER           64775 
 #define AURA_SHADOWY_BARRIER_1          63894
 
-// Freya - Freundlicher Watcher
+// Freya
 #define SPELL_SANITY_WELL               64170
 #define AURA_RESILIENCE_OF_NATURE       62670
 
@@ -51,7 +51,7 @@ EndScriptData */
 
 // Thorim - Freundlicher Watcher
 #define AURA_FURY_OF_THE_STORM          62702
-#define SPELL_TITANIC_STORM             64172
+#define SPELL_TITANIC_STORM             64171
 
 // Ominase Wolke - Phase 1
 #define AURA_SUMMON_GUARDIAN            62979
@@ -132,6 +132,7 @@ enum Adds
 	NPC_IMMORTAL_GUARDIAN		=	33988,
 	NPC_YOGGSARON_BRAIN			=	33890,
 	NPC_TENTACLE_INFLUENCE		=	33943,
+	NPC_SANITY_WELL				=	33991,
 };
 const static float Locs[6][3] =
 {
@@ -166,6 +167,14 @@ const static float PortalLoc[10][3] =
 	{1952.14f,-42.16f,325.86f},
 	{1950.98f,-19.36f,326.52f},
 	{1973.24f,4.05f,326.45f}
+};
+
+const static float GuardianLoc[4][4] =
+{
+	{1938.109f,-91.683f,338.46f,33213}, // hodir
+	{2037.712f,-74.302f,338.42f,33242}, // thorim
+	{2037.307f,26.558f,338.42f,33244}, // mimiron
+	{1938.523f,43.349f,338.46f,33241} // freya
 };
 
 enum YoggEvents
@@ -456,8 +465,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				{
 					CreateEndPortals();
 					if(pInstance) pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
+					me->RemoveAurasDueToSpell(SPELL_SHATTERED_ILLUSION);
 					isBrainPhase = false;
-					DoCastMe(SPELL_SHATTERED_ILLUSION);
 					EndPortal_Timer = 90000;
 				}
 				else
@@ -508,6 +517,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 						if(!Alive && pInstance)
 						{
 							pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,0);
+							DoCastMe(SPELL_SHATTERED_ILLUSION);
 							switch(randomVision)
 							{
 								case 0:
@@ -617,189 +627,96 @@ struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
     }
 };
 
-// Freya - Freundlicher Watcher
-struct MANGOS_DLL_DECL npc_freya_helpAI : public ScriptedAI
+struct MANGOS_DLL_DECL npc_freya_helpAI : public LibDevFSAI
 {
-    npc_freya_helpAI(Creature* pCreature) : ScriptedAI(pCreature)
+    npc_freya_helpAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
+		AddEventOnMe(SPELL_SANITY_WELL,2000,25000);
     }
-
-    ScriptedInstance* m_pInstance;
 
     void Reset()
     {
+		ResetTimers();
 	    if(!me->HasAura(AURA_RESILIENCE_OF_NATURE, 0))
-            me->CastSpell(me, AURA_RESILIENCE_OF_NATURE, true);
+            DoCastMe(AURA_RESILIENCE_OF_NATURE);
     }
 
-    void KilledUnit(Unit *victim)
+	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
+	{
+		if(spell->Id == SPELL_SANITY_WELL)
+			if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
+				if(Yogg->isAlive())
+					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->CallCreature(NPC_SANITY_WELL,TEN_MINS,NEAR_45M,NOTHING);
+	}
+
+    void UpdateAI(const uint32 diff)
     {
+        UpdateEvent(diff);
+    }
+};
+
+struct MANGOS_DLL_DECL npc_thorim_helpAI : public LibDevFSAI
+{
+    npc_thorim_helpAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEventOnMe(SPELL_TITANIC_STORM,5000,THREE_MINS);
     }
 
-    void JustDied(Unit *victim)
+    void Reset()
     {
+		ResetTimers();
+	    if(!me->HasAura(AURA_FURY_OF_THE_STORM, 0))
+            me->CastSpell(me, AURA_FURY_OF_THE_STORM, true);
+    }
+    void UpdateAI(const uint32 diff)
+    {
+        UpdateEvent(diff);
+    }
+};
+
+struct MANGOS_DLL_DECL npc_hodir_helpAI : public LibDevFSAI
+{
+    npc_hodir_helpAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEventOnMe(SPELL_HODIRS_PROTECTIVE_GAZE,6000,30000);
     }
 
-    void Aggro(Unit* pWho)
+    void Reset()
     {
-        me->SetInCombatWithZone();
+		ResetTimers();
+	    if(!me->HasAura(AURA_FORTITUDE_OF_FROST, 0))
+            me->CastSpell(me, AURA_FORTITUDE_OF_FROST, true);
+    }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+    void UpdateAI(const uint32 diff)
+    {
+        UpdateEvent(diff);
+    }
+};
+
+// Mimiron - Freundlicher Watcher
+struct MANGOS_DLL_DECL npc_mimiron_helpAI : public LibDevFSAI
+{
+    npc_mimiron_helpAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+	    if(!me->HasAura(AURA_SPEED_OF_INVENTION , 0))
+            me->CastSpell(me, AURA_SPEED_OF_INVENTION , true);
     }
 
     void UpdateAI(const uint32 diff)
     {
         if (!CanDoSomething())
             return;
-
-        DoMeleeAttackIfReady();
-
-        EnterEvadeIfOutOfCombatArea(diff);
-
     }
-
-};
-
-// Thorim - Freundlicher Watcher
-struct MANGOS_DLL_DECL npc_thorim_helpAI : public ScriptedAI
-{
-    npc_thorim_helpAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-
-    void Reset()
-    {
-	    if(!me->HasAura(AURA_FURY_OF_THE_STORM, 0))
-            me->CastSpell(me, AURA_FURY_OF_THE_STORM, true);
-    }
-
-    void KilledUnit(Unit *victim)
-    {
-    }
-
-    void JustDied(Unit *victim)
-    {
-    }
-
-    void Aggro(Unit* pWho)
-    {
-        me->SetInCombatWithZone();
-
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
-    }
-
-    void UpdateAI(const uint32 diff)
-    {
-        if (!me->SelectHostileTarget() && !me->getVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-
-        EnterEvadeIfOutOfCombatArea(diff);
-
-    }
-
-};
-
-
-// Hodir - Freundlicher Watcher
-struct MANGOS_DLL_DECL npc_hodir_helpAI : public ScriptedAI
-{
-    npc_hodir_helpAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-
-    void Reset()
-    {
-	    if(!me->HasAura(AURA_FORTITUDE_OF_FROST, 0))
-            me->CastSpell(me, AURA_FORTITUDE_OF_FROST, true);
-    }
-
-    void KilledUnit(Unit *victim)
-    {
-    }
-
-    void JustDied(Unit *victim)
-    {
-    }
-
-    void Aggro(Unit* pWho)
-    {
-        me->SetInCombatWithZone();
-
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
-    }
-
-    void UpdateAI(const uint32 diff)
-    {
-        if (!me->SelectHostileTarget() && !me->getVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-
-        EnterEvadeIfOutOfCombatArea(diff);
-
-    }
-
-};
-
-// Mimiron - Freundlicher Watcher
-struct MANGOS_DLL_DECL npc_mimiron_helpAI : public ScriptedAI
-{
-    npc_mimiron_helpAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-
-    void Reset()
-    {
-	    if(!me->HasAura(AURA_SPEED_OF_INVENTION , 0))
-            me->CastSpell(me, AURA_SPEED_OF_INVENTION , true);
-    }
-
-    void KilledUnit(Unit *victim)
-    {
-    }
-
-    void JustDied(Unit *victim)
-    {
-    }
-
-    void Aggro(Unit* pWho)
-    {
-        me->SetInCombatWithZone();
-
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
-    }
-
-    void UpdateAI(const uint32 diff)
-    {
-        if (!me->SelectHostileTarget() && !me->getVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-
-        EnterEvadeIfOutOfCombatArea(diff);
-
-    }
-
 };
 
 
@@ -816,10 +733,10 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public LibDevFSAI
     void Reset()
     {
 		SetCombatMovement(false);
-	    if(!me->HasAura(64169, 0))
-            me->CastSpell(me, 64169, true);
-		if(!me->HasAura(AURA_SANITY_WELL, 0))
-            me->CastSpell(me, AURA_SANITY_WELL, true);
+	    if(!me->HasAura(64169))
+            ModifyAuraStack(64169);
+		if(!me->HasAura(AURA_SANITY_WELL))
+            ModifyAuraStack(AURA_SANITY_WELL);
 
 		Check_Timer = 2000;
     }
@@ -979,7 +896,21 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 						}
 
 		if(pInstance)
+		{
             pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+			if(pInstance->GetData(TYPE_HODIR) == DONE)
+				if(Creature* cr = CallCreature(GuardianLoc[0][3],TEN_MINS*1.5,PREC_COORDS,NOTHING,GuardianLoc[0][0],GuardianLoc[0][1],GuardianLoc[0][2]))
+					cr->SetInFront(me);
+			if(pInstance->GetData(TYPE_THORIM) == DONE)
+				if(Creature* cr = CallCreature(GuardianLoc[1][3],TEN_MINS*1.5,PREC_COORDS,NOTHING,GuardianLoc[1][0],GuardianLoc[1][1],GuardianLoc[1][2]))
+					cr->SetInFront(me);
+			if(pInstance->GetData(TYPE_MIMIRON) == DONE)
+				if(Creature* cr = CallCreature(GuardianLoc[2][3],TEN_MINS*1.5,PREC_COORDS,NOTHING,GuardianLoc[2][0],GuardianLoc[2][1],GuardianLoc[2][2]))
+					cr->SetInFront(me);
+			if(pInstance->GetData(TYPE_FREYA) == DONE)
+				if(Creature* cr = CallCreature(GuardianLoc[3][3],TEN_MINS*1.5,PREC_COORDS,NOTHING,GuardianLoc[3][0],GuardianLoc[3][1],GuardianLoc[3][2]))
+					cr->SetInFront(me);
+		}
 	}
 
 	void CheckDistance()
@@ -1109,13 +1040,8 @@ struct MANGOS_DLL_DECL npc_yoggimmortalAI : public LibDevFSAI
 
     void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if(pDoneBy == me)
-			return;
-
-		if(dmg >= me->GetHealth())
-		{
+		if(dmg >= me->GetHealth() && !me->HasAura(64162))
 			dmg = 0;
-		}
 	}
 };
 
@@ -1215,7 +1141,6 @@ struct MANGOS_DLL_DECL YoggDeathRayAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
     {
 		UpdateEvent(diff);
-        DoMeleeAttackIfReady();
     }
 };
 

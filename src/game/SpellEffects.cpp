@@ -1880,6 +1880,11 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastSpell(m_caster, spell_id, true);
                     return;
                 }
+				case 64172:
+				{
+					unitTarget->CastSpell(unitTarget,64162,true);
+					return;
+				}
 				// Koralon Meteor hands
 				case 66725:
 					m_caster->CastSpell(m_caster,66765,true);
@@ -6283,7 +6288,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                 }
 				case 65238:
 				{
-					m_caster->CastSpell(m_caster,65238,true);
+					m_caster->CastSpell(m_caster,64173,true);
 					return;
 				}
 				case 64466:

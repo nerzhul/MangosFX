@@ -581,11 +581,22 @@ void Unit::DealDamageMods(Unit *pVictim, uint32 &damage, uint32* absorb)
     uint32 originalDamage = damage;
 
     //Script Event damage Deal
-    if( GetTypeId()== TYPEID_UNIT && ((Creature *)this)->AI())
-        ((Creature *)this)->AI()->DamageDeal(pVictim, damage);
+    if(GetTypeId()== TYPEID_UNIT && ((Creature *)this)->AI())
+	{
+		// hack for hodir spell
+		if(pVictim->HasAura(64174) && damage >= pVictim->GetMaxHealth())
+		{
+			damage = 0;
+			pVictim->CastStop();
+			pVictim->CastSpell(pVictim,64175,true);
+			if(Unit* caster = pVictim->GetAura(64174)->GetCaster())
+				caster->RemoveAurasDueToSpell(64174);
+		}
+        ((Creature*)this)->AI()->DamageDeal(pVictim, damage);
+	}
     //Script Event damage taken
-    if( pVictim->GetTypeId()== TYPEID_UNIT && ((Creature *)pVictim)->AI() )
-        ((Creature *)pVictim)->AI()->DamageTaken(this, damage);
+    if(pVictim->GetTypeId()== TYPEID_UNIT && ((Creature *)pVictim)->AI())
+        ((Creature*)pVictim)->AI()->DamageTaken(this, damage);
 
     if(absorb && originalDamage > damage)
         *absorb += (originalDamage - damage);
