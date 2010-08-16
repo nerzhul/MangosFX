@@ -212,6 +212,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	std::vector<Creature*> YoggNuage;
 	std::vector<uint64> YoggAdds;
 	std::vector<uint64> YoggEndPortals;
+	std::vector<uint64> YoggTentacles;
 
     void Initialize();    
 

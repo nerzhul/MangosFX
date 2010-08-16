@@ -13,6 +13,7 @@ void instance_ulduar::Initialize()
 	YoggNuage.clear();
 	YoggAdds.clear();
 	YoggEndPortals.clear();
+	YoggTentacles.clear();
 
     m_uiLeviathanGUID       = 0;
     m_uiIgnisGUID           = 0;
@@ -247,6 +248,11 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			break;
 		case 32915:
 			freyaSecAncientGUID = pCreature->GetGUID();
+			break;
+		case 33966:
+		case 33985:
+		case 33983:
+			YoggTentacles.push_back(pCreature->GetGUID());
 			break;
     }
 }
@@ -547,6 +553,15 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				}
 			}
 			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
+			{
+				if(Creature* cr = GetCreatureInMap(*itr))
+				{
+					cr->ForcedDespawn(2000);
+					cr->SetPhaseMask(0x2,true);
+				}
+			}
+
+			for (std::vector<uint64>::iterator itr = YoggTentacles.begin(); itr != YoggTentacles.end();++itr)
 			{
 				if(Creature* cr = GetCreatureInMap(*itr))
 				{
