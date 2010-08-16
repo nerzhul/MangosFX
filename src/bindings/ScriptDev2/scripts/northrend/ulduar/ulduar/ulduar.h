@@ -209,7 +209,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	std::vector<Creature*> FreyaTrashs;
 	std::vector<Creature*> MimironTrashs;
 	std::vector<Creature*> YoggNuage;
-	std::vector<Creature*> YoggAdds;
+	std::vector<uint64> YoggAdds;
 
     void Initialize();    
 

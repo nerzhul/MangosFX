@@ -223,7 +223,7 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			YoggNuage.push_back(pCreature);
 			break;
 		case 33136:
-			YoggAdds.push_back(pCreature);
+			YoggAdds.push_back(pCreature->GetGUID());
 			break;
 		case 33174:
 			pCreature->SetVisibility(VISIBILITY_OFF);
@@ -535,10 +535,13 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 					(*itr)->SetPhaseMask(0x2,true);
 				}
 			}
-			for (std::vector<Creature*>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
+			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
 			{
-				(*itr)->DealDamage((*itr),(*itr)->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-				(*itr)->SetPhaseMask(0x2,true);
+				if(Creature* cr = GetCreatureInMap(*itr))
+				{
+					cr->ForcedDespawn(2000);
+					cr->SetPhaseMask(0x2,true);
+				}
 			}
 			break;
 		}
