@@ -195,7 +195,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
 		AddEvent(SPELL_SHADOW_BEACON,12000,30000,5000,HEAL_MY_FRIEND,EVENT_PHASE3);
 		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
-		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /*- SaraTimer*/,60000);
 		AddEventOnMe(SPELL_BRAIN_LINK,20000,32000,0,EVENT_PHASE2);
     }
 
@@ -215,6 +214,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	std::vector<uint64> DreamAdds;
 
 	bool isBrainPhase;
+	bool AchCrazy;
 
     void Reset()
     {
@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		EndPortal_Timer = 60000;
 		eStep = 0;
 		AggroAllPlayers(200.0f);
-		SaraTimer = 0;
+		SaraTimer = 900000;
 		DreamAdds.clear();
 		if (pInstance)
 		{
@@ -244,6 +244,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		Psychosis_Timer = 15000;
 		MaladyMind_Timer = 18000;
 		CheckTimer = 500;
+		AchCrazy = true;
     }
 
 	uint8 GetVision()
@@ -264,7 +265,31 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		Yell(15761,"Votre destin est scellé, la fin des temps est enfin arrivée pour vous et pour tous les habitants de ces petits bourgeons !");
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,3);
 		if (pInstance)
+		{
             pInstance->SetData(TYPE_YOGGSARON, DONE);
+			uint8 guardians = 0;
+			if(pInstance->GetData(TYPE_HODIR) == DONE)
+				guardians++;
+			if(pInstance->GetData(TYPE_THORIM) == DONE)
+				guardians++;
+			if(pInstance->GetData(TYPE_MIMIRON) == DONE)
+				guardians++;
+			if(pInstance->GetData(TYPE_FREYA) == DONE)
+				guardians++;
+			if(guardians < 4)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3161 : 3157);
+			if(guardians < 3)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3162 : 3141);
+			if(guardians < 2)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3163 : 3158);
+			if(guardians < 1)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3164 : 3159);
+			if(AchCrazy)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3010 : 3008);
+			if(SaraTimer > 480000)
+				pInstance->CompleteAchievementForGroup(m_difficulty ? 3013 : 3012);
+
+		}
     }
 
     void Aggro(Unit* pWho)
@@ -320,6 +345,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	void ControlPlayer(Player* plr)
 	{
 		DoCast(plr,SPELL_DOMINATE_MIND);
+		AchCrazy = false;
 		Kill(plr);
 	}
 
@@ -353,6 +379,9 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 							Linked[i] = pPlayer->GetGUID();
 							i++;
 						}
+
+						if(!pPlayer->HasAura(SPELL_Sanity) && !pPlayer->isGameMaster() && pPlayer->GetDistance2d(me) < 250.0f)
+							Kill(pPlayer);
 					}
 
 		if(Linked[0] && Linked[1])
@@ -412,6 +441,11 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 						ModifySanity(1,pPlayer);
 	}
 
+	void SetEnrageTimer(uint32 time)
+	{
+		SaraTimer = time;
+	}
+
 	void GoPhase3()
 	{
 		Event = EVENT_PHASE3;
@@ -428,6 +462,14 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		}
 		else
 			CheckPlayerSight_Timer -= diff;
+
+		if(SaraTimer <= diff)
+		{
+			DoCastVictim(SPELL_EXINGUISH_ALL_LIFE);
+			SaraTimer = 900000;
+		}
+		else
+			SaraTimer -= diff;
 
 		switch(Event)
 		{
@@ -767,7 +809,6 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public LibDevFSAI
 
 };
 
-// Yogg_saron_cloud
 struct MANGOS_DLL_DECL boss_yogg_nuageAI : public LibDevFSAI
 {
     boss_yogg_nuageAI(Creature* pCreature) : LibDevFSAI(pCreature)
@@ -828,6 +869,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 	bool EventStarted;
 	uint32 CheckTimer;
 	uint32 SpawnEvent_Timer;
+	uint32 Enrage_Timer;
 
     void Reset()
     {
@@ -842,6 +884,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 
 		EventStarted = false;
 		CheckTimer = 1000;
+		Enrage_Timer = 0;
 		if (pInstance)
 		{
 			pInstance->SetData(DATA_YOGG_NUAGE,0);
@@ -870,6 +913,9 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
     {
 		Yell(15754,"Je suis le r�ve éveillé, le monstre de vos cauchemars, le démon aux milliers de visages, tremblez devant mon véritable aspect, � genoux devant le dieu de la mort !");
 		CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
+		if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
+			if(Yogg->isAlive())
+				((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->SetEnrageTimer(Enrage_Timer);
 		CallCreature(NPC_YOGGSARON_BRAIN,DAY*1000,PREC_COORDS,NOTHING,1981.512f,-22.89f,255.712f,true);
 	}
 
@@ -943,6 +989,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		Enrage_Timer += diff;
 		if(CheckTimer <= diff)
 		{
 			CheckDistance();
