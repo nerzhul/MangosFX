@@ -27,11 +27,13 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
     {
         InitInstance();
         AddEventOnMe(SPELL_ENRAGE,600000,60000);
+		AddTextEvent(15547,"Votre defaite etait inevitable !",TEN_MINS,TEN_MINS);
 		AddEvent(SPELL_MARK_OF_FACELESS,75000,60000);
 		AddEventOnTank(SPELL_SEARING_FLAME,15000,12000,2000);
-		AddEventMaxPrioOnMe(SPELL_SURGE_OF_DARKNESS,70000,60000,10000);
+		AddEventMaxPrioOnMe(SPELL_SURGE_OF_DARKNESS,70000,60000);
 		AddEvent(SPELL_SHADOW_CRASH,8000,12000,2000);
 		AddSummonEvent(NPC_VAPOR_SARONITE,45000,45000,0,0,1,TEN_MINS,NEAR_30M,NOTHING);
+		AddTextEvent(15545,"Le sang noir de Yogg Saron coule dans mes veines",70000,60000);
     }
 
 	uint32 saronite_timer;
@@ -50,6 +52,10 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 
     void KilledUnit(Unit *victim)
     {
+		if(urand(0,1))
+			Yell(15543,"Vous pensiez faire face aux legions de la mort et survivre ?");
+		else
+			Yell(15544,"L'impertinence... a travers de la condition mortelle.");
     }
 
 	void SetSaroniteDown()
@@ -59,6 +65,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 
     void JustDied(Unit *victim)
     {
+		Yell(15546,"Hahahaha, ces horreurs qui attendent...");
         if (pInstance)
 		{
             pInstance->SetData(TYPE_VEZAX, DONE);
@@ -70,8 +77,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 
     void Aggro(Unit* pWho)
     {
-//        DoScriptText(SAY_AGGRO, me);
-        //me->SetInCombatWithZone();
+		Yell(15542,"Votre destruction annoncera un nouveau monde de souffrance");
 		DoCastMe(SPELL_AURA_OF_DESPAIR);
         if (pInstance)
             pInstance->SetData(TYPE_VEZAX, IN_PROGRESS);
@@ -89,6 +95,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 			{
 				CallCreature(NPC_SARONITE_ANIMUS,TEN_MINS,NEAR_30M);
 				DoCastMe(SPELL_VOID_BARRER);
+				Yell(15548,"Contemplez maintenant la terreur absolue !");
 				nbsaro = 0;
 			}
 			saronite_timer = 45000;
