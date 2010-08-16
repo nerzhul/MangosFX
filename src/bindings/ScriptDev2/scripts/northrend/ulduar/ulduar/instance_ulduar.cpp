@@ -130,7 +130,6 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			pCreature->CastSpell(pCreature,66830,false);
             m_uiAlgalonGUID = pCreature->GetGUID();
             break;
-
 		case NPC_IRON_ASSEMBLAGE:
 			IgnisIronAdds.push_back(pCreature);
 			pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
@@ -222,11 +221,9 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 		case 33292:
 			pCreature->SetVisibility(VISIBILITY_ON);
 			YoggNuage.push_back(pCreature);
-			pCreature->SetRespawnDelay(DAY);
 			break;
 		case 33136:
 			YoggAdds.push_back(pCreature);
-			pCreature->SetRespawnDelay(DAY);
 			break;
 		case 33174:
 			pCreature->SetVisibility(VISIBILITY_OFF);
@@ -304,6 +301,9 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 		case 194750:
 			VezaxDoorGUID = pGo->GetGUID();
 			break;
+		case 194773:
+			YoggDoorGUID = pGo->GetGUID();
+			break;
 		case 194325:
 			FreyaGiftGUID = pGo->GetGUID();
 			break;
@@ -377,7 +377,7 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 		case TYPE_LEVIATHAN:
 		case TYPE_RAZORSCALE:
 		case TYPE_MIMIRON:
-		case TYPE_YOGGSARON:
+		
 		case TYPE_ALGALON:
 			m_auiEncounter[uiType] = uiData;
 			break;
@@ -398,6 +398,12 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				OpenDoor(VezaxDoorGUID);
 			else
 				CloseDoor(VezaxDoorGUID);*/
+			break;
+		case TYPE_YOGGSARON:
+			if(uiData == DONE || uiData == FAIL)
+				CloseDoor(YoggDoorGUID);
+			else
+				OpenDoor(YoggDoorGUID);
 			break;
 		case TYPE_AURIAYA:
 			m_auiEncounter[uiType] = uiData;
@@ -519,17 +525,16 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			for (std::vector<Creature*>::iterator itr = YoggNuage.begin(); itr != YoggNuage.end();++itr)
 			{
 				if(uiData == 0)
-					(*itr)->Respawn();
+					(*itr)->SetPhaseMask(0x1,true);
 				else
 				{
-					(*itr)->SetRespawnDelay(DAY*3600);
-					(*itr)->ForcedDespawn(500);
+					(*itr)->SetPhaseMask(0x2,true);
 				}
 			}
 			for (std::vector<Creature*>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
 			{
-				(*itr)->SetRespawnDelay(DAY*3600);
-				(*itr)->ForcedDespawn(500);
+				(*itr)->DealDamage((*itr),(*itr)->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+				(*itr)->SetPhaseMask(0x2,true);
 			}
 			break;
 		}

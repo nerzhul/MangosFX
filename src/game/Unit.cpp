@@ -9986,6 +9986,12 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             break;
         }
         default:
+			switch(spellProto->Id)
+			{
+				case 64085:
+					DoneTotalMod *= 1.2f;
+					break;
+			}
             break;
     }
 

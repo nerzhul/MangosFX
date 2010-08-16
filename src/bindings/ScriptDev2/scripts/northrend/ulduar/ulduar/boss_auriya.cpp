@@ -40,6 +40,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 		AddEventMaxPrioOnTank(SPELL_TERRIFYING_SCREECH,9500,30000);
 		AddEnrageTimer(TEN_MINS);
 		AddTextEvent(15477,"Vous me faîtes perdre mon temps.",TEN_MINS,DAY*HOUR);
+		FreezeMob(false);
     }
 
 	bool SentryDown;

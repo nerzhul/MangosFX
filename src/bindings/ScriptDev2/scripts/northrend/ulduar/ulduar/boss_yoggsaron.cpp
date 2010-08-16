@@ -157,18 +157,19 @@ enum YoggEvents
 	EVENT_PHASE3	=	2,
 };
 
-struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
+struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 {
-    boss_yoggsaronAI(Creature *c) : Scripted_NoMovementAI(c)
+    boss_yoggsaronAI(Creature *c) : LibDevFSAI(c)
     {
-        m_pInstance = ((ScriptedInstance*)c->GetInstanceData());
-        Reset();
-		m_bIsHeroic = c->GetMap()->GetDifficulty();
+        InitInstance();
+		AddSummonEvent(NPC_TENTACLE_TANK,15000,75000,EVENT_PHASE2,15000,1,TEN_MINS*2,NEAR_45M);
+		AddSummonEvent(NPC_TENTACLE_CAST,2000,30000,EVENT_PHASE2,3000,2,TEN_MINS*2,NEAR_45M);
+		AddSummonEvent(NPC_TENTACLE_CONSTRICTOR,20000,45000,EVENT_PHASE2,35000,1,TEN_MINS*2,NEAR_45M);
+		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
+		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
+		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /* - SaraTimer */,60000);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
-	bool m_bIsHeroic;
 	uint32 Event_Timer;
 	uint32 TentacleText_Timer;
 	uint8 Event;
@@ -181,30 +182,26 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
+		ResetTimers();
+		CleanMyAdds();
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.05f);
 	    if(!me->HasAura(AURA_SHADOWY_BARRIER_1, 0))
             me->CastSpell(me, AURA_SHADOWY_BARRIER_1, true);
 
-		m_pInstance->SetData(DATA_YOGG_NUAGE,1);
+		
 		Event = EVENT_POP;
 		Event_Timer = 500;
 		eStep = 0;
 		AggroAllPlayers(200.0f);
-		if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
-		Tasks.AddSummonEvent(NPC_TENTACLE_TANK,15000,75000,EVENT_PHASE2,15000,1,TEN_MINS*2,NEAR_45M);
-		Tasks.AddSummonEvent(NPC_TENTACLE_CAST,2000,30000,EVENT_PHASE2,3000,2,TEN_MINS*2,NEAR_45M);
-		Tasks.AddSummonEvent(NPC_TENTACLE_CONSTRICTOR,20000,45000,EVENT_PHASE2,35000,1,TEN_MINS*2,NEAR_45M);
-		Tasks.AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
-		Tasks.AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
+		if (pInstance)
+		{
+			pInstance->SetData(DATA_YOGG_NUAGE,1);
+            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+		}
+		
 		LunaticGaze_Timer = 5000;
 		uint8 randomVision = 3;
 		TentacleText_Timer = 15000;
-
-		Tasks.AddEvent(SPELL_EXINGUISH_ALL_LIFE,900000 /* - SaraTimer */,60000,0,TARGET_MAIN);
-		
 		Psychosis_Timer = 15000;
 		MaladyMind_Timer = 18000;
 		CheckTimer = 500;
@@ -226,17 +223,17 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
     void JustDied(Unit *victim)
     {
 		Yell(15761,"Votre destin est scellé, la fin des temps est enfin arrivée pour vous et pour tous les habitants de ces petits bourgeons !");
-		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE,3);
-		if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, DONE);
+		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,3);
+		if (pInstance)
+            pInstance->SetData(TYPE_YOGGSARON, DONE);
     }
 
     void Aggro(Unit* pWho)
     {
 		SetCombatMovement(false);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
     }
 
 	void LaunchVisionEvent()
@@ -273,7 +270,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 		for(uint8 i=0;i<6;i++)
 		{
-			Tasks.CallCreature(0,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]);
+			CallCreature(0,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]+1.0f);
 		}
 		PoPYoggPortals();
 	}
@@ -335,7 +332,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				ControlPlayer((Player*)tar);
 		}
 		else
-			ModifyAuraStack(SPELL_Sanity,stk - count,tar,tar);
+			ModifyAuraStack(SPELL_Sanity,-count,tar,tar);
 	}
 
 	void GoPhase3()
@@ -365,7 +362,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				}
 				else
 					Event_Timer -= diff;
-				break;
+
+				return;
 			case EVENT_PHASE2:
 				if(Event_Timer <= diff)
 				{
@@ -386,20 +384,11 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 				if(Psychosis_Timer <= diff)
 				{
-					Unit* target;
-					uint16 count = 0;
-					do
+					if(Unit* target = GetRandomUnit())
 					{
-						target = SelectUnit(SELECT_TARGET_RANDOM,0);
-						count++;
+						DoCast(target,(m_difficulty ? SPELL_PSYCHOSIS_25 : SPELL_PSYCHOSIS_10));
+						ModifySanity((m_difficulty ? 9 : 12),target);
 					}
-					while(!target && target->GetDistance2d(me) > 200.0f 
-						&& target->GetDistanceZ(me) > 10.0f && count < 50);
-
-					if(target)
-						DoCast(target,(m_bIsHeroic ? SPELL_PSYCHOSIS_25 : SPELL_PSYCHOSIS_10));
-					ModifySanity((m_bIsHeroic ? 9 : 12),target);
-
 					Psychosis_Timer = urand(10000,15000);
 				}
 				else
@@ -407,20 +396,11 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 
 				if(MaladyMind_Timer <= diff)
 				{
-					Unit* target;
-					uint16 count = 0;
-					do
+					if(Unit* target = GetRandomUnit())
 					{
-						target = SelectUnit(SELECT_TARGET_RANDOM,0);
-						count++;
-					}
-					while(!target && target->GetDistance2d(me) > 200.0f 
-						&& target->GetDistanceZ(me) > 10.0f && count < 50);
-
-					if(target)
 						DoCast(target,SPELL_MALADY_OF_THE_MIND);
-					ModifySanity(3,target);
-
+						ModifySanity(3,target);
+					}
 					MaladyMind_Timer = urand(18000,25000);
 				}
 				else
@@ -457,13 +437,16 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public Scripted_NoMovementAI
 				break;
 		}
 		
-		Tasks.UpdateEvent(diff,Event);
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff,Event);
+		UpdateEvent(diff);
 
 		if(!me->SelectHostileTarget() && !me->getVictim())
 		{
-			if(Creature* Sara = (Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_YOGG_SARA)))
+			if(Creature* Sara = GetInstanceCreature(DATA_YOGG_SARA))
+			{
 				Sara->Respawn();
+				me->ForcedDespawn(1000);
+			}
 		}	
 	}
 };
@@ -765,22 +748,17 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public ScriptedAI
 };
 
 // Yogg_saron_cloud
-struct MANGOS_DLL_DECL boss_yogg_nuageAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_yogg_nuageAI : public LibDevFSAI
 {
-    boss_yogg_nuageAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_yogg_nuageAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
     }
 
-    ScriptedInstance* m_pInstance;
 	uint32 Check_Timer;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddSummonEvent(NPC_GUARDIAN_OF_YOGG,urand(15000,360000),urand(180000,360000));
 	    if(!me->HasAura(SPELL_NUAGE,0))
             DoCastMe(SPELL_NUAGE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
@@ -796,14 +774,14 @@ struct MANGOS_DLL_DECL boss_yogg_nuageAI : public ScriptedAI
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 					{
 						if(me->GetDistance2d(pPlayer) < 7.0f)
-							Tasks.CallCreature(NPC_GUARDIAN_OF_YOGG);
+							CallCreature(NPC_GUARDIAN_OF_YOGG);
 						return;
 					}
 	}
 
     void UpdateAI(const uint32 diff)
     {
-		if (m_pInstance && m_pInstance->GetData(TYPE_YOGGSARON) != IN_PROGRESS)
+		if (pInstance && pInstance->GetData(TYPE_YOGGSARON) != IN_PROGRESS)
 			return;
 
 		if(Check_Timer <= diff)
@@ -814,41 +792,41 @@ struct MANGOS_DLL_DECL boss_yogg_nuageAI : public ScriptedAI
 		else
 			Check_Timer -= diff;
 		
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 
 };
 
-struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
+struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 {
-    npc_saraAI(Creature *c) : ScriptedAI(c)
+    npc_saraAI(Creature *c) : LibDevFSAI(c)
     {
-        m_pInstance = ((ScriptedInstance*)c->GetInstanceData());
-        Reset();
+        InitInstance();
+		AddEvent(SPELL_SARAS_FERVOR,10000,15000,10000,PLAYER_RANDOM);
+		AddEvent(SPELL_SARAS_BLESSING,21000,15000,10000,PLAYER_RANDOM);
+		AddEvent(SPELL_SARAS_ANGER,12000,18000,12000);
     }
 
-    ScriptedInstance* m_pInstance;
-	MobEventTasks Tasks;
 	bool EventStarted;
 	uint32 CheckTimer;
+	uint32 SpawnEvent_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		if(!me->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE))
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 		if(!me->HasAura(SPELL_SHADOWY_BARRIER))
 			DoCastMe(SPELL_SHADOWY_BARRIER);
 
-		Tasks.AddEvent(SPELL_SARAS_FERVOR,10000,15000,15000,PLAYER_RANDOM);
-		Tasks.AddEvent(SPELL_SARAS_BLESSING,21000,20000,10000,PLAYER_RANDOM);
-		Tasks.AddEvent(SPELL_SARAS_ANGER,12000,18000,12000);
-
 		EventStarted = false;
 		CheckTimer = 1000;
-		m_pInstance->SetData(DATA_YOGG_NUAGE,0);
-		if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, NOT_STARTED);
+		if (pInstance)
+		{
+			pInstance->SetData(DATA_YOGG_NUAGE,0);
+            pInstance->SetData(TYPE_YOGGSARON, NOT_STARTED);
+		}
+		SpawnEvent_Timer = 15000;
     }
 
     void KilledUnit(Unit *victim)
@@ -859,10 +837,19 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 			Yell(15779,"Aurait-il pu �tre sauvé ?");
     }
 
+	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
+	{
+		if(dmg >= me->GetHealth())
+		{
+			error_log("TEST");
+			dmg = 0;
+		}
+	}
+
 	void JustDied(Unit *victim)
     {
 		Yell(15754,"Je suis le r�ve éveillé, le monstre de vos cauchemars, le démon aux milliers de visages, tremblez devant mon véritable aspect, � genoux devant le dieu de la mort !");
-		Tasks.CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
+		CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
 	}
 
     void Aggro(Unit* pWho)
@@ -890,8 +877,8 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 						if(me->GetDistance2d(pPlayer) < 350.0f && !pPlayer->isGameMaster())
 							ModifyAuraStack(SPELL_Sanity,100,pPlayer,pPlayer);
 
-		if (m_pInstance)
-            m_pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+		if(pInstance)
+            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
 	}
 
 	void CheckDistance()
@@ -903,12 +890,19 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 					{
-						if(!EventStarted && !pPlayer->isGameMaster()&&  me->GetDistance2d(pPlayer) < 90.0f && me->GetDistanceZ(pPlayer) < 15.0f)
+						if(!EventStarted && !pPlayer->isGameMaster() &&  me->GetDistance2d(pPlayer) < 90.0f && me->GetDistanceZ(pPlayer) < 15.0f)
 						{
 							StartEvent();
 							find = true;
 							return;
 						}
+
+						if(EventStarted)
+							if(!pPlayer->isGameMaster() && me->GetDistance2d(pPlayer) < 130.0f && me->GetDistanceZ(pPlayer) < 15.0f)
+							{
+								find = true;
+								return;
+							}
 					}
 		if(!find)
 			Reset();
@@ -916,112 +910,101 @@ struct MANGOS_DLL_DECL npc_saraAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-		if(!EventStarted)
+		if(CheckTimer <= diff)
 		{
-			if(CheckTimer <= diff)
-			{
-				CheckDistance();
-				CheckTimer = 1000;
-			}
-			else
-				CheckTimer -= diff;
-			if(!EventStarted)
-				return;
+			CheckDistance();
+			CheckTimer = 1000;
 		}
 		else
-		{
+			CheckTimer -= diff;
 
-			Tasks.UpdateEvent(diff);
+		if(EventStarted)
+		{
+			if(SpawnEvent_Timer <= diff)
+			{
+				if(Creature* nuage = GetInstanceCreature(DATA_YOGG_NUAGE))
+				{
+					((boss_yogg_nuageAI*)(nuage->AI()))->CallCreature(NPC_GUARDIAN_OF_YOGG);
+				}
+				SpawnEvent_Timer = 25000;
+			}
+			else
+				SpawnEvent_Timer -= diff;
+			UpdateEvent(diff);
 			DoMeleeAttackIfReady();
 		}
     }
 
 };
 
-struct MANGOS_DLL_DECL npc_yoggguardAI : public ScriptedAI
+struct MANGOS_DLL_DECL npc_yoggguardAI : public LibDevFSAI
 {
-    npc_yoggguardAI(Creature *pCreature) : ScriptedAI(pCreature)
+    npc_yoggguardAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+		AddEventOnTank(SPELL_DARK_VOLLEY,5000,10000,2000);
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
-	uint32 DeathTimer;
-
+	bool die;
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_DARK_VOLLEY,5000,10000,2000,TARGET_MAIN);
-		DeathTimer = DAY;
+		ResetTimers();
+		die = false;
     }
 
     void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
 		{
-			if(Unit* Sara = Unit::GetUnit((*me), pInstance->GetData64(DATA_YOGG_SARA)))
+			if(Unit* Sara = GetInstanceCreature(DATA_YOGG_SARA))
 				if(Sara->isAlive())
 					AggroAllPlayers(200.0f);
 		}
 
-		if(DeathTimer <= diff)
-		{
-			me->RemoveFromWorld();
-		}
-		else
-			DeathTimer -= diff;
-
-		Tasks.UpdateEvent(diff);
-
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 
     void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		if(dmg > me->GetHealth())
+		if(pDoneBy == me)
+			return;
+
+		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
 			me->CastStop();
-			DoCastMe((m_bIsHeroic ? SPELL_SHADOW_NOVA_H : SPELL_SHADOW_NOVA));
-			if(Unit* Sara = Unit::GetUnit((*me), pInstance->GetData64(DATA_YOGG_SARA)))
+			DoCastMe((m_difficulty ? SPELL_SHADOW_NOVA_H : SPELL_SHADOW_NOVA));
+			if(Unit* Sara = GetInstanceCreature(DATA_YOGG_SARA))
 			{
-				if(Sara && Sara->isAlive())
+				if(Sara && Sara->isAlive() && !die)
 					if(Sara->GetDistance2d(me) < 8.0f)
+					{
 						me->DealDamage(Sara,Sara->GetMaxHealth() * 12 / 100, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-
+						me->ForcedDespawn(1000);
+					}
 			}
-			DeathTimer = 1000;
+			die = true;
 		}
 	}
 };
 
 
-struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public LibDevFSAI
 {
-    add_YoggTentacleTankAI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_YoggTentacleTankAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+		AddEventOnMe(SPELL_FOCUSED_ANGER,500,DAY*1000);
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 CheckDist_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		SetCombatMovement(false);
 		DoCastMe(SPELL_ERUPT);
-		Tasks.AddEvent(SPELL_FOCUSED_ANGER,500,DAY*1000,0,TARGET_ME);
 		CheckDist_Timer = 1000;
 		AggroAllPlayers(150.0f);
     }
@@ -1053,68 +1036,53 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public ScriptedAI
 		else
 			CheckDist_Timer -= diff;
       
-		Tasks.UpdateEvent(diff);
-
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
 
-struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public LibDevFSAI
 {
-    add_YoggTentacleCastAI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_YoggTentacleCastAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
+		AddEvent(SPELL_APATHY,2000,20000,3000);
+		AddEvent(SPELL_BLACK_PLAGUE,5000,7000,7000,TARGET_HAS_MANA);
+		AddEvent(SPELL_CURSE_OF_DOOM,20000,20000,10000);
+		AddEvent(SPELL_DRAINING_POISON,8000,15000,15000,TARGET_HAS_MANA);
     }
-
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		SetCombatMovement(false);
 		DoCastMe(SPELL_ERUPT);
-		Tasks.AddEvent(SPELL_APATHY,2000,20000,3000);
-		Tasks.AddEvent(SPELL_BLACK_PLAGUE,5000,7000,7000,TARGET_HAS_MANA);
-		Tasks.AddEvent(SPELL_CURSE_OF_DOOM,20000,20000,10000);
-		Tasks.AddEvent(SPELL_DRAINING_POISON,8000,15000,15000,TARGET_HAS_MANA);
 		AggroAllPlayers(150.0f);
     }
 
 
     void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
 
-struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public ScriptedAI
+struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public LibDevFSAI
 {
-    add_YoggTentacleConstAI(Creature *pCreature) : ScriptedAI(pCreature)
+    add_YoggTentacleConstAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
     }
 
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 squeeze_Timer;
-	std::vector<Unit*> targets;
+	uint64 targetGUID;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		SetCombatMovement(false);
 		DoCastMe(SPELL_ERUPT);
-		targets.clear();
 		squeeze_Timer = 1000;
 		AggroAllPlayers(150.0f);
     }
@@ -1124,32 +1092,31 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public ScriptedAI
     {
 		if(squeeze_Timer <= diff)
 		{
-			if(Unit* target = SelectUnit(SELECT_TARGET_RANDOM,0))
+			if(Unit* target = GetRandomUnit())
 				if(target->isAlive())
 				{
-					DoCast(target,(m_bIsHeroic ? SPELL_SQUEEZE_25 : SPELL_SQUEEZE_10));
-					DoCast(target,66830);
-					targets.push_back(target);
+					ModifyAuraStack((m_difficulty ? SPELL_SQUEEZE_25 : SPELL_SQUEEZE_10),1,target);
+					target->EnterVehicle(me);
+					targetGUID = target->GetGUID();
 				}
 
-			squeeze_Timer = 35000;
+			squeeze_Timer = DAY*HOUR;
 		}
 		else
 			squeeze_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 
 	void JustDied(Unit* pWho)
 	{
-		for(std::vector<Unit*>::iterator itr = targets.begin(); itr!= targets.end(); ++itr)
-			if((*itr) && (*itr)->isAlive())
+		if(Unit* u = GetGuidUnit(targetGUID))
+			if(u->isAlive())
 			{
-				(*itr)->RemoveAurasDueToSpell(SPELL_SQUEEZE_25);
-				(*itr)->RemoveAurasDueToSpell(SPELL_SQUEEZE_10);
-				(*itr)->RemoveAurasDueToSpell(66830);
+				u->RemoveAurasDueToSpell(SPELL_SQUEEZE_25);
+				u->RemoveAurasDueToSpell(SPELL_SQUEEZE_10);
 			};
 	}
 };

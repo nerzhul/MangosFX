@@ -192,6 +192,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 ThorimDoorGUID;
 	uint64 AuriayaDoorGUID;
 	uint64 VezaxDoorGUID;
+	uint64 YoggDoorGUID;
 
 	uint32 checkPlayer_Timer;
 	uint32 IgnisHFReset_Timer;
@@ -313,6 +314,8 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 				return freyaSecAncientGUID;
 			case DATA_FREYA_ANCIENT_3:
 				return freyaThirdAncientGUID;
+			case DATA_YOGG_NUAGE:
+				return GetRandomYoggNuage();
         }
 
         return 0;
@@ -361,6 +364,27 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 			rand_add = rand() % 20;
 			uint16 nb_add = 0;
 			for (std::vector<Creature*>::iterator itr = IgnisIronAdds.begin(); itr != IgnisIronAdds.end();++itr)
+			{
+				Creature *tmpAdd = *itr;
+				if(nb_add == rand_add && tmpAdd && tmpAdd->isAlive())
+					return tmpAdd->GetGUID();
+
+				nb_add++;
+			}
+			force_out++;
+		}
+		return 0;
+	}
+
+	uint64 GetRandomYoggNuage()
+	{
+		uint16 rand_add;
+		uint16 force_out = 0;
+		while(force_out < 30)
+		{
+			rand_add = rand() % 20;
+			uint16 nb_add = 0;
+			for (std::vector<Creature*>::iterator itr = YoggNuage.begin(); itr != YoggNuage.end();++itr)
 			{
 				Creature *tmpAdd = *itr;
 				if(nb_add == rand_add && tmpAdd && tmpAdd->isAlive())
