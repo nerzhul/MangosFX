@@ -364,8 +364,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void CreateEndPortals()
 	{
-		for(uint8 i=0;i<3;i++)
-			;
+		BossEmote(0,"Les illusions se dissipent et un portail vers la surface apparait");
 	}
 
 	void CheckPlayerSight()
