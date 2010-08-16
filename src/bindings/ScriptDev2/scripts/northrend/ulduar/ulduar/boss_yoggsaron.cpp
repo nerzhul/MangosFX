@@ -842,7 +842,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 		AddEvent(SPELL_SARAS_FERVOR,10000,15000,10000,PLAYER_RANDOM);
 		AddEvent(SPELL_SARAS_BLESSING,21000,15000,10000,PLAYER_RANDOM);
 		AddEvent(SPELL_SARAS_ANGER,12000,18000,12000);
-		AddTextEvent(15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais",12000,DAY*HOUR);
+		AddTextEvent(15775,"Il sera bientôt temps de frapper la tête de la bête, concentrez vos rage sur ces laquais",12000,DAY*100);
     }
 
 	bool EventStarted;

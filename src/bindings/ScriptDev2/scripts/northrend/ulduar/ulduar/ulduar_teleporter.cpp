@@ -20,6 +20,7 @@ The teleporter appears to be active and stable.
 #define ANTECHAMBER  204
 #define WALKWAY      205
 #define CONSERVATORY 206
+#define MADNESS		 207
 
 bool GoHello_ulduar_teleporter( Player *pPlayer, GameObject *pGO )
 {
@@ -39,7 +40,11 @@ bool GoHello_ulduar_teleporter( Player *pPlayer, GameObject *pGO )
             {
                 pPlayer->ADD_GOSSIP_ITEM(0, "Teleport to the Shattered Walkway", GOSSIP_SENDER_MAIN, WALKWAY);
                 if(pInstance->GetData(TYPE_AURIAYA) == DONE)
+				{
                     pPlayer->ADD_GOSSIP_ITEM(0,	 "Teleport to the Conservatory of Life", GOSSIP_SENDER_MAIN, CONSERVATORY);
+					if(pInstance->GetData(TYPE_YOGGSARON) == DONE)
+						pPlayer->ADD_GOSSIP_ITEM(0,	 "Teleportation a la prison de Yogg Saron", GOSSIP_SENDER_MAIN, MADNESS);
+				}
             }
         }
     //}

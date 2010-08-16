@@ -304,11 +304,11 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 			break;
 		case 194750:
 			VezaxDoorGUID = pGo->GetGUID();
+			if(GetData(TYPE_VEZAX) == DONE)
+				OpenDoor(VezaxDoorGUID);
 			break;
 		case 194773:
 			YoggDoorGUID = pGo->GetGUID();
-			if(GetData(TYPE_VEZAX) == DONE)
-				OpenDoor(YoggDoorGUID);
 			break;
 		case 194325:
 			FreyaGiftGUID = pGo->GetGUID();
@@ -357,9 +357,15 @@ void instance_ulduar::Update(uint32 diff)
 				OpenDoor(AuriayaDoorGUID);
 
 			if(!(GetData(TYPE_VEZAX) == DONE))
+			{
+				OpenDoor(YoggDoorGUID);
 				CloseDoor(VezaxDoorGUID);
+			}
 			else
+			{
+				CloseDoor(YoggDoorGUID);
 				OpenDoor(VezaxDoorGUID);
+			}
 
 		}
 		checkPlayer_Timer = 500;

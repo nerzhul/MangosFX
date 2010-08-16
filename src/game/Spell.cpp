@@ -1484,6 +1484,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				}
 				case 65950:
 				case 66001:
+				case 63276:
 					if(m_originalCaster)
 					{
 						if(m_originalCaster->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL || 

@@ -45,7 +45,6 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 		ResetTimers();
 		CleanMyAdds();
 		SaroniteDown = false;
-		
 		nbsaro = 0;
 		saronite_timer = 45000;
     }
