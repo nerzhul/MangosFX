@@ -632,7 +632,7 @@ struct MANGOS_DLL_DECL npc_freya_helpAI : public LibDevFSAI
     npc_freya_helpAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnMe(SPELL_SANITY_WELL,2000,25000);
+		AddEventOnMe(SPELL_SANITY_WELL,2000,45000);
     }
 
     void Reset()
@@ -749,8 +749,9 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 					{
-						if(pPlayer->HasAura(SPELL_Sanity))
-							ModifyAuraStack(SPELL_Sanity,20,pPlayer);
+						if(Creature* Sara = GetInstanceCreature(DATA_YOGG_SARA))
+							if(pPlayer->HasAura(SPELL_Sanity) && pPlayer->GetDistance2d(me) < 12.0f)
+								ModifyAuraStack(SPELL_Sanity,20,pPlayer,Sara);
 					}
 	}
     void UpdateAI(const uint32 diff)
