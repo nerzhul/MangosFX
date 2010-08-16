@@ -45,6 +45,7 @@ void instance_ulduar::Initialize()
 	freyaFirstAncientGUID = 0;
 	freyaSecAncientGUID = 0;
 	freyaThirdAncientGUID = 0;
+	YSBrainGUID = 0;
 
 	YoggBrainDoor1GUID = 0;
 	YoggBrainDoor2GUID = 0;
@@ -260,6 +261,9 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 		case 33985:
 		case 33983:
 			YoggTentacles.push_back(pCreature->GetGUID());
+			break;
+		case 33890:
+			YSBrainGUID = pCreature->GetGUID();
 			break;
     }
 }

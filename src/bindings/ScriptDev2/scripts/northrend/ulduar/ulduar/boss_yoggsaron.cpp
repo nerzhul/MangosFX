@@ -99,6 +99,9 @@ enum Spells
 	SPELL_BLACK_PLAGUE			= 64153,
 	SPELL_CURSE_OF_DOOM			= 64157,
 	SPELL_DRAINING_POISON		= 64152,
+
+	// brain
+	SPELL_CRAZY_BRAIN			= 64059,
 	
 	// p3
 	SPELL_SHADOW_BEACON			= 64465,
@@ -297,6 +300,10 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		for(uint8 i=0;i<6;i++)
 			if(Creature* cr = CallCreature(NPC_TENTACLE_INFLUENCE,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]))
 				DreamAdds.push_back(cr->GetGUID());
+
+		if(Creature* Brain = GetInstanceCreature(DATA_YOGG_BRAIN))
+			Brain->CastSpell(Brain,SPELL_CRAZY_BRAIN,false);
+
 		PoPYoggPortals();
 	}
 
@@ -564,13 +571,30 @@ struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
 		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
+	void SpellHit(Unit* pWho, const SpellEntry* spell)
+	{
+		if(spell->Id == SPELL_CRAZY_BRAIN)
+		{
+			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+			if (!lPlayers.isEmpty())
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					if (Player* pPlayer = itr->getSource())
+						if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
+							if(Yogg->isAlive() && pPlayer->isAlive() && pPlayer->GetPositionZ() < 300.0f)
+							{
+								((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->ModifySanity(100,pPlayer);
+								pPlayer->TeleportTo(pPlayer->GetMap()->GetId(),1980.528f,-29.373f,324.9f,0);
+							}
+		}
+	}
+
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
 		float pct = float(me->GetHealth() - dmg) / float(me->GetMaxHealth());
 		if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
 			if(Yogg->isAlive())
 				Yogg->SetHealth(pct * Yogg->GetMaxHealth());
-		if(pct <= 30)
+		if(CheckPercentLife(30))
 		{
 			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 			if (!lPlayers.isEmpty())

@@ -67,6 +67,7 @@ enum
 	DATA_YOGG_END_PORTALS		= 59,
 	DATA_YOGG_TENTACLES_FROZEN	= 60,
 	DATA_YOGGBRAIN_DOOR			= 61,
+	DATA_YOGG_BRAIN				= 62,
 
     NPC_LEVIATHAN               = 33113,
     NPC_IGNIS                   = 33118,
@@ -184,6 +185,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 freyaFirstAncientGUID;
 	uint64 freyaSecAncientGUID;
 	uint64 freyaThirdAncientGUID;
+	uint64 YSBrainGUID;
 
 	uint64 XTDoorGUID;
 	uint64 IronCouncilDoorGUID;
@@ -327,6 +329,8 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 				return freyaThirdAncientGUID;
 			case DATA_YOGG_NUAGE:
 				return GetRandomYoggNuage();
+			case DATA_YOGG_BRAIN:
+				return YSBrainGUID;
         }
 
         return 0;
