@@ -7228,6 +7228,10 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 
                     int32 extra_attack_power = CalculateSpellDamage(windfurySpellEntry, 1, windfurySpellEntry->EffectBasePoints[1], pVictim);
 
+					// Totem of Splintering
+					if(Aura* aura = GetAura(60764, EFFECT_INDEX_0))
+						extra_attack_power += aura->GetModifier()->m_amount;
+
                     // Off-Hand case
                     if ( castItem->GetSlot() == EQUIPMENT_SLOT_OFFHAND )
                     {
