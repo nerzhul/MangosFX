@@ -319,10 +319,16 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive() && pPlayer->HasAura(SPELL_BRAIN_LINK) && i < 2)
+					if(pPlayer->isAlive())
 					{
-						Linked[i] = pPlayer->GetGUID();
-						i++;
+						if(pPlayer->GetDistance2d(1979.17f,-22.76f) < 250.0f && pPlayer->GetPositionZ() < 250.0f)
+							ModifySanity(1,pPlayer);
+
+						if(pPlayer->HasAura(SPELL_BRAIN_LINK) && i < 2)
+						{
+							Linked[i] = pPlayer->GetGUID();
+							i++;
+						}
 					}
 
 		if(Linked[0] && Linked[1])
