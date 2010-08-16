@@ -523,7 +523,6 @@ struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
 		phase3 = false;
 		SetCombatMovement(false);
 		me->setFaction(14);
-		SetFlying(true);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
@@ -882,7 +881,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
     {
 		Yell(15754,"Je suis le r�ve éveillé, le monstre de vos cauchemars, le démon aux milliers de visages, tremblez devant mon véritable aspect, � genoux devant le dieu de la mort !");
 		CallCreature(NPC_YOGGSARON,DAY*1000,PREC_COORDS,AGGRESSIVE_RANDOM,1976.812f, -25.675f, 328.980f,true);
-		CallCreature(NPC_YOGGSARON_BRAIN,DAY*HOUR,PREC_COORDS,NOTHING,1981.512f,-22.89f,255.712f);
+		CallCreature(NPC_YOGGSARON_BRAIN,DAY*1000,PREC_COORDS,NOTHING,1981.512f,-22.89f,255.712f,true);
 	}
 
 	void StartEvent()
