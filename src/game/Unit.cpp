@@ -5715,7 +5715,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 
                     target = this;
                     if (roll_chance_i(10))
-                        ((Player*)this)->Say("This is Madness!", LANG_UNIVERSAL);
+                        ((Player*)this)->Say("C'est fou!", LANG_UNIVERSAL);
                     break;
                 }
                 // Sunwell Exalted Caster Neck (Shattered Sun Pendant of Acumen neck)
@@ -5882,6 +5882,30 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 
                     break;
                 }
+				// Anger Capacitor
+				case 71406:                                 // normal
+				case 71545:                                 // heroic
+				{
+					if (!pVictim)
+						return false;
+					
+					SpellEntry const* mote = sSpellStore.LookupEntry(71432);
+					if(!mote)
+						return false;
+					
+					uint32 maxStack = mote->StackAmount - (dummySpell->Id == 71545 ? 1 : 0);
+					Aura *aur = GetAura(71432, EFFECT_INDEX_0);
+					if(aur && uint32(aur->GetStackAmount() +1) >= maxStack)
+					{
+						RemoveAurasDueToSpell(71432);       // Mote of Anger
+						// Manifest Anger (main hand/off hand)
+						CastSpell(pVictim, roll_chance_i(50) ? 71433 : 71434, true);
+						return true;
+					}
+					else
+						triggered_spell_id = 71432;
+					break;
+				}
             }
             break;
         }
