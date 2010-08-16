@@ -1352,6 +1352,46 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastSpell(m_caster, 45088, true);
                     return;
                 }
+				case 45449: // Arcane Prisoner Rescue
+                {
+                    uint32 spellId=0;
+                    switch(rand() % 2)
+                    {
+                        case 0: spellId = 45446; break; // Summon Arcane Prisoner - Male
+                        case 1: spellId = 45448; break; // Summon Arcane Prisoner - Female
+                    }
+                    //Spawn
+                    m_caster->CastSpell(m_caster, spellId, true);
+                    //Arcane Prisoner Kill Credit
+                    unitTarget->CastSpell(m_caster, 45456, true);
+
+                    break;
+                }
+                case 45980: // Re-Cursive Transmatter Injection
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER && unitTarget)
+                    {
+                        if (const SpellEntry *pSpell = sSpellStore.LookupEntry(46022))
+                        {
+                            m_caster->CastSpell(unitTarget, pSpell, true);
+                            ((Player*)m_caster)->KilledMonsterCredit(pSpell->EffectMiscValue[EFFECT_INDEX_0], 0);
+                        }
+
+                        if (unitTarget->GetTypeId() == TYPEID_UNIT)
+                            ((Creature*)unitTarget)->ForcedDespawn();
+                    }
+
+                    return;
+                }
+				case 45685: // Magnataur On Death 2
+                {
+                    m_caster->RemoveAurasDueToSpell(45673);
+                    m_caster->RemoveAurasDueToSpell(45672);
+                    m_caster->RemoveAurasDueToSpell(45677);
+                    m_caster->RemoveAurasDueToSpell(45681);
+                    m_caster->RemoveAurasDueToSpell(45683);
+                    return;
+                }
                 case 49357:                                 // Brewfest Mount Transformation
 				{
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -1461,15 +1501,6 @@ void Spell::EffectDummy(uint32 i)
                     // Quest - Borean Tundra - Summon Explosives Cart
                     unitTarget->CastSpell(unitTarget,46798,true,m_CastItem,NULL,m_originalCasterGUID);
                     break;
-				case 45685:                                 // Magnataur On Death 2
-                {
-                    m_caster->RemoveAurasDueToSpell(45673);
-                    m_caster->RemoveAurasDueToSpell(45672);
-                    m_caster->RemoveAurasDueToSpell(45677);
-                    m_caster->RemoveAurasDueToSpell(45681);
-                    m_caster->RemoveAurasDueToSpell(45683);
-                    return;
-                }
 				case 45691:                                 // Magnataur On Death 1
                 {
                     // assuming caster is creature, if not, then return
