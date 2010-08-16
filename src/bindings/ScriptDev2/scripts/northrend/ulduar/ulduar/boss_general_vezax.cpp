@@ -125,6 +125,7 @@ struct MANGOS_DLL_DECL add_vezaxAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SetCombatMovement(false);
     }
 
 	void UpdateAI(const uint32 diff)
