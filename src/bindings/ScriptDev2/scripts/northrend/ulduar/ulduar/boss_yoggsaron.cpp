@@ -824,7 +824,7 @@ struct MANGOS_DLL_DECL boss_yogg_nuageAI : public LibDevFSAI
 		if(Check_Timer <= diff)
 		{
 			CheckDistance();
-			Check_Timer = 6000;
+			Check_Timer = 4000;
 		}
 		else
 			Check_Timer -= diff;
@@ -996,13 +996,14 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public LibDevFSAI
 		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
-			me->CastStop();
-			DoCastMe((m_difficulty ? SPELL_SHADOW_NOVA_H : SPELL_SHADOW_NOVA));
+			
 			if(Unit* Sara = GetInstanceCreature(DATA_YOGG_SARA))
 			{
 				if(Sara && Sara->isAlive() && !die)
 					if(Sara->GetDistance2d(me) < 8.0f)
 					{
+						me->CastStop();
+						DoCastMe((m_difficulty ? SPELL_SHADOW_NOVA_H : SPELL_SHADOW_NOVA));
 						me->DealDamage(Sara,Sara->GetMaxHealth() * 12 / 100, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 						me->ForcedDespawn(1000);
 					}

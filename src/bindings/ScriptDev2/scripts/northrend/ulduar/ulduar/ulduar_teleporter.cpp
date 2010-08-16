@@ -42,7 +42,7 @@ bool GoHello_ulduar_teleporter( Player *pPlayer, GameObject *pGO )
                 if(pInstance->GetData(TYPE_AURIAYA) == DONE)
 				{
                     pPlayer->ADD_GOSSIP_ITEM(0,	 "Teleport to the Conservatory of Life", GOSSIP_SENDER_MAIN, CONSERVATORY);
-					if(pInstance->GetData(TYPE_YOGGSARON) == DONE)
+					if(pInstance->GetData(TYPE_VEZAX) == DONE)
 						pPlayer->ADD_GOSSIP_ITEM(0,	 "Teleportation a la prison de Yogg Saron", GOSSIP_SENDER_MAIN, MADNESS);
 				}
             }
@@ -80,6 +80,9 @@ bool GOSelect_ulduar_teleporter( Player *pPlayer, GameObject *pGO, uint32 sender
         pPlayer->CLOSE_GOSSIP_MENU(); break;
     case CONSERVATORY:
         pPlayer->TeleportTo(603, 2086.27, -24.3134, 421.239, 0);
+        pPlayer->CLOSE_GOSSIP_MENU(); break;
+	case MADNESS:
+		pPlayer->TeleportTo(603, 1854.82f, -11.71f, 334.25f, 0);
         pPlayer->CLOSE_GOSSIP_MENU(); break;
     }
 

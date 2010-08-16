@@ -494,6 +494,13 @@ bool IsPositiveEffect(uint32 spellId, uint32 effIndex)
     SpellEntry const *spellproto = sSpellStore.LookupEntry(spellId);
     if (!spellproto) return false;
 
+	// Forced Override
+	switch(spellId)
+	{
+		case 63050: // Yogg Sanity
+			return false;
+	}
+
     switch(spellproto->Effect[effIndex])
     {
         case SPELL_EFFECT_DUMMY:
