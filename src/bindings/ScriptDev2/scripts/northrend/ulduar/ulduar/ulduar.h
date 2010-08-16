@@ -64,6 +64,7 @@ enum
 	DATA_YOGG_NUAGE				= 56,
 	DATA_HODIR_FREEZE			= 57,
 	DATA_IGNIS_ADD_MONO			= 58,
+	DATA_YOGG_END_PORTALS		= 59,
 
     NPC_LEVIATHAN               = 33113,
     NPC_IGNIS                   = 33118,
@@ -210,6 +211,7 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	std::vector<Creature*> MimironTrashs;
 	std::vector<Creature*> YoggNuage;
 	std::vector<uint64> YoggAdds;
+	std::vector<uint64> YoggEndPortals;
 
     void Initialize();    
 

@@ -12,6 +12,8 @@ void instance_ulduar::Initialize()
 	FreyaTrashs.clear();
 	YoggNuage.clear();
 	YoggAdds.clear();
+	YoggEndPortals.clear();
+
     m_uiLeviathanGUID       = 0;
     m_uiIgnisGUID           = 0;
     m_uiRazorscaleGUID      = 0;
@@ -311,6 +313,9 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 		case 194325:
 			FreyaGiftGUID = pGo->GetGUID();
 			break;
+		case 194625:
+			YoggEndPortals.push_back(pGo->GetGUID());
+			break;
 	}
 }
 
@@ -351,10 +356,10 @@ void instance_ulduar::Update(uint32 diff)
 			else
 				OpenDoor(AuriayaDoorGUID);
 
-			/*if(!(GetData(TYPE_VEZAX) == DONE))
+			if(!(GetData(TYPE_VEZAX) == DONE))
 				CloseDoor(VezaxDoorGUID);
 			else
-				OpenDoor(VezaxDoorGUID);*/
+				OpenDoor(VezaxDoorGUID);
 
 		}
 		checkPlayer_Timer = 500;
@@ -544,6 +549,19 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				}
 			}
 			break;
+		}
+		case DATA_YOGG_END_PORTALS:
+		{
+			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
+			{
+				if(GameObject* go = GetGoInMap(*itr))
+				{
+					if(uiData == 0)
+						go->SetPhaseMask(0x1,true);
+					else
+						go->SetPhaseMask(0x2,true);
+				}
+			}
 		}
 		case DATA_IGNIS_ADD_MONO:
 			if(IgnisAddTimedActivate == 0)

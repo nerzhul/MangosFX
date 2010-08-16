@@ -304,6 +304,9 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		for(uint8 i=0;i<portalCount;i++)
 			CallCreature(NPC_PORTAL_TO_MADNESS,10000,PREC_COORDS,NOTHING,PortalLoc[i][0],PortalLoc[i][1],PortalLoc[i][2]);
 
+		if(pInstance)
+			pInstance->SetData(DATA_YOGG_END_PORTALS,1);
+
 		BossEmote(0,"Un portail s'ouvre vers l'esprit de Yogg Saron");
 	}
 
@@ -365,6 +368,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	void CreateEndPortals()
 	{
 		BossEmote(0,"Les illusions se dissipent et un portail vers la surface apparait");
+		if(pInstance)
+			pInstance->SetData(DATA_YOGG_END_PORTALS,0);
 	}
 
 	void CheckPlayerSight()
