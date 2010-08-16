@@ -137,7 +137,6 @@ const static float Locs[6][3] =
 	{1990.530f,	36.647f,	331.6f	},	// freya well 1
 	{2045.205f,	-23.607f,	329.8f	},	// freya well 2
 	{1986.114f,	-96.745f,	330.7f	},	// freya well 3
-
 };
 
 const static float EventLocs[6][3][3] =
@@ -148,6 +147,20 @@ const static float EventLocs[6][3][3] =
 	{{1930.691f,	68.498f,	242.376f },{2079.520f,	-2.875f,	239.787f},{1932.162f,	-128.573f,	239.989f}},
 	{{1947.385f,	37.697f,	242.400f },{2110.745f,	-37.402f,	242.646f},{1938.041f,	-99.739f,	239.989f}},
 	{{1918.318f,	61.510f,	241.709f },{2141.577f,	0.087f,		239.731f},{1958.820f,	-91.566f,	239.989f}},
+};
+
+const static float PortalLoc[10][3] = 
+{
+	{1952.69f,-35.41f,325.9f},
+	{2009.76f,-23.71f,325.93f},
+	{1989.63f,3.36f,326.5f},
+	{1968.7f,-55.52f,326.14f},
+	{2005.842f,-8.36f,326.44f},
+	{2012.838f,-26.72f,326.59f},
+	{1985.43f,-58.79f,325.92f},
+	{1952.14f,-42.16f,325.86f},
+	{1950.98f,-19.36f,326.52f},
+	{1973.24f,4.05f,326.45f}
 };
 
 enum YoggEvents
@@ -179,6 +192,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	uint32 MaladyMind_Timer;
 	uint32 CheckTimer;
 	uint32 LunaticGaze_Timer;
+	uint32 CheckPlayerSight_Timer;
 
     void Reset()
     {
@@ -188,7 +202,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	    if(!me->HasAura(AURA_SHADOWY_BARRIER_1, 0))
             me->CastSpell(me, AURA_SHADOWY_BARRIER_1, true);
 
-		
+		CheckPlayerSight_Timer = 1000;		
 		Event = EVENT_POP;
 		Event_Timer = 500;
 		eStep = 0;
@@ -270,7 +284,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 		for(uint8 i=0;i<6;i++)
 		{
-			CallCreature(0,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]+1.0f);
+			// TODO create event
+			CallCreature(0,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]);
 		}
 		PoPYoggPortals();
 	}
@@ -282,8 +297,11 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void PoPYoggPortals()
 	{
-		
-
+		uint8 portalCount = 10;
+		if(!m_difficulty)
+			portalCount = 4;
+		for(uint8 i=0;i<portalCount;i++)
+			CallCreature(NPC_PORTAL_TO_MADNESS,10000,PREC_COORDS,NOTHING,PortalLoc[i][0],PortalLoc[i][1],PortalLoc[i][2]);
 	}
 
 	void CheckLinkedPlayers()
@@ -335,6 +353,16 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 			ModifyAuraStack(SPELL_Sanity,-count,tar,tar);
 	}
 
+	void CheckPlayerSight()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive() && pPlayer->HasInArc(M_PI,me))
+						ModifySanity(1,pPlayer);
+	}
+
 	void GoPhase3()
 	{
 		Event = EVENT_PHASE3;
@@ -344,6 +372,14 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		if(CheckPlayerSight_Timer <= diff)
+		{
+			CheckPlayerSight();
+			CheckPlayerSight_Timer = 1000;
+		}
+		else
+			CheckPlayerSight_Timer -= diff;
+
 		switch(Event)
 		{
 			case EVENT_POP:
@@ -362,7 +398,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				}
 				else
 					Event_Timer -= diff;
-
 				return;
 			case EVENT_PHASE2:
 				if(Event_Timer <= diff)
