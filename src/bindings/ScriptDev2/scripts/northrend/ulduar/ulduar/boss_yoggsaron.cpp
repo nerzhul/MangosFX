@@ -59,9 +59,6 @@ EndScriptData */
 // Sanity Well
 #define AURA_SANITY_WELL                63288
 
-// Watcher von Yogg-Saron - Phase 1
-#define SPELL_DOMINATE_MIND             63042
-
 // Schmettertentakel - Phase 2
 #define SPELL_CRUSH                     64147
 
@@ -83,8 +80,9 @@ enum Spells
 	SPELL_BRAIN_LINK			= 63802,
 	SPELL_DEATH_RAY				= 63891,
 	SPELL_LUNATIC_GAZE			= 64167,
-	SPELL_SHATTERED_ILLUSION	= 64173,
-	SPELL_INDUCE_MADNESS		= 64059,
+	SPELL_SHATTERED_ILLUSION	= 65238,
+
+	SPELL_DOMINATE_MIND         = 63042,
 
 	// tentacles
 	SPELL_ERUPT					= 64144,
@@ -102,11 +100,13 @@ enum Spells
 
 	// brain
 	SPELL_CRAZY_BRAIN			= 64059,
+
+	// Death ray
+	SPELL_DEATH_RAY_PERIODIC	= 63883,
+	SPELL_DEATH_RAY_VISUAL		= 63893,
 	
 	// p3
 	SPELL_SHADOW_BEACON			= 64465,
-	SPELL_EMPOWERING_SHADOWS_10	= 64468,
-	SPELL_EMPOWERING_SHADOWS_25	= 64486,
 	SPELL_Deafening_Roar		= 64189,
 
 	// nuage
@@ -184,6 +184,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		AddSummonEvent(NPC_TENTACLE_CAST,2000,30000,EVENT_PHASE2,3000,2,TEN_MINS*2,NEAR_45M);
 		AddSummonEvent(NPC_TENTACLE_CONSTRICTOR,20000,45000,EVENT_PHASE2,35000,1,TEN_MINS*2,NEAR_45M);
 		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
+		AddEvent(SPELL_SHADOW_BEACON,12000,30000,5000,HEAL_MY_FRIEND,EVENT_PHASE3);
 		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
 		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /*- SaraTimer*/,60000);
 		AddEventOnMe(SPELL_BRAIN_LINK,20000,32000,0,EVENT_PHASE2);
@@ -309,6 +310,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void ControlPlayer(Player* plr)
 	{
+		DoCast(plr,SPELL_DOMINATE_MIND);
 		Kill(plr);
 	}
 
@@ -337,9 +339,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 					{
-						if(pPlayer->GetDistance2d(1979.17f,-22.76f) < 250.0f && pPlayer->GetPositionZ() < 250.0f)
-							ModifySanity(1,pPlayer);
-
 						if(pPlayer->HasAura(SPELL_BRAIN_LINK) && i < 2)
 						{
 							Linked[i] = pPlayer->GetGUID();
@@ -458,6 +457,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 					CreateEndPortals();
 					if(pInstance) pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
 					isBrainPhase = false;
+					DoCastMe(SPELL_SHATTERED_ILLUSION);
 					EndPortal_Timer = 90000;
 				}
 				else
@@ -1183,12 +1183,33 @@ struct MANGOS_DLL_DECL add_YoggTentacleEventAI : public LibDevFSAI
 		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
-	uint32 CheckDist_Timer;
-
     void Reset()
     {
 		ResetTimers();
 		SetCombatMovement(false);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+        DoMeleeAttackIfReady();
+    }
+};
+
+struct MANGOS_DLL_DECL YoggDeathRayAI : public LibDevFSAI
+{
+    YoggDeathRayAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		DoCastMe(SPELL_DEATH_RAY_VISUAL);
+		AggroAllPlayers(100.0f);
     }
 
     void UpdateAI(const uint32 diff)
@@ -1362,6 +1383,11 @@ CreatureAI* GetAI_npc_yoggimmortal(Creature *_Creature)
     return new npc_yoggimmortalAI(_Creature);
 }
 
+CreatureAI* GetAI_YoggDeathRayAI(Creature *_Creature)
+{
+    return new YoggDeathRayAI(_Creature);
+}
+
 bool GossipHello_yogg_portal(Player* pPlayer, Creature* pCreature)
 {
 	if(Unit* YoggSaron = Unit::GetUnit((*pCreature), ((ScriptedInstance*)pCreature->GetInstanceData())->GetData64(TYPE_YOGGSARON)))
@@ -1395,6 +1421,12 @@ void AddSC_boss_yoggsaron()
     newscript->Name = "boss_yoggimmortal";
     newscript->GetAI = &GetAI_npc_yoggimmortal;
     newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "yogg_death_ray";
+    newscript->GetAI = &GetAI_YoggDeathRayAI;
+    newscript->RegisterSelf();
+
 
 	newscript = new Script;
     newscript->Name = "npc_freya_help";

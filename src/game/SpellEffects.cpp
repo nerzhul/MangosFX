@@ -1840,6 +1840,11 @@ void Spell::EffectDummy(uint32 i)
 					m_caster->CastSpell(unitTarget, 62936, true);
 					return;
 				}
+				case 63893:
+				{
+					m_caster->CastSpell(m_caster, 63883, true);
+					return;
+				}
                 case 67019:                                 // Flask of the North
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -6276,6 +6281,24 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         ((Player*)m_caster)->learnSpell(discoveredSpell, 0, false);
                     return;
                 }
+				case 65238:
+				{
+					m_caster->CastSpell(m_caster,65238,true);
+					return;
+				}
+				case 64466:
+				{
+					unitTarget->CastSpell(unitTarget,64467,true);
+					return;
+				}
+				case 64467:
+				{
+					if(unitTarget->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL)
+						unitTarget->CastSpell(unitTarget,64468,true);
+					else
+						unitTarget->CastSpell(unitTarget,64486,true);
+					return;
+				}
 				case 66477:                                 // Bountiful Feast
                 {
                     if (!unitTarget)
