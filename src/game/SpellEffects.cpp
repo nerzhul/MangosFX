@@ -4581,7 +4581,7 @@ void Spell::EffectSummonGuardian(uint32 i, uint32 forceFaction)
 
     int32 amount = damage > 0 ? damage : 1;
 
-	switch(m_spellInfo->EffectMiscValueB[eff_idx])
+	switch(m_spellInfo->EffectMiscValueB[i])
 	{
 		case 2081: // Engineering Dragonlings
 		case 2141: // Winterfin Horn of Distress

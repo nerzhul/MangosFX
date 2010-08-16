@@ -4467,7 +4467,14 @@ void Player::ResurrectPlayer(float restore_percent, bool applySickness)
     UpdateVisibilityForPlayer();
 
     if(!applySickness)
-        return;
+	{
+		if (Map* map = GetMap())
+		{
+			if(!map->Instanceable())
+				CastSpell(this, 2479, true);
+		}
+		return;
+	}
 
     //Characters from level 1-10 are not affected by resurrection sickness.
     //Characters from level 11-19 will suffer from one minute of sickness

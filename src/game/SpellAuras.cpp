@@ -2643,6 +2643,20 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     return;
                 }
                 break;
+			case SPELLFAMILY_PRIEST:
+			{
+				// Penance
+				if (m_spellProto->SpellIconID == 225)
+				{
+					Unit* caster = GetCaster();
+					if(!caster || !m_target || caster->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					((Player*)caster)->SetSelection(m_target->GetGUID());
+					return;
+				}
+				break;
+			}
             case SPELLFAMILY_SHAMAN:
                 // Tidal Force
                 if (GetId() == 55198)
@@ -6675,7 +6689,6 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             break;
         case FORM_SHADOW:
             spellId1 = 49868;
-
 			spellId2 = 71167;
             if(m_target->GetTypeId() == TYPEID_PLAYER)      // Spell 49868 have same category as main form spell and share cooldown
             {
