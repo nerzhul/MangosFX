@@ -57,6 +57,8 @@ void instance_ulduar::Initialize()
 	AuriayaDoorGUID = 0;
 	VezaxDoorGUID = 0;
 
+	TentaclesCanAttack = true;
+
 	IgnisAddTimedActivate = 0;
 
 	checkPlayer_Timer = 1500;
@@ -552,6 +554,7 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 					(*itr)->SetPhaseMask(0x2,true);
 				}
 			}
+
 			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
 			{
 				if(Creature* cr = GetCreatureInMap(*itr))
@@ -588,6 +591,12 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			if(IgnisAddTimedActivate == 0)
 				IgnisHFReset_Timer = 5000;
 			IgnisAddTimedActivate++;
+			break;
+		case DATA_YOGG_TENTACLES_FROZEN:
+			if(uiData == 0)
+				TentaclesCanAttack = false;
+			else
+				TentaclesCanAttack = true;
 			break;
     }
 

@@ -1083,6 +1083,10 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		if(pInstance)
+			if(!pInstance->GetData(DATA_YOGG_TENTACLES_FROZEN))
+				return;
+
         if(CheckDist_Timer <= diff)
 		{
 			CheckPlayers();
@@ -1118,6 +1122,10 @@ struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		if(pInstance)
+			if(!pInstance->GetData(DATA_YOGG_TENTACLES_FROZEN))
+				return;
+
 		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
@@ -1145,6 +1153,10 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
+		if(pInstance)
+			if(!pInstance->GetData(DATA_YOGG_TENTACLES_FROZEN))
+				return;
+
 		if(squeeze_Timer <= diff)
 		{
 			if(Unit* target = GetRandomUnit())

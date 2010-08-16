@@ -594,7 +594,7 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 										m_caster->GetAura(57993,i)->SetAuraMaxDuration((1+combo)*1000);
 								}
 							}
-                            damage *= doses;
+                            damage *= combo;
                             damage += int32(((Player*)m_caster)->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * doses);
                         }
                         // Eviscerate and Envenom Bonus Damage (item set effect)

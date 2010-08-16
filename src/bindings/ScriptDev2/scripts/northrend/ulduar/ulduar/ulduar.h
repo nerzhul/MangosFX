@@ -65,6 +65,7 @@ enum
 	DATA_HODIR_FREEZE			= 57,
 	DATA_IGNIS_ADD_MONO			= 58,
 	DATA_YOGG_END_PORTALS		= 59,
+	DATA_YOGG_TENTACLES_FROZEN	= 60,
 
     NPC_LEVIATHAN               = 33113,
     NPC_IGNIS                   = 33118,
@@ -214,6 +215,8 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	std::vector<uint64> YoggEndPortals;
 	std::vector<uint64> YoggTentacles;
 
+	bool TentaclesCanAttack;
+
     void Initialize();    
 
     bool IsEncounterInProgress() const
@@ -343,6 +346,8 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
             case TYPE_YOGGSARON:
             case TYPE_ALGALON:
                 return m_auiEncounter[uiType];
+			case DATA_YOGG_TENTACLES_FROZEN:
+				return TentaclesCanAttack ? 1 : 0;
         }
 
         return 0;
