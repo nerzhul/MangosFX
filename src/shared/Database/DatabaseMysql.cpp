@@ -164,6 +164,10 @@ bool DatabaseMysql::Initialize(const char *infoString)
         // server configs - core sends data in UTF8, so MySQL must expect UTF8 too
         PExecute("SET NAMES `utf8`");
         PExecute("SET CHARACTER SET `utf8`");
+#if MYSQL_VERSION_ID >= 50003
+		my_bool my_true = 1;
+		mysql_options(mMysql, MYSQL_OPT_RECONNECT, &my_true);
+#endif
 
         return true;
     }
