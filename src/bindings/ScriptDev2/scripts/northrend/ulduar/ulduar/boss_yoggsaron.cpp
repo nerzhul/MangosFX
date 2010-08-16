@@ -1100,6 +1100,28 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public LibDevFSAI
     }
 };
 
+struct MANGOS_DLL_DECL add_YoggTentacleEventAI : public LibDevFSAI
+{
+    add_YoggTentacleEventAI(Creature *pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+    }
+
+	uint32 CheckDist_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+        DoMeleeAttackIfReady();
+    }
+};
+
 struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public LibDevFSAI
 {
     add_YoggTentacleCastAI(Creature *pCreature) : LibDevFSAI(pCreature)
@@ -1193,6 +1215,11 @@ CreatureAI* GetAI_add_YoggTentacleTank(Creature *_Creature)
     return new add_YoggTentacleTankAI(_Creature);
 }
 
+CreatureAI* GetAI_add_YoggTentacleEvent(Creature *_Creature)
+{
+    return new add_YoggTentacleEventAI(_Creature);
+}
+
 CreatureAI* GetAI_add_YoggTentacleCast(Creature *_Creature)
 {
     return new add_YoggTentacleCastAI(_Creature);
@@ -1272,7 +1299,7 @@ bool GossipHello_yogg_portal(Player* pPlayer, Creature* pCreature)
     return true;
 }
 
-bool GossipHello_yogg_end_portal(Player* pPlayer, Creature* pCreature)
+bool GossipHello_yogg_end_portal(Player* pPlayer, GameObject* pGo)
 {
 	pPlayer->TeleportTo(pPlayer->GetMap()->GetId(),1980.528f,-29.373f,324.9f,0);
     return true;
@@ -1353,12 +1380,17 @@ void AddSC_boss_yoggsaron()
 
 	newscript = new Script;
     newscript->Name = "yogg_end_portal";
-    newscript->pGossipHello = &GossipHello_yogg_end_portal;
+    newscript->pGOHello = &GossipHello_yogg_end_portal;
     newscript->RegisterSelf();
 
 	newscript = new Script;
     newscript->Name = "npc_yogg_brain";
     newscript->GetAI = &GetAI_yogg_brain;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "npc_yogg_tentEvent";
+    newscript->GetAI = &GetAI_add_YoggTentacleEvent;
     newscript->RegisterSelf();
 }
 
