@@ -66,6 +66,7 @@ enum
 	DATA_IGNIS_ADD_MONO			= 58,
 	DATA_YOGG_END_PORTALS		= 59,
 	DATA_YOGG_TENTACLES_FROZEN	= 60,
+	DATA_YOGGBRAIN_DOOR			= 61,
 
     NPC_LEVIATHAN               = 33113,
     NPC_IGNIS                   = 33118,
@@ -195,6 +196,10 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
 	uint64 AuriayaDoorGUID;
 	uint64 VezaxDoorGUID;
 	uint64 YoggDoorGUID;
+
+	uint64 YoggBrainDoor1GUID;
+	uint64 YoggBrainDoor2GUID;
+	uint64 YoggBrainDoor3GUID;
 
 	uint32 checkPlayer_Timer;
 	uint32 IgnisHFReset_Timer;

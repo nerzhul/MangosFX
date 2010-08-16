@@ -1494,6 +1494,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 					}
 					break;
 				case 69674:
+				case 63830:
 					switch(m_caster->GetMap()->GetDifficulty())
 					{
 						case RAID_DIFFICULTY_10MAN_NORMAL:

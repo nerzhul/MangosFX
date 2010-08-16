@@ -58,6 +58,19 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 			return instance->GetGameObject(guid);
 		}
 
+		void DespawnCreatures(std::vector<uint64> &spVect)
+		{
+			for (std::vector<uint64>::iterator itr = spVect.begin(); itr != spVect.end();++itr)
+			{
+				if(Creature* cr = GetCreatureInMap(*itr))
+				{
+					cr->ForcedDespawn(2000);
+					cr->SetPhaseMask(0x2,true);
+				}
+			}
+			spVect.clear();
+		}
+
 		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
 		void AutoFreeze(Creature* cr);
 };

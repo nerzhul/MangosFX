@@ -331,7 +331,7 @@ Unit* ScriptedAI::SelectUnit(SelectAggroTarget target, uint32 uiPosition)
 			right_target = true;
 	       	advance(itr, uiPosition +  (rand() % (threatlist.size() - uiPosition)));
 			target = Unit::GetUnit((*me),(*itr)->getUnitGuid());
-			if(!target || (target->GetTypeId() == TYPEID_UNIT && ((Creature*)target)->isTotem()))
+			if(!target || (target->GetTypeId() == TYPEID_UNIT && ((Creature*)target)->isTotem()) || abs(target->GetPositionZ() - me->GetPositionZ()) > 55.0f)
 			{
 				itr = threatlist.begin();
 				right_target = false;

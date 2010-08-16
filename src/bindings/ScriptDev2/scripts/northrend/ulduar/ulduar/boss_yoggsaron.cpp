@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		AddSummonEvent(NPC_TENTACLE_CONSTRICTOR,20000,45000,EVENT_PHASE2,35000,1,TEN_MINS*2,NEAR_45M);
 		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
 		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
-		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /* - SaraTimer */,60000);
+		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /*- SaraTimer*/,60000);
 		AddEventOnMe(SPELL_BRAIN_LINK,20000,32000,0,EVENT_PHASE2);
     }
 
@@ -197,6 +197,11 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	uint32 LunaticGaze_Timer;
 	uint32 CheckPlayerSight_Timer;
 	uint32 EndPortal_Timer;
+	uint32 SaraTimer;
+
+	std::vector<uint64> DreamAdds;
+
+	bool isBrainPhase;
 
     void Reset()
     {
@@ -211,12 +216,15 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		EndPortal_Timer = 60000;
 		eStep = 0;
 		AggroAllPlayers(200.0f);
+		SaraTimer = 0;
+		DreamAdds.clear();
 		if (pInstance)
 		{
 			pInstance->SetData(DATA_YOGG_NUAGE,1);
             pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
 		}
 		
+		isBrainPhase = false;
 		LunaticGaze_Timer = 5000;
 		uint8 randomVision = 3;
 		TentacleText_Timer = 15000;
@@ -287,7 +295,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		}
 
 		for(uint8 i=0;i<6;i++)
-			CallCreature(NPC_TENTACLE_INFLUENCE,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]);
+			if(Creature* cr = CallCreature(NPC_TENTACLE_INFLUENCE,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]))
+				DreamAdds.push_back(cr->GetGUID());
 		PoPYoggPortals();
 	}
 
@@ -384,7 +393,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive() && pPlayer->HasInArc(M_PI,me))
+					if(pPlayer->isAlive() && pPlayer->HasInArc(M_PI,me) && pPlayer->GetPositionZ() > 310.0f)
 						ModifySanity(1,pPlayer);
 	}
 
@@ -429,6 +438,9 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if(Event_Timer <= diff)
 				{
 					LaunchVisionEvent();
+					isBrainPhase = true;
+					if(pInstance)
+						pInstance->SetData(DATA_YOGGBRAIN_DOOR,0);
 					Event_Timer = 90000;
 				}
 				else
@@ -437,6 +449,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if(EndPortal_Timer <= diff)
 				{
 					CreateEndPortals();
+					if(pInstance) pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
+					isBrainPhase = false;
 					EndPortal_Timer = 90000;
 				}
 				else
@@ -477,6 +491,30 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if(CheckTimer <= diff)
 				{
 					CheckLinkedPlayers();
+					if(isBrainPhase)
+					{
+						bool Alive = false;
+						for(std::vector<uint64>::const_iterator itr = DreamAdds.begin(); itr != DreamAdds.end(); ++itr)
+							if(Creature* cr = GetGuidCreature(*itr))
+								if(cr->isAlive())
+									Alive = true;
+						if(!Alive && pInstance)
+						{
+							pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,0);
+							switch(randomVision)
+							{
+								case 0:
+									pInstance->SetData(DATA_YOGGBRAIN_DOOR,1);
+									break;
+								case 1:
+									pInstance->SetData(DATA_YOGGBRAIN_DOOR,2);
+									break;
+								case 2:
+									pInstance->SetData(DATA_YOGGBRAIN_DOOR,3);
+									break;
+							}
+						}
+					}
 					CheckTimer = 1000;
 				}
 				else
@@ -523,22 +561,32 @@ struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
 		phase3 = false;
 		SetCombatMovement(false);
 		me->setFaction(14);
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
 	{
-		float damage = dmg / me->GetMaxHealth();
-		if(Unit* Yogg = Unit::GetUnit((*me), pInstance->GetData64(TYPE_YOGGSARON)))
+		float pct = float(me->GetHealth() - dmg) / float(me->GetMaxHealth());
+		if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
 			if(Yogg->isAlive())
-				Yogg->DealDamage(Yogg,Yogg->GetMaxHealth() * damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+				Yogg->SetHealth(pct * Yogg->GetMaxHealth());
+		if(pct <= 30)
+		{
+			Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+			if (!lPlayers.isEmpty())
+				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+					if (Player* pPlayer = itr->getSource())
+						if(pPlayer->isAlive() && pPlayer->GetPositionZ() < 300.0f)
+							pPlayer->TeleportTo(pPlayer->GetMap()->GetId(),1980.528f,-29.373f,324.9f,0);
+		}
 	}
 
     void UpdateAI(const uint32 diff)
     {
-		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30 && !phase3)
+		if(CheckPercentLife(30) && !phase3)
 		{
 			phase3 = true;
-			if(Unit* Yogg = Unit::GetUnit((*me), pInstance->GetData64(TYPE_YOGGSARON)))
+			if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
 				if(Yogg->isAlive())
 					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->GoPhase3();
 		}
@@ -732,21 +780,17 @@ struct MANGOS_DLL_DECL npc_mimiron_helpAI : public ScriptedAI
 
 
 // Sanity Well
-struct MANGOS_DLL_DECL npc_sanity_wellAI : public ScriptedAI
+struct MANGOS_DLL_DECL npc_sanity_wellAI : public LibDevFSAI
 {
-    npc_sanity_wellAI(Creature* pCreature) : ScriptedAI(pCreature)
+    npc_sanity_wellAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        Reset();
+        InitInstance();
     }
 
-    ScriptedInstance* m_pInstance;
 	uint32 Check_Timer;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		SetCombatMovement(false);
 	    if(!me->HasAura(64169, 0))
             me->CastSpell(me, 64169, true);
@@ -765,12 +809,7 @@ struct MANGOS_DLL_DECL npc_sanity_wellAI : public ScriptedAI
 					if(pPlayer->isAlive())
 					{
 						if(pPlayer->HasAura(SPELL_Sanity))
-						{
-							uint32 nbstack = pPlayer->GetAura(SPELL_Sanity,0)->GetStackAmount() + 20;
-							if(nbstack> 100)
-								nbstack = 100;
-							ModifyAuraStack(SPELL_Sanity,nbstack,pPlayer);
-						}
+							ModifyAuraStack(SPELL_Sanity,20,pPlayer);
 					}
 	}
     void UpdateAI(const uint32 diff)
@@ -865,8 +904,16 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 		{
 			pInstance->SetData(DATA_YOGG_NUAGE,0);
             pInstance->SetData(TYPE_YOGGSARON, NOT_STARTED);
+			pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
 		}
 		SpawnEvent_Timer = 15000;
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive())
+						if(me->GetDistance2d(pPlayer) < 350.0f && !pPlayer->isGameMaster())
+							me->RemoveAurasDueToSpell(SPELL_Sanity);
     }
 
     void KilledUnit(Unit *victim)
@@ -902,7 +949,10 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive())
 						if(me->GetDistance2d(pPlayer) < 350.0f && !pPlayer->isGameMaster())
-							ModifyAuraStack(SPELL_Sanity,100,pPlayer,pPlayer);
+						{
+							me->RemoveAurasDueToSpell(SPELL_Sanity);
+							ModifyAuraStack(SPELL_Sanity,100,pPlayer);
+						}
 
 		if(pInstance)
             pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
@@ -1062,6 +1112,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleTankAI : public LibDevFSAI
 		DoCastMe(SPELL_ERUPT);
 		CheckDist_Timer = 1000;
 		AggroAllPlayers(150.0f);
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
 	void CheckPlayers()
@@ -1105,6 +1156,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleEventAI : public LibDevFSAI
     add_YoggTentacleEventAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
 	uint32 CheckDist_Timer;
@@ -1139,6 +1191,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleCastAI : public LibDevFSAI
 		SetCombatMovement(false);
 		DoCastMe(SPELL_ERUPT);
 		AggroAllPlayers(150.0f);
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
 
@@ -1169,7 +1222,7 @@ struct MANGOS_DLL_DECL add_YoggTentacleConstAI : public LibDevFSAI
 		SetCombatMovement(false);
 		DoCastMe(SPELL_ERUPT);
 		squeeze_Timer = 1000;
-		AggroAllPlayers(150.0f);
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX()+0.2f,me->GetPositionY(),me->GetPositionZ()+0.2f);
     }
 
 
@@ -1291,6 +1344,7 @@ bool GossipHello_yogg_portal(Player* pPlayer, Creature* pCreature)
 		if(YoggSaron->isAlive())
 		{
 			uint8 vis = ((boss_yoggsaronAI*)((Creature*)YoggSaron)->AI())->GetVision();
+			//YoggSaron->getHostileRefManager().deleteReference(pPlayer);
 			if(vis > 2)
 				return false;
 			pPlayer->TeleportTo(pPlayer->GetMap()->GetId(),Locs[vis][0],Locs[vis][1],Locs[vis][2],0);

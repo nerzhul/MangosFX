@@ -46,6 +46,10 @@ void instance_ulduar::Initialize()
 	freyaSecAncientGUID = 0;
 	freyaThirdAncientGUID = 0;
 
+	YoggBrainDoor1GUID = 0;
+	YoggBrainDoor2GUID = 0;
+	YoggBrainDoor3GUID = 0;
+
 	XTDoorGUID = 0;
 	IronCouncilDoorGUID = 0;
 	IronCouncilArchivumGUID = 0;
@@ -228,6 +232,7 @@ void instance_ulduar::OnCreatureCreate(Creature* pCreature)
 			YoggNuage.push_back(pCreature);
 			break;
 		case 33136:
+		case 33988:
 			YoggAdds.push_back(pCreature->GetGUID());
 			break;
 		case 33174:
@@ -324,6 +329,15 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 		case 194625:
 			YoggEndPortals.push_back(pGo->GetGUID());
 			break;
+		case 194637:
+			YoggBrainDoor1GUID = pGo->GetGUID();
+			break;
+		case 194635:
+			YoggBrainDoor2GUID = pGo->GetGUID();
+			break;
+		case 194636:
+			YoggBrainDoor3GUID = pGo->GetGUID();
+			break;
 	}
 }
 
@@ -365,16 +379,11 @@ void instance_ulduar::Update(uint32 diff)
 				OpenDoor(AuriayaDoorGUID);
 
 			if(!(GetData(TYPE_VEZAX) == DONE))
-			{
-				OpenDoor(YoggDoorGUID);
 				CloseDoor(VezaxDoorGUID);
-			}
 			else
-			{
-				CloseDoor(YoggDoorGUID);
 				OpenDoor(VezaxDoorGUID);
-			}
 
+			CloseDoor(YoggDoorGUID);
 		}
 		checkPlayer_Timer = 500;
 	}
@@ -400,7 +409,6 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 		case TYPE_LEVIATHAN:
 		case TYPE_RAZORSCALE:
 		case TYPE_MIMIRON:
-		
 		case TYPE_ALGALON:
 			m_auiEncounter[uiType] = uiData;
 			break;
@@ -417,14 +425,17 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 			break;
 		case TYPE_VEZAX:
 			m_auiEncounter[uiType] = uiData;
-			/*if(uiData == DONE)
+			if(uiData == DONE)
 				OpenDoor(VezaxDoorGUID);
 			else
-				CloseDoor(VezaxDoorGUID);*/
+				CloseDoor(VezaxDoorGUID);
 			break;
 		case TYPE_YOGGSARON:
-			if(uiData == DONE || uiData == FAIL)
+			if(uiData == DONE || uiData == FAIL ||uiData == NOT_STARTED)
+			{
+				DespawnCreatures(YoggAdds);
 				CloseDoor(YoggDoorGUID);
+			}
 			else
 				OpenDoor(YoggDoorGUID);
 			break;
@@ -445,7 +456,6 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				OpenDoor(IronCouncilDoorGUID);
 				CloseDoor(IronCouncilArchivumGUID);
 			}
-
 			CompleteAchievementForGroup(instance->GetDifficulty() ? 2885 : 2860);
 			break;
 		case TYPE_XT002:
@@ -555,28 +565,13 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 				}
 			}
 
-			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
-			{
-				if(Creature* cr = GetCreatureInMap(*itr))
-				{
-					cr->ForcedDespawn(2000);
-					cr->SetPhaseMask(0x2,true);
-				}
-			}
-
-			for (std::vector<uint64>::iterator itr = YoggTentacles.begin(); itr != YoggTentacles.end();++itr)
-			{
-				if(Creature* cr = GetCreatureInMap(*itr))
-				{
-					cr->ForcedDespawn(2000);
-					cr->SetPhaseMask(0x2,true);
-				}
-			}
+			DespawnCreatures(YoggAdds);
+			DespawnCreatures(YoggTentacles);
 			break;
 		}
 		case DATA_YOGG_END_PORTALS:
 		{
-			for (std::vector<uint64>::iterator itr = YoggAdds.begin(); itr != YoggAdds.end();++itr)
+			for (std::vector<uint64>::iterator itr = YoggEndPortals.begin(); itr != YoggEndPortals.end();++itr)
 			{
 				if(GameObject* go = GetGoInMap(*itr))
 				{
@@ -586,18 +581,44 @@ void instance_ulduar::SetData(uint32 uiType, uint32 uiData)
 						go->SetPhaseMask(0x2,true);
 				}
 			}
+			break;
 		}
 		case DATA_IGNIS_ADD_MONO:
+		{
 			if(IgnisAddTimedActivate == 0)
 				IgnisHFReset_Timer = 5000;
 			IgnisAddTimedActivate++;
 			break;
+		}
 		case DATA_YOGG_TENTACLES_FROZEN:
+		{
 			if(uiData == 0)
 				TentaclesCanAttack = false;
 			else
 				TentaclesCanAttack = true;
 			break;
+		}
+		case DATA_YOGGBRAIN_DOOR:
+		{
+			switch(uiData)
+			{
+				case 0:
+					CloseDoor(YoggBrainDoor1GUID);
+					CloseDoor(YoggBrainDoor2GUID);
+					CloseDoor(YoggBrainDoor2GUID);
+					break;
+				case 1:
+					OpenDoor(YoggBrainDoor1GUID);
+					break;
+				case 2:
+					OpenDoor(YoggBrainDoor2GUID);
+					break;
+				case 3:
+					OpenDoor(YoggBrainDoor3GUID);
+					break;
+			}
+			break;
+		}
     }
 
     if (uiData == DONE)
