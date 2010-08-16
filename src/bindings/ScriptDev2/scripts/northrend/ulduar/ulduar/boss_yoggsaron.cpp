@@ -858,6 +858,8 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 		if(!me->HasAura(SPELL_SHADOWY_BARRIER))
 			DoCastMe(SPELL_SHADOWY_BARRIER);
 
+		me->SetHealth(me->GetMaxHealth());
+
 		EventStarted = false;
 		CheckTimer = 1000;
 		if (pInstance)
@@ -996,7 +998,6 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public LibDevFSAI
 		if(dmg >= me->GetHealth())
 		{
 			dmg = 0;
-			
 			if(Unit* Sara = GetInstanceCreature(DATA_YOGG_SARA))
 			{
 				if(Sara && Sara->isAlive() && !die)
@@ -1005,10 +1006,10 @@ struct MANGOS_DLL_DECL npc_yoggguardAI : public LibDevFSAI
 						me->CastStop();
 						DoCastMe((m_difficulty ? SPELL_SHADOW_NOVA_H : SPELL_SHADOW_NOVA));
 						me->DealDamage(Sara,Sara->GetMaxHealth() * 12 / 100, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
-						me->ForcedDespawn(1000);
 					}
 			}
 			die = true;
+			me->ForcedDespawn(1000);
 		}
 	}
 };
