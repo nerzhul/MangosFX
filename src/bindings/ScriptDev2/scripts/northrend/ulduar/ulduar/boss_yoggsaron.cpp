@@ -181,6 +181,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
 		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
 		AddEventOnTank(SPELL_EXINGUISH_ALL_LIFE,900000 /* - SaraTimer */,60000);
+		AddEventOnMe(SPELL_BRAIN_LINK,20000,32000,0,EVENT_PHASE2);
     }
 
 	uint32 Event_Timer;
@@ -306,8 +307,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void CheckLinkedPlayers()
 	{
-		/*Player* Linked[2];
-		Linked[0] = Linked[1] = NULL;
+		uint64 Linked[2];
+		Linked[0] = Linked[1] = 0;
 		uint8 i=0;
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
@@ -315,24 +316,30 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && pPlayer->HasAura(SPELL_BRAIN_LINK) && i < 2)
 					{
-						Linked[i] = pPlayer;
+						Linked[i] = pPlayer->GetGUID();
 						i++;
 					}
 
-		if(Linked[0] != NULL && Linked[1] != NULL)
-			if(Linked[0]->GetDistance(Linked[1]) > 20.0f)
-			{
-				if(Linked[0]->isAlive())
+		if(Linked[0] && Linked[1])
+		{
+			if(Unit* u1 = GetGuidUnit(Linked[0]))
+				if(Unit* u2 = GetGuidUnit(Linked[1]))
 				{
-					DoCast(Linked[0],63803);
-					ModifySanity(2,Linked[0]);
+					if(u1->GetDistance(u1) > 20.0f)
+					{
+						if(u1->isAlive())
+						{
+							DoCast(u2,63803);
+							ModifySanity(2,u1);
+						}
+						if(u2->isAlive())
+						{
+							DoCast(u1,63803);
+							ModifySanity(2,u2);
+						}
+					}
 				}
-				if(Linked[1]->isAlive())
-				{
-					DoCast(Linked[1],63803);
-					ModifySanity(2,Linked[1]);
-				}
-			}*/
+		}
 	}
 
 	void ModifySanity(uint16 count,Unit* tar)
@@ -448,19 +455,10 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				}
 				else
 					CheckTimer -= diff;
-
-				
 				break;
 			case EVENT_PHASE3:
 				if(LunaticGaze_Timer <= diff)
 				{
-					Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-					if (!lPlayers.isEmpty())
-						for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-							if (Player* pPlayer = itr->getSource())
-								if(pPlayer->isAlive())
-									if(pPlayer->HasInArc( M_PI, me ))
-										ModifySanity(4,pPlayer);
 					DoCastVictim(SPELL_LUNATIC_GAZE);
 					LunaticGaze_Timer = 20000;
 				}
@@ -486,25 +484,18 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	}
 };
 
-struct MANGOS_DLL_DECL yogg_brainAI : public Scripted_NoMovementAI
+struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
 {
-    yogg_brainAI(Creature *pCreature) : Scripted_NoMovementAI(pCreature)
+    yogg_brainAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
     }
-
-	bool m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	bool phase3;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		phase3 = false;
+		SetCombatMovement(false);
 		me->setFaction(14);
     }
 
@@ -518,10 +509,6 @@ struct MANGOS_DLL_DECL yogg_brainAI : public Scripted_NoMovementAI
 
     void UpdateAI(const uint32 diff)
     {
-        //Return since we have no target
-        if (!me->SelectHostileTarget() && !me->getVictim())
-            return;
-	
 		if(me->GetHealth() * 100 / me->GetMaxHealth() < 30 && !phase3)
 		{
 			phase3 = true;
@@ -529,15 +516,6 @@ struct MANGOS_DLL_DECL yogg_brainAI : public Scripted_NoMovementAI
 				if(Yogg->isAlive())
 					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->GoPhase3();
 		}
-
-		Tasks.UpdateEvent(diff);
-
-        DoMeleeAttackIfReady();
-    }
-
-    void JustDied(Unit* killer)
-    {
-       
     }
 };
 

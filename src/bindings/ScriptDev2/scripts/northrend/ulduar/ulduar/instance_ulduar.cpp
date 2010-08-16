@@ -297,12 +297,16 @@ void instance_ulduar::OnObjectCreate(GameObject* pGo)
 			break;
 		case 194255:
 			AuriayaDoorGUID = pGo->GetGUID();
+			if(GetData(TYPE_AURIAYA) == DONE)
+				OpenDoor(AuriayaDoorGUID);
 			break;
 		case 194750:
 			VezaxDoorGUID = pGo->GetGUID();
 			break;
 		case 194773:
 			YoggDoorGUID = pGo->GetGUID();
+			if(GetData(TYPE_VEZAX) == DONE)
+				OpenDoor(YoggDoorGUID);
 			break;
 		case 194325:
 			FreyaGiftGUID = pGo->GetGUID();
