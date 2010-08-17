@@ -195,6 +195,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		AddSummonEvent(NPC_IMMORTAL_GUARDIAN,15000,35000,EVENT_PHASE3,0,1,TEN_MINS,NEAR_45M);
 		AddEvent(SPELL_SHADOW_BEACON,12000,30000,5000,HEAL_MY_FRIEND,EVENT_PHASE3);
 		AddEvent(SPELL_DEATH_RAY,10000,30000,1000);
+		AddEvent(SPELL_MALADY_OF_THE_MIND,18000,18000,7000,TARGET_RANDOM,EVENT_PHASE2);
 		AddEventOnMe(SPELL_BRAIN_LINK,20000,32000,0,EVENT_PHASE2);
     }
 
@@ -204,7 +205,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	uint8 eStep;
 	uint8 randomVision;
 	uint32 Psychosis_Timer;
-	uint32 MaladyMind_Timer;
 	uint32 CheckTimer;
 	uint32 LunaticGaze_Timer;
 	uint32 CheckPlayerSight_Timer;
@@ -244,7 +244,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		uint8 randomVision = 3;
 		TentacleText_Timer = 15000;
 		Psychosis_Timer = 15000;
-		MaladyMind_Timer = 18000;
 		CheckTimer = 500;
 		AchCrazy = true;
     }
@@ -426,6 +425,21 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 			ModifyAuraStack(SPELL_Sanity,-count,tar,tar);
 	}
 
+	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
+	{
+		switch(spell->Id)
+		{
+			case 64164:
+				ModifySanity(4,pWho);
+				break;
+			case 64168:
+				ModifySanity(2,pWho);
+				break;
+			case SPELL_MALADY_OF_THE_MIND:
+				ModifySanity(3,pWho);
+				break;
+		}
+	}
 	void CreateEndPortals()
 	{
 		BossEmote(0,"Les illusions se dissipent et un portail vers la surface apparait");
@@ -440,7 +454,15 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && pPlayer->HasInArc(M_PI,me) && pPlayer->GetPositionZ() > 310.0f)
-						ModifySanity(1,pPlayer);
+					{
+						if(Event == EVENT_PHASE3 || Event == EVENT_PHASE2)
+						{
+							if(m_difficulty)
+								DoCast(pPlayer,64164);
+							else
+								DoCast(pPlayer,64168);
+						}
+					}
 	}
 
 	void ControlAllDreamPlayers()
@@ -449,7 +471,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		if (!lPlayers.isEmpty())
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
-					if(pPlayer->isAlive() && pPlayer->GetPositionZ() < 280.0f)
+					if(pPlayer->isAlive() && pPlayer->GetPositionZ() < 280.0f && !pPlayer->isGameMaster())
 						ControlPlayer(pPlayer);
 	}
 
@@ -477,6 +499,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 		if(SaraTimer <= diff)
 		{
+			me->CastStop();
 			DoCastVictim(SPELL_EXINGUISH_ALL_LIFE);
 			SaraTimer = 900000;
 		}
@@ -555,18 +578,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				else
 					Psychosis_Timer -= diff;
 
-				if(MaladyMind_Timer <= diff)
-				{
-					if(Unit* target = GetRandomUnit())
-					{
-						DoCast(target,SPELL_MALADY_OF_THE_MIND);
-						ModifySanity(3,target);
-					}
-					MaladyMind_Timer = urand(18000,25000);
-				}
-				else
-					MaladyMind_Timer -= diff;
-
 				if(CheckTimer <= diff)
 				{
 					CheckLinkedPlayers();
@@ -601,15 +612,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 					CheckTimer -= diff;
 				break;
 			case EVENT_PHASE3:
-				if(LunaticGaze_Timer <= diff)
-				{
-					DoCastVictim(SPELL_LUNATIC_GAZE);
-					LunaticGaze_Timer = 20000;
-				}
-				else
-					LunaticGaze_Timer -= diff;
-				
-					break;
+				DoMeleeAttackIfReady();
+				break;
 			default:
 				break;
 		}
@@ -1010,7 +1014,6 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
-		Enrage_Timer += diff;
 		if(CheckTimer <= diff)
 		{
 			CheckDistance();
@@ -1021,6 +1024,8 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 
 		if(EventStarted)
 		{
+			Enrage_Timer += diff;
+
 			if(SpawnEvent_Timer <= diff)
 			{
 				if(Creature* nuage = GetInstanceCreature(DATA_YOGG_NUAGE))
