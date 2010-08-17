@@ -210,6 +210,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	uint32 CheckPlayerSight_Timer;
 	uint32 EndPortal_Timer;
 	uint32 SaraTimer;
+	uint32 ExitDream_Timer;
 
 	std::vector<uint64> DreamAdds;
 
@@ -227,6 +228,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		Event = EVENT_POP;
 		Event_Timer = 500;
 		EndPortal_Timer = 60000;
+		ExitDream_Timer = DAY*10;
 		eStep = 0;
 		AggroAllPlayers(200.0f);
 		SaraTimer = 900000;
@@ -441,6 +443,16 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 						ModifySanity(1,pPlayer);
 	}
 
+	void ControlAllDreamPlayers()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive() && pPlayer->GetPositionZ() < 280.0f)
+						ControlPlayer(pPlayer);
+	}
+
 	void SetEnrageTimer(uint32 time)
 	{
 		SaraTimer = time;
@@ -498,7 +510,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 					isBrainPhase = true;
 					if(pInstance)
 						pInstance->SetData(DATA_YOGGBRAIN_DOOR,0);
-					Event_Timer = 90000;
+					Event_Timer = 120000;
 				}
 				else
 					Event_Timer -= diff;
@@ -509,10 +521,19 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 					if(pInstance) pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
 					me->RemoveAurasDueToSpell(SPELL_SHATTERED_ILLUSION);
 					isBrainPhase = false;
-					EndPortal_Timer = 90000;
+					EndPortal_Timer = 120000;
+					ExitDream_Timer = 15000;
 				}
 				else
 					EndPortal_Timer -= diff;
+
+				if(ExitDream_Timer <= diff)
+				{
+					ControlAllDreamPlayers();
+					ExitDream_Timer = 120000;
+				}
+				else
+					ExitDream_Timer -= diff;
 
 				if(TentacleText_Timer <= diff)
 				{
