@@ -455,13 +455,16 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && pPlayer->HasInArc(M_PI,me) && pPlayer->GetPositionZ() > 310.0f)
 					{
-						if(Event == EVENT_PHASE3 || Event == EVENT_PHASE2)
+						if(Event == EVENT_PHASE3)
 						{
 							if(m_difficulty)
 								DoCast(pPlayer,64164);
 							else
 								DoCast(pPlayer,64168);
 						}
+						
+						if(Event == EVENT_PHASE2 || Event == EVENT_PHASE3)
+							ModifySanity(1,pPlayer);
 					}
 	}
 
@@ -477,7 +480,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void SetEnrageTimer(uint32 time)
 	{
-		SaraTimer = time;
+		SaraTimer = 900000 - time;
 	}
 
 	void GoPhase3()
