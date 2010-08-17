@@ -3670,28 +3670,35 @@ WorldObject* Map::GetWorldObject(uint64 guid)
 
 void Map::SendObjectUpdates()
 {
-    UpdateDataMapType update_players;
+	try
+	{
+		UpdateDataMapType update_players;
 
-	uint32 i=0;
-    while(!i_objectsToClientUpdate.empty())
-    {
-		i++;
-        Object* obj = *i_objectsToClientUpdate.begin();
-        i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
-		if(obj)
-			obj->BuildUpdateData(update_players);
+		uint32 i=0;
+		while(!i_objectsToClientUpdate.empty())
+		{
+			i++;
+			Object* obj = *i_objectsToClientUpdate.begin();
+			i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
+			if(obj)
+				obj->BuildUpdateData(update_players);
 
-		if(i>100000)
-			sLog.outError("SendObjectUpdates() infinite Loop");
-    }
+			if(i>100000)
+				sLog.outError("SendObjectUpdates() infinite Loop");
+		}
 
-    WorldPacket packet;                                     // here we allocate a std::vector with a size of 0x10000
-    for(UpdateDataMapType::iterator iter = update_players.begin(); iter != update_players.end(); ++iter)
-    {
-        iter->second.BuildPacket(&packet);
-        iter->first->GetSession()->SendPacket(&packet);
-        packet.clear();                                     // clean the string
-    }
+		WorldPacket packet;                                     // here we allocate a std::vector with a size of 0x10000
+		for(UpdateDataMapType::iterator iter = update_players.begin(); iter != update_players.end(); ++iter)
+		{
+			iter->second.BuildPacket(&packet);
+			iter->first->GetSession()->SendPacket(&packet);
+			packet.clear();                                     // clean the string
+		}
+	}
+	catch(...)
+	{
+		error_log("Map::SendObjectUpdates() have one object failed");
+	}
 }
 
 uint32 Map::GenerateLocalLowGuid(HighGuid guidhigh)
