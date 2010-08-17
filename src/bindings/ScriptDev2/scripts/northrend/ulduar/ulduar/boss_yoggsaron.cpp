@@ -336,8 +336,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 			if(Creature* cr = CallCreature(NPC_TENTACLE_INFLUENCE,TEN_MINS,PREC_COORDS,NOTHING,EventLocs[i][randomVision][0],EventLocs[i][randomVision][1],EventLocs[i][randomVision][2]))
 				DreamAdds.push_back(cr->GetGUID());
 
-		if(Creature* Brain = GetInstanceCreature(DATA_YOGG_BRAIN))
-			Brain->CastSpell(Brain,SPELL_CRAZY_BRAIN,false);
+		/*if(Creature* Brain = GetInstanceCreature(DATA_YOGG_BRAIN))
+			Brain->CastSpell(Brain,SPELL_CRAZY_BRAIN,false);*/
 
 		PoPYoggPortals();
 	}
@@ -559,7 +559,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 						if(!Alive && pInstance)
 						{
 							pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,0);
-							DoCastMe(SPELL_SHATTERED_ILLUSION);
+							ModifyAuraStack(SPELL_SHATTERED_ILLUSION);
 							switch(randomVision)
 							{
 								case 0:
