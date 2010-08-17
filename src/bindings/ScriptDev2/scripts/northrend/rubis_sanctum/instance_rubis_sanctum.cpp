@@ -13,7 +13,10 @@ struct MANGOS_DLL_DECL instance_rubis_sanctum : public ScriptedInstance
     uint64 m_uiZarithrianGUID;
     uint64 m_uiHalionGUID;
 
+	uint64 HalionFlameGUID;
 
+	uint64 BaltharusFireDoorGUID;
+	std::vector<uint64> FireDoorGUIDs;
 
     void Initialize()
     {
@@ -23,6 +26,10 @@ struct MANGOS_DLL_DECL instance_rubis_sanctum : public ScriptedInstance
 		m_uiRagefireGUID				= 0;
         m_uiZarithrianGUID				= 0;
         m_uiHalionGUID					= 0;
+
+		HalionFlameGUID					= 0;
+		BaltharusFireDoorGUID			= 0;
+		FireDoorGUIDs.clear();
     }
 
     void OnCreatureCreate(Creature* pCreature)
@@ -50,21 +57,57 @@ struct MANGOS_DLL_DECL instance_rubis_sanctum : public ScriptedInstance
 
     void OnObjectCreate(GameObject* pGo)
     {
-        /*switch(pGo->GetEntry())
+        switch(pGo->GetEntry())
         {
-           
-        }*/
+			case 203005:
+				BaltharusFireDoorGUID = pGo->GetGUID();
+				if(GetData(TYPE_BALTHARUS) == DONE)
+					OpenDoor(BaltharusFireDoorGUID);
+				break;
+			case 203007:
+				HalionFlameGUID = pGo->GetGUID();
+				break;
+			case 203006:
+				FireDoorGUIDs.push_back(pGo->GetGUID());
+				if(GetData(TYPE_BALTHARUS == DONE) && GetData(TYPE_RAGEFIRE) == DONE)
+					OpenDoor(pGo->GetGUID());
+				break;
+        }
     }
+
+
+	void OpenZarithrianDoors()
+	{
+		for(std::vector<uint64>::const_iterator itr = FireDoorGUIDs.begin(); itr != FireDoorGUIDs.end(); ++itr)
+			OpenDoor(*itr);
+	}
 
     void SetData(uint32 uiType, uint32 uiData)
     {
         switch(uiType)
         {
-			case TYPE_RAGEFIRE:
-			case TYPE_BALTHARUS:
 			case TYPE_ZARITHRIAN:
-			case TYPE_HALION:
 				m_auiEncounter[uiType] = uiData;
+				break;
+			case TYPE_HALION:
+				if(uiData == IN_PROGRESS)
+					OpenDoor(HalionFlameGUID);
+				else
+					CloseDoor(HalionFlameGUID);
+				m_auiEncounter[uiType] = uiData;
+				break;
+			case TYPE_RAGEFIRE:
+				m_auiEncounter[uiType] = uiData;
+				if(GetData(TYPE_BALTHARUS == DONE) && GetData(TYPE_RAGEFIRE) == DONE)
+					OpenZarithrianDoors();
+				break;
+			case TYPE_BALTHARUS:
+				m_auiEncounter[uiType] = uiData;
+				if(uiData == DONE)
+					OpenDoor(BaltharusFireDoorGUID);
+				if(GetData(TYPE_BALTHARUS == DONE) && GetData(TYPE_RAGEFIRE) == DONE)
+					OpenZarithrianDoors();
+				break;
         }
 
         if (uiData == DONE)

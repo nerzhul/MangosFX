@@ -843,24 +843,52 @@ void WorldSession::HandleAreaTriggerOpcode(WorldPacket & recv_data)
             return;
         }
 
-		if(mapEntry->IsRaid() && mapEntry->MapID == 631)
+		if(mapEntry->IsRaid())
 		{
-			switch(GetPlayer()->GetDifficulty(mapEntry->IsRaid()))
+			switch(mapEntry->MapID)
 			{
-				case RAID_DIFFICULTY_10MAN_HEROIC:
-					if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4530))
+				case 631:
+				{
+					switch(GetPlayer()->GetDifficulty(mapEntry->IsRaid()))
 					{
-						SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 10 normal pour acceder a cette zone");
-						return;
+						case RAID_DIFFICULTY_10MAN_HEROIC:
+							if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4530))
+							{
+								SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 10 normal pour acceder a cette zone");
+								return;
+							}
+							break;
+						case RAID_DIFFICULTY_25MAN_HEROIC:
+							if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4597))
+							{
+								SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 25 normal pour acceder a cette zone");
+								return;
+							}
+							break;
 					}
 					break;
-				case RAID_DIFFICULTY_25MAN_HEROIC:
-					if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4597))
+				}
+				case 724:
+				{
+					switch(GetPlayer()->GetDifficulty(mapEntry->IsRaid()))
 					{
-						SendAreaTriggerMessage("Vous devez avoir defait le Roi Liche en mode 25 normal pour acceder a cette zone");
-						return;
+						case RAID_DIFFICULTY_10MAN_HEROIC:
+							if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4817))
+							{
+								SendAreaTriggerMessage("Vous devez avoir vaincu Halion en mode 10 normal pour acceder a cette zone");
+								return;
+							}
+							break;
+						case RAID_DIFFICULTY_25MAN_HEROIC:
+							if(!GetPlayer()->GetAchievementMgr().IsCompletedAchievement(4815))
+							{
+								SendAreaTriggerMessage("Vous devez avoir vaincu Halion en mode 25 normal pour acceder a cette zone");
+								return;
+							}
+							break;
 					}
 					break;
+				}
 			}
 		}
     }

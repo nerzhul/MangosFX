@@ -344,9 +344,9 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void ControlPlayer(Player* plr)
 	{
+		Kill(plr);
 		DoCast(plr,SPELL_DOMINATE_MIND);
 		AchCrazy = false;
-		Kill(plr);
 	}
 
 	void PoPYoggPortals()

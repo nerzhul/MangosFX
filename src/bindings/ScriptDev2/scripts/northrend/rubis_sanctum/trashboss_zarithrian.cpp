@@ -17,6 +17,25 @@ struct MANGOS_DLL_DECL trashboss_zarithrianAI : public LibDevFSAI
 	{
 		ResetTimers();
 	}
+
+	void JustDied(Unit* pWho)
+	{
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+		}
+	}
 	
     void UpdateAI(const uint32 diff)
 	{	
