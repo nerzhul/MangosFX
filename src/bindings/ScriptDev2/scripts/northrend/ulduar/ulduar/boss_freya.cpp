@@ -220,6 +220,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 		{
 			if(Check_InLife_Timer <= diff)
 			{
+				Check_InLife_Timer = 1500;
 				if(!TriAdds.empty())
 				{
 					uint8 AliveCount = 0;
@@ -247,11 +248,9 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
 							}
 						}
 					}
-					
-					Check_InLife_Timer = 10000;
+					if(CheckInLife)
+						Check_InLife_Timer = 10000;
 				}
-
-				Check_InLife_Timer = 1500;
 			}
 			else
 				Check_InLife_Timer -= diff;
