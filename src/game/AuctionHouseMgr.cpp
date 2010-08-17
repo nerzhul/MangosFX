@@ -271,7 +271,7 @@ void AuctionHouseMgr::SendAuctionExpiredMail( AuctionEntry * auction )
 void AuctionHouseMgr::LoadAuctionItems()
 {
     // data needs to be at first place for Item::LoadFromDB
-    QueryResult *result = CharacterDatabase.Query( "SELECT data,text,itemguid,item_template FROM auction JOIN item_instance ON itemguid = guid" );
+    QueryResult *result = CharacterDatabase.Query( "SELECT data,itemguid,item_template FROM auction JOIN item_instance ON itemguid = guid" );
 
     if( !result )
     {
