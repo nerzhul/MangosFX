@@ -710,7 +710,7 @@ struct MANGOS_DLL_DECL npc_freya_helpAI : public LibDevFSAI
 		if(spell->Id == SPELL_SANITY_WELL)
 			if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
 				if(Yogg->isAlive())
-					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->CallCreature(NPC_SANITY_WELL,TEN_MINS,NEAR_45M,NOTHING);
+					((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->CallCreature(NPC_SANITY_WELL,60000,NEAR_45M,NOTHING);
 	}
 
     void UpdateAI(const uint32 diff)
