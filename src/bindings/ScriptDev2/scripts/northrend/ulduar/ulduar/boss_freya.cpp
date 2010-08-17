@@ -323,7 +323,7 @@ struct MANGOS_DLL_DECL detonating_lasherAI : public LibDevFSAI
     detonating_lasherAI(Creature* pCreature) : LibDevFSAI(pCreature) 
 	{
 		InitInstance();
-		AddEventOnTank(62608,500,2500);
+		AddEventOnTank(62608,urand(500,5000),5500,1000);
 	}
 
 	bool death;
