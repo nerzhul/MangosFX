@@ -92,15 +92,15 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 				case RAID_DIFFICULTY_25MAN_NORMAL:
 					if(dmg >= pWho->GetHealth() && me->isAlive())
 						me->SetHealth(me->GetHealth() + 5 / 100 * me->GetMaxHealth());
-					IncreasePower(5);
+					IncreasePower(3);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
-						IncreasePower(3);
+						IncreasePower(2);
 					break;
 				case RAID_DIFFICULTY_10MAN_HEROIC:
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(dmg >= pWho->GetHealth() && me->isAlive())
 						me->SetHealth(me->GetHealth() + 20 / 100 * me->GetMaxHealth());
-					IncreasePower(5);
+					IncreasePower(3);
 					if(pWho->HasAura(SPELL_BOILING_BLOOD))
 						IncreasePower(2);
 					break;
