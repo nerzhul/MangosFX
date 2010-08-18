@@ -8724,7 +8724,7 @@ void Aura::PeriodicDummyTick()
 					if(!caster)
 						return;
 					// probably im blind but damage is not in dbc files ...
-					int32 bp1 = m_spellProto->CalculateSimpleValue(EFFECT_INDEX_0);
+					int32 bp1 = m_spellProto->CalculateSimpleValue(EFFECT_INDEX_0) /10;
 					caster->CastCustomSpell(m_target, 63278, 0, &bp1, 0, true);
 					return;
 				}
