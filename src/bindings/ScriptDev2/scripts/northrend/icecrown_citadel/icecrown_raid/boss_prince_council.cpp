@@ -29,7 +29,7 @@ enum BossSpells
 	SPELL_SHADOW_LANCE                      = 71405, // ok
 	SPELL_SHADOW_LANCE_POW                  = 71815, // ok
 	SPELL_SHADOW_RESONANCE                  = 71943, // ok
-	SPELL_SHADOW_RESONANCE_DAMAGE           = 71822,
+	SPELL_SHADOW_RESONANCE_DAMAGE           = 71822, // ok
 
 	NPC_DARK_NUCLEUS                        = 38369,
 };
@@ -50,6 +50,10 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			Keleseth->AddThreat(pWho,1);
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			Taldaram->AddThreat(pWho,1);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
@@ -105,6 +109,12 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
     void JustReachedHome()
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			if(!Keleseth->isAlive())
+				Keleseth->Respawn();
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			if(!Taldaram->isAlive())
+				Taldaram->Respawn();
     }
 
     void UpdateAI(const uint32 diff)
@@ -139,6 +149,10 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			Keleseth->AddThreat(pWho,1);
+		if(Creature* Valanar = GetInstanceCreature(DATA_PRINCE_VALANAR))
+			Valanar->AddThreat(pWho,1);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
@@ -176,6 +190,12 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
     void JustReachedHome()
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			if(!Keleseth->isAlive())
+				Keleseth->Respawn();
+		if(Creature* Valanar = GetInstanceCreature(DATA_PRINCE_VALANAR))
+			if(!Valanar->isAlive())
+				Valanar->Respawn();
     }
 
     void UpdateAI(const uint32 diff)
@@ -246,6 +266,10 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			Taldaram->AddThreat(pWho,1);
+		if(Creature* Valanar = GetInstanceCreature(DATA_PRINCE_VALANAR))
+			Valanar->AddThreat(pWho,1);
     }
 
 	void KilledUnit(Unit* who)
@@ -264,6 +288,12 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     void JustReachedHome()
     {
         SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			if(!Taldaram->isAlive())
+				Taldaram->Respawn();
+		if(Creature* Valanar = GetInstanceCreature(DATA_PRINCE_VALANAR))
+			if(!Valanar->isAlive())
+				Valanar->Respawn();
     }
 
     void UpdateAI(const uint32 diff)
@@ -289,6 +319,32 @@ CreatureAI* GetAI_boss_icc_keleseth(Creature* pCreature)
     return new boss_icc_kelesethAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL boss_icc_prince_shadowresAI : public LibDevFSAI
+{
+    boss_icc_prince_shadowresAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(SPELL_SHADOW_RESONANCE_DAMAGE,1000,3000,0,TARGET_NEAR);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+		AggroAllPlayers(100.0f);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_boss_icc_prince_shadowres(Creature* pCreature)
+{
+    return new boss_icc_prince_shadowresAI(pCreature);
+}
+
 void AddSC_ICC_prince_council()
 {
 	Script* NewScript;
@@ -305,5 +361,10 @@ void AddSC_ICC_prince_council()
 	NewScript = new Script;
     NewScript->Name = "boss_icc_keleseth";
     NewScript->GetAI = &GetAI_boss_icc_keleseth;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "boss_icc_prince_shadowres";
+    NewScript->GetAI = &GetAI_boss_icc_prince_shadowres;
     NewScript->RegisterSelf();
 }
