@@ -496,6 +496,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			SavedEventTexts.clear();
 		}
 
+		void SetInstanceData(uint32 type, uint32 data) { if(pInstance) pInstance->SetData(type,data); }
+
 		void CanBeTaunt(bool taunt=true) { me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, taunt); }
 
 		void AddPercentLife(Unit* u,uint8 percent);
