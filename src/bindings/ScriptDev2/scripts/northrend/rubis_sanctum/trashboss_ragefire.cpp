@@ -62,6 +62,14 @@ struct MANGOS_DLL_DECL trashboss_ragefireAI : public LibDevFSAI
 				me->GetMotionMaster()->MoveChase(me->getVictim());
 		}
 	}
+
+	void DamageDeal(Unit* pWho, uint32 &dmg)
+	{
+		// anti bug abuse
+		if(pWho->GetTypeId() == TYPEID_UNIT)
+			if(((Creature*)pWho)->getFaction() == 103)
+				dmg = 25000000;
+	}
 	
 	void Aggro(Unit* pWho)
 	{
