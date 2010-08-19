@@ -30,6 +30,21 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 		me->RemoveAurasDueToSpell(SPELL_SIPHONED_MIGHT);
 		cloned = false;
 		clone = 0;
+		SetInstanceData(TYPE_BALTHARUS,NOT_STARTED);
+	}
+
+	void Aggro(Unit* pWho)
+	{
+		SetInstanceData(TYPE_BALTHARUS,IN_PROGRESS);
+		Say(17520,"Ah ! Mon petit divertissement est arrivé !");
+	}
+
+	void KilledUnit(Unit* pWho)
+	{
+		if(urand(0,1))
+			Say(17521,"Baltharus ne fait jamais de prisonniers !");
+		else
+			Say(17522,"Le monde a bien assez de héros");
 	}
 
 	void JustSummoned(Creature* add)
@@ -45,6 +60,8 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 
 	void JustDied(Unit* pWho)
 	{
+		Yell(17523,"Celle la je ne l'ai pas vu venir...");
+		SetInstanceData(TYPE_BALTHARUS,DONE);
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -64,6 +81,7 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 
 	void JustReachedHome()
 	{
+		SetInstanceData(TYPE_BALTHARUS,FAIL);
 		if(Creature* add = GetGuidCreature(clone))
 			add->ForcedDespawn(1000);
 	}
@@ -75,6 +93,7 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 
 		if(CheckPercentLife(50) && !cloned)
 		{
+			Yell(17524,"Deux fois plus mal et deux fois moins drôle.");
 			cloned = true;
 			me->CastStop();
 			DoCastMe(SPELL_SUMMON_CLONE);
