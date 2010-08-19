@@ -536,7 +536,12 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				return m_uiRotfaceGUID;
 			case TYPE_PUTRICIDE:
 				return m_uiPutricideGUID;
-			// TODO : Princes
+			case DATA_PRINCE_VALANAR:
+				return m_uiPrinceValanarGUID;
+			case DATA_PRINCE_KELESETH:
+				return m_uiPrinceKelesethGUID;
+			case DATA_PRINCE_TALDARAM:
+				return m_uiPrinceTaldaramGUID;
 			case TYPE_LANATHEL:
 				return m_uiLanathelGUID;
 			case TYPE_DREAMWALKER:

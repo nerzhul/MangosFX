@@ -120,25 +120,6 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 
     void JustDied(Unit* pKiller)
     {
-        /*if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, DONE);
-
-		switch(m_difficulty)
-		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
-				GiveEmblemsToGroup(TRIOMPHE,2);
-				GiveEmblemsToGroup(GIVRE,1);
-				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_25MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,4);
-				break;
-		}*/
     }
 
     void JustReachedHome()
@@ -186,25 +167,6 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
 
     void JustDied(Unit* pKiller)
     {
-        /*if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, DONE);
-
-		switch(m_difficulty)
-		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
-				GiveEmblemsToGroup(TRIOMPHE,2);
-				GiveEmblemsToGroup(GIVRE,1);
-				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_25MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,4);
-				break;
-		}*/
     }
 
     void JustReachedHome()

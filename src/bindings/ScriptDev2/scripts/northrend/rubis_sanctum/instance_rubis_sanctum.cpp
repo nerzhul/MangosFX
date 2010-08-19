@@ -42,7 +42,6 @@ struct MANGOS_DLL_DECL instance_rubis_sanctum : public ScriptedInstance
 				break;
             case NPC_BALTHARUS: 
 				m_uiBaltharusGUID = pCreature->GetGUID(); 
-				AutoFreeze(pCreature);
 				break;
             case NPC_RAGEFIRE: 
 				m_uiRagefireGUID = pCreature->GetGUID(); 
