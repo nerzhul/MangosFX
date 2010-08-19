@@ -8,12 +8,13 @@ enum BossSpells
 
 	//Valanar
 	SPELL_KINETIC_BOMB                      = 72053,
-	NPC_KINETIC_BOMB                        = 38458,
 	SPELL_KINETIC_BOMB_EXPLODE              = 72052,
 	SPELL_SHOCK_VORTEX                      = 72037,
-	NPC_SHOCK_VORTEX                        = 38422,
 	SPELL_SHOCK_VORTEX_DAMAGE               = 71944,
 	SPELL_SHOCK_VORTEX_2                    = 72039,
+
+	NPC_KINETIC_BOMB                        = 38458,
+	NPC_SHOCK_VORTEX                        = 38422,
 
 	//Taldaram
 	SPELL_GLITTERING_SPARKS                 = 71807,
@@ -40,12 +41,12 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
@@ -54,8 +55,7 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
 
     void JustDied(Unit* pKiller)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, DONE);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, DONE);
 
 		switch(m_difficulty)
 		{
@@ -77,8 +77,7 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
 
     void JustReachedHome()
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, FAIL);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
     }
 
     void UpdateAI(const uint32 diff)
@@ -106,12 +105,12 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
@@ -124,8 +123,7 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 
     void JustReachedHome()
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, FAIL);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
     }
 
     void UpdateAI(const uint32 diff)
@@ -153,12 +151,12 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
@@ -171,8 +169,7 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
 
     void JustReachedHome()
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PRINCE_COUNCIL, FAIL);
+        SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
     }
 
     void UpdateAI(const uint32 diff)

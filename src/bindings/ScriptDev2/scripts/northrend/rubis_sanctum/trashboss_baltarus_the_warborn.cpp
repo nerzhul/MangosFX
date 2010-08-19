@@ -16,15 +16,25 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 	trashboss_baltarusAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {	
         InitInstance();
-		AddEventOnTank(SPELL_BLADE_TEMPEST, urand(3000,5000),15000,5000);
+		AddEventOnTank(SPELL_BLADE_TEMPEST, urand(3000,5000),25000,5000);
 		AddEventOnTank(SPELL_REPELLING_WAVE,urand(7000,9000),12000,1000);
 		AddEvent(SPELL_ENERVATING_BRAND,urand(30000,50000),45000);
     }
+
+	bool cloned;
+	uint64 clone;
 
     void Reset()
 	{
 		ResetTimers();
 		me->RemoveAurasDueToSpell(SPELL_SIPHONED_MIGHT);
+		cloned = false;
+		clone = 0;
+	}
+
+	void JustSummoned(Creature* add)
+	{
+		clone = add->GetGUID();
 	}
 
 	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
@@ -51,14 +61,21 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 				break;
 		}
 	}
+
+	void JustReachedHome()
+	{
+		if(Creature* add = GetGuidCreature(clone))
+			add->ForcedDespawn(1000);
+	}
 	
     void UpdateAI(const uint32 diff)
 	{	
         if (!CanDoSomething())
             return;
 
-		if(CheckPercentLife(50))
+		if(CheckPercentLife(50) && !cloned)
 		{
+			cloned = true;
 			me->CastStop();
 			DoCastMe(SPELL_SUMMON_CLONE);
 		}
