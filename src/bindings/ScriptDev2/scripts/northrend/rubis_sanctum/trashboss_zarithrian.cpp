@@ -33,6 +33,14 @@ struct MANGOS_DLL_DECL trashboss_zarithrianAI : public LibDevFSAI
 		SetInstanceData(TYPE_ZARITHRIAN,NOT_STARTED);
 	}
 
+	void DamageDeal(Unit* pWho, uint32 &dmg)
+	{
+		// anti bug abuse
+		if(pWho->GetTypeId() == TYPEID_UNIT)
+			if(((Creature*)pWho)->getFaction() == 103)
+				dmg = 25000000;
+	}
+
 	void Aggro(Unit* pWho)
 	{
 		SetInstanceData(TYPE_ZARITHRIAN,IN_PROGRESS);
@@ -51,6 +59,8 @@ struct MANGOS_DLL_DECL trashboss_zarithrianAI : public LibDevFSAI
 	{
 		Yell(17515,"Halion... je... arrgh...");
 		SetInstanceData(TYPE_ZARITHRIAN,DONE);
+		if(pWho->getFaction() == 103)
+			return;
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:

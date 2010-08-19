@@ -22,14 +22,13 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
     }
 
 	bool cloned;
-	uint64 clone;
 
     void Reset()
 	{
 		ResetTimers();
+		CleanMyAdds();
 		me->RemoveAurasDueToSpell(SPELL_SIPHONED_MIGHT);
 		cloned = false;
-		clone = 0;
 		SetInstanceData(TYPE_BALTHARUS,NOT_STARTED);
 	}
 
@@ -47,11 +46,6 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 			Say(17522,"Le monde a bien assez de héros");
 	}
 
-	void JustSummoned(Creature* add)
-	{
-		clone = add->GetGUID();
-	}
-
 	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
 	{
 		if(spell->Id == SPELL_ENERVATING_B_TRIG)
@@ -62,6 +56,8 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 	{
 		Yell(17523,"Celle la je ne l'ai pas vu venir...");
 		SetInstanceData(TYPE_BALTHARUS,DONE);
+		if(pWho->getFaction() == 103)
+			return;
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -82,8 +78,6 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 	void JustReachedHome()
 	{
 		SetInstanceData(TYPE_BALTHARUS,FAIL);
-		if(Creature* add = GetGuidCreature(clone))
-			add->ForcedDespawn(1000);
 	}
 	
     void UpdateAI(const uint32 diff)
@@ -96,7 +90,7 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
 			Yell(17524,"Deux fois plus mal et deux fois moins drôle.");
 			cloned = true;
 			me->CastStop();
-			DoCastMe(SPELL_SUMMON_CLONE);
+			CallCreature(39899,TEN_MINS,NEAR_7M);
 		}
 
 		UpdateEvent(diff);
