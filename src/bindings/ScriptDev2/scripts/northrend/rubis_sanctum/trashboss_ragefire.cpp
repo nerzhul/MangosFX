@@ -46,6 +46,21 @@ struct MANGOS_DLL_DECL trashboss_ragefireAI : public LibDevFSAI
 	{
 		Say(17531,"Aarrrrrgh !");
 		SetInstanceData(TYPE_RAGEFIRE,DONE);
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,2);
+				break;
+		}
 	}
 
 	void KilledUnit(Unit* pWho)
