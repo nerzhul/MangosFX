@@ -1481,8 +1481,8 @@ void Spell::EffectDummy(uint32 i)
                 case 51026:                                 // Create Drakkari Medallion Cover
                 case 51592:                                 // Pickup Primordial Hatchling
                 case 51961:                                 // Captured Chicken Cover
-		case 55364:                                 // Create Ghoul Drool Cover
-		case 61832:                                 // Rifle the Bodies: Create Magehunter Personal Effects Cover
+				case 55364:                                 // Create Ghoul Drool Cover
+				case 61832:                                 // Rifle the Bodies: Create Magehunter Personal Effects Cover
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
@@ -1496,8 +1496,8 @@ void Spell::EffectDummy(uint32 i)
                         case 51026: spellId = 50737; break;
                         case 51592: spellId = 51593; break;
                         case 51961: spellId = 51037; break;
-			case 55364: spellId = 55363; break;
-			case 61832: spellId = 47096; break;
+						case 55364: spellId = 55363; break;
+						case 61832: spellId = 47096; break;
                     }
 
                     if (const SpellEntry *pSpell = sSpellStore.LookupEntry(spellId))
@@ -1891,6 +1891,9 @@ void Spell::EffectDummy(uint32 i)
 					return;
 				case 68161:
 					m_caster->CastSpell(m_caster,67333,true);
+					return;
+				case 74452:
+					m_caster->CastSpell(m_caster,74455,true);
 					return;
             }
             break;
@@ -6365,9 +6368,11 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 					m_caster->CastSpell(unitTarget, spellId, true);
 					if(Aura *pAura = unitTarget->GetAura(spellId, 0))
 						pAura->SetStackAmount(urand(1,8));
+					return;
 				}
             }
-            break;
+	        break;
+			
         }
         case SPELLFAMILY_WARLOCK:
         {
