@@ -153,7 +153,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_PRINCE_KELESETH:
 				m_uiPrinceKelesethGUID = pCreature->GetGUID();
-				AutoFreeze(pCreature);
 				break;
 			case NPC_PRINCE_VALANAR:
 				m_uiPrinceValanarGUID = pCreature->GetGUID();

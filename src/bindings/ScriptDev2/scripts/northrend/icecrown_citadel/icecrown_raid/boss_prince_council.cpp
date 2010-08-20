@@ -304,13 +304,12 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
 		if(PoweredSpell_Timer <= diff)
 		{
 			DoCastVictim(me->HasAura(SPELL_INVOCATION_OF_BLOOD_K) ? SPELL_SHADOW_LANCE_POW : SPELL_SHADOW_LANCE);
-			PoweredSpell_Timer = urand(3000,5000);
+			PoweredSpell_Timer = urand(2000,3000);
 		}
 		else
 			PoweredSpell_Timer -= diff;
 
 		UpdateEvent(diff);
-		DoMeleeAttackIfReady();
     }
 };
 

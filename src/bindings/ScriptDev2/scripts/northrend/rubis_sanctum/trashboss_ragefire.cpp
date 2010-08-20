@@ -66,7 +66,7 @@ struct MANGOS_DLL_DECL trashboss_ragefireAI : public LibDevFSAI
 	void DamageDeal(Unit* pWho, uint32 &dmg)
 	{
 		// anti bug abuse
-		if(pWho->GetTypeId() == TYPEID_UNIT)
+		if(pWho->GetTypeId() == TYPEID_UNIT && pWho != me)
 			if(((Creature*)pWho)->getFaction() == 103)
 				dmg = 25000000;
 	}
