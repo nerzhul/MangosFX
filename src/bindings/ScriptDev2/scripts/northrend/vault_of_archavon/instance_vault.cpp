@@ -86,6 +86,9 @@ struct MANGOS_DLL_DECL instance_vault_of_archavon : public ScriptedInstance
                         m_uiMinion = 0;
                         break;
                 }
+				break;
+			case 38433:
+				AutoFreeze(pCreature);
                 break;
         }
     }
