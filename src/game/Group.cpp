@@ -1090,21 +1090,18 @@ bool Group::_addMember(const uint64 &guid, const char* name, bool isAssistant)
 {
     // get first not-full group
     uint8 groupid = 0;
-    if (m_subGroupsCounts)
+    bool groupFound = false;
+    for (; groupid < MAX_RAID_SUBGROUPS; ++groupid)
     {
-        bool groupFound = false;
-        for (; groupid < MAX_RAID_SUBGROUPS; ++groupid)
+        if (HasFreeSlotSubGroup(groupid))
         {
-            if (m_subGroupsCounts[groupid] < MAX_GROUP_SIZE)
-            {
-                groupFound = true;
-                break;
-            }
+            groupFound = true;
+            break;
         }
-        // We are raid group and no one slot is free
-        if (!groupFound)
-            return false;
     }
+    // We are raid group and no one slot is free
+    if (!groupFound)
+        return false;
 
     return _addMember(guid, name, isAssistant, groupid);
 }

@@ -17,7 +17,7 @@ struct MANGOS_DLL_DECL trashboss_baltarusAI : public LibDevFSAI
     {	
         InitInstance();
 		AddEventOnTank(SPELL_BLADE_TEMPEST, urand(3000,5000),25000,5000);
-		AddEventOnTank(SPELL_REPELLING_WAVE,urand(7000,9000),12000,1000);
+		AddEventOnTank(SPELL_REPELLING_WAVE,urand(7000,9000),12000,3000);
 		AddEvent(SPELL_ENERVATING_BRAND,urand(30000,50000),45000);
     }
 
@@ -110,8 +110,8 @@ struct MANGOS_DLL_DECL trashboss_baltarus_cloneAI : public LibDevFSAI
 	trashboss_baltarus_cloneAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {	
         InitInstance();
-		AddEventOnTank(SPELL_BLADE_TEMPEST, urand(3000,5000),15000,5000);
-		AddEventOnTank(SPELL_REPELLING_WAVE,urand(7000,9000),12000,1000);
+		AddEventOnTank(SPELL_BLADE_TEMPEST, urand(3000,5000),20000,5000);
+		AddEventOnTank(SPELL_REPELLING_WAVE,urand(7000,9000),15000,3000);
 		AddEvent(SPELL_ENERVATING_BRAND,urand(30000,50000),45000);
     }
 

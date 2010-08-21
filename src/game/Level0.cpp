@@ -1318,7 +1318,7 @@ bool ChatHandler::HandleAutoRecuperationCommand(const char* args)
 		return true;
 	}
 
-	if(player->getLevel() > 15 || player->getLevel() < 65 && player->getClass() == CLASS_DEATH_KNIGHT)
+	if(player->getLevel() > 15 || player->getLevel() > 65 && player->getClass() == CLASS_DEATH_KNIGHT)
 	{
 		SendSysMessage("Ce personnage ne repond pas aux criteres de recuperation : votre niveau est trop eleve.");
 		return true;
