@@ -370,8 +370,8 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     boss_icc_kelesethAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnMe(SPELL_SHADOW_RESONANCE,30000,60000);
-		AddTextEvent(16728,"Le sang va couler !",30000,60000);
+		AddEventOnMe(SPELL_SHADOW_RESONANCE,13000,60000);
+		AddTextEvent(16728,"Le sang va couler !",13000,45000);
 		AddEnrageTimer(TEN_MINS);
 		AddTextEvent(16726,"Mouhahahahaha !",TEN_MINS,60000);
     }
@@ -602,31 +602,11 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
 		{
 			case -1:
 			{
-				uint8 selectedPrince = urand(0,2);
-				switch(selectedPrince)
-				{
-					case 0:
-						EmpowerMe(percent);
-						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-							Keleseth->SetHealth(1);
-						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-							Taldaram->SetHealth(1);
-						break;
-					case 1:
-						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-							((boss_icc_kelesethAI*)Keleseth->AI())->EmpowerMe(percent);
-						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-							Taldaram->SetHealth(1);
-						me->SetHealth(1);
-						break;
-					case 2:
-						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-							((boss_icc_taldaramAI*)Taldaram->AI())->EmpowerMe(percent);
-						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-							Keleseth->SetHealth(1);
-						me->SetHealth(1);
-						break;
-				}
+				EmpowerMe(percent);
+				if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+					Keleseth->SetHealth(1);
+				if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+					Taldaram->SetHealth(1);
 				break;
 			}
 			case 0:

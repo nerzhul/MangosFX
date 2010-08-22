@@ -1042,6 +1042,10 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 				pVictim->AddThreat(this, damage*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
 			else
 				pVictim->AddThreat(this, damage, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+			if(pVictim->GetTypeId() == TYPEID_UNIT && spellProto && damage == 0)
+				if(uint32 entry = ((Creature*)this)->GetEntry())
+					if(entry == 37970 || entry == 37972 || entry == 37973)
+						pVictim->AddThreat(this, 500, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
         }
         else                                                // victim is a player
         {

@@ -182,6 +182,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());
 				break;
 			case 38422:
+			case 38458:
+			case 38454:
 				vortexGUIDs.push_back(pCreature->GetGUID());
 				break;
         }
