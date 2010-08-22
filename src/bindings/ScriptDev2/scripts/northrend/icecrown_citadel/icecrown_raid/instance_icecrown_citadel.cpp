@@ -47,6 +47,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiLichKingGUID;
 
 	std::vector<uint64> rotfacePoolsGUIDs;
+	std::vector<uint64> vortexGUIDs;
 
     uint64 m_uiMarrowgarIce1GUID;
     uint64 m_uiMarrowgarIce2GUID;
@@ -97,6 +98,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiLichKingGUID				= 0;
 
 		rotfacePoolsGUIDs.clear();
+		vortexGUIDs.clear();
 
         m_uiMarrowgarIce1GUID           = 0;
         m_uiMarrowgarIce2GUID           = 0;
@@ -179,6 +181,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case 37006:
 				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());
 				break;
+			case 38422:
+				vortexGUIDs.push_back(pCreature->GetGUID());
+				break;
         }
     }
 
@@ -226,7 +231,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case GO_BLOODWING_DOOR:
 				m_uiBloodWingDoorGUID = pGo->GetGUID();
-				if (m_auiEncounter[TYPE_PUTRICIDE] == DONE)
+				if (m_auiEncounter[TYPE_PUTRICIDE] == DONE || m_auiEncounter[TYPE_ROTFACE] == DONE && m_auiEncounter[TYPE_FESTERGUT] == DONE)
 					OpenDoor(m_uiBloodWingDoorGUID);
 				break;
 			case GO_PRINCECOUNCIL_DOOR:
@@ -358,6 +363,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				}
 				else if(uiData == IN_PROGRESS)
 					OpenDoor(m_uiFestergutDoorGUID);
+
+				if(m_auiEncounter[TYPE_ROTFACE] == DONE && m_auiEncounter[TYPE_FESTERGUT] == DONE)
+					OpenDoor(m_uiBloodWingDoorGUID);
 				break;
 			case TYPE_ROTFACE:
 				m_auiEncounter[TYPE_ROTFACE] = uiData;
@@ -368,12 +376,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				else if(uiData == IN_PROGRESS)
 					OpenDoor(m_uiRotfaceDoorGUID);
 				else if(uiData == FAIL)
-				{
-					for(std::vector<uint64>::iterator itr = rotfacePoolsGUIDs.begin(); itr != rotfacePoolsGUIDs.end(); ++itr)
-						if(Creature* cr = GetCreatureInMap(*itr))
-							cr->ForcedDespawn(1000);
-					rotfacePoolsGUIDs.clear();
-				}
+					DespawnCreatures(rotfacePoolsGUIDs);
+
+				if(m_auiEncounter[TYPE_ROTFACE] == DONE && m_auiEncounter[TYPE_FESTERGUT] == DONE)
+					OpenDoor(m_uiBloodWingDoorGUID);
 				break;
 			case TYPE_PUTRICIDE:
 				m_auiEncounter[TYPE_PUTRICIDE] = uiData;
@@ -396,6 +402,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiPrinceCouncilDoorGUID);
+				else if(uiData == FAIL)
+					DespawnCreatures(vortexGUIDs);
 				break;
 			case TYPE_LANATHEL:
 				m_auiEncounter[TYPE_LANATHEL] = uiData;

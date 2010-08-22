@@ -10,12 +10,15 @@ enum BossSpells
 
 	//Valanar
 	SPELL_KINETIC_BOMB                      = 72053,
+	SPELL_KINETIC_BOMB_2					= 72080,
 	SPELL_KINETIC_BOMB_EXPLODE              = 72052,
 	SPELL_SHOCK_VORTEX                      = 72037,
-	SPELL_SHOCK_VORTEX_DAMAGE               = 71944,
-	SPELL_SHOCK_VORTEX_2                    = 72039,
+	SPELL_SHOCK_VORTEX_PERIODIC             = 71945,
+	SPELL_SHOCK_VORTEX_SKIN					= 72633,
+	SPELL_SHOCK_VORTEX_POW                  = 72039,
 
-	NPC_KINETIC_BOMB                        = 38458,
+	NPC_KINETIC_BOMB_TARGET                 = 38458,
+	NPC_KINETIC_BOMB						= 38454,
 	NPC_SHOCK_VORTEX                        = 38422,
 
 	//Taldaram
@@ -37,103 +40,92 @@ enum BossSpells
 	NPC_DARK_NUCLEUS                        = 38369,
 };
 
-struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
+struct MANGOS_DLL_DECL boss_icc_prince_bomb_targetAI : public LibDevFSAI
 {
-    boss_icc_valanarAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    boss_icc_prince_bomb_targetAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		MakeHostileInvisibleStalker();
     }
 
     void Reset()
     {
 		ResetTimers();
-		CleanMyAdds();
-		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
-    }
-
-    void Aggro(Unit* pWho)
-    {
-        SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
-		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-			Keleseth->AddThreat(pWho,1);
-		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-			Taldaram->AddThreat(pWho,1);
-    }
-
-	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
-	{
-		if(!me->HasAura(SPELL_INVOCATION_OF_BLOOD_T))
-		{
-			dmg = 0;
-			return;
-		}
-
-		if(dmg >= me->GetHealth())
-		{
-			if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-			{
-				Taldaram->CastStop();
-				Taldaram->CastSpell(Taldaram,7,true);
-			}
-
-			if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-			{
-				Keleseth->CastStop();
-				Keleseth->CastSpell(Keleseth,7,true);
-			}
-		}
-	}
-
-	void KilledUnit(Unit* who)
-	{
-	}
-
-    void JustDied(Unit* pKiller)
-    {
-        SetInstanceData(TYPE_PRINCE_COUNCIL, DONE);
-
-		switch(m_difficulty)
-		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
-				GiveEmblemsToGroup(TRIOMPHE,2);
-				GiveEmblemsToGroup(GIVRE,1);
-				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,3);
-				break;
-			case RAID_DIFFICULTY_25MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,4);
-				break;
-		}
-    }
-
-    void JustReachedHome()
-    {
-        SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
-		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
-			if(!Keleseth->isAlive())
-				Keleseth->Respawn();
-		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
-			if(!Taldaram->isAlive())
-				Taldaram->Respawn();
+		SetCombatMovement(false);
     }
 
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
-            return;
-
-		UpdateEvent(diff);
-		DoMeleeAttackIfReady();
     }
 };
 
-CreatureAI* GetAI_boss_icc_valanar(Creature* pCreature)
+CreatureAI* GetAI_boss_icc_prince_bomb_target(Creature* pCreature)
 {
-    return new boss_icc_valanarAI(pCreature);
+    return new boss_icc_prince_bomb_targetAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_icc_prince_bombAI : public LibDevFSAI
+{
+    boss_icc_prince_bombAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		//MakeHostileInvisibleStalker();
+    }
+
+	uint32 checkDist_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		SetCombatMovement(false);
+		checkDist_Timer = 1000;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		if(checkDist_Timer <= diff)
+		{
+			checkDist_Timer = 1000;
+			if(Creature* target = me->GetClosestCreatureWithEntry(NPC_KINETIC_BOMB_TARGET,150.0f))
+				if(target->GetDistance2d(me) < 5.0f)
+					DoCastMe(SPELL_KINETIC_BOMB_EXPLODE);
+		}
+		else
+			checkDist_Timer -= diff;
+    }
+};
+
+CreatureAI* GetAI_boss_icc_prince_bomb(Creature* pCreature)
+{
+    return new boss_icc_prince_bombAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_icc_prince_shock_vortexAI : public LibDevFSAI
+{
+    boss_icc_prince_shock_vortexAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+    }
+
+	uint32 checkDist_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		ModifyAuraStack(SPELL_SHOCK_VORTEX_SKIN);
+		ModifyAuraStack(SPELL_SHOCK_VORTEX_PERIODIC);
+		SetCombatMovement(false);
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+    }
+};
+
+CreatureAI* GetAI_boss_icc_prince_shock_vortex(Creature* pCreature)
+{
+    return new boss_icc_prince_shock_vortexAI(pCreature);
 }
 
 struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
@@ -262,15 +254,25 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 		{
 			if(Creature* flame = me->GetClosestCreatureWithEntry(38332,100.0f))
 				if(flame->isAlive())
-					if(Unit* target = GetRandomUnit(1))
+				{
+					Unit* target = GetRandomUnit(1);
+					if(!target)
+						target = me->getVictim();
+					if(target)
 						((boss_icc_prince_flameballAI*)flame->AI())->SetTarget(target);
+				}
 		}
 		else if(spell->Id == 72041)
 		{
 			if(Creature* flame = me->GetClosestCreatureWithEntry(38451,100.0f))
 				if(flame->isAlive())
-					if(Unit* target = GetRandomUnit(1))
+				{
+					Unit* target = GetRandomUnit(1);
+					if(!target)
+						target = me->getVictim();
+					if(target)
 						((boss_icc_prince_flameball_powAI*)flame->AI())->SetTarget(target);
+				}
 		}
 	}
 
@@ -503,6 +505,290 @@ CreatureAI* GetAI_boss_icc_prince_flameball_pow(Creature* pCreature)
     return new boss_icc_prince_flameball_powAI(pCreature);
 }
 
+
+struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
+{
+    boss_icc_valanarAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddMaxPrioEvent(SPELL_KINETIC_BOMB,30000,30000);
+		AddEnrageTimer(TEN_MINS);
+		AddTextEvent(16684,"A genoux devant le San'len !",TEN_MINS,60000);
+    }
+
+	uint32 PoweredSpell_Timer;
+	uint32 orb_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		CleanMyAdds();
+		PoweredSpell_Timer = 10000;
+		orb_Timer = 50000;
+		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
+    }
+
+	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
+	{
+		if(spell->Id == SPELL_KINETIC_BOMB)
+		{
+			me->CastStop();
+			DoCastMe(SPELL_KINETIC_BOMB_2);
+		}
+		else if(spell->Id == SPELL_KINETIC_BOMB_2)
+		{
+			if(Creature* bomb = me->GetClosestCreatureWithEntry(NPC_KINETIC_BOMB,150.0f))
+				if(Creature* bombTarget = me->GetClosestCreatureWithEntry(NPC_KINETIC_BOMB_TARGET,150.0f))
+				{
+					bomb->AddThreat(bombTarget,1000000.0f);
+					bomb->GetMotionMaster()->MoveChase(bombTarget);
+				}
+		}
+	}
+
+	void EmpowerMe(float pctLife)
+	{
+		me->SetHealth(me->GetMaxHealth()*pctLife);
+		me->CastStop();
+		DoCastMe(SPELL_INVOCATION_OF_BLOOD_V);
+		Yell(16685,"Naxanar ne fut qu'un contretemps. Grâce au pouvoir de l'orbe, Valanar aura sa revanche !");
+	}
+
+    void Aggro(Unit* pWho)
+    {
+        SetInstanceData(TYPE_PRINCE_COUNCIL, IN_PROGRESS);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			Keleseth->AddThreat(pWho,1);
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			Taldaram->AddThreat(pWho,1);
+
+		ChangeOrbOwner();		
+    }
+
+	void ChangeOrbOwner()
+	{
+		/**
+		* 0 : Valanar
+		* 1 : Keleseth
+		* 2 : Taldaram
+		*/
+
+		float percent = 100.0f;
+		int8 lastPrince = -1;
+		if(me->HasAura(SPELL_INVOCATION_OF_BLOOD_V))
+		{
+			lastPrince = 0;
+			percent = float(me->GetHealth()) / float(me->GetMaxHealth());
+			me->RemoveAurasDueToSpell(SPELL_INVOCATION_OF_BLOOD_V);
+		}
+
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			if(Keleseth->HasAura(SPELL_INVOCATION_OF_BLOOD_K))
+			{
+				lastPrince = 1;
+				percent = float(Keleseth->GetHealth()) / float(Keleseth->GetMaxHealth());
+				Keleseth->RemoveAurasDueToSpell(SPELL_INVOCATION_OF_BLOOD_K);
+			}
+
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			if(Taldaram->HasAura(SPELL_INVOCATION_OF_BLOOD_T))
+			{
+				lastPrince = 2;
+				percent = float(Taldaram->GetHealth()) / float(Taldaram->GetMaxHealth());
+				Taldaram->RemoveAurasDueToSpell(SPELL_INVOCATION_OF_BLOOD_T);
+			}
+
+		switch(lastPrince)
+		{
+			case -1:
+			{
+				uint8 selectedPrince = urand(0,2);
+				switch(selectedPrince)
+				{
+					case 0:
+						EmpowerMe(percent);
+						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+							Keleseth->SetHealth(1);
+						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+							Taldaram->SetHealth(1);
+						break;
+					case 1:
+						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+							((boss_icc_kelesethAI*)Keleseth->AI())->EmpowerMe(percent);
+						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+							Taldaram->SetHealth(1);
+						me->SetHealth(1);
+						break;
+					case 2:
+						if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+							((boss_icc_taldaramAI*)Taldaram->AI())->EmpowerMe(percent);
+						if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+							Keleseth->SetHealth(1);
+						me->SetHealth(1);
+						break;
+				}
+				break;
+			}
+			case 0:
+			{
+				uint8 selectedPrince = urand(0,1);
+				me->SetHealth(1);
+				if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+				{
+					if(selectedPrince == 0)
+						Keleseth->SetHealth(1);
+					else
+						((boss_icc_kelesethAI*)Keleseth->AI())->EmpowerMe(percent);
+				}
+				if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+				{
+					if(selectedPrince == 1)
+						Taldaram->SetHealth(1);
+					else
+						((boss_icc_taldaramAI*)Taldaram->AI())->EmpowerMe(percent);
+				}
+				break;
+			}
+			case 1:
+			{
+				uint8 selectedPrince = urand(0,1);
+				if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+					Keleseth->SetHealth(1);
+				
+				if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+				{
+					if(selectedPrince == 1)
+						Taldaram->SetHealth(1);
+					else
+						((boss_icc_taldaramAI*)Taldaram->AI())->EmpowerMe(percent);
+				}
+
+				if(selectedPrince == 0)
+					me->SetHealth(1);
+				else
+					EmpowerMe(percent);
+				break;
+			}
+			case 2:
+			{
+				uint8 selectedPrince = urand(0,1);
+				if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+					Taldaram->SetHealth(1);
+
+				if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+				{
+					if(selectedPrince == 1)
+						Keleseth->SetHealth(1);
+					else
+						((boss_icc_kelesethAI*)Keleseth->AI())->EmpowerMe(percent);
+				}
+
+				if(selectedPrince == 0)
+					me->SetHealth(1);
+				else
+					EmpowerMe(percent);
+				break;
+			}
+		}
+	}
+
+	void DamageTaken(Unit* pDoneBy, uint32 &dmg)
+	{
+		if(!me->HasAura(SPELL_INVOCATION_OF_BLOOD_V))
+		{
+			dmg = 0;
+			return;
+		}
+
+		if(dmg >= me->GetHealth())
+		{
+			if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			{
+				Taldaram->CastStop();
+				Taldaram->CastSpell(Taldaram,7,true);
+			}
+
+			if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			{
+				Keleseth->CastStop();
+				Keleseth->CastSpell(Keleseth,7,true);
+			}
+		}
+	}
+
+	void KilledUnit(Unit* who)
+	{
+		if(urand(0,1))
+			Say(16681,"Le diner est servi.");
+		else
+			Say(16682,"Voyez vous la puissance des ténèbres à présent ?");
+	}
+
+    void JustDied(Unit* pKiller)
+    {
+        SetInstanceData(TYPE_PRINCE_COUNCIL, DONE);
+		Yell(16683,"Arrrr ! Pourquoi.... ?");
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+				GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(GIVRE,1);
+				break;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,3);
+				break;
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				GiveEmblemsToGroup(GIVRE,4);
+				break;
+		}
+    }
+
+    void JustReachedHome()
+    {
+        SetInstanceData(TYPE_PRINCE_COUNCIL, FAIL);
+		if(Creature* Keleseth = GetInstanceCreature(DATA_PRINCE_KELESETH))
+			if(!Keleseth->isAlive())
+				Keleseth->Respawn();
+		if(Creature* Taldaram = GetInstanceCreature(DATA_PRINCE_TALDARAM))
+			if(!Taldaram->isAlive())
+				Taldaram->Respawn();
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		if(orb_Timer <= diff)
+		{
+			ChangeOrbOwner();
+			orb_Timer = 60000;
+		}
+		else
+			orb_Timer -= diff;
+
+		if(PoweredSpell_Timer <= diff)
+		{
+			Yell(16686,"Ma coupe déborde");
+			DoCastMe(me->HasAura(SPELL_INVOCATION_OF_BLOOD_V) ? SPELL_SHOCK_VORTEX_POW : SPELL_SHOCK_VORTEX);
+			PoweredSpell_Timer = urand(15000,18000);
+		}
+		else
+			PoweredSpell_Timer -= diff;
+
+		UpdateEvent(diff);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_icc_valanar(Creature* pCreature)
+{
+    return new boss_icc_valanarAI(pCreature);
+}
+
 void AddSC_ICC_prince_council()
 {
 	Script* NewScript;
@@ -534,5 +820,20 @@ void AddSC_ICC_prince_council()
 	NewScript = new Script;
     NewScript->Name = "icc_taldaram_ball_flame_pow";
     NewScript->GetAI = &GetAI_boss_icc_prince_flameball_pow;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_prince_bomb";
+    NewScript->GetAI = &GetAI_boss_icc_prince_bomb;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_prince_bomb_target";
+    NewScript->GetAI = &GetAI_boss_icc_prince_bomb_target;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_prince_shock_vortex";
+    NewScript->GetAI = &GetAI_boss_icc_prince_shock_vortex;
     NewScript->RegisterSelf();
 }
