@@ -19,17 +19,20 @@ enum BossSpells
 	NPC_SHOCK_VORTEX                        = 38422,
 
 	//Taldaram
-	SPELL_GLITTERING_SPARKS                 = 71807, // ok
+	SPELL_GLITTERING_SPARKS                 = 71807,
 	SPELL_CONJURE_FLAME                     = 71718,
-	SPELL_FLAMES                            = 71393,
+	SPELL_FLAME_EXPLOSION	                = 71393,
+	SPELL_FLAME_VISUAL						= 71706,
+	SPELL_FLAME_AUTOATTACK					= 71709,
+	SPELL_FLAME_POWER						= 71756,
 	SPELL_CONJURE_FLAME_POW                 = 72040,
 	SPELL_FLAMES_2                          = 71708,
 
 	//Keleseth
-	SPELL_SHADOW_LANCE                      = 71405, // ok
-	SPELL_SHADOW_LANCE_POW                  = 71815, // ok
-	SPELL_SHADOW_RESONANCE                  = 71943, // ok
-	SPELL_SHADOW_RESONANCE_DAMAGE           = 71822, // ok
+	SPELL_SHADOW_LANCE                      = 71405,
+	SPELL_SHADOW_LANCE_POW                  = 71815,
+	SPELL_SHADOW_RESONANCE                  = 71943,
+	SPELL_SHADOW_RESONANCE_DAMAGE           = 71822,
 
 	NPC_DARK_NUCLEUS                        = 38369,
 };
@@ -44,6 +47,7 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
     }
 
@@ -132,19 +136,151 @@ CreatureAI* GetAI_boss_icc_valanar(Creature* pCreature)
     return new boss_icc_valanarAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
+{
+    boss_icc_prince_flameballAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+    }
+
+	uint64 target;
+	uint32 checkDist_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		ModifyAuraStack(SPELL_FLAME_VISUAL);
+		SetCombatMovement(false);
+		target = 0;
+		checkDist_Timer = 1000;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		if(checkDist_Timer <= diff)
+		{
+			checkDist_Timer = 1000;
+			if(Unit* tar = GetGuidUnit(target))
+				if(tar->GetDistance2d(me) < 7.0f)
+				{
+					DoCast(tar,SPELL_FLAME_EXPLOSION);
+					me->ForcedDespawn(500);
+				}
+		}
+		else
+			checkDist_Timer -= diff;
+    }
+
+	void SetTarget(Unit* who)
+	{
+		target = who->GetGUID();
+		who->AddThreat(me,10000000.0f);
+		me->GetMotionMaster()->MoveChase(who);
+	}
+};
+
+CreatureAI* GetAI_boss_icc_prince_flameball(Creature* pCreature)
+{
+    return new boss_icc_prince_flameballAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
+{
+    boss_icc_prince_flameball_powAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+    }
+
+	uint64 target;
+	uint32 checkDist_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		ModifyAuraStack(SPELL_FLAME_VISUAL);
+		ModifyAuraStack(SPELL_FLAME_AUTOATTACK);
+		ModifyAuraStack(SPELL_FLAME_POWER,20);
+		SetCombatMovement(false);
+		checkDist_Timer = 1000;
+		target = 0;
+    }
+
+	void SpellHitTarget(Unit* pWho,const SpellEntry* spell)
+	{
+		ModifyAuraStack(SPELL_FLAME_POWER,-1);
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+		if(checkDist_Timer <= diff)
+		{
+			checkDist_Timer = 1000;
+			if(Unit* tar = GetGuidUnit(target))
+				if(tar->GetDistance2d(me) < 5.0f)
+				{
+					DoCast(tar,SPELL_FLAME_EXPLOSION);
+					me->ForcedDespawn(500);
+				}
+		}
+		else
+			checkDist_Timer -= diff;
+    }
+
+	void SetTarget(Unit* who)
+	{
+		target = who->GetGUID();
+		who->AddThreat(me,10000000.0f);
+		me->GetMotionMaster()->MoveChase(who);
+	}
+};
+
 struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 {
     boss_icc_taldaramAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
 		AddEvent(SPELL_GLITTERING_SPARKS,15000,15000,3000);
+		AddEnrageTimer(TEN_MINS);
+		AddTextEvent(16856,"Ha ha ha ha !",TEN_MINS,60000);
     }
+
+	uint32 PoweredSpell_Timer;
 
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
+		PoweredSpell_Timer = 20000;
     }
+
+	void SpellHit(Unit* pWho, const SpellEntry* spell)
+	{
+		if(spell->Id == 71719)
+		{
+			if(Creature* flame = me->GetClosestCreatureWithEntry(38332,100.0f))
+				if(flame->isAlive())
+					if(Unit* target = GetRandomUnit(1))
+						((boss_icc_prince_flameballAI*)flame->AI())->SetTarget(target);
+		}
+		else if(spell->Id == 72041)
+		{
+			if(Creature* flame = me->GetClosestCreatureWithEntry(38451,100.0f))
+				if(flame->isAlive())
+					if(Unit* target = GetRandomUnit(1))
+						((boss_icc_prince_flameball_powAI*)flame->AI())->SetTarget(target);
+		}
+	}
+
+	void EmpowerMe(float pctLife)
+	{
+		me->SetHealth(me->GetMaxHealth()*pctLife);
+		me->CastStop();
+		DoCastMe(SPELL_INVOCATION_OF_BLOOD_T);
+		Yell(16857,"Tremblez devant Taldaram, mortels, car le pouvoir de l'orbe coule en moi !");
+	}
 
     void Aggro(Unit* pWho)
     {
@@ -181,10 +317,15 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 
 	void KilledUnit(Unit* who)
 	{
+		if(urand(0,1))
+			Say(16853,"A manger pour les asticots !");
+		else
+			Say(16853,"Implorez pitié !");
 	}
 
     void JustDied(Unit* pKiller)
     {
+		Yell(16855,"Aarrr...");
     }
 
     void JustReachedHome()
@@ -203,6 +344,15 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(PoweredSpell_Timer <= diff)
+		{
+			Yell(16858,"Savourez la douleur !");
+			DoCastMe(me->HasAura(SPELL_INVOCATION_OF_BLOOD_T) ? SPELL_CONJURE_FLAME_POW : SPELL_CONJURE_FLAME);
+			PoweredSpell_Timer = 30000;
+		}
+		else
+			PoweredSpell_Timer -= diff;
+
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
     }
@@ -220,6 +370,8 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
         InitInstance();
 		AddEventOnMe(SPELL_SHADOW_RESONANCE,30000,60000);
 		AddTextEvent(16728,"Le sang va couler !",30000,60000);
+		AddEnrageTimer(TEN_MINS);
+		AddTextEvent(16726,"Mouhahahahaha !",TEN_MINS,60000);
     }
 
 	uint32 PoweredSpell_Timer;
@@ -227,6 +379,7 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		PoweredSpell_Timer = 3000;
 		SetInstanceData(TYPE_PRINCE_COUNCIL, NOT_STARTED);
     }
@@ -344,6 +497,12 @@ CreatureAI* GetAI_boss_icc_prince_shadowres(Creature* pCreature)
     return new boss_icc_prince_shadowresAI(pCreature);
 }
 
+
+CreatureAI* GetAI_boss_icc_prince_flameball_pow(Creature* pCreature)
+{
+    return new boss_icc_prince_flameball_powAI(pCreature);
+}
+
 void AddSC_ICC_prince_council()
 {
 	Script* NewScript;
@@ -365,5 +524,15 @@ void AddSC_ICC_prince_council()
 	NewScript = new Script;
     NewScript->Name = "boss_icc_prince_shadowres";
     NewScript->GetAI = &GetAI_boss_icc_prince_shadowres;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_taldaram_ball_flame";
+    NewScript->GetAI = &GetAI_boss_icc_prince_flameball;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_taldaram_ball_flame_pow";
+    NewScript->GetAI = &GetAI_boss_icc_prince_flameball_pow;
     NewScript->RegisterSelf();
 }

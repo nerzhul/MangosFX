@@ -2382,6 +2382,7 @@ void Aura::TriggerSpell()
 		case 13810:
 		case 70842:
 		case 63132:
+		case 71706:
 			return;
 		case 33711:
 			trigger_spell_id = 33760;

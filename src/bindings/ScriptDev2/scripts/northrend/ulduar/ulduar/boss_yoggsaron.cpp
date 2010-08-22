@@ -660,7 +660,7 @@ struct MANGOS_DLL_DECL yogg_brainAI : public LibDevFSAI
 				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 					if (Player* pPlayer = itr->getSource())
 						if(Creature* Yogg = GetInstanceCreature(TYPE_YOGGSARON))
-							if(Yogg->isAlive() && pPlayer->isAlive() && pPlayer->GetPositionZ() < 300.0f)
+							if(Yogg->isAlive() && pPlayer->isAlive() && pPlayer->GetPositionZ() < 300.0f && !pPlayer->isGameMaster())
 							{
 								((boss_yoggsaronAI*)((Creature*)Yogg)->AI())->ModifySanity(100,pPlayer);
 								pPlayer->TeleportTo(pPlayer->GetMap()->GetId(),1980.528f,-29.373f,324.9f,0);
