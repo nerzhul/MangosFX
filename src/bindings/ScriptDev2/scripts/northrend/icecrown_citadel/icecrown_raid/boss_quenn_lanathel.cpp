@@ -15,7 +15,7 @@ enum BossSpells
 	SPELL_SWARMING_SHADOWS                  = 71264, // ok: TODO : spawn event and casting region
 	SPELL_FEAR								= 73070, // ok
 	SPELL_TWILIGHT_BLOODBOLT                = 71446,
-	SPELL_BLOODBOLT_WHIRL                   = 71772,
+	SPELL_BLOODBOLT_WHIRL                   = 71772, // ok : TODO: proc twilight bolts
 	SPELL_PRESENCE_OF_DARKFALLEN            = 71952,
 };
 
@@ -145,13 +145,12 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 				}
 				else if(subphase == SUBPHASE_STORM)
 				{
-					; // Todo : cast lightning shadows
-					phase_Timer = 1000; // Todo : change this
+					DoCastMe(SPELL_BLOODBOLT_WHIRL);
+					phase_Timer = 6000;
 					subphase = SUBPHASE_LANDING;
 				}
 				else if(subphase == SUBPHASE_LANDING)
 				{
-					; // TODO : land
 					phase = PHASE_LAND;
 					phase_Timer = 2000;
 				}
