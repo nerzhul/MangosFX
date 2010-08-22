@@ -3,7 +3,7 @@
 
 enum BossSpells
 {
-	SPELL_SHROUD_OF_SORROW                  = 72981,
+	SPELL_SHROUD_OF_SORROW                  = 72981, // ok
 	SPELL_DELRIOUS_SLASH                    = 71623,
 	SPELL_BLOOD_MIRROR_1                    = 70821,
 	SPELL_BLOOD_MIRROR_2                    = 71510,
@@ -18,26 +18,53 @@ enum BossSpells
 	SPELL_PRESENCE_OF_DARKFALLEN            = 71952,
 };
 
+enum phases
+{
+	PHASE_LAND			= 0,
+	PHASE_AIR			= 1,
+	SUBPHASE_FEAR		= 0,
+	SUBPHASE_STORM		= 1,
+	SUBPHASE_LANDING	= 2,
+};
+
 struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 {
     boss_lanathelAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		AddEventOnTank(SPELL_DELRIOUS_SLASH,3000,20000,0,PHASE_LAND);
+
+		AddEnrageTimer(320000);
+		AddTextEvent(16793,"On arrete MAINTENANT !",320000,60000);
     }
+
+	uint8 phase;
+	uint32 phase_Timer;
+	uint8 subphase;
 
     void Reset()
     {
 		ResetTimers();
+		phase = PHASE_LAND;
+		phase_Timer = 120000;
+		subphase = SUBPHASE_FEAR;
+		ModifyAuraStack(SPELL_SHROUD_OF_SORROW);
     }
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
             pInstance->SetData(TYPE_LANATHEL, IN_PROGRESS);
+		Yell(16782,"Ce n'est pas une décision... très sage...");
     }
 
 	void KilledUnit(Unit* who)
 	{
+		if(urand(0,1))
+			Say(16791,"Vraiment ? Et c'est tout ?");
+		else
+			Say(16792,"Quel affreux gachis...");
+
 	}
 
     void JustDied(Unit* pKiller)
@@ -45,6 +72,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
         if (pInstance)
             pInstance->SetData(TYPE_LANATHEL, DONE);
 
+		Say(16794,"Mais... tout allait si bien... entre ... nous...");
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
@@ -65,6 +93,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 
     void JustReachedHome()
     {
+		Yell(16789,"Quel dommage ! Hahahahahaha !");
         if (pInstance)
             pInstance->SetData(TYPE_LANATHEL, FAIL);
     }
@@ -74,8 +103,43 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
+		if(phase_Timer <= diff)
+		{
+			if(phase == PHASE_LAND)
+			{
+				phase = PHASE_AIR;
+				subphase = SUBPHASE_FEAR;
+				// animation 2sec
+				phase_Timer = 2000;
+			}
+			else if(phase == PHASE_AIR)
+			{
+				if(subphase == SUBPHASE_FEAR)
+				{
+					; // Todo : cast fear
+					subphase = SUBPHASE_STORM;
+					phase_Timer = 3000;
+				}
+				else if(subphase == SUBPHASE_STORM)
+				{
+					; // Todo : cast lightning shadows
+					phase_Timer = 1000; // Todo : change this
+					subphase = SUBPHASE_LANDING;
+				}
+				else if(subphase == SUBPHASE_LANDING)
+				{
+					; // TODO : land
+					phase = PHASE_LAND;
+					phase_Timer = 2000;
+				}
+			}
+		}
+		else
+			phase_Timer -= diff;
+
 		UpdateEvent(diff);
-		DoMeleeAttackIfReady();
+		if(phase == PHASE_LAND)
+			DoMeleeAttackIfReady();
     }
 };
 
