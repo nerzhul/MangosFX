@@ -88,6 +88,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
             pInstance->SetData(TYPE_ROTFACE, IN_PROGRESS);
 
 		Yell(16986,"Ouiiiiiiiiiii ! Hahahaha !");
+		me->SetInCombatWithZone();
     }
 
 	void SpellHitTarget(Unit* who, const SpellEntry* sp)
@@ -264,6 +265,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
+		EnterEvadeIfOutOfCombatArea(diff);
     }
 };
 

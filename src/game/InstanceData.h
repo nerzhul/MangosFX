@@ -57,7 +57,22 @@ class MANGOS_DLL_SPEC InstanceData
         //Called when a player successfully enters the instance (after really added to map)
         virtual void OnPlayerEnter(Player *) {}
 
-        //Called when a gameobject is created
+		//Called when a player dies inside instance
+		virtual void OnPlayerDeath(Player *) {}
+
+		//Called when a player leaves the instance (before really removed from map (or possibly world))
+		virtual void OnPlayerLeave(Player *) {}
+
+		//called on creature enter combat
+		virtual void OnCreatureEnterCombat(Creature * /*creature*/) {}
+		
+		//called on creature evade
+		virtual void OnCreatureEvade(Creature * /*creature*/) {}
+		
+		//called on creature death
+		virtual void OnCreatureDeath(Creature * /*creature*/) {}
+		
+		//Called when a gameobject is created
         virtual void OnObjectCreate(GameObject *) {}
 
         //called on creature creation
