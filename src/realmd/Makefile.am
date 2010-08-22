@@ -22,6 +22,8 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../
 ## Build realm list daemon as standalone program
 bin_PROGRAMS = mangos-realmd
 mangos_realmd_SOURCES = \
+	AccountMgr.cpp \
+	AccountMgr.h \
 	AuthCodes.h \
 	AuthSocket.cpp \
 	AuthSocket.h \
