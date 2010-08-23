@@ -7667,7 +7667,7 @@ void Spell::EffectKnockBack(uint32 i)
     if(!unitTarget)
         return;
 
-	if(unitTarget->IsVehicle())
+	if(unitTarget->IsVehicle() || unitTarget->GetVehicle() || unitTarget->GetVehicleGUID())
 		return;
 
     unitTarget->KnockBackFrom(m_caster,float(m_spellInfo->EffectMiscValue[i])/10,float(damage)/10);
