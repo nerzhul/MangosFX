@@ -862,9 +862,11 @@ struct MANGOS_DLL_DECL boss_yogg_nuageAI : public LibDevFSAI
 				if (Player* pPlayer = itr->getSource())
 					if(pPlayer->isAlive() && !pPlayer->isGameMaster())
 					{
-						if(me->GetDistance2d(pPlayer) < 10.0f)
+						if(me->GetDistance2d(pPlayer) < 7.0f)
+						{
 							CallCreature(NPC_GUARDIAN_OF_YOGG);
-						return;
+							return;
+						}
 					}
 	}
 
@@ -873,7 +875,7 @@ struct MANGOS_DLL_DECL boss_yogg_nuageAI : public LibDevFSAI
 		if(Check_Timer <= diff)
 		{
 			CheckDistance();
-			Check_Timer = 4000;
+			Check_Timer = 6000;
 		}
 		else
 			Check_Timer -= diff;
@@ -1035,7 +1037,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 				{
 					((boss_yogg_nuageAI*)(nuage->AI()))->CallCreature(NPC_GUARDIAN_OF_YOGG);
 				}
-				SpawnEvent_Timer = 25000;
+				SpawnEvent_Timer = 45000;
 			}
 			else
 				SpawnEvent_Timer -= diff;

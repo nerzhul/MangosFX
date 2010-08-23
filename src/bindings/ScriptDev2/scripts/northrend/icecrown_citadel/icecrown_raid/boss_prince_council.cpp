@@ -106,6 +106,7 @@ struct MANGOS_DLL_DECL boss_icc_prince_shock_vortexAI : public LibDevFSAI
     {
         InitInstance();
 		MakeHostileInvisibleStalker();
+		me->ForcedDespawn(20000);
     }
 
 	uint32 checkDist_Timer;
@@ -134,6 +135,7 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
     {
         InitInstance();
 		MakeHostileInvisibleStalker();
+		me->ForcedDespawn(20000);
     }
 
 	uint64 target;
@@ -183,6 +185,7 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
     {
         InitInstance();
 		MakeHostileInvisibleStalker();
+		me->ForcedDespawn(20000);
     }
 
 	uint64 target;
@@ -370,8 +373,8 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
     boss_icc_kelesethAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnMe(SPELL_SHADOW_RESONANCE,13000,60000);
-		AddTextEvent(16728,"Le sang va couler !",13000,45000);
+		AddEventMaxPrioOnMe(SPELL_SHADOW_RESONANCE,13000,15000);
+		AddTextEvent(16728,"Le sang va couler !",13000,15000);
 		AddEnrageTimer(TEN_MINS);
 		AddTextEvent(16726,"Mouhahahahaha !",TEN_MINS,60000);
     }
