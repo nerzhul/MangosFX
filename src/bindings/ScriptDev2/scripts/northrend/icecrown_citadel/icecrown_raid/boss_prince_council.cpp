@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
 			checkDist_Timer = 1000;
 			if(Unit* tar = GetGuidUnit(target))
 			{
-				if(tar->GetDistance2d(me) < 10.0f)
+				if(tar->GetDistance2d(me) < 12.0f || !tar->isAlive())
 				{
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
 					me->ForcedDespawn(500);
@@ -213,9 +213,13 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
 			checkDist_Timer = 1000;
 			if(Unit* tar = GetGuidUnit(target))
 			{
-				if(tar->GetDistance2d(me) < 10.0f)
+				if(tar->GetDistance2d(me) < 15.0f || !tar->isAlive())
 				{
+					SetCombatMovement(false);
+					me->CastStop();
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
+					me->RemoveAurasDueToSpell(SPELL_FLAME_AUTOATTACK);
+					me->RemoveAurasDueToSpell(SPELL_FLAME_POWER);
 					me->ForcedDespawn(500);
 				}
 			}

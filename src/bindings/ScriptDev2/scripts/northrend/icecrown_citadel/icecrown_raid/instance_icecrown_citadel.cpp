@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				m_uiDeathwhisperGUID = pCreature->GetGUID(); 
 				break;
             case NPC_SAURFANG: 
-				m_uiSaurfangGUID = pCreature->GetGUID(); 
+				m_uiSaurfangGUID = pCreature->GetGUID();
 				break;
 			case NPC_FESTERGUT:
 				m_uiFestergutGUID = pCreature->GetGUID();
