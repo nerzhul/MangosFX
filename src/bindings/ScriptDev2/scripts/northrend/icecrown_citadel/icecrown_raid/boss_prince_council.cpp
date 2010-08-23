@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL boss_icc_prince_bombAI : public LibDevFSAI
 		{
 			checkDist_Timer = 1000;
 			if(Creature* target = me->GetClosestCreatureWithEntry(NPC_KINETIC_BOMB_TARGET,150.0f))
-				if(target->GetDistance2d(me) < 5.0f)
+				if(target->GetDistance2d(me) < 10.0f)
 					DoCastMe(SPELL_KINETIC_BOMB_EXPLODE);
 		}
 		else
@@ -156,11 +156,15 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
 		{
 			checkDist_Timer = 1000;
 			if(Unit* tar = GetGuidUnit(target))
-				if(tar->GetDistance2d(me) < 7.0f)
+			{
+				if(tar->GetDistance2d(me) < 10.0f)
 				{
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
 					me->ForcedDespawn(500);
 				}
+				else
+					me->GetMotionMaster()->MoveChase(tar);
+			}
 		}
 		else
 			checkDist_Timer -= diff;
@@ -190,15 +194,15 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
 
 	uint64 target;
 	uint32 checkDist_Timer;
+	uint32 startTimer_Timer;
 
     void Reset()
     {
 		ResetTimers();
 		ModifyAuraStack(SPELL_FLAME_VISUAL);
-		ModifyAuraStack(SPELL_FLAME_AUTOATTACK);
-		ModifyAuraStack(SPELL_FLAME_POWER,20);
 		SetCombatMovement(false);
 		checkDist_Timer = 1000;
+		startTimer_Timer = 3000;
 		target = 0;
     }
 
@@ -213,14 +217,27 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
 		{
 			checkDist_Timer = 1000;
 			if(Unit* tar = GetGuidUnit(target))
-				if(tar->GetDistance2d(me) < 5.0f)
+			{
+				if(tar->GetDistance2d(me) < 10.0f)
 				{
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
 					me->ForcedDespawn(500);
 				}
+				else
+					me->GetMotionMaster()->MoveChase(tar);
+			}
 		}
 		else
 			checkDist_Timer -= diff;
+
+		if(startTimer_Timer <= diff)
+		{
+			ModifyAuraStack(SPELL_FLAME_AUTOATTACK);
+			ModifyAuraStack(SPELL_FLAME_POWER,20);
+			startTimer_Timer = 30000;
+		}
+		else
+			startTimer_Timer -= diff;
     }
 
 	void SetTarget(Unit* who)
