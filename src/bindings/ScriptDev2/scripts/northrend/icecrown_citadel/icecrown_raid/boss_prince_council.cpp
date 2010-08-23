@@ -145,7 +145,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
     {
 		ResetTimers();
 		ModifyAuraStack(SPELL_FLAME_VISUAL);
-		SetCombatMovement(false);
 		target = 0;
 		checkDist_Timer = 1000;
     }
@@ -162,8 +161,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
 					me->ForcedDespawn(500);
 				}
-				else
-					me->GetMotionMaster()->MoveChase(tar);
 			}
 		}
 		else
@@ -174,7 +171,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameballAI : public LibDevFSAI
 	{
 		target = who->GetGUID();
 		who->AddThreat(me,10000000.0f);
-		me->GetMotionMaster()->MoveChase(who);
 	}
 };
 
@@ -200,7 +196,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
     {
 		ResetTimers();
 		ModifyAuraStack(SPELL_FLAME_VISUAL);
-		SetCombatMovement(false);
 		checkDist_Timer = 1000;
 		startTimer_Timer = 3000;
 		target = 0;
@@ -223,8 +218,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
 					DoCast(tar,SPELL_FLAME_EXPLOSION);
 					me->ForcedDespawn(500);
 				}
-				else
-					me->GetMotionMaster()->MoveChase(tar);
 			}
 		}
 		else
@@ -244,7 +237,6 @@ struct MANGOS_DLL_DECL boss_icc_prince_flameball_powAI : public LibDevFSAI
 	{
 		target = who->GetGUID();
 		who->AddThreat(me,10000000.0f);
-		me->GetMotionMaster()->MoveChase(who);
 	}
 };
 
