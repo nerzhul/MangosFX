@@ -211,6 +211,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case 38422:
 			case 38458:
 			case 38454:
+			case 38369:
 				vortexGUIDs.push_back(pCreature->GetGUID());
 				break;
         }
