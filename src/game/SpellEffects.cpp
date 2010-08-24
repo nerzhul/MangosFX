@@ -3149,7 +3149,7 @@ void Spell::EffectApplyAura(uint32 i)
 	if(m_spellInfo->Id == 60430 && (unitTarget->GetTypeId() != TYPEID_UNIT || unitTarget->GetEntry() != 30643))
 		return;
 
-    sLog.outDebug("Spell: Aura is: %u", m_spellInfo->EffectApplyAuraName[i]);
+    //sLog.outDebug("Spell: Aura is: %u", m_spellInfo->EffectApplyAuraName[i]);
 
     Aura* Aur = CreateAura(m_spellInfo, i, &m_currentBasePoints[i], unitTarget, caster, m_CastItem);
 

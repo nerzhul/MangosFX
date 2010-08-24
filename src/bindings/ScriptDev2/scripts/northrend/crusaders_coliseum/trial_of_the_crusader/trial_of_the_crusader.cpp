@@ -406,7 +406,6 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						{
 							Jaraxxus->setFaction(35);
 							ModifyAuraStack(67924,1,Jaraxxus);
-							//((ScriptedAI*)Jarraxus->AI())->DoResetThreat();
 						}
 						Event_Timer = 11000;
 						break;

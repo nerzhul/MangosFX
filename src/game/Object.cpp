@@ -30,6 +30,7 @@
 #include "ObjectDefines.h"
 #include "UpdateData.h"
 #include "UpdateMask.h"
+#include "InstanceData.h"
 #include "Util.h"
 #include "MapManager.h"
 #include "Transports.h"
@@ -1774,6 +1775,9 @@ Creature* WorldObject::SummonCreature(uint32 id, float x, float y, float z, floa
 
     if(GetTypeId()==TYPEID_UNIT && ((Creature*)this)->AI())
         ((Creature*)this)->AI()->JustSummoned(pCreature);
+
+	if(GetMap()->IsDungeon() && ((InstanceMap*)GetMap())->GetInstanceData())
+		((InstanceMap*)GetMap())->GetInstanceData()->OnCreatureCreate(pCreature);
 
     // return the creature therewith the summoner has access to it
     return pCreature;

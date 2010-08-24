@@ -82,7 +82,7 @@ enum Spells
 	SPELL_LUNATIC_GAZE			= 64167,
 	SPELL_SHATTERED_ILLUSION	= 65238,
 
-	SPELL_DOMINATE_MIND         = 63042,
+	SPELL_DOMINATE_MIND         = 63120,
 
 	// tentacles
 	SPELL_ERUPT					= 64144,
@@ -220,6 +220,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		UnControlPlayers();
 		me->SetFloatValue(OBJECT_FIELD_SCALE_X, 0.05f);
 	    if(!me->HasAura(AURA_SHADOWY_BARRIER_1, 0))
             me->CastSpell(me, AURA_SHADOWY_BARRIER_1, true);
@@ -263,6 +264,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
     void JustDied(Unit *victim)
     {
+		UnControlPlayers();
 		Yell(15761,"Votre destin est scellé, la fin des temps est enfin arrivée pour vous et pour tous les habitants de ces petits bourgeons !");
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,3);
 		if (pInstance)
@@ -345,9 +347,26 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 
 	void ControlPlayer(Player* plr)
 	{
-		Kill(plr);
-		DoCast(plr,SPELL_DOMINATE_MIND);
+		ModifyAuraStack(SPELL_DOMINATE_MIND,1,plr);
+		if(plr->HasAura(SPELL_DOMINATE_MIND))
+		{
+			plr->GetAura(SPELL_DOMINATE_MIND)->SetAuraMaxDuration(TEN_MINS*2);
+			plr->GetAura(SPELL_DOMINATE_MIND)->SetAuraDuration(TEN_MINS*2);
+		}
 		AchCrazy = false;
+	}
+
+	void UnControlPlayers()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->isAlive())
+					{
+						if(pPlayer->HasAura(SPELL_DOMINATE_MIND))
+							Kill(pPlayer);
+					}
 	}
 
 	void PoPYoggPortals()
@@ -380,9 +399,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 							Linked[i] = pPlayer->GetGUID();
 							i++;
 						}
-
-						if(!pPlayer->HasAura(SPELL_Sanity) && !pPlayer->isGameMaster() && pPlayer->GetDistance2d(me) < 250.0f)
-							Kill(pPlayer);
+						if(!pPlayer->HasAura(SPELL_DOMINATE_MIND) && !pPlayer->HasAura(SPELL_Sanity))
+							ControlPlayer(pPlayer);
 					}
 
 		if(Linked[0] && Linked[1])
