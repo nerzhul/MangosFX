@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 					{
 						me->RemoveAurasDueToSpell(SPELL_FRENZIED_BLOODTHIST);
 						DoCast(pPlayer,SPELL_UNCONTROLLABLE_FRENZY,true);
-						Kill(pPlayer);
+						//Kill(pPlayer);
 						// TODO : CM
 					}
 

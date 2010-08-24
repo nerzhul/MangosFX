@@ -229,7 +229,7 @@ pAuraHandler AuraHandler[TOTAL_AURAS]=
     &Aura::HandleModSpellDamagePercentFromStat,             //174 SPELL_AURA_MOD_SPELL_DAMAGE_OF_STAT_PERCENT  implemented in Unit::SpellBaseDamageBonus
     &Aura::HandleModSpellHealingPercentFromStat,            //175 SPELL_AURA_MOD_SPELL_HEALING_OF_STAT_PERCENT implemented in Unit::SpellBaseHealingBonus
     &Aura::HandleSpiritOfRedemption,                        //176 SPELL_AURA_SPIRIT_OF_REDEMPTION   only for Spirit of Redemption spell, die at aura end
-    &Aura::HandleNULL,                                      //177 SPELL_AURA_AOE_CHARM (22 spells)
+	&Aura::HandleAOECharm,                                  //177 SPELL_AURA_AOE_CHARM (22 spells)
     &Aura::HandleNoImmediateEffect,                         //178 SPELL_AURA_MOD_DEBUFF_RESISTANCE          implemented in Unit::MagicSpellHitResult
     &Aura::HandleNoImmediateEffect,                         //179 SPELL_AURA_MOD_ATTACKER_SPELL_CRIT_CHANCE implemented in Unit::SpellCriticalBonus
     &Aura::HandleNoImmediateEffect,                         //180 SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS   implemented in Unit::SpellDamageBonus
@@ -9553,4 +9553,24 @@ void Aura::HandleAuraLinked(bool apply, bool Real)
 		GetTarget()->CastSpell(GetTarget(), linkedSpell, true, NULL, this);
 	else
 		GetTarget()->RemoveAurasByCasterSpell(linkedSpell, GetCasterGUID());
+}
+
+void Aura::HandleAOECharm(bool apply, bool Real)
+{
+	if(!GetCaster() || !GetTarget())
+		return;
+
+	if(apply)
+	{
+		GetTarget()->SetCharmerGUID(GetCaster()->GetGUID());
+		GetTarget()->setFaction(GetCaster()->getFaction());
+	}
+	else
+	{
+		GetTarget()->SetCharmerGUID(0);
+		if(GetTarget()->GetTypeId() == TYPEID_PLAYER)
+        {
+            ((Player*)GetTarget())->setFactionForRace(GetTarget()->getRace());
+        }
+	}
 }

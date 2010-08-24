@@ -226,6 +226,7 @@ class MANGOS_DLL_SPEC Aura
 
 		// fss mod
 		void HandleIgnoreUnitState(bool Apply, bool Real);
+		void HandleAOECharm(bool Apply, bool Real);
 
         virtual ~Aura();
 
