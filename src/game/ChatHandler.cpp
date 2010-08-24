@@ -610,6 +610,13 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
     //Send scripted event call
     if (unit && unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->AI())
         ((Creature*)unit)->AI()->ReceiveEmote(GetPlayer(), text_emote);
+
+	if(unit && unit->GetTypeId() == TYPEID_PLAYER && em->Id == 9 && GetPlayer()->HasAura(70877)	&& !unit->HasAura(70867) && !unit->HasAura(70877))
+	{
+		GetPlayer()->RemoveAurasDueToSpell(70877);
+		GetPlayer()->CastSpell(GetPlayer(),70867,true);
+		unit->CastSpell(unit,70867,true);
+	}
 }
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket& recv_data )
