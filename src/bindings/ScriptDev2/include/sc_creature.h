@@ -503,6 +503,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void AddPercentLife(Unit* u,uint8 percent);
 		void DealDamage(Unit* target, uint32 damage);
 		void DealPercentDamage(Unit* target, float percent);
+		void RemoveFromThreatList(Unit* u);
 
 		Unit* GetRandomUnit(uint8 pos = 0) { return SelectUnit(SELECT_TARGET_RANDOM,pos); }
 

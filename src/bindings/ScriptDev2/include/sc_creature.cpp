@@ -1559,6 +1559,15 @@ void LibDevFSAI::DealPercentDamage(Unit* target,float percent)
 	DealDamage(target,dmg);	
 }
 
+void LibDevFSAI::RemoveFromThreatList(Unit* u)
+{
+	if(!u)
+		return;
+	
+	if(me->getThreatManager().getThreat(u))
+		me->getThreatManager().modifyThreatPercent(u, -100);
+}
+
 void LibDevFSAI::MakeInvisibleStalker()
 {
 	me->SetDisplayId(16925);
