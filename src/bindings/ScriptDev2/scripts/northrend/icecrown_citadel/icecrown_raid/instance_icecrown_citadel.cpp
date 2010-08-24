@@ -593,19 +593,30 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				CloseDoor(m_uiRotfaceDoorGUID);
 				OpenDoor(m_uiPutricideDoorGUID);
 				OpenDoor(m_uiPrinceCouncilDoorGUID);
-				if(GetData(TYPE_PRINCE_COUNCIL) == DONE)
-				{
-					OpenDoor(m_uiLanathelDoorGUID_1);
-					OpenDoor(m_uiLanathelDoorGUID_2);
-				}
 				if(GetData(TYPE_LANATHEL) == DONE)
-				{
-					OpenDoor(m_uiFrostWingDoorGUID);
 					OpenDoor(m_uiDreamWalkerDoorGUID);
-				}
 				if(GetData(TYPE_DREAMWALKER) == DONE)
 					OpenDoor(m_uiSindragosaDoorGUID);
 			}
+
+			if (GetData(TYPE_SAURFANG) == DONE)
+	            OpenDoor(m_uiSaurfangDoorGUID);
+
+			if(GetData(TYPE_PRINCE_COUNCIL) == DONE)
+			{
+				OpenDoor(m_uiLanathelDoorGUID_1);
+				OpenDoor(m_uiLanathelDoorGUID_2);
+			}
+
+			if(GetData(TYPE_LANATHEL) == DONE)
+				OpenDoor(m_uiFrostWingDoorGUID);
+
+			if(GetData(TYPE_ROTFACE) == DONE && GetData(TYPE_FESTERGUT) == DONE || GetData(TYPE_PUTRICIDE) == DONE)
+			{
+				OpenDoor(m_uiBloodWingDoorGUID);
+				OpenDoor(m_uiFrostWingDoorGUID);
+			}
+
 			checkPlayer_Timer = 500;
 		}
 		else
