@@ -150,6 +150,8 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 					const int32 bp0 = dmg;
 					me->CastCustomSpell(MT2,50846,&bp0,NULL,NULL,true);
 				}
+			if(pDoneTo->HasAura(SPELL_UNCONTROLLABLE_FRENZY))
+				Kill(pDoneTo);
 		}
 	}
 
