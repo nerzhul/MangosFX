@@ -22851,4 +22851,14 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 		default:
 			break;
 	}
+
+	if(isCrit && HasAura(67712)) // Reign of the Dead
+	{
+		CastSpell(this,67713,true);
+		if(HasAura(67713) && GetAura(67713)->GetStackAmount() >= 3)
+		{
+			RemoveAurasDueToSpell(67713);
+			CastSpell(victim,67714,true);
+		}
+	}
 }
