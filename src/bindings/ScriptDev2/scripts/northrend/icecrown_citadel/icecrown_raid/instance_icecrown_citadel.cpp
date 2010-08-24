@@ -135,22 +135,37 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
         switch(pCreature->GetEntry())
         {
             case NPC_MARROWGAR: 
-				m_uiMarrowgarGUID = pCreature->GetGUID(); 
+				m_uiMarrowgarGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_MARROWGAR,DONE);
 				break;
             case NPC_DEATHWHISPER: 
-				m_uiDeathwhisperGUID = pCreature->GetGUID(); 
+				m_uiDeathwhisperGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_DEATHWHISPER,DONE);
 				break;
             case NPC_SAURFANG: 
 				m_uiSaurfangGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+				{
+					m_auiEncounter[TYPE_SAURFANG] = DONE;
+					OpenDoor(m_uiSaurfangDoorGUID);
+				}
 				break;
 			case NPC_FESTERGUT:
 				m_uiFestergutGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_FESTERGUT,DONE);
 				break;
 			case NPC_ROTFACE:
 				m_uiRotfaceGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_ROTFACE,DONE);
 				break;
 			case NPC_PUTRICIDE:
 				m_uiPutricideGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_PUTRICIDE,DONE);
 				AutoFreeze(pCreature);
 				break;
 			case NPC_PRINCE_KELESETH:
@@ -158,13 +173,16 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_PRINCE_VALANAR:
 				m_uiPrinceValanarGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_PRINCE_COUNCIL,DONE);
 				break;
 			case NPC_PRINCE_TALDARAM:
 				m_uiPrinceTaldaramGUID = pCreature->GetGUID();
 				break;
 			case NPC_LANATHEL:
 				m_uiLanathelGUID = pCreature->GetGUID();
-				//AutoFreeze(pCreature);
+				if(!pCreature->isAlive())
+					SetData(TYPE_LANATHEL,DONE);
 				break;
 			case NPC_DREAMWALKER:
 				m_uiDreamWalkerGUID = pCreature->GetGUID();
@@ -401,13 +419,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiPrinceCouncilDoorGUID);
 					OpenDoor(m_uiLanathelDoorGUID_1);
 					OpenDoor(m_uiLanathelDoorGUID_2);
+					OpenDoor(m_uiBloodWingDoorGUID);
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiPrinceCouncilDoorGUID);
 				else if(uiData == FAIL)
 				{
 					DespawnCreatures(vortexGUIDs);
-					OpenDoor(m_uiSaurfangDoorGUID);
 					OpenDoor(m_uiPrinceCouncilDoorGUID);
 				}
 				break;
