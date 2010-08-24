@@ -86,6 +86,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
         SetInstanceData(TYPE_LANATHEL, IN_PROGRESS);
 		Yell(16782,"Ce n'est pas une décision... très sage...");
 		ModifyAuraStack(SPELL_SHROUD_OF_SORROW);
+		BossEmote(0,"Pour mordre tapez /mordre sur un joueur a mordre");
     }
 
 	void KilledUnit(Unit* who)
@@ -303,7 +304,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 				{
 					if(Unit* u = GetRandomUnit())
 					{
-						if(u->HasAura(SPELL_PACT_OF_DARKFALLEN))
+						if(u->HasAura(SPELL_PACT_OF_DARKFALLEN) || u->GetTypeId() != TYPEID_PLAYER)
 							i--;
 						else
 							DoCast(u,SPELL_PACT_OF_DARKFALLEN,true);

@@ -405,7 +405,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiPrinceCouncilDoorGUID);
 				else if(uiData == FAIL)
+				{
 					DespawnCreatures(vortexGUIDs);
+					OpenDoor(m_uiSaurfangDoorGUID);
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
+				}
 				break;
 			case TYPE_LANATHEL:
 				m_auiEncounter[TYPE_LANATHEL] = uiData;
@@ -413,6 +417,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				{
 					OpenDoor(m_uiLanathelDoorGUID_1);
 					OpenDoor(m_uiLanathelDoorGUID_2);
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
+					OpenDoor(m_uiBloodWingDoorGUID);
+					OpenDoor(m_uiSaurfangDoorGUID);
 				}
 				if(uiData == DONE)
 				{
