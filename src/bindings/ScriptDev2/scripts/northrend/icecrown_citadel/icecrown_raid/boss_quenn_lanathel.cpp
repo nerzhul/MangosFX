@@ -3,20 +3,21 @@
 
 enum BossSpells
 {
-	SPELL_SHROUD_OF_SORROW                  = 72981, // ok
-	SPELL_DELRIOUS_SLASH                    = 71623, // ok
-	SPELL_BLOOD_MIRROR_1                    = 70821, // ok
-	SPELL_BLOOD_MIRROR_2                    = 70838, // ok
-	SPELL_FRENZIED_BLOODTHIST				= 70877, // ok
-	SPELL_VAMPIRIC_BITE                     = 71726, // ok
-	SPELL_ESSENCE_OF_BLOOD_QUEEN			= 70867, // ok
-	SPELL_UNCONTROLLABLE_FRENZY             = 70923, // ok
-	SPELL_PACT_OF_DARKFALLEN                = 71340, // ok
-	SPELL_PACT_OF_DARKFALLEN_DMG			= 71341, // ok
-	SPELL_SWARMING_SHADOWS                  = 71264, // ok: TODO : spawn event and casting region
-	SPELL_FEAR								= 73070, // ok
-	SPELL_TWILIGHT_BLOODBOLT                = 71446, // ok
-	SPELL_BLOODBOLT_WHIRL                   = 71772, // ok : TODO: proc twilight bolts
+	SPELL_SHROUD_OF_SORROW                  = 72981,
+	SPELL_DELRIOUS_SLASH                    = 71623,
+	SPELL_BLOOD_MIRROR_1                    = 70821,
+	SPELL_BLOOD_MIRROR_2                    = 70838, 
+	SPELL_FRENZIED_BLOODTHIST				= 70877,
+	SPELL_VAMPIRIC_BITE                     = 71726,
+	SPELL_ESSENCE_OF_BLOOD_QUEEN			= 70867,
+	SPELL_UNCONTROLLABLE_FRENZY             = 70923,
+	SPELL_PACT_OF_DARKFALLEN                = 71340,
+	SPELL_PACT_OF_DARKFALLEN_DMG			= 71341,
+	SPELL_SWARMING_SHADOWS                  = 71264,
+	SPELL_SWARMING_SHADOWS_DMG				= 71268, // ok
+	SPELL_FEAR								= 73070,
+	SPELL_TWILIGHT_BLOODBOLT                = 71446,
+	SPELL_BLOODBOLT_WHIRL                   = 71772,
 	SPELL_PRESENCE_OF_DARKFALLEN            = 71952, // TODO : HM
 };
 
@@ -386,11 +387,46 @@ CreatureAI* GetAI_boss_lanathel(Creature* pCreature)
     return new boss_lanathelAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL swarming_shadowAI : public LibDevFSAI
+{	
+	swarming_shadowAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {	
+        InitInstance();
+		MakeHostileInvisibleStalker();
+		ModifyAuraStack(71267);
+		me->ForcedDespawn(30000);
+		AddEvent(SPELL_SWARMING_SHADOWS_DMG,1000,1000);
+    }
+
+    void Reset()
+	{
+		ResetTimers();
+		SetCombatMovement(false);
+		AggroAllPlayers(75.0f);
+	}
+	
+    void UpdateAI(const uint32 diff)
+	{	
+		UpdateEvent(diff);
+
+	}
+};
+
+CreatureAI* GetAI_swarming_shadow(Creature* pCreature)
+{
+    return new swarming_shadowAI(pCreature);
+} 
+
 void AddSC_ICC_Lanathel()
 {
 	Script* NewScript;
     NewScript = new Script;
     NewScript->Name = "boss_lanathel";
     NewScript->GetAI = &GetAI_boss_lanathel;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_swarming_shadow";
+    NewScript->GetAI = &GetAI_swarming_shadow;
     NewScript->RegisterSelf();
 }

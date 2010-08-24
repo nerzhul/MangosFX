@@ -3109,10 +3109,11 @@ void SpellMgr::LoadSpellAreas()
 SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spellInfo, uint32 map_id, uint32 zone_id, uint32 area_id, Player const* player)
 {
     // normal case
-    if (spellInfo->AreaGroupId > 0)
+    if (spellInfo->AreaGroupId > 0 && spellInfo->Id != 71266) // Hack for one Lanathel spell
     {
         bool found = false;
         AreaGroupEntry const* groupEntry = sAreaGroupStore.LookupEntry(spellInfo->AreaGroupId);
+		error_log("AreaGroupId %u",spellInfo->AreaGroupId);
 		int i=0;
         while (groupEntry)
         {
