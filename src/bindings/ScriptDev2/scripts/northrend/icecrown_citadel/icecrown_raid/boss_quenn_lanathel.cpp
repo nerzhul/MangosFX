@@ -365,7 +365,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 			if(vampir_Timer <= diff)
 			{
 				vampir_Timer = TEN_MINS;
-				if(Unit* u = GetRandomUnit())
+				if(Unit* u = GetRandomUnit(1))
 				{
 					if(u->GetTypeId() == TYPEID_PLAYER)
 						ModifyAuraStack(SPELL_ESSENCE_OF_BLOOD_QUEEN,1,u,u);

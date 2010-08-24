@@ -66,6 +66,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiDreamWalkerExitDoorGUID;
 	uint64 m_uiSindragosaDoorGUID;
 
+	uint64 m_uiDreamwalkerEventDoorGUID[4];
+
 	uint64 m_uiSaurfangCacheGUID;
 
 	uint64 m_uiPlagueSigilGUID;
@@ -119,6 +121,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		m_uiSindragosaDoorGUID			= 0;
 
 		m_uiSaurfangCacheGUID			= 0;
+
+		for(uint8 i=0;i<4;i++)
+			m_uiDreamwalkerEventDoorGUID[i] = 0;
 
 		m_uiPlagueSigilGUID				= 0;
 		m_uiBloodSigilGUID				= 0;
@@ -186,10 +191,14 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_DREAMWALKER:
 				m_uiDreamWalkerGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_DREAMWALKER,DONE);
 				AutoFreeze(pCreature);
 				break;
 			case NPC_SINDRAGOSA:
 				m_uiSindragosaGUID = pCreature->GetGUID();
+				if(!pCreature->isAlive())
+					SetData(TYPE_SINDRAGOSA,DONE);
 				AutoFreeze(pCreature);
 				break;
 			case NPC_LICHKING:
@@ -324,6 +333,18 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
             case GO_SAURFANG_CACHE_25_H:
 				m_uiSaurfangCacheGUID = pGo->GetGUID();
+				break;
+			case GO_DREAMWALKER_EVENT_DOOR_1:
+				m_uiDreamwalkerEventDoorGUID[0] = pGo->GetGUID();
+				break;
+			case GO_DREAMWALKER_EVENT_DOOR_2:
+				m_uiDreamwalkerEventDoorGUID[1] = pGo->GetGUID();
+				break;
+			case GO_DREAMWALKER_EVENT_DOOR_3:
+				m_uiDreamwalkerEventDoorGUID[2] = pGo->GetGUID();
+				break;
+			case GO_DREAMWALKER_EVENT_DOOR_4:
+				m_uiDreamwalkerEventDoorGUID[3] = pGo->GetGUID();
 				break;
         }
     }
@@ -473,6 +494,30 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiSindragosaDoorGUID);
+				break;
+			case DATA_DW_DOOR_1:
+				if(uiData == 0)
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[0]);
+				else
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[0]);
+				break;
+			case DATA_DW_DOOR_2:
+				if(uiData == 0)
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[1]);
+				else
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[1]);
+				break;
+			case DATA_DW_DOOR_3:
+				if(uiData == 0)
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[2]);
+				else
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[2]);
+				break;
+			case DATA_DW_DOOR_4:
+				if(uiData == 0)
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[2]);
+				else
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[2]);
 				break;
         }
 
