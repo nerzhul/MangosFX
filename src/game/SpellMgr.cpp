@@ -3113,7 +3113,6 @@ SpellCastResult SpellMgr::GetSpellAllowedInLocationError(SpellEntry const *spell
     {
         bool found = false;
         AreaGroupEntry const* groupEntry = sAreaGroupStore.LookupEntry(spellInfo->AreaGroupId);
-		error_log("AreaGroupId %u",spellInfo->AreaGroupId);
 		int i=0;
         while (groupEntry)
         {
