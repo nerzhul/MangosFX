@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         SetInstanceData(TYPE_LANATHEL, DONE);
-
+		KillAllControled();
 		Say(16794,"Mais... tout allait si bien... entre ... nous...");
 		switch(m_difficulty)
 		{
@@ -136,8 +136,14 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 		{
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
+				{
 					if(pPlayer->HasAura(SPELL_UNCONTROLLABLE_FRENZY))
 						Kill(pPlayer);
+					if(pPlayer->HasAura(SPELL_FRENZIED_BLOODTHIST))
+						pPlayer->RemoveAurasDueToSpell(SPELL_FRENZIED_BLOODTHIST);
+					if(pPlayer->HasAura(SPELL_ESSENCE_OF_BLOOD_QUEEN))
+						pPlayer->RemoveAurasDueToSpell(SPELL_ESSENCE_OF_BLOOD_QUEEN);
+				}
 		}
 	}
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)

@@ -612,7 +612,7 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
         ((Creature*)unit)->AI()->ReceiveEmote(GetPlayer(), text_emote);
 
 	if(unit && unit->GetTypeId() == TYPEID_PLAYER && em->Id == 9 && GetPlayer()->HasAura(70877)	&& !unit->HasAura(70867) && !unit->HasAura(70877)
-		&& GetPlayer()->GetDistance2d(unit) < 5.0f)
+		&& GetPlayer()->GetDistance2d(unit) < 5.0f && GetPlayer()->GetMapId() == 571)
 	{
 		GetPlayer()->RemoveAurasDueToSpell(70877);
 		GetPlayer()->CastSpell(GetPlayer(),70867,true);
