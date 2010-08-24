@@ -1895,6 +1895,12 @@ void Spell::EffectDummy(uint32 i)
 				case 74452:
 					m_caster->CastSpell(m_caster,74455,true);
 					return;
+				case 71899:
+					if(!unitTarget)
+						return;
+
+					m_caster->CastSpell(unitTarget,71446,true);
+					return;
 				case 71718:
 				case 72040:
 					if(!unitTarget)

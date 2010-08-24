@@ -8,14 +8,16 @@ enum BossSpells
 	SPELL_BLOOD_MIRROR_1                    = 70821, // ok
 	SPELL_BLOOD_MIRROR_2                    = 70838, // ok
 	SPELL_FRENZIED_BLOODTHIST				= 70877, // ok
-	SPELL_VAMPIRIC_BITE                     = 71726, // ok : must CM when finish
-	SPELL_UNCONTROLLABLE_FRENZY             = 70923,
-	SPELL_PACT_OF_DARKFALLEN                = 71340, // ok: TODO : distance damages
+	SPELL_VAMPIRIC_BITE                     = 71726, // ok
+	SPELL_ESSENCE_OF_BLOOD_QUEEN			= 70867, // ok
+	SPELL_UNCONTROLLABLE_FRENZY             = 70923, // ok
+	SPELL_PACT_OF_DARKFALLEN                = 71340, // ok
+	SPELL_PACT_OF_DARKFALLEN_DMG			= 71341, // ok
 	SPELL_SWARMING_SHADOWS                  = 71264, // ok: TODO : spawn event and casting region
 	SPELL_FEAR								= 73070, // ok
-	SPELL_TWILIGHT_BLOODBOLT                = 71446,
+	SPELL_TWILIGHT_BLOODBOLT                = 71446, // ok
 	SPELL_BLOODBOLT_WHIRL                   = 71772, // ok : TODO: proc twilight bolts
-	SPELL_PRESENCE_OF_DARKFALLEN            = 71952,
+	SPELL_PRESENCE_OF_DARKFALLEN            = 71952, // TODO : HM
 };
 
 enum phases
@@ -60,7 +62,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 
 	uint64 tank[2];
 	uint32 checkTanks_Timer;
-	uint32 checkVampirs_Timer;
+	uint32 checkPlayers_Timer;
 	uint32 vampir_Timer;
 
     void Reset()
@@ -69,12 +71,12 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 		phase = PHASE_LAND;
 		phase_Timer = 120000;
 		subphase = SUBPHASE_MOVE;
-		ModifyAuraStack(SPELL_SHROUD_OF_SORROW);
+		me->RemoveAurasDueToSpell(SPELL_SHROUD_OF_SORROW);
 		pact_Timer = 20000;
 		tank[0] = tank[1] = 0;
 		checkTanks_Timer = 1500;
 		vampir_Timer = 15000;
-		checkVampirs_Timer = 30000;
+		checkPlayers_Timer = 20000;
 		SetInstanceData(TYPE_LANATHEL, NOT_STARTED);
     }
 
@@ -82,6 +84,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
     {
         SetInstanceData(TYPE_LANATHEL, IN_PROGRESS);
 		Yell(16782,"Ce n'est pas une décision... très sage...");
+		ModifyAuraStack(SPELL_SHROUD_OF_SORROW);
     }
 
 	void KilledUnit(Unit* who)
@@ -135,20 +138,72 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 		}
 	}
 
-	void CheckVampirStates()
+	void CheckPlayerStates()
 	{
+		Player* LinkedPlayers[3];
+		for(uint8 i=0;i<3;i++)
+			LinkedPlayers[i] = NULL;
+
+		uint8 linkItr = 0;
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
+		{
 			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 				if (Player* pPlayer = itr->getSource())
 				{
 					if(pPlayer->isGameMaster())
 						continue;
 
-					if(pPlayer->HasAura(SPELL_FRENZIED_BLOODTHIST) && pPlayer->GetAura(SPELL_FRENZIED_BLOODTHIST)->GetAuraDuration() < 1200)
-						;
+					if(pPlayer->HasAura(SPELL_FRENZIED_BLOODTHIST) && pPlayer->GetAura(SPELL_FRENZIED_BLOODTHIST)->GetAuraDuration() < 1100)
+					{
+						me->RemoveAurasDueToSpell(SPELL_FRENZIED_BLOODTHIST);
+						DoCast(pPlayer,SPELL_UNCONTROLLABLE_FRENZY,true);
+						Kill(pPlayer);
+						// TODO : CM
+					}
 
+					if(pPlayer->HasAura(SPELL_PACT_OF_DARKFALLEN) && linkItr < 3)
+					{
+						LinkedPlayers[linkItr] = pPlayer;
+						linkItr++;
+					}
 				}
+		}
+
+		bool removeLink = true;
+		switch(m_difficulty)
+		{
+			case RAID_DIFFICULTY_25MAN_NORMAL:
+			case RAID_DIFFICULTY_25MAN_HEROIC:
+				if(LinkedPlayers[2] && LinkedPlayers[1] && LinkedPlayers[2]->GetDistance2d(LinkedPlayers[1]) > 5.0f)
+					removeLink = false;
+				if(LinkedPlayers[2] && LinkedPlayers[0] && LinkedPlayers[2]->GetDistance2d(LinkedPlayers[0]) > 5.0f)
+					removeLink = false;
+
+				if(!LinkedPlayers[2])
+					removeLink = false;
+			case RAID_DIFFICULTY_10MAN_NORMAL:
+			case RAID_DIFFICULTY_10MAN_HEROIC:
+				if(LinkedPlayers[1] && LinkedPlayers[0] && LinkedPlayers[1]->GetDistance2d(LinkedPlayers[0]) > 5.0f)
+					removeLink = false;
+
+				if(!LinkedPlayers[0] || !LinkedPlayers[1])
+					removeLink = false;
+				break;
+		}
+
+		if(removeLink)
+		{
+			if(LinkedPlayers[0]) LinkedPlayers[0]->RemoveAurasDueToSpell(SPELL_PACT_OF_DARKFALLEN);
+			if(LinkedPlayers[1]) LinkedPlayers[1]->RemoveAurasDueToSpell(SPELL_PACT_OF_DARKFALLEN);
+			if(LinkedPlayers[2]) LinkedPlayers[2]->RemoveAurasDueToSpell(SPELL_PACT_OF_DARKFALLEN);
+		}
+		else
+		{
+			if(LinkedPlayers[0]) LinkedPlayers[0]->CastSpell(LinkedPlayers[0],SPELL_PACT_OF_DARKFALLEN_DMG,true);
+			if(LinkedPlayers[1]) LinkedPlayers[1]->CastSpell(LinkedPlayers[1],SPELL_PACT_OF_DARKFALLEN_DMG,true);
+			if(LinkedPlayers[2]) LinkedPlayers[2]->CastSpell(LinkedPlayers[2],SPELL_PACT_OF_DARKFALLEN_DMG,true);
+		}
 	}
 
 	Unit* GetNearestMT2()
@@ -230,13 +285,14 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 		UpdateEvent(diff);
 		UpdateEvent(diff,phase);
 
-		if(checkVampirs_Timer <= diff)
+		if(checkPlayers_Timer <= diff)
 		{
-			CheckVampirStates();
-			checkVampirs_Timer = 500;
+			CheckPlayerStates();
+			checkPlayers_Timer = 1000;
 		}
 		else
-			checkVampirs_Timer -= diff;
+			checkPlayers_Timer -= diff;
+
 		if(phase == PHASE_LAND)
 		{
 			if(pact_Timer <= diff)
@@ -310,13 +366,12 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 				if(Unit* u = GetRandomUnit())
 				{
 					if(u->GetTypeId() == TYPEID_PLAYER)
-					{
-						u->CastStop();
-						u->CastSpell(u,SPELL_VAMPIRIC_BITE,true);
-					}
+						ModifyAuraStack(SPELL_ESSENCE_OF_BLOOD_QUEEN,1,u,u);
 					else
 						vampir_Timer = 200;
 				}
+				else
+					vampir_Timer = 200;
 			}
 			else
 				vampir_Timer -= diff;

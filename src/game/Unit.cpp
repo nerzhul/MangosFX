@@ -1041,10 +1041,17 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         }
         if (pVictim->GetTypeId() != TYPEID_PLAYER)
         {
+			uint32 generatedThreat = damage;
+			if(HasAura(70867))
+			{
+				generatedThreat = 0;
+				const int32 bp0 = int32(damage / 10);
+				CastCustomSpell(this,70872,&bp0,NULL,NULL,true);
+			}
 			if(spellProto && IsDamageToThreatSpell(spellProto))
-				pVictim->AddThreat(this, damage*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+				pVictim->AddThreat(this, generatedThreat*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
 			else
-				pVictim->AddThreat(this, damage, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+				pVictim->AddThreat(this, generatedThreat, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
 
 			if(pVictim->GetTypeId() == TYPEID_UNIT && damage == 0)
 				if(uint32 entry = ((Creature*)this)->GetEntry())
