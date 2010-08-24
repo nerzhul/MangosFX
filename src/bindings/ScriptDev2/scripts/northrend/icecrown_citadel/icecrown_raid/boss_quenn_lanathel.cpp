@@ -69,6 +69,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		KillAllControled();
 		phase = PHASE_LAND;
 		phase_Timer = 120000;
 		subphase = SUBPHASE_MOVE;
@@ -125,8 +126,20 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
     {
 		Yell(16789,"Quel dommage ! Hahahahahaha !");
         SetInstanceData(TYPE_LANATHEL, FAIL);
+		KillAllControled();
     }
 
+	void KillAllControled()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+		{
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+				if (Player* pPlayer = itr->getSource())
+					if(pPlayer->HasAura(SPELL_UNCONTROLLABLE_FRENZY))
+						Kill(pPlayer);
+		}
+	}
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
 	{
 		if(pDoneTo == me->getVictim())
@@ -137,9 +150,6 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 					const int32 bp0 = dmg;
 					me->CastCustomSpell(MT2,50846,&bp0,NULL,NULL,true);
 				}
-
-			if(pDoneTo->HasAura(SPELL_UNCONTROLLABLE_FRENZY))
-				Kill(pDoneTo);
 		}
 	}
 
