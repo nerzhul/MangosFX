@@ -1677,10 +1677,15 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                     (spellInfo_2->SpellIconID == 456 && spellInfo_1->SpellIconID == 2006) )
                     return false;
 
-				// FSS : Taste of Blood and Sudden Death
+				// Taste of Blood and Sudden Death
                 if( (spellInfo_1->Id == 52437 && spellInfo_2->Id == 60503) ||
                     (spellInfo_2->Id == 52437 && spellInfo_1->Id == 60503) )
 					return false;
+				
+				// Battle Shout and Rampage
+                if( (spellInfo_1->SpellIconID == 2767 && spellInfo_2->SpellIconID == 38) ||
+                    (spellInfo_2->SpellIconID == 2767 && spellInfo_1->SpellIconID == 38) )
+                    return false;
 
             }
 
