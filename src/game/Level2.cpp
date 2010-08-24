@@ -4648,8 +4648,10 @@ bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
 	if(!spell)
 		return false;
 
-	PSendSysMessage("Spell %i / Nom : %s / Icone : %u / SpellVisual[0] %u / SpellVisual[1] %u / activeIconId %u / FamilyFlags1 : " UI64FMTD " / FamilyFlags2 : " UI64FMTD " / FamilyName : %u",
-		spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->SpellFamilyFlags,spell->SpellFamilyFlags2,spell->SpellFamilyName);
+	PSendSysMessage("Spell %i / Nom : %s / Icone : %u / SpellVisual[0] %u / SpellVisual[1] %u / activeIconId %u / FamilyFlags1 : " UI64FMTD " / FamilyFlags2 : " UI64FMTD " / FamilyName : %u"
+		" / AuraType1 : %u / AuraType2 : %u / AuraType3 %u",
+		spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->SpellFamilyFlags,spell->SpellFamilyFlags2,spell->SpellFamilyName,
+		spell->EffectApplyAuraName[0],spell->EffectApplyAuraName[1],spell->EffectApplyAuraName[2]);
 	return true;
 }
 
