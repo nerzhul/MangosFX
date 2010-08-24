@@ -409,10 +409,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case TYPE_LANATHEL:
 				m_auiEncounter[TYPE_LANATHEL] = uiData;
-				if(uiData == DONE)
+				if(uiData == FAIL || uiData == DONE)
 				{
 					OpenDoor(m_uiLanathelDoorGUID_1);
 					OpenDoor(m_uiLanathelDoorGUID_2);
+				}
+				if(uiData == DONE)
+				{
 					OpenDoor(m_uiFrostWingDoorGUID);
 					OpenDoor(m_uiDreamWalkerDoorGUID);
 					OpenDoor(m_uiBloodSigilGUID);
