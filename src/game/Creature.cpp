@@ -617,9 +617,6 @@ bool Creature::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, 
         //Notify the map's instance data.
         //Only works if you create the object in it, not if it is moves to that map.
         //Normally non-players do not teleport to other maps.
-        if(map->IsDungeon() && ((InstanceMap*)map)->GetInstanceData())
-            ((InstanceMap*)map)->GetInstanceData()->OnCreatureCreate(this);
-
 		if(GetMap()->IsBattleGroundOrArena() && ((BattleGroundMap*)GetMap())->GetBG())
 			(((BattleGroundMap*)GetMap())->GetBG())->OnCreatureCreate(this);
 
@@ -1144,6 +1141,9 @@ bool Creature::LoadFromDB(uint32 guid, Map *map)
     m_defaultMovementType = MovementGeneratorType(data->movementType);
 
     AIM_Initialize();
+
+	if(map->IsDungeon() && ((InstanceMap*)map)->GetInstanceData())
+		((InstanceMap*)map)->GetInstanceData()->OnCreatureCreate(this);
     return true;
 }
 
