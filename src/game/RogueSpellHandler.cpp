@@ -35,6 +35,9 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 
         if(found)
             totalDmgPctMod *= 1.2f;          // 120% if poisoned
+
+		// WOTLK formula
+		spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7); 
     }
     // Fan of Knives
     else if (spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_FAN_OF_KNIVES))
@@ -58,6 +61,7 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
 			totalDmgPctMod *= 1.44f;         // 144% with dagger 
 	}
+	// Sinister strike WOTLK formula
 	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_SINISTERSTK))
 	{
 		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
