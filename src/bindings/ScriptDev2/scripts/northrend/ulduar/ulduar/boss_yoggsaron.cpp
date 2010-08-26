@@ -476,7 +476,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 								DoCast(pPlayer,64168);
 						}
 						
-						if((Event == EVENT_PHASE2 || Event == EVENT_PHASE3) && me->HasInArc(M_PI,pPlayer)
+						if((Event == EVENT_PHASE2 || Event == EVENT_PHASE3) && me->HasInArc(M_PI,pPlayer))
 							ModifySanity(1,pPlayer);
 					}
 	}
