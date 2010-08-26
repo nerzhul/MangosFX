@@ -9,6 +9,8 @@ INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 #define FLAG_FAN_OF_KNIVES	UI64LIT(0x0004000000000000)
 #define FLAG_HEMORRHAGE		UI64LIT(0x2000000)
 #define FLAG_SINISTERSTK	UI64LIT(0x800002)
+#define FLAG_AMBUSH			UI64LIT(0x800200)
+#define FLAG_BACKSTAB		UI64LIT(0x800004)
 
 void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
@@ -69,5 +71,17 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
 		else
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+	}
+	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_AMBUSH))
+	{
+		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+	}
+	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_BACKSTAB))
+	{
+		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
 	}
 }

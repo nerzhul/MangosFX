@@ -22799,6 +22799,12 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 {
 	switch(getClass())
 	{
+		case CLASS_WARRIOR:
+			break;
+		case CLASS_DEATH_KNIGHT:
+			break;
+		case CLASS_PALADIN:
+			break;
 		case CLASS_WARLOCK:
 			switch(spell->SpellIconID)
 			{
