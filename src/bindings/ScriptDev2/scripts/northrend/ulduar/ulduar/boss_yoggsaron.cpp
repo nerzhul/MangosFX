@@ -348,11 +348,6 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	void ControlPlayer(Player* plr)
 	{
 		ModifyAuraStack(SPELL_DOMINATE_MIND,1,plr);
-		if(plr->HasAura(SPELL_DOMINATE_MIND))
-		{
-			plr->GetAura(SPELL_DOMINATE_MIND)->SetAuraMaxDuration(TEN_MINS*2);
-			plr->GetAura(SPELL_DOMINATE_MIND)->SetAuraDuration(TEN_MINS*2);
-		}
 		AchCrazy = false;
 	}
 
@@ -481,7 +476,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 								DoCast(pPlayer,64168);
 						}
 						
-						if(Event == EVENT_PHASE2 || Event == EVENT_PHASE3)
+						if((Event == EVENT_PHASE2 || Event == EVENT_PHASE3) && me->HasInArc(M_PI,pPlayer)
 							ModifySanity(1,pPlayer);
 					}
 	}
