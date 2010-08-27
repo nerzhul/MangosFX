@@ -144,6 +144,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 			{
 				guild->RegisterCalendarEvent(cEvent);
 				guild->BroadcastEventToGuild(cEvent->getId());
+				CharacterDatabase.PExecute("UPDATE calendar_events SET guild = %u",GetPlayer()->GetGuildId());
 			}
 		}
 		else
