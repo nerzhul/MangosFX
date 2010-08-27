@@ -22890,8 +22890,7 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 
 	if(HasAura(71562) || HasAura(71519)) // Deathbringer will
 	{
-		uint32 spellTable[8][3] = 
-		{
+		uint32 spellTable[8][3] = {
 			{{71561},{71560},{71559}}, // War,DK,Pala
 			{{71556},{71560},{71558}}, // Shaman, Rogue
 			{{71556},{71558},{71559}}, // Hunt
