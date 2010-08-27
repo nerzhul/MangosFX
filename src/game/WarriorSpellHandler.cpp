@@ -6,6 +6,12 @@
 
 INSTANTIATE_SINGLETON_1(WarriorSpellHandler);
 
+#define FLAG_DEVASTATE UI64LIT(0x4000000000)
+#define FLAG_MORTALSTRIKE UI64LIT(0x2000000)
+#define SPELL_WHIRLWIND 1680
+#define SPELL_OVERPOWER 7384
+#define SPELL_WHIRLWIND_OFFHAND 44949
+
 void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Devastate bonus and sunder armor refresh
@@ -36,6 +42,34 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 		// glyph of devastate
 		if(spell->GetCaster()->HasAura(58388))
 			spell->GetCaster()->CastSpell(spell->getUnitTarget(), 58567, true);
-
     }
+
+	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
+	{
+		if(spell->m_spellInfo->SpellFamilyFlags == FLAG_DEVASTATE)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+		else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_MORTALSTRIKE)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+		else if(spell->m_spellInfo->Id == SPELL_WHIRLWIND || spell->m_spellInfo->Id == SPELL_WHIRLWIND_OFFHAND ||
+			spell->m_spellInfo->Id == SPELL_OVERPOWER)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+	}
 }

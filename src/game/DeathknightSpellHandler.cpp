@@ -9,6 +9,9 @@ INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 #define FLAG_DEATH_COIL			UI64LIT(0x002000)
 #define FLAG_HUNGERING_COLD		UI64LIT(0x0000100000000000)
 #define FLAG_DEATH_STRIKE		UI64LIT(0x0000000000000010)
+#define FLAG_PLAGUE_STRIKE		UI64LIT(0x0000000000000001)
+#define FLAG_BLOOD_STRIKE		UI64LIT(0x0000000000400000)
+#define FLAG_OBLITERATE			UI64LIT(0x2000000000000)
 
 bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
 {
@@ -121,12 +124,20 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         }
     }
     // Glyph of Blood Strike
-    if(spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000400000) &&
-        spell->GetCaster()->HasAura(59332) &&
-        spell->getUnitTarget()->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
-    {
-        totalDmgPctMod *= 1.2f;              // 120% if snared
-    }
+    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_BLOOD_STRIKE)
+	{
+        if(spell->GetCaster()->HasAura(59332) && spell->getUnitTarget()->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
+			totalDmgPctMod *= 1.2f;              // 120% if snared
+
+		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+	}
 	// Rune strike
 	if(spell->m_spellInfo->SpellIconID == 3007)
 	{
@@ -134,7 +145,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
 		spell_bonus += int32(count * spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
 	}
     // Glyph of Death Strike
-    if(spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000010) &&
+    else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_STRIKE &&
         spell->GetCaster()->HasAura(59336))
     {
         int32 rp = spell->GetCaster()->GetPower(POWER_RUNIC_POWER) / 10;
@@ -143,9 +154,20 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         totalDmgPctMod *= 1.0f + rp / 100.0f;
     }
     // Glyph of Plague Strike
-    if(spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000001) &&
+    else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_PLAGUE_STRIKE &&
         spell->GetCaster()->HasAura(58657))
     {
         totalDmgPctMod *= 1.2f;
     }
+	else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_OBLITERATE)
+	{
+		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+	}
 }
