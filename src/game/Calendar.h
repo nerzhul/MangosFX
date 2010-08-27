@@ -65,7 +65,7 @@ class CalendarMgr
 		cEventMap getGuildEvents(uint32 guild);
 		CalendarEvent* getEventById(uint64 id);
 		void LoadCalendarEvents();
-		void RemoveCalendarEvent(uint32 eventId);
+		void RemoveCalendarEvent(uint64 eventId);
 	private:
 		cEventMap m_calendarEvents;
 		cEventMap m_guildCalendarEvents;

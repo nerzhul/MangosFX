@@ -218,7 +218,7 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	return cEvent;
 }
 
-void CalendarMgr::RemoveCalendarEvent(uint32 eventId)
+void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 {
 	CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId);
 	if(!cEvent)

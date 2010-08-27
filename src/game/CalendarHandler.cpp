@@ -215,7 +215,8 @@ void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
     recv_data >> eventId;
     recv_data >> creatorGuid;
     recv_data >> unk1;
-
+	error_log("CMSG_CALENDAR_REMOVE_EVENT unk1 : %u",unk1);
+	sCalendarMgr.RemoveCalendarEvent(eventId);
 }
 
 void WorldSession::HandleCalendarCopyEvent(WorldPacket &recv_data)
