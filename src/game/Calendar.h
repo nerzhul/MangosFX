@@ -24,6 +24,7 @@
 class Player;
 class CalendarEvent;
 
+#define MAX_INVITES 100
 enum EventType
 {
 	EVENT_RAID			= 0,
@@ -49,6 +50,23 @@ enum PveType
 	PVETYPE_RUBIS_SANCTUM_25	= 294,
 };
 
+enum State
+{
+	REFUSED		= 0,
+	CONFIRMED	= 1,
+	ACCEPTED	= 3,
+	EXIT		= 4,
+	AWAITING	= 5,
+	NOTSURE		= 8,
+};
+
+enum State2
+{
+	REFUSED2	= 0,
+	VALID		= 2,
+};
+
+
 typedef std::map<uint64,CalendarEvent*> cEventMap;
 class CalendarMgr
 {
@@ -66,6 +84,7 @@ class CalendarMgr
 		CalendarEvent* getEventById(uint64 id);
 		void LoadCalendarEvents();
 		void RemoveCalendarEvent(uint64 eventId);
+		void SendEvent(CalendarEvent* cEvent, Player* plr, bool create);
 	private:
 		cEventMap m_calendarEvents;
 		cEventMap m_guildCalendarEvents;
