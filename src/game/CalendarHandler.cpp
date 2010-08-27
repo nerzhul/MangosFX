@@ -230,6 +230,7 @@ void WorldSession::HandleCalendarCopyEvent(WorldPacket &recv_data)
     recv_data >> newId;
     recv_data >> unk1;
 
+	error_log("CMSG_CALENDAR_COPY_EVENT %u %u %u",oldId,newId,unk1);
 }
 
 void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)

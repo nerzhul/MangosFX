@@ -139,8 +139,6 @@ void CalendarMgr::Send(Player* plr)
 			
 		data << holidayName;
 	}
-    sLog.outDebug("Sending calendar");
-	data.hexlike();
     plr->GetSession()->SendPacket(&data);
 }
 
@@ -224,8 +222,8 @@ void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 	if(!cEvent)
 		return;
 	sWorld.RemoveCalendarEventFromActiveSessions(cEvent);
-	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = %u'",eventId);
-	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = %u'",eventId);
+	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = '%u'",eventId);
+	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = '%u'",eventId);
 	m_calendarEvents.erase(cEvent->getId());
 	m_guildCalendarEvents.erase(cEvent->getId());
 	delete cEvent;

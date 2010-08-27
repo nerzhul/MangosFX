@@ -1781,6 +1781,7 @@ void World::RemoveCalendarEventFromActiveSessions(CalendarEvent* cEvent)
             itr->second->GetPlayer())
 		{
 			itr->second->GetPlayer()->RemoveCalendarEvent(cEvent);
+			sCalendarMgr.Send(itr->second->GetPlayer());
 		}
     }
 }
