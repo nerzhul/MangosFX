@@ -57,6 +57,8 @@ void CalendarMgr::Send(Player* plr)
 
 	for (cEventMap::iterator itr = cPlayerEventMap.begin(); itr != cPlayerEventMap.end(); ++itr)
     {
+		if(!(*itr).second)
+			continue;
 		data << uint64((*itr).first);
 		data << std::string((*itr).second->getTitle());
 		data << uint32((*itr).second->getType());
@@ -68,6 +70,8 @@ void CalendarMgr::Send(Player* plr)
 
 	for (cEventMap::iterator itr = cGuildEventMap.begin(); itr != cGuildEventMap.end(); ++itr)
     {
+		if(!(*itr).second)
+			continue;
 		data << uint64((*itr).first);
 		data << std::string((*itr).second->getTitle());
 		data << uint32((*itr).second->getType());
@@ -177,7 +181,6 @@ void CalendarMgr::LoadCalendarEvents()
 		cEvent->setId(eventId);
 		if(guildid > 0)
 		{
-			m_guildCalendarEvents[eventId] = cEvent;
 			if(Guild* guild = sObjectMgr.GetGuildById(guildid))
 			{
 				m_guildCalendarEvents[eventId] = cEvent;

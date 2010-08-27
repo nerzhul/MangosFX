@@ -31,9 +31,11 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 		return;
 
     sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
-	for(uint8 i=0;i<10;i++){
+	for(uint8 i=0;i<10;i++)
+	{
 	WorldPacket data(CMSG_CALENDAR_GET_CALENDAR);
-	SendPacket(&data);}
+	SendPacket(&data);
+	}
 	sCalendarMgr.Send(GetPlayer());
 }
 
@@ -51,12 +53,38 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
 		return;
 	}
 
-	uint32 maxInvites = 1;
+	uint32 maxInvites = 0;
 	// window to show event details when click on it
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
-	data << uint8(0); // 1: close panel 0: open panel
-	data << maxInvites;
-	for(int i = 0; i < maxInvites; i++)
+	
+	data << uint8(0); // 1: close panel 0: open panel // or guid 1st ?
+	data.appendPackGUID(cEvent->getCreator()); // or append ?
+	data << uint64(eventId);
+	data << std::string(cEvent->getTitle());
+	data << std::string(cEvent->getDescription());
+	data << uint8(0) << uint8(0);
+	data << uint8(100); // maxinvites
+	data << uint32(cEvent->getPveType());
+	data << uint32(1); // unk
+	data << uint32(0); // unk
+	data << uint32(cEvent->getDate());
+	// moding
+	data << uint32(0);
+	data << uint32(1);
+	data << uint8(0x00) << uint8(0x00); //
+	data << uint8(0x00); // or guid 1st ?
+	data << uint64(cEvent->getCreator()); // or append
+	data << uint8(0x0A);
+	data << uint8(0x03); // maybe unk when recv add packet
+	data << uint8(0x02); // maybe unk when recv add packet
+	data << uint8(0x00); // unk
+	data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01);
+	data << uint32(0);
+	data << uint32(0);
+	data << uint8(0);
+	/*data << uint32(cEvent->getFlags());
+	data << uint32(1); // maxinvites 2
+	for(uint32 i = 0; i < maxInvites; i++)
 	{
 		uint64 inviteId = 1;
 		uint8 unk1 = 1,unk2 = 0,unk3 = 1 ,unk4 = 1;
@@ -66,15 +94,16 @@ void WorldSession::HandleCalendarGetEvent(WorldPacket &recv_data)
 			data.appendPackGUID(cEvent->getCreator()); // change this
 		else
 			data.appendPackGUID(0);
-		data << unk1; 
-		data << unk2;
-		data << unk3;
-		data << unk4;
-		data << inviteId;
-		data << unk5;
-		data << title;
-		SendPacket(&data);
-	}
+		data << uint8(unk1); 
+		data << uint8(unk2);
+		data << uint8(unk3);
+		data << uint8(unk4);
+		data << uint64(inviteId);
+		data << uint32(unk5);
+		data << std::string(title);
+	}*/
+	data.hexlike();
+	SendPacket(&data);
 	
 }
 
@@ -153,22 +182,31 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 		sCalendarMgr.Send(GetPlayer());
 
 		WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
-		data << uint8(0); // 0: open window 1: close window to choose role
-		data << uint32(maxInvites);
-		for(int i = 0; i < maxInvites; i++)
-		{
-			if(!i)
-				data.appendPackGUID(GetPlayer()->GetGUID()); // change this
-			else
-				data.appendPackGUID(0);
-			data << uint8(0); 
-			data << uint8(0);
-			data << uint8(0);
-			data << uint8(0);
-			data << uint64(1);
-			data << uint32(5); // Resp date ?
-			data << "help";
-		}
+		data << uint8(0); // 1: close panel 0: open panel // or guid 1st ?
+		data.appendPackGUID(cEvent->getCreator()); // or append ?
+		data << uint64(eventId);
+		data << std::string(cEvent->getTitle());
+		data << std::string(cEvent->getDescription());
+		data << uint8(0) << uint8(0);
+		data << uint8(100); // maxinvites
+		data << uint32(cEvent->getPveType());
+		data << uint32(1); // unk
+		data << uint32(0); // unk
+		data << uint32(cEvent->getDate());
+		// moding
+		data << uint32(0);
+		data << uint32(1);
+		data << uint8(0x00) << uint8(0x00); //
+		data << uint8(0x00); // or guid 1st ?
+		data << uint64(cEvent->getCreator()); // or append
+		data << uint8(0x0A);
+		data << uint8(0x03); // maybe unk when recv add packet, status ?
+		data << uint8(0x02); // maybe unk when recv add packet, status ?
+		data << uint8(0x00); // unk
+		data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01);
+		data << uint32(0);
+		data << uint32(0);
+		data << uint8(0);
 		SendPacket(&data);
 	}
 }
@@ -211,11 +249,10 @@ void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
     recv_data.hexlike();
 	
 	uint64 eventId,creatorGuid;
-	uint32 unk1;
+	uint32 flags;
     recv_data >> eventId;
     recv_data >> creatorGuid;
-    recv_data >> unk1;
-	error_log("CMSG_CALENDAR_REMOVE_EVENT unk1 : %u",unk1);
+    recv_data >> flags;
 	sCalendarMgr.RemoveCalendarEvent(eventId);
 }
 
