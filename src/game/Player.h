@@ -31,6 +31,7 @@
 #include "Bag.h"
 #include "WorldSession.h"
 #include "Pet.h"
+#include "Guild.h"
 #include "MapReference.h"
 #include "Util.h"                                           // for Tokens typedef
 #include "AchievementMgr.h"
@@ -821,6 +822,7 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADSKILLS               = 25,
 	PLAYER_LOGIN_QUERY_LOADWEKLYQUESTSTATUS     = 26,
 	PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS		= 27,
+	PLAYER_LOGIN_QUERY_LOADGUILDCALENDAREVENTS	= 27,
     MAX_PLAYER_LOGIN_QUERY                      = 28
 };
 
@@ -1655,6 +1657,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetRank(uint32 rankId){ SetUInt32Value(PLAYER_GUILDRANK, rankId); }
         void SetGuildIdInvited(uint32 GuildId) { m_GuildIdInvited = GuildId; }
         uint32 GetGuildId() { return GetUInt32Value(PLAYER_GUILDID);  }
+		Guild* getGuild();
         static uint32 GetGuildIdFromDB(uint64 guid);
         uint32 GetRank(){ return GetUInt32Value(PLAYER_GUILDRANK); }
         static uint32 GetRankFromDB(uint64 guid);

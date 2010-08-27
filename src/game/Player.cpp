@@ -6620,6 +6620,11 @@ uint32 Player::GetGuildIdFromDB(uint64 guid)
     return id;
 }
 
+Guild* Player::getGuild()
+{
+	return sObjectMgr.GetGuildById(GetGuildId());
+}
+
 uint32 Player::GetRankFromDB(uint64 guid)
 {
     QueryResult *result = CharacterDatabase.PQuery( "SELECT rank FROM guild_member WHERE guid='%u'", GUID_LOPART(guid) );
@@ -15873,6 +15878,18 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     _LoadEquipmentSets(holder->GetResult(PLAYER_LOGIN_QUERY_LOADEQUIPMENTSETS));
 
 	if(QueryResult* result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS))
+	{
+		cEventMap cEM = sCalendarMgr.getAllCalendarEvents();
+		do
+        {
+			if(Field *fields = result->Fetch())
+				if(CalendarEvent* cEvent = sCalendarMgr.getEventById(fields[0].GetUInt64()))
+					RegisterCalendarEvent(cEvent);
+		}
+		while(result->NextRow());
+	}
+
+	if(QueryResult* result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADGUILDCALENDAREVENTS))
 	{
 		cEventMap cEM = sCalendarMgr.getAllCalendarEvents();
 		do

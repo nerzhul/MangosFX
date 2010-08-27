@@ -105,7 +105,8 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
     
 	std::string title,description;
 	uint8 type,unk1;
-	uint32 maxInvites,pve_type,date,unk4,flags;
+	uint32 maxInvites,date,unk4,flags;
+	int32 pve_type;
 
 	recv_data >> title;
 	recv_data >> description;
@@ -117,7 +118,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	recv_data >> unk4;
 	recv_data >> flags;
 
-	error_log("Calendar Event unk1 %u maxInvites %u pve_type %u unk4 %u flags %u date %u",unk1,maxInvites,pve_type,unk4,flags,date);
+	error_log("Calendar Event unk1 %u maxInvites %u pve_type %i unk4 %u flags %u date %u",unk1,maxInvites,pve_type,unk4,flags,date);
 	if (((flags >> 6) & 1) != 0)
 		return;
 
@@ -137,6 +138,8 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID());
 	if(cEvent)
 	{
+		if(flags & EVENT_GUILD)
+
 		GetPlayer()->RegisterCalendarEvent(cEvent);
 		sCalendarMgr.Send(GetPlayer());
 

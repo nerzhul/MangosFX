@@ -19,6 +19,7 @@
 #include <Policies/SingletonImp.h>
 #include "InstanceSaveMgr.h"
 #include "Player.h"
+#include "Guild.h"
 #include "Opcodes.h"
 #include "Calendar.h"
 #include "ObjectMgr.h"
@@ -30,6 +31,12 @@ void CalendarMgr::Send(Player* plr)
 	time_t cur_time = time(NULL);
 
 	CalendarEventSet cEventSet = plr->GetCalendarEvents();
+	CalendarEventSet cGuildEventSet;
+    if(Guild *guild = plr->getGuild())
+		cGuildEventSet = guild->GetCalendarEvents();
+	else
+		cGuildEventSet.clear();
+
 
     WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,600);
 
@@ -45,7 +52,7 @@ void CalendarMgr::Send(Player* plr)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-    data << uint32(cEventSet.size());                            //event count
+	data << uint32(cEventSet.size() + cGuildEventSet.size());                            //event count
 
 	for (CalendarEventSet::iterator itr = cEventSet.begin(); itr != cEventSet.end(); ++itr)
     {
@@ -54,7 +61,18 @@ void CalendarMgr::Send(Player* plr)
 		data << uint32((*itr)->getType());
 		data << uint32((*itr)->getDate());
 		data << uint32((*itr)->getFlags());
-		data << uint32((*itr)->getPveType());
+		data << int32((*itr)->getPveType());
+		data.appendPackGUID((*itr)->getCreator());
+	}
+
+	for (CalendarEventSet::iterator itr = cGuildEventSet.begin(); itr != cGuildEventSet.end(); ++itr)
+    {
+		data << uint64((*itr)->getId());
+		data << std::string((*itr)->getTitle());
+		data << uint32((*itr)->getType());
+		data << uint32((*itr)->getDate());
+		data << uint32((*itr)->getFlags());
+		data << int32((*itr)->getPveType());
 		data.appendPackGUID((*itr)->getCreator());
 	}
 
@@ -150,7 +168,7 @@ void CalendarMgr::LoadCalendarEvents()
 		std::string desc = fields[2].GetCppString();
 		uint8 type = fields[3].GetUInt8();
 		uint32 date = fields[4].GetUInt32();
-		uint8 ptype = fields[5].GetUInt8();
+		int8 ptype = fields[5].GetUInt8();
 		uint8 flags = fields[6].GetUInt8();
 		uint64 creator = fields[7].GetUInt64();
 

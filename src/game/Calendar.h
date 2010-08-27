@@ -37,10 +37,13 @@ enum CalendarEventFlags
 {
 	EVENT_UNK1			= 0x00000001,
 	EVENT_LOCK			= 0x00000010,
+	EVENT_ANN			= 0x00000040,
+	EVENT_GUILD			= 0x00000400,
 };
 
 enum PveType
 {
+	PVETYPE_NONE				= -1,
 	PVETYPE_ARCHAVON_25			= 240,
 	PVETYPE_RUBIS_SANCTUM_10	= 293,
 	PVETYPE_RUBIS_SANCTUM_25	= 294,
@@ -58,10 +61,13 @@ class CalendarMgr
 		void SendCalendarFlash(Player* plr);
 
 		cEventMap getAllCalendarEvents() { return m_calendarEvents; }
+		cEventMap getAllGuildCalendarEvents() { return m_guildCalendarEvents; }
+		cEventMap getGuildEvents(uint32 guild);
 		CalendarEvent* getEventById(uint64 id);
 		void LoadCalendarEvents();
 	private:
 		cEventMap m_calendarEvents;
+		cEventMap m_guildCalendarEvents;
 };
 
 class CalendarEvent
