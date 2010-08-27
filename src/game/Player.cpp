@@ -22805,6 +22805,14 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 			break;
 		case CLASS_PALADIN:
 			break;
+		case CLASS_SHAMAN:
+			break;
+		case CLASS_HUNTER:
+			break;
+		case CLASS_ROGUE:
+			break;
+		case CLASS_DRUID:
+			break;
 		case CLASS_WARLOCK:
 			switch(spell->SpellIconID)
 			{
@@ -22878,5 +22886,55 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 				CastSpell(victim,67714,true);
 			}
 		}		
+	}
+
+	if(HasAura(71562) || HasAura(71519)) // Deathbringer will
+	{
+		uint32 spellTable[8][3] = 
+		{
+			{{71561},{71560},{71559}}, // War,DK,Pala
+			{{71556},{71560},{71558}}, // Shaman, Rogue
+			{{71556},{71558},{71559}}, // Hunt
+			{{71560},{71561},{71556}}, // Druid
+			{{71484},{71492},{71491}},
+			{{71485},{71492},{71486}},
+			{{71485},{71486},{71491}},
+			{{71492},{71484},{71485}}
+		};
+		int32 idx = -1;
+		switch(getClass())
+		{
+			case CLASS_WARRIOR:
+			case CLASS_PALADIN:
+			case CLASS_DEATH_KNIGHT:
+				if(HasAura(71562)) idx = 0;
+				else if(HasAura(71519)) idx = 4;
+				break;
+			case CLASS_SHAMAN:
+			case CLASS_ROGUE:
+				if(HasAura(71562)) idx = 1;
+				else if(HasAura(71519)) idx = 5;
+				break;
+			case CLASS_HUNTER:
+				if(HasAura(71562)) idx = 2;
+				else if(HasAura(71519)) idx = 6;
+				break;
+			case CLASS_DRUID:
+				if(HasAura(71562)) idx = 3;
+				else if(HasAura(71519)) idx = 7;
+				break;
+			default: idx = -1; break;
+		}
+		if(idx != -1 && !HasAura(spellTable[idx][0]) && !HasAura(spellTable[idx][1]) && !HasAura(spellTable[idx][2]))
+		{
+			uint8 spellIdx = urand(0,9);
+			switch(spellIdx)
+			{
+				case 0:	CastSpell(this,spellTable[idx][0],true); break;
+				case 1: CastSpell(this,spellTable[idx][1],true); break;
+				case 2: CastSpell(this,spellTable[idx][2],true); break;
+				default: break;
+			}
+		}
 	}
 }
