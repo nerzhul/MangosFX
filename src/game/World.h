@@ -27,6 +27,7 @@
 #include "Timer.h"
 #include "Policies/Singleton.h"
 #include "SharedDefines.h"
+#include "Calendar.h"
 #include "WorldPacket.h"
 #include "ace/Atomic_Op.h"
 
@@ -599,6 +600,7 @@ class World
 		 void LockWorld(bool lock) { worldLocked = lock; }
 		 WorldPacket* getLastPckFrom(uint64 guid);
 		 void setLastPckFor(uint64 guid, const WorldPacket* pck);
+		 void RemoveCalendarEventFromActiveSessions(CalendarEvent* cEvent);
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

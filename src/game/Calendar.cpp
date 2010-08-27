@@ -23,6 +23,7 @@
 #include "Opcodes.h"
 #include "Calendar.h"
 #include "ObjectMgr.h"
+#include "World.h"
 
 INSTANTIATE_SINGLETON_1( CalendarMgr );
 
@@ -30,12 +31,12 @@ void CalendarMgr::Send(Player* plr)
 {
 	time_t cur_time = time(NULL);
 
-	CalendarEventSet cEventSet = plr->GetCalendarEvents();
-	CalendarEventSet cGuildEventSet;
+	cEventMap cPlayerEventMap = plr->GetCalendarEvents();
+	cEventMap cGuildEventMap;
     if(Guild *guild = plr->getGuild())
-		cGuildEventSet = guild->GetCalendarEvents();
+		cGuildEventMap = guild->GetCalendarEvents();
 	else
-		cGuildEventSet.clear();
+		cGuildEventMap.clear();
 
 
     WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,600);
@@ -52,28 +53,28 @@ void CalendarMgr::Send(Player* plr)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-	data << uint32(cEventSet.size() + cGuildEventSet.size());                            //event count
+	data << uint32(cPlayerEventMap.size() + cGuildEventMap.size());                            //event count
 
-	for (CalendarEventSet::iterator itr = cEventSet.begin(); itr != cEventSet.end(); ++itr)
+	for (cEventMap::iterator itr = cPlayerEventMap.begin(); itr != cPlayerEventMap.end(); ++itr)
     {
-		data << uint64((*itr)->getId());
-		data << std::string((*itr)->getTitle());
-		data << uint32((*itr)->getType());
-		data << uint32((*itr)->getDate());
-		data << uint32((*itr)->getFlags());
-		data << int32((*itr)->getPveType());
-		data.appendPackGUID((*itr)->getCreator());
+		data << uint64((*itr).first);
+		data << std::string((*itr).second->getTitle());
+		data << uint32((*itr).second->getType());
+		data << uint32((*itr).second->getDate());
+		data << uint32((*itr).second->getFlags());
+		data << int32((*itr).second->getPveType());
+		data.appendPackGUID((*itr).second->getCreator());
 	}
 
-	for (CalendarEventSet::iterator itr = cGuildEventSet.begin(); itr != cGuildEventSet.end(); ++itr)
+	for (cEventMap::iterator itr = cGuildEventMap.begin(); itr != cGuildEventMap.end(); ++itr)
     {
-		data << uint64((*itr)->getId());
-		data << std::string((*itr)->getTitle());
-		data << uint32((*itr)->getType());
-		data << uint32((*itr)->getDate());
-		data << uint32((*itr)->getFlags());
-		data << int32((*itr)->getPveType());
-		data.appendPackGUID((*itr)->getCreator());
+		data << uint64((*itr).first);
+		data << std::string((*itr).second->getTitle());
+		data << uint32((*itr).second->getType());
+		data << uint32((*itr).second->getDate());
+		data << uint32((*itr).second->getFlags());
+		data << int32((*itr).second->getPveType());
+		data.appendPackGUID((*itr).second->getCreator());
 	}
 
     data << (uint32) 0;                                     //wtf??
@@ -155,11 +156,12 @@ void CalendarMgr::SendCalendarFlash(Player* plr)
 
 void CalendarMgr::LoadCalendarEvents()
 {
-	QueryResult* result = CharacterDatabase.Query("SELECT `id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator` FROM calendar_events");
+	QueryResult* result = CharacterDatabase.Query("SELECT `id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`,`guild` FROM calendar_events");
 	if(!result)
 		return;
 
 	uint32 nb = 0;
+	uint32 nbg = 0;
 	do
 	{
 		Field *fields = result->Fetch();
@@ -171,15 +173,32 @@ void CalendarMgr::LoadCalendarEvents()
 		int8 ptype = fields[5].GetUInt8();
 		uint8 flags = fields[6].GetUInt8();
 		uint64 creator = fields[7].GetUInt64();
+		uint32 guildid = fields[8].GetUInt32();
 
 		CalendarEvent* cEvent = new CalendarEvent(title,desc,EventType(type),PveType(ptype),date,CalendarEventFlags(flags),creator);
 		cEvent->setId(eventId);
-		m_calendarEvents[eventId] = cEvent;
-		nb++;
+		if(guildid > 0)
+		{
+			m_guildCalendarEvents[eventId] = cEvent;
+			if(Guild* guild = sObjectMgr.GetGuildById(guildid))
+			{
+				m_guildCalendarEvents[eventId] = cEvent;
+				guild->RegisterCalendarEvent(cEvent);
+			}
+			else
+				RemoveCalendarEvent(eventId);
+			nbg++;
+		}
+		else
+		{
+			m_calendarEvents[eventId] = cEvent;
+			nb++;
+		}
 	}
 	while(result->NextRow());
 
-	sLog.outString("Loaded %u Calendar Events",nb);
+	sLog.outString("Loaded %u Player Calendar Events",nb);
+	sLog.outString("Loaded %u Guild Calendar Events",nbg);
 }
 
 CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid)
@@ -197,6 +216,19 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`) VALUES "
 		"('" UI64FMTD "','%u',1)", guid, eventId);
 	return cEvent;
+}
+
+void CalendarMgr::RemoveCalendarEvent(uint32 eventId)
+{
+	CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId);
+	if(!cEvent)
+		return;
+	sWorld.RemoveCalendarEventFromActiveSessions(cEvent);
+	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = %u'",eventId);
+	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = %u'",eventId);
+	m_calendarEvents.erase(cEvent->getId());
+	m_guildCalendarEvents.erase(cEvent->getId());
+	delete cEvent;
 }
 
 CalendarEvent* CalendarMgr::getEventById(uint64 id)

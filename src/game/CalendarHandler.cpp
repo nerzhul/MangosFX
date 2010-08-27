@@ -139,8 +139,16 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	if(cEvent)
 	{
 		if(flags & EVENT_GUILD)
+		{
+			if(Guild* guild = GetPlayer()->getGuild())
+			{
+				guild->RegisterCalendarEvent(cEvent);
+				guild->BroadcastEventToGuild(cEvent->getId());
+			}
+		}
+		else
+			GetPlayer()->RegisterCalendarEvent(cEvent);
 
-		GetPlayer()->RegisterCalendarEvent(cEvent);
 		sCalendarMgr.Send(GetPlayer());
 
 		WorldPacket data(SMSG_CALENDAR_SEND_EVENT);

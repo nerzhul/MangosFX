@@ -49,7 +49,7 @@ enum PveType
 	PVETYPE_RUBIS_SANCTUM_25	= 294,
 };
 
-typedef std::map<uint32,CalendarEvent*> cEventMap;
+typedef std::map<uint64,CalendarEvent*> cEventMap;
 class CalendarMgr
 {
 	public:
@@ -65,6 +65,7 @@ class CalendarMgr
 		cEventMap getGuildEvents(uint32 guild);
 		CalendarEvent* getEventById(uint64 id);
 		void LoadCalendarEvents();
+		void RemoveCalendarEvent(uint32 eventId);
 	private:
 		cEventMap m_calendarEvents;
 		cEventMap m_guildCalendarEvents;

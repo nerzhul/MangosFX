@@ -2344,3 +2344,14 @@ bool GuildItemPosCount::isContainedIn(GuildItemPosCountVec const &vec) const
 
     return false;
 }
+
+void Guild::BroadcastEventToGuild(uint64 eventId)
+{
+	for(MemberList::const_iterator itr = members.begin(); itr != members.end(); ++itr)
+		if(Player* plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+			if(plr->IsInWorld())
+			{
+				sCalendarMgr.Send(plr);
+				sCalendarMgr.SendCalendarFlash(plr);
+			}
+}

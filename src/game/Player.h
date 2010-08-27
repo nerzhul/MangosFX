@@ -58,6 +58,7 @@ class InstanceSave;
 class Spell;
 class Item;
 class OutdoorPvP;
+class CalendarMgr;
 
 typedef std::deque<Mail*> PlayerMails;
 
@@ -948,8 +949,6 @@ struct TradeData
 		return false;
 	}
 };
-
-typedef std::set<CalendarEvent*> CalendarEventSet;
 
 class MANGOS_DLL_SPEC Player : public Unit
 {
@@ -2274,9 +2273,10 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void ForceProcOnDamage(Unit* victim, SpellEntry const * spell, bool isCrit);
 		void SetIsCanDelayTeleport(bool setting) { m_bHasDelayedTeleport = setting; }
 
-		void RegisterCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents.insert(cEvent); }
-		CalendarEventSet GetCalendarEvents() { return m_calendarEvents; }
-		void RemoveCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents.erase(cEvent); }
+		void RegisterCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents[cEvent->getId()] = cEvent; }
+		cEventMap GetCalendarEvents() { return m_calendarEvents; }
+		void RemoveCalendarEvent(CalendarEvent* cEvent) { if(cEvent) m_calendarEvents.erase(cEvent->getId()); }
+		void RemoveCalendarEvent(uint64 eventId) { m_calendarEvents.erase(eventId); }
 
     protected:
 
@@ -2589,7 +2589,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		uint8 XpAllowed;
 		bool daily_random_BG_done;
 
-		CalendarEventSet m_calendarEvents;
+		cEventMap m_calendarEvents;
 };
 
 void AddItemsSetItem(Player*player,Item *item);
