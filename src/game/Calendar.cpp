@@ -172,7 +172,7 @@ void CalendarMgr::LoadCalendarEvents()
 		std::string desc = fields[2].GetCppString();
 		uint8 type = fields[3].GetUInt8();
 		uint32 date = fields[4].GetUInt32();
-		int8 ptype = fields[5].GetUInt8();
+		int16 ptype = fields[5].GetInt16();
 		uint8 flags = fields[6].GetUInt8();
 		uint64 creator = fields[7].GetUInt64();
 		uint32 guildid = fields[8].GetUInt32();
@@ -212,7 +212,7 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.escape_string(title);
 	CharacterDatabase.escape_string(desc);
 	CharacterDatabase.PExecute("INSERT INTO calendar_events(`id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`) VALUES "
-		"('%u','%s','%s','%u','%u','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
+		"('%u','%s','%s','%u','%i','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
 
 	return cEvent;
 }
@@ -222,11 +222,11 @@ void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 	CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId);
 	if(!cEvent)
 		return;
-	sWorld.RemoveCalendarEventFromActiveSessions(cEvent);
 	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = '%u'",eventId);
 	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = '%u'",eventId);
 	m_calendarEvents.erase(cEvent->getId());
 	m_guildCalendarEvents.erase(cEvent->getId());
+	sWorld.RemoveCalendarEventFromActiveSessions(cEvent);
 	delete cEvent;
 }
 
@@ -263,7 +263,7 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 	data << uint8(0x00) << uint8(0x00) << uint8(0x00);
 	for(CalEventMemberList::const_iterator itr = cEvent->getMemberList().begin(); itr != cEvent->getMemberList().end(); ++itr)
 	{
-		data.appendPackGUID(itr->first); // or append
+		data.appendPackGUID(itr->first);
 		data << uint8(plr->getLevel());
 		data << uint8(itr->second.status);
 		data << uint8(itr->second.status2);
@@ -287,7 +287,7 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		data << uint32(unk5);
 		data << std::string(title);
 	}*/
-	data.hexlike();
+	//data.hexlike();
 	plr->GetSession()->SendPacket(&data);
 }
 

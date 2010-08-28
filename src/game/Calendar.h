@@ -110,13 +110,18 @@ class CalendarEvent
 		void setId(uint64 id) { m_Id = id; }
 
 		const char* getTitle() { return m_title.c_str(); }
+		void setTitle(std::string title) { m_title = title; }
 		const char* getDescription() { return m_desc.c_str(); }
+		void setDescription(std::string desc) { m_desc = desc; }
 		EventType getType() { return m_type; }
+		void setEventType(EventType eType) { m_type = eType; }
 		PveType getPveType() { return m_ptype; }
+		void setPveType(PveType pType) { m_ptype = pType; }
 		uint64 getCreator() { return m_creatorGUID; }
 		CalendarEventFlags getFlags() { return m_flags; }
 		uint64 getId() { return m_Id; }
 		uint32 getDate() { return m_date; }
+		void setDate(uint32 date) { m_date = date; }
 		void AddMember(uint64 guid, State st, State2 st2);
 		void DelMember(uint64 guid);
 		void UpdateStatus(uint64 guid, State st, State2 st2);

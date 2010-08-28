@@ -95,12 +95,19 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	recv_data >> unk4;
 	recv_data >> flags;
 
-	error_log("Calendar Event unk1 %u maxInvites %u pve_type %i unk4 %u flags %u date %u",unk1,maxInvites,pve_type,unk4,flags,date);
-	if (((flags >> 6) & 1) != 0)
+	CharacterDatabase.escape_string(title);
+	CharacterDatabase.escape_string(description);
+
+	error_log("Calendar Event unk1 %u pve_type %i unk4 %u flags %u date %u",unk1,pve_type,unk4,flags,date);
+	if (((flags >> 6) & 1) != 0 && !(flags & EVENT_ANN))
+	{
+		error_log("Calendar Event: Unhandled added Event");
 		return;
+	}
 
 	uint32 count = 0;
-	recv_data >> count;
+	if(!(flags & EVENT_ANN))
+		recv_data >> count;
 
 	CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID());
 	if(cEvent)
@@ -114,7 +121,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 			recv_data >> status2;
 			cEvent->AddMember(invitedGUID,State(status),State2(status2));
 		}	
-		if(flags & EVENT_GUILD)
+		if((flags & EVENT_GUILD) || (flags & EVENT_ANN))
 		{
 			if(Guild* guild = GetPlayer()->getGuild())
 			{
@@ -160,7 +167,41 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_UPDATE_EVENT");
     recv_data.hexlike();
 
-	sCalendarMgr.ReadCalendarEventCreationValues(recv_data);
+	uint64 eventId = 0;
+	uint64 creatorGUID;
+	std::string title,desc;
+	uint8 maxInvites,unk7;
+	uint32 date,unk4,unk5;
+	uint16 unk3,unk6;
+	int32 pve_type;
+
+	recv_data >> eventId;
+	recv_data >> creatorGUID;
+	recv_data >> title;
+	recv_data >> desc;
+	recv_data >> unk3;
+	recv_data >> maxInvites;
+	recv_data >> pve_type;
+	recv_data >> unk4;
+	recv_data >> date;
+	recv_data >> unk5;
+	recv_data >> unk6;
+	recv_data >> unk7;
+	CharacterDatabase.escape_string(title);
+	CharacterDatabase.escape_string(desc);
+	error_log("Unk3 : %u Unk4 : %u Unk5 %u Unk6 %u Unk7 %u",unk3,unk4,unk5,unk6,unk7);
+	if(CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId))
+	{
+		cEvent->setTitle(title);
+		cEvent->setDescription(desc);
+		//cEvent->setEventType(EventType(type));
+		cEvent->setPveType(PveType(pve_type));
+		cEvent->setDate(date);
+		CharacterDatabase.PExecute("UPDATE calendar_events SET `title` = '%s', `desc` = '%s', `date` = '%u', `ptype` = '%i' WHERE `id` = '"UI64FMTD"'",
+			title.c_str(),desc.c_str(),date,pve_type,eventId);
+		sCalendarMgr.SendEvent(cEvent,GetPlayer(),false);
+	}
+	
 }
 
 void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
@@ -204,7 +245,6 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	normalizePlayerName(playername);
 	debug_log("Guid : " UI64FMTD"  Event Id : %u",guid,eventId);
 	
-
 	uint64 inviteId = 0;
 	uint8 err = 0;
 	uint32 errId = 0;
@@ -218,14 +258,6 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	data << uint8(0); // status
 	data << uint8(0); // status2
 	data << uint8(1);
-	/*	data << uint8(err); // err ?
-		if(err)
-		{
-			data << uint8(0); // error msg ?
-			data << uint8(0);
-		}
-		//data << uint8(0);
-	}*/
 	data.hexlike();
 	SendPacket(&data);
 }
@@ -235,7 +267,8 @@ void WorldSession::HandleCalendarEventRsvp(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_EVENT_RSVP");
     recv_data.hexlike();
 
-	uint64 guid,eventId,unk1;
+	uint64 guid,eventId;
+	uint32 unk1;
     recv_data >> guid;
     recv_data >> eventId;
     recv_data >> unk1;

@@ -1778,7 +1778,7 @@ void World::RemoveCalendarEventFromActiveSessions(CalendarEvent* cEvent)
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
-            itr->second->GetPlayer())
+			itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld())
 		{
 			itr->second->GetPlayer()->RemoveCalendarEvent(cEvent);
 			sCalendarMgr.Send(itr->second->GetPlayer());
