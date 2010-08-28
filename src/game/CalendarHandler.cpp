@@ -99,22 +99,21 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 	if (((flags >> 6) & 1) != 0)
 		return;
 
-	uint32 count;
+	uint32 count = 0;
 	recv_data >> count;
-
-	for(uint16 i=0;i<count;i++)
-	{
-		uint64 invitedGUID;
-		uint8 unk6,unk7;
-		recv_data.readPackGUID(invitedGUID);
-		recv_data >> unk6;
-		recv_data >> unk7;
-		error_log("unk6 %u %u",unk6,unk7);
-	}	
 
 	CalendarEvent* cEvent = sCalendarMgr.CreateEvent(title,description,EventType(type),PveType(pve_type),date,CalendarEventFlags(flags),GetPlayer()->GetGUID());
 	if(cEvent)
 	{
+		for(uint32 i=0;i<count;i++)
+		{
+			uint64 invitedGUID;
+			uint8 status,status2;
+			recv_data.readPackGUID(invitedGUID);
+			recv_data >> status;
+			recv_data >> status2;
+			cEvent->AddMember(invitedGUID,State(status),State2(status2));
+		}	
 		if(flags & EVENT_GUILD)
 		{
 			if(Guild* guild = GetPlayer()->getGuild())

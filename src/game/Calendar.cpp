@@ -214,8 +214,7 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.PExecute("INSERT INTO calendar_events(`id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`) VALUES "
 		"('%u','%s','%s','%u','%u','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
 
-	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`) VALUES "
-		"('" UI64FMTD "','%u',1)", guid, eventId);
+	
 	return cEvent;
 }
 
@@ -259,14 +258,14 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 	data << uint32(cEvent->getDate());
 	// moding
 	data << uint32(0); // if invites it was 1
-	data << uint32(invites);
+	data << uint32(cEvent->getMemberList().size());
 	data << uint8(0x00) << uint8(0x00) << uint8(0x00);
-	for(uint32 i=0;i<invites;i++)
+	for(CalEventMemberList::const_iterator itr = cEvent->getMemberList().begin(); itr != cEvent->getMemberList().end(); ++itr)
 	{
-		data.appendPackGUID(cEvent->getCreator()); // or append
+		data.appendPackGUID(itr->first); // or append
 		data << uint8(plr->getLevel());
-		data << uint8(0x03); // maybe unk when recv add packet
-		data << uint8(0x02); // maybe unk when recv add packet
+		data << uint8(itr->second.status);
+		data << uint8(itr->second.status2);
 	}
 	data << uint8(0x00); // unk
 	data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01);
@@ -295,4 +294,34 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 	}*/
 	data.hexlike();
 	plr->GetSession()->SendPacket(&data);
+}
+
+void CalendarEvent::AddMember(uint64 guid, State st, State2 st2)
+{
+	MemberStatus ms;
+	ms.status = st;
+	ms.status2 = st2;
+	m_memberList[guid] = ms;
+	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`,`status2`) VALUES "
+		"('" UI64FMTD "','%u','%u','%u')", guid, getId(), st, st2);
+	// TODO: send event to all calendar members
+}
+
+void CalendarEvent::DelMember(uint64 guid)
+{
+	CalEventMemberList::iterator itr = m_memberList.find(guid);
+	if(itr != m_memberList.end())
+		m_memberList.erase(guid);
+	CharacterDatabase.PExecute("DELETE FROM character_calendar_events where guid = '" UI64FMTD "' AND eventid = '%u'",guid,getId());
+	// TODO: send event to all calendar members
+}
+
+void CalendarEvent::UpdateStatus(uint64 guid, State st, State2 st2)
+{
+	CalEventMemberList::iterator itr = m_memberList.find(guid);
+	if(itr != m_memberList.end())
+	{
+		itr->second.status = st;
+		itr->second.status2 = st2;
+	}
 }

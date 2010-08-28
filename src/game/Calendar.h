@@ -90,6 +90,13 @@ class CalendarMgr
 		cEventMap m_guildCalendarEvents;
 };
 
+struct MemberStatus
+{
+	State status;
+	State2 status2;
+};
+
+typedef std::map<uint64,MemberStatus> CalEventMemberList;
 class CalendarEvent
 {
 	public:
@@ -109,6 +116,10 @@ class CalendarEvent
 		CalendarEventFlags getFlags() { return m_flags; }
 		uint64 getId() { return m_Id; }
 		uint32 getDate() { return m_date; }
+		void AddMember(uint64 guid, State st, State2 st2);
+		void DelMember(uint64 guid);
+		void UpdateStatus(uint64 guid, State st, State2 st2);
+		CalEventMemberList getMemberList() { return m_memberList; }
 
 	private:
 		std::string m_title;
@@ -119,6 +130,7 @@ class CalendarEvent
 		uint64 m_Id;
 		CalendarEventFlags m_flags;
 		uint32 m_date;
+		CalEventMemberList m_memberList;
 };
 
 #define sCalendarMgr MaNGOS::Singleton<CalendarMgr>::Instance()

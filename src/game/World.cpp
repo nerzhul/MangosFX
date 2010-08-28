@@ -1443,9 +1443,6 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();
 
-	sLog.outString("Loading Calendar Events...");
-	sCalendarMgr.LoadCalendarEvents();
-
     ///- Handle outdated emails (delete/return)
     sLog.outString( "Returning old mails..." );
     sObjectMgr.ReturnOrDeleteOldMails(false);
@@ -1551,6 +1548,9 @@ void World::SetInitialWorldSettings()
 
     sLog.outString("Initialize AuctionHouseBot...");
     auctionbot.Initialize();
+
+	sLog.outString("Loading Calendar Events...");
+	sCalendarMgr.LoadCalendarEvents();
 
     sLog.outString( "WORLD: World initialized" );
 
