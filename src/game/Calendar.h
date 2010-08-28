@@ -104,6 +104,7 @@ class CalendarEvent
 					 m_title(title),	m_desc(desc),		m_type(type),	m_ptype(ptype), m_date(date), m_flags(flags), m_creatorGUID(guid), 
 							 m_Id(0)
 		{
+			m_memberList.clear();
 		}
 
 		void setId(uint64 id) { m_Id = id; }

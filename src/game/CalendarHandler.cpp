@@ -209,28 +209,12 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	uint8 err = 0;
 	uint32 errId = 0;
 	guid = sObjectMgr.GetPlayerGUIDByName(playername);
-	if(Player* pl = ObjectAccessor::FindPlayer(guid))
-	{
-		
-		if(pl->getFactionForRace(pl->getRace()) != GetPlayer()->getFactionForRace(GetPlayer()->getRace()))
-		{
-			err = 1;
-			errId = 0x0C;
-		}
-	}
-	else
-	{
-		err = 1;
-		errId = 0x0B; // opposite faction : 0x0C
-		// find uint32 error
-	}
 
-	guid = 32;
 	WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
 	data.appendPackGUID(guid);
 	data << uint64(/*inviteId*/0);
 	data << uint64(eventId);
-	data << uint8(0x0B);
+	data << uint8(1);
 	data << uint8(0); // status
 	data << uint8(0); // status2
 	data << uint8(1);

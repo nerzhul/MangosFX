@@ -241,6 +241,8 @@ CalendarEvent* CalendarMgr::getEventById(uint64 id)
 
 void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 {
+	if(!cEvent || !plr || !plr->IsInWorld())
+		return;
 	uint32 invites = 1;
 
 	WorldPacket data(SMSG_CALENDAR_SEND_EVENT);
