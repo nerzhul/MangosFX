@@ -193,8 +193,6 @@ void WorldSession::HandleCalendarCopyEvent(WorldPacket &recv_data)
 void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 {
     sLog.outDebug("WORLD: CMSG_CALENDAR_EVENT_INVITE");
-    recv_data.hexlike();
-
 	uint64 guid,eventId;
 	std::string playername;
 	uint8 status,status2;
@@ -207,17 +205,18 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 	debug_log("Guid : " UI64FMTD"  Event Id : %u",guid,eventId);
 	
 
-	uint64 inviteId = 1;
-
-
-	
-
+	uint64 inviteId = 0;
 	uint8 err = 0;
 	uint32 errId = 0;
-	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
-	if(Player* pl = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(invitedPlayerGuid, 0, HIGHGUID_PLAYER)))
+	guid = sObjectMgr.GetPlayerGUIDByName(playername);
+	if(Player* pl = ObjectAccessor::FindPlayer(guid))
 	{
-		guid = invitedPlayerGuid;		
+		
+		if(pl->getFactionForRace(pl->getRace()) != GetPlayer()->getFactionForRace(GetPlayer()->getRace()))
+		{
+			err = 1;
+			errId = 0x0C;
+		}
 	}
 	else
 	{
@@ -226,19 +225,23 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 		// find uint32 error
 	}
 
+	guid = 32;
 	WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
 	data.appendPackGUID(guid);
-	data << uint64(inviteId);
+	data << uint64(/*inviteId*/0);
 	data << uint64(eventId);
-	data << uint8(status);
-	data << uint8(status2);
-
-	data << uint8(err); // err ?
-	if(err)
-	{
-		data << uint32(0); // error msg ?
-	}
-	data << uint8(0);
+	data << uint8(0x0B);
+	data << uint8(0); // status
+	data << uint8(0); // status2
+	data << uint8(1);
+	/*	data << uint8(err); // err ?
+		if(err)
+		{
+			data << uint8(0); // error msg ?
+			data << uint8(0);
+		}
+		//data << uint8(0);
+	}*/
 	data.hexlike();
 	SendPacket(&data);
 }
