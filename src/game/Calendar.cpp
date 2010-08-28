@@ -214,7 +214,6 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.PExecute("INSERT INTO calendar_events(`id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`) VALUES "
 		"('%u','%s','%s','%u','%u','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
 
-	
 	return cEvent;
 }
 
@@ -266,12 +265,12 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		data << uint8(plr->getLevel());
 		data << uint8(itr->second.status);
 		data << uint8(itr->second.status2);
+		data << uint8(0x00); // unk
+		data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01) << uint32(0); // inviteId ?
+		data << uint32(0); // unk
+		data << std::string("");
 	}
-	data << uint8(0x00); // unk
-	data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01);
-	data << uint32(0);
-	data << uint32(0);
-	data << uint8(0);
+	
 	/*data << uint32(cEvent->getFlags());
 	data << uint32(1); // maxinvites 2
 	for(uint32 i = 0; i < maxInvites; i++)
@@ -280,13 +279,7 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		uint8 unk1 = 1,unk2 = 0,unk3 = 1 ,unk4 = 1;
 		const char* title = "Coucou";
 		uint32 unk5 = 1;
-		if(i == 0)
-			data.appendPackGUID(cEvent->getCreator()); // change this
-		else
-			data.appendPackGUID(0);
-		data << uint8(unk1); 
-		data << uint8(unk2);
-		data << uint8(unk3);
+
 		data << uint8(unk4);
 		data << uint64(inviteId);
 		data << uint32(unk5);
@@ -298,13 +291,16 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 
 void CalendarEvent::AddMember(uint64 guid, State st, State2 st2)
 {
-	MemberStatus ms;
-	ms.status = st;
-	ms.status2 = st2;
-	m_memberList[guid] = ms;
-	CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`,`status2`) VALUES "
-		"('" UI64FMTD "','%u','%u','%u')", guid, getId(), st, st2);
-	// TODO: send event to all calendar members
+	CalEventMemberList::iterator itr = m_memberList.find(guid);
+	if(itr == m_memberList.end())
+	{
+		MemberStatus ms;
+		ms.status = st;
+		ms.status2 = st2;
+		m_memberList[guid] = ms;
+		CharacterDatabase.PExecute("INSERT INTO character_calendar_events(`guid`,`eventid`,`status`,`status2`) VALUES "
+			"('" UI64FMTD "','%u','%u','%u')", guid, getId(), st, st2);
+	}
 }
 
 void CalendarEvent::DelMember(uint64 guid)
@@ -313,7 +309,6 @@ void CalendarEvent::DelMember(uint64 guid)
 	if(itr != m_memberList.end())
 		m_memberList.erase(guid);
 	CharacterDatabase.PExecute("DELETE FROM character_calendar_events where guid = '" UI64FMTD "' AND eventid = '%u'",guid,getId());
-	// TODO: send event to all calendar members
 }
 
 void CalendarEvent::UpdateStatus(uint64 guid, State st, State2 st2)

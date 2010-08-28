@@ -699,7 +699,7 @@ bool AuthSocket::_HandleLogonProof()
     {
         if (_build > 6005)                                  // > 1.12.2
 		{
-			char data[4]= { CMD_AUTH_LOGON_PROOF, WOW_FAIL_INCORRECT_PASSWORD, 2, 0};
+			char data[4]= { CMD_AUTH_LOGON_PROOF, WOW_FAIL_INCORRECT_PASSWORD, 3, 0};
 			send(data, sizeof(data));
 		}
 		else

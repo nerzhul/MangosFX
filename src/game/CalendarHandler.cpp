@@ -197,38 +197,50 @@ void WorldSession::HandleCalendarEventInvite(WorldPacket &recv_data)
 
 	uint64 guid,eventId;
 	std::string playername;
-	uint8 unk1,unk2;
-    recv_data >> guid;
+	uint8 status,status2;
     recv_data >> eventId;
+    recv_data >> guid;
     recv_data >> playername;
-    recv_data >> unk1;
-    recv_data >> unk2;
+    recv_data >> status;
+    recv_data >> status2;
 	normalizePlayerName(playername);
-	debug_log("Guid : %u Event Id : %u unk1 : %u unk2 : %u",guid,eventId,unk1,unk2);
+	debug_log("Guid : " UI64FMTD"  Event Id : %u",guid,eventId);
 	
-	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
-	if(Player* pl = sObjectMgr.GetPlayer(invitedPlayerGuid))
-	{
-		uint64 inviteId = 1;
-		bool unk3 = false;
-		uint32 unk4 = 0;
-		uint8 unk5 = 0;
 
-		WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
-		data.appendPackGUID(guid);
-		data << uint64(inviteId);
-		data << uint64(eventId);
-		data << uint8(unk1);
-		data << uint8(unk2);
-		data << uint8(unk3);
-		if(unk3)
-		{
-			data << uint32(unk4);
-		}
-		data << uint8(unk5);
-		pl->GetSession()->SendPacket(&data);
-		//SendPacket(&data);
+	uint64 inviteId = 1;
+
+
+	
+
+	uint8 err = 0;
+	uint32 errId = 0;
+	uint64 invitedPlayerGuid = sObjectMgr.GetPlayerGUIDByName(playername);
+	if(Player* pl = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(invitedPlayerGuid, 0, HIGHGUID_PLAYER)))
+	{
+		guid = invitedPlayerGuid;		
 	}
+	else
+	{
+		err = 1;
+		errId = 0x0B; // opposite faction : 0x0C
+		// find uint32 error
+	}
+
+	WorldPacket data(SMSG_CALENDAR_EVENT_INVITE);
+	data.appendPackGUID(guid);
+	data << uint64(inviteId);
+	data << uint64(eventId);
+	data << uint8(status);
+	data << uint8(status2);
+
+	data << uint8(err); // err ?
+	if(err)
+	{
+		data << uint32(0); // error msg ?
+	}
+	data << uint8(0);
+	data.hexlike();
+	SendPacket(&data);
 }
 
 void WorldSession::HandleCalendarEventRsvp(WorldPacket &recv_data)

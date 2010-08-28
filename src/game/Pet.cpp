@@ -896,7 +896,6 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
                 {
                     case CLASS_WARLOCK:
                     {
-
                         //the damage bonus used for pets is either fire or shadow damage, whatever is higher
                         uint32 fire  = owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_FIRE);
                         uint32 shadow = owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_SHADOW);
@@ -943,14 +942,21 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 						if(GetEntry() == 26125)
 						{
 							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
-							int32 bonusmelee = int32(attackPower * 0.25f);
+							float multiplier = 0.25f;
+							float healmultip = 0.15;
+							if(HasAura(58686))
+							{
+								multiplier += 0.4f;
+								healmultip += 0.4f;
+							}
+							int32 bonusmelee = int32(attackPower * multiplier);
 							SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
 							SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
 							SetAttackTime(BASE_ATTACK, 1500);
 							setPowerType(POWER_ENERGY);
 							SetMaxPower(POWER_ENERGY,100);
 							SetPower(POWER_ENERGY,100);
-							SetCreateHealth(GetMaxHealth() + owner->GetHealth() * 0.15);
+							SetCreateHealth(GetMaxHealth() + owner->GetHealth() * healmultip);
 						}
 						break;
 					}
