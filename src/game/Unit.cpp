@@ -7110,7 +7110,8 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return false;
 
                     triggered_spell_id = 53652;             // Beacon of Light
-                    basepoints0 = triggeredByAura->GetModifier()->m_amount*damage/100;
+					float modPctHeal = pVictim->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
+                    basepoints0 = int32(triggeredByAura->GetModifier()->m_amount*damage/100*(100.0f + modPctHeal) / 100.0f);
 
                     // cast with original caster set but beacon to beacon for apply caster mods and avoid LoS check
                     beacon->CastCustomSpell(beacon,triggered_spell_id,&basepoints0,NULL,NULL,true,castItem,triggeredByAura,pVictim->GetGUID());
@@ -8537,7 +8538,7 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 if (GetTypeId() != TYPEID_PLAYER || !((Player*)this)->isHonorOrXPTarget(pVictim) || !damage)
                     return false;
 				float modPctHeal = pVictim->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
-                basepoints[0] = triggerAmount * damage / 100 * (100.0f + minval) / 100.0f;
+                basepoints[0] = int32(triggerAmount * damage / 100 * (100.0f + modPctHeal) / 100.0f);
                 trigger_spell_id = 50475;
             }
             break;
