@@ -8536,7 +8536,8 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
             {
                 if (GetTypeId() != TYPEID_PLAYER || !((Player*)this)->isHonorOrXPTarget(pVictim) || !damage)
                     return false;
-                basepoints[0] = triggerAmount * damage / 100;
+				float modPctHeal = pVictim->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
+                basepoints[0] = triggerAmount * damage / 100 * (100.0f + minval) / 100.0f;
                 trigger_spell_id = 50475;
             }
             break;
