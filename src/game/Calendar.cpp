@@ -160,6 +160,7 @@ void CalendarMgr::SendCalendarFlash(Player* plr)
 
 void CalendarMgr::LoadCalendarEvents()
 {
+	m_calendarEvents.clear();
 	uint32 nb = 0;
 	if(QueryResult* result = CharacterDatabase.Query("SELECT `id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`,`guild` FROM calendar_events"))
 	{

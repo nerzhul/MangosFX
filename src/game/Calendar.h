@@ -70,11 +70,6 @@ typedef std::map<uint64,CalendarEvent*> cEventMap;
 class CalendarMgr
 {
 	public:
-		CalendarMgr::CalendarMgr()
-		{
-			m_calendarEvents.clear();
-		}
-		CalendarMgr::~CalendarMgr() {}
 		CalendarEvent* CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid);
 		
 		uint32 ReadCalendarEventCreationValues(WorldPacket& data);
