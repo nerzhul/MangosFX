@@ -167,6 +167,9 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_UPDATE_EVENT");
     recv_data.hexlike();
 
+	if(!GetPlayer())
+		return;
+
 	uint64 eventId = 0;
 	uint64 creatorGUID;
 	std::string title,desc;
@@ -199,6 +202,7 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
 		cEvent->setDate(date);
 		CharacterDatabase.PExecute("UPDATE calendar_events SET `title` = '%s', `desc` = '%s', `date` = '%u', `ptype` = '%i' WHERE `id` = '"UI64FMTD"'",
 			title.c_str(),desc.c_str(),date,pve_type,eventId);
+		sCalendarMgr.Send(GetPlayer());
 		sCalendarMgr.SendEvent(cEvent,GetPlayer(),false);
 	}
 	
@@ -209,12 +213,15 @@ void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_REMOVE_EVENT");
     recv_data.hexlike();
 	
+	if(!GetPlayer())
+		return;
 	uint64 eventId,creatorGuid;
 	uint32 flags;
     recv_data >> eventId;
     recv_data >> creatorGuid;
     recv_data >> flags;
 	sCalendarMgr.RemoveCalendarEvent(eventId);
+	sCalendarMgr.Send(GetPlayer());
 }
 
 void WorldSession::HandleCalendarCopyEvent(WorldPacket &recv_data)

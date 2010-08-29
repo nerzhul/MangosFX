@@ -15879,6 +15879,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
 	if(QueryResult* result = holder->GetResult(PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS))
 	{
+		m_calendarEvents.clear();
 		cEventMap cEM = sCalendarMgr.getAllCalendarEvents();
 		do
         {

@@ -72,6 +72,7 @@ void CalendarMgr::Send(Player* plr)
     {
 		if(!(*itr).second)
 			continue;
+		error_log("test");
 		data << uint64((*itr).first);
 		data << std::string((*itr).second->getTitle());
 		data << uint32((*itr).second->getType());
