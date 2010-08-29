@@ -25,9 +25,9 @@
 #include "Common.h"
 #include "Item.h"
 #include "ObjectDefines.h"
-#include "ObjectMgr.h"
 
 class Item;
+class ObjectMgr;
 
 #define GUILD_RANKS_MIN_COUNT   5
 #define GUILD_RANKS_MAX_COUNT   10
