@@ -190,7 +190,6 @@ void CalendarMgr::LoadCalendarEvents()
 					RemoveCalendarEvent(eventId);
 			}
 
-			m_calendarEvents[eventId] = cEvent;
 			nb++;
 		}
 		while(result->NextRow());
