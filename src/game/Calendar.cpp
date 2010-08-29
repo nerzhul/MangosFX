@@ -269,22 +269,6 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		data << uint32(0); // unk
 		data << std::string("");
 	}
-	
-	/*data << uint32(cEvent->getFlags());
-	data << uint32(1); // maxinvites 2
-	for(uint32 i = 0; i < maxInvites; i++)
-	{
-		uint64 inviteId = 1;
-		uint8 unk1 = 1,unk2 = 0,unk3 = 1 ,unk4 = 1;
-		const char* title = "Coucou";
-		uint32 unk5 = 1;
-
-		data << uint8(unk4);
-		data << uint64(inviteId);
-		data << uint32(unk5);
-		data << std::string(title);
-	}*/
-	data.hexlike();
 	plr->GetSession()->SendPacket(&data);
 }
 
