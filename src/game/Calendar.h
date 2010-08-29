@@ -78,7 +78,6 @@ class CalendarMgr
 		void SendCalendarFlash(Player* plr);
 
 		cEventMap getAllCalendarEvents() { return m_calendarEvents; }
-		cEventMap getAllGuildCalendarEvents() { return m_guildCalendarEvents; }
 		cEventMap getGuildEvents(uint32 guild);
 		CalendarEvent* getEventById(uint64 id);
 		CalendarEvent* getPlayerEventById(uint64 id);
@@ -88,7 +87,6 @@ class CalendarMgr
 		void SendEvent(CalendarEvent* cEvent, Player* plr, bool create);
 	private:
 		cEventMap m_calendarEvents;
-		cEventMap m_guildCalendarEvents;
 };
 
 struct MemberStatus
@@ -103,7 +101,7 @@ class CalendarEvent
 	public:
 		CalendarEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid) : 
 					 m_title(title),	m_desc(desc),		m_type(type),	m_ptype(ptype), m_date(date), m_flags(flags), m_creatorGUID(guid), 
-							 m_Id(0)
+							 m_Id(0), m_guild(0)
 		{
 			m_memberList.clear();
 		}
@@ -120,9 +118,12 @@ class CalendarEvent
 		void setPveType(PveType pType) { m_ptype = pType; }
 		uint64 getCreator() { return m_creatorGUID; }
 		CalendarEventFlags getFlags() { return m_flags; }
+		void setFlags(CalendarEventFlags flags) { m_flags = flags; }
 		uint64 getId() { return m_Id; }
 		uint32 getDate() { return m_date; }
 		void setDate(uint32 date) { m_date = date; }
+		uint32 getGuild() { return m_guild; }
+		void setGuild(uint32 guildId) { m_guild = guildId; }
 		void AddMember(uint64 guid, State st, State2 st2);
 		void DelMember(uint64 guid);
 		void UpdateStatus(uint64 guid, State st, State2 st2);
@@ -135,6 +136,7 @@ class CalendarEvent
 		PveType m_ptype;
 		uint64 m_creatorGUID;
 		uint64 m_Id;
+		uint32 m_guild;
 		CalendarEventFlags m_flags;
 		uint32 m_date;
 		CalEventMemberList m_memberList;

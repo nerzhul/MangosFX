@@ -2276,7 +2276,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
 		void RegisterCalendarEvent(uint64 eventId) { m_calendarEvents.insert(eventId); }
 		cEventSet GetCalendarEvents() { return m_calendarEvents; }
-		void RemoveCalendarEvent(uint64 eventId) { m_calendarEvents.erase(eventId); }
+		bool RemoveCalendarEvent(uint64 eventId);
 
     protected:
 

@@ -22801,6 +22801,18 @@ void Player::AddItem(uint32 entry,uint16 count)
 	}
 }
 
+bool Player::RemoveCalendarEvent(uint64 eventId)
+{
+	cEventSet::iterator itr = m_calendarEvents.find(eventId);
+	if(itr != m_calendarEvents.end())
+	{
+		m_calendarEvents.erase(eventId);
+		return true;
+	}
+
+	return false;
+}
+
 void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCrit)
 {
 	switch(getClass())

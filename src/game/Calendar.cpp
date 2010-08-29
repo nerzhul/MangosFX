@@ -55,11 +55,13 @@ void CalendarMgr::Send(Player* plr)
 
 	data << uint32(cPlayerEventSet.size() + cGuildEventSet.size());                            //event count
 
+	error_log("size : %d",cGuildEventSet.size());
 	for (cEventSet::iterator itr = cPlayerEventSet.begin(); itr != cPlayerEventSet.end(); ++itr)
     {
 		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
 		if(!cEvent)
 			continue;
+		error_log("event Title %s",cEvent->getTitle());
 		data << uint64(cEvent->getId());
 		data << std::string(cEvent->getTitle());
 		data << uint32(cEvent->getType());
@@ -74,6 +76,7 @@ void CalendarMgr::Send(Player* plr)
 		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
 		if(!cEvent)
 			continue;
+		error_log("event Title %s",cEvent->getTitle());
 		data << uint64(cEvent->getId());
 		data << std::string(cEvent->getTitle());
 		data << uint32(cEvent->getType());
@@ -160,48 +163,42 @@ void CalendarMgr::SendCalendarFlash(Player* plr)
 
 void CalendarMgr::LoadCalendarEvents()
 {
-	QueryResult* result = CharacterDatabase.Query("SELECT `id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`,`guild` FROM calendar_events");
-	if(!result)
-		return;
-
 	uint32 nb = 0;
-	uint32 nbg = 0;
-	do
+	if(QueryResult* result = CharacterDatabase.Query("SELECT `id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`,`guild` FROM calendar_events"))
 	{
-		Field *fields = result->Fetch();
-		uint64 eventId = fields[0].GetUInt64();
-		std::string title = fields[1].GetCppString();
-		std::string desc = fields[2].GetCppString();
-		uint8 type = fields[3].GetUInt8();
-		uint32 date = fields[4].GetUInt32();
-		int16 ptype = fields[5].GetInt16();
-		uint8 flags = fields[6].GetUInt8();
-		uint64 creator = fields[7].GetUInt64();
-		uint32 guildid = fields[8].GetUInt32();
+		do
+		{
+			Field *fields = result->Fetch();
+			uint64 eventId = fields[0].GetUInt64();
+			std::string title = fields[1].GetCppString();
+			std::string desc = fields[2].GetCppString();
+			uint8 type = fields[3].GetUInt8();
+			uint32 date = fields[4].GetUInt32();
+			int16 ptype = fields[5].GetInt16();
+			uint8 flags = fields[6].GetUInt8();
+			uint64 creator = fields[7].GetUInt64();
+			uint32 guildid = fields[8].GetUInt32();
 
-		CalendarEvent* cEvent = new CalendarEvent(title,desc,EventType(type),PveType(ptype),date,CalendarEventFlags(flags),creator);
-		cEvent->setId(eventId);
-		if(guildid > 0)
-		{
-			if(Guild* guild = sObjectMgr.GetGuildById(guildid))
+			CalendarEvent* cEvent = new CalendarEvent(title,desc,EventType(type),PveType(ptype),date,CalendarEventFlags(flags),creator);
+			cEvent->setId(eventId);
+			if(guildid > 0)
 			{
-				m_guildCalendarEvents[eventId] = cEvent;
-				guild->RegisterCalendarEvent(eventId);
+				if(Guild* guild = sObjectMgr.GetGuildById(guildid))
+				{
+					cEvent->setGuild(guildid);
+					guild->RegisterCalendarEvent(eventId);
+				}
+				else
+					RemoveCalendarEvent(eventId);
 			}
-			else
-				RemoveCalendarEvent(eventId);
-			nbg++;
-		}
-		else
-		{
+
 			m_calendarEvents[eventId] = cEvent;
 			nb++;
 		}
+		while(result->NextRow());
 	}
-	while(result->NextRow());
 
-	sLog.outString("Loaded %u Player Calendar Events",nb);
-	sLog.outString("Loaded %u Guild Calendar Events",nbg);
+	sLog.outString("Loaded %u Calendar Events",nb);
 }
 
 CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, EventType type, PveType ptype, uint32 date, CalendarEventFlags flags, uint64 guid)
@@ -214,7 +211,7 @@ CalendarEvent* CalendarMgr::CreateEvent(std::string title, std::string desc, Eve
 	CharacterDatabase.escape_string(title);
 	CharacterDatabase.escape_string(desc);
 	CharacterDatabase.PExecute("INSERT INTO calendar_events(`id`,`title`,`desc`,`type`,`date`,`ptype`,`flags`,`creator`) VALUES "
-		"('%u','%s','%s','%u','%i','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, ptype, flags, guid);
+		"('%u','%s','%s','%u','%i','%u','%u','" UI64FMTD "')", eventId, title.c_str(), desc.c_str(), type, date, int32(ptype), flags, guid);
 
 	return cEvent;
 }
@@ -226,35 +223,16 @@ void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 		return;
 	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = '%u'",eventId);
 	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = '%u'",eventId);
+	if(Guild* guild = sObjectMgr.GetGuildById(cEvent->getGuild()))
+		guild->RemoveCalendarEvent(eventId);
 	m_calendarEvents.erase(eventId);
-	m_guildCalendarEvents.erase(eventId);
 	sWorld.RemoveCalendarEventFromActiveSessions(eventId);
 	delete cEvent;
 }
 
 CalendarEvent* CalendarMgr::getEventById(uint64 id)
 {
-	if(CalendarEvent* cEvent = getPlayerEventById(id))
-		return cEvent;
-
-	if(CalendarEvent* cEvent = getGuildEventById(id))
-		return cEvent;
-
-	return NULL;
-}
-
-CalendarEvent* CalendarMgr::getPlayerEventById(uint64 id)
-{
 	cEventMap::iterator itr = m_calendarEvents.find(id);
-	if(itr == m_calendarEvents.end())
-		return NULL;
-
-	return itr->second;
-}
-
-CalendarEvent* CalendarMgr::getGuildEventById(uint64 id)
-{
-	cEventMap::iterator itr = m_guildCalendarEvents.find(id);
 	if(itr == m_calendarEvents.end())
 		return NULL;
 
@@ -273,16 +251,16 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 	data << uint64(cEvent->getId());
 	data << std::string(cEvent->getTitle());
 	data << std::string(cEvent->getDescription());
-	data << uint8(0) << uint8(0);
-	data << uint8(MAX_INVITES); // maxinvites
+	data << uint8(cEvent->getType());
+	data << uint8(0);
+	data << uint32(MAX_INVITES); // maxinvites
 	data << uint32(cEvent->getPveType());
-	data << uint32(1); // unk
 	data << uint32(0); // unk
-	data << uint32(cEvent->getDate());
+	data << uint32(cEvent->getDate()); // unk
+	data << uint32(cEvent->getFlags());
 	// moding
 	data << uint32(0); // if invites it was 1
 	data << uint32(cEvent->getMemberList().size());
-	data << uint8(0x00) << uint8(0x00) << uint8(0x00);
 	for(CalEventMemberList::const_iterator itr = cEvent->getMemberList().begin(); itr != cEvent->getMemberList().end(); ++itr)
 	{
 		data.appendPackGUID(itr->first);

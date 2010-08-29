@@ -125,6 +125,7 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 		{
 			if(Guild* guild = GetPlayer()->getGuild())
 			{
+				cEvent->setGuild(guild->GetId());
 				guild->RegisterCalendarEvent(cEvent->getId());
 				guild->BroadcastEventToGuild(cEvent->getId());
 				CharacterDatabase.PExecute("UPDATE calendar_events SET guild = %u",GetPlayer()->GetGuildId());
@@ -173,9 +174,8 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
 	uint64 eventId = 0;
 	uint64 creatorGUID;
 	std::string title,desc;
-	uint8 maxInvites,unk7;
-	uint32 date,unk4,unk5;
-	uint16 unk3,unk6;
+	uint32 maxInvites,date,unk4,flags;
+	uint16 unk3;
 	int32 pve_type;
 
 	recv_data >> eventId;
@@ -185,20 +185,19 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
 	recv_data >> unk3;
 	recv_data >> maxInvites;
 	recv_data >> pve_type;
-	recv_data >> unk4;
 	recv_data >> date;
-	recv_data >> unk5;
-	recv_data >> unk6;
-	recv_data >> unk7;
+	recv_data >> flags;
+	recv_data >> unk4;
 	CharacterDatabase.escape_string(title);
 	CharacterDatabase.escape_string(desc);
-	error_log("Unk3 : %u Unk4 : %u Unk5 %u Unk6 %u Unk7 %u",unk3,unk4,unk5,unk6,unk7);
+	error_log("Unk3 : %u Unk4 : %u ",unk3,unk4);
 	if(CalendarEvent* cEvent = sCalendarMgr.getEventById(eventId))
 	{
 		cEvent->setTitle(title);
 		cEvent->setDescription(desc);
 		//cEvent->setEventType(EventType(type));
 		cEvent->setPveType(PveType(pve_type));
+		cEvent->setFlags(CalendarEventFlags(flags));
 		cEvent->setDate(date);
 		CharacterDatabase.PExecute("UPDATE calendar_events SET `title` = '%s', `desc` = '%s', `date` = '%u', `ptype` = '%i' WHERE `id` = '"UI64FMTD"'",
 			title.c_str(),desc.c_str(),date,pve_type,eventId);
@@ -221,7 +220,6 @@ void WorldSession::HandleCalendarRemoveEvent(WorldPacket &recv_data)
     recv_data >> creatorGuid;
     recv_data >> flags;
 	sCalendarMgr.RemoveCalendarEvent(eventId);
-	sCalendarMgr.Send(GetPlayer());
 }
 
 void WorldSession::HandleCalendarCopyEvent(WorldPacket &recv_data)
