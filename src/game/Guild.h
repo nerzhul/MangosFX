@@ -24,8 +24,8 @@
 
 #include "Common.h"
 #include "Item.h"
-#include "Calendar.h"
 #include "ObjectDefines.h"
+#include "Calendar.h"
 
 class Item;
 

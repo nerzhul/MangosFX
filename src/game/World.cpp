@@ -2385,9 +2385,9 @@ void World::setLastPckFor(uint64 guid, const WorldPacket *pck)
 	if(!pck)
 		return;
 
-	switch(pck->GetOpcode())
+	/*switch(pck->GetOpcode())
 	{
-		default:
+		default:*/
 			std::map<uint64,WorldPacket*>::iterator lastPck = lastPckMap.find(guid);
 			if(lastPck != lastPckMap.end())
 			{
@@ -2397,6 +2397,6 @@ void World::setLastPckFor(uint64 guid, const WorldPacket *pck)
 				delete pck;
 			}
 			lastPckMap[guid] = new WorldPacket(*pck);
-			break;
-	}
+	/*		break;
+	}*/
 }
