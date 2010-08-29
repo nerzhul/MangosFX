@@ -341,14 +341,8 @@ class Guild
         void BroadcastPacketToRank(WorldPacket *packet, uint32 rankId);
         void BroadcastPacket(WorldPacket *packet);
 
-        template<class Do>
-        void BroadcastWorker(Do& _do, Player* except = NULL)
-        {
-            for(MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
-                if(Player *player = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
-                    if(player != except)
-                        _do(player);
-        }
+		template<class Do>
+        void BroadcastWorker(Do& _do, Player* except = NULL);
 
         void CreateRank(std::string name,uint32 rights);
         void DelRank();

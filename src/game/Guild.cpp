@@ -426,6 +426,15 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
     return true;
 }
 
+template<class Do>
+void Guild::BroadcastWorker(Do& _do, Player* except = NULL);
+{
+    for(MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
+        if(Player *player = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+            if(player != except)
+                _do(player);
+}
+
 void Guild::SetMemberStats(uint64 guid)
 {
     MemberList::iterator itr = members.find(GUID_LOPART(guid));
