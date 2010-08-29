@@ -426,8 +426,8 @@ bool Guild::LoadMembersFromDB(QueryResult *guildMembersResult)
     return true;
 }
 
-template<class Do>
-void Guild::BroadcastWorker(Do& _do, Player* except = NULL);
+template<class Do> 
+void Guild::BroadcastWorker(Do& _do, Player* except)
 {
     for(MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
         if(Player *player = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
