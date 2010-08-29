@@ -600,7 +600,7 @@ class World
 		 void LockWorld(bool lock) { worldLocked = lock; }
 		 WorldPacket* getLastPckFrom(uint64 guid);
 		 void setLastPckFor(uint64 guid, const WorldPacket* pck);
-		 void RemoveCalendarEventFromActiveSessions(CalendarEvent* cEvent);
+		 void RemoveCalendarEventFromActiveSessions(uint64 eventId);
     protected:
         void _UpdateGameTime();
         // callback for UpdateRealmCharacters

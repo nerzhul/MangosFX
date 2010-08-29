@@ -15885,7 +15885,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
         {
 			if(Field *fields = result->Fetch())
 				if(CalendarEvent* cEvent = sCalendarMgr.getEventById(fields[0].GetUInt64()))
-					RegisterCalendarEvent(cEvent);
+					RegisterCalendarEvent(fields[0].GetUInt64());
 		}
 		while(result->NextRow());
 	}

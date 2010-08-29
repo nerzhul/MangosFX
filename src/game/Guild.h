@@ -430,10 +430,9 @@ class Guild
         void   LogBankEvent(uint8 EventType, uint8 TabId, uint32 PlayerGuidLow, uint32 ItemOrMoney, uint8 ItemStackCount=0, uint8 DestTabId=0);
         bool   AddGBankItemToDB(uint32 GuildId, uint32 BankTab , uint32 BankTabSlot , uint32 GUIDLow, uint32 Entry );
 
-		void RegisterCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents[cEvent->getId()] = cEvent; }
-		cEventMap GetCalendarEvents() { return m_calendarEvents; }
-		void RemoveCalendarEvent(CalendarEvent* cEvent) { if(cEvent) m_calendarEvents.erase(cEvent->getId()); }
-		void RemoveCalendarEvent(uint64 eventId) { RemoveCalendarEvent(sCalendarMgr.getEventById(eventId)); }
+		void RegisterCalendarEvent(uint64 eventId) { m_calendarEvents.insert(eventId); }
+		cEventSet GetCalendarEvents() { return m_calendarEvents; }
+		void RemoveCalendarEvent(uint64 eventId) { m_calendarEvents.erase(eventId); }
 		void BroadcastEventToGuild(uint64 eventId);
 
     protected:
@@ -489,6 +488,6 @@ class Guild
         uint8 _CanStoreItem_InSpecificSlot( uint8 tab, uint8 slot, GuildItemPosCountVec& dest, uint32& count, bool swap, Item *pSrcItem ) const;
         uint8 _CanStoreItem_InTab( uint8 tab, GuildItemPosCountVec& dest, uint32& count, bool merge, Item *pSrcItem, uint8 skip_slot ) const;
         Item* _StoreItem( uint8 tab, uint8 slot, Item *pItem, uint32 count, bool clone );
-		cEventMap m_calendarEvents;
+		cEventSet m_calendarEvents;
 };
 #endif

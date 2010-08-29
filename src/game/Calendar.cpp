@@ -31,12 +31,12 @@ void CalendarMgr::Send(Player* plr)
 {
 	time_t cur_time = time(NULL);
 
-	cEventMap cPlayerEventMap = plr->GetCalendarEvents();
-	cEventMap cGuildEventMap;
+	cEventSet cPlayerEventSet = plr->GetCalendarEvents();
+	cEventSet cGuildEventSet;
     if(Guild *guild = plr->getGuild())
-		cGuildEventMap = guild->GetCalendarEvents();
+		cGuildEventSet = guild->GetCalendarEvents();
 	else
-		cGuildEventMap.clear();
+		cGuildEventSet.clear();
 
 
     WorldPacket data(SMSG_CALENDAR_SEND_CALENDAR,600);
@@ -53,33 +53,34 @@ void CalendarMgr::Send(Player* plr)
 		data << inviteId << eventId << unk1 << unk2 << unk3 << creatorGuid;		
 	}
 
-	data << uint32(cPlayerEventMap.size() + cGuildEventMap.size());                            //event count
+	data << uint32(cPlayerEventSet.size() + cGuildEventSet.size());                            //event count
 
-	for (cEventMap::iterator itr = cPlayerEventMap.begin(); itr != cPlayerEventMap.end(); ++itr)
+	for (cEventSet::iterator itr = cPlayerEventSet.begin(); itr != cPlayerEventSet.end(); ++itr)
     {
-		if(!(*itr).second)
+		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
+		if(!cEvent)
 			continue;
-		data << uint64((*itr).first);
-		data << std::string((*itr).second->getTitle());
-		data << uint32((*itr).second->getType());
-		data << uint32((*itr).second->getDate());
-		data << uint32((*itr).second->getFlags());
-		data << int32((*itr).second->getPveType());
-		data.appendPackGUID((*itr).second->getCreator());
+		data << uint64(cEvent->getId());
+		data << std::string(cEvent->getTitle());
+		data << uint32(cEvent->getType());
+		data << uint32(cEvent->getDate());
+		data << uint32(cEvent->getFlags());
+		data << int32(cEvent->getPveType());
+		data.appendPackGUID(cEvent->getCreator());
 	}
 
-	for (cEventMap::iterator itr = cGuildEventMap.begin(); itr != cGuildEventMap.end(); ++itr)
+	for (cEventSet::iterator itr = cGuildEventSet.begin(); itr != cGuildEventSet.end(); ++itr)
     {
-		if(!(*itr).second)
+		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
+		if(!cEvent)
 			continue;
-		error_log("test");
-		data << uint64((*itr).first);
-		data << std::string((*itr).second->getTitle());
-		data << uint32((*itr).second->getType());
-		data << uint32((*itr).second->getDate());
-		data << uint32((*itr).second->getFlags());
-		data << int32((*itr).second->getPveType());
-		data.appendPackGUID((*itr).second->getCreator());
+		data << uint64(cEvent->getId());
+		data << std::string(cEvent->getTitle());
+		data << uint32(cEvent->getType());
+		data << uint32(cEvent->getDate());
+		data << uint32(cEvent->getFlags());
+		data << int32(cEvent->getPveType());
+		data.appendPackGUID(cEvent->getCreator());
 	}
 
     data << (uint32) 0;                                     //wtf??
@@ -185,7 +186,7 @@ void CalendarMgr::LoadCalendarEvents()
 			if(Guild* guild = sObjectMgr.GetGuildById(guildid))
 			{
 				m_guildCalendarEvents[eventId] = cEvent;
-				guild->RegisterCalendarEvent(cEvent);
+				guild->RegisterCalendarEvent(eventId);
 			}
 			else
 				RemoveCalendarEvent(eventId);
@@ -233,7 +234,27 @@ void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 
 CalendarEvent* CalendarMgr::getEventById(uint64 id)
 {
+	if(CalendarEvent* cEvent = getPlayerEventById(id))
+		return cEvent;
+
+	if(CalendarEvent* cEvent = getGuildEventById(id))
+		return cEvent;
+
+	return NULL;
+}
+
+CalendarEvent* CalendarMgr::getPlayerEventById(uint64 id)
+{
 	cEventMap::iterator itr = m_calendarEvents.find(id);
+	if(itr == m_calendarEvents.end())
+		return NULL;
+
+	return itr->second;
+}
+
+CalendarEvent* CalendarMgr::getGuildEventById(uint64 id)
+{
+	cEventMap::iterator itr = m_guildCalendarEvents.find(id);
 	if(itr == m_calendarEvents.end())
 		return NULL;
 

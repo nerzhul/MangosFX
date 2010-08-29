@@ -1773,14 +1773,14 @@ void World::SendGlobalMessage(WorldPacket *packet, WorldSession *self, uint32 te
     }
 }
 
-void World::RemoveCalendarEventFromActiveSessions(CalendarEvent* cEvent)
+void World::RemoveCalendarEventFromActiveSessions(uint64 eventId)
 {
     for (SessionMap::const_iterator itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
     {
         if (itr->second &&
 			itr->second->GetPlayer() && itr->second->GetPlayer()->IsInWorld())
 		{
-			itr->second->GetPlayer()->RemoveCalendarEvent(cEvent);
+			itr->second->GetPlayer()->RemoveCalendarEvent(eventId);
 			sCalendarMgr.Send(itr->second->GetPlayer());
 		}
     }

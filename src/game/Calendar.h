@@ -66,7 +66,7 @@ enum State2
 	VALID		= 2,
 };
 
-
+typedef std::set<uint64> cEventSet;
 typedef std::map<uint64,CalendarEvent*> cEventMap;
 class CalendarMgr
 {
@@ -82,6 +82,8 @@ class CalendarMgr
 		cEventMap getAllGuildCalendarEvents() { return m_guildCalendarEvents; }
 		cEventMap getGuildEvents(uint32 guild);
 		CalendarEvent* getEventById(uint64 id);
+		CalendarEvent* getPlayerEventById(uint64 id);
+		CalendarEvent* getGuildEventById(uint64 id);
 		void LoadCalendarEvents();
 		void RemoveCalendarEvent(uint64 eventId);
 		void SendEvent(CalendarEvent* cEvent, Player* plr, bool create);

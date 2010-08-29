@@ -125,13 +125,13 @@ void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 		{
 			if(Guild* guild = GetPlayer()->getGuild())
 			{
-				guild->RegisterCalendarEvent(cEvent);
+				guild->RegisterCalendarEvent(cEvent->getId());
 				guild->BroadcastEventToGuild(cEvent->getId());
 				CharacterDatabase.PExecute("UPDATE calendar_events SET guild = %u",GetPlayer()->GetGuildId());
 			}
 		}
 		else
-			GetPlayer()->RegisterCalendarEvent(cEvent);
+			GetPlayer()->RegisterCalendarEvent(cEvent->getId());
 
 		sCalendarMgr.Send(GetPlayer());
 		sCalendarMgr.SendEvent(cEvent,GetPlayer(),true);

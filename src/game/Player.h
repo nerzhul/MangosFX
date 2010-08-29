@@ -2273,9 +2273,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void ForceProcOnDamage(Unit* victim, SpellEntry const * spell, bool isCrit);
 		void SetIsCanDelayTeleport(bool setting) { m_bHasDelayedTeleport = setting; }
 
-		void RegisterCalendarEvent(CalendarEvent* cEvent) { m_calendarEvents[cEvent->getId()] = cEvent; }
-		cEventMap GetCalendarEvents() { return m_calendarEvents; }
-		void RemoveCalendarEvent(CalendarEvent* cEvent) { if(cEvent) m_calendarEvents.erase(cEvent->getId()); }
+		void RegisterCalendarEvent(uint64 eventId) { m_calendarEvents.insert(eventId); }
+		cEventSet GetCalendarEvents() { return m_calendarEvents; }
 		void RemoveCalendarEvent(uint64 eventId) { m_calendarEvents.erase(eventId); }
 
     protected:
@@ -2589,7 +2588,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		uint8 XpAllowed;
 		bool daily_random_BG_done;
 
-		cEventMap m_calendarEvents;
+		cEventSet m_calendarEvents;
 };
 
 void AddItemsSetItem(Player*player,Item *item);
