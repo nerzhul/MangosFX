@@ -55,18 +55,16 @@ void CalendarMgr::Send(Player* plr)
 
 	data << uint32(cPlayerEventSet.size() + cGuildEventSet.size());                            //event count
 
-	error_log("size : %d",cGuildEventSet.size());
 	for (cEventSet::iterator itr = cPlayerEventSet.begin(); itr != cPlayerEventSet.end(); ++itr)
     {
 		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
 		if(!cEvent)
 			continue;
-		error_log("event Title %s",cEvent->getTitle());
 		data << uint64(cEvent->getId());
 		data << std::string(cEvent->getTitle());
 		data << uint32(cEvent->getType());
 		data << uint32(cEvent->getDate());
-		data << uint32(cEvent->getFlags());
+		data << uint32(EVENT_GUILD); // must be this to work
 		data << int32(cEvent->getPveType());
 		data.appendPackGUID(cEvent->getCreator());
 	}
@@ -76,12 +74,11 @@ void CalendarMgr::Send(Player* plr)
 		CalendarEvent* cEvent = sCalendarMgr.getEventById(*itr);
 		if(!cEvent)
 			continue;
-		error_log("event Title %s",cEvent->getTitle());
 		data << uint64(cEvent->getId());
 		data << std::string(cEvent->getTitle());
 		data << uint32(cEvent->getType());
 		data << uint32(cEvent->getDate());
-		data << uint32(cEvent->getFlags());
+		data << uint32(EVENT_GUILD); // must be this to work
 		data << int32(cEvent->getPveType());
 		data.appendPackGUID(cEvent->getCreator());
 	}
@@ -255,11 +252,11 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 	data << uint8(0);
 	data << uint32(MAX_INVITES); // maxinvites
 	data << uint32(cEvent->getPveType());
-	data << uint32(0); // unk
+	data << uint32(1); // unk
 	data << uint32(cEvent->getDate()); // unk
-	data << uint32(cEvent->getFlags());
+	data << uint32(/*cEvent->getFlags()*/0);
 	// moding
-	data << uint32(0); // if invites it was 1
+	data << uint32(1);
 	data << uint32(cEvent->getMemberList().size());
 	for(CalEventMemberList::const_iterator itr = cEvent->getMemberList().begin(); itr != cEvent->getMemberList().end(); ++itr)
 	{
@@ -268,7 +265,7 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		data << uint8(itr->second.status);
 		data << uint8(itr->second.status2);
 		data << uint8(0x00); // unk
-		data << uint8(0x2D) << uint8(0xC1) << uint8(0x71) << uint8(0x01) << uint32(0); // inviteId ?
+		data << uint8(0x2D) << uint8(urand(1,100)) << uint8(0x71) << uint8(itr->first) << uint32(0); // inviteId ?
 		data << uint32(0); // unk
 		data << std::string("");
 	}
@@ -287,7 +284,7 @@ void CalendarMgr::SendEvent(CalendarEvent* cEvent, Player* plr, bool create)
 		data << uint32(unk5);
 		data << std::string(title);
 	}*/
-	//data.hexlike();
+	data.hexlike();
 	plr->GetSession()->SendPacket(&data);
 }
 

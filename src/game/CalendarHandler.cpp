@@ -30,12 +30,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket &recv_data)
 	if(!GetPlayer())
 		return;
 
-    sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
-	for(uint8 i=0;i<10;i++)
-	{
-	WorldPacket data(CMSG_CALENDAR_GET_CALENDAR);
-	SendPacket(&data);
-	}
+    //sLog.outDebug("WORLD: CMSG_CALENDAR_GET_CALENDAR");     // empty
 	sCalendarMgr.Send(GetPlayer());
 }
 
