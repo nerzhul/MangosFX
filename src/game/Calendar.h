@@ -66,7 +66,6 @@ enum State2
 	VALID		= 2,
 };
 
-typedef std::set<uint64> cEventSet;
 typedef std::map<uint64,CalendarEvent*> cEventMap;
 class CalendarMgr
 {

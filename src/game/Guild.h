@@ -25,7 +25,6 @@
 #include "Common.h"
 #include "Item.h"
 #include "ObjectDefines.h"
-#include "Calendar.h"
 
 class Item;
 
@@ -283,6 +282,8 @@ struct RankInfo
     uint32 TabRight[GUILD_BANK_MAX_TABS];
     uint32 TabSlotPerDay[GUILD_BANK_MAX_TABS];
 };
+
+typedef std::set<uint64> cEventSet;
 
 class Guild
 {

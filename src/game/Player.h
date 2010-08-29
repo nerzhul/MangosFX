@@ -38,7 +38,6 @@
 #include "ReputationMgr.h"
 #include "BattleGround.h"
 #include "DBCEnums.h"
-#include "Calendar.h"
 #include "LFGMgr.h"
 
 #include<string>
@@ -949,6 +948,8 @@ struct TradeData
 		return false;
 	}
 };
+
+typedef std::set<uint64> cEventSet;
 
 class MANGOS_DLL_SPEC Player : public Unit
 {
