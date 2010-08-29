@@ -25,6 +25,7 @@
 #include "Common.h"
 #include "Item.h"
 #include "ObjectDefines.h"
+#include "ObjectMgr.h"
 
 class Item;
 
