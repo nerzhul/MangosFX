@@ -27,7 +27,6 @@
 #include "ObjectDefines.h"
 
 class Item;
-class ObjectMgr;
 
 #define GUILD_RANKS_MIN_COUNT   5
 #define GUILD_RANKS_MAX_COUNT   10
@@ -342,15 +341,6 @@ class Guild
         void BroadcastPacketToRank(WorldPacket *packet, uint32 rankId);
         void BroadcastPacket(WorldPacket *packet);
 
-		template<class Do>
-		void BroadcastWorker(Do& _do, Player* except = NULL)
-		{
-			for(MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
-			if(Player *player = sObjectMgr.GetPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
-				if(player != except)
-					_do(player);
-		}
-
         void CreateRank(std::string name,uint32 rights);
         void DelRank();
         std::string GetRankName(uint32 rankId);
@@ -380,6 +370,8 @@ class Guild
             }
             return NULL;
         }
+
+		MemberList GetMemberList() { return members; }
 
         void Roster(WorldSession *session = NULL);          // NULL = broadcast
         void Query(WorldSession *session);

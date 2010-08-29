@@ -604,7 +604,10 @@ void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
     {
         MaNGOS::AchievementChatBuilder say_builder(*GetPlayer(), CHAT_MSG_GUILD_ACHIEVEMENT, LANG_ACHIEVEMENT_EARNED,achievement->ID);
         MaNGOS::LocalizedPacketDo<MaNGOS::AchievementChatBuilder> say_do(say_builder);
-        guild->BroadcastWorker(say_do,GetPlayer());
+		for(std::map<uint32, MemberSlot>::iterator itr = guild->GetMemberList().begin(); itr != guild->GetMemberList().end(); ++itr)
+			if(Player *player = sObjectMgr.GetPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+				if(player != GetPlayer())
+					say_do(player);
     }
 
     if(achievement->flags & (ACHIEVEMENT_FLAG_REALM_FIRST_KILL|ACHIEVEMENT_FLAG_REALM_FIRST_REACH))
