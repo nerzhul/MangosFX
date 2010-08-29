@@ -70,7 +70,7 @@ void WorldSession::HandleCalendarArenaTeam(WorldPacket &recv_data)
 
 void WorldSession::HandleCalendarAddEvent(WorldPacket &recv_data)
 {
-	if(!GetPlayer())
+	//if(!GetPlayer())
 		return;
     sLog.outDebug("WORLD: CMSG_CALENDAR_ADD_EVENT");
     recv_data.hexlike();
@@ -163,7 +163,7 @@ void WorldSession::HandleCalendarUpdateEvent(WorldPacket &recv_data)
     sLog.outDebug("WORLD: CMSG_CALENDAR_UPDATE_EVENT");
     recv_data.hexlike();
 
-	if(!GetPlayer())
+	//if(!GetPlayer())
 		return;
 
 	uint64 eventId = 0;
