@@ -226,9 +226,9 @@ void CalendarMgr::RemoveCalendarEvent(uint64 eventId)
 		return;
 	CharacterDatabase.PExecute("DELETE FROM calendar_events WHERE id = '%u'",eventId);
 	CharacterDatabase.PExecute("DELETE FROM character_calendar_events WHERE eventid = '%u'",eventId);
-	m_calendarEvents.erase(cEvent->getId());
-	m_guildCalendarEvents.erase(cEvent->getId());
-	sWorld.RemoveCalendarEventFromActiveSessions(cEvent);
+	m_calendarEvents.erase(eventId);
+	m_guildCalendarEvents.erase(eventId);
+	sWorld.RemoveCalendarEventFromActiveSessions(eventId);
 	delete cEvent;
 }
 

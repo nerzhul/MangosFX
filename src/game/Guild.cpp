@@ -52,6 +52,8 @@ Guild::Guild()
     m_GuildBankEventLogNextGuid_Money = 0;
     for (uint8 i = 0; i < GUILD_BANK_MAX_TABS; ++i)
         m_GuildBankEventLogNextGuid_Item[i] = 0;
+
+	m_calendarEvents.clear();
 }
 
 Guild::~Guild()
