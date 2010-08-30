@@ -522,49 +522,7 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
             }
             case SPELLFAMILY_DRUID:
             {
-                //	
-                if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x000800000)) && m_spellInfo->SpellVisual[0]==6587)
-                {
-                    // converts up to 30 points of energy into ($f1+$AP/410) additional damage
-                    float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-                    float multiple = ap / 410 + m_spellInfo->DmgMultiplier[effect_idx];
-                    damage += int32(((Player*)m_caster)->GetComboPoints() * ap * 7 / 100);
-                    uint32 energy = m_caster->GetPower(POWER_ENERGY);
-                    uint32 used_energy = energy > 30 ? 30 : energy;
-                    damage += int32(used_energy * multiple);
-                    m_caster->SetPower(POWER_ENERGY,energy-used_energy);
-                }
-                // Rake
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000001000) && m_spellInfo->Effect[2]==SPELL_EFFECT_ADD_COMBO_POINTS)
-                {
-                    // $AP*0.01 bonus
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
-					// Glyoh of rake
-					if(m_caster->HasAura(54821))
-						m_caster->CastSpell(unitTarget,54820,true);
-                }
-                // Swipe
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0010000000000000))
-                {
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.08f);
-                }
-				else if(m_caster->GetTypeId() == TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x00000004)) && m_caster->HasAura(54845))
-				{
-					Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                    for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                    {
-						if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && (*itr)->GetSpellProto()->SpellIconID == 225
-							&& (*itr)->GetCaster() == m_caster)
-						{
-							if((*itr)->GetAuraMaxDuration() < 21000)
-							{
-								(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 3000);
-								(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 3000);
-								((Player*)m_caster)->SendAurasForTarget(unitTarget);
-							}
-						}
-					}
-				}
+				sClassSpellHandler.HandleSchoolDmg(this,damage,SpellEffectIndex(effect_idx));
                 break;
             }
             case SPELLFAMILY_ROGUE:
