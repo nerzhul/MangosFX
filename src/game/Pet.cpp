@@ -1037,7 +1037,14 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 				case 1964:
 				{
 					uint32 spellpower = int32(owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_NATURE));
-					int32 bonusmelee = int32(spellpower * 0.08f);
+					float thornsTalent = 0.0f;
+					if(owner->HasAura(16840))
+						thornsTalent = 0.15f;
+					else if(owner->HasAura(16839))
+						thornsTalent = 0.10f;
+					else if(owner->HasAura(16836))
+						thornsTalent = 0.05f;
+					int32 bonusmelee = int32(spellpower * 0.08f * (1+thornsTalent));
 					SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
 					SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
 					break;

@@ -22906,8 +22906,10 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 		}		
 	}
 
-	if(HasAura(71562) || HasAura(71519)) // Deathbringer will
+	if(HasAura(71562) && !HasSpellCooldown(71562) || HasAura(71519) && !HasSpellCooldown(71519)) // Deathbringer will
 	{
+		AddSpellCooldown(71562,0,time(NULL)+60000);
+		AddSpellCooldown(71519,0,time(NULL)+60000);
 		static uint32 const spellTable[8][3] = {
 			{71561,71560,71559}, // War,DK,Pala
 			{71556,71560,71558}, // Shaman, Rogue

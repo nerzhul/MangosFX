@@ -8339,6 +8339,11 @@ void Aura::PeriodicTick()
             if(m_target->GetMaxPower(power) == 0)
                 break;
 
+			// Cannot energize when we are in cyclone
+			if(m_target->getPowerType() == POWER_MANA && m_target->HasAura(33786) && (GetId() == 29166 || GetId() == 54833))
+				return;
+
+
             SpellPeriodicAuraLogInfo pInfo(this, pdamage, 0, 0, 0, 0.0f);
             m_target->SendPeriodicAuraLog(&pInfo);
 
@@ -9586,6 +9591,8 @@ bool Aura::IsForcedVisibleAura() const
 		case 31579:
 		case 31582:
 		case 31583:
+		case 53138:
+		case 53137:
 			return true;
 		default:
 			return false;

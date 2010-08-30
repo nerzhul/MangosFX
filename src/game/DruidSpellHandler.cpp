@@ -7,10 +7,11 @@
 
 INSTANTIATE_SINGLETON_1(DruidSpellHandler);
 
-#define FLAGS_SHRED		0x40000
 #define FLAG_STARFIRE	UI64LIT(0x00000004)
 #define FLAG_RAKE		UI64LIT(0x0000000000001000)
 #define FLAG_SWIPE		UI64LIT(0x0010000000000000)
+#define FLAG_SHRED		UI64LIT(0x8000)
+#define FLAG_RIP		UI64LIT(0x1000)
 
 void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
@@ -31,7 +32,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
         }
     }
     // Shred
-    if(spell->m_spellInfo->SpellFamilyFlags2 & FLAGS_SHRED)
+    if(spell->m_spellInfo->SpellFamilyFlags2 & FLAG_SHRED)
     {
             weaponDmgMod = true;
             spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
@@ -81,7 +82,24 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 				{
 					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 3000);
 					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 3000);
-					((Player*)m_caster)->SendAurasForTarget(unitTarget);
+					(*itr)->SendAuraUpdate(false);
+				}
+			}
+		}
+	}
+	else if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && m_caster->HasAura(54815))
+	{
+		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+        for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+        {
+			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
+				&& (*itr)->GetCaster() == m_caster)
+			{
+				if((*itr)->GetAuraMaxDuration() < 9000)
+				{
+					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 2000);
+					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 2000);
+					(*itr)->SendAuraUpdate(false);
 				}
 			}
 		}

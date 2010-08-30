@@ -12,6 +12,7 @@ INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 #define FLAG_PLAGUE_STRIKE		UI64LIT(0x0000000000000001)
 #define FLAG_BLOOD_STRIKE		UI64LIT(0x0000000000400000)
 #define FLAG_OBLITERATE			UI64LIT(0x2000000000000)
+#define FLAG_HEART_STRIKE		UI64LIT(0x1000000)
 
 bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
 {
@@ -160,6 +161,17 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         totalDmgPctMod *= 1.2f;
     }
 	else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_OBLITERATE)
+	{
+		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
+		{
+			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
+			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
+			else
+				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
+		}
+	}
+	else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_HEART_STRIKE)
 	{
 		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
 		{

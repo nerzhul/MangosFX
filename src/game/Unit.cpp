@@ -3376,7 +3376,27 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
     {
         case SPELL_DAMAGE_CLASS_RANGED:
         case SPELL_DAMAGE_CLASS_MELEE:
-            return MeleeSpellHitResult(pVictim, spell);
+		{
+			SpellMissInfo Smi = MeleeSpellHitResult(pVictim, spell);
+			if(GetTypeId() == TYPEID_PLAYER && spell->SpellFamilyName & SPELLFAMILY_DRUID)
+			{
+				if(spell->SpellFamilyFlags & (0x8000000000|0x800000|0x1000000000000000))
+				{
+					if(Smi != SPELL_MISS_NONE && Smi != SPELL_MISS_BLOCK)
+					{
+						uint32 cost = spell->manaCost;
+						float multiplier = 0.0f;
+						if(HasAura(48410))
+							multiplier = 0.8f;
+						else if(HasAura(48409))
+							multiplier = 0.4f;
+
+						ModifyPower(POWER_ENERGY,int32(cost * multiplier));
+					}
+				}
+			}
+            return Smi;
+		}
         case SPELL_DAMAGE_CLASS_NONE:
         case SPELL_DAMAGE_CLASS_MAGIC:
             return MagicSpellHitResult(pVictim, spell);
