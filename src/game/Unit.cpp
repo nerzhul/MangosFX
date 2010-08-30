@@ -10712,6 +10712,8 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
                         !(m_spell->SpellFamilyFlags & UI64LIT(0x0000001000000050)))
                         continue;
                     modPercent += stepPercent * itr->second->GetStackAmount();
+					if(HasAura(62971))
+						modPercent += 6;
                 }
                 DoneTotalMod *= (modPercent+100.0f)/100.0f;
                 break;
