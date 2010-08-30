@@ -425,6 +425,7 @@ class MANGOS_DLL_SPEC Aura
     private:
         void CleanupTriggeredSpells();
         bool IsNeedVisibleSlot(Unit const* caster) const;   // helper for check req. visibility slot
+		bool IsForcedVisibleAura() const;
         void ReapplyAffectedPassiveAuras(Unit* target, bool owner_mode);
 };
 

@@ -9925,6 +9925,26 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                     }
                 }
             }
+
+			// Arcane empowerment
+			if(spellProto->SpellFamilyFlags & UI64LIT(0x800))
+			{
+				if(HasAura(31583))
+					DoneTotalMod *= 3;
+				else if(HasAura(31582))
+					DoneTotalMod *= 6;
+				else if(HasAura(31579))
+					DoneTotalMod *= 9;
+			}
+			else if(spellProto->SpellFamilyFlags & UI64LIT(0x200000))
+			{
+				if(HasAura(31583))
+					DoneTotalMod *= 15;
+				else if(HasAura(31582))
+					DoneTotalMod *= 30;
+				else if(HasAura(31579))
+					DoneTotalMod *= 45;
+			}
             break;
         }
 		case SPELLFAMILY_PRIEST:

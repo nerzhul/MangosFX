@@ -976,11 +976,13 @@ bool Aura::IsNeedVisibleSlot(Unit const* caster) const
 {
     bool totemAura = caster && caster->GetTypeId() == TYPEID_UNIT && ((Creature*)caster)->isTotem();
 
+	if(IsForcedVisibleAura())
+		return true;
     // passive auras (except totem auras) do not get placed in the slots
     if (m_isPassive && !totemAura)
         return false;
 
-    // generic not caster case
+	// generic not caster case
     if (m_target != caster)
         return true;
 
@@ -9572,5 +9574,20 @@ void Aura::HandleAOECharm(bool apply, bool Real)
         {
             ((Player*)GetTarget())->setFactionForRace(GetTarget()->getRace());
         }
+	}
+}
+
+bool Aura::IsForcedVisibleAura() const
+{
+	switch(GetId())
+	{
+		case 55610:
+		case 29801:
+		case 31579:
+		case 31582:
+		case 31583:
+			return true;
+		default:
+			return false;
 	}
 }
