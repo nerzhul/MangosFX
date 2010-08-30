@@ -34,7 +34,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
         return false;
     }
     // Hungering Cold
-    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_COIL)
+    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_HUNGERING_COLD)
     {
         spell->GetCaster()->CastSpell(spell->GetCaster(), 51209, true);
         return false;
