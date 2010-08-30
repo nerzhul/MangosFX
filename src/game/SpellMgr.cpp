@@ -961,7 +961,7 @@ void SpellMgr::LoadSpellProcEvents()
 
         spe.schoolMask      = fields[1].GetUInt32();
         spe.spellFamilyName = fields[2].GetUInt32();
-        spe.spellFamilyMask = (uint64)fields[3].GetUInt32()|((uint64)fields[4].GetUInt32()<<32);
+        spe.spellFamilyMask = fields[3].GetUInt64()|((uint64)fields[4].GetUInt32()<<32);
         spe.spellFamilyMask2= fields[5].GetUInt32();
         spe.procFlags       = fields[6].GetUInt32();
         spe.procEx          = fields[7].GetUInt32();
