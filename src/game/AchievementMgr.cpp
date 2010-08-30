@@ -587,6 +587,16 @@ void AchievementMgr::LoadFromDB(QueryResult *achievementResult, QueryResult *cri
 
 }
 
+
+template<class Do>
+void Guild::BroadcastWorker(Do &_do,Player* except)
+{
+	for(MemberList::iterator itr = members.begin(); itr != members.end(); ++itr)
+		if(Player *player = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+			if(player != except)
+				_do(player);
+}
+
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
     if(GetPlayer()->GetSession()->PlayerLoading())
