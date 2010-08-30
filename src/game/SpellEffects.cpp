@@ -539,6 +539,9 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                 {
                     // $AP*0.01 bonus
                     damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
+					// Glyoh of rake
+					if(m_caster->HasAura(54821))
+						m_caster->CastSpell(unitTarget,54820,true);
                 }
                 // Swipe
                 else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0010000000000000))

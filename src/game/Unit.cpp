@@ -12793,9 +12793,15 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
                     if (spellProto->SpellFamilyFlags & UI64LIT(0x100))
                     {
                         // Glyph of Thorns
-                        if (Aura * aur = GetAura(57862, 0))
+                        if (Aura *aur = GetAura(57862, 0))
                             duration += aur->GetModifier()->m_amount * MINUTE * IN_MILLISECONDS;
                     }
+					else if(spellProto->SpellFamilyFlags & UI64LIT(0x800000))
+					{
+						// Glyph of rip
+						 if (Aura * aur = GetAura(54818, 0))
+                            duration += aur->GetModifier()->m_amount;
+					}
                     break;
                 case SPELLFAMILY_PALADIN:
                     if (spellProto->SpellFamilyFlags & UI64LIT(0x00000002))
