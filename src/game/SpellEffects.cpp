@@ -545,6 +545,23 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                 {
                     damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.08f);
                 }
+				else if(m_caster->GetTypeId() == TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x00000004)) && m_caster->HasAura(54845))
+				{
+					Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+                    for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+                    {
+						if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && (*itr)->GetSpellProto()->SpellIconID == 225
+							&& (*itr)->GetCaster() == m_caster)
+						{
+							if((*itr)->GetAuraMaxDuration() < 21000)
+							{
+								(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 3000);
+								(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 3000);
+								((Player*)m_caster)->SendAurasForTarget(unitTarget);
+							}
+						}
+					}
+				}
                 break;
             }
             case SPELLFAMILY_ROGUE:
