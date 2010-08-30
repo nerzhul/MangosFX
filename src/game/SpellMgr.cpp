@@ -499,6 +499,13 @@ bool IsPositiveEffect(uint32 spellId, uint32 effIndex)
 	{
 		case 63050: // Yogg Sanity
 			return false;
+		case 63680:
+		case 63706:
+		case 63707:
+		case 63644:
+		case 63645:
+			return true;
+
 	}
 
     switch(spellproto->Effect[effIndex])

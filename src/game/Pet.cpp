@@ -944,7 +944,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
 							float multiplier = 0.25f;
 							float healmultip = 0.15;
-							if(HasAura(58686))
+							if(owner->HasAura(58686))
 							{
 								multiplier += 0.4f;
 								healmultip += 0.4f;
