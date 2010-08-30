@@ -375,8 +375,6 @@ class Guild
             return NULL;
         }
 
-		MemberList GetMemberList() { return members; }
-
         void Roster(WorldSession *session = NULL);          // NULL = broadcast
         void Query(WorldSession *session);
 
