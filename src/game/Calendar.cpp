@@ -18,11 +18,11 @@
 
 #include <Policies/SingletonImp.h>
 #include "InstanceSaveMgr.h"
+#include "ObjectMgr.h"
 #include "Player.h"
 #include "Guild.h"
 #include "Opcodes.h"
 #include "Calendar.h"
-#include "ObjectMgr.h"
 #include "World.h"
 
 INSTANTIATE_SINGLETON_1( CalendarMgr );
