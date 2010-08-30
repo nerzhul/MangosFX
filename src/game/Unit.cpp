@@ -9927,29 +9927,41 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             }
 
 			// Arcane empowerment
-			if(spellProto->SpellFamilyFlags & UI64LIT(0x800))
+			if(spellProto->SpellFamilyFlags & UI64LIT(0x0000200000))
 			{
 				if(Aura* aur = GetAura(31583))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 3;
+						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+				}
 				else if(Aura* aur = GetAura(31582))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 6;
+						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+				}
 				else if(Aura* aur = GetAura(31579))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 9;
+						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+				}
 			}
-			else if(spellProto->SpellFamilyFlags & UI64LIT(0x200000))
+			else if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
 			{
 				if(Aura* aur = GetAura(31583))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 15;
+						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+				}
 				else if(Aura* aur = GetAura(31582))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 30;
+						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+				}
 				else if(Aura* aur = GetAura(31579))
+				{
 					if(aur->GetCaster() == this)
-						DoneTotalMod *= 45;
+						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+				}
 			}
             break;
         }
