@@ -175,16 +175,39 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 			Yell(16991,"Ah c'est tout englué.");
 			DoCastRandom(SPELL_MUTATED_INFECTION);
 			infection_nb++;
-			if(infection_nb > 12)
-				infection_Timer = 8000;
-			else if(infection_nb > 8)
-				infection_Timer = 10000;
-			else if(infection_nb > 5)
-				infection_Timer = 11000;
-			else if(infection_nb > 2)
-				infection_Timer = 12500;
-			else
-				infection_Timer = 14000;
+			switch(m_difficulty)
+			{
+				case RAID_DIFFICULTY_10MAN_NORMAL:
+				case RAID_DIFFICULTY_10MAN_HEROIC:
+				{
+					if(infection_nb > 12)
+						infection_Timer = 8000;
+					else if(infection_nb > 8)
+						infection_Timer = 10000;
+					else if(infection_nb > 5)
+						infection_Timer = 11000;
+					else if(infection_nb > 2)
+						infection_Timer = 12500;
+					else
+						infection_Timer = 14000;
+					break;
+				}
+				case RAID_DIFFICULTY_25MAN_NORMAL:
+				case RAID_DIFFICULTY_25MAN_HEROIC:
+				{
+					if(infection_nb > 12)
+						infection_Timer = 9000;
+					else if(infection_nb > 8)
+						infection_Timer = 11000;
+					else if(infection_nb > 5)
+						infection_Timer = 12500;
+					else if(infection_nb > 2)
+						infection_Timer = 15500;
+					else
+						infection_Timer = 17000;
+					break;
+				}
+			}
 		}
 		else
 			infection_Timer -= diff;
