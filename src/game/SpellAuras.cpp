@@ -9039,6 +9039,9 @@ void Aura::PeriodicDummyTick()
 					}
 				}
 			}
+			// Hysteria dot fix
+			if(spell->Id == 49016)
+				m_target->SetHealth(m_target->GetHealth() - uint32(m_target->GetMaxHealth() * 1 / 100));
             break;
         }
         default:
@@ -9593,6 +9596,7 @@ bool Aura::IsForcedVisibleAura() const
 		case 31583:
 		case 53138:
 		case 53137:
+		case 44544:
 			return true;
 		default:
 			return false;
