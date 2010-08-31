@@ -956,7 +956,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 							setPowerType(POWER_ENERGY);
 							SetMaxPower(POWER_ENERGY,100);
 							SetPower(POWER_ENERGY,100);
-							SetCreateHealth(GetMaxHealth() + owner->GetHealth() * healmultip);
+							SetCreateHealth(GetMaxHealth() + uint32(owner->GetHealth() * healmultip));
 						}
 						break;
 					}

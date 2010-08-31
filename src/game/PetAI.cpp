@@ -138,6 +138,11 @@ void PetAI::UpdateAI(const uint32 diff)
 
     Unit* owner = me->GetCharmerOrOwner();
 
+	// chained, use original owner instead
+    if (owner && owner->GetTypeId() == TYPEID_UNIT && ((Creature*)owner)->GetEntry() == me->GetEntry())
+        if (Unit *creator = me->GetCreator())
+            owner = creator;
+
     if(m_updateAlliesTimer <= diff)
         // UpdateAllies self set update timer
         UpdateAllies();

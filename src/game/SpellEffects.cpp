@@ -4059,8 +4059,6 @@ void Spell::EffectSummonType(uint32 i)
             //1161 - feral spirit - sid 51533
             if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
                 EffectSummonGuardian(i, summon_prop->FactionId);
-            else if(prop_id == 1161)
-				EffectSummonWild(i);
 			else
                 EffectSummon(i);
             break;
@@ -4100,6 +4098,8 @@ void Spell::EffectSummon(uint32 i)
     if(Player* modOwner = m_caster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
 
+	int32 amount = damage;
+    Unit *summoner = m_caster;
     if (m_caster->GetTypeId()==TYPEID_PLAYER && spawnCreature->LoadPetFromDB((Player*)m_caster,pet_entry))
     {
         // Summon in dest location
@@ -4116,84 +4116,97 @@ void Spell::EffectSummon(uint32 i)
         if (duration > 0)
             spawnCreature->SetDuration(duration);
 
-        return;
+		error_log("AMOUT %u",amount);
+		if (amount)
+        {
+            --amount;
+            summoner = spawnCreature;
+        }
+        
+        if (!amount)
+            return;
     }
+	for(int32 count = 0; count < amount; ++count)
+	{
+		Pet* creature = new Pet(SUMMON_PET);
+		Map *map = m_caster->GetMap();
+		uint32 pet_number = sObjectMgr.GeneratePetNumber();
+		if (!creature->Create(map->GenerateLocalLowGuid(HIGHGUID_PET), map, summoner->GetPhaseMask(),
+			m_spellInfo->EffectMiscValue[i], pet_number))
+		{
+			sLog.outErrorDb("Spell::EffectSummon: no such creature entry %u",m_spellInfo->EffectMiscValue[i]);
+			delete creature;
+			return;
+		}
 
-    Map *map = m_caster->GetMap();
-    uint32 pet_number = sObjectMgr.GeneratePetNumber();
-    if (!spawnCreature->Create(map->GenerateLocalLowGuid(HIGHGUID_PET), map, m_caster->GetPhaseMask(),
-        m_spellInfo->EffectMiscValue[i], pet_number))
-    {
-        sLog.outErrorDb("Spell::EffectSummon: no such creature entry %u",m_spellInfo->EffectMiscValue[i]);
-        delete spawnCreature;
-        return;
-    }
+		// Summon in dest location
+		float x, y, z;
+		if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
+		{
+			x = m_targets.m_destX;
+			y = m_targets.m_destY;
+			z = m_targets.m_destZ;
+		}
+		else
+			summoner->GetClosePoint(x, y, z, creature->GetObjectBoundingRadius());
 
-    // Summon in dest location
-    float x, y, z;
-    if (m_targets.m_targetMask & TARGET_FLAG_DEST_LOCATION)
-    {
-        x = m_targets.m_destX;
-        y = m_targets.m_destY;
-        z = m_targets.m_destZ;
-    }
-    else
-        m_caster->GetClosePoint(x, y, z, spawnCreature->GetObjectBoundingRadius());
+		creature->Relocate(x, y, z, -m_caster->GetOrientation());
+		creature->SetSummonPoint(x, y, z, -m_caster->GetOrientation());
 
-    spawnCreature->Relocate(x, y, z, -m_caster->GetOrientation());
-	spawnCreature->SetSummonPoint(x, y, z, -m_caster->GetOrientation());
+		if (!creature->IsPositionValid())
+		{
+			sLog.outError("Pet (guidlow %d, entry %d) not summoned. Suggested coordinates isn't valid (X: %f Y: %f)",
+				creature->GetGUIDLow(), creature->GetEntry(), creature->GetPositionX(), creature->GetPositionY());
+			delete creature;
+			return;
+		}
 
-    if (!spawnCreature->IsPositionValid())
-    {
-        sLog.outError("Pet (guidlow %d, entry %d) not summoned. Suggested coordinates isn't valid (X: %f Y: %f)",
-            spawnCreature->GetGUIDLow(), spawnCreature->GetEntry(), spawnCreature->GetPositionX(), spawnCreature->GetPositionY());
-        delete spawnCreature;
-        return;
-    }
+		// set timer for unsummon
+		if (duration > 0)
+			creature->SetDuration(duration);
 
-    // set timer for unsummon
-    if (duration > 0)
-        spawnCreature->SetDuration(duration);
+		creature->SetOwnerGUID(summoner->GetGUID());
+		creature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
+		creature->setPowerType(POWER_MANA);
+		creature->setFaction(m_caster->getFaction());
+		creature->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
+		creature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
+		creature->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
+		creature->SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, 0);
+		creature->SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
+		creature->SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
+		creature->SetCreatorGUID(m_caster->GetGUID());
+		creature->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
 
-    spawnCreature->SetOwnerGUID(m_caster->GetGUID());
-    spawnCreature->SetUInt32Value(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_NONE);
-    spawnCreature->setPowerType(POWER_MANA);
-    spawnCreature->setFaction(m_caster->getFaction());
-    spawnCreature->SetUInt32Value(UNIT_FIELD_FLAGS, 0);
-    spawnCreature->SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
-    spawnCreature->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
-    spawnCreature->SetUInt32Value(UNIT_FIELD_PET_NAME_TIMESTAMP, 0);
-    spawnCreature->SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
-    spawnCreature->SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
-    spawnCreature->SetCreatorGUID(m_caster->GetGUID());
-    spawnCreature->SetUInt32Value(UNIT_CREATED_BY_SPELL, m_spellInfo->Id);
+		creature->InitStatsForLevel(level, m_caster);
 
-    spawnCreature->InitStatsForLevel(level, m_caster);
+		creature->GetCharmInfo()->SetPetNumber(pet_number, false);
+	    
+		creature->UpdateWalkMode(m_caster);
 
-    spawnCreature->GetCharmInfo()->SetPetNumber(pet_number, false);
-    
-    spawnCreature->UpdateWalkMode(m_caster);
+		creature->AIM_Initialize();
+		creature->InitPetCreateSpells();
+		creature->InitLevelupSpellsForLevel();
+		creature->SetHealth(creature->GetMaxHealth());
+		creature->SetPower(POWER_MANA, creature->GetMaxPower(POWER_MANA));
 
-    spawnCreature->AIM_Initialize();
-    spawnCreature->InitPetCreateSpells();
-    spawnCreature->InitLevelupSpellsForLevel();
-    spawnCreature->SetHealth(spawnCreature->GetMaxHealth());
-    spawnCreature->SetPower(POWER_MANA, spawnCreature->GetMaxPower(POWER_MANA));
+		std::string name = m_caster->GetName();
+		name.append(petTypeSuffix[creature->getPetType()]);
+		creature->SetName( name );
 
-    std::string name = m_caster->GetName();
-    name.append(petTypeSuffix[spawnCreature->getPetType()]);
-    spawnCreature->SetName( name );
+		map->Add((Creature*)creature);
 
-    map->Add((Creature*)spawnCreature);
+		summoner->SetPet(creature);
 
-    m_caster->SetPet(spawnCreature);
+		if (m_caster->GetTypeId() == TYPEID_PLAYER && damage == amount && count == 0)
+		{
+			creature->GetCharmInfo()->SetReactState( REACT_DEFENSIVE );
+			creature->SavePetToDB(PET_SAVE_AS_CURRENT);
+			((Player*)m_caster)->PetSpellInitialize();
+		}
 
-    if (m_caster->GetTypeId() == TYPEID_PLAYER)
-    {
-        spawnCreature->GetCharmInfo()->SetReactState( REACT_DEFENSIVE );
-        spawnCreature->SavePetToDB(PET_SAVE_AS_CURRENT);
-        ((Player*)m_caster)->PetSpellInitialize();
-    }
+		summoner = creature;
+	}
 }
 
 void Spell::EffectLearnSpell(uint32 i)
