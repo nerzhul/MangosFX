@@ -4057,10 +4057,7 @@ void Spell::EffectSummonType(uint32 i)
             // FIXME : multiple summons -  not yet supported as pet
             //1562 - force of nature  - sid 33831
             //1161 - feral spirit - sid 51533
-            if(prop_id == 1562) // 3 uncontrolable instead of one controllable :/
-                EffectSummonGuardian(i, summon_prop->FactionId);
-			else
-                EffectSummon(i);
+            EffectSummon(i);
             break;
         }
         case SUMMON_PROP_GROUP_CONTROLLABLE:
@@ -4187,14 +4184,16 @@ void Spell::EffectSummon(uint32 i)
 		creature->AIM_Initialize();
 		creature->InitPetCreateSpells();
 		creature->InitLevelupSpellsForLevel();
-		creature->SetHealth(creature->GetMaxHealth());
-		creature->SetPower(POWER_MANA, creature->GetMaxPower(POWER_MANA));
 
 		std::string name = m_caster->GetName();
 		name.append(petTypeSuffix[creature->getPetType()]);
 		creature->SetName( name );
 
 		map->Add((Creature*)creature);
+
+		creature->InitStatsForLevel(level, m_caster);
+		creature->SetHealth(creature->GetMaxHealth());
+        creature->SetPower(POWER_MANA, creature->GetMaxPower(POWER_MANA));
 
 		summoner->SetPet(creature);
 
@@ -4204,6 +4203,8 @@ void Spell::EffectSummon(uint32 i)
 			creature->SavePetToDB(PET_SAVE_AS_CURRENT);
 			((Player*)m_caster)->PetSpellInitialize();
 		}
+		else
+			creature->SetNeedSave(false);
 
 		summoner = creature;
 	}

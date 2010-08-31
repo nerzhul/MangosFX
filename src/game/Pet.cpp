@@ -39,7 +39,7 @@ char const* petTypeSuffix[MAX_PET_TYPE] =
 
 Pet::Pet(PetType type) :
 Creature(CREATURE_SUBTYPE_PET), m_removed(false), m_petType(type), m_happinessTimer(7500), m_duration(0), m_resetTalentsCost(0),
-m_bonusdamage(0), m_resetTalentsTime(0), m_usedTalentCount(0), m_auraUpdateMask(0), m_loading(false),
+m_bonusdamage(0), m_resetTalentsTime(0), m_usedTalentCount(0), m_auraUpdateMask(0), m_loading(false),m_needSave(true),
 m_declinedname(NULL), m_petModeFlags(PET_MODE_DEFAULT)
 {
     m_name = "Pet";
@@ -1833,6 +1833,11 @@ void Pet::ToggleAutocast(uint32 spellid, bool apply)
 {
     if(IsPassiveSpell(spellid))
         return;
+
+    // chained pets
+    if (Pet *chainedPet = GetPet())
+        if (GetEntry() == chainedPet->GetEntry())
+            chainedPet->ToggleAutocast(spellid, apply);
 
     PetSpellMap::iterator itr = m_spells.find(spellid);
 

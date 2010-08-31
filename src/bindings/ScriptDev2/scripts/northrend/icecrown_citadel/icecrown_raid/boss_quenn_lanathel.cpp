@@ -330,7 +330,7 @@ struct MANGOS_DLL_DECL boss_lanathelAI : public LibDevFSAI
 							DoCast(u,SPELL_PACT_OF_DARKFALLEN,true);
 					}
 					breaker++;
-					if(breaker >= 50)
+					if(breaker >= 200)
 						break;
 				}
 				pact_Timer = 30000;

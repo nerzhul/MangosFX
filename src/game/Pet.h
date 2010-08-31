@@ -239,6 +239,9 @@ class Pet : public Creature
         void SetAuraUpdateMask(uint8 slot) { m_auraUpdateMask |= (uint64(1) << slot); }
         void ResetAuraUpdateMask() { m_auraUpdateMask = 0; }
 
+		bool GetNeedSave() const { return m_needSave; }
+        void SetNeedSave(bool needSave) { m_needSave = needSave; }
+
         // overwrite Creature function for name localization back to WorldObject version without localization
         const char* GetNameForLocaleIdx(int32 locale_idx) const { return WorldObject::GetNameForLocaleIdx(locale_idx); }
 
@@ -250,6 +253,7 @@ class Pet : public Creature
         PetType m_petType;
         int32   m_duration;                                 // time until unsummon (used mostly for summoned guardians and not used for controlled pets)
         int32   m_bonusdamage;
+		bool    m_needSave;                                 // is pet needed to be saved in DB (for chained - only originally first in chain)
         uint64  m_auraUpdateMask;
         bool    m_loading;
 
