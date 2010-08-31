@@ -265,7 +265,10 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
 	// Hysteria dot fix
 	if(spell->Id == 49016)
 	{
-		m_target->SetHealth(m_target->GetHealth() - uint32(m_target->GetMaxHealth() * 1 / 100));
+		if(m_target->isAlive())
+			m_target->ModifyHealth(- int32(m_target->GetMaxHealth() * 1 / 100));
+		else
+			m_target->RemoveAurasDueToSpell(49016);
 		return;
 	}
 }

@@ -7121,6 +7121,44 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 	// Hack for totem bug
 	pTotem->SetPhaseMask(1,true);
 
+	// stone claw shield
+	if(m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & 0x00008)
+	{
+		int32 bp0 = 0;
+		switch(m_spellInfo->Id)
+		{
+			case 5730: bp0 = 21; break;
+			case 6390: bp0 = 58; break;
+			case 6391: bp0 = 108; break;
+			case 6392: bp0 = 170; break;
+			case 10427: bp0 = 244; break;
+			case 10428: bp0 = 330; break;
+			case 25525: bp0 = 460; break;
+			case 58580: bp0 = 875; break;
+			case 58581: bp0 = 990; break;
+			case 58582: bp0 = 1085; break;
+			default:
+				error_log("Unhandled Stoneclaw Totem found : %u",m_spellInfo->Id);
+				break;
+		}
+
+		for(int slot = 0;  slot < MAX_TOTEM; ++slot)
+		{
+			if(!m_caster->m_TotemSlot[slot])
+				continue;
+
+			Creature* totem = m_caster->GetMap()->GetCreature(m_caster->m_TotemSlot[slot]);
+			if(totem && totem->isTotem())
+				if(bp0)
+					pTotem->CastCustomSpell(totem,55277,&bp0,NULL,NULL,true);
+		}
+		if(m_caster->HasAura(63298))
+		{
+			bp0 *= 4;
+			m_caster->CastCustomSpell(m_caster,55277,&bp0,NULL,NULL,true);
+		}
+	}
+
     if(slot < MAX_TOTEM && m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data(SMSG_TOTEM_CREATED, 1 + 8 + 4 + 4);
@@ -7652,6 +7690,10 @@ void Spell::EffectKnockBack(uint32 i)
         return;
 
 	if(unitTarget->IsVehicle() || unitTarget->GetVehicle() || unitTarget->GetVehicleGUID())
+		return;
+
+	// Thunderstorm Glyph
+	if(m_spellInfo->SpellFamilyName & SPELLFAMILY_SHAMAN && unitTarget->HasAura(62132) && m_spellInfo->SpellFamilyFlags & UI64LIT(0x200000000000))
 		return;
 
     unitTarget->KnockBackFrom(m_caster,float(m_spellInfo->EffectMiscValue[i])/10,float(damage)/10);
