@@ -4113,7 +4113,6 @@ void Spell::EffectSummon(uint32 i)
         if (duration > 0)
             spawnCreature->SetDuration(duration);
 
-		error_log("AMOUT %u",amount);
 		if (amount)
         {
             --amount;

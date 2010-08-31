@@ -12528,6 +12528,33 @@ void Player::ApplyEnchantment(Item *item, EnchantmentSlot slot, bool apply, bool
     if (!pEnchant)
         return;
 
+	// Metagem Bug Abuse Fix. Warning, if you equip your head and metagem must apply, it doesnt apply. Otherwise yes
+	RemoveAurasDueToSpell(11818);
+	RemoveAurasDueToSpell(23990);
+	RemoveAurasDueToSpell(27521);
+	RemoveAurasDueToSpell(32837);
+	RemoveAurasDueToSpell(32842);
+	RemoveAurasDueToSpell(32844);
+	RemoveAurasDueToSpell(37982);
+	RemoveAurasDueToSpell(39957);
+	RemoveAurasDueToSpell(39958);
+	RemoveAurasDueToSpell(40691);
+	RemoveAurasDueToSpell(40706);
+	RemoveAurasDueToSpell(46600);
+	RemoveAurasDueToSpell(55256);
+	RemoveAurasDueToSpell(55275);
+	RemoveAurasDueToSpell(55283);
+	RemoveAurasDueToSpell(55337);
+	RemoveAurasDueToSpell(55344);
+	RemoveAurasDueToSpell(55345);
+	RemoveAurasDueToSpell(55357);
+	RemoveAurasDueToSpell(55366);
+	RemoveAurasDueToSpell(55358);
+	RemoveAurasDueToSpell(55378);
+	RemoveAurasDueToSpell(55381);
+	RemoveAurasDueToSpell(55380);
+	RemoveAurasDueToSpell(61356);
+
     if (!ignore_condition && pEnchant->EnchantmentCondition && !((Player*)this)->EnchantmentFitsRequirements(pEnchant->EnchantmentCondition, -1))
         return;
 
