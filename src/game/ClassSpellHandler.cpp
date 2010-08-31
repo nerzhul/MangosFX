@@ -2,6 +2,7 @@
 
 #include "Spell.h"
 #include "SpellMgr.h"
+#include "SpellAuras.h"
 
 #include "ClassSpellHandler.h"
 
@@ -154,6 +155,46 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 			sDruidSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
 		/*case SPELLFAMILY_HUNTER:
+			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_MAGE:
+			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PALADIN:
+			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_ROGUE:
+			sRogueSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_SHAMAN:
+			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARRIOR:
+			sWarriorSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;*/
+	}
+}
+
+void ClassSpellHandler::PeriodicDummyTick(Aura* aura)
+{
+	if(!aura)
+		return;
+
+	switch(aura->GetSpellProto()->SpellFamilyName)
+	{
+		case SPELLFAMILY_DEATHKNIGHT:
+			return sDeathknightSpellHandler.PeriodicDummyTick(aura);
+			break;
+		/*case SPELLFAMILY_DRUID:
+			sDruidSpellHandler.HandleSchoolDmg(spell,damage,i);
+			break;
+		case SPELLFAMILY_HUNTER:
 			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_MAGE:

@@ -12,6 +12,7 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 		void HandleDummyAuraProc(Unit* u, Spell* dummy, uint32 &trig_sp_id);
 		void HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i);
 		bool HandleEffectDummy(Spell* spell);
+		void PeriodicDummyTick(Aura* aura);
 };
 
 #define sClassSpellHandler MaNGOS::Singleton<ClassSpellHandler>::Instance()

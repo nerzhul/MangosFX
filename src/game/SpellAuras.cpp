@@ -47,6 +47,7 @@
 #include "CellImpl.h"
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvP.h"
+#include "ClassSpellHandler.h"
 
 #define NULL_AURA_SLOT 0xFF
 
@@ -8962,86 +8963,7 @@ void Aura::PeriodicDummyTick()
         }
         case SPELLFAMILY_DEATHKNIGHT:
         {
-            // Death and Decay
-            if (spell->SpellFamilyFlags & UI64LIT(0x0000000000000020))
-            {
-                if (Unit *caster = GetCaster())
-                    caster->CastCustomSpell(m_target, 52212, &m_modifier.m_amount, NULL, NULL, true, NULL, this);
-                return;
-            }
-            // Raise Dead
-//            if (spell->SpellFamilyFlags & UI64LIT(0x0000000000001000))
-//                return;
-            // Chains of Ice
-            if (spell->SpellFamilyFlags & UI64LIT(0x0000400000000000))
-            {
-                // Get 0 effect aura
-                Aura *slow = m_target->GetAura(GetId(), 0);
-                if (slow)
-                {
-                    slow->ApplyModifier(false, true);
-                    Modifier *mod = slow->GetModifier();
-                    mod->m_amount+= m_modifier.m_amount;
-                    if (mod->m_amount > 0) mod->m_amount = 0;
-                    slow->ApplyModifier(true, true);
-                }
-                return;
-            }
-            // Summon Gargoyle
-//            if (spell->SpellFamilyFlags & UI64LIT(0x0000008000000000))
-//                return;
-            // Bladed Armor
-            if (spell->SpellIconID == 2653)
-            {
-                // Increases your attack power by $s1 for every $s2 armor value you have.
-                // Calculate AP bonus (from 1 efect of this spell)
-                int32 apBonus = m_modifier.m_amount * m_target->GetArmor() / m_target->CalculateSpellDamage(spell, 1, spell->EffectBasePoints[1], m_target);
-                m_target->CastCustomSpell(m_target, 61217, &apBonus, &apBonus, NULL, true, NULL, this);
-                return;
-            }
-			// Death Rune Mastery
-			if (spell->SpellIconID == 2622)
-			{
-				if (m_target->GetTypeId() != TYPEID_PLAYER)
-					return;
-				
-				Player *player = (Player*)m_target;
-				for (uint32 i = 0; i < MAX_RUNES; ++i)
-				{
-					if (!player->GetRuneCooldown(i))
-					{
-						RuneType type = player->GetBaseRune(i);
-						if (player->GetCurrentRune(i) == RUNE_DEATH && (type == RUNE_FROST || type == RUNE_UNHOLY) && player->IsRuneConvertedBy(i, spell->Id))
-						{
-							player->ConvertRune(i, type);
-							player->ClearConvertedBy(i);
-						}
-					}
-				}
-			}
-			// Blood of the North and Reaping
-			if (spell->SpellIconID == 3041 || spell->SpellIconID == 22)
-			{
-				if (m_target->GetTypeId() != TYPEID_PLAYER)
-					return;
-				
-				Player *player = (Player*)m_target;
-				for (uint32 i = 0; i < MAX_RUNES; ++i)
-				{
-					if (!player->GetRuneCooldown(i) && player->IsRuneConvertedBy(i, spell->Id))
-					{
-						RuneType type = player->GetBaseRune(i);
-						if (player->GetCurrentRune(i) == RUNE_DEATH && type == RUNE_BLOOD)
-						{
-							player->ConvertRune(i, type);
-							player->ClearConvertedBy(i);
-						}
-					}
-				}
-			}
-			// Hysteria dot fix
-			if(spell->Id == 49016)
-				m_target->SetHealth(m_target->GetHealth() - uint32(m_target->GetMaxHealth() * 1 / 100));
+			sClassSpellHandler.PeriodicDummyTick(this);
             break;
         }
         default:
