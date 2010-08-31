@@ -482,6 +482,9 @@ void LoadDBCStores(const std::string& dataPath)
 	SpellEntry *sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33778));
 	sfix->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
 
+	// Rotface Explode range
+	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(69832));
+	sfix->rangeIndex = 7;
 
 	// Visuals
 	SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(55610));
