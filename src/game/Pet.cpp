@@ -25,6 +25,7 @@
 #include "Pet.h"
 #include "Formulas.h"
 #include "SpellAuras.h"
+#include "SharedDefines.h"
 #include "CreatureAI.h"
 #include "Unit.h"
 #include "Util.h"
@@ -957,13 +958,14 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 						{
 							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
 							float multiplier = 0.25f;
-							float healmultip = 0.15;
+							float healmultip = 0.15f;
+							uint32 strenght = 0;
 							if(owner->HasAura(58686))
 							{
-								multiplier += 0.4f;
+								strenght += owner->GetStat(STAT_STRENGTH)* 0.4f;
 								healmultip += 0.4f;
 							}
-							int32 bonusmelee = int32(attackPower * multiplier);
+							int32 bonusmelee = int32(attackPower * 0.25f + strenght);
 							SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
 							SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
 							SetAttackTime(BASE_ATTACK, 1500);
