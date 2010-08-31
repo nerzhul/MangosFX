@@ -6794,6 +6794,16 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     if(mainTarget->HasAura(55095))
                         m_caster->CastSpell(unitTarget, 55095, true);
 
+					// Malady glyph
+					if (m_caster->HasAura(63334))
+                    {
+                                                                                   
+						Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+						for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+							if ((*itr)->GetSpellProto()->Dispel == DISPEL_DISEASE)
+								if ((*itr)->GetCaster() == m_caster)
+									(*itr)->RefreshAura();
+					}
                     break;
                 }
             }
