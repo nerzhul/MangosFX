@@ -9953,8 +9953,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 }
             }
 
-			// Arcane empowerment
-			if(spellProto->SpellFamilyFlags & UI64LIT(0x0000200000))
+			// Arcane empowerment						
+			if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
 			{
 				if(Aura* aur = GetAura(31583))
 				{
@@ -9972,7 +9972,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
 				}
 			}
-			else if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
+															
+			else if(spellProto->SpellFamilyFlags & UI64LIT(0x0800))
 			{
 				if(Aura* aur = GetAura(31583))
 				{

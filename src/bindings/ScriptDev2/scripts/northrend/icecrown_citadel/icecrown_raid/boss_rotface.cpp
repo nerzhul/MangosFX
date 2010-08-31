@@ -265,7 +265,6 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
 
 		UpdateEvent(diff);
 		DoMeleeAttackIfReady();
-		EnterEvadeIfOutOfCombatArea(diff);
     }
 };
 
