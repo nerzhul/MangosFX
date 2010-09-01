@@ -10671,8 +10671,10 @@ uint32 Unit::SpellCriticalDamageBonus(SpellEntry const *spellProto, uint32 damag
 	// Mage Spell Power
 	if(spellProto->SpellFamilyName == SPELLFAMILY_MAGE)
 	{
-		if(HasAura(35578) || HasAura(35581))
-			critPctDamageMod += spellProto->CalculateSimpleValue(0);
+		if(HasAura(35578))
+			critPctDamageMod += 25;
+		else if(HasAura(35581))
+			critPctDamageMod += 50;
 	}
 
     if(critPctDamageMod!=0)
