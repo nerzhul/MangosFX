@@ -5453,8 +5453,17 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
             Unit* caster = GetCaster();
 
             // Explosive Shot
-            if (apply && !loading && caster)
+			if (apply && !loading && caster && GetSpellProto()->SpellIconID == 3407)
+			{
+				switch(GetId())
+				{
+					case 53301: m_modifier.m_amount += urand(144,172); break;
+					case 60051: m_modifier.m_amount += urand(221,265); break;
+					case 60052: m_modifier.m_amount += urand(325,392); break;
+					case 60053: m_modifier.m_amount += urand(385,462); break;
+				}
                 m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 14 / 100);
+			}
             break;
         }
 		case SPELLFAMILY_DEATHKNIGHT:
