@@ -3644,9 +3644,9 @@ void Spell::finish(bool ok)
 			break;
 	 }
 	 
-	 // King of the jungle hack
 	 switch(m_spellInfo->Id)
 	 {
+		// King of the jungle hack
 		case 5217:
 		case 6793:
 		case 9845:
@@ -3665,6 +3665,20 @@ void Spell::finish(bool ok)
 			m_caster->SetPower(POWER_ENERGY,m_caster->GetPower(POWER_ENERGY) + mod);
 			break;
 		}
+		// Glyph of icy vein
+		case 12472:
+			if(m_caster->HasAura(56374))
+            {
+                m_caster->RemoveSpellsCausingAura(SPELL_AURA_MOD_DECREASE_SPEED);
+
+                Unit::AuraList const& mModStat = unitTarget->GetAurasByType(SPELL_AURA_HASTE_SPELLS);
+                for(Unit::AuraList::const_iterator i = mModStat.begin(); i != mModStat.end(); ++i)
+                {
+                   if((*i)->GetModifier()->GetAmount() < 0)
+                     m_caster->RemoveSpellsCausingAura(SPELL_AURA_HASTE_SPELLS);
+                }
+            }
+			break;
 		default:
 			break;
 	 }
