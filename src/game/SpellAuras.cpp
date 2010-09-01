@@ -9522,6 +9522,8 @@ bool Aura::IsForcedVisibleAura() const
 		case 51466:
 		case 51470:
 		case 28878:
+		case 35578:
+		case 35581:
 			return true;
 		default:
 			return false;

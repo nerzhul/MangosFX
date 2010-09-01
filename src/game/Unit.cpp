@@ -10227,6 +10227,21 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         if (bonus->ap_bonus)
             DoneTotal += int32(bonus->ap_bonus * GetTotalAttackPowerValue(BASE_ATTACK) * stack);
 
+		// impurity (DK)
+		if (GetTypeId() == TYPEID_PLAYER && spellProto->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellProto->SpellFamilyFlags & 0x600100200042022)
+        {
+			if(HasAura(49220))
+                DoneTotal += int32((GetAura(49220)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
+			else if(HasAura(49633))
+                DoneTotal += int32((GetAura(49633)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
+			else if(HasAura(49635))
+                DoneTotal += int32((GetAura(49635)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
+			else if(HasAura(49638))
+                DoneTotal += int32((GetAura(49638)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
+			else if(HasAura(49636))
+                DoneTotal += int32((GetAura(49636)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
+        }
+
 		if(GetTypeId() == TYPEID_PLAYER)
 			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
 
@@ -10652,6 +10667,13 @@ uint32 Unit::SpellCriticalDamageBonus(SpellEntry const *spellProto, uint32 damag
 
     uint32 creatureTypeMask = pVictim->GetCreatureTypeMask();
     critPctDamageMod += GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_CRIT_PERCENT_VERSUS, creatureTypeMask);
+
+	// Mage Spell Power
+	if(spellProto->SpellFamilyName == SPELLFAMILY_MAGE)
+	{
+		if(HasAura(35578) || HasAura(35581))
+			critPctDamageMod += spellProto->CalculateSimpleValue(0);
+	}
 
     if(critPctDamageMod!=0)
         crit_bonus = int32(crit_bonus * float((100.0f + critPctDamageMod)/100.0f));
@@ -11079,7 +11101,7 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
 		AuraList const& immuneMechanicAuraApply = GetAurasByType(SPELL_AURA_MECHANIC_IMMUNITY_MASK);
         for(AuraList::const_iterator i = immuneMechanicAuraApply.begin(); i != immuneMechanicAuraApply.end(); ++i)
 		{
-			if((*i)->GetId() == 46924 && spellInfo->Mechanic & 3) // Hack for disarm into blade storm
+			if((*i)->GetId() == 46924 && spellInfo->Mechanic == 3) // Hack for disarm into blade storm
 				return false;
             if ((spellInfo->EffectMechanic[index] & (*i)->GetMiscValue() ||
                 spellInfo->Mechanic & (*i)->GetMiscValue()) ||
