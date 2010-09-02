@@ -3670,13 +3670,23 @@ void Spell::finish(bool ok)
 			if(m_caster->HasAura(56374))
             {
                 m_caster->RemoveSpellsCausingAura(SPELL_AURA_MOD_DECREASE_SPEED);
-
-                Unit::AuraList const& mModStat = unitTarget->GetAurasByType(SPELL_AURA_HASTE_SPELLS);
-                for(Unit::AuraList::const_iterator i = mModStat.begin(); i != mModStat.end(); ++i)
-                {
-                   if((*i)->GetModifier()->GetAmount() < 0)
-                     m_caster->RemoveSpellsCausingAura(SPELL_AURA_HASTE_SPELLS);
-                }
+				std::list<Aura *>::const_iterator iter, next;
+				std::list<Aura *> auras = m_caster->GetAurasByType(SPELL_AURA_HASTE_SPELLS);
+				for (iter = auras.begin(); iter != auras.end(); iter = next)
+				{
+					next = iter;
+					++next;
+					if((*iter)->GetModifier()->m_amount < 0)
+						m_caster->RemoveAurasDueToSpell((*iter)->GetId());
+				}
+				auras = m_caster->GetAurasByType(SPELL_AURA_MOD_CASTING_SPEED_NOT_STACK);
+				for (iter = auras.begin(); iter != auras.end(); iter = next)
+				{
+					next = iter;
+					++next;
+					if((*iter)->GetModifier()->m_amount < 0)
+						m_caster->RemoveAurasDueToSpell((*iter)->GetId());
+				}
             }
 			break;
 		default:
