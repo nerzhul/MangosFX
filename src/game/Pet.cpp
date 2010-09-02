@@ -1041,19 +1041,20 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             }
 
 			int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
-			float pctAp = 0.0f;
+			float pctAp = 22.0f;
+			healthValue += uint32(25.0f/100.0f*owner->GetHealth());
 			// wild hunt
 			if(HasAura(62762))
 			{
 				pctAp += 30.0f;
-				healthValue += uint32(40.0f*owner->GetHealth());
+				healthValue += uint32(40.0f/100.0f*owner->GetHealth());
 			}
 			else if(HasAura(62758))
 			{
 				pctAp += 15.0f;
-				healthValue += uint32(20.0f*owner->GetHealth());
+				healthValue += uint32(20.0f/100.0f*owner->GetHealth());
 			}
-			int32 ap_bonus = int32(pctAp = attackPower);
+			int32 ap_bonus = int32(pctAp * attackPower / 100.0f);
 			SetInt32Value(UNIT_FIELD_ATTACK_POWER,GetInt32Value(UNIT_FIELD_ATTACK_POWER) + ap_bonus);
 			SetCreateHealth(healthValue);
             break;

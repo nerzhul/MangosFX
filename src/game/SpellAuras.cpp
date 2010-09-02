@@ -5455,7 +5455,6 @@ void Aura::HandleAuraPeriodicDummy(bool apply, bool Real)
             // Explosive Shot
 			if (apply && !loading && caster && GetSpellProto()->SpellIconID == 3407)
 			{
-				error_log("m_spellInfo->DmgClass %u",GetSpellProto()->DmgClass);
 				switch(GetId())
 				{
 					case 53301: m_modifier.m_amount += urand(144,172); break;

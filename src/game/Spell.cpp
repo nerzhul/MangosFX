@@ -3118,6 +3118,16 @@ void Spell::cast(bool skipCheck)
 			}
             break;
         }
+		case SPELLFAMILY_HUNTER:
+		{
+			switch(m_spellInfo->Id)
+			{
+				case 34026:
+					AddTriggeredSpell(34027);
+					break;
+			}
+			break;
+		}
         default:
             break;
     }
