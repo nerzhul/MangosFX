@@ -6,9 +6,7 @@ automake --add-missing
 automake src/bindings/Scriptdev2/Makefile
 mkdir objdir
 cd objdir
-../configure --prefix=/home/nerzhul/mangos/server_test/ --sysconfdir=/home/nerzhul/mangos/server_test/etc --enable-cli --enable-ra --datadir=/home/nerzhul/mangos/server_test/dat
+../configure --prefix=/home/nerzhul/mangos/server/ --sysconfdir=/home/nerzhul/mangos/server/etc --enable-cli --enable-ra --datadir=/home/nerzhul/mangos/server/dat
 make
-make install -j8
+make install -j4
 cd ..
-
-

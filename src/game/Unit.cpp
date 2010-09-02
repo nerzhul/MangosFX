@@ -11227,7 +11227,7 @@ uint32 Unit::MeleeDamageBonus(Unit *pVictim, uint32 pdamage,WeaponAttackType att
     DonePercent *= GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS, creatureTypeMask);
 
 	// Improved Tracking
-	if (GetTypeId() == TYPEID_PLAYER && spellProto->SpellFamilyName == SPELLFAMILY_HUNTER)
+	if (GetTypeId() == TYPEID_PLAYER && (spellProto && spellProto->SpellFamilyName == SPELLFAMILY_HUNTER || !spellProto))
     {
 		uint8 pctImprovement = 0;
         if(HasAura(52788))
