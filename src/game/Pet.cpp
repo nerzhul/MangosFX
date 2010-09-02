@@ -982,13 +982,13 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
 							if(owner->HasAura(63271))
 							{
-								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*60/100));
-								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*60/100));
+								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*60.0f/100.0f));
+								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*60.0f/100.0f));
 							}
 							else
 							{
-								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*30/100));
-								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*30/100));
+								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*30.0f/100.0f));
+								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*30.0f/100.0f));
 							}
 							SetArmor(int32(owner->GetArmor()*0.35f));
 							SetCreateHealth(GetMaxHealth() + uint32(owner->GetHealth() * 30/100));
@@ -1012,11 +1012,12 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)) );
             //damage is increased afterwards as strength and pet scaling modify attack power
 
+			uint32 healthValue = 1;
             //stored standard pet stats are entry 1 in pet_levelinfo
             PetLevelInfo const* pInfo = sObjectMgr.GetPetLevelInfo(creature_ID, petlevel);
             if(pInfo)                                       // exist in DB
             {
-                SetCreateHealth(pInfo->health);
+                healthValue = pInfo->health;
                 SetModifierValue(UNIT_MOD_ARMOR, BASE_VALUE, float(pInfo->armor));
                 //SetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE, float(cinfo->attackpower));
 
@@ -1030,7 +1031,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
                 sLog.outErrorDb("Hunter pet levelstats missing in DB");
 
                 // remove elite bonuses included in DB values
-                SetCreateHealth( uint32(((float(cinfo->maxhealth) / cinfo->maxlevel) / (1 + 2 * cinfo->rank)) * petlevel) );
+                healthValue = uint32(((float(cinfo->maxhealth) / cinfo->maxlevel) / (1 + 2 * cinfo->rank)) * petlevel);
 
                 SetCreateStat(STAT_STRENGTH, 22);
                 SetCreateStat(STAT_AGILITY, 22);
@@ -1038,6 +1039,23 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
                 SetCreateStat(STAT_INTELLECT, 28);
                 SetCreateStat(STAT_SPIRIT, 27);
             }
+
+			int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
+			float pctAp = 0.0f;
+			// wild hunt
+			if(HasAura(62762))
+			{
+				pctAp += 30.0f;
+				healthValue += uint32(40.0f*owner->GetHealth());
+			}
+			else if(HasAura(62758))
+			{
+				pctAp += 15.0f;
+				healthValue += uint32(20.0f*owner->GetHealth());
+			}
+			int32 ap_bonus = int32(pctAp = attackPower);
+			SetInt32Value(UNIT_FIELD_ATTACK_POWER,GetInt32Value(UNIT_FIELD_ATTACK_POWER) + ap_bonus);
+			SetCreateHealth(healthValue);
             break;
         }
         case GUARDIAN_PET:

@@ -11226,33 +11226,35 @@ uint32 Unit::MeleeDamageBonus(Unit *pVictim, uint32 pdamage,WeaponAttackType att
     // ..done pct (by creature type mask)
     DonePercent *= GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS, creatureTypeMask);
 
-	// Improved Tracking
-	if (GetTypeId() == TYPEID_PLAYER && (spellProto && spellProto->SpellFamilyName == SPELLFAMILY_HUNTER || !spellProto))
-    {
-		uint8 pctImprovement = 0;
-        if(HasAura(52788))
-			pctImprovement = 5;
-		else if(HasAura(52787))
-			pctImprovement = 4;
-		else if(HasAura(52786))
-			pctImprovement = 3;
-		else if(HasAura(52785))
-			pctImprovement = 2;
-		else if(HasAura(52783))
-			pctImprovement = 1;
+	
+	if (GetTypeId() == TYPEID_PLAYER)
+		if(spellProto && spellProto->SpellFamilyName == SPELLFAMILY_HUNTER || !spellProto)
+		{
+			// Improved Tracking
+			uint8 pctImprovement = 0;
+			if(HasAura(52788))
+				pctImprovement = 5;
+			else if(HasAura(52787))
+				pctImprovement = 4;
+			else if(HasAura(52786))
+				pctImprovement = 3;
+			else if(HasAura(52785))
+				pctImprovement = 2;
+			else if(HasAura(52783))
+				pctImprovement = 1;
 
-		if(pctImprovement)
-        {
-            if (HasAura(1494) && pVictim->getRace() == 1 ||
-				HasAura(19879) && pVictim->getRace() == 2 ||
-				HasAura(19878) && pVictim->getRace() == 3 ||
-				HasAura(19880) && pVictim->getRace() == 4 ||
-				HasAura(19882) && pVictim->getRace() == 5 ||
-				HasAura(19884) && pVictim->getRace() == 6 ||
-				HasAura(19883) && pVictim->getRace() == 7)
-            TakenPercent *= pctImprovement / 100.0f;
-        }
-    }
+			if(pctImprovement)
+			{
+				if (HasAura(1494) && pVictim->getRace() == 1 ||
+					HasAura(19879) && pVictim->getRace() == 2 ||
+					HasAura(19878) && pVictim->getRace() == 3 ||
+					HasAura(19880) && pVictim->getRace() == 4 ||
+					HasAura(19882) && pVictim->getRace() == 5 ||
+					HasAura(19884) && pVictim->getRace() == 6 ||
+					HasAura(19883) && pVictim->getRace() == 7)
+				TakenPercent *= pctImprovement / 100.0f;
+			}
+		}
 
     // ..taken pct (by school mask)
     TakenPercent *= pVictim->GetTotalAuraMultiplierByMiscMask(SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN, schoolMask);

@@ -154,10 +154,10 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 		case SPELLFAMILY_DRUID:
 			sDruidSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
-		/*case SPELLFAMILY_HUNTER:
-			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+		case SPELLFAMILY_HUNTER:
+			sHunterSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
-		case SPELLFAMILY_MAGE:
+		/*case SPELLFAMILY_MAGE:
 			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_PALADIN:
