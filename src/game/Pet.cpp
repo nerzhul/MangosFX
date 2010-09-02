@@ -966,13 +966,32 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 								healmultip += 0.4f;
 							}
 							int32 bonusmelee = int32(attackPower * 0.25f + strenght);
-							SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+bonusmelee);
-							SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+bonusmelee);
+							
 							SetAttackTime(BASE_ATTACK, 1500);
 							setPowerType(POWER_ENERGY);
 							SetMaxPower(POWER_ENERGY,100);
 							SetPower(POWER_ENERGY,100);
 							SetCreateHealth(GetMaxHealth() + uint32(owner->GetHealth() * healmultip));
+						}
+						break;
+					}
+					case CLASS_SHAMAN:
+					{
+						if(GetEntry() == 29264)
+						{
+							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
+							if(owner->HasAura(63271))
+							{
+								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*60/100));
+								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*60/100));
+							}
+							else
+							{
+								SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, (cinfo->mindmg)+int32(attackPower*30/100));
+								SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, (cinfo->maxdmg)+int32(attackPower*30/100));
+							}
+							SetArmor(int32(owner->GetArmor()*0.35f));
+							SetCreateHealth(GetMaxHealth() + uint32(owner->GetHealth() * 30/100));
 						}
 						break;
 					}
