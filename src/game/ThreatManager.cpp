@@ -401,28 +401,21 @@ void ThreatManager::addThreat(Unit* pVictim, float pThreat, bool crit, SpellScho
 
     float threat = ThreatCalcHelper::calcThreat(pVictim, iOwner, pThreat, crit, schoolMask, pThreatSpell);
 
-	error_log("TEST %f %u",threat,pVictim->GetReducedThreatPercent());
 	// must check > 0.0f, otherwise dead loop
     if (threat > 0.0f && pVictim->GetReducedThreatPercent())
     {
         uint32 reducedThreadPercent = pVictim->GetReducedThreatPercent();
 
-		error_log("reducedThreadPercent %u",reducedThreadPercent);
         Unit *unit = pVictim->GetMisdirectionTarget();
         if (unit)
             if (Aura* pAura = unit->GetAura(63326,0)) // Glyph of Vigilance
                 reducedThreadPercent += pAura->GetSpellProto()->EffectBasePoints[0];
 
-		error_log("reducedThreadPercent %u",reducedThreadPercent);
         float reducedThreat = threat * reducedThreadPercent / 100;
-		error_log("reducedThreat %f",reducedThreat);
-		error_log("threat %f",threat);
         threat -= reducedThreat;
-		error_log("threat %f",threat);
         if (unit)
             _addThreat(unit, reducedThreat);
     }
-	error_log("TEST2");
 
     _addThreat(pVictim, threat);
 }
