@@ -3160,7 +3160,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
     }
 
     // Check for attack from behind but not for deterrence
-    if (!pVictim->HasInArc(M_PI,this) && spell->Id != 19263)
+    if (!pVictim->HasInArc(M_PI,this))
     {
         // Can`t dodge from behind in PvP (but its possible in PvE)
         if (GetTypeId() == TYPEID_PLAYER && pVictim->GetTypeId() == TYPEID_PLAYER)
@@ -3175,6 +3175,11 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         if( flagEx & CREATURE_FLAG_EXTRA_NO_PARRY )
             canParry = false;
     }
+
+	// Deterrence
+	if(pVictim->HasAura(19263))
+		canParry = true;
+
     // Ignore combat result aura
     AuraList const& ignore = GetAurasByType(SPELL_AURA_IGNORE_COMBAT_RESULT);
     for(AuraList::const_iterator i = ignore.begin(); i != ignore.end(); ++i)
@@ -3325,6 +3330,9 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit *pVictim, SpellEntry const *spell)
         if (rand < deflect_chance)
             return SPELL_MISS_DEFLECT;
     }
+
+	if(pVictim->HasAura(19263))
+		return SPELL_MISS_DEFLECT;
 
     return SPELL_MISS_NONE;
 }
@@ -9868,6 +9876,13 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 }
                 break;
             }
+			case 7282:
+			{
+				// ebony plaguebringer
+				if(spellProto->Dispel == DISPEL_DISEASE)
+					DoneTotalMod *= ((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1);
+				break;
+			}
             case 7293: // Rage of Rivendare
             {
                 if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DEATHKNIGHT, UI64LIT(0x0200000000000000)))
@@ -10155,6 +10170,18 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
 	if(GetTypeId() == TYPEID_PLAYER)
 		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with dummys %f",TakenTotalMod);
+
+	// .. taken (class scripts)
+    AuraList const& mclassScritAuras = pVictim->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+    for(AuraList::const_iterator i = mclassScritAuras.begin(); i != mclassScritAuras.end(); ++i)
+    {
+        switch((*i)->GetMiscValue())
+		{
+			case 7282:
+				TakenTotalMod *= ((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1);
+				break;
+		}
+	}
 
     // From caster spells
     AuraList const& mOwnerTaken = pVictim->GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);

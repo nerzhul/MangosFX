@@ -107,27 +107,30 @@ void CalendarMgr::Send(Player* plr)
     }
     data.put<uint32>(p_counter,counter);
 
-    data << (uint32) 1135753200;                            //wtf?? (28.12.2005 12:00)
-
-	counter = 0;
+    data << uint32(1135717200 + sWorld.getConfig(CONFIG_INSTANCE_RESET_TIME_HOUR) * HOUR);
+    counter = 0;
     p_counter = data.wpos();
-    data << uint32(counter);  
-
-	// FAIL
-    /*ResetTimeByMapDifficultyMap const& resets = sInstanceSaveMgr.GetResetTimeMap();
-    for (ResetTimeByMapDifficultyMap::const_iterator itr = resets.begin(); itr != resets.end(); ++itr)
+    data << uint32(counter); // Instance reset intervals
+    for(MapDifficultyMap::const_iterator itr = sMapDifficultyMap.begin(); itr != sMapDifficultyMap.end(); ++itr)
     {
-        uint32 mapid = PAIR32_LOPART(itr->first);
-        MapEntry const* mapEnt = sMapStore.LookupEntry(mapid);
-        if (!mapEnt || !mapEnt->IsRaid())
+        uint32 map_diff_pair = itr->first;
+        uint32 mapid = PAIR32_LOPART(map_diff_pair);
+        Difficulty difficulty = Difficulty(PAIR32_HIPART(map_diff_pair));
+        MapDifficulty const* mapDiff = &itr->second;
+
+        if (!mapDiff->resetTime || difficulty != REGULAR_DIFFICULTY)
             continue;
 
-        data << uint32(mapid);
-        data << uint32(itr->second - cur_time);
-        data << uint32(mapEnt->reset_time);
-        ++counter;
-    }*/
+        const MapEntry* map = sMapStore.LookupEntry(mapid);
 
+		uint32 delay = uint32(mapDiff->resetTime / DAY * sWorld.getConfig(RATE_INSTANCE_RESET_TIME)) * DAY;
+		if (delay < DAY) // the reset_delay must be at least one day
+			delay = DAY;
+        data << uint32(mapid);
+        data << uint32(delay);
+        data << uint32(map->reset_time);
+        ++counter;
+    }
     data.put<uint32>(p_counter, counter);
 
     data << (uint32) holiday_count;                   // unk counter 5

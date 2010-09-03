@@ -3308,10 +3308,18 @@ void Spell::EffectHeal( uint32 /*i*/ )
 
             addhealth += tickheal * tickcount;
         }
+		// Runic Healing Injector & Healing Potion Injector effect increase for engineers
+		else if ((m_spellInfo->Id == 67486 || m_spellInfo->Id == 67489) && unitTarget->GetTypeId() == TYPEID_PLAYER)
+		{
+			Player* player = (Player*)unitTarget;
+			if(player->HasSkill(SKILL_ENGINERING))
+				addhealth += int32(addhealth * 0.25);
+		}
         else
             addhealth = caster->SpellHealingBonus(unitTarget, m_spellInfo, addhealth, HEAL);
 
         m_healing += addhealth;
+
 
         // Chain Healing
         if (m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000100))
@@ -3611,6 +3619,17 @@ void Spell::EffectEnergize(uint32 i)
         case 48542:                                         // Revitalize (mana restore case)
             damage = damage * unitTarget->GetMaxPower(POWER_MANA) / 100;
             break;
+		case 67487:                                         // Mana Potion Injector
+		case 67490:                                         // Runic Mana Injector
+		{
+			if(unitTarget->GetTypeId() == TYPEID_PLAYER)
+			{
+				Player* player = (Player*)unitTarget;
+				if(player->HasSkill(SKILL_ENGINERING))
+					damage += int32(damage * 0.25);
+			}
+			break;
+		}
         default:
             break;
     }

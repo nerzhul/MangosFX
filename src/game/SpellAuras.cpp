@@ -675,7 +675,7 @@ void Aura::Update(uint32 diff)
             if(Player* modOwner = caster->GetSpellModOwner())
                 modOwner->ApplySpellMod(GetId(), SPELLMOD_RANGE, max_range, NULL);
 
-            if(!caster->IsWithinDistInMap(m_target, max_range))
+			if(!caster->IsWithinDistInMap(m_target, max_range))
             {
                 caster->InterruptSpell(CURRENT_CHANNELED_SPELL);
                 return;
@@ -5699,9 +5699,15 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                 else if ((m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004)) && m_spellProto->SpellIconID == 678)
                 {
                     // $RAP*0.1/5 bonus per tick
-                    m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 10 / 500);
+                    m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 1 / 500);
                     return;
                 }
+				// Explosive trap
+				else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000080))
+				{
+					m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) / 10);
+					return;
+				}
                 break;
             }
             case SPELLFAMILY_PALADIN:
@@ -5722,9 +5728,11 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
 			{
 				//Frost Fever and Blood Plague AP scale
 				if (m_spellProto->SpellFamilyFlags & UI64LIT(0x400080000000000))
-				{
 					m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.055f * 1.15f);
-					// Crypt Fever & Ebony plague mod
+
+				// Dk disease with ebony plague
+				if(m_spellProto->SpellFamilyFlags & UI64LIT(0x600100200042022))
+				{
 					if(GetTarget()->HasAura(50508))
 						m_modifier.m_amount *= 1.1;
 					else if(GetTarget()->HasAura(50509))
