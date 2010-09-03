@@ -6755,13 +6755,26 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 				// Tricks of Trade
 				case 57934:
 				{
-					if(Aura* pAura = GetAura(57934, EFFECT_INDEX_1))
-						if(Unit* target = GetUnit(*this, pAura->GetModMisc()))
-							CastSpell(target, 57933, true);
-					
-					triggered_spell_id = 59628;
-					target = this;
-					RemoveAurasDueToSpell(57934);
+					if(Aura* pAura = GetAura(57934))
+					{
+						if(pAura->GetAuraMaxDuration() > 25000)
+						{
+							if(Aura* pAura2 = GetAura(57934, EFFECT_INDEX_1))
+							{
+								if(Unit* target = GetUnit(*this, pAura2->GetModMisc()))
+									CastSpell(target, 57933, true);
+							}
+							uint32 spDuration = 6000;
+							// trick of the trade glyp
+							if(HasAura(63256))
+								spDuration += 4000;
+							pAura->SetAuraMaxDuration(spDuration);
+							pAura->RefreshAura();
+							
+							triggered_spell_id = 59628;
+							target = this;
+						}
+					}
 					break;
 				}    
             }
