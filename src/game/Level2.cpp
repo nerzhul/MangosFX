@@ -5223,6 +5223,12 @@ bool ChatHandler::HandleDebugDualSpecCommand(const char *args)
 {
 	Player* player = getSelectedPlayer();
 
+	if(!player)
+	{
+		SendSysMessage("Aucun joueur selectionne");
+		return false;
+	}
+
 	if(player->GetMoney() < 10000000)
 	{
 		SendSysMessage("Ce joueur n'a pas assez d'argent");
