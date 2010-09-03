@@ -1973,7 +1973,7 @@ void Spell::EffectDummy(uint32 i)
 
                 // dummy cast itself ignored by client in logs
                 m_caster->CastCustomSpell(unitTarget,50782,&damage,NULL,NULL,true);
-                return;
+				return;
             }
             // Concussion Blow
             if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000004000000))

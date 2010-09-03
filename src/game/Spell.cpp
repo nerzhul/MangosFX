@@ -4634,12 +4634,14 @@ SpellCastResult Spell::CheckCast(bool strict)
     if(m_spellInfo->CasterAuraStateNot && m_caster->HasAuraState(AuraState(m_spellInfo->CasterAuraStateNot)))
         return SPELL_FAILED_CASTER_AURASTATE;
 
-	// fss mod
 	//Check Caster for combat
 	if(m_caster->isInCombat() && IsNonCombatSpell(m_spellInfo) && !m_caster->isIgnoreUnitState(m_spellInfo)
 	&& m_spellInfo->Id != 11327 && m_spellInfo->Id != 11329 && m_spellInfo->Id != 26888) // Vanish hack
 		return SPELL_FAILED_AFFECTING_COMBAT;
-	// fss end
+
+	// Disengage hack
+	if(!m_caster->isInCombat() && m_spellInfo->Id == 781)
+		return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
 
     // Caster aura req check if need
 	 if(m_spellInfo->casterAuraSpell &&

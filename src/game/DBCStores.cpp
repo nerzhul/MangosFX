@@ -486,6 +486,10 @@ void LoadDBCStores(const std::string& dataPath)
 	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(69832));
 	sfix->rangeIndex = 7;
 
+	// Slam dummy cost fix
+	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(69832));
+	sfix->manaCost = 0;
+
 	// Visuals
 	SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(55610));
 	sfix2->activeIconID = sfix2->SpellIconID;
