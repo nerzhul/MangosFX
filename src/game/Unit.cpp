@@ -9893,7 +9893,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			{
 				// ebony plaguebringer
 				if(spellProto->Dispel == DISPEL_DISEASE)
-					DoneTotalMod *= ((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1);
+					DoneTotalMod *= (100.0f + (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1)/100.0f;
 				break;
 			}
             case 7293: // Rage of Rivendare

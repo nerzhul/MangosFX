@@ -4653,6 +4653,9 @@ bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
 						spell->SpellFamilyName);
 	PSendSysMessage("AuraType1 : %u / AuraType2 : %u / AuraType3 %u / Effect1 %u / Effect2 %u / Effect3 %u",		
 		spell->EffectApplyAuraName[0],spell->EffectApplyAuraName[1],spell->EffectApplyAuraName[2],spell->Effect[0],spell->Effect[1],spell->Effect[2]);
+	PSendSysMessage("ImplicitTargetA[0] %u / ImplicitTargetA[1] %u / ImplicitTargetA[2] %u / ImplicitTargetB[0] %u / ImplicitTargetB[1] %u / ImplicitTargetB[2] %u",
+		spell->EffectImplicitTargetA[0],spell->EffectImplicitTargetA[1],spell->EffectImplicitTargetA[2],spell->EffectImplicitTargetB[0],spell->EffectImplicitTargetB[1],
+		spell->EffectImplicitTargetB[2]);
 	return true;
 }
 
