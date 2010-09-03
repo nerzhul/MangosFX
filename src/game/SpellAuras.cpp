@@ -3212,12 +3212,12 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             break;
 		case SPELLFAMILY_HUNTER:
 			// Misdirection
-			if(GetId()==34477)
+			if(GetId()==34477 && !apply)
 				m_target->SetReducedThreatPercent(0, 0);
 			break;
 		case SPELLFAMILY_ROGUE:
 			// Tricks of the Trade
-			if(GetId()==57934)
+			if(GetId()==57934 && !apply)
 				m_target->SetReducedThreatPercent(0, 0);
 			break;
         case SPELLFAMILY_DEATHKNIGHT:

@@ -6352,6 +6352,11 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 						pAura->SetStackAmount(urand(1,8));
 					return;
 				}
+				case 50725: // vigilance
+				{
+					m_caster->CastSpell(unitTarget,59665,true);
+					return;
+				}
             }
 	        break;
 			
@@ -8406,7 +8411,7 @@ void Spell::EffectRedirectThreat(uint32 /*i*/)
 	if(unitTarget)
 	{
 		if(m_spellInfo->Id==59665) // Vigilance
-			unitTarget->SetReducedThreatPercent((uint32)damage, m_caster->GetGUID());
+			unitTarget->SetReducedThreatPercent(10, m_caster->GetGUID());
 		else
 			m_caster->SetReducedThreatPercent((uint32)damage, unitTarget->GetGUID());
 	}

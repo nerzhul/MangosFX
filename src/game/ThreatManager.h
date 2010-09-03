@@ -55,7 +55,11 @@ class MANGOS_DLL_SPEC HostileReference : public Reference<Unit, ThreatManager>
 
         void setThreat(float pThreat) { addThreat(pThreat - getThreat()); }
 
-        void addThreatPercent(int32 pPercent) { float tmpThreat = iThreat; tmpThreat = tmpThreat * (pPercent+100) / 100; addThreat(tmpThreat-iThreat); }
+        void addThreatPercent(int32 pPercent) { 
+			float tmpThreat = iThreat;
+			tmpThreat = tmpThreat * (pPercent+100) / 100;
+			addThreat(tmpThreat-iThreat); 
+		}
 
         float getThreat() const { return iThreat; }
 
