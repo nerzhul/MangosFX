@@ -10191,7 +10191,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         switch((*i)->GetMiscValue())
 		{
 			case 7282:
-				TakenTotalMod *= ((*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1);
+				TakenTotalMod *= (100.0f + (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
 				break;
 		}
 	}
