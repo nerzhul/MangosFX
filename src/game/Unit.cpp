@@ -10185,16 +10185,13 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 		sLog.outDebugSpell("SpellDamageBonus TakenTotalMod with dummys %f",TakenTotalMod);
 
 	// .. taken (class scripts)
-    AuraList const& mclassScritAuras = pVictim->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
-    for(AuraList::const_iterator i = mclassScritAuras.begin(); i != mclassScritAuras.end(); ++i)
-    {
-        switch((*i)->GetMiscValue())
-		{
-			case 7282:
-				TakenTotalMod *= (100.0f + (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
-				break;
-		}
-	}
+	// ebony plague
+    if(Aura *aur = pVictim->GetAura(51735))
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
+	else if(Aura *aur = pVictim->GetAura(51734))
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
+	else if(Aura *aur = pVictim->GetAura(51726))
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
 
     // From caster spells
     AuraList const& mOwnerTaken = pVictim->GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);
