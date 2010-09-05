@@ -10767,16 +10767,15 @@ uint32 Unit::SpellCriticalHealingBonus(SpellEntry const *spellProto, uint32 dama
 
 uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint32 healamount, DamageEffectType damagetype, uint32 stack)
 {
-    // No heal amount for this class spells
-    if (spellProto->DmgClass == SPELL_DAMAGE_CLASS_NONE)
-        return healamount;
-
     // For totems get healing bonus from owner (statue isn't totem in fact)
     if( GetTypeId()==TYPEID_UNIT && ((Creature*)this)->isTotem() && ((Totem*)this)->GetTotemType()!=TOTEM_STATUE)
         if(Unit* owner = GetOwner())
             return owner->SpellHealingBonus(pVictim, spellProto, healamount, damagetype, stack);
 
     float  TakenTotalMod = 1.0f;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("INIT : Heal Amount %u / TakenTotalMod %f",healamount,TakenTotalMod);
 
     // Healing taken percent
     float minval = pVictim->GetMaxNegativeAuraModifier(SPELL_AURA_MOD_HEALING_PCT);
@@ -10787,8 +10786,11 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     if(maxval)
         TakenTotalMod *= (100.0f + maxval) / 100.0f;
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f with mod healing pct",healamount,TakenTotalMod);
+
     // No heal amount for this class spells
-    if (spellProto->DmgClass == SPELL_DAMAGE_CLASS_NONE)
+    if (spellProto->DmgClass == SPELL_DAMAGE_CLASS_NONE && spellProto->Id != 64844) // divine hymn hack
     {
         healamount = healamount * TakenTotalMod;
         return healamount < 0 ? 0 : uint32(healamount);
@@ -10800,16 +10802,25 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     int32  DoneTotal = 0;
     int32  TakenTotal = 0;
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("INIT : Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f",healamount,TakenTotalMod,DoneTotalMod);
+
     // Healing done percent
     AuraList const& mHealingDonePct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
     for(AuraList::const_iterator i = mHealingDonePct.begin();i != mHealingDonePct.end(); ++i)
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f with mod_healing_done",healamount,TakenTotalMod,DoneTotalMod);
 
 	// bonus against aurastate
 	AuraList const &mDamageDoneVersusAurastate = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE);
 	for(AuraList::const_iterator i = mDamageDoneVersusAurastate.begin(); i != mDamageDoneVersusAurastate.end(); ++i)
 		if(pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
 			DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f with mod_damage_done",healamount,TakenTotalMod,DoneTotalMod);
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
@@ -10873,6 +10884,9 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
                 break;
         }
     }
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f with class_script",healamount,TakenTotalMod,DoneTotalMod);
     // Taken/Done fixed damage bonus auras
     int32 DoneAdvertisedBenefit  = SpellBaseHealingBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseHealingBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
@@ -10963,6 +10977,8 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
             TakenTotalMod *= 1.2f;
     }
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f",healamount,TakenTotalMod,DoneTotalMod);
     // Taken mods
     // Healing Wave cast
     if (spellProto->SpellFamilyName == SPELLFAMILY_SHAMAN && (spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000040)))
@@ -10979,7 +10995,13 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
         if ((*i)->isAffectedOnSpell(spellProto))
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal %u / TakenTotalMod %f / DoneTotalMod %f with mod_healing_recv",heal,TakenTotalMod,DoneTotalMod);
+
     heal = (heal + TakenTotal) * TakenTotalMod;
+
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("Heal %u final calcul",heal);
 
     return heal < 0 ? 0 : uint32(heal);
 }
