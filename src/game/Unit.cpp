@@ -1333,7 +1333,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
     if(!pVictim)
         return;
 
-    if(!this->isAlive() || !pVictim->isAlive())
+    if(!isAlive() || !pVictim->isAlive())
         return;
 
     uint32 crTypeMask = pVictim->GetCreatureTypeMask();
@@ -3361,7 +3361,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
         return SPELL_MISS_NONE;
 
     // Check for immune
-    if (pVictim->IsImmunedToDamage(GetSpellSchoolMask(spell)) && spell->Id != 64382)
+	if (pVictim->IsImmunedToDamage(GetSpellSchoolMask(spell)) && spell->Id != 64382 && spell->SpellIconID != 2267) // Shattering throw & mass dispell hack
         return SPELL_MISS_IMMUNE;
 
     // Try victim reflect spell
@@ -4600,6 +4600,7 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
             // use clean value for initial damage
 			int32 damage = dotAura->GetSpellProto()->CalculateSimpleValue(0);
 			damage *= 9;
+			damage += (SpellBaseDamageBonus(SPELL_SCHOOL_MASK_SHADOW) * 1.8);
 
             // Remove spell auras from stack
             RemoveSingleSpellAurasByCasterSpell(spellId, casterGUID, AURA_REMOVE_BY_DISPEL);
@@ -9752,7 +9753,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 	if(GetTypeId() == TYPEID_PLAYER)
 		sLog.outDebugSpell("Initial SpellDamageBonus %i",pdamage);
 
-    if(!spellProto || !pVictim || damagetype==DIRECT_DAMAGE )
+    if(!spellProto || !pVictim || damagetype==DIRECT_DAMAGE)
         return pdamage;
 
     // For totems get damage bonus from owner (statue isn't totem in fact)
@@ -11083,6 +11084,9 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo)
 				break;
 		}
 	}
+
+	if(GetTypeId() == TYPEID_PLAYER && spellInfo->SpellIconID == 2267)
+		return false;
 
 	switch(spellInfo->Id)
 	{

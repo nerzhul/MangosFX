@@ -480,7 +480,6 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                         // Save value of further damage
                         m_currentBasePoints[1] = damagetick * 2 / 3;
                         damage += damagetick * 2;
-						
 
 						// Glyph of Conflagrate
                         if (!m_caster->HasAura(56235))
@@ -4217,14 +4216,15 @@ void Spell::EffectDispel(uint32 i)
     // Fill possible dispell list
     std::vector <Aura *> dispel_list;
 
-    // Create dispel mask by dispel type
+	// Create dispel mask by dispel type
     uint32 dispel_type = m_spellInfo->EffectMiscValue[i];
-    uint32 dispelMask  = GetDispellMask( DispelType(dispel_type) );
+    uint32 dispelMask  = GetDispellMask(DispelType(dispel_type));
     Unit::AuraMap const& auras = unitTarget->GetAuras();
     for(Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
     {
         Aura *aur = (*itr).second;
-        if (aur && (1<<aur->GetSpellProto()->Dispel) & dispelMask)
+  
+		if (aur && (1<<aur->GetSpellProto()->Dispel) & dispelMask)
         {
             if(aur->GetSpellProto()->Dispel == DISPEL_MAGIC)
             {
@@ -4241,19 +4241,20 @@ void Spell::EffectDispel(uint32 i)
             }
 			else if(aur->GetSpellProto()->Dispel == DISPEL_DISEASE)
 			{
+				// Unholy Blight hack
 				if(unitTarget->HasAura(50536))
 					continue;
 			}
             // Add aura to dispel list (all stack cases)
-            for(int k = 0; k < aur->GetStackAmount(); ++k)
+            for(int8 k = 0; k < aur->GetStackAmount(); ++k)
                 dispel_list.push_back(aur);
         }
     }
     // Ok if exist some buffs for dispel try dispel it
     if (!dispel_list.empty())
     {
-        std::list < std::pair<uint32,uint64> > success_list;// (spell_id,casterGuid)
-        std::list < uint32 > fail_list;                     // spell_id
+        std::list <std::pair<uint32,uint64>> success_list;// (spell_id,casterGuid)
+        std::list <uint32> fail_list;                     // spell_id
 
         // some spells have effect value = 0 and all from its by meaning expect 1
         if(!damage)
@@ -4276,11 +4277,23 @@ void Spell::EffectDispel(uint32 i)
             // TODO: possible chance depend from spell level??
             int32 miss_chance = 0;
             // Apply dispel mod from aura caster
-            if (Unit *caster = aur->GetCaster())
+            if(Unit *caster = aur->GetCaster())
             {
-                if ( Player* modOwner = caster->GetSpellModOwner() )
+                if(Player* modOwner = caster->GetSpellModOwner())
                     modOwner->ApplySpellMod(spellInfo->Id, SPELLMOD_RESIST_DISPEL_CHANCE, miss_chance, this);
             }
+			switch(spellInfo->Id)
+			{
+				case 642:
+				case 45438:
+					if(m_spellInfo->Id != 32375)
+					{
+						count--;
+						fail_list.push_back(spellInfo->Id);
+						continue;
+					}
+					break;
+			}
             // Try dispel
             if (roll_chance_i(miss_chance))
                 fail_list.push_back(spellInfo->Id);

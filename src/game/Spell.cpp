@@ -1148,9 +1148,9 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
     Unit* realCaster = m_originalCaster ? m_originalCaster : m_caster;
 
     // Recheck immune (only for delayed spells)
-    if (m_spellInfo->speed && (
-        unit->IsImmunedToDamage(GetSpellSchoolMask(m_spellInfo)) ||
-        unit->IsImmunedToSpell(m_spellInfo)) && !(m_spellInfo->Id == 64380 || m_spellInfo->Id == 64382 ||
+    if (m_spellInfo->speed && 
+		(unit->IsImmunedToDamage(GetSpellSchoolMask(m_spellInfo)) || unit->IsImmunedToSpell(m_spellInfo)) && 
+		!(m_spellInfo->Id == 64380 || m_spellInfo->Id == 64382 ||
         m_spellInfo->Id == 32375 || m_spellInfo->Id == 32592 || m_spellInfo->Id == 39897))
     {
         realCaster->SendSpellMiss(unit, m_spellInfo->Id, SPELL_MISS_IMMUNE);
@@ -3020,8 +3020,8 @@ void Spell::cast(bool skipCheck)
             // Divine Shield, Divine Protection or Hand of Protection
             else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000408080))
             {
-                AddPrecastSpell(25771);                     // Forbearance
-                AddPrecastSpell(61987);                     // Avenging Wrath Marker
+                AddTriggeredSpell(25771);                     // Forbearance
+				AddPrecastSpell(61987);                     // Avenging Wrath Marker
             }
             // Lay on Hands
 			else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
