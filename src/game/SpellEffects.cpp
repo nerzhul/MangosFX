@@ -4223,7 +4223,6 @@ void Spell::EffectDispel(uint32 i)
     for(Unit::AuraMap::const_iterator itr = auras.begin(); itr != auras.end(); ++itr)
     {
         Aura *aur = (*itr).second;
-  
 		if (aur && (1<<aur->GetSpellProto()->Dispel) & dispelMask)
         {
             if(aur->GetSpellProto()->Dispel == DISPEL_MAGIC)
@@ -4286,7 +4285,7 @@ void Spell::EffectDispel(uint32 i)
 			{
 				case 642:
 				case 45438:
-					if(m_spellInfo->Id != 32375)
+					if(m_spellInfo->SpellIconID != 2267)
 					{
 						count--;
 						fail_list.push_back(spellInfo->Id);
