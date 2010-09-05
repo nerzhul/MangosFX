@@ -4285,7 +4285,7 @@ void Spell::EffectDispel(uint32 i)
 			{
 				case 642:
 				case 45438:
-					if(m_spellInfo->SpellIconID != 2267)
+					if(m_spellInfo->SpellIconID != 2267 && m_spellInfo->Id != 64382)
 					{
 						count--;
 						fail_list.push_back(spellInfo->Id);
