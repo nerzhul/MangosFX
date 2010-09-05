@@ -266,7 +266,7 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
 	if(spell->Id == 49016)
 	{
 		if(m_target->isAlive())
-			m_target->ModifyHealth(- int32(m_target->GetMaxHealth() * 1 / 100));
+			m_target->DealDamage(m_target,uint32(m_target->GetMaxHealth() * 1 / 100), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 		else
 			m_target->RemoveAurasDueToSpell(49016);
 		return;
