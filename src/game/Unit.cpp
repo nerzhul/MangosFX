@@ -9800,6 +9800,12 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 	if(GetTypeId() == TYPEID_PLAYER)
 		sLog.outDebugSpell("SpellDamageBonus DoneTotalMod with SPELL_AURA_MOD_FLAT_SPELL_DAMAGE_VERSUS %f",DoneTotalMod);
 
+	// bonus against aurastate
+	AuraList const &mDamageDoneVersusAurastate = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE);
+	for (AuraList::const_iterator i = mDamageDoneVersusAurastate.begin(); i != mDamageDoneVersusAurastate.end(); ++i)
+		if(pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
+			DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
+
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
     if (!owner) owner = this;
@@ -10798,6 +10804,12 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     AuraList const& mHealingDonePct = GetAurasByType(SPELL_AURA_MOD_HEALING_DONE_PERCENT);
     for(AuraList::const_iterator i = mHealingDonePct.begin();i != mHealingDonePct.end(); ++i)
         DoneTotalMod *= (100.0f + (*i)->GetModifier()->m_amount) / 100.0f;
+
+	// bonus against aurastate
+	AuraList const &mDamageDoneVersusAurastate = GetAurasByType(SPELL_AURA_MOD_DAMAGE_DONE_VERSUS_AURASTATE);
+	for(AuraList::const_iterator i = mDamageDoneVersusAurastate.begin(); i != mDamageDoneVersusAurastate.end(); ++i)
+		if(pVictim->HasAuraState(AuraState((*i)->GetMiscValue())))
+			DoneTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
     // done scripted mod (take it from owner)
     Unit *owner = GetOwner();
