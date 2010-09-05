@@ -4252,7 +4252,7 @@ void Spell::EffectDispel(uint32 i)
     // Ok if exist some buffs for dispel try dispel it
     if (!dispel_list.empty())
     {
-        std::list <std::pair<uint32,uint64>> success_list;// (spell_id,casterGuid)
+        std::list < std::pair<uint32,uint64> > success_list;// (spell_id,casterGuid)
         std::list <uint32> fail_list;                     // spell_id
 
         // some spells have effect value = 0 and all from its by meaning expect 1
