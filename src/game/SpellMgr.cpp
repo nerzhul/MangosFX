@@ -1920,7 +1920,7 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 
 				// Wrath totem check
 				if(spellInfo_1->SpellIconID == 2019 && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x200000004000000) &&
-					spellInfo_2->SpellFamilyFlags & UI64LIT(0x200000004000000))
+					spellInfo_2->SpellFamilyFlags & UI64LIT(0x200000004000000)))
 					return true;
 
 				// Fire lang totem
