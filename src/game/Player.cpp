@@ -22512,6 +22512,26 @@ void Player::ActivateSpec(uint8 spec)
 		RemoveAurasDueToSpell(19258);
 		RemoveAurasDueToSpell(19259);
 	}
+	else if(getClass() == CLASS_SHAMAN)
+	{
+		// weapon cheat
+		RemoveAurasDueToSpell(10400);
+		RemoveAurasDueToSpell(15567);
+		RemoveAurasDueToSpell(15568);
+		RemoveAurasDueToSpell(15569);
+		RemoveAurasDueToSpell(16311);
+		RemoveAurasDueToSpell(16313);
+		RemoveAurasDueToSpell(58784);
+		RemoveAurasDueToSpell(58791);
+		RemoveAurasDueToSpell(58792);
+		RemoveAurasDueToSpell(51940);
+		RemoveAurasDueToSpell(51989);
+		RemoveAurasDueToSpell(52004);
+		RemoveAurasDueToSpell(52005);
+		RemoveAurasDueToSpell(52007);
+		RemoveAurasDueToSpell(52008);
+		RemoveAurasDueToSpell(33757);
+	}
     
     UnsummonPetTemporaryIfAny();
     
