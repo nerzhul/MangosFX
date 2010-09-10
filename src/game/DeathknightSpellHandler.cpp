@@ -93,7 +93,19 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
         spell->getUnitTarget()->CastSpell(spell->GetCaster()->GetPositionX(), spell->GetCaster()->GetPositionY(), spell->GetCaster()->GetPositionZ()+1, spellId, true);
         return false;
     }
-
+	else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_OBLITERATE)
+	{
+		// search for Annihilation
+		Unit::AuraList const& dummyList = spell->GetCaster()->GetAurasByType(SPELL_AURA_DUMMY);
+		for (Unit::AuraList::const_iterator itr = dummyList.begin(); itr != dummyList.end(); ++itr)
+		{
+			if((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 2710)
+				if(roll_chance_i((*itr)->GetModifier()->m_amount)) // don't consume if found
+					return false;
+		}
+		// consume diseases
+		spell->getUnitTarget()->RemoveAurasWithDispelType(DISPEL_DISEASE, spell->GetCaster()->GetGUID());
+	}
 	return true;
 }
 

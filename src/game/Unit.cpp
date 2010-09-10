@@ -4700,7 +4700,7 @@ void Unit::RemoveAurasDueToSpellByCancel(uint32 spellId)
     }
 }
 
-void Unit::RemoveAurasWithDispelType( DispelType type )
+void Unit::RemoveAurasWithDispelType(DispelType type, uint64 casterGUID)
 {
     // Create dispel mask by dispel type
     uint32 dispelMask = GetDispellMask(type);
@@ -4709,7 +4709,7 @@ void Unit::RemoveAurasWithDispelType( DispelType type )
     for(AuraMap::iterator itr = auras.begin(); itr != auras.end(); )
     {
         SpellEntry const* spell = itr->second->GetSpellProto();
-        if( (1<<spell->Dispel) & dispelMask )
+        if(((1<<spell->Dispel) & dispelMask) && (!casterGUID || casterGUID == itr->second->GetCasterGUID()))
         {
             // Dispel aura
             RemoveAurasDueToSpell(spell->Id);
@@ -12933,8 +12933,10 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
 
     if (duration > 0)
     {
+		error_log("TEST");
 		if (periodicTime)
         {
+			error_log("TEST2");
             Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_DURATION_OF_HASTE);
             for(Unit::AuraList::const_iterator i = mModByHaste.begin(); i != mModByHaste.end(); ++i)
             {
