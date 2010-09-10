@@ -52,6 +52,7 @@
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvPWG.h"
 #include "Vehicle.h"
+#include "ClassSpellHandler.h"
 
 #include <math.h>
 
@@ -10007,7 +10008,6 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
 				}
 			}
-															
 			else if(spellProto->SpellFamilyFlags & UI64LIT(0x0800))
 			{
 				if(Aura* aur = GetAura(31583))
@@ -10034,10 +10034,16 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             if (spellProto->SpellFamilyFlags & UI64LIT(0x00000080))
             {
                 // Holy Fire
-                if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_PRIEST, UI64LIT(0x00100000), NULL))
-                    if (Aura *aur = GetAura(55692, 0))
+				if (sClassSpellHandler.GetAuraByName(pVictim,PRIEST_HOLY_FIRE))
+                    if (Aura *aur = GetAura(55692))
                         DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
             }
+			// Twin Disciplines
+			else if(spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && (spellProto->SpellFamilyFlags & UI64LIT(200204008000)))
+			{
+				if(Aura* aur = sClassSpellHandler.GetAuraByName(this,PRIEST_TWIN_DISCIPLINES))
+					DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
+			}
 
 			switch(spellProto->Id)
 			{
@@ -10977,6 +10983,12 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
             //increase healing by 20%
             TakenTotalMod *= 1.2f;
     }
+	// Twin disciplines
+	else if(spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && (spellProto->SpellFamilyFlags & UI64LIT(200204008000)))
+	{
+		if(Aura* aur = sClassSpellHandler.GetAuraByName(this,PRIEST_TWIN_DISCIPLINES))
+			DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
+	}
 
 	if(GetTypeId() == TYPEID_PLAYER)
 		sLog.outDebugSpell("Heal Amount %u / TakenTotalMod %f / DoneTotalMod %f",healamount,TakenTotalMod,DoneTotalMod);

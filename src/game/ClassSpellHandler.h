@@ -3,6 +3,21 @@
 
 #include <Policies/Singleton.h>
 
+struct AuraCarac
+{
+	AuraType aType;
+	SpellFamilyNames sfName;
+	uint64 sFlag;
+	uint32 sFlag2;
+};
+enum AuraName
+{
+	PRIEST_TWIN_DISCIPLINES		= 0,
+	PRIEST_HOLY_FIRE			= 1,
+
+	MAX_AURA_NAMES				= 2
+};
+
 class MANGOS_DLL_SPEC ClassSpellHandler
 {
 	public:
@@ -13,6 +28,8 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 		void HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i);
 		bool HandleEffectDummy(Spell* spell);
 		void PeriodicDummyTick(Aura* aura);
+
+		Aura* GetAuraByName(Unit* u,AuraName aName, uint64 casterGUID = 0);
 };
 
 #define sClassSpellHandler MaNGOS::Singleton<ClassSpellHandler>::Instance()

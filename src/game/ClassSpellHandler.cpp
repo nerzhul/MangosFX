@@ -220,3 +220,20 @@ void ClassSpellHandler::PeriodicDummyTick(Aura* aura)
 			break;*/
 	}
 }
+
+AuraCarac caracTab[MAX_AURA_NAMES] =
+{
+	{SPELL_AURA_ADD_PCT_MODIFIER,SPELLFAMILY_PRIEST,UI64LIT(0x00400000),0},
+	{SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_PRIEST, UI64LIT(0x00100000),0},
+};
+
+Aura* ClassSpellHandler::GetAuraByName(Unit *u, AuraName aName, uint64 casterGUID)
+{
+	if(!u || aName >= MAX_AURA_NAMES || aName < 0)
+		return NULL;
+
+	if(Aura* aur = u->GetAura(caracTab[aName].aType,caracTab[aName].sfName,caracTab[aName].sFlag,caracTab[aName].sFlag2,casterGUID))
+		return aur;
+
+	return NULL;
+}
