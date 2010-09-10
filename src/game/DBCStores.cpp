@@ -490,6 +490,10 @@ void LoadDBCStores(const std::string& dataPath)
 	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(69832));
 	sfix->manaCost = 0;
 
+	// Pray of mending hack
+	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33110));
+	sfix->spellLevel = 0;
+
 	// Visuals
 	SpellEntry *sfix2 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(55610));
 	sfix2->activeIconID = sfix2->SpellIconID;

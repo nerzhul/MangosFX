@@ -6388,7 +6388,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 						return false;
 					
 					// Renew
-					Aura* healingAura = pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_PRIEST, UI64LIT(0x40), 0, GetGUID());
+					Aura* healingAura = sClassSpellHandler.GetAuraByName(pVictim,PRIEST_RENEW,GetGUID());
                     if (!healingAura)
                         return false;
 
@@ -10898,6 +10898,9 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
     int32 DoneAdvertisedBenefit  = SpellBaseHealingBonus(GetSpellSchoolMask(spellProto));
     int32 TakenAdvertisedBenefit = SpellBaseHealingBonusForVictim(GetSpellSchoolMask(spellProto), pVictim);
 
+	if(GetTypeId() == TYPEID_PLAYER)
+		sLog.outDebugSpell("DoneAdvertisedBenefit %i TakenAdvertisedBenefit %i",DoneAdvertisedBenefit,TakenAdvertisedBenefit);
+
     float LvlPenalty = CalculateLevelPenalty(spellProto);
     
 	Player* modOwner = GetSpellModOwner();
@@ -11009,12 +11012,12 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
             TakenTotalMod *= ((*i)->GetModifier()->m_amount + 100.0f) / 100.0f;
 
 	if(GetTypeId() == TYPEID_PLAYER)
-		sLog.outDebugSpell("Heal %u / TakenTotalMod %f / DoneTotalMod %f with mod_healing_recv",heal,TakenTotalMod,DoneTotalMod);
+		sLog.outDebugSpell("Heal %f / TakenTotalMod %f / DoneTotalMod %f with mod_healing_recv",heal,TakenTotalMod,DoneTotalMod);
 
     heal = (heal + TakenTotal) * TakenTotalMod;
 
 	if(GetTypeId() == TYPEID_PLAYER)
-		sLog.outDebugSpell("Heal %u final calcul",heal);
+		sLog.outDebugSpell("Heal %f final calcul",heal);
 
     return heal < 0 ? 0 : uint32(heal);
 }

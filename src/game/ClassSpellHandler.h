@@ -14,8 +14,9 @@ enum AuraName
 {
 	PRIEST_TWIN_DISCIPLINES		= 0,
 	PRIEST_HOLY_FIRE			= 1,
+	PRIEST_RENEW				= 2,
 
-	MAX_AURA_NAMES				= 2
+	MAX_AURA_NAMES				= 3
 };
 
 class MANGOS_DLL_SPEC ClassSpellHandler
