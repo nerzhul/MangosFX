@@ -12,11 +12,12 @@ struct AuraCarac
 };
 enum AuraName
 {
-	PRIEST_TWIN_DISCIPLINES		= 0,
-	PRIEST_HOLY_FIRE			= 1,
-	PRIEST_RENEW				= 2,
+	PRIEST_TWIN_DISCIPLINES				= 0,
+	PRIEST_HOLY_FIRE					= 1,
+	PRIEST_RENEW						= 2,
+	PRIEST_IMPROVED_DEVOURING_PLAGUE	= 3,
 
-	MAX_AURA_NAMES				= 3
+	MAX_AURA_NAMES						= 4
 };
 
 class MANGOS_DLL_SPEC ClassSpellHandler

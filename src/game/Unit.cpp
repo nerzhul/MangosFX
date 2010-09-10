@@ -1000,8 +1000,13 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
                     bg->HandleKillUnit(vCreature, player);
 
 			// Sentry totem hack
-			if(vCreature->isTotem() && vCreature->GetOwner() && vCreature->GetEntry() == 3968)
-				vCreature->GetOwner()->RemoveAurasDueToSpell(6495);
+			if(vCreature->GetOwner())
+			{
+				if(vCreature->GetEntry() == 3968)
+					vCreature->GetOwner()->RemoveAurasDueToSpell(6495);
+				else if(vCreature->GetEntry() == 4277)
+					vCreature->GetOwner()->RemoveAurasDueToSpell(126);
+			}
         }
     }
     else                                                    // if (health <= damage)
@@ -6411,11 +6416,12 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     if (triggeredByAura->GetEffIndex() != 1)
 						return false;
 						
-					Aura* leachAura = pVictim->GetAura(SPELL_AURA_PERIODIC_LEECH, SPELLFAMILY_PRIEST, UI64LIT(0x02000000), NULL, GetGUID());
+					Aura* leachAura = sClassSpellHandler.GetAuraByName(pVictim,PRIEST_IMPROVED_DEVOURING_PLAGUE,GetGUID());
                     if (!leachAura)
                         return false;
 
-                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
+					// Little hack
+                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (2*leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
                     basepoints0 = damagefromticks * triggerAmount / 100;
                     triggered_spell_id = 63675;
                     break;
@@ -11193,6 +11199,11 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
             if (itr->type == aura)
                 return true;
 
+		if(HasAura(47585) && (
+			spellInfo->EffectMechanic[index] & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK ||
+            spellInfo->Mechanic & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK))
+				return true;
+
         // Check for immune to application of harmful magical effects
         AuraList const& immuneAuraApply = GetAurasByType(SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL);
         for(AuraList::const_iterator iter = immuneAuraApply.begin(); iter != immuneAuraApply.end(); ++iter)
@@ -11206,6 +11217,7 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
 		{
 			if((*i)->GetId() == 46924 && spellInfo->Mechanic == 3) // Hack for disarm into blade storm
 				return false;
+		
             if ((spellInfo->EffectMechanic[index] & (*i)->GetMiscValue() ||
                 spellInfo->Mechanic & (*i)->GetMiscValue()) ||
                 ((*i)->GetId() == 46924 &&                                                // Bladestorm Immunity
@@ -12938,10 +12950,8 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
 
     if (duration > 0)
     {
-		error_log("TEST");
 		if (periodicTime)
         {
-			error_log("TEST2");
             Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_DURATION_OF_HASTE);
             for(Unit::AuraList::const_iterator i = mModByHaste.begin(); i != mModByHaste.end(); ++i)
             {

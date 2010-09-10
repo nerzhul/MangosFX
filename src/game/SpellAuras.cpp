@@ -3056,11 +3056,43 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 else
                 {
                     int32 bp0 = m_modifier.m_amount;
-
                     if (Unit* caster = GetCaster())
                         m_target->CastCustomSpell(caster,48210,&bp0,NULL,NULL,true,NULL,this,GetCasterGUID());
                 }
             }
+			// Killrog eye
+			else if(GetSpellProto()->Id == 126)
+			{
+				Pet* killrogEye = GetCaster()->FindGuardianWithEntry(4277);
+				if(!killrogEye || GetCaster()->GetTypeId() != TYPEID_PLAYER)
+					return;
+
+				if(killrogEye && apply)
+				{
+					killrogEye->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PLAYER_CONTROLLED);
+					((Player*)m_target)->SetFarSightGUID(killrogEye->GetGUID());
+					((Player*)m_target)->SetClientControl(killrogEye, 1);
+					((Player*)GetCaster())->SetMover(killrogEye);
+
+					killrogEye->StopMoving();
+					killrogEye->GetMotionMaster()->Clear();
+					killrogEye->GetMotionMaster()->MoveIdle();
+				}
+				else
+				{
+					((Player*)GetCaster())->SetFarSightGUID(0);
+					if(killrogEye)
+					{
+						((Player*)m_target)->SetClientControl(killrogEye, 0);
+						killrogEye->AttackStop();
+						killrogEye->GetMotionMaster()->MoveFollow(GetCaster(), PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+						killrogEye->AddSplineFlag(SPLINEFLAG_WALKMODE);
+					}
+					((Player*)GetCaster())->SetClientControl(GetCaster(), 1);
+					((Player*)GetCaster())->SetMover(GetCaster());
+				}
+				return;
+			}
             break;
         }
         case SPELLFAMILY_PRIEST:

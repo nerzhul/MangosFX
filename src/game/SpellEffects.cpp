@@ -4066,6 +4066,7 @@ void Spell::EffectSummon(uint32 i)
     uint32 pet_entry = m_spellInfo->EffectMiscValue[i];
     if (!pet_entry)
         return;
+
     uint32 level = m_caster->getLevel();
     Pet* spawnCreature = new Pet(SUMMON_PET);
 
@@ -4074,7 +4075,11 @@ void Spell::EffectSummon(uint32 i)
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
 
 	int32 amount = damage;
+	if(pet_entry == 89)
+		amount = 1;
+
     Unit *summoner = m_caster;
+
     if (m_caster->GetTypeId()==TYPEID_PLAYER && spawnCreature->LoadPetFromDB((Player*)m_caster,pet_entry))
     {
         // Summon in dest location
