@@ -246,7 +246,7 @@ m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE)
 
     m_addDmgOnce = 0;
 
-    for(int i = 0; i < MAX_TOTEM; ++i)
+    for(int i = 0; i < MAX_TOTEM_SLOT; ++i)
         m_TotemSlot[i] = 0;
 
     m_ObjectSlot[0] = m_ObjectSlot[1] = m_ObjectSlot[2] = m_ObjectSlot[3] = 0;
@@ -9627,7 +9627,7 @@ Unit* Unit::_GetTotem(uint8 slot) const
 
 Totem* Unit::GetTotem( uint8 slot ) const
 {
-    if(slot >= MAX_TOTEM || !IsInWorld())
+    if(slot >= MAX_TOTEM_SLOT || !IsInWorld())
         return NULL;
 
     Creature *totem = GetMap()->GetCreature(m_TotemSlot[slot]);
@@ -9636,7 +9636,7 @@ Totem* Unit::GetTotem( uint8 slot ) const
 
 void Unit::UnsummonAllTotems()
 {
-    for (int8 i = 0; i < MAX_TOTEM; ++i)
+    for (int8 i = 0; i < MAX_TOTEM_SLOT; ++i)
     {
         if(!m_TotemSlot[i])
             continue;
@@ -15731,29 +15731,26 @@ void Unit::EnterVehicle(Vehicle *vehicle, int8 seatId)
 
 	if(GetTypeId() == TYPEID_PLAYER)
 	{
+
+		if(((Player*)this)->InBattleGround())
+            if(BattleGround *bg = ((Player*)this)->GetBattleGround())
+                bg->EventPlayerDroppedFlag((Player*)this);
+
 		if(m_vehicle && m_vehicle->GetBase())
 		{
 			WorldPacket data(SMSG_BREAK_TARGET, 8);
 			data.appendPackGUID(m_vehicle->GetBase()->GetGUID());
 			((Player*)this)->GetSession()->SendPacket(&data);
 		}
-	}
 
-	if(GetTypeId() == TYPEID_PLAYER)
-		if(((Player*)this)->InBattleGround())
-            if(BattleGround *bg = ((Player*)this)->GetBattleGround())
-                bg->EventPlayerDroppedFlag((Player*)this);
+		WorldPacket data(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA);
+		((Player*)this)->GetSession()->SendPacket(&data);
+	}
 
     if (!m_vehicle->AddPassenger(this, seatId))
     {
         m_vehicle = NULL;
         return;
-    }
-
-	if (GetTypeId() == TYPEID_PLAYER)
-    {
-        WorldPacket data(SMSG_ON_CANCEL_EXPECTED_RIDE_VEHICLE_AURA, 0);
-        ((Player*)this)->GetSession()->SendPacket(&data);
     }
 }
 

@@ -536,7 +536,7 @@ void WorldSession::HandleTotemDestroyed( WorldPacket& recvPacket)
 
     recvPacket >> slotId;
 
-    if (slotId >= MAX_TOTEM)
+    if (slotId >= MAX_TOTEM_SLOT)
         return;
 
     if(!_player->m_TotemSlot[slotId])

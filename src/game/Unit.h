@@ -1078,7 +1078,6 @@ enum ReactiveType
 };
 
 #define MAX_REACTIVE 3
-#define MAX_TOTEM 4
 
 typedef std::set<uint64> GuardianPetList;
 
@@ -1588,7 +1587,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         Spell* FindCurrentSpellBySpellId(uint32 spell_id) const;
 
         uint32 m_addDmgOnce;
-        uint64 m_TotemSlot[MAX_TOTEM];
+        uint64 m_TotemSlot[MAX_TOTEM_SLOT];
         uint64 m_ObjectSlot[4];
         uint32 m_detectInvisibilityMask;
         uint32 m_invisibilityMask;
@@ -2014,7 +2013,7 @@ void Unit::CallForAllControlledUnits(Func const& func, bool withTotems, bool wit
 
     if (withTotems)
     {
-        for (int8 i = 0; i < MAX_TOTEM; ++i)
+        for (int8 i = 0; i < MAX_TOTEM_SLOT; ++i)
             if (Unit *totem = _GetTotem(i))
                 func(totem);
     }
@@ -2043,7 +2042,7 @@ bool Unit::CheckAllControlledUnits(Func const& func, bool withTotems, bool withG
 
     if (withTotems)
     {
-        for (int8 i = 0; i < MAX_TOTEM; ++i)
+        for (int8 i = 0; i < MAX_TOTEM_SLOT; ++i)
             if (Unit const* totem = _GetTotem(i))
                 if (func(totem))
                     return true;

@@ -1372,10 +1372,17 @@ void WorldSession::HandleFarSightOpcode( WorldPacket & recv_data )
     sLog.outDebug("WORLD: CMSG_FAR_SIGHT");
     //recv_data.hexlike();
 
-    uint8 unk;
-    recv_data >> unk;
+    uint8 op;
+    recv_data >> op;
 
-    switch(unk)
+	if(!GetPlayer())
+		return;
+
+	 WorldObject* obj = _player->GetMap()->GetWorldObject(_player->GetFarSight());
+	 if (!obj)
+		 return;
+
+    switch(op)
     {
         case 0:
             //WorldPacket data(SMSG_CLEAR_FAR_SIGHT_IMMEDIATE, 0)

@@ -5033,7 +5033,7 @@ void Spell::EffectSummonAllTotems(uint32 i)
         case 66843:         // Call of the Ancestors
         case 66844:         // Call of the Spirits
         {
-            for(int32 slot = 0; slot != MAX_TOTEM; ++slot)
+            for(int32 slot = 0; slot != MAX_TOTEM_SLOT; ++slot)
             {
                 uint8 button = m_spellInfo->EffectMiscValue[i]+slot+132;
                 uint32 spell_id = ((Player*)m_caster)->GetActionByActionButton(button);
@@ -6166,7 +6166,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                    if ( !unitTarget )  // Stoneclaw Totem owner
                        return;
                    // Absorb shield for totems
-                   for(int itr = 0; itr < MAX_TOTEM; ++itr)
+                   for(int itr = 0; itr < MAX_TOTEM_SLOT; ++itr)
                    {
                        Unit* totem = ObjectAccessor::GetUnit( *unitTarget,  unitTarget->m_TotemSlot[itr]);
                        if( totem )
@@ -7067,7 +7067,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 {
     slot = slot ? (slot - 1): 255;
 
-    if(slot < MAX_TOTEM)
+    if(slot < MAX_TOTEM_SLOT)
     {
         uint64 guid = m_caster->m_TotemSlot[slot];
         if(guid != 0)
@@ -7091,7 +7091,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
         return;
     }
 
-    float angle = slot < MAX_TOTEM ? M_PI/MAX_TOTEM - (slot*2*M_PI/MAX_TOTEM) : 0;
+    float angle = slot < MAX_TOTEM_SLOT ? M_PI/MAX_TOTEM_SLOT - (slot*2*M_PI/MAX_TOTEM_SLOT) : 0;
 
     float x, y, z;
     m_caster->GetClosePoint(x, y, z, pTotem->GetObjectBoundingRadius(), 2.0f, angle);
@@ -7103,7 +7103,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
     pTotem->Relocate(x, y, z, m_caster->GetOrientation());
 	pTotem->SetSummonPoint(x, y, z, m_caster->GetOrientation());
 
-    if(slot < MAX_TOTEM)
+    if(slot < MAX_TOTEM_SLOT)
         m_caster->m_TotemSlot[slot] = pTotem->GetGUID();
 
     pTotem->SetOwner(m_caster->GetGUID());
@@ -7160,7 +7160,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 				break;
 		}
 
-		for(int slot = 0;  slot < MAX_TOTEM; ++slot)
+		for(int slot = 0;  slot < MAX_TOTEM_SLOT; ++slot)
 		{
 			if(!m_caster->m_TotemSlot[slot])
 				continue;
@@ -7177,7 +7177,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 		}
 	}
 
-    if(slot < MAX_TOTEM && m_caster->GetTypeId() == TYPEID_PLAYER)
+    if(slot < MAX_TOTEM_SLOT && m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data(SMSG_TOTEM_CREATED, 1 + 8 + 4 + 4);
         data << uint8(slot);
@@ -7833,7 +7833,7 @@ void Spell::EffectSummonDeadPet(uint32 /*i*/)
 void Spell::EffectDestroyAllTotems(uint32 /*i*/)
 {
     int32 mana = 0;
-    for(int slot = 0;  slot < MAX_TOTEM; ++slot)
+    for(int slot = 0;  slot < MAX_TOTEM_SLOT; ++slot)
     {
         if(!m_caster->m_TotemSlot[slot])
             continue;

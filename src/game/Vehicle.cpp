@@ -575,6 +575,8 @@ void Vehicle::RemovePassenger(Unit *unit)
                 ((Player*)unit)->SetClientControl(unit, 1);
                 ((Player*)unit)->SetMoverInQueve(NULL);
 				((Player*)unit)->RemovePetActionBar();
+
+				((Player*)unit)->SetFarSightGUID(unit->GetGUID());
             }
             unit->SetCharm(NULL);
             me->SetCharmerGUID(NULL);			
@@ -591,7 +593,7 @@ void Vehicle::RemovePassenger(Unit *unit)
 			if(((Player*)unit)->GetGroup())
 				((Player*)unit)->SetGroupUpdateFlag(GROUP_UPDATE_VEHICLE);
 
-            ((Player*)unit)->SetFarSightGUID(NULL);
+            ((Player*)unit)->SetFarSightGUID(0);
 
             if(seat->second.vs_flags & SF_CAN_CAST)
             {

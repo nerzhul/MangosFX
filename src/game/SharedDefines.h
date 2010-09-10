@@ -2666,6 +2666,19 @@ enum PetTameFailureReason
     PETTAME_UNKNOWNERROR            = 12
 };
 
+// Stored in SummonProperties.dbc with slot+1 values
+enum TotemSlot
+{
+    TOTEM_SLOT_FIRE   = 0,
+    TOTEM_SLOT_EARTH  = 1,
+    TOTEM_SLOT_WATER  = 2,
+    TOTEM_SLOT_AIR    = 3,
+};
+
+#define TOTEM_SLOT_NONE 255                                 // custom value for no slot case
+
+#define MAX_TOTEM_SLOT  4
+
 enum SummonCategory
 {
     SUMMON_CATEGORY_WILD        = 0,

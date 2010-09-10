@@ -2222,7 +2222,7 @@ void Aura::TriggerSpell()
                     case 38443:
                     {
                         bool all = true;
-                        for(int i = 0; i < MAX_TOTEM; ++i)
+                        for(int i = 0; i < MAX_TOTEM_SLOT; ++i)
                         {
                             if(!target->m_TotemSlot[i])
                             {
@@ -3235,7 +3235,24 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 				m_target->CastSpell(m_target,m_spellProto->EffectTriggerSpell[m_effIndex],true);
 			break;
         case SPELLFAMILY_SHAMAN:
-            break;
+		{
+			switch(GetId())
+			{
+				case 6495:                                  // Sentry Totem
+				{
+					if(m_target->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					Totem* totem = m_target->GetTotem(TOTEM_SLOT_AIR);
+					if(totem && apply)
+						((Player*)m_target)->SetFarSightGUID(totem->GetGUID());
+					else
+						((Player*)m_target)->SetFarSightGUID(0);
+					return;
+				}
+			}
+			break;
+		}
     }
 
     // pet auras
