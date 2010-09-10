@@ -617,7 +617,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         pVictim->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
 
     // remove affects from attacker at any non-DoT damage (including 0 damage)
-    if( damagetype != DOT)
+    if(damagetype != DOT)
     {
         RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
         RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
@@ -10162,6 +10162,19 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			}
             break;
         }
+		case SPELLFAMILY_SHAMAN:
+		{
+			// Frozen power
+			if((spellProto->SpellFamilyFlags & UI64LIT(0x80100003)) || spellProto->Id == 60103)
+			{
+				Aura* aur = GetAura(63373);
+				if(!aur)
+					aur = GetAura(63374);
+				if(aur)
+					DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
+			}
+			break;
+		}
         default:
 			switch(spellProto->Id)
 			{
@@ -10217,11 +10230,11 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 	// .. taken (class scripts)
 	// ebony plague
     if(Aura *aur = pVictim->GetAura(51735))
-		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)) / 100.0f;
 	else if(Aura *aur = pVictim->GetAura(51734))
-		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)) / 100.0f;
 	else if(Aura *aur = pVictim->GetAura(51726))
-		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1) * 4 + 1) / 100.0f;
+		TakenTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)) / 100.0f;
 
     // From caster spells
     AuraList const& mOwnerTaken = pVictim->GetAurasByType(SPELL_AURA_MOD_DAMAGE_FROM_CASTER);
@@ -11838,7 +11851,7 @@ void Unit::SetInCombatState(bool PvP, Unit* enemy)
 				}
 			}
 		}
-		
+
 		if(Spell* spell = m_currentSpells[CURRENT_CHANNELED_SPELL])
 		{
 			if (spell->getState() == SPELL_STATE_CASTING)
