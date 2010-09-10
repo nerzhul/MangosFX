@@ -994,9 +994,14 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
         }
         else if(pVictim->GetTypeId() == TYPEID_UNIT)
         {
+			Creature* vCreature = (Creature*)pVictim;
             if (player)
                 if (BattleGround *bg = player->GetBattleGround())
-                    bg->HandleKillUnit((Creature*)pVictim, player);
+                    bg->HandleKillUnit(vCreature, player);
+
+			// Sentry totem hack
+			if(vCreature->isTotem() && vCreature->GetOwner() && vCreature->GetEntry() == 3968)
+				vCreature->GetOwner()->RemoveAurasDueToSpell(6495);
         }
     }
     else                                                    // if (health <= damage)
