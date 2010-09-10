@@ -4709,7 +4709,11 @@ SpellCastResult Spell::CheckCast(bool strict)
             if (target->isInFlight())
                 return SPELL_FAILED_BAD_TARGETS;
 
-            if(!m_IsTriggeredSpell && VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) && !m_caster->IsWithinLOSInMap(target))
+            if(!m_IsTriggeredSpell && !m_caster->IsWithinLOSInMap(target) && 
+				VMAP::VMapFactory::checkSpellForLoS(m_spellInfo->Id) &&
+				m_spellInfo->Id != 64844 && m_spellInfo->Id != 64901 && m_spellInfo->Id != 32375 && 
+				m_spellInfo->Id != 32592 && m_spellInfo->Id != 72734 && m_spellInfo->Id != 39897 // Priest WallCast Spells
+				)
                 return SPELL_FAILED_LINE_OF_SIGHT;
 
             // auto selection spell rank implemented in WorldSession::HandleCastSpellOpcode
