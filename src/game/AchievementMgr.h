@@ -247,6 +247,7 @@ class AchievementMgr
 		bool HasAchievement(uint32 achievement_id) const { return m_completedAchievements.find(achievement_id) != m_completedAchievements.end(); }
 
 		void DoCompleteAchivement(AchievementEntry const* entry) { CompletedAchievement(entry); }
+		void SetLootedItem(uint32 type,uint32 nb) { UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, type, nb); }
 
     private:
         enum ProgressType { PROGRESS_SET, PROGRESS_ACCUMULATE, PROGRESS_HIGHEST };

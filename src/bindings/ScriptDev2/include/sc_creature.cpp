@@ -6,6 +6,7 @@
 #include "Item.h"
 #include "Spell.h"
 #include "WorldPacket.h"
+#include "DBCEnums.h"
 #include "ObjectMgr.h"
 #include "utf8cpp/utf8.h"
 
@@ -793,7 +794,10 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 	uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, type, nb, false);
 	if (msg == EQUIP_ERR_OK)
 		if(Item* pItem = pPlayer->StoreNewItem(dest, type, nb, true))
+		{
 			pPlayer->SendNewItem(pItem, nb, true, false);
+			//pPlayer->GetAchievementMgr().SetLootedItem(type,nb);
+		}
 
 	// Wintergrasp Aura
 	if(group5 && pPlayer->HasAura(57940))
@@ -802,7 +806,10 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 	        uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 43228, 4, false);
 	        if (msg == EQUIP_ERR_OK)
                 	if(Item* pItem = pPlayer->StoreNewItem(dest, 43228, 4, true))
-        	                pPlayer->SendNewItem(pItem, 4, true, false);
+					{
+        				pPlayer->SendNewItem(pItem, 4, true, false);
+						//pPlayer->GetAchievementMgr().SetLootedItem(43228,4);
+					}
 	}
 	
 }

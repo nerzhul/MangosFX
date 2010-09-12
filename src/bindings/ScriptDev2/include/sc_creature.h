@@ -198,7 +198,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     bool EnterEvadeIfOutOfCombatArea(const uint32 diff);
 
 	// LibDevFS Implementation
-	void AggroAllPlayers(float maxdist);
+	void AggroAllPlayers(float maxdist = 150.0f);
 	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
 	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }

@@ -2750,6 +2750,8 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
 			break;
 		}
 		case 47531:
+		case 16613:
+		case 35273:
 			return;
 		case 64884:
 		{
@@ -6372,6 +6374,23 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 				case 50725: // vigilance
 				{
 					m_caster->CastSpell(unitTarget,59665,true);
+					return;
+				}
+				case 72224:
+				{
+					switch(m_caster->GetMap()->GetDifficulty())
+					{
+						case RAID_DIFFICULTY_10MAN_NORMAL:
+						case RAID_DIFFICULTY_10MAN_HEROIC:
+							for(uint8 i=0;i<3;i++)
+								m_caster->CastSpell(m_caster,71301,true);
+							break;
+						case RAID_DIFFICULTY_25MAN_NORMAL:
+						case RAID_DIFFICULTY_25MAN_HEROIC:
+							for(uint8 i=0;i<6;i++)
+								m_caster->CastSpell(m_caster,71301,true);
+							break;
+					}
 					return;
 				}
             }

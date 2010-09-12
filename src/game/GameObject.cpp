@@ -518,6 +518,18 @@ void GameObject::Update(uint32 p_time)
             }
 
             loot.clear();
+
+			// Hack for delete summoned spell chest
+			switch(GetEntry())
+			{
+				case 202338:
+				case 202340:
+				case 201959:
+				case 202339:
+					SetRespawnTime(0);
+					Delete();
+					return;
+			}
             SetLootState(GO_READY);
 
             if(!m_respawnDelayTime)

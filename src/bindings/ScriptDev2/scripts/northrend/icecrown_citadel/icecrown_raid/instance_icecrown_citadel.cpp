@@ -67,6 +67,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint64 m_uiSindragosaDoorGUID;
 
 	uint64 m_uiDreamwalkerEventDoorGUID[4];
+	std::vector<uint64> dreamwalkerAddsGUIDs;
+	std::vector<uint64> dreamwalkerEventAddGUIDs;
+	uint8 m_uiDreamwalkerGuardDone;
+	uint64 m_uiDreamwalkerImageGUID;
 
 	uint64 m_uiSaurfangCacheGUID;
 
@@ -124,6 +128,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 
 		for(uint8 i=0;i<4;i++)
 			m_uiDreamwalkerEventDoorGUID[i] = 0;
+
+		dreamwalkerAddsGUIDs.clear();
+		dreamwalkerEventAddGUIDs.clear();
+		m_uiDreamwalkerGuardDone = 0;
+		m_uiDreamwalkerImageGUID = 0;
 
 		m_uiPlagueSigilGUID				= 0;
 		m_uiBloodSigilGUID				= 0;
@@ -191,9 +200,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_DREAMWALKER:
 				m_uiDreamWalkerGUID = pCreature->GetGUID();
-				if(!pCreature->isAlive())
-					SetData(TYPE_DREAMWALKER,DONE);
-				AutoFreeze(pCreature);
+				if(GetData(TYPE_DREAMWALKER) == DONE)
+					pCreature->ForcedDespawn(100);
 				break;
 			case NPC_SINDRAGOSA:
 				m_uiSindragosaGUID = pCreature->GetGUID();
@@ -214,6 +222,30 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case 38369:
 				vortexGUIDs.push_back(pCreature->GetGUID());
 				break;
+			case 38186:
+			case 38068:
+			case 37934:
+			case 37907:
+			case 37886:
+			case 37863:
+			case 36791:
+				dreamwalkerAddsGUIDs.push_back(pCreature->GetGUID());
+				break;
+			case 37868:
+				if(pCreature->GetDBTableGUIDLow() == 0)
+					dreamwalkerAddsGUIDs.push_back(pCreature->GetGUID());
+				else
+				{
+					if(GetData(TYPE_DREAMWALKER) == DONE)
+						pCreature->ForcedDespawn(100);
+					dreamwalkerEventAddGUIDs.push_back(pCreature->GetGUID());
+				}
+				break;
+			case NPC_DREAMWALKER_IMAGE:
+				pCreature->SetPhaseMask(16,true);
+				m_uiDreamwalkerImageGUID = pCreature->GetGUID();
+				break;
+
         }
     }
 
@@ -241,7 +273,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 break;
             case GO_SAURFANG_DOOR:
                 m_uiSaurfangDoorGUID = pGo->GetGUID();
-                if (m_auiEncounter[TYPE_SAURFANG] == DONE)
+                if(m_auiEncounter[TYPE_SAURFANG] == DONE)
                     pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
 			case GO_MARROWGAR_DOOR:
@@ -392,7 +424,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                     OpenDoor(m_uiSaurfangDoorGUID);
 					if (GameObject* pChest = instance->GetGameObject(m_uiSaurfangCacheGUID))
 						if (!pChest->isSpawned())
+						{
 							pChest->SetRespawnTime(7*DAY);
+							pChest->UpdateObjectVisibility();
+						}
 				}
                 break;
 			case TYPE_FESTERGUT:
@@ -480,10 +515,36 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiDreamWalkerDoorGUID);
 					OpenDoor(m_uiDreamWalkerExitDoorGUID);
 					OpenDoor(m_uiSindragosaDoorGUID);
+					DespawnCreatures(dreamwalkerAddsGUIDs);
 				}
 				else if(uiData == IN_PROGRESS)
 				{
 					CloseDoor(m_uiDreamWalkerDoorGUID);
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[0]);
+					OpenDoor(m_uiDreamwalkerEventDoorGUID[3]);
+					switch(instance->GetDifficulty())
+					{
+						case RAID_DIFFICULTY_25MAN_NORMAL:
+						case RAID_DIFFICULTY_25MAN_HEROIC:
+							OpenDoor(m_uiDreamwalkerEventDoorGUID[1]);
+							OpenDoor(m_uiDreamwalkerEventDoorGUID[2]);
+							break;
+					}
+				}
+				else
+				{
+					DespawnCreatures(dreamwalkerAddsGUIDs);
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[0]);
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[1]);
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[2]);
+					CloseDoor(m_uiDreamwalkerEventDoorGUID[3]);
+					if(uiData == FAIL)
+					{
+						m_uiDreamwalkerGuardDone = 0;
+						for(std::vector<uint64>::iterator itr = dreamwalkerEventAddGUIDs.begin(); itr != dreamwalkerEventAddGUIDs.end(); ++itr)
+							if(Creature* add = GetCreatureInMap(*itr))
+								add->Respawn();
+					}
 				}
 				break;
 			case TYPE_SINDRAGOSA:
@@ -519,6 +580,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					CloseDoor(m_uiDreamwalkerEventDoorGUID[2]);
 				else
 					OpenDoor(m_uiDreamwalkerEventDoorGUID[2]);
+				break;
+			case DATA_DREAMWALKER_GUARD:
+				m_uiDreamwalkerGuardDone++;
 				break;
         }
 
@@ -595,6 +659,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				return m_auiEncounter[TYPE_SINDRAGOSA];
 			case TYPE_LICHKING:
                 return m_auiEncounter[TYPE_LICHKING];
+			case DATA_DREAMWALKER_GUARD:
+				return m_uiDreamwalkerGuardDone;
         }
         return 0;
     }
@@ -652,6 +718,21 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					
 					if(GetData(TYPE_SAURFANG) != IN_PROGRESS)
 						pPlayer->RemoveAurasDueToSpell(72293);
+
+					if(Creature* Dreamwalker = GetCreatureInMap(m_uiDreamWalkerGUID))
+					{
+						if(pPlayer->GetTeam() == ALLIANCE)
+							Dreamwalker->setFaction(1802);
+						else
+							Dreamwalker->setFaction(1801);
+					}
+					if(Creature* Dreamwalker = GetCreatureInMap(m_uiDreamwalkerImageGUID))
+					{
+						if(pPlayer->GetTeam() == ALLIANCE)
+							Dreamwalker->setFaction(1802);
+						else
+							Dreamwalker->setFaction(1801);
+					}
 				}
 		return found;
 	}
@@ -671,6 +752,20 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiDreamWalkerDoorGUID);
 				if(GetData(TYPE_DREAMWALKER) == DONE)
 					OpenDoor(m_uiSindragosaDoorGUID);
+
+				CloseDoor(m_uiDreamwalkerEventDoorGUID[0]);
+				CloseDoor(m_uiDreamwalkerEventDoorGUID[1]);
+				CloseDoor(m_uiDreamwalkerEventDoorGUID[2]);
+				CloseDoor(m_uiDreamwalkerEventDoorGUID[3]);
+
+				if(GetData(TYPE_DREAMWALKER) == IN_PROGRESS)
+					SetData(TYPE_DREAMWALKER,FAIL);
+
+				if(Creature* Dreamwalker = GetCreatureInMap(m_uiDreamwalkerImageGUID))
+				{
+					Dreamwalker->ForcedDespawn(500);
+					m_uiDreamwalkerImageGUID = 0;
+				}
 			}
 
 			if (GetData(TYPE_SAURFANG) == DONE)

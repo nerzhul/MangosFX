@@ -147,7 +147,10 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 				{
 					if (GameObject* pChest = instance->GetGameObject(ChampionChest_guid))
 						if (!pChest->isSpawned())
+						{
 							pChest->SetRespawnTime(7*DAY);
+							pChest->UpdateObjectVisibility();
+						}
 
 					if(instance)
 					{

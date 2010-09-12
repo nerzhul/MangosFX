@@ -75,9 +75,8 @@ struct MANGOS_DLL_DECL mob_webwrapAI : public ScriptedAI
         {
             if (victimGUID)
             {
-                Unit* victim = NULL;
-                victim = Unit::GetUnit((*me), victimGUID);
-				if(victim->isAlive())
+                Unit* victim = Unit::GetUnit((*me), victimGUID);
+				if(victim && victim->isAlive())
 	                victim->RemoveAurasDueToSpell(SPELL_WEBTRAP);
             }
         }
