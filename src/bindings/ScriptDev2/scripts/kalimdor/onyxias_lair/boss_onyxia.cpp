@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL boss_onyxiaAI : public ScriptedAI
         m_pPointData = GetMoveData();
 
         m_uiEngulfingFlamesTimer = 15000;
-        m_uiSummonWhelpsTimer = 45000;
+        m_uiSummonWhelpsTimer = 25000;
         m_uiBellowingRoarTimer = 30000;
         m_uiWhelpTimer = 1000;
 
