@@ -4986,6 +4986,9 @@ void Aura::HandleAuraModTotalThreat(bool apply, bool Real)
     if (!m_target->isAlive() || m_target->GetTypeId() != TYPEID_PLAYER)
         return;
 
+	if(!m_target->isInCombat())
+		return;
+
     Unit* caster = GetCaster();
 
     if (!caster || !caster->isAlive())

@@ -1035,7 +1035,7 @@ void Spell::EffectDummy(uint32 i)
                     return;
                 }
                 case 29858:                                 // Soulshatter
-                    if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT && unitTarget->IsHostileTo(m_caster))
+					if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT && unitTarget->IsHostileTo(m_caster) && unitTarget->isInCombat())
                         m_caster->CastSpell(unitTarget,32835,true);
                     return;
                 case 30458:                                 // Nigh Invulnerability

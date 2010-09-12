@@ -1501,13 +1501,13 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							unMaxTargets = 1;
 							break;
 						case RAID_DIFFICULTY_10MAN_HEROIC:
-							unMaxTargets = urand(1,2);
+							unMaxTargets = 2;
 							break;
 						case RAID_DIFFICULTY_25MAN_NORMAL:
-							unMaxTargets = urand(1,2);
+							unMaxTargets = 1;
 							break;
 						case RAID_DIFFICULTY_25MAN_HEROIC:
-							unMaxTargets = urand(2,3);
+							unMaxTargets = 2;
 							break;
 					}
 					break;
