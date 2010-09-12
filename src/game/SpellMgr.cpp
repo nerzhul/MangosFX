@@ -1920,27 +1920,6 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->SpellIconID == 67 && spellInfo_2->SpellIconID == 67)
                     return false;
 
-				// Wrath totem check
-				if(spellInfo_1->SpellIconID == 2019 && (spellInfo_1->SpellFamilyFlags & UI64LIT(0x200000004000000) &&
-					spellInfo_2->SpellFamilyFlags & UI64LIT(0x200000004000000)))
-					return true;
-
-				// Fire lang totem
-				if(spellInfo_1->SpellFamilyFlags & UI64LIT(0x2000000) && spellInfo_2->SpellFamilyFlags & UI64LIT(0x2000000))
-					return true;
-
-				// Frost resist totem
-				if(spellInfo_1->SpellFamilyFlags & UI64LIT(0x4000000) && spellInfo_2->SpellFamilyFlags & UI64LIT(0x4000000) && spellInfo_1->SpellIconID == spellInfo_2->SpellIconID)
-					return true;
-
-				// Strenght of the earth totem
-				if(spellInfo_1->SpellFamilyFlags & UI64LIT(0x10000) && spellInfo_2->SpellFamilyFlags & UI64LIT(0x10000))
-					return true;
-
-				// windfury totem
-				if(spellInfo_1->Id == 2895 && spellInfo_2->Id == 2895)
-					return true;
-
 				// Totem of Wrath (positive/negative), ranks checked early
                 if (spellInfo_1->SpellIconID == 2019 && spellInfo_2->SpellIconID == 2019)
                     return false;

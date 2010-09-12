@@ -1420,6 +1420,7 @@ void Spell::EffectDummy(uint32 i)
                 case 51961:                                 // Captured Chicken Cover
 				case 55364:                                 // Create Ghoul Drool Cover
 				case 61832:                                 // Rifle the Bodies: Create Magehunter Personal Effects Cover
+				case 74904:                                 // Pickup Sen'jin Frog
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT || m_caster->GetTypeId() != TYPEID_PLAYER)
                         return;
@@ -1435,6 +1436,7 @@ void Spell::EffectDummy(uint32 i)
                         case 51961: spellId = 51037; break;
 						case 55364: spellId = 55363; break;
 						case 61832: spellId = 47096; break;
+						case 74904: spellId = 74905; break;
                     }
 
                     if (const SpellEntry *pSpell = sSpellStore.LookupEntry(spellId))

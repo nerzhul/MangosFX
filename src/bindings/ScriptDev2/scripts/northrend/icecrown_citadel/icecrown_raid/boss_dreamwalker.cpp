@@ -96,6 +96,9 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 
 	void LaunchEvent()
 	{
+		if(pInstance && pInstance->GetData(TYPE_DREAMWALKER) == DONE)
+			return;
+
 		eventStarted = true;
 		pop_Timer = 12000;
 		if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
