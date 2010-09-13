@@ -2212,13 +2212,14 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
             case SPELLFAMILY_ROGUE:
             {
 				 // Cheat Death (make less prio with Guardian Spirit case)
-                if (!preventDeathSpell && spellProto->SpellIconID == 2109 &&
-                    GetTypeId()==TYPEID_PLAYER)              // Only players
+                if (spellProto->SpellIconID == 2109)
                 {
-                    if(!((Player*)this)->HasSpellCooldown(31231) &&
-                                                            // Only if no cooldown
-                        roll_chance_i((*i)->GetModifier()->m_amount))
-                                                            // Only if roll
+                    if (!preventDeathSpell &&
+						GetTypeId()==TYPEID_PLAYER &&           // Only players
+						!((Player*)this)->HasSpellCooldown(31231) &&
+						// Only if no cooldown
+						roll_chance_i((*i)->GetModifier()->m_amount))
+						// Only if roll
                     {
                         preventDeathSpell = (*i)->GetSpellProto();
                     }

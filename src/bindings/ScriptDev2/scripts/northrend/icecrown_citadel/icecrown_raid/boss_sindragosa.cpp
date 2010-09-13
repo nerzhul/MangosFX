@@ -18,12 +18,12 @@ enum Spells
 	SPELL_MYSTIC_BUFFER		=	70128, // must handle ice blocks
 	
 	// phase 2 only
-	SPELL_ICE_TOMB			=	69675, // ok ?
+	SPELL_ICE_TOMB			=	69675, // ok
 	SPELL_ICE_TOMB_BUFF		=	70157,
 	NPC_ICE_TOMB			=	36980,
 	SPELL_FROST_BOMB		=	71053,
 	SPELL_ASPHYXIATION		=	71665,
-	SPELL_BLUE_ARROW		=	70126,
+	SPELL_BLUE_ARROW		=	70126, // use this to cast ball
 	
 	// others
 	SPELL_ENRAGE			=	26662, // ok
@@ -200,7 +200,9 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 		if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL || m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC)
 			targetNb = 5;
 
-		
+		error_log("test");
+		// Change this for number of targets
+		DoCastVictim(SPELL_BLUE_ARROW,true);		
 	}
 
     void UpdateAI(const uint32 diff)
