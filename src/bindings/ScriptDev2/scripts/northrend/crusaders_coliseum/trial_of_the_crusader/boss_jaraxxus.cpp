@@ -70,6 +70,8 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public LibDevFSAI
 			Speak(CHAT_TYPE_SAY,16145,"Cafard insignifiant !");
 		else
 			Speak(CHAT_TYPE_SAY,16146,"Banni, au néant !");
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
     }
 
     void JustDied(Unit *victim)
@@ -153,11 +155,15 @@ struct MANGOS_DLL_DECL volcan_jaraxxusEdCAI : public LibDevFSAI
 
     void Reset()
     {
-		ResetTimers();
-				
+		ResetTimers();	
 		SetCombatMovement(false);
     }
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -170,38 +176,32 @@ CreatureAI* GetAI_volcan_jaraxxusEdC(Creature* pCreature)
     return new volcan_jaraxxusEdCAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL portal_jaraxxusEdCAI : public ScriptedAI
+struct MANGOS_DLL_DECL portal_jaraxxusEdCAI : public LibDevFSAI
 {
-    portal_jaraxxusEdCAI(Creature* pCreature) : ScriptedAI(pCreature)
+    portal_jaraxxusEdCAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
-		dfc = me->GetMap()->GetDifficulty();
-    }
-
-	MobEventTasks Tasks;
-	Difficulty dfc;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		switch(dfc)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:
-				Tasks.AddSummonEvent(34826,5000,900000,0,0,1,TEN_MINS,ON_ME,AGGRESSIVE_MAIN);
+				AddSummonEvent(34826,5000,900000,0,0,1,TEN_MINS,ON_ME,AGGRESSIVE_MAIN);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
-				Tasks.AddSummonEvent(34826,5000,35000,0,0,1,TEN_MINS,ON_ME,AGGRESSIVE_MAIN);
+				AddSummonEvent(34826,5000,35000,0,0,1,TEN_MINS,ON_ME,AGGRESSIVE_MAIN);
 				break;
 		}
-		
+		InitInstance();
+    }
+
+    void Reset()
+    {
 		SetCombatMovement(false);
     }
 
     void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 
 };
@@ -211,29 +211,28 @@ CreatureAI* GetAI_portal_jaraxxusEdC(Creature* pCreature)
     return new portal_jaraxxusEdCAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_fel_infernalAI : public LibDevFSAI
 {
-    mob_fel_infernalAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_fel_infernalAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		Difficulty = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
 		me->setFaction(14);
+		AddEventOnTank(66494,5000,15000,5000);
+		AddEventOnTank(66495,1000,6100,100);
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
     }
  
-    ScriptedInstance* m_pInstance;
-    uint8 Difficulty;
-    MobEventTasks Tasks;
-
 	uint32 resetAggro_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(66494,5000,15000,5000,TARGET_MAIN);
-		Tasks.AddEvent(66495,1000,6100,100,TARGET_MAIN);
-		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
 		resetAggro_Timer = 8000;
+	}
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
 	}
  
     void UpdateAI(const uint32 diff)
@@ -249,7 +248,7 @@ struct MANGOS_DLL_DECL mob_fel_infernalAI : public ScriptedAI
 		else
 			resetAggro_Timer -= diff;
  
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -259,31 +258,31 @@ CreatureAI* GetAI_mob_fel_infernal(Creature* pCreature)
     return new mob_fel_infernalAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL mob_mistress_of_painAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_mistress_of_painAI : public LibDevFSAI
 {
-    mob_mistress_of_painAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_mistress_of_painAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		dfc = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnTank(66378,20000,20000);
+		AddEvent(66283,5000,15000,5000);
+		AddEvent(66334,10000,8000,2000,TARGET_HAS_MANA);
+		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
     }
  
-	ScriptedInstance* m_pInstance;
-	Difficulty dfc;
-	MobEventTasks Tasks;
 	uint32 resetAggro_Timer;
  
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(66378,20000,20000,0,TARGET_MAIN);
-		Tasks.AddEvent(66283,5000,15000,5000);
-		Tasks.AddEvent(66334,10000,8000,2000,TARGET_HAS_MANA);
 		AggroAllPlayers(150.0f);
-		me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
 		resetAggro_Timer = 4000;
     }
  
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
+
     void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
@@ -297,7 +296,7 @@ struct MANGOS_DLL_DECL mob_mistress_of_painAI : public ScriptedAI
 		else
 			resetAggro_Timer -= diff;
 	
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -323,6 +322,12 @@ struct MANGOS_DLL_DECL mob_legion_flameAI : public LibDevFSAI
 		SetDespawnTimer(m_difficulty ? 30000 : 60000);
 		SetCombatMovement(false);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
