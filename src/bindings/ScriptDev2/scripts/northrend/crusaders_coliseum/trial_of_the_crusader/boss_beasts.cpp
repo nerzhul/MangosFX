@@ -80,6 +80,12 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 		}
     }
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         if (pInstance)
@@ -157,6 +163,12 @@ struct MANGOS_DLL_DECL add_GormoktheImpaler_AI : public LibDevFSAI
     {
         me->SetInCombatWithZone();
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -294,6 +306,12 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 			}
 		}
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void Aggro(Unit* pWho)
     {
@@ -474,6 +492,12 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 			}
 		}
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void Aggro(Unit* pWho)
     {
@@ -669,6 +693,13 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 		me->ForcedDespawn(TEN_MINS*1000);
     }
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance)
+				m_pInstance->SetData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
@@ -790,19 +821,13 @@ CreatureAI* GetAI_boss_Icehowl(Creature* pCreature)
 }
 
 
-struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public LibDevFSAI
 {
-    boss_jorm_flaqueAI(Creature *pCreature) : ScriptedAI(pCreature)
+    boss_jorm_flaqueAI(Creature *pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-		Reset();
+		InitInstance();
     }
 
-	Difficulty m_bIsHeroic;
-
-    ScriptedInstance* pInstance;
-	MobEventTasks Tasks;
 	uint32 poison_Timer;
 	uint8 poisonForce;
 
@@ -815,32 +840,37 @@ struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public ScriptedAI
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
 		SetCombatMovement(false);
 		
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 		ModifyAuraStack(30914);
-		switch(m_bIsHeroic)
+		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_NORMAL:
 				me->ForcedDespawn(30000);
-				Tasks.AddEvent(67638,500,1000,0,TARGET_MAIN);
+				AddEventOnTank(67638,500,1000);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
 				me->ForcedDespawn(45000);
-				Tasks.AddEvent(67639,500,1000,0,TARGET_MAIN);
+				AddEventOnTank(67639,500,1000);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
 				me->ForcedDespawn(60000);
-				Tasks.AddEvent(67640,500,1000,0,TARGET_MAIN);
+				AddEventOnTank(67640,500,1000);
 				break; 
 		}
 		poisonForce = 1;
 		me->SetPhaseMask(1,true);
 		poison_Timer = 1000;
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -853,7 +883,7 @@ struct MANGOS_DLL_DECL boss_jorm_flaqueAI : public ScriptedAI
 		else
 			poison_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 };
 
@@ -876,6 +906,12 @@ struct MANGOS_DLL_DECL boss_gormok_flameAI : public LibDevFSAI
 		MakeHostileInvisibleStalker();
 		me->SetPhaseMask(1,true);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {

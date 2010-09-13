@@ -3,9 +3,7 @@
 
 void npc_toc10_announcerAI::Reset()
 {
-	Tasks.SetObjects(this,me);
 	EventStarted = false;
-	HeroicMode = false;
 	Event_Timer = TEN_MINS*1000;
 	Event_Type = EVENT_TYPE_BEASTS_INTRO;
 	Fordring = NULL;
@@ -14,14 +12,6 @@ void npc_toc10_announcerAI::Reset()
 	Event_phase = 1;
 	Flopboum = NULL;
 	Champions_Guid.clear();
-	switch(Difficult)
-	{
-		case RAID_DIFFICULTY_10MAN_HEROIC:
-		case RAID_DIFFICULTY_25MAN_HEROIC:
-			HeroicMode = true;
-			Try_Heroic = 50;
-			break;
-	}
 	for(uint8 i=0;i<8;i++)
 		ID[i] = 0;
 }
@@ -30,7 +20,7 @@ void npc_toc10_announcerAI::SpawnChampions()
 {
 	uint8 nb_mobs,nb_heals,nb_cac;
 
-	switch(Difficult)
+	switch(m_difficulty)
 	{
 		case RAID_DIFFICULTY_10MAN_NORMAL:
 		case RAID_DIFFICULTY_10MAN_HEROIC:
@@ -56,7 +46,7 @@ void npc_toc10_announcerAI::SpawnChampions()
 	{
 		for(uint8 i=0;i<nb_mobs;i++)
 		{
-			if(Creature* tmp = Tasks.CallCreature(ID[i],TEN_MINS*1.5,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
+			if(Creature* tmp = CallCreature(ID[i],TEN_MINS*1.5,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
 			Champion_spawn[i][popZone][1],Champion_spawn[i][popZone][2]))
 			{
 				/*if(team == ALLIANCE)
@@ -158,7 +148,7 @@ void npc_toc10_announcerAI::SpawnChampions()
 		
 		for(uint8 i=0;i<nb_mobs;i++)
 		{
-			if(Creature* tmp = Tasks.CallCreature(ID[i],TEN_MINS,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
+			if(Creature* tmp = CallCreature(ID[i],TEN_MINS,PREC_COORDS,NOTHING,Champion_spawn[i][popZone][0],
 				Champion_spawn[i][popZone][1],Champion_spawn[i][popZone][2]))
 			{
 				/*if(team == ALLIANCE)
@@ -268,13 +258,12 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-						UpdateWStates();
 						Speak(CHAT_TYPE_SAY,16036,"Bienvenue champions ! Vous avez entendu l'appel de la croisade d'argent et vaillament répondu. C'est ici dans le colisée d'argent que vous affronterez vos plus grands défis. Ceux d'entre vous qui auront survécu aux vigueurs du colisée se joindrons à la marche de la croisade sur la Citadelle de la Couronne de Glace",Fordring);
 						Event_Timer = 21000;
 						break;
 					case 2:
 						Yell(16037,"Que les jeux commencent!",Fordring);
-						if(Creature* Gormok = Tasks.CallCreature(34796,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
+						if(Creature* Gormok = CallCreature(34796,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
 						{
 							Gormok->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}
@@ -308,12 +297,12 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						Yell(16039,"Apprêtez vous héros car voici que les terreurs jumelles, Gueule d'Acide et Ecaille d'effroi pénètrent dans l'arène !",Fordring);
-						if(Creature* Acidmaw = Tasks.CallCreature(35144,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,572.243f,244.680f,395.0f))
+						if(Creature* Acidmaw = CallCreature(35144,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,572.243f,244.680f,395.0f))
 						{
 							Acidmaw->GetMotionMaster()->MovePoint(0, 574.376f,180.478f,396.0f);
 							Acidmaw->SetSpeedRate(MOVE_RUN,1.3f,true);
 						}
-						if(Creature* Dreadscale = Tasks.CallCreature(34799,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,554.910f,244.888f,395.0f))
+						if(Creature* Dreadscale = CallCreature(34799,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,554.910f,244.888f,395.0f))
 						{
 							Dreadscale->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 							Dreadscale->SetSpeedRate(MOVE_RUN,1.3f,true);
@@ -322,7 +311,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 8000;
 						break;
 					case 2:
-						if (Creature* Acidmaw = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Dreadscale))))
+						if (Creature* Acidmaw = GetInstanceCreature(TYPE_Dreadscale))
 						{
 							((ScriptedAI*)Acidmaw->AI())->SetCombatMovement(false);
 						}
@@ -343,7 +332,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						Yell(16040,"L'air se gèle à l'entrée de notre prochain combattant : Glace-Hurlante ! Tuez ou soyez tués, champions !",Fordring);
-						if(Creature* Icehowl = Tasks.CallCreature(34797,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
+						if(Creature* Icehowl = CallCreature(34797,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
 						{
 							Icehowl->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}
@@ -351,7 +340,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 10000;
 						break;
 					case 2:
-						if (Creature* Icehowl = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_Icehowl))))
+						if (Creature* Icehowl = GetInstanceCreature(TYPE_Icehowl))
 							((ScriptedAI*)Icehowl->AI())->SetCombatMovement(false);
 						pInstance->DoUseDoorOrButton(pInstance->GetData64(TYPE_DOOR));
 						EventStarted = false;
@@ -373,7 +362,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						break;
 					case 2:
 						Yell(16043,"Le Grand démoniste Wilfried Flopboum va invoquer votre prochain défi, ne bougez pas il arrive !",Fordring);
-						if(Flopboum = Tasks.CallCreature(35458,TEN_MINS,PREC_COORDS,NOTHING,564.057f,203.706f,395.2f))
+						if(Flopboum = CallCreature(35458,TEN_MINS,PREC_COORDS,NOTHING,564.057f,203.706f,395.2f))
 						{
 							Flopboum->GetMotionMaster()->MovePoint(0, 563.659f,145.059,395.0f);
 							//Flopboum->SetSpeedRate(MOVE_RUN,2.0f);
@@ -390,19 +379,19 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 3000;
 						break;
 					case 5:
-						Tasks.CallCreature(35651,30000,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f);
+						CallCreature(35651,30000,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f);
 						Event_Timer = 2000;
 						break;
 					case 6:
 						if(Flopboum)
 							Flopboum->CastSpell(Flopboum,45927,false);
 
-						Tasks.CallCreature(19224,11000,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f);
+						CallCreature(19224,11000,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f);
 						Event_Timer = 10000;
 						break;
 					case 7:
 						Yell(16270,"Haha ! J'ai réussi ! Comtemplez l'absolue puissante de Wielfried Flopboum, Maître invocateur. Tu es mon esclave démon",Flopboum ? Flopboum : NULL);
-						if(Creature* Jaraxxus = Tasks.CallCreature(34780,TEN_MINS*1.5,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f))
+						if(Creature* Jaraxxus = CallCreature(34780,TEN_MINS*1.5,PREC_COORDS,NOTHING,563.711f,139.268f,394.0f))
 						{
 							Jaraxxus->setFaction(35);
 							ModifyAuraStack(67924,1,Jaraxxus);
@@ -410,7 +399,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 11000;
 						break;
 					case 8:
-						if (Creature* Jaraxxus = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_JARAXXUS))))
+						if (Creature* Jaraxxus = GetInstanceCreature(TYPE_JARAXXUS))
 						{
 							Speak(CHAT_TYPE_SAY,16143,"Misérable gnome, ton arrogance te perdra !",Jaraxxus);
 							Jaraxxus->RemoveAurasDueToSpell(67924);
@@ -422,20 +411,19 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 3000;
 						break;
 					case 10:
-						if (Creature* Jaraxxus = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_JARAXXUS))))
+						if (Creature* Jaraxxus = GetInstanceCreature(TYPE_JARAXXUS))
 						{
 							if(Flopboum)
 								Jaraxxus->CastSpell(Flopboum,31008,false);
 						}
 						Kill(Flopboum);
 						Yell(16044,"Vite héros anéantissez le seigneur démon avant qu'il ne puisse ouvrir un portail vers son épouvantable royaume démoniaque !",Fordring);
-						if (Creature* Jaraxxus = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_JARAXXUS))))
+						if (Creature* Jaraxxus = GetInstanceCreature(TYPE_JARAXXUS))
 							Jaraxxus->setFaction(14);
 						Event_Timer = DAY * HOUR;
 						break;
 
 				}
-				UpdateWStates();
 				Event_phase++;
 			}
 			else
@@ -457,7 +445,6 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				{
 					case 1:
 						Yell(16047,"La prochaine bataille sera contre les chevaliers de la Croisade d'argent. Ce ne sera qu'après les avoir vaincus que vous serez déclarés dignes.",Fordring);
-						UpdateWStates();
 						Event_Timer = 7500;
 						break;
 					case 2:
@@ -505,20 +492,19 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
-						UpdateWStates();
-						if(Creature* Darkbane = Tasks.CallCreature(34496,TEN_MINS*1.5,PREC_COORDS,NOTHING,572.243f,244.680f,395.0f))
+						if(Creature* Darkbane = CallCreature(34496,TEN_MINS*1.5,PREC_COORDS,NOTHING,572.243f,244.680f,395.0f))
 						{
 							Darkbane->GetMotionMaster()->MovePoint(0, 574.376f,180.478f,396.0f);
 						}
-						if(Creature* Lightbane = Tasks.CallCreature(34497,TEN_MINS*1.5,PREC_COORDS,NOTHING,554.910f,244.888f,395.0f))
+						if(Creature* Lightbane = CallCreature(34497,TEN_MINS*1.5,PREC_COORDS,NOTHING,554.910f,244.888f,395.0f))
 						{
 							Lightbane->GetMotionMaster()->MovePoint(0, 563.832f, 180.223f, 395.0f);
 						}
 						Speak(CHAT_TYPE_SAY,16050,"Ce n'est qu'en travaillant côte à côte que vous pourrez triompher de l'ultime défi. Venues des profondeurs de la Couronne de Glace, voici deux des lieutenants les plus puissants du fléau, deux redoutables valkyrs, messagères ailées du Roi Liche",Fordring);
-						Tasks.CallCreature(34568,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[0][0],ValkyrPortal_spawn[0][1],ValkyrPortal_spawn[0][2]);
-						Tasks.CallCreature(34567,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[1][0],ValkyrPortal_spawn[1][1],ValkyrPortal_spawn[1][2]);
-						Tasks.CallCreature(34567,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[2][0],ValkyrPortal_spawn[2][1],ValkyrPortal_spawn[2][2]);
-						Tasks.CallCreature(34568,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[3][0],ValkyrPortal_spawn[3][1],ValkyrPortal_spawn[3][2]);
+						CallCreature(34568,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[0][0],ValkyrPortal_spawn[0][1],ValkyrPortal_spawn[0][2]);
+						CallCreature(34567,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[1][0],ValkyrPortal_spawn[1][1],ValkyrPortal_spawn[1][2]);
+						CallCreature(34567,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[2][0],ValkyrPortal_spawn[2][1],ValkyrPortal_spawn[2][2]);
+						CallCreature(34568,TEN_MINS,PREC_COORDS,NOTHING,ValkyrPortal_spawn[3][0],ValkyrPortal_spawn[3][1],ValkyrPortal_spawn[3][2]);
 						pInstance->DoUseDoorOrButton(pInstance->GetData64(TYPE_DOOR));
 						Event_Timer = 13000;
 						break;
@@ -558,7 +544,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 1000;
 						break;
 					case 4:
-						if(LichKing = Tasks.CallCreature(31301,50000,PREC_COORDS,NOTHING,564.057f,	203.706f,395.2f))
+						if(LichKing = CallCreature(31301,50000,PREC_COORDS,NOTHING,564.057f,	203.706f,395.2f))
 						{
 							LichKing->GetMotionMaster()->MovePoint(0, 563.734f,139.577,394.0f);
 							LichKing->setFaction(35);
@@ -589,7 +575,6 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 						Event_Timer = 1000;
 						break;
 					case 15:
-						UpdateWStates();
 						if (GameObject* Floor = me->GetMap()->GetGameObject(pInstance->GetData64(TYPE_FLOOR)))
 						{
 							if (Floor)
@@ -617,7 +602,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 									if(pPlayer->isAlive() && urand(0,3) == 3)
 										Kill(pPlayer);
 
-						if (Creature* AnubArak = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_ANUBARAK))))
+						if (Creature* AnubArak = GetInstanceCreature(TYPE_ANUBARAK))
 						{
 							Yell(16235,"Ah. Nos invités sont arrivés... Comme l'avait promis le maître",AnubArak);
 						}
@@ -650,6 +635,7 @@ bool GossipHello_npc_toc10_announcer(Player* pPlayer, Creature* pCreature)
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Debug_Valkyrs", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Debug_Jaraxxus", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Debug_Outro_Valkyr", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Debug_Champions", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
 	}
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     return true;
@@ -671,6 +657,9 @@ bool GossipSelect_npc_toc10_announcer(Player* pPlayer, Creature* pCreature, uint
 			break;
 		case GOSSIP_ACTION_INFO_DEF+4:
 			((npc_toc10_announcerAI*)pCreature->AI())->StartEvent(pPlayer,EVENT_TYPE_VALKYR_OUTRO);
+			break;
+		case GOSSIP_ACTION_INFO_DEF+5:
+			((npc_toc10_announcerAI*)pCreature->AI())->StartEvent(pPlayer,EVENT_TYPE_CHAMPIONS);
 			break;
     }
 

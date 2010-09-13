@@ -193,7 +193,10 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 					champion_down = 0;
 				break;
 			case TYPE_TRY:
-				m_auiEncounter[5]--;
+				if(m_auiEncounter[5] > 0)
+					m_auiEncounter[5]--;
+				DoUpdateWorldState(4390,1);
+				DoUpdateWorldState(4389,m_auiEncounter[5]);
 				break;
         }
 

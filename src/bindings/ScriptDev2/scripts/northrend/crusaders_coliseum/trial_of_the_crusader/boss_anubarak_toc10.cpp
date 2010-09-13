@@ -75,6 +75,10 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 			Speak(CHAT_TYPE_SAY,16236,"Flat'chir");
 		else
 			Speak(CHAT_TYPE_SAY,16237,"Encore un âme pour repaître l'armée des morts");
+
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance)
+				m_pInstance->SetData(TYPE_TRY,1);
     }
 
     void JustDied(Unit *victim)

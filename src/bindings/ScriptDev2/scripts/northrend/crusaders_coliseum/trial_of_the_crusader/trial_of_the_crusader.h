@@ -91,22 +91,15 @@ enum
 	EVENT_TYPE_ANUB				= 9
 };
 
-struct MANGOS_DLL_DECL npc_toc10_announcerAI : public ScriptedAI
+struct MANGOS_DLL_DECL npc_toc10_announcerAI : public LibDevFSAI
 {
-    npc_toc10_announcerAI(Creature *c) : ScriptedAI(c)
+    npc_toc10_announcerAI(Creature *c) : LibDevFSAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
-		Difficult = c->GetMap()->GetDifficulty();
-		Reset();
+        InitInstance();
     }
     
-    ScriptedInstance* pInstance;
 	bool EventStarted;
-	bool HeroicMode;
 	uint32 Spawn_Timer;
-	uint8 Try_Heroic;
-	MobEventTasks Tasks;
-	Difficulty Difficult;
 	uint32 Event_Timer;
 	uint8 Event_Type;
 	uint8 Event_phase;
@@ -123,18 +116,4 @@ struct MANGOS_DLL_DECL npc_toc10_announcerAI : public ScriptedAI
 	void SpawnChampions();
 	
     void UpdateAI(const uint32 diff);
-    
-	void UpdateWStates()
-	{
-		if(!HeroicMode)
-			return;
-
-		if(!pInstance)
-			return;
-
-		pInstance->DoUpdateWorldState(4390,1);
-		Try_Heroic--;
-		pInstance->DoUpdateWorldState(4389,Try_Heroic);
-		pInstance->SetData(TYPE_TRY,Try_Heroic);				
-	};
 };
