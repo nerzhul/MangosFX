@@ -171,24 +171,18 @@ CreatureAI* GetAI_boss_anubarakEdC(Creature* pCreature)
     return new boss_anubarakEdCAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL mob_swarm_scarabAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_swarm_scarabAI : public LibDevFSAI
 {
-    mob_swarm_scarabAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_swarm_scarabAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		difficulty = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnTank(SPELL_ACID_MANDIBLE,5000,20000);
+		AddEventOnTank(SPELL_DETERMINATION,5000,10000,20000);
     }
-
-    ScriptedInstance* m_pInstance;
-    Difficulty difficulty;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_ACID_MANDIBLE,5000,20000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_DETERMINATION,5000,10000,20000,TARGET_MAIN);
+		ResetTimers();		
     }
 
     void UpdateAI(const uint32 diff)
@@ -196,9 +190,15 @@ struct MANGOS_DLL_DECL mob_swarm_scarabAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 };
 
 CreatureAI* GetAI_mob_swarm_scarab(Creature* pCreature)
@@ -206,29 +206,30 @@ CreatureAI* GetAI_mob_swarm_scarab(Creature* pCreature)
     return new mob_swarm_scarabAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
+struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public LibDevFSAI
 {
-    mob_nerubian_borrowerAI(Creature* pCreature) : ScriptedAI(pCreature)
+    mob_nerubian_borrowerAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		difficulty = me->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnTank(SPELL_EXPOSE_WEAKNESS,5000,5000);
+		AddEventOnMe(SPELL_SPIDER_FRENZY,9000,10000,1000);
     }
 
-    ScriptedInstance* m_pInstance;
-    Difficulty difficulty;
-	MobEventTasks Tasks;
 	uint32 Submerge_Timer;
     bool submerged;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_EXPOSE_WEAKNESS,5000,5000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_SPIDER_FRENZY,9000,10000,1000,TARGET_ME);
-		Submerge_Timer =
+		ResetTimers();
+		Submerge_Timer = 2000;
         submerged = false;
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
@@ -237,7 +238,7 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
 
 		if(Submerge_Timer <= diff)
 		{
-			if (me->GetHealth() * 100.0 / me->GetMaxHealth() < 20.0f && !submerged)
+			if (CheckPercentLife(20) && !submerged)
 			{
 				DoCastMe(SPELL_SUBMERGE_1);
 				submerged = true;
@@ -248,14 +249,14 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public ScriptedAI
 		else
 			Submerge_Timer -= diff;
 
-        if (me->GetHealth() * 100.0 / me->GetMaxHealth() > 50.0f && submerged)
+        if (GetPercentLife() > 50.0f && submerged)
         {
              me->RemoveAurasDueToSpell(SPELL_SUBMERGE_1);
              submerged = false;
              Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien sort du sol");
          };
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -283,13 +284,13 @@ struct MANGOS_DLL_DECL anub_sphereAI : public ScriptedAI
 
     void DamageTaken(Unit* u, uint32 &dmg)
     {
-	if(dmg >= me->GetHealth())
-	{
-	     dmg = 0;
-	     explode_timer = 1000;
-	}
-
+		if(dmg >= me->GetHealth())
+		{
+			 dmg = 0;
+			 explode_timer = 1000;
+		}
     }
+
     void UpdateAI(const uint32 diff)
     {
 		if(explode_timer <= diff)
@@ -299,7 +300,6 @@ struct MANGOS_DLL_DECL anub_sphereAI : public ScriptedAI
 		}
 		else 
 			explode_timer -= diff;
-
     }
 
 };
@@ -309,27 +309,30 @@ CreatureAI* GetAI_anub_sphere(Creature* pCreature)
     return new anub_sphereAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL anub_spikeAI : public ScriptedAI
+struct MANGOS_DLL_DECL anub_spikeAI : public LibDevFSAI
 {
-    anub_spikeAI(Creature* pCreature) : ScriptedAI(pCreature)
+    anub_spikeAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
-		difficulty = me->GetMap()->GetDifficulty();
-    }
-    
-    MobEventTasks Tasks;
-	Difficulty difficulty;
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_IMPALE,500,1500,500,TARGET_MAIN);
+        InitInstance();
+		AddEventOnTank(SPELL_IMPALE,500,1500,500);
 		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
+    
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void UpdateAI(const uint32 diff)
     {
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
     }
 
 };

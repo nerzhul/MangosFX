@@ -155,6 +155,12 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
 		}
 	}
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
+
     void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
@@ -272,6 +278,12 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
 				me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 		me->ForcedDespawn(TEN_MINS*1000);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void Aggro(Unit* pWho)
     {
