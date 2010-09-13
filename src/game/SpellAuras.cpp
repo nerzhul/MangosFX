@@ -2048,6 +2048,7 @@ void Aura::TriggerSpell()
 //                    case 47015: break;
 //                    // Party G.R.E.N.A.D.E.
 //                    case 51510: break;
+					case 70126: trigger_spell_id = 69675; break;
                     default:
                         break;
                 }

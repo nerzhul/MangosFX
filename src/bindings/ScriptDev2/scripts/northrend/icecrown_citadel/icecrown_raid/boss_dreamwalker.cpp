@@ -284,8 +284,8 @@ struct MANGOS_DLL_DECL dw_archmageAI : public LibDevFSAI
     dw_archmageAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_FROSTBOLT_VOLLEY,10000,20000,5000);
-		AddEvent(SPELL_COLUMN_OF_FROST,5000,12000,2000);
+		AddEventOnTank(SPELL_FROSTBOLT_VOLLEY,urand(10000,15000),20000,5000);
+		AddEvent(SPELL_COLUMN_OF_FROST,urand(5000,10000),12000,2000);
     }
 
     void Reset()
@@ -358,7 +358,7 @@ struct MANGOS_DLL_DECL dw_blazingskeletonsAI : public LibDevFSAI
     dw_blazingskeletonsAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventMaxPrioOnMe(SPELL_LAY_WASTE,5000,17000,5000);
+		AddEventMaxPrioOnMe(SPELL_LAY_WASTE,urand(5000,8000),17000,5000);
 		AddEventOnTank(SPELL_FIREBALL,1000,2000,3000);
     }
 
@@ -462,7 +462,7 @@ struct MANGOS_DLL_DECL dw_abominationAI : public LibDevFSAI
     dw_abominationAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_GUT_SPRAY,3000,10000,6000);
+		AddEventOnTank(SPELL_GUT_SPRAY,urand(2000,8000),10000,6000);
     }
 
 	bool die;
@@ -480,7 +480,7 @@ struct MANGOS_DLL_DECL dw_abominationAI : public LibDevFSAI
 			if(!die)
 			{
 				dmg = 0;
-				for(uint8 i=0;i<urand(8,10);i++)
+				for(uint8 i=0;i<urand(7,10);i++)
 					CallCreature(NPC_ROT_WORM,THREE_MINS);
 				me->ForcedDespawn(1000);
 				die = true;

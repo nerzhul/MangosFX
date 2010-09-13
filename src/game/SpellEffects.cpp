@@ -7165,6 +7165,101 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 	// Hack for totem bug
 	pTotem->SetPhaseMask(1,true);
 
+	// Hack for totem skin
+	if(m_caster->GetTypeId() == TYPEID_PLAYER)
+	{
+		Player* plr = (Player*)m_caster;
+		switch(plr->getRace())
+		{
+			case RACE_DWARF:
+				switch(slot)
+				{
+					case TOTEM_SLOT_FIRE:
+						pTotem->SetDisplayId(30754);
+						break;
+					case TOTEM_SLOT_EARTH:
+						pTotem->SetDisplayId(30753);
+						break;
+					case TOTEM_SLOT_WATER:
+						pTotem->SetDisplayId(30755);
+						break;
+					case TOTEM_SLOT_AIR:
+						pTotem->SetDisplayId(30736);
+						break;
+				}
+				break;
+			case RACE_TROLL:
+				switch(slot)
+				{
+					case TOTEM_SLOT_FIRE:
+						pTotem->SetDisplayId(30762);
+						break;
+					case TOTEM_SLOT_EARTH:
+						pTotem->SetDisplayId(30761);
+						break;
+					case TOTEM_SLOT_WATER:
+						pTotem->SetDisplayId(30763);
+						break;
+					case TOTEM_SLOT_AIR:
+						pTotem->SetDisplayId(30760);
+						break;
+				}
+				break;
+			case RACE_ORC:
+				switch(slot)
+				{
+					case TOTEM_SLOT_FIRE:
+						pTotem->SetDisplayId(30758);
+						break;
+					case TOTEM_SLOT_EARTH:
+						pTotem->SetDisplayId(30757);
+						break;
+					case TOTEM_SLOT_WATER:
+						pTotem->SetDisplayId(30759);
+						break;
+					case TOTEM_SLOT_AIR:
+						pTotem->SetDisplayId(30756);
+						break;
+				}
+				break;
+			case RACE_TAUREN:
+				switch(slot)
+				{
+					case TOTEM_SLOT_FIRE:
+						pTotem->SetDisplayId(4683);
+						break;
+					case TOTEM_SLOT_EARTH:
+						pTotem->SetDisplayId(4588);
+						break;
+					case TOTEM_SLOT_WATER:
+						pTotem->SetDisplayId(4587);
+						break;
+					case TOTEM_SLOT_AIR:
+						pTotem->SetDisplayId(4590);
+						break;
+				}
+				break;
+			case RACE_DRAENEI:
+				switch(slot)
+				{
+					case TOTEM_SLOT_FIRE:
+						pTotem->SetDisplayId(19074);
+						break;
+					case TOTEM_SLOT_EARTH:
+						pTotem->SetDisplayId(19073);
+						break;
+					case TOTEM_SLOT_WATER:
+						pTotem->SetDisplayId(19075);
+						break;
+					case TOTEM_SLOT_AIR:
+						pTotem->SetDisplayId(19071);
+						break;
+				}
+				break;
+
+		}
+	}
+
 	// stone claw shield
 	if(m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & 0x00008)
 	{

@@ -370,7 +370,6 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
 
 	void Disempale()
 	{
-		bool found = false;
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 		if (!lPlayers.isEmpty())
 		{
@@ -385,10 +384,10 @@ struct MANGOS_DLL_DECL bonespike_marrowgarAI : public LibDevFSAI
 					if(pPlayer->GetDistance2d(me) > 3.0f)
 						continue;
 
-					if(pPlayer->isAlive() && !found)
+					if(pPlayer->isAlive())
 					{
 						pPlayer->RemoveAurasDueToSpell(SPELL_BONE_SPIKE_IMPALE);
-						found = true;
+						return;
 					}
 				}
 			}
