@@ -27,6 +27,8 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 	uint64 floor_guid;
 	uint64 door_guid;
 
+	uint64 ArgentChestGUID[4][2];
+
 	bool Raid25;
 
     void Initialize()
@@ -128,6 +130,30 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 			case 195647:
 				door_guid = pGo->GetGUID();
 				break;
+			case GO_10_TRY_10HM:
+				ArgentChestGUID[0][0] = pGo->GetGUID();
+				break;
+			case GO_25_TRY_10HM:
+				ArgentChestGUID[1][0] = pGo->GetGUID();
+				break;
+			case GO_45_TRY_10HM:
+				ArgentChestGUID[2][0] = pGo->GetGUID();
+				break;
+			case GO_50_TRY_10HM:
+				ArgentChestGUID[3][0] = pGo->GetGUID();
+				break;
+			case GO_10_TRY_25HM:
+				ArgentChestGUID[0][1] = pGo->GetGUID();
+				break;
+			case GO_25_TRY_25HM:
+				ArgentChestGUID[1][1] = pGo->GetGUID();
+				break;
+			case GO_45_TRY_25HM:
+				ArgentChestGUID[2][1] = pGo->GetGUID();
+				break;
+			case GO_50_TRY_25HM:
+				ArgentChestGUID[3][1] = pGo->GetGUID();
+				break;
 		}
     }
 
@@ -138,8 +164,51 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 			case TYPE_EVENT_BEAST:
 			case TYPE_JARAXXUS:
 			case TYPE_VALKYRS:
+				m_auiEncounter[uiType] = uiData;
+				break;
 			case TYPE_ANUBARAK:
 				m_auiEncounter[uiType] = uiData;
+				if(uiData == DONE)
+				{
+					if(instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC)
+					{
+						uint64 chestGUID = 0;
+						if(m_auiEncounter[5] == 50)
+							chestGUID = ArgentChestGUID[3][0];
+						else if(m_auiEncounter[5] >= 45)
+							chestGUID = ArgentChestGUID[2][0];
+						else if(m_auiEncounter[5] >= 25)
+							chestGUID = ArgentChestGUID[1][0];
+						else if(m_auiEncounter[5] >= 10)
+							chestGUID = ArgentChestGUID[0][0];
+
+						if(GameObject* pChest = instance->GetGameObject(chestGUID))
+							if (!pChest->isSpawned())
+							{
+								pChest->SetRespawnTime(7*DAY);
+								pChest->UpdateObjectVisibility();
+							}	
+					}
+					else if(instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC)
+					{
+						uint64 chestGUID = 0;
+						if(m_auiEncounter[5] == 50)
+							chestGUID = ArgentChestGUID[3][1];
+						else if(m_auiEncounter[5] >= 45)
+							chestGUID = ArgentChestGUID[2][1];
+						else if(m_auiEncounter[5] >= 25)
+							chestGUID = ArgentChestGUID[1][1];
+						else if(m_auiEncounter[5] >= 10)
+							chestGUID = ArgentChestGUID[0][1];
+
+						if(GameObject* pChest = instance->GetGameObject(chestGUID))
+							if (!pChest->isSpawned())
+							{
+								pChest->SetRespawnTime(7*DAY);
+								pChest->UpdateObjectVisibility();
+							}
+					}
+				}
 				break;
 			case TYPE_CHAMPIONS:
 				m_auiEncounter[uiType] = uiData;

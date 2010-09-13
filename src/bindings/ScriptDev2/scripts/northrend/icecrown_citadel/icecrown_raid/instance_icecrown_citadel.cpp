@@ -421,7 +421,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 if (uiData == DONE)
 				{
                     OpenDoor(m_uiSaurfangDoorGUID);
-					if (GameObject* pChest = instance->GetGameObject(m_uiSaurfangCacheGUID))
+					if(GameObject* pChest = instance->GetGameObject(m_uiSaurfangCacheGUID))
 						if (!pChest->isSpawned())
 						{
 							pChest->SetRespawnTime(7*DAY);
@@ -441,7 +441,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					OpenDoor(m_uiFestergutDoorGUID);
 
 				if(m_auiEncounter[TYPE_ROTFACE] == DONE && m_auiEncounter[TYPE_FESTERGUT] == DONE)
+				{
 					OpenDoor(m_uiBloodWingDoorGUID);
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
+				}
 				break;
 			case TYPE_ROTFACE:
 				m_auiEncounter[TYPE_ROTFACE] = uiData;
@@ -455,7 +458,10 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 					DespawnCreatures(rotfacePoolsGUIDs);
 
 				if(m_auiEncounter[TYPE_ROTFACE] == DONE && m_auiEncounter[TYPE_FESTERGUT] == DONE)
+				{
 					OpenDoor(m_uiBloodWingDoorGUID);
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
+				}
 				break;
 			case TYPE_PUTRICIDE:
 				m_auiEncounter[TYPE_PUTRICIDE] = uiData;
@@ -463,6 +469,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				{
 					OpenDoor(m_uiPutricideDoorGUID);
 					OpenDoor(m_uiBloodWingDoorGUID);
+					OpenDoor(m_uiPrinceCouncilDoorGUID);
 					OpenDoor(m_uiPlagueSigilGUID);
 				}
 				else if(uiData == IN_PROGRESS)
