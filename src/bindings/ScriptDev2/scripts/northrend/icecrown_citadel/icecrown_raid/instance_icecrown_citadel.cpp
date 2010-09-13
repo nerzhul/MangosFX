@@ -207,7 +207,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				m_uiSindragosaGUID = pCreature->GetGUID();
 				if(!pCreature->isAlive())
 					SetData(TYPE_SINDRAGOSA,DONE);
-				AutoFreeze(pCreature);
 				break;
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
