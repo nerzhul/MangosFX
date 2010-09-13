@@ -52,6 +52,12 @@ struct MANGOS_DLL_DECL boss_championWarAI : public LibDevFSAI
 		}
 	}
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         if (pInstance)
@@ -94,35 +100,30 @@ enum druidbalancespells
 	SPELL_WRATH = 65862,
 };
 
-struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public LibDevFSAI
 {
-    boss_championDruidBalanceAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_championDruidBalanceAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bDifficulty = pCreature->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEventOnMe(SPELL_BARKSKIN,4000,60000);
+		AddEvent(SPELL_CYCLONE,20000,60000);
+		AddEvent(SPELL_ENTANGLING_ROOTS,15000,60000);
+		AddEvent(SPELL_FAERIE_FIRE,1000,6000);
+		AddEvent(SPELL_FORCE_OF_NATURE,45000,180000);
+		AddEventOnMe(SPELL_PVP_TRINKET,180000,120000);
+		AddEventOnTank(SPELL_INSECT_SWARM,2000,18000);
+		AddEventOnTank(SPELL_MOONFIRE,3000,9000,1000);
+		AddEventOnTank(SPELL_STARFIRE,5000,9000,2500);
+		AddEventOnTank(SPELL_WRATH,200,9000,2500);
     }
 
-    ScriptedInstance* m_pInstance;
-    MobEventTasks Tasks;
-    Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
 	uint32 Mana_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
+		ResetTimers();
 		ResetAggro_Timer = 6000;
-		Tasks.AddEvent(SPELL_BARKSKIN,4000,60000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_CYCLONE,20000,60000);
-		Tasks.AddEvent(SPELL_ENTANGLING_ROOTS,15000,60000);
-		Tasks.AddEvent(SPELL_FAERIE_FIRE,1000,6000);
-		Tasks.AddEvent(SPELL_FORCE_OF_NATURE,45000,180000);
-		Tasks.AddEvent(SPELL_PVP_TRINKET,180000,120000,0,TARGET_ME);
-		Tasks.AddEvent(SPELL_INSECT_SWARM,2000,18000,0,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_MOONFIRE,3000,9000,1000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_STARFIRE,5000,9000,2500,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_WRATH,200,9000,2500,TARGET_MAIN);
 		Mana_Timer = 200;
     }
 
@@ -137,14 +138,18 @@ struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHAMPIONDRUID, DONE);
+        SetInstanceData(TYPE_CHAMPIONDRUID, DONE);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			SetInstanceData(TYPE_TRY,1);
+	}
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHAMPIONDRUID, IN_PROGRESS);
+        SetInstanceData(TYPE_CHAMPIONDRUID, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -171,7 +176,7 @@ struct MANGOS_DLL_DECL boss_championDruidBalanceAI : public ScriptedAI
 		else
 			Mana_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
 
@@ -243,6 +248,12 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
 			dmg = 0;
 			DoResetThreat();
 		}
+	}
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -349,6 +360,12 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
 		}
 	}
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         if (m_pInstance)
@@ -434,6 +451,12 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_CHAMPIONROGUE, DONE);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
 	{
@@ -525,6 +548,12 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
 
 		DoCastMe(SPELL_SUMMON_FELHUNTER);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
 	{
@@ -626,6 +655,12 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_CHAMPIONSHAMAN, DONE);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
 	{
@@ -730,6 +765,12 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
             m_pInstance->SetData(TYPE_CHAMPIONSHAMAN, IN_PROGRESS);
     }
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
+
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
 	{
 		if(pDoneTo->getFaction() == me->getFaction())
@@ -833,6 +874,12 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
 		}
 	}
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         if (m_pInstance)
@@ -921,6 +968,12 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
 			dmg = 0;
 			DoResetThreat();
 		}
+	}
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
 	}
 
     void JustDied(Unit *victim)
@@ -1030,6 +1083,12 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
             m_pInstance->SetData(TYPE_CHAMPIONPRIEST, DONE);
     }
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
@@ -1132,6 +1191,12 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
 		}
 	}
 
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
+
     void Aggro(Unit* pWho)
     {
         if (m_pInstance)
@@ -1228,6 +1293,12 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
         if (m_pInstance)
             m_pInstance->SetData(TYPE_CHAMPIONDEATHKNIGHT, DONE);
     }
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
+	}
 
     void Aggro(Unit* pWho)
     {
@@ -1326,6 +1397,12 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
 			dmg = 0;
 			DoResetThreat();
 		}
+	}
+
+	void KilledUnit(Unit* victim)
+	{
+		if(victim->GetTypeId() == TYPEID_PLAYER)
+			if(m_pInstance) m_pInstance->SetData(TYPE_TRY,1);
 	}
 
     void UpdateAI(const uint32 diff)

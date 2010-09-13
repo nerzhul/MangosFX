@@ -257,6 +257,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 						Speak(CHAT_TYPE_SAY,16036,"Bienvenue champions ! Vous avez entendu l'appel de la croisade d'argent et vaillament répondu. C'est ici dans le colisée d'argent que vous affronterez vos plus grands défis. Ceux d'entre vous qui auront survécu aux vigueurs du colisée se joindrons à la marche de la croisade sur la Citadelle de la Couronne de Glace",Fordring);
 						Event_Timer = 21000;
@@ -296,6 +297,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						Yell(16039,"Apprêtez vous héros car voici que les terreurs jumelles, Gueule d'Acide et Ecaille d'effroi pénètrent dans l'arène !",Fordring);
 						if(Creature* Acidmaw = CallCreature(35144,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,572.243f,244.680f,395.0f))
 						{
@@ -331,6 +333,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)		
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						Yell(16040,"L'air se gèle à l'entrée de notre prochain combattant : Glace-Hurlante ! Tuez ou soyez tués, champions !",Fordring);
 						if(Creature* Icehowl = CallCreature(34797,TEN_MINS*1.5,PREC_COORDS,AGGRESSIVE_RANDOM,563.135f,	243.306f,395.0f))
 						{
@@ -357,6 +360,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						pInstance->DoUseDoorOrButton(pInstance->GetData64(TYPE_DOOR));
 						Event_Timer = 1000;
 						break;
@@ -444,6 +448,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						Yell(16047,"La prochaine bataille sera contre les chevaliers de la Croisade d'argent. Ce ne sera qu'après les avoir vaincus que vous serez déclarés dignes.",Fordring);
 						Event_Timer = 7500;
 						break;
@@ -492,6 +497,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						if(Creature* Darkbane = CallCreature(34496,TEN_MINS*1.5,PREC_COORDS,NOTHING,572.243f,244.680f,395.0f))
 						{
 							Darkbane->GetMotionMaster()->MovePoint(0, 574.376f,180.478f,396.0f);
@@ -524,6 +530,7 @@ void npc_toc10_announcerAI::UpdateAI(const uint32 diff)
 				switch(Event_phase)
 				{
 					case 1:
+						SetInstanceData(TYPE_TRY,0);
 						Speak(CHAT_TYPE_SAY,16051,"C'est un rude coup qui vient d'être porté au Roi Liche. Vous avez prouvé que vous êtes aptes à servir comme Champion de la Croisade d'Argent. Ensemble nous frapperons la Citadelle de la Couronne de Glace et détruirons ce qui reste du fléau. Aucun défi ne pourra résister à notre unité !",Fordring);
 						Event_Timer = 19500;
 						break;

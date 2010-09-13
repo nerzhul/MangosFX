@@ -193,10 +193,13 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 					champion_down = 0;
 				break;
 			case TYPE_TRY:
-				if(m_auiEncounter[5] > 0)
-					m_auiEncounter[5]--;
-				DoUpdateWorldState(4390,1);
-				DoUpdateWorldState(4389,m_auiEncounter[5]);
+				if(instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC || instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC)
+				{
+					if(m_auiEncounter[5] > 0 && uiData == 1)
+						m_auiEncounter[5]--;
+					DoUpdateWorldState(4390,1);
+					DoUpdateWorldState(4389,m_auiEncounter[5]);
+				}
 				break;
         }
 
@@ -219,6 +222,12 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
     {
         return strInstData.c_str();
     }
+
+	void OnPlayerEnter(Player* pWho)
+	{
+		pWho->SendUpdateWorldState(4390,1);
+		pWho->SendUpdateWorldState(4389,m_auiEncounter[5]);
+	}
 
     uint32 GetData(uint32 uiType)
     {
