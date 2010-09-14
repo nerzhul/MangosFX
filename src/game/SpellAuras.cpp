@@ -2048,7 +2048,10 @@ void Aura::TriggerSpell()
 //                    case 47015: break;
 //                    // Party G.R.E.N.A.D.E.
 //                    case 51510: break;
-					case 70126: trigger_spell_id = 69675; break;
+					case 70126:
+						if(Unit* caster = GetCaster())
+							caster->CastSpell(m_target,70157,true);
+						return;
                     default:
                         break;
                 }
@@ -2387,6 +2390,7 @@ void Aura::TriggerSpell()
 		case 70842:
 		case 63132:
 		case 71706:
+		case 70157:
 			return;
 		case 33711:
 			trigger_spell_id = 33760;

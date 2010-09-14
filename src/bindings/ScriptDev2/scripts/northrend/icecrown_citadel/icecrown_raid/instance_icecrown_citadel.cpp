@@ -727,17 +727,23 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 
 					if(Creature* Dreamwalker = GetCreatureInMap(m_uiDreamWalkerGUID))
 					{
-						if(pPlayer->GetTeam() == ALLIANCE)
-							Dreamwalker->setFaction(1802);
-						else
-							Dreamwalker->setFaction(1801);
+						if(!pPlayer->isGameMaster())
+						{
+							if(pPlayer->GetTeam() == ALLIANCE)
+								Dreamwalker->setFaction(1802);
+							else
+								Dreamwalker->setFaction(1801);
+						}
 					}
 					if(Creature* Dreamwalker = GetCreatureInMap(m_uiDreamwalkerImageGUID))
 					{
-						if(pPlayer->GetTeam() == ALLIANCE)
-							Dreamwalker->setFaction(1802);
-						else
-							Dreamwalker->setFaction(1801);
+						if(!pPlayer->isGameMaster())
+						{
+							if(pPlayer->GetTeam() == ALLIANCE)
+								Dreamwalker->setFaction(1802);
+							else
+								Dreamwalker->setFaction(1801);
+						}
 					}
 				}
 		return found;

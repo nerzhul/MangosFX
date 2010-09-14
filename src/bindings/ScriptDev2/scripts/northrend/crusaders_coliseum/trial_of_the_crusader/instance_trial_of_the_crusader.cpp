@@ -174,11 +174,20 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 					{
 						uint64 chestGUID = 0;
 						if(m_auiEncounter[5] == 50)
+						{
+							CompleteAchievementForGroup(3810);
 							chestGUID = ArgentChestGUID[3][0];
+						}
 						else if(m_auiEncounter[5] >= 45)
+						{
+							CompleteAchievementForGroup(3809);
 							chestGUID = ArgentChestGUID[2][0];
+						}
 						else if(m_auiEncounter[5] >= 25)
+						{
+							CompleteAchievementForGroup(3808);
 							chestGUID = ArgentChestGUID[1][0];
+						}
 						else if(m_auiEncounter[5] >= 10)
 							chestGUID = ArgentChestGUID[0][0];
 
@@ -193,11 +202,20 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 					{
 						uint64 chestGUID = 0;
 						if(m_auiEncounter[5] == 50)
+						{
 							chestGUID = ArgentChestGUID[3][1];
+							CompleteAchievementForGroup(3818);
+						}
 						else if(m_auiEncounter[5] >= 45)
+						{
+							CompleteAchievementForGroup(3818);
 							chestGUID = ArgentChestGUID[2][1];
+						}
 						else if(m_auiEncounter[5] >= 25)
+						{
+							CompleteAchievementForGroup(3817);
 							chestGUID = ArgentChestGUID[1][1];
+						}
 						else if(m_auiEncounter[5] >= 10)
 							chestGUID = ArgentChestGUID[0][1];
 

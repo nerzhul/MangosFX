@@ -163,6 +163,12 @@ void ScriptedAI::DoCast(Unit* pTarget, uint32 uiSpellId, bool bTriggered)
     me->CastSpell(pTarget, uiSpellId, bTriggered);
 }
 
+void ScriptedAI::DoCastXYZ(float x, float y, float z, uint32 uiSpellId, bool bTriggered)
+{
+	me->StopMoving();
+	me->CastSpell(x,y,z,uiSpellId,bTriggered);
+}
+
 void ScriptedAI::DoCastMe(uint32 uiSpellId, bool bTriggered)
 {
     if (!me->isAlive() || me->IsNonMeleeSpellCasted(false))
@@ -913,13 +919,12 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
     {
 		who->SetReactState(REACT_PASSIVE);
         who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x03);
-        //who->AddSplineFlag(SplineFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
     }
     else
     {
 		who->SetReactState(REACT_AGGRESSIVE);
-        who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x00);
-        //who->RemoveSplineFlag(SplineFlags(MOVEFLAG_CAN_FLY + MOVEFLAG_FLYING));
+        who->SetUInt32Value(UNIT_FIELD_BYTES_0, 0);
+        who->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
     }
 }
 
