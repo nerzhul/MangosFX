@@ -40,8 +40,8 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 {
     boss_sindragosaAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-		AddEventOnTank(SPELL_CLEAVE,3000,5000,1000,1);
-		AddEventOnTank(SPELL_CLEAVE,3000,5000,1000,3);
+		AddEventOnTank(SPELL_CLEAVE,3000,6000,1000,1);
+		AddEventOnTank(SPELL_CLEAVE,3000,6000,1000,3);
 		AddEventOnMe(SPELL_TAIL_SMASH,1000,10000,1000,1);
 		AddEventOnMe(SPELL_TAIL_SMASH,1000,10000,1000,3);
 		AddEventOnTank(SPELL_FROST_BREATH,25000,35000,2000,1);
@@ -51,8 +51,8 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 		AddEventMaxPrioOnMe(SPELL_ICY_GRIP,17000,35000,0,1);
 		AddEventMaxPrioOnMe(SPELL_ICY_GRIP,17000,35000,0,3);
 		// Script here test for aura with stacks
-		AddEvent(SPELL_UNCHAINED_MAGIC,15000,20000,0,TARGET_HAS_MANA,1);
-		AddEvent(SPELL_UNCHAINED_MAGIC,15000,20000,0,TARGET_HAS_MANA,3);
+		AddEvent(SPELL_UNCHAINED_MAGIC,15000,60000,0,TARGET_HAS_MANA,1);
+		AddEvent(SPELL_UNCHAINED_MAGIC,15000,60000,0,TARGET_HAS_MANA,3);
 
 		AddEnrageTimer(TEN_MINS);
 		AddTextEvent(17011,"Assez ! Ce petit jeu me fatigue !",TEN_MINS,60000);
