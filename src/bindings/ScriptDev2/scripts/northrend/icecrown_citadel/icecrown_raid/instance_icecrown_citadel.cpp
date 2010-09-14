@@ -72,6 +72,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 	uint8 m_uiDreamwalkerGuardDone;
 	uint64 m_uiDreamwalkerImageGUID;
 
+	uint64 m_uiFordringLKEventGUID;
+
 	uint64 m_uiSaurfangCacheGUID;
 
 	uint64 m_uiPlagueSigilGUID;
@@ -133,6 +135,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 		dreamwalkerEventAddGUIDs.clear();
 		m_uiDreamwalkerGuardDone = 0;
 		m_uiDreamwalkerImageGUID = 0;
+
+		m_uiFordringLKEventGUID = 0;
 
 		m_uiPlagueSigilGUID				= 0;
 		m_uiBloodSigilGUID				= 0;
@@ -243,6 +247,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case NPC_DREAMWALKER_IMAGE:
 				pCreature->SetPhaseMask(16,true);
 				m_uiDreamwalkerImageGUID = pCreature->GetGUID();
+				break;
+			case NPC_TIRION_FORDRING:
+				m_uiFordringLKEventGUID = pCreature->GetGUID();
 				break;
 
         }
@@ -562,6 +569,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				}
 				else if(uiData == IN_PROGRESS)
 					CloseDoor(m_uiSindragosaDoorGUID);
+				else
+					OpenDoor(m_uiSindragosaDoorGUID);
 				break;
 			case DATA_DW_DOOR_1:
 				if(uiData == 0)
@@ -703,6 +712,8 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				return m_uiSindragosaGUID;
 			case TYPE_LICHKING:
 				return m_uiMarrowgarDoorGUID;
+			case DATA_FORDRING:
+				return m_uiFordringLKEventGUID;
         }
         return 0;
     }

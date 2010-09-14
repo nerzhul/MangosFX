@@ -58,7 +58,9 @@ enum Spells
 	SPELL_ICE_PULSE						=	69099,
 	SPELL_ICE_BURST						=	69108,
 	// Raging Spirit
-	SPELL_SOUl_SHRIEK					=	69242
+	SPELL_SOUl_SHRIEK					=	69242,
+
+	SPELL_FROSTMOURNE_WRATH				=	72350,
 };
 
 struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
@@ -66,6 +68,8 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
     boss_iccraid_lichkingAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		AddEnrageTimer(10000);
+		AddTextEvent(17365,"Rencontrez votre tragique fin !",10000,TEN_MINS);
     }
 
     void Reset()
@@ -75,18 +79,20 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 
     void Aggro(Unit* pWho)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_LICHKING, IN_PROGRESS);
+        SetInstanceData(TYPE_LICHKING, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
 	{
+		if(urand(0,1))
+			Yell(17363,"L'espoir faiblit.");
+		else
+			Yell(17364,"La fin est venue !");
 	}
 
     void JustDied(Unit* pKiller)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_LICHKING, DONE);
+        SetInstanceData(TYPE_LICHKING, DONE);
 
 		switch(m_difficulty)
 		{
@@ -107,8 +113,7 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 
     void JustReachedHome()
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_LICHKING, FAIL);
+        SetInstanceData(TYPE_LICHKING, FAIL);
     }
 
     void UpdateAI(const uint32 diff)
@@ -126,11 +131,129 @@ CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
     return new boss_iccraid_lichkingAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
+{
+    icc_fordring_lkAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		IntroEvent = false;
+    }
+
+	bool IntroEvent;
+	uint16 EvPhase;
+	uint32 Ev_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		EvPhase = 0;
+		Ev_Timer = 1000;
+    }
+
+	void DamageTaken(Unit* pWho, uint32 &dmg)
+	{
+		dmg = 0;
+	}
+
+	void KilledUnit(Unit* who)
+	{
+	}
+
+	void StartIntroEvent()
+	{
+		/*if(!(pInstance->GetData(TYPE_SINDRAGOSA) == DONE))
+			return;*/
+
+		IntroEvent = true;
+		EvPhase = 0;
+		Ev_Timer = 500;
+	}
+
+	void StopIntroEvent()
+	{
+		IntroEvent = false;
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+		if(IntroEvent)
+		{
+			if(Ev_Timer <= diff)
+			{
+				switch(EvPhase)
+				{
+					case 0:
+						Say(16653,"Voici venu l'ultime combat. Les échos des évènements d'aujourd'hui résonneront dans l'histoire. Quelle qu'en soit l'issue, "
+							"le monde saura que nous avons combattu avec honneur, que nous avons combattu pour la liberté et la survie de nos peuples.");
+						Ev_Timer = 13000;
+						break;
+					default:
+						// Dont forget to break that after
+						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+							LichKing->CastSpell(LichKing,SPELL_FROSTMOURNE_WRATH,false);
+						Ev_Timer = 10000;
+						break;
+				}
+				EvPhase++;
+			}
+			else
+				Ev_Timer -= diff;
+		}
+    }
+};
+
+bool GossipHello_icc_fordring_lk(Player* pPlayer, Creature* pCreature)
+{
+	if(((icc_fordring_lkAI*)pCreature->AI())->IntroEvent && !pPlayer->isGameMaster())
+		return false;
+
+	pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Je suis pret a affronter Arthas.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+
+	if(pPlayer->isGameMaster())
+	{
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Debug_LK", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Stop Intro", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+	}
+	pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
+    return true;
+}
+
+bool GossipSelect_icc_fordring_lk(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
+{
+	pPlayer->CLOSE_GOSSIP_MENU();
+    switch(uiAction)
+    {
+		case GOSSIP_ACTION_INFO_DEF+1:
+			((icc_fordring_lkAI*)pCreature->AI())->StartIntroEvent();
+			break;
+		case GOSSIP_ACTION_INFO_DEF+2:
+			// ALL TO DEBUG LK
+			break;
+		case GOSSIP_ACTION_INFO_DEF+3:
+			((icc_fordring_lkAI*)pCreature->AI())->StopIntroEvent();
+			break;
+    }
+
+    return true;
+}
+
+CreatureAI* GetAI_icc_fordring_lk(Creature* pCreature)
+{
+    return new icc_fordring_lkAI(pCreature);
+}
+
 void AddSC_ICC_LichKing()
 {
 	Script* NewScript;
     NewScript = new Script;
     NewScript->Name = "boss_iccraid_lichking";
     NewScript->GetAI = &GetAI_boss_iccraid_lichking;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "icc_fordring_lk_event";
+    NewScript->GetAI = &GetAI_icc_fordring_lk;
+	NewScript->pGossipHello = &GossipHello_icc_fordring_lk;
+    NewScript->pGossipSelect = &GossipSelect_icc_fordring_lk;
     NewScript->RegisterSelf();
 }
