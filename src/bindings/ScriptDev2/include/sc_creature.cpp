@@ -1599,6 +1599,10 @@ void ScriptedAI::DoSpeakEmote(Unit* who)
 		who = me;
 
 	if(who->isAlive())
-		who->HandleEmoteCommand(13);
+		who->HandleEmoteCommand(1);
+
+	// 1 : speak
+	// 25 : point
+	// 48 : attack stand
 }
 

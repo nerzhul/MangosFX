@@ -572,6 +572,9 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				else
 					OpenDoor(m_uiSindragosaDoorGUID);
 				break;
+			case TYPE_LICHKING:
+				m_auiEncounter[TYPE_LICHKING] = uiData;
+				break;
 			case DATA_DW_DOOR_1:
 				if(uiData == 0)
 					CloseDoor(m_uiDreamwalkerEventDoorGUID[0]);
@@ -711,7 +714,7 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 			case TYPE_SINDRAGOSA:
 				return m_uiSindragosaGUID;
 			case TYPE_LICHKING:
-				return m_uiMarrowgarDoorGUID;
+				return m_uiLichKingGUID;
 			case DATA_FORDRING:
 				return m_uiFordringLKEventGUID;
         }

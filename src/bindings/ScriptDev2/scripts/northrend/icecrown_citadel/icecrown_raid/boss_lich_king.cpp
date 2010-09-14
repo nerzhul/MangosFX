@@ -60,7 +60,13 @@ enum Spells
 	// Raging Spirit
 	SPELL_SOUl_SHRIEK					=	69242,
 
+	// For Events
+
+	// Wipe Event
 	SPELL_FROSTMOURNE_WRATH				=	72350,
+
+	// Intro event
+	SPELL_FROZEN_JAIL					=	71321,
 };
 
 struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
@@ -114,6 +120,9 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
     void JustReachedHome()
     {
         SetInstanceData(TYPE_LICHKING, FAIL);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -183,14 +192,59 @@ struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
 				switch(EvPhase)
 				{
 					case 0:
-						Say(16653,"Voici venu l'ultime combat. Les échos des évènements d'aujourd'hui résonneront dans l'histoire. Quelle qu'en soit l'issue, "
-							"le monde saura que nous avons combattu avec honneur, que nous avons combattu pour la liberté et la survie de nos peuples.");
-						Ev_Timer = 13000;
+						me->GetMotionMaster()->MovePoint(0,488.602f,-2124.82f,1040.87f);
+						// Emote stand attack for tirion
+						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+							LichKing->GetMotionMaster()->MovePoint(0,430.38f,-2123.95f,1064.844f);
+						Ev_Timer = 3000;
+						break;
+					case 1:
+						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+						{
+							Yell(17349,"Voici donc qu'arrive la fameuse justice de la Lumière. Dois-je déposer Deuillegivre et me jeter à tes pieds en implorant pitié, Fordring ?",LichKing);
+							LichKing->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
+						}
+						Ev_Timer = 3000;
+						break;
+					case 2:
+						me->HandleEmoteCommand(48);
+						Ev_Timer = 10000;
+						break;
+					case 3:
+						Say(17390,"Nous t'accorderons une mort rapide, Arthas. Les milliers d'âme que tu as torturées et anéanties n'y ont pas eu droit.");
+						Ev_Timer = 7000;
+						break;
+					case 4:
+						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+							Yell(17350,"Et vous allez les rejoindre. Quand j'en aurais fini avec vous, vous crierez grâce, et je vous la refuserai. Vos cris d'agonie seront un hymne, à ma puissance, ILLIMITEE !",LichKing);
+						Ev_Timer = 21000;
+						break;
+					case 5:
+						Yell(17391,"Tout est dit. Champions, à l'ATTAQUE !");
+						Ev_Timer = 4000;
+						break;
+					case 6:
+						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+						{
+							Yell(17351,"Je vais te laisser en vie. Que tu sois le témoin de la fin, Fordring. Je ne voudrais pas priver le plus grand héros de la Lumière du spectacle de ce misérable monde "
+							"refaçonné à mon image",LichKing);
+							LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+							LichKing->HandleEmoteCommand(25);
+						}
+						me->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
+						Ev_Timer = 1000;
+						break;
+					case 7:
+						DoCastMe(SPELL_FROZEN_JAIL);
+						Ev_Timer = 25000;
 						break;
 					default:
 						// Dont forget to break that after
 						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
+						{
 							LichKing->CastSpell(LichKing,SPELL_FROSTMOURNE_WRATH,false);
+							me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+						}
 						Ev_Timer = 10000;
 						break;
 				}
