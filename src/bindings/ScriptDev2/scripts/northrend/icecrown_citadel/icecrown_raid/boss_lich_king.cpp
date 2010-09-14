@@ -170,8 +170,8 @@ struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
 
 	void StartIntroEvent()
 	{
-		/*if(!(pInstance->GetData(TYPE_SINDRAGOSA) == DONE))
-			return;*/
+		if(!(pInstance->GetData(TYPE_SINDRAGOSA) == DONE))
+			return;
 
 		IntroEvent = true;
 		EvPhase = 0;
