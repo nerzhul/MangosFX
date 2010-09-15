@@ -11379,7 +11379,7 @@ uint32 Unit::MeleeDamageBonus(Unit *pVictim, uint32 pdamage,WeaponAttackType att
 					HasAura(19882) && pVictim->getRace() == 5 ||
 					HasAura(19884) && pVictim->getRace() == 6 ||
 					HasAura(19883) && pVictim->getRace() == 7)
-				TakenPercent *= pctImprovement / 100.0f;
+				TakenPercent *= (100.0f + pctImprovement) / 100.0f;
 			}
 		}
 

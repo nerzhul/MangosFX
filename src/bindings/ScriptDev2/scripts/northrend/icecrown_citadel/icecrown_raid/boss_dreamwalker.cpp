@@ -228,14 +228,14 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 				if(eventStep > 1)
 					PopAdds();
 
-				if(eventStep >= 20)
-					pop_Timer = 9000;
-				if(eventStep >= 14)
-					pop_Timer = 11000;
+				if(eventStep >= 24)
+					pop_Timer = 10000;
+				if(eventStep >= 16)
+					pop_Timer = 12000;
 				else if(eventStep >= 8)
-					pop_Timer = 13000;
+					pop_Timer = 14000;
 				else if(eventStep > 1)
-					pop_Timer = 15000;
+					pop_Timer = 16000;
 			}
 			else
 				pop_Timer -= diff;

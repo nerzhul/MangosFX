@@ -31,7 +31,6 @@ enum Spells
 	NPC_FROST_BOMB			=	37186,
 	SPELL_ASPHYXIATION		=	71665,
 	
-	
 	// others
 	SPELL_ENRAGE			=	26662,
 };
@@ -90,7 +89,7 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 			if (!lPlayers.isEmpty())
 				for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 					if (Player* pPlayer = itr->getSource())
-						if(pPlayer->GetDistance2d(me) <= 250.0f)
+						if(pPlayer->GetDistance2d(me) <= 250.0f && pPlayer->isAlive() && !pPlayer->HasAura(SPELL_ICE_TOMB_BUFF))
 							pPlayer->TeleportTo(me->GetMapId(),me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1.0f,me->GetOrientation());
 		}
 		else if(spell->Id == SPELL_ICE_TOMB_BUFF)
@@ -166,7 +165,7 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 		DoCastMe(SPELL_FROST_AURA,true);
 		ModifyAuraStack(SPELL_PERMEATING_CHILL);
 		SetFlying(false);
-		DoCastMe(SPELL_MYSTIC_BUFFER,true);
+		ModifyAuraStack(SPELL_MYSTIC_BUFFER);
 	}
 
 	void GoToGround()
