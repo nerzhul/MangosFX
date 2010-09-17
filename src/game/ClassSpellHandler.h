@@ -19,8 +19,9 @@ enum AuraName
 	PRIEST_SILENT_RESOLVE				= 4,
 	MAGE_ARCANE_SUBTLELY				= 5,
 	ROGUE_VILE_POISON					= 6,
+	ROGUE_ENVENOM						= 7,
 
-	MAX_AURA_NAMES						= 7
+	MAX_AURA_NAMES						= 8
 };
 
 typedef std::list<Aura *> AuraList;

@@ -562,14 +562,11 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 								// envenom buff 6sec
 								for(uint8 i=0;i<3;i++)
 								{
-									if(m_caster->HasAura(32645,i))
-										m_caster->GetAura(32645,i)->SetAuraMaxDuration((1+combo)*1000);
-									if(m_caster->HasAura(32684,i))
-										m_caster->GetAura(32684,i)->SetAuraMaxDuration((1+combo)*1000);
-									if(m_caster->HasAura(57992,i))
-										m_caster->GetAura(57992,i)->SetAuraMaxDuration((1+combo)*1000);
-									if(m_caster->HasAura(57993,i))
-										m_caster->GetAura(57993,i)->SetAuraMaxDuration((1+combo)*1000);
+									if(Aura* aur = sClassSpellHandler.GetAuraByName(m_caster,ROGUE_ENVENOM))
+									{
+										aur->SetAuraMaxDuration((1+combo)*1000);
+										aur->RefreshAura();
+									}
 								}
 							}
                             damage *= combo;
