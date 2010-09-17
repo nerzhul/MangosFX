@@ -8115,6 +8115,17 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 //case 54072: break;                        // Knockback Ball Passive
                 //case 54476: break;                        // Blood Presence
                 //case 54775: break;                        // Abandon Vehicle on Poly
+				case 51701:
+				case 51698:
+				case 51700:
+				{
+					if(pVictim->GetTypeId() != TYPEID_PLAYER)
+						return false;
+
+					if(Unit* target = Unit::GetUnit(*this,pVictim->GetTargetGUID()))
+						((Player*)pVictim)->AddComboPoints(target,1);
+					return true;
+				}
                 case 57345:                                 // Darkmoon Card: Greatness
                 {
                     float stat = 0.0f;

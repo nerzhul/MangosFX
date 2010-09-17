@@ -559,14 +559,10 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 								for (uint8 i=0; i<combo; i++)
 									unitTarget->RemoveSingleSpellAurasByCasterSpell(spellId, m_caster->GetGUID());
 
-								// envenom buff 6sec
-								for(uint8 i=0;i<3;i++)
+								if(Aura* aur = sClassSpellHandler.GetAuraByName(m_caster,ROGUE_ENVENOM))
 								{
-									if(Aura* aur = sClassSpellHandler.GetAuraByName(m_caster,ROGUE_ENVENOM))
-									{
-										aur->SetAuraMaxDuration((1+combo)*1000);
-										aur->RefreshAura();
-									}
+									aur->SetAuraMaxDuration((1+combo)*1000);
+									aur->RefreshAura();
 								}
 							}
                             damage *= combo;
@@ -2669,6 +2665,8 @@ void Spell::EffectTriggerSpell(uint32 effIndex)
 			unitTarget->CombatStop();
 
             m_caster->CastSpell(unitTarget, spellId, true);
+			if(m_caster->HasAura(58426))
+				m_caster->CastSpell(m_caster, 58427, true);
             return;
         }
         // just skip
