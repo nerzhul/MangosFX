@@ -5743,14 +5743,14 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     return;
                 }
                 // Immolation Trap
-                else if ((m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004)) && m_spellProto->SpellIconID == 678)
+                else if(m_spellProto->SpellIconID == 678)
                 {
                     // $RAP*0.1/5 bonus per tick
                     m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) * 1 / 500);
                     return;
                 }
 				// Explosive trap
-				else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000080))
+				else if (m_spellProto->SpellFamilyFlags & UI64LIT(0x000000000000004))
 				{
 					m_modifier.m_amount += int32(caster->GetTotalAttackPowerValue(RANGED_ATTACK) / 10);
 					return;
