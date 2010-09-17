@@ -4288,7 +4288,18 @@ void Spell::EffectDispel(uint32 i)
             if(Unit *caster = aur->GetCaster())
             {
                 if(Player* modOwner = caster->GetSpellModOwner())
+				{
                     modOwner->ApplySpellMod(spellInfo->Id, SPELLMOD_RESIST_DISPEL_CHANCE, miss_chance, this);
+					// Vile poison
+					if(Aura* aur = sClassSpellHandler.GetAuraByName(modOwner,ROGUE_VILE_POISON))
+						miss_chance += aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_2);
+					// Arcane subtlely
+					if(Aura* aur = sClassSpellHandler.GetAuraByName(modOwner,MAGE_ARCANE_SUBTLELY))
+						miss_chance += aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
+					// Silent resolve
+					if(Aura* aur = sClassSpellHandler.GetAuraByName(modOwner,PRIEST_SILENT_RESOLVE))
+						miss_chance += aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
+				}
             }
 			switch(spellInfo->Id)
 			{

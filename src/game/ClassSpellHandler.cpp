@@ -227,12 +227,47 @@ AuraCarac caracTab[MAX_AURA_NAMES] =
 	{SPELL_AURA_PERIODIC_DAMAGE,	SPELLFAMILY_PRIEST, UI64LIT(0x00100000),0},
 	{SPELL_AURA_PERIODIC_HEAL,		SPELLFAMILY_PRIEST, UI64LIT(0x00000040),0},
 	{SPELL_AURA_PERIODIC_LEECH,		SPELLFAMILY_PRIEST, UI64LIT(0x02000000),0},
+	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_PRIEST, UI64LIT(0x00000000),0},
+	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_MAGE,	UI64LIT(0x00000000),0},
+	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_ROGUE,	UI64LIT(0x00000000),0},
 };
+
+Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
+{
+	AuraList const& aList = u->GetAurasByType(caracTab[aName].aType);
+	for(AuraList::const_iterator i = aList.begin(); i != aList.end(); ++i)
+	{
+		if(!(caracTab[aName].sfName == (*i)->GetSpellProto()->SpellFamilyName))
+			continue;
+
+		switch(aName)
+		{
+			case PRIEST_SILENT_RESOLVE:
+				if((*i)->GetSpellProto()->SpellIconID == 338)
+					return (*i);
+				break;
+			case MAGE_ARCANE_SUBTLELY:
+				if((*i)->GetSpellProto()->SpellIconID == 74)
+					return (*i);
+				break;
+			case ROGUE_VILE_POISON:
+				if((*i)->GetSpellProto()->SpellIconID == 74)
+					return (*i);
+				break;
+		}
+	}
+
+	return NULL;
+}
 
 Aura* ClassSpellHandler::GetAuraByName(Unit *u, AuraName aName, uint64 casterGUID)
 {
 	if(!u || aName >= MAX_AURA_NAMES || aName < 0)
 		return NULL;
+
+	if(caracTab[aName].sFlag == UI64LIT(0x0000000) && caracTab[aName].sFlag2 == 0)
+		if(Aura* aur = sClassSpellHandler.GetSpecialAura(u,aName))
+			return aur;
 
 	if(Aura* aur = u->GetAura(caracTab[aName].aType,caracTab[aName].sfName,caracTab[aName].sFlag,caracTab[aName].sFlag2,casterGUID))
 		return aur;

@@ -16,9 +16,14 @@ enum AuraName
 	PRIEST_HOLY_FIRE					= 1,
 	PRIEST_RENEW						= 2,
 	PRIEST_IMPROVED_DEVOURING_PLAGUE	= 3,
+	PRIEST_SILENT_RESOLVE				= 4,
+	MAGE_ARCANE_SUBTLELY				= 5,
+	ROGUE_VILE_POISON					= 6,
 
-	MAX_AURA_NAMES						= 4
+	MAX_AURA_NAMES						= 7
 };
+
+typedef std::list<Aura *> AuraList;
 
 class MANGOS_DLL_SPEC ClassSpellHandler
 {
@@ -32,6 +37,7 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 		void PeriodicDummyTick(Aura* aura);
 
 		Aura* GetAuraByName(Unit* u,AuraName aName, uint64 casterGUID = 0);
+		Aura* GetSpecialAura(Unit* u, AuraName aName);
 };
 
 #define sClassSpellHandler MaNGOS::Singleton<ClassSpellHandler>::Instance()

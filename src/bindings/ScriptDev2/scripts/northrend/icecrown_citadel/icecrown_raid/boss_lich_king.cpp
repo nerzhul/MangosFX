@@ -69,6 +69,8 @@ enum Spells
 	SPELL_FROZEN_JAIL					=	71321,
 };
 
+const static float FrostmourneCoords[3] = {481.0f,-2522.0f,1000.0f};
+
 struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 {
     boss_iccraid_lichkingAI(Creature* pCreature) : LibDevFSAI(pCreature)

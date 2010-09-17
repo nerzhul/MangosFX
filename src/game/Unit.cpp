@@ -2094,8 +2094,8 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
         Modifier* i_mod = (*i)->GetModifier();
         if (!(i_mod->m_miscvalue & schoolMask))
             continue;
-
-        SpellEntry const* i_spellProto = (*i)->GetSpellProto();
+        
+		SpellEntry const* i_spellProto = (*i)->GetSpellProto();
         // Fire Ward or Frost Ward
         if(i_spellProto->SpellFamilyName == SPELLFAMILY_MAGE && i_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000108))
         {
