@@ -3214,6 +3214,10 @@ void Spell::handle_immediate()
             // Apply duration mod
             if(Player* modOwner = m_caster->GetSpellModOwner())
                 modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
+
+			if (m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE)
+                duration = int32(duration * m_caster->GetFloatValue(UNIT_MOD_CAST_SPEED));
+
             m_spellState = SPELL_STATE_CASTING;
             SendChannelStart(duration);
         }
@@ -4212,7 +4216,7 @@ void Spell::SendChannelStart(uint32 duration)
         }
     }
 
-	duration = ApplyHasteToChannelSpell(duration, m_spellInfo, this);
+	//duration = ApplyHasteToChannelSpell(duration, m_spellInfo, this);
     WorldPacket data( MSG_CHANNEL_START, (8+4+4) );
     data.append(m_caster->GetPackGUID());
     data << uint32(m_spellInfo->Id);

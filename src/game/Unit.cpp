@@ -1067,7 +1067,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 			if(pVictim->GetTypeId() == TYPEID_UNIT && damage == 0)
 				if(uint32 entry = ((Creature*)this)->GetEntry())
 					if(entry == 37970 || entry == 37972 || entry == 37973)
-						pVictim->AddThreat(this, 5000, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+						pVictim->AddThreat(this, 7500, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
         }
         else                                                // victim is a player
         {
@@ -12974,19 +12974,41 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
         duration = minduration;
 
     if (duration > 0)
-    {
+    {	
+		Player* modOwner = GetSpellModOwner();
+
+		if (modOwner)
+            modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_DURATION, duration);
+
 		if (periodicTime)
         {
-            Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_DURATION_OF_HASTE);
-            for(Unit::AuraList::const_iterator i = mModByHaste.begin(); i != mModByHaste.end(); ++i)
+			// Apply periodic time mod
+            if (modOwner)
+                modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_ACTIVATION_TIME, periodicTime);
+
+			bool applyHaste = spellProto->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE;
+			if (!applyHaste)
             {
-                 if (!(*i)->isAffectedOnSpell(spellProto))
-                     continue;
-                
-                 int32 ticksNum = duration / periodicTime ;
-                 periodicTime = int32(GetFloatValue(UNIT_MOD_CAST_SPEED) * periodicTime);
-                 duration = periodicTime * ticksNum;
-                 break;
+                Unit::AuraList const& mModByHaste = GetAurasByType(SPELL_AURA_MOD_PERIODIC_DURATION_OF_HASTE);
+                for (Unit::AuraList::const_iterator itr = mModByHaste.begin(); itr != mModByHaste.end(); ++itr)
+                {
+                    if ((*itr)->isAffectedOnSpell(spellProto))
+                    {
+                        applyHaste = true;
+                        break;
+                    }
+                }
+            }
+
+			// Hack for vampiric touch & shadow form
+			if(HasAura(15473) && spellProto->SpellIconID == 2213 && spellProto->SpellFamilyName == SPELLFAMILY_PRIEST)
+				applyHaste = true;
+
+            if (applyHaste)
+            {
+                int32 ticks = duration / periodicTime;
+                periodicTime = int32(GetFloatValue(UNIT_MOD_CAST_SPEED) * periodicTime);
+                duration = periodicTime * ticks;
             }
         }
 

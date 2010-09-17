@@ -296,7 +296,7 @@ struct MANGOS_DLL_DECL boss_icc_taldaramAI : public LibDevFSAI
 	{
 		me->SetHealth(me->GetMaxHealth()*pctLife);
 		me->CastStop();
-		DoCastMe(SPELL_INVOCATION_OF_BLOOD_T);
+		ModifyAuraStack(SPELL_INVOCATION_OF_BLOOD_T);
 		Yell(16857,"Tremblez devant Taldaram, mortels, car le pouvoir de l'orbe coule en moi !");
 	}
 
@@ -430,7 +430,7 @@ struct MANGOS_DLL_DECL boss_icc_kelesethAI : public LibDevFSAI
 	{
 		me->SetHealth(me->GetMaxHealth()*pctLife);
 		me->CastStop();
-		DoCastMe(SPELL_INVOCATION_OF_BLOOD_K);
+		ModifyAuraStack(SPELL_INVOCATION_OF_BLOOD_K);
 		Yell(16727,"Quel incroyable pouvoir ! L'orbe des ténébrants m'a rendu invincible !");
 	}
 
@@ -566,7 +566,7 @@ struct MANGOS_DLL_DECL boss_icc_valanarAI : public LibDevFSAI
 	{
 		me->SetHealth(me->GetMaxHealth()*pctLife);
 		me->CastStop();
-		DoCastMe(SPELL_INVOCATION_OF_BLOOD_V);
+		ModifyAuraStack(SPELL_INVOCATION_OF_BLOOD_V);
 		Yell(16685,"Naxanar ne fut qu'un contretemps. Grâce au pouvoir de l'orbe, Valanar aura sa revanche !");
 	}
 

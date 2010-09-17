@@ -442,11 +442,7 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
 
     Player* modOwner = caster ? caster->GetSpellModOwner() : NULL;
 
-	// Apply periodic time mod
-    if(modOwner && m_modifier.periodictime)
-        modOwner->ApplySpellMod(GetId(), SPELLMOD_ACTIVATION_TIME, m_modifier.periodictime);
-
-    if (!caster)
+	if (!caster)
         m_maxduration = target->CalculateSpellDuration(m_spellProto, m_effIndex, target, m_modifier.periodictime);
     else
         m_maxduration = caster->CalculateSpellDuration(m_spellProto, m_effIndex, target, m_modifier.periodictime);
@@ -454,15 +450,8 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
     if(m_maxduration == -1 || m_isPassive && m_spellProto->DurationIndex == 0)
         m_permanent = true;
 
-    if(!m_permanent && modOwner)
+    if(!m_permanent)
     {
-        modOwner->ApplySpellMod(GetId(), SPELLMOD_DURATION, m_maxduration);
-
-		if(m_spellProto->AttributesEx & (SPELL_ATTR_EX_CHANNELED_1 | SPELL_ATTR_EX_CHANNELED_2) && GetCaster())
-        {
-            if( !(m_spellProto->Attributes & (SPELL_ATTR_UNK4|SPELL_ATTR_TRADESPELL)) )
-                m_maxduration = int32(m_maxduration * GetCaster()->GetFloatValue(UNIT_MOD_CAST_SPEED));
-        }
         // Get zero duration aura after - need set m_maxduration > 0 for apply/remove aura work
         if (m_maxduration<=0)
             m_maxduration = 1;
