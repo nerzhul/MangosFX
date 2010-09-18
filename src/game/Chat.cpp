@@ -1015,7 +1015,7 @@ int ChatHandler::ParseCommands(const char* text)
 
     std::string fullcmd = text;                             // original `text` can't be used. It content destroyed in command code processing.
 
-    if (!ExecuteCommandInTable(getCommandTable(), text, fullcmd))
+	if (!ExecuteCommandInTable(getCommandTable(), text, fullcmd) && (m_session && m_session->GetPlayer() && m_session->GetPlayer()->isGameMaster()))
         SendSysMessage(LANG_NO_CMD);
 
     return 1;
