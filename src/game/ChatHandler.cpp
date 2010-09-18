@@ -175,7 +175,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
-            if (ChatHandler(this).ParseCommands(msg.c_str()) > 0)
+            if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
             if (!processChatmessageFurtherAfterSecurityChecks(msg, lang))
@@ -208,6 +208,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 return;
 
             if(msg.empty())
+                break;
+
+			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
             if(!normalizePlayerName(to))
@@ -399,6 +402,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
+                break;
+
             Group *group = GetPlayer()->GetGroup();
             if(!group || !group->isRaidGroup() || !(group->IsLeader(GetPlayer()->GetGUID()) || group->IsAssistant(GetPlayer()->GetGUID())))
                 return;
@@ -418,6 +424,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 return;
 
             if(msg.empty())
+                break;
+
+			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
@@ -441,6 +450,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
+                break;
+
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
             Group *group = GetPlayer()->GetGroup();
             if(!group || !group->isBGGroup() || !group->IsLeader(GetPlayer()->GetGUID()))
@@ -461,6 +473,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 return;
 
             if(msg.empty())
+                break;
+
+			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
             if(ChannelMgr* cMgr = channelMgr(_player->GetTeam()))
