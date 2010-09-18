@@ -10134,7 +10134,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
             {
 				if(spellProto->SpellFamilyFlags & UI64LIT(0x000002))
 				{
-					if(Aura* aur = sClassSpellHandler.GetAuraByName(DK_IMPROVED_ICY_TOUCH))
+					if(Aura* aur = sClassSpellHandler.GetAuraByName(this,DK_IMPROVED_ICY_TOUCH))
 						DoneTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
 				}
 
@@ -10168,6 +10168,13 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			{
 				if(Aura* sigil = GetDummyAura(64962))
 					DoneTotal += sigil->GetModifier()->m_amount;
+			}
+
+			// impurity
+			if (spellProto->SpellFamilyFlags & 0x600100200042022)
+			{
+				if(Aura* aur = sClassSpellHandler.GetAuraByName(this,DK_IMPURITY))
+					DoneTotal += int32(aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0) * GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
 			}
 
 			switch(spellProto->Id)
@@ -10324,21 +10331,6 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 
         if (bonus->ap_bonus)
             DoneTotal += int32(bonus->ap_bonus * GetTotalAttackPowerValue(BASE_ATTACK) * stack);
-
-		// impurity (DK)
-		if (GetTypeId() == TYPEID_PLAYER && spellProto->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellProto->SpellFamilyFlags & 0x600100200042022)
-        {
-			if(HasAura(49220))
-                DoneTotal += int32((GetAura(49220)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
-			else if(HasAura(49633))
-                DoneTotal += int32((GetAura(49633)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
-			else if(HasAura(49635))
-                DoneTotal += int32((GetAura(49635)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
-			else if(HasAura(49638))
-                DoneTotal += int32((GetAura(49638)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
-			else if(HasAura(49636))
-                DoneTotal += int32((GetAura(49636)->GetSpellProto()->CalculateSimpleValue(0) * GetTotalAttackPowerValue(BASE_ATTACK)) / 100.0f);
-        }
 
 		if(GetTypeId() == TYPEID_PLAYER)
 			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);

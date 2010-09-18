@@ -233,6 +233,7 @@ AuraCarac caracTab[MAX_AURA_NAMES] =
 	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_ROGUE,			UI64LIT(0x800800000),0},
 	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
 	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
+	{SPELL_AURA_NONE,				SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
 };
 
 Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
@@ -263,6 +264,10 @@ Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
 				break;
 			case DK_IMPROVED_ICY_TOUCH:
 				if((*i)->GetSpellProto()->SpellIconID == 2721)
+					return (*i);
+				break;
+			case DK_IMPURITY:
+				if((*i)->GetSpellProto()->SpellIconID == 1986)
 					return (*i);
 				break;
 		}
