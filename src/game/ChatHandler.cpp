@@ -59,6 +59,29 @@ bool WorldSession::processChatmessageFurtherAfterSecurityChecks(std::string& msg
     return true;
 }
 
+std::string deleteUnneededSpaces(const char* text)
+{
+	std::string str;
+	bool space = false;
+	while (*text != '\0')
+    {
+		if(*text == ' ' && space)
+		{
+			++text;
+			continue;
+		}
+
+		str += *text;
+		if(*text == ' ')
+			space = true;
+		else
+			space = false;
+        ++text;
+    }
+
+	return str;  
+}
+
 void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 {
     uint32 type;
@@ -184,6 +207,7 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
 			if(GetPlayer()->getLevel() < 10 && type == CHAT_MSG_YELL)
 			{
 				ChatHandler(this).SendSysMessage("Vous ne respectez pas les conditions requises pour pouvoir parler en /crier");
@@ -212,6 +236,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
+
+			msg = deleteUnneededSpaces(msg.c_str());
 
             if(!normalizePlayerName(to))
             {
@@ -269,6 +295,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             // if player is in battleground, he cannot say to battleground members by /p
             Group *group = GetPlayer()->GetOriginalGroup();
             if(!group)
@@ -303,6 +331,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             if (GetPlayer()->GetGuildId())
                 if (Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId()))
                     guild->BroadcastToGuild(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
@@ -325,6 +355,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             if (GetPlayer()->GetGuildId())
                 if (Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId()))
                     guild->BroadcastToOfficers(this, msg, lang == LANG_ADDON ? LANG_ADDON : LANG_UNIVERSAL);
@@ -346,6 +378,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
             if(msg.empty())
                 break;
+
+			msg = deleteUnneededSpaces(msg.c_str());
 
             // if player is in battleground, he cannot say to battleground members by /ra
             Group *group = GetPlayer()->GetOriginalGroup();
@@ -377,6 +411,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
             if(msg.empty())
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             // if player is in battleground, he cannot say to battleground members by /ra
             Group *group = GetPlayer()->GetOriginalGroup();
             if(!group)
@@ -405,6 +441,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             Group *group = GetPlayer()->GetGroup();
             if(!group || !group->isRaidGroup() || !(group->IsLeader(GetPlayer()->GetGUID()) || group->IsAssistant(GetPlayer()->GetGUID())))
                 return;
@@ -428,6 +466,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
+
+			msg = deleteUnneededSpaces(msg.c_str());
 
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
             Group *group = GetPlayer()->GetGroup();
@@ -453,6 +493,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
 
+			msg = deleteUnneededSpaces(msg.c_str());
+
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
             Group *group = GetPlayer()->GetGroup();
             if(!group || !group->isBGGroup() || !group->IsLeader(GetPlayer()->GetGUID()))
@@ -477,6 +519,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
 
 			if(ChatHandler(this).ParseCommands(msg.c_str()) > 0)
                 break;
+
+			msg = deleteUnneededSpaces(msg.c_str());
 
             if(ChannelMgr* cMgr = channelMgr(_player->GetTeam()))
                 if(Channel *chn = cMgr->GetChannel(channel, _player))
