@@ -20,8 +20,10 @@ enum AuraName
 	MAGE_ARCANE_SUBTLELY				= 5,
 	ROGUE_VILE_POISON					= 6,
 	ROGUE_ENVENOM						= 7,
+	DK_RIME								= 8,
+	DK_IMPROVED_ICY_TOUCH				= 9,
 
-	MAX_AURA_NAMES						= 8
+	MAX_AURA_NAMES						= 10
 };
 
 typedef std::list<Aura *> AuraList;

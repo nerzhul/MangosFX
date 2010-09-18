@@ -10130,8 +10130,14 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         case SPELLFAMILY_DEATHKNIGHT:
         {
             // Icy Touch, Howling Blast and Frost Strike
-            if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
+            if(spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
             {
+				if(spellProto->SpellFamilyFlags & UI64LIT(0x000002))
+				{
+					if(Aura* aur = sClassSpellHandler.GetAuraByName(DK_IMPROVED_ICY_TOUCH))
+						DoneTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
+				}
+
                 // search disease
                 bool found = false;
                 Unit::AuraMap const& auras = pVictim->GetAuras();
@@ -10644,6 +10650,12 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
 								crit_chance += 30.0f;
 						}
 						break;
+					case SPELLFAMILY_DEATHKNIGHT:
+					{
+						if(Aura* aur = sClassSpellHandler.GetAuraByName(this,DK_RIME))
+							if(spellProto->SpellFamilyFlags & UI64LIT(0x2000000000002))
+								crit_chance += aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0);
+					}
                 }
 				if(GetTypeId() == TYPEID_PLAYER)
 					sLog.outDebugSpell("Crit Chance add special crits by CLASS : %f",crit_chance);
