@@ -19,7 +19,8 @@
 #ifndef _IVMAPMANAGER_H
 #define _IVMAPMANAGER_H
 
-#include<string>
+#include <string>
+#include <Platform/Define.h>
 
 //===========================================================
 
@@ -30,7 +31,7 @@ This is the minimum interface to the VMapMamager.
 namespace VMAP
 {
 
-    enum VMAP_LOAD_RESULT
+    enum VMAPLoadResult
     {
         VMAP_LOAD_RESULT_ERROR,
         VMAP_LOAD_RESULT_OK,
@@ -52,7 +53,7 @@ namespace VMAP
 
             virtual ~IVMapManager(void) {}
 
-            virtual int loadMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
+            virtual VMAPLoadResult loadMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
 
             virtual bool existsMap(const char* pBasePath, unsigned int pMapId, int x, int y) = 0;
 
@@ -60,7 +61,7 @@ namespace VMAP
             virtual void unloadMap(unsigned int pMapId) = 0;
 
             virtual bool isInLineOfSight(unsigned int pMapId, float x1, float y1, float z1, float x2, float y2, float z2) = 0;
-            virtual float getHeight(unsigned int pMapId, float x, float y, float z) = 0;
+            virtual float getHeight(unsigned int pMapId, float x, float y, float z, float maxSearchDist) = 0;
             /**
             test if we hit an object. return true if we hit one. rx,ry,rz will hold the hit position or the dest position, if no intersection was found
             return a position, that is pReduceDist closer to the origin
@@ -93,6 +94,12 @@ namespace VMAP
             e.g.: "0,1,530"
             */
             virtual void preventMapsFromBeingUsed(const char* pMapIdString) =0;
+            /**
+            Query world model area info.
+            \param z gets adjusted to the ground height for which this are info is valid
+            */
+            virtual bool getAreaInfo(unsigned int pMapId, float x, float y, float &z, uint32 &flags, int32 &adtId, int32 &rootId, int32 &groupId) const=0;
+            virtual bool GetLiquidLevel(uint32 pMapId, float x, float y, float z, uint8 ReqLiquidType, float &level, float &floor, uint32 &type) const=0;
     };
 
 }
