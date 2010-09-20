@@ -25,8 +25,8 @@ AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(srcdir)
 #  libMaNGOSScript shared library will later be reused by world server daemon.
 noinst_LIBRARIES = libmangosframework.a
 libmangosframework_a_SOURCES = \
-	Policies/ObjectLifeTime.cpp \
 	Policies/MemoryManagement.cpp \
+	Policies/ObjectLifeTime.cpp \
 	Utilities/EventProcessor.cpp
 
 ## Additional files to include when running 'make dist'
@@ -43,7 +43,6 @@ EXTRA_DIST = \
 	GameSystem/TypeContainerFunctions.h \
 	GameSystem/TypeContainerFunctionsPtr.h \
 	GameSystem/TypeContainerVisitor.h \
-	Network/SocketDefines.h \
 	Platform/CompilerDefs.h \
 	Platform/Define.h \
 	Policies/CreationPolicy.h \
@@ -56,7 +55,6 @@ EXTRA_DIST = \
 	Utilities/ByteConverter.h \
 	Utilities/Callback.h \
 	Utilities/EventProcessor.h \
-	Utilities/UnorderedMap.h \
 	Utilities/UnorderedMapSet.h \
 	Utilities/LinkedList.h \
 	Utilities/TypeList.h
