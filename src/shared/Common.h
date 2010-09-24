@@ -236,4 +236,8 @@ inline char * mangos_strdup(const char * source)
 #  define M_PI          3.14159265358979323846
 #endif
 
+#ifndef M_PI_F
+#  define M_PI_F        float(M_PI)
+#endif
+
 #endif

@@ -42,16 +42,26 @@ HomeMovementGenerator<Creature>::_setTargetLocation(Creature & owner)
     if( !&owner )
         return;
 
-    if( owner.hasUnitState(UNIT_STAT_NOT_MOVE) )
+    if (owner.hasUnitState(UNIT_STAT_NOT_MOVE))
         return;
 
     float x, y, z;
-    owner.GetRespawnCoord(x, y, z);
+
+    // at apply we can select more nice return points base at current movegen
+    if (owner.GetMotionMaster()->empty() || !owner.GetMotionMaster()->top()->GetResetPosition(owner,x,y,z))
+        owner.GetRespawnCoord(x, y, z);
 
     CreatureTraveller traveller(owner);
+    i_destinationHolder.SetDestination(traveller, x, y, z, false);
 
-    uint32 travel_time = i_destinationHolder.SetDestination(traveller, x, y, z);
-    modifyTravelTime(travel_time);
+    PathInfo path(&owner, x, y, z);
+    PointPath pointPath = path.getFullPath();
+
+    float speed = traveller.Speed() * 0.001f; // in ms
+    uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
+    modifyTravelTime(traveltime);
+
+    owner.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), owner.GetSplineFlags(), traveltime);
     owner.clearUnitState(UNIT_STAT_ALL_STATE);
 }
 

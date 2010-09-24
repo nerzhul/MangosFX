@@ -76,12 +76,10 @@ int libmpq_archive_open(mpq_archive *mpq_a, unsigned char *mpq_filename) {
 
 	while (!ncnt) {
 		mpq_a->header->id = 0;
-		#ifdef WIN32
-			_lseeki64(mpq_a->fd, mpq_a->mpqpos, SEEK_SET);
-		#else
-			lseek64(mpq_a->fd, mpq_a->mpqpos, SEEK_SET);
-		#endif
-		rb = _read(mpq_a->fd, mpq_a->header, sizeof(mpq_header));
+
+        libmpq_lseek(mpq_a, mpq_a->mpqpos);
+
+        rb = _read(mpq_a->fd, mpq_a->header, sizeof(mpq_header));
 
 		/* if different number of bytes read, break the loop */
 		if (rb != sizeof(mpq_header)) {
@@ -200,29 +198,15 @@ int libmpq_archive_info(mpq_archive *mpq_a, unsigned int infotype) {
  * This function returns some useful file information.
  */
 int libmpq_file_info(mpq_archive *mpq_a, unsigned int infotype, const unsigned int number) {
-	int blockindex = number; //-1;
+	int blockindex = number;
 	int i = 0;
 	mpq_block *mpq_b = NULL;
 	mpq_hash *mpq_h = NULL;
 
 	/* check if given number is not out of range */
-	if (number < 1 || number > mpq_a->header->blocktablesize) {
+	if (number < 0 || number >= mpq_a->header->blocktablesize) {
 		return LIBMPQ_EINV_RANGE;
 	}
-
-	/* search for correct hashtable */
-	/*for (i = 0; i < mpq_a->header->hashtablesize; i++) {
-		if ((number - 1) == (mpq_a->hashtable[i]).blockindex) {
-			blockindex = (mpq_a->hashtable[i]).blockindex;
-			mpq_h = &(mpq_a->hashtable[i]);
-			break;
-		}
-	}*/
-
-	/* check if file was found */
-	/*if (blockindex == -1 || blockindex > mpq_a->header->blocktablesize) {
-		return LIBMPQ_EFILE_NOT_FOUND;
-	}*/
 
 	/* check if sizes are correct */
 	mpq_b = mpq_a->blocktable + blockindex;

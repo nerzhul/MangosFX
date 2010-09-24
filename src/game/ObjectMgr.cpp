@@ -5318,7 +5318,7 @@ uint32 ObjectMgr::GetTaxiMountDisplayId( uint32 id, uint32 team, bool allowed_al
     return mount_id;
 }
 
-void ObjectMgr::GetTaxiPathNodes( uint32 path, Path &pathnodes, std::vector<uint32>& mapIds)
+/*void ObjectMgr::GetTaxiPathNodes( uint32 path, Path &pathnodes, std::vector<uint32>& mapIds)
 {
     if(path >= sTaxiPathNodesByPath.size())
         return;
@@ -5336,7 +5336,7 @@ void ObjectMgr::GetTaxiPathNodes( uint32 path, Path &pathnodes, std::vector<uint
 
         mapIds[i] = nodeList[i].mapid;
     }
-}
+}*/
 
 void ObjectMgr::GetTransportPathNodes( uint32 path, TransportPath &pathnodes )
 {

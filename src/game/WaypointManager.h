@@ -45,10 +45,11 @@ struct WaypointNode
     float z;
     float orientation;
     uint32 delay;
+    uint32 script_id;                                       // Added may 2010. WaypointBehavior w/DB data should in time be removed.
     WaypointBehavior * behavior;
-    WaypointNode() : x(0.0f), y(0.0f), z(0.0f), orientation(0.0f), delay(0), behavior(NULL) {}
-    WaypointNode(float _x, float _y, float _z, float _o, uint32 _delay, WaypointBehavior * _behavior)
-      : x(_x), y(_y), z(_z), orientation(_o), delay(_delay), behavior(_behavior) {}
+    WaypointNode() : x(0.0f), y(0.0f), z(0.0f), orientation(0.0f), delay(0), script_id(0), behavior(NULL) {}
+    WaypointNode(float _x, float _y, float _z, float _o, uint32 _delay, uint32 _script_id, WaypointBehavior * _behavior)
+      : x(_x), y(_y), z(_z), orientation(_o), delay(_delay), script_id(_script_id), behavior(_behavior) {}
 };
 
 typedef std::vector<WaypointNode> WaypointPath;
@@ -70,6 +71,12 @@ class WaypointManager
             return itr != m_pathMap.end() ? &itr->second : NULL;
         }
 
+		WaypointPath *GetPathTemplate(uint32 entry)
+        {
+            WaypointPathTemplateMap::iterator itr = m_pathTemplateMap.find(entry);
+            return itr != m_pathTemplateMap.end() ? &itr->second : NULL;
+        }
+
         void AddLastNode(uint32 id, float x, float y, float z, float o, uint32 delay, uint32 wpGuid);
         void AddAfterNode(uint32 id, uint32 point, float x, float y, float z, float o, uint32 delay, uint32 wpGuid);
         uint32 GetLastPoint(uint32 id, uint32 default_notfound);
@@ -85,6 +92,8 @@ class WaypointManager
 
         typedef UNORDERED_MAP<uint32, WaypointPath> WaypointPathMap;
         WaypointPathMap m_pathMap;
+		typedef UNORDERED_MAP<uint32, WaypointPath> WaypointPathTemplateMap;
+        WaypointPathTemplateMap m_pathTemplateMap;
 };
 
 #define sWaypointMgr MaNGOS::Singleton<WaypointManager>::Instance()

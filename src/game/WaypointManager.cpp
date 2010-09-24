@@ -234,7 +234,7 @@ void WaypointManager::_addNode(uint32 id, uint32 point, float x, float y, float 
     WaypointPathMap::iterator itr = m_pathMap.find(id);
     if(itr == m_pathMap.end())
         itr = m_pathMap.insert(WaypointPathMap::value_type(id, WaypointPath())).first;
-    itr->second.insert(itr->second.begin() + (point - 1), WaypointNode(x, y, z, o, delay, NULL));
+    itr->second.insert(itr->second.begin() + (point - 1), WaypointNode(x, y, z, o, delay, 0, NULL));
 }
 
 uint32 WaypointManager::GetLastPoint(uint32 id, uint32 default_notfound)

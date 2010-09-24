@@ -270,6 +270,8 @@ AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([
    dep/include/Makefile
    dep/lib/Makefile
+   dep/recastnavigation/Makefile
+   dep/recastnavigation/Detour/Makefile
    dep/src/Makefile
    dep/src/g3dlite/Makefile
    dep/src/zlib/Makefile

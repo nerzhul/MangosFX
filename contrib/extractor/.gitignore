@@ -14,7 +14,17 @@
 *.ncb
 *.pdb
 *.suo
+*.sdf
 debug
 release
+ipch
 *.user
 *.ilk
+ad_debug.exe
+
+# CMake files
+
+CMakeFiles
+CMakeCache.txt
+cmake_install.cmake
+

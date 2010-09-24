@@ -39,8 +39,8 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
     //bool is_water_ok = creature.canSwim();                // not used?
     bool is_air_ok   = creature.canFly();
 
-    const float angle = rand_norm()*(M_PI*2);
-    const float range = rand_norm()*wander_distance;
+    const float angle = rand_norm_f()*(M_PI_F*2.0f);
+    const float range = rand_norm_f()*wander_distance;
     const float distanceX = range * cos(angle);
     const float distanceY = range * sin(angle);
 
@@ -55,7 +55,8 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
 
     if (is_air_ok)                                          // 3D system above ground and above water (flying mode)
     {
-        const float distanceZ = rand_norm() * sqrtf(dist)/2;// Limit height change
+        // Limit height change
+        const float distanceZ = rand_norm_f() * sqrtf(dist)/2.0f;
         nz = Z + distanceZ;
         float tz = map->GetHeight(nx, ny, nz-2.0f, false);  // Map check only, vmap needed here but need to alter vmaps checks for height.
         float wz = map->GetWaterLevel(nx, ny);
@@ -136,15 +137,13 @@ void RandomMovementGenerator<Creature>::Interrupt(Creature &creature)
 }
 
 template<>
-void
-RandomMovementGenerator<Creature>::Finalize(Creature &creature)
+void RandomMovementGenerator<Creature>::Finalize(Creature &creature)
 {
     creature.clearUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE);
 }
 
 template<>
-bool
-RandomMovementGenerator<Creature>::Update(Creature &creature, const uint32 &diff)
+bool RandomMovementGenerator<Creature>::Update(Creature &creature, const uint32 &diff)
 {
     if (creature.hasUnitState(UNIT_STAT_NOT_MOVE))
     {
@@ -165,6 +164,9 @@ RandomMovementGenerator<Creature>::Update(Creature &creature, const uint32 &diff
 
     if (i_destinationHolder.UpdateTraveller(traveller, diff, false, true))
     {
+        if (!IsActive(creature))                        // force stop processing (movement can move out active zone with cleanup movegens list)
+            return true;                                // not expire now, but already lost
+
         if (i_nextMoveTime.Passed())
         {
             if (creature.canFly())
@@ -176,9 +178,22 @@ RandomMovementGenerator<Creature>::Update(Creature &creature, const uint32 &diff
         }
         else if (creature.isPet() && creature.GetOwner() && !creature.IsWithinDist(creature.GetOwner(), PET_FOLLOW_DIST+2.5f))
         {
-           creature.AddSplineFlag(SPLINEFLAG_WALKMODE);
-           _setRandomLocation(creature);
+            creature.AddSplineFlag(SPLINEFLAG_WALKMODE);
+            _setRandomLocation(creature);
         }
     }
+    return true;
+}
+
+template<>
+bool RandomMovementGenerator<Creature>::GetResetPosition(Creature& c, float& x, float& y, float& z)
+{
+    float radius;
+    c.GetRespawnCoord(x, y, z, NULL, &radius);
+
+    // use current if in range
+    if (c.IsWithinDist2d(x,y,radius))
+        c.GetPosition(x,y,z);
+
     return true;
 }

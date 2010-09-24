@@ -41,13 +41,15 @@
 #include "InstanceSaveMgr.h"
 #include "VMapFactory.h"
 
+#include "../recastnavigation/Detour/Include/DetourNavMesh.h"
+
 #define MAX_GRID_LOAD_TIME      50
 #define MAX_CREATURE_ATTACK_RADIUS  (45.0f * sWorld.getRate(RATE_CREATURE_AGGRO))
 
 GridState* si_GridStates[MAX_GRID_STATE];
 
 static char const* MAP_MAGIC         = "MAPS";
-static char const* MAP_VERSION_MAGIC = "v1.1";
+static char const* MAP_VERSION_MAGIC = "v1.2";
 static char const* MAP_AREA_MAGIC    = "AREA";
 static char const* MAP_HEIGHT_MAGIC  = "MHGT";
 static char const* MAP_LIQUID_MAGIC  = "MLIQ";
@@ -67,6 +69,12 @@ Map::~Map()
 
     if(!m_scriptSchedule.empty())
         sWorld.DecreaseScheduledScriptCount(m_scriptSchedule.size());
+
+	if (m_navMesh)
+    {
+        dtFreeNavMesh(m_navMesh);
+        m_navMesh = NULL;
+    }
 }
 
 bool Map::ExistMap(uint32 mapid,int gx,int gy)
@@ -89,7 +97,7 @@ bool Map::ExistMap(uint32 mapid,int gx,int gy)
     if (header.mapMagic     != *((uint32 const*)(MAP_MAGIC)) ||
         header.versionMagic != *((uint32 const*)(MAP_VERSION_MAGIC)))
     {
-        sLog.outError("Map file '%s' is non-compatible version (outdated?). Please, create new using ad.exe program.",tmp);
+		sLog.outError("Map file '%s' is non-compatible version  (%u outdated?). Please, create new using ad.exe program.",tmp,header.versionMagic);
         delete [] tmp;
         fclose(pf);                                         //close file before return
         return false;
@@ -185,6 +193,7 @@ void Map::LoadMapAndVMap(int gx,int gy)
     LoadMap(gx,gy);
     if(i_InstanceId == 0)
         LoadVMap(gx, gy);                                   // Only load the data for the base map
+	LoadNavMesh(gx,gy);
 }
 
 void Map::InitStateMachine()
@@ -209,7 +218,8 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _par
   m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
   m_activeNonPlayersIter(m_activeNonPlayers.end()),
   i_gridExpiry(expiry), m_parentMap(_parent ? _parent : this),
-  m_hiDynObjectGuid(1), m_hiPetGuid(1), m_hiVehicleGuid(1)
+  m_hiDynObjectGuid(1), m_hiPetGuid(1), m_hiVehicleGuid(1),
+  m_navMesh(0)
 {
     for(unsigned int idx=0; idx < MAX_NUMBER_OF_GRIDS; ++idx)
     {
@@ -1118,6 +1128,7 @@ bool Map::UnloadGrid(const uint32 &x, const uint32 &y, bool pForce)
                 delete GridMaps[gx][gy];
             }
             VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(GetId(), gx, gy);
+			UnloadNavMesh(gx, gy);
         }
         else
             ((MapInstanced*)m_parentMap)->RemoveGridMapReference(GridPair(gx, gy));
@@ -1261,6 +1272,7 @@ bool GridMap::loadAreaData(FILE *in, uint32 offset, uint32 size)
     map_areaHeader header;
     fseek(in, offset, SEEK_SET);
     fread(&header, sizeof(header), 1, in);
+	error_log("%u %u",header.fourcc,*((uint32 const*)(MAP_AREA_MAGIC)));
     if (header.fourcc != *((uint32 const*)(MAP_AREA_MAGIC)))
         return false;
 

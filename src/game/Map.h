@@ -37,6 +37,8 @@
 #include <bitset>
 #include <list>
 
+#include "../recastnavigation/Detour/Include/DetourNavMesh.h"
+
 class Creature;
 class Unit;
 class WorldPacket;
@@ -62,6 +64,8 @@ struct map_fileheader
     uint32 heightMapSize;
     uint32 liquidMapOffset;
     uint32 liquidMapSize;
+	uint32 holesOffset;
+    uint32 holesSize;
 };
 
 #define MAP_AREA_NO_AREA      0x0001
@@ -553,6 +557,15 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
             else
                 m_activeNonPlayers.erase(obj);
         }
+	public:
+        dtNavMesh* GetNavMesh();
+
+    private:
+        void LoadNavMesh(int gx, int gy);
+        void UnloadNavMesh(int gx, int gy);
+        dtNavMesh* m_navMesh;
+        UNORDERED_MAP<uint32, uint32> m_mmapTileMap;    // maps [map grid coords] to [dtTile coords]
+        // end movemap-related
 };
 
 enum InstanceResetMethod

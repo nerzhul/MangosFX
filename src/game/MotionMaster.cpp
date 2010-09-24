@@ -434,14 +434,22 @@ MotionMaster::MoveTaxiFlight(uint32 path, uint32 pathnode)
 {
     if(i_owner->GetTypeId()==TYPEID_PLAYER)
     {
-        DEBUG_LOG("Player (GUID: %u) taxi to (Path %u node %u)", i_owner->GetGUIDLow(), path, pathnode);
-        FlightPathMovementGenerator* mgen = new FlightPathMovementGenerator(path,pathnode);
-        Mutate(mgen);
+        if(path < sTaxiPathNodesByPath.size())
+        {
+            DEBUG_LOG("Player (GUID: %u) taxi to (Path %u node %u)", i_owner->GetGUIDLow(), path, pathnode);
+            FlightPathMovementGenerator* mgen = new FlightPathMovementGenerator(sTaxiPathNodesByPath[path],pathnode);
+            Mutate(mgen);
+        }
+        else
+        {
+           sLog.outError("Creature (Entry: %u GUID: %u) attempt taxi to (Path %u node %u)",
+            i_owner->GetEntry(), i_owner->GetGUIDLow(), path, pathnode );
+        }
     }
     else
     {
-        sLog.outError("Creature (Entry: %u GUID: %u) attempt taxi to (Path %u node %u)",
-            i_owner->GetEntry(), i_owner->GetGUIDLow(), path, pathnode );
+        sLog.outError("%u attempt taxi to (Path %u node %u)",
+            i_owner->GetGUIDLow(), path, pathnode );
     }
 }
 
