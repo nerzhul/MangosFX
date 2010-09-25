@@ -183,13 +183,17 @@ dtNavMesh::~dtNavMesh()
 	{
 		if (m_tiles[i].flags & DT_TILE_FREE_DATA)
 		{
-			delete m_tiles[i].data;
-			m_tiles[i].data = 0;
+			if(m_tiles[i].data)
+				delete m_tiles[i].data;
+			m_tiles[i].data = NULL;
 			m_tiles[i].dataSize = 0;
 		}
 	}
-	delete m_posLookup;
-	delete m_tiles;
+
+	if(m_posLookup)
+		delete [] m_posLookup;
+	if(m_tiles)
+		delete m_tiles;
 }
 		
 bool dtNavMesh::init(const dtNavMeshParams* params)
