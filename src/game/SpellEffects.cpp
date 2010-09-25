@@ -5865,6 +5865,16 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     m_caster->CastSpell(m_caster, 50217, true);
                     return;
                 }
+				case 42436:
+				{
+					if (!unitTarget || unitTarget->GetTypeId() != TYPEID_PLAYER)
+                        return;
+
+					Player* plr = (Player*)unitTarget;
+					plr->AddItem(33096);
+					plr->KilledMonsterCredit(24108,0);
+					return;
+				}
 				case 44455:                                 // Character Script Effect Reverse Cast
                 {
                     if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
