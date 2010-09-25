@@ -109,7 +109,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
     if (!&creature)
         return true;
 
-	error_log("%u %u Update",creature.GetGUIDLow(),creature.GetEntry());
     // Waypoint movement can be switched on/off
     // This is quite handy for escort quests and other stuff
     if (creature.hasUnitState(UNIT_STAT_NOT_MOVE))
@@ -118,7 +117,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
         return true;
     }
 
-	error_log("%u %u CAN_MOVE",creature.GetGUIDLow(),creature.GetEntry());
     // prevent a crash at empty waypoint path.
     if (!i_path || i_path->empty())
     {
@@ -126,7 +124,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
         return true;
     }
 
-	error_log("%u %u ROAMING_MOVE",creature.GetGUIDLow(),creature.GetEntry());
     if (i_currentNode >= i_path->size())
         i_currentNode = 0;
 
@@ -136,16 +133,13 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
 
     if (i_destinationHolder.UpdateTraveller(traveller, diff, false, true))
     {
-		error_log("%u %u UpdateTraveller",creature.GetGUIDLow(),creature.GetEntry());
         if (!IsActive(creature))                            // force stop processing (movement can move out active zone with cleanup movegens list)
             return true;                                    // not expire now, but already lost
     }
 
-	error_log("%u %u IsActive",creature.GetGUIDLow(),creature.GetEntry());
     // creature has been stopped in middle of the waypoint segment
     if (!i_destinationHolder.HasArrived() && creature.IsStopped())
     {
-		error_log("%u %u !Arrived & Stopped",creature.GetGUIDLow(),creature.GetEntry());
         // Timer has elapsed, meaning this part controlled it
         if (i_nextMoveTime.Passed())
         {
@@ -175,10 +169,8 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
 
     if (creature.IsStopped())
     {
-		error_log("%u %u Stopped solo",creature.GetGUIDLow(),creature.GetEntry());
         if (!m_isArrivalDone)
         {
-			error_log("%u %u m_arrivaldone = false",creature.GetGUIDLow(),creature.GetEntry());
             if (i_path->at(i_currentNode).orientation != 100)
                 creature.SetOrientation(i_path->at(i_currentNode).orientation);
 
@@ -238,11 +230,9 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
     // This is at the end of waypoint segment or has been stopped by player
     if (i_nextMoveTime.Passed())
     {
-		error_log("%u %u Passed",creature.GetGUIDLow(),creature.GetEntry());
         // If stopped then begin a new move segment
         if (creature.IsStopped())
         {
-			error_log("%u %u Passed & Stopped",creature.GetGUIDLow(),creature.GetEntry());
             creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
 
             if (creature.canFly())
