@@ -56,8 +56,7 @@ dtNavMeshQuery* dtAllocNavMeshQuery()
 void dtFreeNavMeshQuery(dtNavMeshQuery* navmesh)
 {
 	if (!navmesh) return;
-	navmesh->~dtNavMeshQuery();
-	dtFree(navmesh);
+	delete navmesh;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -74,14 +73,11 @@ dtNavMeshQuery::dtNavMeshQuery() :
 dtNavMeshQuery::~dtNavMeshQuery()
 {
 	if (m_tinyNodePool)
-		m_tinyNodePool->~dtNodePool();
+		delete m_tinyNodePool;
 	if (m_nodePool)
-		m_nodePool->~dtNodePool();
+		delete m_nodePool;
 	if (m_openList)
-		m_openList->~dtNodeQueue();
-	dtFree(m_tinyNodePool);
-	dtFree(m_nodePool);
-	dtFree(m_openList);
+		delete m_openList;
 }
 
 bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)
@@ -92,9 +88,8 @@ bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)
 	{
 		if (m_nodePool)
 		{
-			m_nodePool->~dtNodePool();
-			dtFree(m_nodePool);
-			m_nodePool = 0;
+			delete m_nodePool;
+			m_nodePool = NULL;
 		}
 		m_nodePool = new (dtAlloc(sizeof(dtNodePool), DT_ALLOC_PERM)) dtNodePool(maxNodes, dtNextPow2(maxNodes/4));
 		if (!m_nodePool)
@@ -121,9 +116,8 @@ bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)
 	{
 		if (m_openList)
 		{
-			m_openList->~dtNodeQueue();
-			dtFree(m_openList);
-			m_openList = 0;
+			delete m_openList;
+			m_openList = NULL;
 		}
 		m_openList = new (dtAlloc(sizeof(dtNodeQueue), DT_ALLOC_PERM)) dtNodeQueue(maxNodes);
 		if (!m_openList)

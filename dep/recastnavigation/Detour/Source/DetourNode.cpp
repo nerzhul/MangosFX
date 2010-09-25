@@ -46,9 +46,9 @@ dtNodePool::dtNodePool(int maxNodes, int hashSize) :
 
 dtNodePool::~dtNodePool()
 {
-	dtFree(m_nodes);
-	dtFree(m_next);
-	dtFree(m_first);
+	delete m_nodes;
+	delete m_next;
+	delete m_first;
 }
 
 void dtNodePool::clear()
@@ -115,7 +115,7 @@ dtNodeQueue::dtNodeQueue(int n) :
 
 dtNodeQueue::~dtNodeQueue()
 {
-	dtFree(m_heap);
+	delete m_heap;
 }
 
 void dtNodeQueue::bubbleUp(int i, dtNode* node)

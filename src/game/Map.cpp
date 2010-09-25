@@ -72,7 +72,7 @@ Map::~Map()
 
 	if (m_navMesh)
     {
-        dtFreeNavMesh(m_navMesh);
+        delete m_navMesh;
         m_navMesh = NULL;
     }
 }

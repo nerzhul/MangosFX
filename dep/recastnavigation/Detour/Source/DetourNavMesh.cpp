@@ -155,8 +155,7 @@ dtNavMesh* dtAllocNavMesh()
 void dtFreeNavMesh(dtNavMesh* navmesh)
 {
 	if (!navmesh) return;
-	navmesh->~dtNavMesh();
-	dtFree(navmesh);
+	delete navmesh;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -184,13 +183,13 @@ dtNavMesh::~dtNavMesh()
 	{
 		if (m_tiles[i].flags & DT_TILE_FREE_DATA)
 		{
-			dtFree(m_tiles[i].data);
+			delete m_tiles[i].data;
 			m_tiles[i].data = 0;
 			m_tiles[i].dataSize = 0;
 		}
 	}
-	dtFree(m_posLookup);
-	dtFree(m_tiles);
+	delete m_posLookup;
+	delete m_tiles;
 }
 		
 bool dtNavMesh::init(const dtNavMeshParams* params)
@@ -206,7 +205,7 @@ bool dtNavMesh::init(const dtNavMeshParams* params)
 	if (!m_tileLutSize) m_tileLutSize = 1;
 	m_tileLutMask = m_tileLutSize-1;
 	
-	m_tiles = (dtMeshTile*)dtAlloc(sizeof(dtMeshTile)*m_maxTiles, DT_ALLOC_PERM);
+	m_tiles = new dtMeshTile[m_maxTiles];
 	if (!m_tiles)
 		return false;
 	m_posLookup = (dtMeshTile**)dtAlloc(sizeof(dtMeshTile*)*m_tileLutSize, DT_ALLOC_PERM);
