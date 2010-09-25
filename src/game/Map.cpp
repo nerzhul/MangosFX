@@ -72,8 +72,8 @@ Map::~Map()
 
 	if (m_navMesh)
     {
-        delete m_navMesh;
-        m_navMesh = NULL;
+        /*delete m_navMesh;
+        m_navMesh = NULL;*/
     }
 }
 
