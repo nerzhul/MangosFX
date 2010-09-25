@@ -47,11 +47,7 @@ dtNodePool::dtNodePool(int maxNodes, int hashSize) :
 dtNodePool::~dtNodePool()
 {
 	if(m_nodes)
-	{
-		for(int i=0;i<m_maxNodes;i++)
-			delete &m_nodes[i];
 		m_nodes = NULL;
-	}
 	if(m_next)
 		delete [] m_next;
 	if(m_first)
