@@ -77,7 +77,7 @@ dtNavMeshQuery::~dtNavMeshQuery()
 	if (m_nodePool)
 		delete m_nodePool;
 	if (m_openList)
-		delete m_openList;
+		delete [] m_openList;
 }
 
 bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)
@@ -116,7 +116,7 @@ bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)
 	{
 		if (m_openList)
 		{
-			delete m_openList;
+			delete [] m_openList;
 			m_openList = NULL;
 		}
 		m_openList = new (dtAlloc(sizeof(dtNodeQueue), DT_ALLOC_PERM)) dtNodeQueue(maxNodes);
