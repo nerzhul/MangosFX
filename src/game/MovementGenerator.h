@@ -34,7 +34,7 @@ class MANGOS_DLL_SPEC MovementGenerator
         virtual ~MovementGenerator();
 
         // called before adding movement generator to motion stack
-		virtual void Initialize(Unit &){};
+		virtual void Initialize(Unit &) = 0;
         // called aftre remove movement generator from motion stack
         virtual void Finalize(Unit &) = 0;
 

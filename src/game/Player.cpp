@@ -2351,7 +2351,7 @@ void Player::SetGameMaster(bool on)
         m_ExtraFlags |= PLAYER_EXTRA_GM_ON;
         setFaction(35);
         
-		if(this->GetSession()->GetSecurity() > SEC_GAMEMASTER)
+		if(GetSession()->GetSecurity() > SEC_COADMIN)
 			SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_DEVELOPER);
 		else
 			SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);
@@ -2374,7 +2374,7 @@ void Player::SetGameMaster(bool on)
 
         m_ExtraFlags &= ~ PLAYER_EXTRA_GM_ON;
         setFactionForRace(getRace());
-		if(this->GetSession()->GetSecurity() > SEC_GAMEMASTER)
+		if(this->GetSession()->GetSecurity() > SEC_COADMIN)
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_DEVELOPER);
 		else
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);

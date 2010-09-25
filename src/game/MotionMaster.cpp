@@ -44,7 +44,7 @@ MotionMaster::Initialize()
     while(!empty())
     {
 		i++;
-		if(i>2500)
+		if(i>3500)
 			sLog.outError("MotionMaster::Initialize Boucle");
         MovementGenerator *curr = top();
         pop();
@@ -92,7 +92,7 @@ MotionMaster::UpdateMotion(uint32 diff)
     m_cleanFlag |= MMCF_UPDATE;
     if (!top()->Update(*i_owner, diff))
     {
-        m_cleanFlag &= ~MMCF_UPDATE;
+		m_cleanFlag &= ~MMCF_UPDATE;
         MovementExpired();
     }
     else
