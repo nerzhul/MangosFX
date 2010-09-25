@@ -1640,7 +1640,12 @@ void Aura::TriggerSpell()
                     }
 //                    // Mark of Frost
 //                    case 23184: break;
-                    // Restoration
+					// Corrupted Totems
+					case 23425:
+					{
+
+						return;
+					}
                     case 23493:
                     {
                         int32 heal = target->GetMaxHealth() / 10;
