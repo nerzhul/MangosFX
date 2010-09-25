@@ -64,7 +64,7 @@ void WaypointMovementGenerator<Creature>::LoadPath(Creature &creature)
     // No movement found for guid
     if (!i_path)
     {
-        i_path = sWaypointMgr.GetPathTemplate(creature.GetEntry());
+        i_path = sWaypointMgr.GetPath(creature.GetEntry());
 
         // No movement found for entry
         if (!i_path)
@@ -85,6 +85,8 @@ void WaypointMovementGenerator<Creature>::LoadPath(Creature &creature)
 
 void WaypointMovementGenerator<Creature>::Initialize(Creature &creature)
 {
+    i_nextMoveTime.Reset(0);                        // TODO: check the lower bound (0 is probably too small)
+    creature.StopMoving();
     LoadPath(creature);
     creature.addUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE);
 }
@@ -101,6 +103,7 @@ void WaypointMovementGenerator<Creature>::Interrupt(Creature &creature)
 
 void WaypointMovementGenerator<Creature>::Reset(Creature &creature)
 {
+    //ReloadPath(u);
     SetStoppedByPlayer(false);
     i_nextMoveTime.Reset(0);
     creature.addUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE);
@@ -127,10 +130,7 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
     }
 
     if (i_currentNode >= i_path->size())
-    {
-        sLog.outError("WaypointMovement currentNode (%u) is equal or bigger than path size (creature entry %u)", i_currentNode, creature.GetEntry());
         i_currentNode = 0;
-    }
 
     CreatureTraveller traveller(creature);
 
@@ -179,13 +179,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
             if (i_path->at(i_currentNode).orientation != 100)
                 creature.SetOrientation(i_path->at(i_currentNode).orientation);
 
-            if (i_path->at(i_currentNode).script_id)
-            {
-                //DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Creature movement start script %u at point %u for creature %u (entry %u).", i_path->at(i_currentNode).script_id, i_currentNode, creature.GetDBTableGUIDLow(), creature.GetEntry());
-                //creature.GetMap()->ScriptsStart(sCreatureMovementScripts, i_path->at(i_currentNode).script_id, &creature, &creature);
-            }
-
-            // We have reached the destination and can process behavior
             if (WaypointBehavior *behavior = i_path->at(i_currentNode).behavior)
             {
                 if (behavior->emote != 0)
@@ -225,7 +218,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
             // Can only do this once for the node
             m_isArrivalDone = true;
 
-            // Inform script
             MovementInform(creature);
 
             if (!IsActive(creature))                        // force stop processing (movement can move out active zone with cleanup movegens list)
@@ -240,7 +232,7 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
         }
     }                                                       // i_creature.IsStopped()
 
-    // This is at the end of waypoint segment (incl. was previously stopped by player, extending the time)
+    // This is at the end of waypoint segment or has been stopped by player
     if (i_nextMoveTime.Passed())
     {
         // If stopped then begin a new move segment
@@ -251,17 +243,6 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
             if (creature.canFly())
                 creature.AddSplineFlag(SPLINEFLAG_UNKNOWN7);
 
-            if (WaypointBehavior *behavior = i_path->at(i_currentNode).behavior)
-            {
-                if (behavior->model2 != 0)
-                    creature.SetDisplayId(behavior->model2);
-
-                creature.SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
-            }
-
-            // behavior for "departure" of the current node is done
-            m_isArrivalDone = false;
-
             // Proceed with increment current node and then send to the next destination
             ++i_currentNode;
 
@@ -269,23 +250,35 @@ bool WaypointMovementGenerator<Creature>::Update(Creature &creature, const uint3
             if (i_currentNode >= i_path->size())
                 i_currentNode = 0;
 
+
+            MoveToNextNode(traveller);
+
             if (i_path->at(i_currentNode).orientation != 100)
                 creature.SetOrientation(i_path->at(i_currentNode).orientation);
 
-            MoveToNextNode(traveller);
-        }
+            if (WaypointBehavior *behavior = i_path->at(i_currentNode).behavior)
+            {
+                if (behavior->model2 != 0)
+                    creature.SetDisplayId(behavior->model2);
+
+                creature.SetUInt32Value(UNIT_NPC_EMOTESTATE, 0);
+            }
+            // behavior for "departure" of the current node is done
+            m_isArrivalDone = false;
+       }
         else
         {
-            // If not stopped then stop it
-            creature.clearUnitState(UNIT_STAT_ROAMING_MOVE);
-
+            // If not stopped then stop it and set the reset of TimeTracker to waittime
+            creature.StopMoving();
             SetStoppedByPlayer(false);
 
-            // Set TimeTracker to waittime for the current node
             i_nextMoveTime.Reset(i_path->at(i_currentNode).delay);
+            ++i_currentNode;
+
+            if (i_currentNode >= i_path->size())
+                i_currentNode = 0;
         }
     }
-
     return true;
 }
 
