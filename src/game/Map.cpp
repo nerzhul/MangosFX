@@ -1272,7 +1272,6 @@ bool GridMap::loadAreaData(FILE *in, uint32 offset, uint32 size)
     map_areaHeader header;
     fseek(in, offset, SEEK_SET);
     fread(&header, sizeof(header), 1, in);
-	error_log("%u %u",header.fourcc,*((uint32 const*)(MAP_AREA_MAGIC)));
     if (header.fourcc != *((uint32 const*)(MAP_AREA_MAGIC)))
         return false;
 

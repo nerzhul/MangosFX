@@ -1367,10 +1367,10 @@ namespace MMAP
         if(m_skipContinents)
             switch(mapID)
             {
-                case 0:
+                /*case 0:
                 case 1:
                 case 530:
-                case 571:
+                case 571:*/
                     return true;
                 default:
                     break;
