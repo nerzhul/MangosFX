@@ -74,9 +74,10 @@ void Map::LoadNavMesh(int gx, int gy)
     int length = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    unsigned char* data =  (unsigned char*)dtAlloc(length, DT_ALLOC_PERM);
+    unsigned char* data =  new unsigned char[length];
     fread(data, length, 1, file);
     fclose(file);
+	
 
     dtMeshHeader* header = (dtMeshHeader*)data;
     if (header->magic != DT_NAVMESH_MAGIC)

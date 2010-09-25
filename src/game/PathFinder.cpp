@@ -414,7 +414,7 @@ void PathInfo::updateNextPosition()
     if(pointCount < 2)
     {
         // only happens if pass bad data to findStraightPath or navmesh is broken
-        sLog.outError("%u's UpdateNextPosition failed: %u length path", m_sourceObject->GetGUID(), pointCount);
+        //sLog.outError("%u's UpdateNextPosition failed: %u length path", m_sourceObject->GetGUID(), pointCount);
         shortcut();
         return;
     }
