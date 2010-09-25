@@ -3703,6 +3703,20 @@ void Spell::finish(bool ok)
 				}
             }
 			break;
+		case 41621:
+		{
+			if(m_caster->GetTypeId() == TYPEID_PLAYER)
+			{
+				Player* plr = (Player*)m_caster;
+				if(unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT)
+				{
+					Creature* cr = (Creature*)unitTarget;
+					cr->ForcedDespawn(500);
+				}
+				plr->AddItem(32906);
+			}
+			break;
+		}
 		default:
 			break;
 	 }
