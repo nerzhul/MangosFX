@@ -190,6 +190,7 @@ libmangosgame_a_SOURCES = \
 	MotionMaster.cpp \
 	MotionMaster.h \
 	MoveMap.cpp \
+	MoveMap.h \
 	MovementGenerator.cpp \
 	MovementGenerator.h \
 	MovementGeneratorImpl.h \
