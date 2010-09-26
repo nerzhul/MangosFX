@@ -369,6 +369,26 @@ void InstanceSaveManager::PackInstances()
     sLog.outString();
 }
 
+uint32 InstanceSaveManager::GetMaxResetTimeFor(MapDifficulty const* mapDiff)
+{
+    if (!mapDiff || !mapDiff->resetTime)
+        return 0;
+
+    uint32 delay = uint32(mapDiff->resetTime / DAY * sWorld.getConfig(RATE_INSTANCE_RESET_TIME)) * DAY;
+
+    if (delay < DAY) // the reset_delay must be at least one day
+        delay = DAY;
+
+    return delay;
+}
+
+time_t InstanceSaveManager::CalculateNextResetTime(MapDifficulty const* mapDiff, time_t prevResetTime)
+{
+	uint32 diff = sWorld.getConfig(CONFIG_INSTANCE_RESET_TIME_HOUR) * HOUR;
+	uint32 period = GetMaxResetTimeFor(mapDiff);
+	return ((prevResetTime + MINUTE) / DAY * DAY) + period + diff;
+}
+
 void InstanceSaveManager::LoadResetTimes()
 {
     time_t now = time(NULL);
@@ -545,7 +565,6 @@ void InstanceSaveManager::Update()
         {
             // for individual normal instances, max creature respawn + X hours
             _ResetInstance(event.mapid, event.instanceId);
-            m_resetTimeQueue.erase(m_resetTimeQueue.begin());
         }
         else
         {
@@ -558,8 +577,24 @@ void InstanceSaveManager::Update()
                 event.type = ResetEventType(event.type+1);
 				ScheduleReset(true, resetTime - resetEventTypeDelay[event.type], event);
             }
-            m_resetTimeQueue.erase(m_resetTimeQueue.begin());
+			else
+			{
+				// re-schedule the next/new global reset/warning
+				// calculate the next reset time
+				MapDifficulty const* mapDiff = GetMapDifficultyData(event.mapid,event.difficulty);
+				ASSERT(mapDiff);
+				time_t next_reset = InstanceSaveManager::CalculateNextResetTime(mapDiff, resetTime);
+				ResetEventType type = RESET_EVENT_INFORM_1;
+				for (; type < RESET_EVENT_INFORM_LAST; type = ResetEventType(type+1))
+					if (next_reset - resetEventTypeDelay[type] > now)
+						break;
+				
+				// add new scheduler event to the queue
+				event.type = type;
+				ScheduleReset(true, next_reset - resetEventTypeDelay[event.type], event);
+			}
         }
+		m_resetTimeQueue.erase(m_resetTimeQueue.begin());
     }
 }
 
@@ -637,9 +672,7 @@ void InstanceSaveManager::_ResetOrWarnAll(uint32 mapid, Difficulty difficulty, b
         CharacterDatabase.CommitTransaction();
 
         // calculate the next reset time
-        uint32 diff = sWorld.getConfig(CONFIG_INSTANCE_RESET_TIME_HOUR) * HOUR;
-        uint32 period = (mapDiff->resetTime / DAY) * DAY;
-		time_t next_reset = today + period + diff;
+        time_t next_reset = InstanceSaveManager::CalculateNextResetTime(mapDiff, now + timeLeft);
         // update it in the DB
         CharacterDatabase.PExecute("UPDATE instance_reset SET resettime = '"UI64FMTD"' WHERE mapid = '%d' AND difficulty = '%d'", next_reset, mapid, difficulty);
 

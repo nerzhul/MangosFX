@@ -155,6 +155,10 @@ class MANGOS_DLL_DECL InstanceSaveManager : public MaNGOS::Singleton<InstanceSav
         void PackInstances();
 
         void LoadResetTimes();
+
+		static uint32 GetMaxResetTimeFor(MapDifficulty const* mapDiff);
+		static time_t CalculateNextResetTime(MapDifficulty const* mapDiff, time_t prevResetTime);
+
         time_t GetResetTimeFor(uint32 mapid, Difficulty d) const
         {
             ResetTimeByMapDifficultyMap::const_iterator itr  = m_resetTimeByMapDifficulty.find(MAKE_PAIR32(mapid,d));
