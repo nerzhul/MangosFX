@@ -123,7 +123,6 @@ dtNodeQueue::~dtNodeQueue()
 		for(int i=0;i<m_size;i++)
 			dtFree(m_heap[i]);
 	}
-	delete m_heap;
 }
 
 void dtNodeQueue::bubbleUp(int i, dtNode* node)
