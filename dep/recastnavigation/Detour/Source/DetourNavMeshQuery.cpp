@@ -56,8 +56,7 @@ dtNavMeshQuery* dtAllocNavMeshQuery()
 void dtFreeNavMeshQuery(dtNavMeshQuery* navmesh)
 {
 	if (!navmesh) return;
-	navmesh->~dtNavMeshQuery();
-	dtFree(navmesh);
+	delete navmesh;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

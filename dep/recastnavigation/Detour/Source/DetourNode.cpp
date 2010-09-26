@@ -115,11 +115,7 @@ dtNodeQueue::dtNodeQueue(int n) :
 
 dtNodeQueue::~dtNodeQueue()
 {
-	if(m_heap)
-	{
-		for(int i=0;i<m_size;i++)
-			dtFree(m_heap[i]);
-	}
+	dtFree(m_heap);
 }
 
 void dtNodeQueue::bubbleUp(int i, dtNode* node)
