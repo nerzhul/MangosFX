@@ -47,7 +47,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
     {
         case TYPEID_UNIT:
         {
-            sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY for npc, guid = %u",uint32(GUID_LOPART(guid)) );
+            //sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY for npc, guid = %u",uint32(GUID_LOPART(guid)) );
             Creature* cr_questgiver=(Creature*)questgiver;
             if( !cr_questgiver->IsHostileTo(_player))       // not show quest status to enemies
             {
@@ -59,7 +59,7 @@ void WorldSession::HandleQuestgiverStatusQueryOpcode( WorldPacket & recv_data )
         }
         case TYPEID_GAMEOBJECT:
         {
-            sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY for GameObject guid = %u",uint32(GUID_LOPART(guid)) );
+            //sLog.outDebug( "WORLD: Received CMSG_QUESTGIVER_STATUS_QUERY for GameObject guid = %u",uint32(GUID_LOPART(guid)) );
             GameObject* go_questgiver=(GameObject*)questgiver;
             dialogStatus = Script->GODialogStatus(_player, go_questgiver);
             if( dialogStatus > 6 )
@@ -80,7 +80,7 @@ void WorldSession::HandleQuestgiverHelloOpcode(WorldPacket & recv_data)
     uint64 guid;
     recv_data >> guid;
 
-    sLog.outDebug ("WORLD: Received CMSG_QUESTGIVER_HELLO npc = %u", GUID_LOPART(guid));
+    //sLog.outDebug ("WORLD: Received CMSG_QUESTGIVER_HELLO npc = %u", GUID_LOPART(guid));
 
     Creature *pCreature = GetPlayer()->GetNPCIfCanInteractWith(guid, UNIT_NPC_FLAG_NONE);
 

@@ -558,7 +558,7 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
                 m_activeNonPlayers.erase(obj);
         }
 	public:
-        dtNavMesh* GetNavMesh();
+		dtNavMesh* GetNavMesh() { return m_navMesh; }
 
     private:
         void LoadNavMesh(int gx, int gy);

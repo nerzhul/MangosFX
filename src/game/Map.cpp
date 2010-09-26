@@ -71,10 +71,7 @@ Map::~Map()
         sWorld.DecreaseScheduledScriptCount(m_scriptSchedule.size());
 
 	if (m_navMesh)
-    {
-        /*delete m_navMesh;
-        m_navMesh = NULL;*/
-    }
+        m_navMesh = NULL;
 }
 
 bool Map::ExistMap(uint32 mapid,int gx,int gy)

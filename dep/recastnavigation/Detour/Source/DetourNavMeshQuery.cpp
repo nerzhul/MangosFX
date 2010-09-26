@@ -73,11 +73,20 @@ dtNavMeshQuery::dtNavMeshQuery() :
 dtNavMeshQuery::~dtNavMeshQuery()
 {
 	if (m_tinyNodePool)
+	{
 		delete m_tinyNodePool;
+		m_tinyNodePool = NULL;
+	}
 	if (m_nodePool)
+	{
 		delete m_nodePool;
+		m_nodePool = NULL;
+	}
 	if (m_openList)
-		delete [] m_openList;
+	{
+		delete m_openList;
+		m_openList = NULL;
+	}
 }
 
 bool dtNavMeshQuery::init(dtNavMesh* nav, const int maxNodes)

@@ -65,6 +65,7 @@
 #include "LFGMgr.h"
 #include "AuctionHouseBot.h"
 #include "Calendar.h"
+#include "MoveMap.h"
 #include "OutdoorPvPMgr.h"
 
 INSTANTIATE_SINGLETON_1( World );
@@ -1523,6 +1524,10 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Starting BattleGround System" );
     sBattleGroundMgr.CreateInitialBattleGrounds();
     sBattleGroundMgr.InitAutomaticArenaPointDistribution();
+
+	/// - Initialize mmaps
+	sLog.outString("Loading All MMaps...");
+	sMMapMgr.LoadAllMMaps();
 
 	///- Initialize outdoor pvp
     sLog.outString("Starting Outdoor PvP System");

@@ -31,7 +31,7 @@
 
 void WorldSession::HandleTaxiNodeStatusQueryOpcode( WorldPacket & recv_data )
 {
-    sLog.outDebug( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
+    //sLog.outDebug( "WORLD: Received CMSG_TAXINODE_STATUS_QUERY" );
 
     uint64 guid;
 
@@ -55,18 +55,18 @@ void WorldSession::SendTaxiStatus( uint64 guid )
     if(curloc == 0)
         return;
 
-    sLog.outDebug( "WORLD: current location %u ",curloc);
+    //sLog.outDebug( "WORLD: current location %u ",curloc);
 
     WorldPacket data( SMSG_TAXINODE_STATUS, 9 );
     data << guid;
     data << uint8( GetPlayer( )->m_taxi.IsTaximaskNodeKnown(curloc) ? 1 : 0 );
     SendPacket( &data );
-    sLog.outDebug( "WORLD: Sent SMSG_TAXINODE_STATUS" );
+    //sLog.outDebug( "WORLD: Sent SMSG_TAXINODE_STATUS" );
 }
 
 void WorldSession::HandleTaxiQueryAvailableNodes( WorldPacket & recv_data )
 {
-    sLog.outDebug( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
+    //sLog.outDebug( "WORLD: Received CMSG_TAXIQUERYAVAILABLENODES" );
 
     uint64 guid;
     recv_data >> guid;
