@@ -2524,12 +2524,7 @@ bool InstanceMap::Add(Player *player)
                         // if the group/leader is permanently bound to the instance
                         // players also become permanently bound when they enter
                         if(groupBind->perm)
-                        {
-                            WorldPacket data(SMSG_INSTANCE_SAVE_CREATED, 4);
-                            data << uint32(0);
-                            player->GetSession()->SendPacket(&data);
                             player->BindToInstance(mapSave, true);
-                        }
                     }
                 }
                 else
@@ -2695,12 +2690,7 @@ void InstanceMap::PermBindAllPlayers(Player *player)
         // some players may already be permanently bound, in this case nothing happens
         InstancePlayerBind *bind = plr->GetBoundInstance(save->GetMapId(), save->GetDifficulty());
         if(!bind || !bind->perm)
-        {
             plr->BindToInstance(save, true);
-            WorldPacket data(SMSG_INSTANCE_SAVE_CREATED, 4);
-            data << uint32(0);
-            plr->GetSession()->SendPacket(&data);
-        }
 
         // if the leader is not in the instance the group will not get a perm bind
         if(group && group->GetLeaderGUID() == plr->GetGUID())

@@ -16761,6 +16761,12 @@ InstancePlayerBind* Player::BindToInstance(InstanceSave *save, bool permanent, b
 
         bind.save = save;
         bind.perm = permanent;
+
+		WorldPacket data(SMSG_INSTANCE_SAVE_CREATED, 4);
+		// 0 : normal / 1 : debug
+        data << uint32(0);
+        GetSession()->SendPacket(&data);
+
         if(!load) sLog.outDebug("Player::BindToInstance: %s(%d) is now bound to map %d, instance %d, difficulty %d", GetName(), GetGUIDLow(), save->GetMapId(), save->GetInstanceId(), save->GetDifficulty());
         return &bind;
     }
@@ -19904,6 +19910,8 @@ void Player::SendInitialPacketsAfterAddToMap()
 	ExitVehicle();
 	if(!CanSpeak())
 		SetAuraStack(1852,this,1);
+
+	SendSavedInstances();
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
