@@ -46,12 +46,9 @@ dtNodePool::dtNodePool(int maxNodes, int hashSize) :
 
 dtNodePool::~dtNodePool()
 {
-	if(m_nodes)
-		dtFree(m_nodes);
-	if(m_next)
-		delete [] m_next;
-	if(m_first)
-		delete [] m_first;
+	dtFree(m_nodes);
+	dtFree(m_next);
+	dtFree(m_first);
 }
 
 void dtNodePool::clear()
