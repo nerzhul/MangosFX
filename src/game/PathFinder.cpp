@@ -45,7 +45,7 @@ PathInfo::~PathInfo()
         delete [] m_pathPolyRefs;
 
     if(m_navMesh && m_navMeshQuery)
-        delete m_navMeshQuery;
+        dtFreeNavMeshQuery(m_navMeshQuery);
 }
 
 dtPolyRef PathInfo::getPathPolyByPosition(float x, float y, float z)
