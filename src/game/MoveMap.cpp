@@ -18,6 +18,7 @@
 
 #include "Map.h"
 #include "MoveMap.h"
+#include "DBCStores.h"
 #include <Log.h>
 #include <Policies/SingletonImp.h>
 #include <Utilities/UnorderedMapSet.h>
