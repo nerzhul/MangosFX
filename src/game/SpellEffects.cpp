@@ -376,13 +376,11 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 			case SPELLFAMILY_HUNTER:
 			case SPELLFAMILY_ROGUE:
 			case SPELLFAMILY_WARRIOR:
+			case SPELLFAMILY_PALADIN:
             {
 				sClassSpellHandler.HandleSchoolDmg(this,damage,SpellEffectIndex(effect_idx));
                 break;
             }
-            case SPELLFAMILY_PALADIN:
-            {
-                            }
         }
 
         if(damage >= 0)
