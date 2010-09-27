@@ -40,7 +40,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
     }
 	
 	// Mangle (Cat): CP
-    if (spell->m_spellInfo->SpellFamilyFlags & ))
+    if (spell->m_spellInfo->SpellFamilyFlags & FLAG_MANGLE_CAT))
     {
         if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER)
             ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
