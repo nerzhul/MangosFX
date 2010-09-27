@@ -5087,13 +5087,7 @@ void Spell::EffectWeaponDmg(uint32 i)
     // prevent negative damage
     m_damage+= uint32(bonus > 0 ? bonus : 0);
 
-    // Mangle (Cat): CP
-    if (m_spellInfo->SpellFamilyName==SPELLFAMILY_DRUID && (m_spellInfo->SpellFamilyFlags==UI64LIT(0x0000040000000000)))
-    {
-        if(m_caster->GetTypeId()==TYPEID_PLAYER)
-            ((Player*)m_caster)->AddComboPoints(unitTarget, 1);
-    }
-    else if(m_spellInfo->SpellFamilyName==SPELLFAMILY_PALADIN)
+    if(m_spellInfo->SpellFamilyName==SPELLFAMILY_PALADIN)
     {
         // Judgement of Blood/of the Martyr backlash damage (33%)
         if(m_spellInfo->SpellFamilyFlags & 0x0000000800000000LL && m_spellInfo->SpellIconID==153)
