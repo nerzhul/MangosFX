@@ -146,6 +146,7 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 	if(!spell || !spell->m_spellInfo)
 		return;
 
+	// Other classes dont use HandleSchoolDamage
 	switch(spell->m_spellInfo->SpellFamilyName)
 	{
 		/*case SPELLFAMILY_DEATHKNIGHT:
@@ -159,10 +160,10 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 			break;
 		/*case SPELLFAMILY_MAGE:
 			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
-		case SPELLFAMILY_PALADIN:
-			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;*/
+		case SPELLFAMILY_PALADIN:
+			sPaladinSpellHandler.HandleSchoolDmg(spell,damage,i);
+			break;
 		case SPELLFAMILY_PRIEST:
 			sPriestSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
