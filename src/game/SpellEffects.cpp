@@ -370,51 +370,6 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                 }
                 break;
             }
-            case SPELLFAMILY_WARRIOR:
-            {
-                // Bloodthirst
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x40000000000))
-                {
-                    damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
-                }
-                // Shield Slam
-                else if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000020000000000)) && m_spellInfo->Category==1209)
-				{
-                    damage += int32(m_caster->GetShieldBlockValue());
-					// glyph of shield slam
-					if (m_caster->HasAura(58375))
-                        m_caster->CastSpell(m_caster, 58374, true);
-				}
-                // Victory Rush
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x10000000000))
-                {
-                    damage = uint32(damage * m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
-                    m_caster->ModifyAuraState(AURA_STATE_WARRIOR_VICTORY_RUSH, false);
-                }
-                // Revenge ${$m1+$AP*0.310} to ${$M1+$AP*0.310}
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000400))
-                    damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.310f);
-                // Heroic Throw ${$m1+$AP*.50}
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000100000000))
-                    damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.5f);
-				// Shattering Throw ${$m1+$AP*.50}
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0040000000000000))
-                    damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.5f);
-                // Shockwave ${$m3/100*$AP}
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000800000000000))
-                {
-                    int32 pct = m_caster->CalculateSpellDamage(m_spellInfo, 2, m_spellInfo->EffectBasePoints[2], unitTarget);
-                    if (pct > 0)
-                        damage+= int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * pct / 100);
-                    break;
-                }
-                // Thunder Clap
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000080))
-                {
-                    damage+=int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 12 / 100);
-                }
-                break;
-            }
             case SPELLFAMILY_WARLOCK:
             {
                 // Incinerate Rank 1 & 2
@@ -521,6 +476,7 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
             }
             case SPELLFAMILY_DRUID:
 			case SPELLFAMILY_HUNTER:
+			case SPELLFAMILY_WARRIOR:
             {
 				sClassSpellHandler.HandleSchoolDmg(this,damage,SpellEffectIndex(effect_idx));
                 break;
