@@ -175,9 +175,9 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 		case SPELLFAMILY_WARRIOR:
 			sWarriorSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
-		/*case SPELLFAMILY_WARLOCK:
-			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;*/
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleSchoolDmg(spell,damage,i);
+			break;
 	}
 }
 
