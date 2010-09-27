@@ -84,12 +84,12 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 
 void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
+	Unit* m_caster = spell->GetCaster();
+	Unit* unitTarget = spell->getUnitTarget();
 	// Bloodthirst
 	if (m_spellInfo->SpellFamilyFlags & FLAG_BLOODTHIRST)
-	{
 		damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
-	}
 	// Shield Slam
 	else if ((m_spellInfo->SpellFamilyFlags & FLAG_SHIELD_SLAM) && m_spellInfo->Category==1209)
 	{
@@ -119,7 +119,6 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 		int32 pct = m_caster->CalculateSpellDamage(m_spellInfo, 2, m_spellInfo->EffectBasePoints[2], unitTarget);
 		if (pct > 0)
 			damage+= int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * pct / 100);
-		break;
 	}
 	// Thunder Clap
 	else if (m_spellInfo->SpellFamilyFlags & FLAG_THUNDER_CLAP)

@@ -428,6 +428,7 @@ class Spell
         uint32 m_glyphIndex;
         SpellCastTargets m_targets;
 
+		Item* GetCastItem() { return m_CastItem; }
         int32 GetCastTime() const { return m_casttime; }
         uint32 GetCastedTime() { return m_timer; }
         bool IsAutoRepeat() const { return m_autoRepeat; }

@@ -1,7 +1,9 @@
 #include <Policies/SingletonImp.h>
 #include "Spell.h"
 #include "SpellAuras.h"
+#include "SpellMgr.h"
 #include "RogueSpellHandler.h"
+#include "ClassSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 
@@ -96,7 +98,7 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
 	Unit* m_caster = spell->GetCaster();
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* unitTarget = spell->getUnitTarget();
 	
 	if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & FLAG_ENVENOM))
@@ -166,7 +168,7 @@ void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 
 bool RogueSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* m_caster = spell->GetCaster();
 	Unit* unitTarget = spell->getUnitTarget();
 	

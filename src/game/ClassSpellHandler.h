@@ -39,6 +39,7 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 		void HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i);
 		bool HandleEffectDummy(Spell* spell,int32 &damage,SpellEffectIndex i);
 		void PeriodicDummyTick(Aura* aura);
+		void SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod);
 
 		Aura* GetAuraByName(Unit* u,AuraName aName, uint64 casterGUID = 0);
 		Aura* GetSpecialAura(Unit* u, AuraName aName);

@@ -1,5 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include "Spell.h"
+#include "SpellAuras.h"
+#include "SpellMgr.h"
 #include "PriestSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(PriestSpellHandler);
@@ -13,9 +15,9 @@ void PriestSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bon
 
 void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* m_caster = spell->GetCaster();
-	Unit* unitTarget = spell->GetUnitTarget();
+	Unit* unitTarget = spell->getUnitTarget();
 	
 	// Shadow Word: Death - deals damage equal to damage done to caster
 	if (m_spellInfo->SpellFamilyFlags & FLAG_SW_DEATH)

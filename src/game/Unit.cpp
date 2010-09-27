@@ -10044,74 +10044,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     {
         case SPELLFAMILY_MAGE:
         {
-            // Ice Lance
-            if (spellProto->SpellIconID == 186)
-            {
-				if (pVictim->isFrozen() || isIgnoreUnitState(spellProto))
-                {
-					float multiplier;
-					// Glyph of Ice Lance
-                    if (owner->HasAura(56377) && pVictim->getLevel() > getLevel())
-                        multiplier = 4.0f;
-                    else
-						multiplier = 3.0f;
-
-                    DoneTotalMod *= multiplier;
-                }
-            }
-            // Torment the weak affected (Arcane Barrage, Arcane Blast, Frostfire Bolt, Arcane Missiles, Fireball)
-            if ((spellProto->SpellFamilyFlags & UI64LIT(0x0000900020200021)) &&
-                (pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || pVictim->HasAuraType(SPELL_AURA_HASTE_ALL)))
-            {
-                //Search for Torment the weak dummy aura
-                Unit::AuraList const& ttw = GetAurasByType(SPELL_AURA_DUMMY);
-                for(Unit::AuraList::const_iterator i = ttw.begin(); i != ttw.end(); ++i)
-                {
-                    if ((*i)->GetSpellProto()->SpellIconID == 3263)
-                    {
-                        DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
-                        break;
-                    }
-                }
-            }
-
-			// Arcane empowerment						
-			if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
-			{
-				if(Aura* aur = GetAura(31583))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
-				}
-				else if(Aura* aur = GetAura(31582))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
-				}
-				else if(Aura* aur = GetAura(31579))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
-				}
-			}
-			else if(spellProto->SpellFamilyFlags & UI64LIT(0x0800))
-			{
-				if(Aura* aur = GetAura(31583))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
-				}
-				else if(Aura* aur = GetAura(31582))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
-				}
-				else if(Aura* aur = GetAura(31579))
-				{
-					if(aur->GetCaster() == this)
-						DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
-				}
-			}
+			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
             break;
         }
 		case SPELLFAMILY_PRIEST:

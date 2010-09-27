@@ -222,6 +222,46 @@ void ClassSpellHandler::PeriodicDummyTick(Aura* aura)
 	}
 }
 
+void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
+{
+	if(!spell)
+		return;
+
+	switch(spell->SpellFamilyName)
+	{
+		/*case SPELLFAMILY_DEATHKNIGHT:
+			sDeathknightSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_DRUID:
+			sDruidSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_HUNTER:
+			sHunterSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;*/
+		case SPELLFAMILY_MAGE:
+			sMageSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
+			break;
+		/*case SPELLFAMILY_PALADIN:
+			sPaladinSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_ROGUE:
+			sRogueSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_SHAMAN:
+			sShamanSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_WARRIOR:
+			sWarriorSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			break;*/
+	}
+}
+
 AuraCarac caracTab[MAX_AURA_NAMES] =
 {
 	{SPELL_AURA_ADD_PCT_MODIFIER,	SPELLFAMILY_PRIEST,			UI64LIT(0x000400000),0},

@@ -1,5 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include "Spell.h"
+#include "SpellAuras.h"
+#include "SpellMgr.h"
 #include "MageSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(MageSpellHandler);
@@ -14,7 +16,7 @@ void MageSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus
 
 bool MageSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* m_caster = spell->GetCaster();
 	Unit* unitTarget = spell->getUnitTarget();
 	
@@ -73,9 +75,83 @@ bool MageSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffec
 	// Conjure Mana Gem
 	if (i == 1 && m_spellInfo->Effect[0] == SPELL_EFFECT_CREATE_ITEM)
 	{
-		unitTarget->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(i), true, m_CastItem);
+		unitTarget->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(i), true, spell->GetCastItem());
 		return false;
 	}
 	
 	return true;
+}
+
+void MageSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
+{
+
+	Unit* owner = caster->GetOwner();
+	// Ice Lance
+    if (spellProto->SpellIconID == 186)
+    {
+		if (pVictim->isFrozen() || caster->isIgnoreUnitState(spellProto))
+        {
+			float multiplier;
+			// Glyph of Ice Lance
+            if (owner && owner->HasAura(56377) && pVictim->getLevel() > caster->getLevel())
+                multiplier = 4.0f;
+            else
+				multiplier = 3.0f;
+
+            DoneTotalMod *= multiplier;
+        }
+    }
+    // Torment the weak affected (Arcane Barrage, Arcane Blast, Frostfire Bolt, Arcane Missiles, Fireball)
+    if ((spellProto->SpellFamilyFlags & UI64LIT(0x0000900020200021)) &&
+        (pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || pVictim->HasAuraType(SPELL_AURA_HASTE_ALL)))
+    {
+        //Search for Torment the weak dummy aura
+        Unit::AuraList const& ttw = caster->GetAurasByType(SPELL_AURA_DUMMY);
+        for(Unit::AuraList::const_iterator i = ttw.begin(); i != ttw.end(); ++i)
+        {
+            if ((*i)->GetSpellProto()->SpellIconID == 3263)
+            {
+                DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
+                break;
+            }
+        }
+    }
+
+	// Arcane empowerment						
+	if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
+	{
+		if(Aura* aur = caster->GetAura(31583))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+		}
+		else if(Aura* aur = caster->GetAura(31582))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+		}
+		else if(Aura* aur = caster->GetAura(31579))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
+		}
+	}
+	else if(spellProto->SpellFamilyFlags & UI64LIT(0x0800))
+	{
+		if(Aura* aur = caster->GetAura(31583))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+		}
+		else if(Aura* aur = caster->GetAura(31582))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+		}
+		else if(Aura* aur = caster->GetAura(31579))
+		{
+			if(aur->GetCaster() == caster)
+				DoneTotalMod *= (aur->GetModifier()->m_amount*5+100.0f) / 100.0f;
+		}
+	}
 }

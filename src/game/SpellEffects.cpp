@@ -2109,7 +2109,7 @@ void Spell::EffectDummy(uint32 i)
 		case SPELLFAMILY_ROGUE:
 		case SPELLFAMILY_MAGE:
         case SPELLFAMILY_DEATHKNIGHT:
-			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,i))
+			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,SpellEffectIndex(i)))
 				return;
             break;
     }

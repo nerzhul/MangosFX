@@ -19963,7 +19963,13 @@ void Player::SendInstanceResetWarning( uint32 mapid, Difficulty difficulty, uint
     data << uint32(time);
     if(type == RAID_INSTANCE_WELCOME)
     {
-        data << uint8(0);                                   // is your (1)
+		bool bound = false;
+		if(InstancePlayerBind* pBind = GetBoundInstance(mapid,difficulty))
+		{
+			if(pBind->perm)
+				bound = true;
+		}
+		data << uint8(bound ? 1 : 0);                                   // is your (1)
         data << uint8(0);                                   // is extended (1), ignored if prev field is 0
     }
     GetSession()->SendPacket(&data);

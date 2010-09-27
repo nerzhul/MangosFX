@@ -1,5 +1,6 @@
 #include <Policies/SingletonImp.h>
 #include "Spell.h"
+#include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "PaladinSpellHandler.h"
 
@@ -37,9 +38,9 @@ void PaladinSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 
 void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* m_caster = spell->GetCaster();
-	Unit* unitTarget = spell->GetUnitTarget();
+	Unit* unitTarget = spell->getUnitTarget();
 	
 	// Judgement of Righteousness - receive benefit from Spell Damage and Attack power
 	if (m_spellInfo->Id == SPELL_JUDGEMENT_OF_RIGHTEOUSNESS)

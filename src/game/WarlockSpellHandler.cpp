@@ -1,5 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include "Spell.h"
+#include "SpellAuras.h"
+#include "SpellMgr.h"
 #include "WarlockSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(WarlockSpellHandler);
@@ -14,9 +16,9 @@ void WarlockSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 
 void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i)
 {
-	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* m_caster = spell->GetCaster();
-	Unit* m_target = spell->GetUnitTarget();
+	Unit* unitTarget = spell->getUnitTarget();
 	
 	// Incinerate Rank 1 & 2
 	if ((m_spellInfo->SpellFamilyFlags & FLAG_INCINERATE) && m_spellInfo->SpellIconID==2128)
@@ -79,14 +81,12 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 			// DoT not have applied spell bonuses in m_amount
 			int32 damagetick = m_caster->SpellDamageBonus(unitTarget, aura->GetSpellProto(), aura->GetModifier()->m_amount, DOT);
 			// Save value of further damage
-			m_currentBasePoints[1] = damagetick * 2 / 3;
+			spell->m_currentBasePoints[1] = damagetick * 2 / 3;
 			damage += damagetick * 2;
 			
 			// Glyph of Conflagrate
 			if (!m_caster->HasAura(56235))
 				unitTarget->RemoveAurasByCasterSpell(aura->GetId(), m_caster->GetGUID());
-			
-			break;
 		}
 	}
 	

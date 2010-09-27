@@ -983,6 +983,12 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 			if(m_session->GetPlayer()->m_lookingForGroup.group)
 				m_session->SendLfgUpdatePlayer(LFG_UPDATETYPE_PROPOSAL_FOUND);
 		}
+		else if(argstr == "lockwarn")
+		{
+			WorldPacket data(SMSG_INSTANCE_LOCK_WARNING_QUERY,20);
+			data << uint8(1);
+			m_session->SendPacket(&data);
+		}
 
 	}
 	return true;

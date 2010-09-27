@@ -16,6 +16,7 @@ INSTANTIATE_SINGLETON_1(DruidSpellHandler);
 
 void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
+	Unit* unitTarget = spell->getUnitTarget();
 	// Rend and Tear ( on Maul / Shred )
     if (spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008800))
     {
@@ -40,7 +41,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
     }
 	
 	// Mangle (Cat): CP
-    if (spell->m_spellInfo->SpellFamilyFlags & FLAG_MANGLE_CAT))
+    if (spell->m_spellInfo->SpellFamilyFlags & FLAG_MANGLE_CAT)
     {
         if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER)
             ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
