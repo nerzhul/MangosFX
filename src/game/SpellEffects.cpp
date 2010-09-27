@@ -5022,15 +5022,11 @@ void Spell::EffectWeaponDmg(uint32 i)
         case SPELLFAMILY_PALADIN:
 		case SPELLFAMILY_PRIEST:
 		case SPELLFAMILY_ROGUE:
+		case SPELLFAMILY_SHAMAN:
 		case SPELLFAMILY_WARRIOR:
 		case SPELLFAMILY_WARLOCK:
         {
             sClassSpellHandler.HandleEffectWeaponDamage(this,spell_bonus,spellBonusNeedWeaponDamagePercentMod,totalDamagePercentMod);
-            break;
-        }
-        case SPELLFAMILY_SHAMAN:
-        {
-            
             break;
         }
     }

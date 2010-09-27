@@ -7,11 +7,12 @@
 
 INSTANTIATE_SINGLETON_1(DruidSpellHandler);
 
-#define FLAG_STARFIRE	UI64LIT(0x00000004)
-#define FLAG_RAKE		UI64LIT(0x0000000000001000)
+#define FLAG_STARFIRE	UI64LIT(0x0000000000000004)
+#define FLAG_RAKE		UI64LIT(0x0000000000001000) // verify this
+#define FLAG_RIP		UI64LIT(0x0000000000001000) // verify this
+#define FLAG_SHRED		UI64LIT(0x0000000000008000)
+#define FLAG_MANGLE_CAT	UI64LIT(0x0000040000000000)
 #define FLAG_SWIPE		UI64LIT(0x0010000000000000)
-#define FLAG_SHRED		UI64LIT(0x8000)
-#define FLAG_RIP		UI64LIT(0x1000)
 
 void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
@@ -36,6 +37,13 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
     {
             weaponDmgMod = true;
             spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
+    }
+	
+	// Mangle (Cat): CP
+    if (spell->m_spellInfo->SpellFamilyFlags & ))
+    {
+        if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER)
+            ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
     }
 }
 

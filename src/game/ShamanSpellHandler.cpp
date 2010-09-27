@@ -4,12 +4,13 @@
 #include "ShamanSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(ShamanSpellHandler);
+#define FLAG_STORMSTRIKE		UI64LIT(0x001000000000)
 
 void ShamanSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Skyshatter Harness item set bonus
     // Stormstrike
-    if(spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x001000000000))
+    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_STORMSTRIKE)
     {
         Unit::AuraList const& m_OverrideClassScript = spell->GetCaster()->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
         for(Unit::AuraList::const_iterator citr = m_OverrideClassScript.begin(); citr != m_OverrideClassScript.end(); ++citr)
