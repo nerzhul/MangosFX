@@ -1540,66 +1540,6 @@ void Spell::EffectDummy(uint32 i)
             }
             break;
         }
-        case SPELLFAMILY_MAGE:
-            switch(m_spellInfo->Id )
-            {
-                case 11958:                                 // Cold Snap
-                {
-                    if (m_caster->GetTypeId()!=TYPEID_PLAYER)
-                        return;
-
-                    // immediately finishes the cooldown on Frost spells
-                    const SpellCooldowns& cm = ((Player *)m_caster)->GetSpellCooldownMap();
-                    for (SpellCooldowns::const_iterator itr = cm.begin(); itr != cm.end();)
-                    {
-                        SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
-
-                        if (spellInfo->SpellFamilyName == SPELLFAMILY_MAGE &&
-                            (GetSpellSchoolMask(spellInfo) & SPELL_SCHOOL_MASK_FROST) &&
-                            spellInfo->Id != 11958 && GetSpellRecoveryTime(spellInfo) > 0)
-                        {
-                            ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first, true);
-                        }
-                        else
-                            ++itr;
-                    }
-
-					((Player*)m_caster)->RemoveSpellCooldown(12472,true);
-                    return;
-                }
-                case 31687:                                 // Summon Water Elemental
-                {
-                    if (m_caster->HasAura(70937))           // Glyph of Eternal Water (permanent limited by known spells version)
-                        m_caster->CastSpell(m_caster, 70908, true);
-                    else                                    // temporary version
-                        m_caster->CastSpell(m_caster, 70907, true);
-                    return;
-                }
-                case 32826:                                 // Polymorph Cast Visual
-                {
-                    if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT)
-                    {
-                        //Polymorph Cast Visual Rank 1
-                        const uint32 spell_list[6] = {
-                            32813,                          // Squirrel Form
-                            32816,                          // Giraffe Form
-                            32817,                          // Serpent Form
-                            32818,                          // Dragonhawk Form
-                            32819,                          // Worgen Form
-                            32820                           // Sheep Form
-                        };
-                        unitTarget->CastSpell( unitTarget, spell_list[urand(0, 5)], true);
-                    }
-                    return;
-                }
-            }
-			// Conjure Mana Gem
-            if (i == 1 && m_spellInfo->Effect[0] == SPELL_EFFECT_CREATE_ITEM)
-            {
-                unitTarget->CastSpell( unitTarget, m_spellInfo->CalculateSimpleValue(i), true, m_CastItem);
-                return;
-            }
-            break;
         case SPELLFAMILY_WARRIOR:
             // Charge
             if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x1)) && m_spellInfo->SpellVisual[0] == 867)
@@ -1749,7 +1689,7 @@ void Spell::EffectDummy(uint32 i)
 			switch(m_spellInfo->Id)
 			{
 				case 27217:
-					// Glyphe de drain d'âme
+					// Glyphe de drain d'ame
 					if(m_caster->GetTypeId() == TYPEID_PLAYER)
 						if(m_caster->HasAura(58070))
 							if(roll_chance_i(5))
@@ -2243,8 +2183,9 @@ void Spell::EffectDummy(uint32 i)
                 return;
             }
             break;
+		case SPELLFAMILY_MAGE:
         case SPELLFAMILY_DEATHKNIGHT:
-			if(!sClassSpellHandler.HandleEffectDummy(this))
+			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,i))
 				return;
             break;
     }

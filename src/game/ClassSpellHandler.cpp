@@ -99,7 +99,7 @@ void ClassSpellHandler::HandleDummyAuraProc(Unit *u, Spell *dummy, uint32 &trig_
 	}
 }
 
-bool ClassSpellHandler::HandleEffectDummy(Spell* spell)
+bool ClassSpellHandler::HandleEffectDummy(Spell* spell,int32 &damage, SpellEffectIndex i)
 {
 	if(!spell)
 		return false;
@@ -107,18 +107,18 @@ bool ClassSpellHandler::HandleEffectDummy(Spell* spell)
 	switch(spell->m_spellInfo->SpellFamilyName)
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
-			return sDeathknightSpellHandler.HandleEffectDummy(spell);
+			return sDeathknightSpellHandler.HandleEffectDummy(spell,damage,i);
 			break;
 		/*case SPELLFAMILY_DRUID:
 			sDruidSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_HUNTER:
 			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
+			break;*/
 		case SPELLFAMILY_MAGE:
-			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sMageSpellHandler.HandleEffectDummy(spell,damage,i);
 			break;
-		case SPELLFAMILY_PALADIN:
+		/*case SPELLFAMILY_PALADIN:
 			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_PRIEST:

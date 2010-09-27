@@ -16,7 +16,7 @@ INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 #define FLAG_HUNGERING_COLD		UI64LIT(0x0000900000000000)
 #define FLAG_OBLITERATE			UI64LIT(0x0002000000000000)
 
-bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell)
+bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
 	 // Death Coil
     if(spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_COIL)
