@@ -143,7 +143,7 @@ bool ClassSpellHandler::HandleEffectDummy(Spell* spell)
 
 void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
-	if(!spell)
+	if(!spell || !spell->m_spellInfo)
 		return;
 
 	switch(spell->m_spellInfo->SpellFamilyName)
