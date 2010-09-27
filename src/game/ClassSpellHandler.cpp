@@ -165,11 +165,11 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 			break;
 		case SPELLFAMILY_PRIEST:
 			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
+			break;*/
 		case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
-		case SPELLFAMILY_SHAMAN:
+		/*case SPELLFAMILY_SHAMAN:
 			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;*/
 		case SPELLFAMILY_WARRIOR:
