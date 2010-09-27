@@ -476,87 +476,10 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
             }
             case SPELLFAMILY_DRUID:
 			case SPELLFAMILY_HUNTER:
+			case SPELLFAMILY_ROGUE:
 			case SPELLFAMILY_WARRIOR:
             {
 				sClassSpellHandler.HandleSchoolDmg(this,damage,SpellEffectIndex(effect_idx));
-                break;
-            }
-            case SPELLFAMILY_ROGUE:
-            {
-                // Envenom
-                if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x800000000)))
-                {
-                    // consume from stack dozes not more that have combo-points
-                    if(uint32 combo = ((Player*)m_caster)->GetComboPoints())
-                    {
-                        Aura *poison = 0;
-                        // Lookup for Deadly poison (only attacker applied)
-                        Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-                        for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                            if( (*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_ROGUE &&
-                                ((*itr)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x10000)) &&
-                                (*itr)->GetCasterGUID() == m_caster->GetGUID() )
-                            {
-                                poison = *itr;
-                                break;
-                            }
-                        // count consumed deadly poison doses at target
-                        if (poison)
-                        {
-                            uint32 spellId = poison->GetId();
-                            uint32 doses = poison->GetStackAmount();
-							
-							if(!m_caster->HasAura(58410) && !(m_caster->HasAura(31227) 
-								&& roll_chance_i(66)) && !(m_caster->HasAura(31226) 
-								&& roll_chance_i(33)))
-							{
-								if (doses > combo)
-									doses = combo;
-								for (uint8 i=0; i<combo; i++)
-									unitTarget->RemoveSingleSpellAurasByCasterSpell(spellId, m_caster->GetGUID());
-
-								if(Aura* aur = sClassSpellHandler.GetAuraByName(m_caster,ROGUE_ENVENOM))
-								{
-									aur->SetAuraMaxDuration((1+combo)*1000);
-									aur->RefreshAura();
-								}
-							}
-                            damage *= combo;
-                            damage += int32(((Player*)m_caster)->GetTotalAttackPowerValue(BASE_ATTACK) * 0.09f * doses);
-                        }
-                        // Eviscerate and Envenom Bonus Damage (item set effect)
-                        if(m_caster->GetDummyAura(37169))
-                            damage += ((Player*)m_caster)->GetComboPoints()*40;
-                    }
-                }
-                // Eviscerate
-                else if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x00020000)) && m_caster->GetTypeId()==TYPEID_PLAYER)
-                {
-                    if(uint32 combo = ((Player*)m_caster)->GetComboPoints())
-                    {
-                        float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-                        damage += irand(int32(ap * combo * 0.03f), int32(ap * combo * 0.07f));
-
-                        // Eviscerate and Envenom Bonus Damage (item set effect)
-                        if(m_caster->GetDummyAura(37169))
-                            damage += combo*40;
-                    }
-                }
-                // Gouge
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000008))
-                {
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.21f);
-                }
-                // Instant Poison
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000002000))
-                {
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.10f);
-                }
-                // Wound Poison
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000010000000))
-                {
-                    damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.04f);
-                }
                 break;
             }
             case SPELLFAMILY_PALADIN:
