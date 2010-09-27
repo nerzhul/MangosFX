@@ -1755,84 +1755,7 @@ void Spell::EffectDummy(uint32 i)
                 }
             }
             break;
-        case SPELLFAMILY_ROGUE:
-            switch(m_spellInfo->Id)
-            {
-                case 5938:                                  // Shiv
-                {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                        return;
-
-                    Player *pCaster = ((Player*)m_caster);
-
-                    Item *item = pCaster->GetWeaponForAttack(OFF_ATTACK);
-                    if (!item)
-                        return;
-
-                    // all poison enchantments is temporary
-                    uint32 enchant_id = item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
-                    if (!enchant_id)
-                        return;
-
-                    SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
-                    if (!pEnchant)
-                        return;
-
-                    for (int s=0;s<3;s++)
-                    {
-                        if (pEnchant->type[s]!=ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
-                            continue;
-
-                        SpellEntry const* combatEntry = sSpellStore.LookupEntry(pEnchant->spellid[s]);
-                        if (!combatEntry || combatEntry->Dispel != DISPEL_POISON)
-                            continue;
-
-                        m_caster->CastSpell(unitTarget, combatEntry, true, item);
-                    }
-
-                    m_caster->CastSpell(unitTarget, 5940, true);
-                    return;
-                }
-                case 14185:                                 // Preparation
-                {
-                    if (m_caster->GetTypeId()!=TYPEID_PLAYER)
-                        return;
-
-                    //immediately finishes the cooldown on certain Rogue abilities
-                    const SpellCooldowns& cm = ((Player *)m_caster)->GetSpellCooldownMap();
-                    for (SpellCooldowns::const_iterator itr = cm.begin(); itr != cm.end();)
-                    {
-                        SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
-
-							// glyph of preparation
-                        if (spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && (spellInfo->SpellFamilyFlags & UI64LIT(0x0000024000000860))
-							|| ((Player*)m_caster)->HasAura(56819) && (spellInfo->Id == 13877 || spellInfo->Id == 51722 || spellInfo->Id == 1766))
-                            ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
-                        else
-                            ++itr;
-                    }
-                    return;
-                }
-                case 31231:                                 // Cheat Death
-                {
-                    m_caster->CastSpell(m_caster, 45182, true);
-                    return;
-                }
-				case 51662:
-				{
-					m_caster->CastSpell(m_caster, 63848, true);
-					break;
-				}
-				case 57934:
-				{
-					if(m_caster != unitTarget)
-						m_caster->CastSpell(unitTarget,57933,true);
-					break;
-				}
-
-            }
-            break;
-        case SPELLFAMILY_HUNTER:
+		case SPELLFAMILY_HUNTER:
             // Steady Shot
             if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x100000000))
             {
@@ -2183,6 +2106,7 @@ void Spell::EffectDummy(uint32 i)
                 return;
             }
             break;
+		case SPELLFAMILY_ROGUE:
 		case SPELLFAMILY_MAGE:
         case SPELLFAMILY_DEATHKNIGHT:
 			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,i))

@@ -17,6 +17,9 @@ INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 #define FLAG_ENVENOM		UI64LIT(0x0000800000000)
 #define FLAG_FAN_OF_KNIVES	UI64LIT(0x4000000000000)
 
+#define SPELL_SHIV			5938
+#define SPELL_PREPARATION	14185
+
 void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Mutilate (for each hand)
@@ -159,5 +162,87 @@ void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 		damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.10f);
 	else if (m_spellInfo->SpellFamilyFlags & FLAG_WOUND_POISON)
 		damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.04f);
+}
+
+bool RogueSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i)
+{
+	SpellEntry* m_spellInfo = spell->m_spellInfo;
+	Unit* m_caster = spell->GetCaster();
+	Unit* unitTarget = spell->getUnitTarget();
 	
+	switch(m_spellInfo->Id)
+	{
+		case SPELL_SHIV:                                  // Shiv
+		{
+			if (m_caster->GetTypeId() != TYPEID_PLAYER)
+				return false;
+			
+			Player *pCaster = ((Player*)m_caster);
+			
+			Item *item = pCaster->GetWeaponForAttack(OFF_ATTACK);
+			if (!item)
+				return false;
+			
+			// all poison enchantments is temporary
+			uint32 enchant_id = item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
+			if (!enchant_id)
+				return false;
+			
+			SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+			if (!pEnchant)
+				return false;
+			
+			for (int s=0;s<3;s++)
+			{
+				if (pEnchant->type[s]!=ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
+					continue;
+				
+				SpellEntry const* combatEntry = sSpellStore.LookupEntry(pEnchant->spellid[s]);
+				if (!combatEntry || combatEntry->Dispel != DISPEL_POISON)
+					continue;
+				
+				m_caster->CastSpell(unitTarget, combatEntry, true, item);
+			}
+			
+			m_caster->CastSpell(unitTarget, 5940, true);
+			return false;
+		}
+		case SPELL_PREPARATION:                                 // Preparation
+		{
+			if (m_caster->GetTypeId()!=TYPEID_PLAYER)
+				return false;
+			
+			//immediately finishes the cooldown on certain Rogue abilities
+			const SpellCooldowns& cm = ((Player *)m_caster)->GetSpellCooldownMap();
+			for (SpellCooldowns::const_iterator itr = cm.begin(); itr != cm.end();)
+			{
+				SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
+				
+				// glyph of preparation
+				if (spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && (spellInfo->SpellFamilyFlags & UI64LIT(0x0000024000000860))
+					|| ((Player*)m_caster)->HasAura(56819) && (spellInfo->Id == 13877 || spellInfo->Id == 51722 || spellInfo->Id == 1766))
+					((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
+					else
+						++itr;
+			}
+			return false;
+		}
+		case 31231:                                 // Cheat Death
+		{
+			m_caster->CastSpell(m_caster, 45182, true);
+			return false;
+		}
+		case 51662:
+		{
+			m_caster->CastSpell(m_caster, 63848, true);
+			break;
+		}
+		case 57934:
+		{
+			if(m_caster != unitTarget)
+				m_caster->CastSpell(unitTarget,57933,true);
+				break;
+		}
+	}
+	return true;
 }

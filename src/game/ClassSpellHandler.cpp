@@ -123,11 +123,11 @@ bool ClassSpellHandler::HandleEffectDummy(Spell* spell,int32 &damage, SpellEffec
 			break;
 		case SPELLFAMILY_PRIEST:
 			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
+			break;*/
 		case SPELLFAMILY_ROGUE:
-			sRogueSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sRogueSpellHandler.HandleEffectDummy(spell,damage,i);
 			break;
-		case SPELLFAMILY_SHAMAN:
+		/*case SPELLFAMILY_SHAMAN:
 			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_WARRIOR:
