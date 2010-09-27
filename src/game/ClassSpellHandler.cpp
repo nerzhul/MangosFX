@@ -162,10 +162,10 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 			break;
 		case SPELLFAMILY_PALADIN:
 			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
-		case SPELLFAMILY_PRIEST:
-			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;*/
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.HandleSchoolDmg(spell,damage,i);
+			break;
 		case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.HandleSchoolDmg(spell,damage,i);
 			break;
