@@ -53,7 +53,7 @@ FleeingMovementGenerator<T>::_setTargetLocation(T &owner)
 	float speed = traveller.Speed() * 0.001f; // in ms
 	uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
 	SplineFlags flags = (owner.GetTypeId() == TYPEID_UNIT) ? ((Creature*)&owner)->GetSplineFlags() : SPLINEFLAG_WALKMODE;
-	unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
+	owner.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
 }
 
 template<class T>
