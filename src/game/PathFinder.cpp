@@ -104,172 +104,160 @@ void PathInfo::BuildPath(dtPolyRef startPoly, float* startPos, dtPolyRef endPoly
         // ignore obstacles/terrain is better than giving up
         //printf("++ PathInfo::BuildPath :: (startPoly == 0 || endPoly == 0) %u\n", m_sourceObject->GetGUID());
         shortcut();
-
+		
         // TODO: swimming case
         // in both cases paths will be generated here
         if(canFly())
             m_type = PATHFIND_NORMAL;
-
+		
         return;
     }
-
+	
     // start and end are on same polygon
     // just need to move in straight line - nothing more to do here
     if(startPoly == endPoly)
     {
         //printf("++ PathInfo::BuildPath :: (startPoly == endPoly) %u\n",m_sourceObject->GetGUID());
         shortcut();
-
+		
         m_pathPolyRefs = new dtPolyRef[1];
         m_pathPolyRefs[0] = startPoly;
         m_polyLength = 1;
-
+		
         m_type = PATHFIND_NORMAL;
         return;
     }
-
+	
     // look for startPoly/endPoly in current path
     bool startPolyFound = false;
     bool endPolyFound = false;
-    for(uint32 i = 0; i < m_polyLength; ++i)
+    uint32 pathStartIndex, pathEndIndex;
+	
+    if(m_polyLength)
     {
-        if(m_pathPolyRefs[i] == startPoly)
-            startPolyFound = true;
-
-        if(m_pathPolyRefs[i] == endPoly)
-            endPolyFound = true;
+        for(pathStartIndex = 0; pathStartIndex < m_polyLength; ++pathStartIndex)
+            if(m_pathPolyRefs[pathStartIndex] == startPoly)
+            {
+                startPolyFound = true;
+                break;
+            }
+		
+        for(pathEndIndex = m_polyLength-1; pathEndIndex > pathStartIndex; --pathEndIndex)
+            if(m_pathPolyRefs[pathEndIndex] == endPoly)
+            {
+                endPolyFound = true;
+                break;
+            }
     }
-
+	
     if(startPolyFound && endPolyFound)
     {
         //printf("++ PathInfo::BuildPath :: (startPolyFound && endPolyFound) %u\n",m_sourceObject->GetGUID());
-
+		
         // we moved along the path and the target did not move out of our old poly-path
         // our path is a simple subpath case, we have all the data we need
         // just "cut" it out
-
-        uint32 pathStartIndex, pathEndIndex; // keep outside loops
-
-        // find if start node is on the existing path
-        for(pathStartIndex = 0; pathStartIndex < m_polyLength; ++pathStartIndex)
-            if(m_pathPolyRefs[pathStartIndex] == startPoly)
-                break;
-
-        // find if end node is on the existing path - start from last
-        for(pathEndIndex = m_polyLength-1; pathEndIndex > pathStartIndex; --pathEndIndex)
-            if(m_pathPolyRefs[pathEndIndex] == endPoly)
-                break;
-
+		
         m_polyLength = pathEndIndex - pathStartIndex + 1;
-
+		
         dtPolyRef* newPolyRefs = new dtPolyRef[m_polyLength];
         memcpy(newPolyRefs, m_pathPolyRefs+pathStartIndex, m_polyLength*sizeof(dtPolyRef));
-
+		
         delete [] m_pathPolyRefs;
         m_pathPolyRefs = newPolyRefs;
     }
     else if(startPolyFound && !endPolyFound)
     {
         //printf("++ PathInfo::BuildPath :: (startPolyFound && !endPolyFound) %u\n",m_sourceObject->GetGUID());
-
+		
         // we are moving on the old path but target moved out
         // so we have atleast part of poly-path ready
-
-        // find if start node is on the existing path
-        uint32 pathStartIndex;
-        for(pathStartIndex = 0; pathStartIndex < m_polyLength; ++pathStartIndex)
-            if(m_pathPolyRefs[pathStartIndex] == startPoly)
-                break;
-
+		
         m_polyLength -= pathStartIndex;
-
+		
         // try to adjust the suffix of the path instead of recalculating entire length
         // at given interval the target cannot get too far from its last location
         // thus we have less poly to cover
         // sub-path of optimal path is optimal
-
+		
         // take ~80% of the original length
         // TODO : play with the values here
         uint32 prefixPolyLength = uint32(m_polyLength*0.8f + 0.5f);
         dtPolyRef prefixPathPolys[MAX_PATH_LENGTH];
         memcpy(prefixPathPolys, m_pathPolyRefs+pathStartIndex, prefixPolyLength*sizeof(dtPolyRef));
-
+		
         dtPolyRef suffixStartPoly = prefixPathPolys[prefixPolyLength-1];
-        dtPolyRef suffixPathPolys[MAX_PATH_LENGTH];
-        uint32 suffixPolyLength = 0;
-
+		
         // we need any point on our suffix start poly to generate poly-path, so we need last poly in prefix data
         const dtMeshTile* tile;
         const dtPoly* poly;
-        if(m_navMesh->getTileAndPolyByRef(suffixStartPoly, &tile, &poly))
-        {
-            dtQueryFilter filter = createFilter();
-
-            // generate suffix
-            suffixPolyLength = m_navMeshQuery->findPath(
-                    suffixStartPoly,     // start polygon
-                    endPoly,            // end polygon
-                    // we might need to get better point here
-                    &tile->verts[poly->verts[0]], // start position
-                    endPos,             // end position
-                    &filter,            // polygon search filter
-                    suffixPathPolys,     // [out] path
-                    MAX_PATH_LENGTH);   // max number of polygons in output path
-
-            if(suffixPolyLength)
-            {
-                // new path = prefix + suffix - overlap
-
-                m_polyLength = prefixPolyLength + suffixPolyLength - 1;
-                delete [] m_pathPolyRefs;
-                m_pathPolyRefs = new dtPolyRef[m_polyLength];
-
-                // copy the part of the old path we keep - prefix
-                memcpy(m_pathPolyRefs, prefixPathPolys, prefixPolyLength*sizeof(dtPolyRef));
-
-                // copy the newly created suffix - skip first poly, we have it at prefix end
-                memcpy(m_pathPolyRefs+prefixPolyLength, suffixPathPolys+1, (suffixPolyLength-1)*sizeof(dtPolyRef));
-            }
-            else
-            {
-                // this is probably an error state, but we'll leave it
-                // and hopefully recover on the next Update
-                sLog.outError("%u's Path Build failed: 0 length path", m_sourceObject->GetGUID());
-            }
-        }
-        else
+        if(!m_navMesh->getTileAndPolyByRef(suffixStartPoly, &tile, &poly))
         {
             // suffixStartPoly is invalid somehow, or the navmesh is broken => error state
             sLog.outError("%u's Path Build failed: invalid polyRef in path", m_sourceObject->GetGUID());
-
+			
             // we need to get usable start/end polyRefs and recalculate path from scratch
             BuildFreshPath();
             return;
         }
+		
+        dtQueryFilter filter = createFilter();
+        dtPolyRef suffixPathPolys[MAX_PATH_LENGTH];
+		
+        // generate suffix
+        uint32 suffixPolyLength = m_navMeshQuery->findPath(
+														   suffixStartPoly,     // start polygon
+														   endPoly,            // end polygon
+														   // we might need to get better point here
+														   &tile->verts[poly->verts[0]], // start position
+														   endPos,             // end position
+														   &filter,            // polygon search filter
+														   suffixPathPolys,     // [out] path
+														   MAX_PATH_LENGTH);   // max number of polygons in output path
+		
+        if(suffixPolyLength == 0)
+        {
+            // this is probably an error state, but we'll leave it
+            // and hopefully recover on the next Update
+            // we still need to copy our preffix
+            sLog.outError("%u's Path Build failed: 0 length path", m_sourceObject->GetGUID());
+        }
+		
+        // new path = prefix + suffix - overlap
+        m_polyLength = prefixPolyLength + suffixPolyLength - 1;
+        delete [] m_pathPolyRefs;
+        m_pathPolyRefs = new dtPolyRef[m_polyLength];
+		
+        // copy the part of the old path we keep - prefix
+        memcpy(m_pathPolyRefs, prefixPathPolys, prefixPolyLength*sizeof(dtPolyRef));
+		
+        // copy the newly created suffix - skip first poly, we have it at prefix end
+        if(suffixPathPolys)
+            memcpy(m_pathPolyRefs+prefixPolyLength, suffixPathPolys+1, (suffixPolyLength-1)*sizeof(dtPolyRef));
     }
     else
     {
         //printf("++ PathInfo::BuildPath :: (!startPolyFound && !endPolyFound) %u\n",m_sourceObject->GetGUID());
-
+		
         // either we have no path at all -> first run
         // or something went really wrong -> we aren't moving along the path to the target
         // just generate new path
-
+		
         // free and invalidate old path data (particularly m_pointPathPointer)
         clear();
-
+		
         dtQueryFilter filter = createFilter();      // use special filter so we use proper terrain types
         dtPolyRef pathPolys[MAX_PATH_LENGTH];
-
+		
         m_polyLength = m_navMeshQuery->findPath(
-                startPoly,          // start polygon
-                endPoly,            // end polygon
-                startPos,           // start position
-                endPos,             // end position
-                &filter,            // polygon search filter
-                pathPolys,          // [out] path
-                MAX_PATH_LENGTH);   // max number of polygons in output path
-
+												startPoly,          // start polygon
+												endPoly,            // end polygon
+												startPos,           // start position
+												endPos,             // end position
+												&filter,            // polygon search filter
+												pathPolys,          // [out] path
+												MAX_PATH_LENGTH);   // max number of polygons in output path
+		
         if(m_polyLength == 0)
         {
             // only happens if we passed bad data to findPath(), or navmesh is messed up
@@ -277,18 +265,18 @@ void PathInfo::BuildPath(dtPolyRef startPoly, float* startPos, dtPolyRef endPoly
             shortcut();
             return;
         }
-
+		
         m_pathPolyRefs = new dtPolyRef[m_polyLength];
         memcpy(m_pathPolyRefs, pathPolys, m_polyLength*sizeof(dtPolyRef));
     }
-
+	
     if(m_pathPolyRefs[m_polyLength - 1] == endPoly)
         m_type = PATHFIND_NORMAL;
     else if (m_polyLength < MAX_PATH_LENGTH)
         m_type = PATHFIND_NOPATH;
     else
         m_type = PATHFIND_INCOMPLETE;
-
+	
     // generate the point-path out of our up-to-date poly-path
     updateNextPosition();
 }
@@ -513,7 +501,7 @@ NavTerrain PathInfo::getNavTerrain(float x, float y, float z)
         case MAP_LIQUID_TYPE_SLIME:
             return NAV_SLIME;
         default:
-            return NavTerrain(0);
+            return NAV_EMPTY;
     }
 }
 
@@ -680,7 +668,7 @@ uint32 PathInfo::findSmoothPath(const float* startPos, const float* endPos,
         {
             // Reached end of path.
             dtVcopy(iterPos, targetPos);
-            if (m_nsmoothPath < MAX_SMOOTH_PATH_LENGTH)
+            if (m_nsmoothPath < maxSmoothPathSize)
             {
                 dtVcopy(&smoothPath[m_nsmoothPath*VERTEX_SIZE], iterPos);
                 m_nsmoothPath++;
