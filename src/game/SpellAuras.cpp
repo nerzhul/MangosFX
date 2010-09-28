@@ -8122,7 +8122,7 @@ void Aura::PeriodicTick()
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
             pCaster->ProcDamageAndSpell(m_target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, pdamage, BASE_ATTACK, GetSpellProto());
 
-			cleanDamage->absorb = absorb;
+			cleanDamage.absorb = absorb;
             pCaster->DealDamage(m_target, pdamage, &cleanDamage, DOT, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), true);
             break;
         }
@@ -8194,7 +8194,7 @@ void Aura::PeriodicTick()
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
             pCaster->ProcDamageAndSpell(m_target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, pdamage, BASE_ATTACK, GetSpellProto());
 			
-			cleanDamage->absorb = absorb;
+			cleanDamage.absorb = absorb;
             int32 new_damage = pCaster->DealDamage(m_target, pdamage, &cleanDamage, DOT, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), false);
 
             if (!m_target->isAlive() && pCaster->IsNonMeleeSpellCasted(false))
