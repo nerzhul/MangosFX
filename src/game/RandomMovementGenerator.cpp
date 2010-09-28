@@ -94,7 +94,7 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
     Traveller<Creature> traveller(creature);
 
     creature.SetOrientation(creature.GetAngle(nx, ny));
-    i_destinationHolder.SetDestination(traveller, nx, ny, nz);
+    i_destinationHolder.SetDestination(traveller, nx, ny, nz, false);
 	PathInfo path(&unit, nx, ny, nz);
 	PointPath pointPath = path.getFullPath();
 	float speed = traveller.Speed() * 0.001f; // in ms

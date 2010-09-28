@@ -21,6 +21,7 @@
 #include "MapManager.h"
 #include "FleeingMovementGenerator.h"
 #include "DestinationHolderImp.h"
+#include "PathFinder.h"
 #include "ObjectAccessor.h"
 
 #define MIN_QUIET_DISTANCE 28.0f
@@ -46,7 +47,13 @@ FleeingMovementGenerator<T>::_setTargetLocation(T &owner)
 
     owner.addUnitState(UNIT_STAT_FLEEING_MOVE);
     Traveller<T> traveller(owner);
-    i_destinationHolder.SetDestination(traveller, x, y, z);
+    i_destinationHolder.SetDestination(traveller, x, y, z, false);
+	PathInfo path(&unit, x, y, z);
+	PointPath pointPath = path.getFullPath();
+	float speed = traveller.Speed() * 0.001f; // in ms
+	uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
+	SplineFlags flags = (unit.GetTypeId() == TYPEID_UNIT) ? ((Creature*)&unit)->GetSplineFlags() : SPLINEFLAG_WALKMODE;
+	unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
 }
 
 template<class T>
