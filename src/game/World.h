@@ -613,6 +613,8 @@ class World
         void ResetDailyQuests();
 		void ResetBGDaily();
 		void ResetWeeklyQuests();
+	
+		void SendMessageToAll(std::string str);
     private:
         static volatile bool m_stopEvent;
         static uint8 m_ExitCode;
