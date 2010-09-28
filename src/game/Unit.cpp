@@ -1562,7 +1562,7 @@ void Unit::DealSpellDamage(SpellNonMeleeDamage *damageInfo, bool durabilityLoss)
     }
 
     // Call default DealDamage (send critical in hit info for threat calculation)
-    CleanDamage cleanDamage(damageInfo->cleanDamage, BASE_ATTACK, damageInfo->HitInfo & SPELL_HIT_TYPE_CRIT ? MELEE_HIT_CRIT : MELEE_HIT_NORMAL);
+    CleanDamage cleanDamage(damageInfo->cleanDamage,damageInfo->absorb, BASE_ATTACK, damageInfo->HitInfo & SPELL_HIT_TYPE_CRIT ? MELEE_HIT_CRIT : MELEE_HIT_NORMAL);
     DealDamage(pVictim, damageInfo->damage, &cleanDamage, SPELL_DIRECT_DAMAGE, damageInfo->schoolMask, spellProto, durabilityLoss);
 }
 
@@ -1908,7 +1908,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
     }
 
 	// Call default DealDamage
-    CleanDamage cleanDamage(damageInfo->cleanDamage,damageInfo->attackType,damageInfo->hitOutCome);
+    CleanDamage cleanDamage(damageInfo->cleanDamage,damageInfo->absorb,damageInfo->attackType,damageInfo->hitOutCome);
 	if(HasAura(66725) && GetTypeId() == TYPEID_UNIT)
 	{
 		DealDamage(getVictim(),damageInfo->damage, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_FIRE, NULL, false);
@@ -2582,7 +2582,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
 
             SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, splitted_absorb, 0, false, 0, false);
 
-            CleanDamage cleanDamage = CleanDamage(splitted, BASE_ATTACK, MELEE_HIT_NORMAL);
+            CleanDamage cleanDamage = CleanDamage(splitted,splitted_absorb, BASE_ATTACK, MELEE_HIT_NORMAL);
             DealDamage(caster, splitted, &cleanDamage, DIRECT_DAMAGE, schoolMask, (*i)->GetSpellProto(), false);
         }
 
@@ -2609,7 +2609,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
 
             SendSpellNonMeleeDamageLog(caster, (*i)->GetSpellProto()->Id, splitted, schoolMask, split_absorb, 0, false, 0, false);
 
-            CleanDamage cleanDamage = CleanDamage(splitted, BASE_ATTACK, MELEE_HIT_NORMAL);
+            CleanDamage cleanDamage = CleanDamage(splitted, split_absorb, BASE_ATTACK, MELEE_HIT_NORMAL);
             DealDamage(caster, splitted, &cleanDamage, DIRECT_DAMAGE, schoolMask, (*i)->GetSpellProto(), false);
         }
     }

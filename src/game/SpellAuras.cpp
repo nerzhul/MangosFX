@@ -8042,7 +8042,7 @@ void Aura::PeriodicTick()
 
             uint32 absorb = 0;
             uint32 resist = 0;
-            CleanDamage cleanDamage =  CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL );
+            CleanDamage cleanDamage =  CleanDamage(0,0, BASE_ATTACK, MELEE_HIT_NORMAL );
 
             // ignore non positive values (can be result apply spellmods to aura damage
             uint32 amount = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
@@ -8122,6 +8122,7 @@ void Aura::PeriodicTick()
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
             pCaster->ProcDamageAndSpell(m_target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, pdamage, BASE_ATTACK, GetSpellProto());
 
+			cleanDamage->absorb = absorb;
             pCaster->DealDamage(m_target, pdamage, &cleanDamage, DOT, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), true);
             break;
         }
@@ -8149,7 +8150,7 @@ void Aura::PeriodicTick()
 
             uint32 absorb=0;
             uint32 resist=0;
-            CleanDamage cleanDamage =  CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL );
+            CleanDamage cleanDamage =  CleanDamage(0,0, BASE_ATTACK, MELEE_HIT_NORMAL );
 
             uint32 pdamage = m_modifier.m_amount > 0 ? m_modifier.m_amount : 0;
 
@@ -8192,6 +8193,8 @@ void Aura::PeriodicTick()
             if (pdamage)
                 procVictim|=PROC_FLAG_TAKEN_ANY_DAMAGE;
             pCaster->ProcDamageAndSpell(m_target, procAttacker, procVictim, PROC_EX_NORMAL_HIT, pdamage, BASE_ATTACK, GetSpellProto());
+			
+			cleanDamage->absorb = absorb;
             int32 new_damage = pCaster->DealDamage(m_target, pdamage, &cleanDamage, DOT, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), false);
 
             if (!m_target->isAlive() && pCaster->IsNonMeleeSpellCasted(false))
@@ -8300,7 +8303,7 @@ void Aura::PeriodicTick()
                     pCaster->DealDamageMods(pCaster, damage, &absorb);
                     pCaster->SendSpellNonMeleeDamageLog(pCaster, GetId(), damage, GetSpellSchoolMask(GetSpellProto()), absorb, 0, false, 0, false);
 
-                    CleanDamage cleanDamage =  CleanDamage(0, BASE_ATTACK, MELEE_HIT_NORMAL );
+                    CleanDamage cleanDamage =  CleanDamage(0,absorb, BASE_ATTACK, MELEE_HIT_NORMAL);
                     pCaster->DealDamage(pCaster, damage, &cleanDamage, NODAMAGE, GetSpellSchoolMask(GetSpellProto()), GetSpellProto(), true);
                 }
             }
