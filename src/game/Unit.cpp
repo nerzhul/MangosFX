@@ -8721,9 +8721,15 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
         // Finish movies that add combo
         case 14189: // Seal Fate (Netherblade set)
         case 14157: // Ruthlessness
+		case 70802: // Mayhem (Shadowblade sets)
         {
             // Need add combopoint AFTER finish movie (or they dropped in finish phase)
-            break;
+			if (Spell* spell = GetCurrentSpell(CURRENT_GENERIC_SPELL))
+			{
+				spell->AddTriggeredSpell(trigger_spell_id);
+				return true;
+			}
+			return false;
         }
         // Bloodthirst (($m/100)% of max health)
         case 23880:
