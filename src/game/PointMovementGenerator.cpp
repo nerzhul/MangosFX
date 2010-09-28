@@ -18,6 +18,7 @@
 
 #include "PointMovementGenerator.h"
 #include "Errors.h"
+#include "PathFinder.h"
 #include "Creature.h"
 #include "CreatureAI.h"
 #include "TemporarySummon.h"
@@ -31,7 +32,13 @@ void PointMovementGenerator<T>::Initialize(T &unit)
     unit.StopMoving();
     unit.addUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE);
     Traveller<T> traveller(unit);
-    i_destinationHolder.SetDestination(traveller,i_x,i_y,i_z);
+    i_destinationHolder.SetDestination(traveller, i_x, i_y, i_z);
+	PathInfo path(&unit, i_x, i_y, i_z);
+	PointPath pointPath = path.getFullPath();
+	float speed = traveller.Speed() * 0.001f; // in ms
+	uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
+	SplineFlags flags = (unit.GetTypeId() == TYPEID_UNIT) ? ((Creature*)&unit)->GetSplineFlags() : SPLINEFLAG_WALKMODE;
+	unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
 
     if (unit.GetTypeId() == TYPEID_UNIT && ((Creature*)&unit)->canFly())
         ((Creature&)unit).AddSplineFlag(SPLINEFLAG_UNKNOWN7);
