@@ -79,7 +79,8 @@ enum WorldTimers
     WUPDATE_UPTIME      = 4,
     WUPDATE_CORPSES     = 5,
     WUPDATE_EVENTS      = 6,
-    WUPDATE_COUNT       = 7
+	WUPDATE_VOTES		= 7,
+    WUPDATE_COUNT       = 8
 };
 
 /// Configuration elements

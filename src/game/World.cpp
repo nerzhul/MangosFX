@@ -154,6 +154,21 @@ Player* World::FindPlayerInZone(uint32 zone)
     return NULL;
 }
 
+void World::SendMessageToAll(std::string str)
+{
+	SessionMap::const_iterator itr;
+    for (itr = m_sessions.begin(); itr != m_sessions.end(); ++itr)
+    {
+        if(!itr->second)
+            continue;
+        Player *player = itr->second->GetPlayer();
+        if(!player)
+            continue;
+        if(player->IsInWorld())
+			itr->second->SendAreaTriggerMessage(str.c_str);
+	}
+}
+
 /// Find a session by its id
 WorldSession* World::FindSession(uint32 id) const
 {
@@ -1494,6 +1509,7 @@ void World::SetInitialWorldSettings()
     m_timers[WUPDATE_OBJECTS].SetInterval(0);
     m_timers[WUPDATE_SESSIONS].SetInterval(0);
     m_timers[WUPDATE_WEATHERS].SetInterval(1*IN_MILLISECONDS);
+	m_timers[WUPDATE_VOTES].SetInterval(90*MINUTE*IN_MILLISECONDS);
     m_timers[WUPDATE_AUCTIONS].SetInterval(MINUTE*IN_MILLISECONDS/10);
     m_timers[WUPDATE_UPTIME].SetInterval(m_configs[CONFIG_UPTIME_UPDATE]*MINUTE*IN_MILLISECONDS);
                                                             //Update "uptime" table based on configuration entry in minutes.
@@ -1684,6 +1700,12 @@ void World::Update(uint32 diff)
         UpdateSessions(diff);
     }
 
+	if (m_timers[WUPDATE_VOTES].Passed())
+    {
+        m_timers[WUPDATE_VOTES].Reset();
+		SendMessageToAll("Pensez a voter toutes les 2h pour le serveur");		
+	}
+	
     /// <li> Handle weather updates when the timer has passed
     if (m_timers[WUPDATE_WEATHERS].Passed())
     {
