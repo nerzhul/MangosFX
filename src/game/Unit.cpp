@@ -1124,15 +1124,10 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
 				CastCustomSpell(this,70872,&bp0,NULL,NULL,true);
 			}
 			if(spellProto && IsDamageToThreatSpell(spellProto))
-				pVictim->AddThreat(this, generatedThreat*2, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+				pVictim->AddThreat(this, float((generatedThreat + (cleanDamage ? cleanDamage->absorb : 0))*2), (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
 			else
-				pVictim->AddThreat(this, generatedThreat, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
-
-			if(pVictim->GetTypeId() == TYPEID_UNIT && damage == 0)
-				if(uint32 entry = ((Creature*)this)->GetEntry())
-					if(entry == 37970 || entry == 37972 || entry == 37973)
-						pVictim->AddThreat(this, 7500, (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
-        }
+				pVictim->AddThreat(this, float(generatedThreat + (cleanDamage ? cleanDamage->absorb : 0)), (cleanDamage && cleanDamage->hitOutCome == MELEE_HIT_CRIT), damageSchoolMask, spellProto);
+		}
         else                                                // victim is a player
         {
             // Rage from damage received
