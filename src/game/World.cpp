@@ -165,7 +165,7 @@ void World::SendMessageToAll(std::string str)
         if(!player)
             continue;
         if(player->IsInWorld())
-			itr->second->SendAreaTriggerMessage(str.c_str);
+			itr->second->SendAreaTriggerMessage(str.c_str());
 	}
 }
 
