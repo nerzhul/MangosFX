@@ -21251,7 +21251,7 @@ void Player::ConvertRune(uint8 index, RuneType newType, uint32 spellid)
 void Player::ResyncRunes(uint8 count)
 {
     WorldPacket data(SMSG_RESYNC_RUNES, 4 + count * 2);
-	data << uint32(count + 1);
+	data << uint32(count);
     for(uint32 i = 0; i < count; ++i)
     {
         data << uint8(GetCurrentRune(i));                   // rune type
