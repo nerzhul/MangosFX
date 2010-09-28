@@ -21,6 +21,7 @@
 #include "Opcodes.h"
 #include "ConfusedMovementGenerator.h"
 #include "DestinationHolderImp.h"
+#include "PathFinder.h"
 
 template<class T>
 void
@@ -142,7 +143,13 @@ bool ConfusedMovementGenerator<T>::Update(T &unit, const uint32 &diff)
             const float y = i_waypoints[i_nextMove][1];
             const float z = i_waypoints[i_nextMove][2];
             Traveller<T> traveller(unit);
-            i_destinationHolder.SetDestination(traveller, x, y, z);
+            i_destinationHolder.SetDestination(traveller, x, y, z, false);
+			PathInfo path(&unit, x, y, z);
+			PointPath pointPath = path.getFullPath();
+			float speed = traveller.Speed() * 0.001f; // in ms
+			uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
+			SplineFlags flags = (unit.GetTypeId() == TYPEID_UNIT) ? ((Creature*)&unit)->GetSplineFlags() : SPLINEFLAG_WALKMODE;
+			unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
         }
     }
     return true;

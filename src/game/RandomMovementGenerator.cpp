@@ -21,6 +21,7 @@
 #include "RandomMovementGenerator.h"
 #include "DestinationHolderImp.h"
 #include "Map.h"
+#include "PathFinder.h"
 #include "Util.h"
 
 template<>
@@ -94,6 +95,12 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
 
     creature.SetOrientation(creature.GetAngle(nx, ny));
     i_destinationHolder.SetDestination(traveller, nx, ny, nz);
+	PathInfo path(&unit, nx, ny, nz);
+	PointPath pointPath = path.getFullPath();
+	float speed = traveller.Speed() * 0.001f; // in ms
+	uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
+	SplineFlags flags = (unit.GetTypeId() == TYPEID_UNIT) ? ((Creature*)&unit)->GetSplineFlags() : SPLINEFLAG_WALKMODE;
+	unit.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
     creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
 
     if (is_air_ok)
