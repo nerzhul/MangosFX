@@ -10049,68 +10049,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 		case SPELLFAMILY_WARLOCK:
 		case SPELLFAMILY_SHAMAN:
 		case SPELLFAMILY_DRUID:
+		case SPELLFAMILY_DEATHKNIGHT:
         {
 			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
-            break;
-        }
-        case SPELLFAMILY_DEATHKNIGHT:
-        {
-            // Icy Touch, Howling Blast and Frost Strike
-            if(spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
-            {
-				if(spellProto->SpellFamilyFlags & UI64LIT(0x000002))
-				{
-					if(Aura* aur = sClassSpellHandler.GetAuraByName(this,DK_IMPROVED_ICY_TOUCH))
-						DoneTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
-				}
-
-                // search disease
-                bool found = false;
-                Unit::AuraMap const& auras = pVictim->GetAuras();
-                for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-                {
-                    if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found)
-                    break;
-
-                // search for Glacier Rot dummy aura
-                Unit::AuraList const& dummyAuras = GetAurasByType(SPELL_AURA_DUMMY);
-                for(Unit::AuraList::const_iterator i = dummyAuras.begin(); i != dummyAuras.end(); ++i)
-                {
-                    if ((*i)->GetSpellProto()->EffectMiscValue[(*i)->GetEffIndex()] == 7244)
-                    {
-                        DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
-                        break;
-                    }
-                }
-            }
-			// Death Coil (bonus from Item - Death Knight T8 DPS Relic)
-			else if (spellProto->SpellFamilyFlags & UI64LIT(0x00002000))
-			{
-				if(Aura* sigil = GetDummyAura(64962))
-					DoneTotal += sigil->GetModifier()->m_amount;
-			}
-
-			// impurity
-			if (spellProto->SpellFamilyFlags & 0x600100200042022)
-			{
-				if(Aura* aur = sClassSpellHandler.GetAuraByName(this,DK_IMPURITY))
-					DoneTotal += int32(aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0) * GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
-			}
-
-			switch(spellProto->Id)
-			{
-				// Glyph of Unholy Blight
-				case 50536:
-					if (Aura *glyphAura = GetDummyAura(63332))
-						DoneTotalMod *= (glyphAura->GetModifier()->m_amount + 100.0f)/ 100.0f;
-					break;
-			}
             break;
         }
         default:

@@ -3,6 +3,7 @@
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "DeathknightSpellHandler.h"
+#include "ClassSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 
@@ -282,5 +283,65 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
 		else
 			m_target->RemoveAurasDueToSpell(49016);
 		return;
+	}
+}
+
+void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
+{
+	// Icy Touch, Howling Blast and Frost Strike
+    if(spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
+    {
+		if(spellProto->SpellFamilyFlags & UI64LIT(0x000002))
+		{
+			if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,DK_IMPROVED_ICY_TOUCH))
+				DoneTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
+		}
+
+        // search disease
+        bool found = false;
+        Unit::AuraMap const& auras = pVictim->GetAuras();
+        for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+        {
+            if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE)
+            {
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+            return;
+
+        // search for Glacier Rot dummy aura
+        Unit::AuraList const& dummyAuras = caster->GetAurasByType(SPELL_AURA_DUMMY);
+        for(Unit::AuraList::const_iterator i = dummyAuras.begin(); i != dummyAuras.end(); ++i)
+        {
+            if ((*i)->GetSpellProto()->EffectMiscValue[(*i)->GetEffIndex()] == 7244)
+            {
+                DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
+                break;
+            }
+        }
+    }
+	// Death Coil (bonus from Item - Death Knight T8 DPS Relic)
+	else if (spellProto->SpellFamilyFlags & UI64LIT(0x00002000))
+	{
+		if(Aura* sigil = caster->GetDummyAura(64962))
+			DoneTotal += sigil->GetModifier()->m_amount;
+	}
+
+	// impurity
+	if (spellProto->SpellFamilyFlags & 0x600100200042022)
+	{
+		if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,DK_IMPURITY))
+			DoneTotal += int32(aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0) * caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
+	}
+
+	switch(spellProto->Id)
+	{
+		// Glyph of Unholy Blight
+		case 50536:
+			if (Aura *glyphAura = caster->GetDummyAura(63332))
+				DoneTotalMod *= (glyphAura->GetModifier()->m_amount + 100.0f)/ 100.0f;
+			break;
 	}
 }

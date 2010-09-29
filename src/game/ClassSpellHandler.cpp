@@ -229,9 +229,9 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 
 	switch(spell->SpellFamilyName)
 	{
-		/*case SPELLFAMILY_DEATHKNIGHT:
+		case SPELLFAMILY_DEATHKNIGHT:
 			sDeathknightSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
-			break;*/
+			break;
 		case SPELLFAMILY_DRUID:
 			sDruidSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;
