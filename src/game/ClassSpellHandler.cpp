@@ -243,11 +243,11 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 			break;
 		/*case SPELLFAMILY_PALADIN:
 			sPaladinSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
-			break;
+			break;*/
 		case SPELLFAMILY_PRIEST:
 			sPriestSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;
-		case SPELLFAMILY_ROGUE:
+		/*case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;
 		case SPELLFAMILY_SHAMAN:
@@ -275,6 +275,7 @@ AuraCarac caracTab[MAX_AURA_NAMES] =
 	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
 	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
 	{SPELL_AURA_NONE,				SPELLFAMILY_DEATHKNIGHT,	UI64LIT(0x000000000),0},
+	{SPELL_AURA_PERIODIC_DAMAGE,	SPELLFAMILY_PRIEST,			UI64LIT(0x000008000),0},
 };
 
 Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)

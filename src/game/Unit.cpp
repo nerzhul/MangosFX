@@ -10045,53 +10045,9 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     switch(spellProto->SpellFamilyName)
     {
         case SPELLFAMILY_MAGE:
-        {
-			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
-            break;
-        }
 		case SPELLFAMILY_PRIEST:
         {
-			// Glyph of Smite
-            if (spellProto->SpellFamilyFlags & UI64LIT(0x00000080))
-            {
-                // Holy Fire
-				if (sClassSpellHandler.GetAuraByName(pVictim,PRIEST_HOLY_FIRE))
-                    if (Aura *aur = GetAura(55692))
-                        DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
-            }
-			// Twin Disciplines
-			else if(spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && (spellProto->SpellFamilyFlags & UI64LIT(200204008000)))
-			{
-				if(Aura* aur = sClassSpellHandler.GetAuraByName(this,PRIEST_TWIN_DISCIPLINES))
-					DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
-			}
-
-			switch(spellProto->Id)
-			{
-				// Glyph of Shadow Word: Pain
-				case 58381:
-				{
-					if(HasAura(55687))
-					{
-						Aura* glyph = GetAura(55687, 0);
-						//search for shadow word: pain on target
-						if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_PRIEST, UI64LIT(0x0000000000008000)))
-						DoneTotalMod += glyph->GetModifier()->m_amount * DoneTotalMod / 100;
-					}
-					break;
-				}
-				// Glyph of Shadow Word: Death
-				case 32379:
-				case 32996:
-				case 48157:
-				case 48158:
-				{
-					if(HasAura(55682) && pVictim->GetHealth() * 100 / pVictim->GetMaxHealth() <= 35.0f)
-						DoneTotalMod *= 1.1;
-					break;
-				}
-	
-			}
+			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
             break;
         }
         case SPELLFAMILY_WARLOCK:
