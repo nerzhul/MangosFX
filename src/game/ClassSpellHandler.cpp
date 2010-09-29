@@ -255,10 +255,10 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 			break;
 		case SPELLFAMILY_WARRIOR:
 			sWarriorSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
-			break;
+			break;*/
 		case SPELLFAMILY_WARLOCK:
 			sWarlockSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
-			break;*/
+			break;
 	}
 }
 

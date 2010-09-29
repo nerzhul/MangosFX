@@ -7,6 +7,7 @@
 INSTANTIATE_SINGLETON_1(WarlockSpellHandler);
 
 #define FLAG_IMMOLATE		UI64LIT(0x0000000000004)
+#define FLAG_DRAIN_SOUL		UI64LIT(0x0000000004000)
 #define FLAG_INCINERATE		UI64LIT(0x0004000000000)
 #define FLAG_SHADOWFLAME	UI64LIT(0x1000000000000)
 
@@ -89,5 +90,14 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 				unitTarget->RemoveAurasByCasterSpell(aura->GetId(), m_caster->GetGUID());
 		}
 	}
-	
+}
+
+void WarlockSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
+{
+	// Drain Soul
+    if (spellProto->SpellFamilyFlags & FLAG_DRAIN_SOUL)
+    {
+        if (pVictim->GetHealth() * 100 / pVictim->GetMaxHealth() <= 25)
+          DoneTotalMod *= 4;
+    }
 }
