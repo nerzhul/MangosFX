@@ -249,11 +249,11 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 			break;
 		/*case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
-			break;
+			break;*/
 		case SPELLFAMILY_SHAMAN:
 			sShamanSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;
-		case SPELLFAMILY_WARRIOR:
+		/*case SPELLFAMILY_WARRIOR:
 			sWarriorSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;*/
 		case SPELLFAMILY_WARLOCK:

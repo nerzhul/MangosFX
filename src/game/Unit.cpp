@@ -10046,15 +10046,12 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     {
         case SPELLFAMILY_MAGE:
 		case SPELLFAMILY_PRIEST:
+		case SPELLFAMILY_WARLOCK:
+		case SPELLFAMILY_SHAMAN:
         {
 			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
             break;
         }
-        case SPELLFAMILY_WARLOCK:
-        {
-            
-            break;
-		}
 		case SPELLFAMILY_DRUID:
 		{
 			// Improved Insect Swarm (Wrath part)
@@ -10136,19 +10133,6 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 			}
             break;
         }
-		case SPELLFAMILY_SHAMAN:
-		{
-			// Frozen power
-			if((spellProto->SpellFamilyFlags & UI64LIT(0x80100003)) || spellProto->Id == 60103)
-			{
-				Aura* aur = GetAura(63373);
-				if(!aur)
-					aur = GetAura(63374);
-				if(aur)
-					DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
-			}
-			break;
-		}
         default:
 			switch(spellProto->Id)
 			{
