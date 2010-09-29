@@ -10048,31 +10048,11 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
 		case SPELLFAMILY_PRIEST:
 		case SPELLFAMILY_WARLOCK:
 		case SPELLFAMILY_SHAMAN:
+		case SPELLFAMILY_DRUID:
         {
 			sClassSpellHandler.SpellDamageBonusDone((SpellEntry*)spellProto,this,pVictim,DoneTotal,DoneTotalMod);
             break;
         }
-		case SPELLFAMILY_DRUID:
-		{
-			// Improved Insect Swarm (Wrath part)
-			if (spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000001))
-			{
-				// if Insect Swarm on target
-				if (pVictim->GetAura(SPELL_AURA_PERIODIC_DAMAGE, SPELLFAMILY_DRUID, UI64LIT(0x000000000200000), 0, GetGUID()))
-				{
-					Unit::AuraList const& improvedSwarm = GetAurasByType(SPELL_AURA_DUMMY);
-					for(Unit::AuraList::const_iterator iter = improvedSwarm.begin(); iter != improvedSwarm.end(); ++iter)
-					{
-						if ((*iter)->GetSpellProto()->SpellIconID == 1771)
-						{
-							DoneTotalMod *= ((*iter)->GetModifier()->m_amount+100.0f) / 100.0f;
-							break;
-						}
-					}
-				}
-			}
-			break;
-		}
         case SPELLFAMILY_DEATHKNIGHT:
         {
             // Icy Touch, Howling Blast and Frost Strike

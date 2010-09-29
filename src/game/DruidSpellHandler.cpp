@@ -3,10 +3,11 @@
 #include "SpellAuras.h"
 #include "SpellMgr.h"
 #include "DruidSpellHandler.h"
-
+#include "ClassSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(DruidSpellHandler);
 
+#define FLAG_WRATH		UI64LIT(0x0000000000000001)
 #define FLAG_STARFIRE	UI64LIT(0x0000000000000004)
 #define FLAG_RAKE		UI64LIT(0x0000000000001000) // verify this
 #define FLAG_RIP		UI64LIT(0x0000000000001000) // verify this
@@ -109,6 +110,26 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 2000);
 					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 2000);
 					(*itr)->SendAuraUpdate(false);
+				}
+			}
+		}
+	}
+}
+void DruidSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
+{
+	// Improved Insect Swarm (Wrath part)
+	if (spellProto->SpellFamilyFlags & FLAG_WRATH)
+	{
+		// if Insect Swarm on target
+		if(sClassSpellHandler.GetAuraByName(pVictim,DRUID_INSECT_SWARM,caster->GetGUID()))
+		{
+			Unit::AuraList const& improvedSwarm = caster->GetAurasByType(SPELL_AURA_DUMMY);
+			for(Unit::AuraList::const_iterator iter = improvedSwarm.begin(); iter != improvedSwarm.end(); ++iter)
+			{
+				if ((*iter)->GetSpellProto()->SpellIconID == 1771)
+				{
+					DoneTotalMod *= ((*iter)->GetModifier()->m_amount+100.0f) / 100.0f;
+					break;
 				}
 			}
 		}
