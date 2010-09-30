@@ -66,6 +66,7 @@
 #include "OutdoorPvP.h"
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvPWG.h"
+#include "ClassSpellHandler.h"
 
 #include <cmath>
 
@@ -7575,7 +7576,32 @@ void Player::CastItemCombatSpell(Unit* Target, WeaponAttackType attType)
                 if(IsPositiveSpell(pEnchant->spellid[s]))
                     CastSpell(this, pEnchant->spellid[s], true, item);
                 else
-                    CastSpell(Target, pEnchant->spellid[s], true, item);
+				{
+					uint32 spellId_ = pEnchant->spellid[s];
+					// Only for rogue off hand
+					if(attType == BASE_ATTACK)
+						if(Aura* aur = sClassSpellHandler.GetAuraByName(Target,ROGUE_DEADLY_POISON,GetGUID()))
+							if(aur->GetStackAmount() == 5)
+								if(Item* it = GetWeaponForAttack(OFF_ATTACK))
+									for(int f_slot = 0; f_slot < MAX_ENCHANTMENT_SLOT; ++f_slot)
+									{
+										uint32 _enchant_id = item->GetEnchantmentId(EnchantmentSlot(f_slot));
+										SpellItemEnchantmentEntry const *_pEnchant = sSpellItemEnchantmentStore.LookupEntry(_enchant_id);
+										if(!_pEnchant) continue;
+										for (uint8 t=0;t<3;t++)
+										{
+											if(_pEnchant->type[t]!=ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
+												continue;
+
+											if (SpellEntry const *_spellInfo = sSpellStore.LookupEntry(_pEnchant->spellid[t]))
+												if(_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && _spellInfo->SpellIconID != 513)
+													spellId_ = _spellInfo->Id;
+
+										}
+									}
+					// end there
+                    CastSpell(Target, spellId_ , true, item);
+				}
             }
         }
     }

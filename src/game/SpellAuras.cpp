@@ -2593,7 +2593,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         return;
                     case 58591:                                 // Stoneclaw Totem X
                         m_target->CastSpell( m_target, 58585, true );
-                        return;  
+                        return;
+					case 71563:
+						for(uint8 i=0;i<5;i++)
+							m_target->CastSpell(m_target,71564,true);
+						return;
 					case 71342:                             // Big Love Rocket
 						Spell::SelectMountByAreaAndSkill(m_target, 71344, 71345, 71346, 71347, 0);
 						return; 

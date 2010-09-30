@@ -10625,6 +10625,10 @@ uint32 Unit::SpellCriticalDamageBonus(SpellEntry const *spellProto, uint32 damag
 			critPctDamageMod += 25;
 		else if(HasAura(35581))
 			critPctDamageMod += 50;
+
+		// Glyph of arcane missiles
+		if(HasAura(56363) && spellProto->SpellFamilyFlags & 0x200000)
+			critPctDamageMod += 25;
 	}
 
     if(critPctDamageMod!=0)
@@ -10873,7 +10877,7 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
         modOwner->ApplySpellMod(spellProto->Id, damagetype == DOT ? SPELLMOD_DOT : SPELLMOD_DAMAGE, heal);
 
 	// Nourish cast bonus
-    if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x2000000)
+    if (spellProto->SpellFamilyName == SPELLFAMILY_DRUID && spellProto->SpellFamilyFlags & 0x200000000000000)
     {
         // Rejuvenation, Regrowth, Lifebloom, or Wild Growth
         if (pVictim->GetAura(SPELL_AURA_PERIODIC_HEAL, SPELLFAMILY_DRUID, 0x50, 0x4000010, GetGUID()))

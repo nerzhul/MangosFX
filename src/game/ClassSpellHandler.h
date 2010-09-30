@@ -25,8 +25,9 @@ enum AuraName
 	DK_IMPURITY							= 10,
 	PRIEST_SHADOW_WORD_PAIN				= 11,
 	DRUID_INSECT_SWARM					= 12,
+	ROGUE_DEADLY_POISON					= 13,
 
-	MAX_AURA_NAMES						= 13
+	MAX_AURA_NAMES						= 14
 };
 
 typedef std::list<Aura *> AuraList;
