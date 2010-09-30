@@ -230,10 +230,10 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 	switch(spell->SpellFamilyName)
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
-			sDeathknightSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			sDeathknightSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 		case SPELLFAMILY_DRUID:
-			sDruidSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			sDruidSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 		/*case SPELLFAMILY_HUNTER:
 			sHunterSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
@@ -245,19 +245,19 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 			sPaladinSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;*/
 		case SPELLFAMILY_PRIEST:
-			sPriestSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			sPriestSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 		/*case SPELLFAMILY_ROGUE:
 			sRogueSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;*/
 		case SPELLFAMILY_SHAMAN:
-			sShamanSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			sShamanSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 		/*case SPELLFAMILY_WARRIOR:
 			sWarriorSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
 			break;*/
 		case SPELLFAMILY_WARLOCK:
-			sWarlockSpellHandler.SpellDamageBonusDone(spell,DoneTotal,DoneTotalMod);
+			sWarlockSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 	}
 }
