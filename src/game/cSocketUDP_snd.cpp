@@ -15,7 +15,7 @@ cSocketUDP_snd::~cSocketUDP_snd()
 
 void cSocketUDP_snd::InitConnect(Packet buff, std::string addr, uint16 port)
 {
-	if(buff.CheckSize() || addr == "" || port == 0 || port > 65534)
+	if(buff.GetDataSize() > 0 || addr == "" || port == 0 || port > 65534)
 		return;
 
 	m_data = buff;
