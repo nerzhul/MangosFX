@@ -604,7 +604,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 					nbDebris += 5;
 					respawnright = 60000;
 				}
-			if (!me->IsWithinDistInMap(me->getVictim(), 10))
+			if (!me->GetDistance2d(me->getVictim(), 12.0f))
 				DoCastVictim(m_difficulty ? SPELL_PETRIFYING_BREATH_H : SPELL_PETRIFYING_BREATH);
 			Check_Timer = 500;
         }

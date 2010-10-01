@@ -1848,6 +1848,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Clusters"
+			>
+			<File
+				RelativePath="..\..\src\game\ClusterSocket.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\ClusterSocket.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"
 			>

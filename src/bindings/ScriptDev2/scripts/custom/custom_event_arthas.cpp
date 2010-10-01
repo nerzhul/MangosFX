@@ -30,6 +30,9 @@ struct MANGOS_DLL_DECL boss_event_annivAI : public LibDevFSAI
     {
         InitInstance();
 		AddEnrageTimer(TEN_MINS);
+		
+		// feu d'artifice
+		AddEvent(11540,11000,10000,1000);
 
 		AddEventOnTank(SPELL_HIT_TANK,3000,3000,3000);
 		AddEventOnTank(SPELL_FIRE_BREATH,5000,24000,1000,PHASE_CLASSIC);
