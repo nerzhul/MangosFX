@@ -21,6 +21,7 @@ void cSocketUDP_snd::InitConnect(Packet buff, std::string addr, uint16 port)
 	m_data = buff;
 	m_address = addr;
 	m_port = port;
+	_init = true;
 }
 
 void cSocketUDP_snd::SendPacket()
