@@ -29,5 +29,7 @@ SUBDIRS += tbb
 # pathfinding
 SUBDIRS += recastnavigation
 
+SUBDIRS += SFML
+
 ## Additional files to include when running 'make dist'
 #  Nothing yet.

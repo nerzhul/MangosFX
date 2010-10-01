@@ -1,8 +1,8 @@
 #ifndef _CLUSTERBASIC_H
 #define _CLUSTERBASIC_H
 
-#include "Common.h"
-#include "Policies/Singleton.h"
+#include <Common.h>
+#include <Policies/Singleton.h>
 
 #define CLUSTER_SLEEP_CONST 50
 enum ShutdownExitCode
