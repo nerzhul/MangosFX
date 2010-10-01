@@ -50,10 +50,11 @@ mangos_worldd_LDADD = \
 	../framework/libmangosframework.a \
 	../../dep/recastnavigation/Detour/libdetour.a \
 	../../dep/src/g3dlite/libg3dlite.a \
+	../../dep/SFML/lib/sfml-network.so.1.6 \
 	../../dep/src/gsoap/libgsoap.a
 
 mangos_worldd_LDFLAGS = -L../../dep/src/g3dlite -L../../dep/src/gsoap -L../bindings/ScriptDev2/ -L$(libdir) $(MANGOS_LIBS) 
-mangos_worldd_LDFLAGS += -lomnithread -lomniORB4 -lomniDynamic4 -lomniCodeSets4 -lomnisslTP4 -lCOS4 -lCOSDynamic4 -lsfml-network1.6 -export-dynamic
+mangos_worldd_LDFLAGS += -lomnithread -lomniORB4 -lomniDynamic4 -lomniCodeSets4 -lomnisslTP4 -lCOS4 -lCOSDynamic4 -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
