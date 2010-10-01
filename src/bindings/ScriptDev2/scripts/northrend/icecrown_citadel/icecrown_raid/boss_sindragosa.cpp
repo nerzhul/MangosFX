@@ -151,7 +151,7 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
 		IceTombTarSelect_Timer = 3000;
 		bombTarget_Timer = 13000;
 		me->RemoveAurasDueToSpell(SPELL_FROST_AURA);
-		me->RemoveAurasDueToSpellByCancel(SPELL_PERMEATING_CHILL);
+		me->RemoveAurasDueToSpell(SPELL_PERMEATING_CHILL);
 		SetFlying(true);
 		me->GetMotionMaster()->MovePoint(0,4447.37f,2483.92f,235.0f);
 	}

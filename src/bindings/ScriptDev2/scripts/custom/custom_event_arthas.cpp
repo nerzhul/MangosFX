@@ -1,161 +1,125 @@
-#include "precompiled.h"
+#include "Precompiled.h"
 
-enum Event_Spells
+enum Spells
 {
-	// Phase Givre
-
-	SPELL_FROST_VRILLE		=	56925, // 4k dmg
-	SPELL_AURA_BLIZZARD		=	29952, // une aura de blizzard pour le raid
-	SPELL_BLIZZARD			=	64653,	// le blizzard
-	SPELL_FROST_STORM		=	31249,
-	SPELL_EXPLODE_FROST		=	64626, // 10k dmg en instantané
-	SPELL_FROST_DEBUFF		=	4307,	// debuff sur une zone
-	SPELL_FROST_ATTACK		=	68510, // dommages direct type dk
-
-	// Phase Ombre
-	SPELL_MENTAL_ATTACK		=	68040, // 6k dmg
-	SPELL_SHADOW_AURA		=	41142, // +10% dmg
-	SPELL_BANNIR			=	8994,
-	SPELL_SHADOW_BOMB		=	63024, // explosion d'un joueur
-	SPELL_NIGHTMARE			=	60947, // fear
-	SPELL_ALL_SHADOW_BOLT	=	59975, // trait de l'ombre sur tous
-	SPELL_SHADOW_BOLT		=	40876,
-
-	// Phase Feu
-	SPELL_ARMAGEDDON		=	45915, // explosion
-	SPELL_FIRE_BOLT			=	62796,
-	SPELL_FLAME_BREATH		=	64721,
-	SPELL_FIRE_BOLT2		=	54249,
-	SPELL_DOWN_LIFE			=	19367, // -35% de vie pour 15 min
-
-	// All Phases
-	SPELL_UP_DAMAGE_ON_TAR	=	39095,
-	SPELL_UP_CC				=	31035,
-	SPELL_SLEEP_TAR			=	36333,
-	SPELL_CECITE			=	26108,
-	SPELL_FRACASS_ARMOR		=	36836,
-
+	SPELL_PRISMATIC_SHIELD		=	40879, // ok
+	SPELL_ANTICAC				=	70109, // ok
+	SPELL_SHADOW_MOBS_PROC		=	71861, // ok
+	SPELL_FEAR					=	73070, // ok
+	SPELL_MYSTIC_BUFFER			=	70128, // ok
+	SPELL_HIT_TANK				=	64395, // ok
+	SPELL_HIT_TANK_FROST		=	71993, // ok
+	SPELL_FIRE_BREATH			=	74525, // ok
+	SPELL_CLEAVE				=	74524, // ok
+	SPELL_SHADOW_BREATH			=	74806, // ok
+	SPELL_SHADOW_ZONE			=	74792, // ok
 };
 
-enum Event_Texts
+enum Phases
 {
-
-
+	PHASE_NONE		=	0,
+	PHASE_INIT		=	1,
+	PHASE_CLASSIC	=	2,
+	PHASE_RAGE		=	3,
+	PHASE_CRAZY		=	4,
 };
 
-struct MANGOS_DLL_DECL event_lich_king_AI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_event_annivAI : public LibDevFSAI
 {
-	event_lich_king_AI(Creature *pCreature) : ScriptedAI(pCreature) 
-	{
-		Reset();
-	}
+    boss_event_annivAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEnrageTimer(TEN_MINS);
+
+		AddEventOnTank(SPELL_HIT_TANK,3000,3000,3000);
+		AddEventOnTank(SPELL_FIRE_BREATH,5000,24000,1000,PHASE_CLASSIC);
+		AddEventOnTank(SPELL_FIRE_BREATH,5000,24000,1000,PHASE_INIT);
+		AddEventOnTank(SPELL_SHADOW_BREATH,5000,24000,1000,PHASE_CLASSIC);
+		AddEventOnTank(SPELL_SHADOW_BREATH,5000,24000,1000,PHASE_INIT);
+		AddEvent(SPELL_SHADOW_ZONE,18000,30000,5000,TARGET_RANDOM,PHASE_INIT);
+		AddEvent(SPELL_SHADOW_ZONE,18000,30000,5000,TARGET_RANDOM,PHASE_CLASSIC);
+		AddEvent(SPELL_FEAR,15000,20000);
+		AddEventOnTank(SPELL_CLEAVE,4000,3000,3000,PHASE_RAGE);
+		AddEventOnTank(SPELL_CLEAVE,4000,3000,3000,PHASE_CRAZY);
+		AddEvent(SPELL_SHADOW_MOBS_PROC,15000,30000,0,TARGET_RANDOM,PHASE_RAGE);
+		AddEvent(SPELL_SHADOW_MOBS_PROC,15000,30000,0,TARGET_RANDOM,PHASE_CRAZY);
+    }
 
 	uint8 phase;
 	uint32 phase_Timer;
-	uint32 Enrage_Timer;
 
-	// init frost
-	uint32 Vrille_Timer;
-	uint32 AuraFrost_Timer;
-	uint32 Blizzard_Timer;
-	uint32 Glacon_Timer;
-	uint32 FrostExplode_Timer;
-	uint32 FrostZone_Timer;
-	uint32 FrostDirect_Timer;
+    void Reset()
+    {
+		ResetTimers();
+		phase = PHASE_NONE;
+		phase_Timer = 60000;
+    }
 
-	void Reset()
+	void SpellHit(Unit* pWho, const SpellEntry* spell)
 	{
-		phase = 0;
-		phase_Timer = 0; // TODO : changer suivant l'event
+		if(pWho->GetTypeId() != TYPEID_PLAYER)
+			return;
 
-		// Frost Timers
-		Vrille_Timer = 15000;
-		AuraFrost_Timer = 17000;
-		Blizzard_Timer = 8000;
-		Glacon_Timer = 35000;
-		FrostExplode_Timer = 45000;
-		FrostZone_Timer = 37000;
-		FrostDirect_Timer = 4000;
+		if(urand(1,100) > 90)
+			DoCast(pWho,spell->Id,true);
 	}
 
-	void UpdateAI(const uint32 diff)
+	void SwitchPhase()
 	{
-		if (!CanDoSomething())
-            return;
-
 		switch(phase)
 		{
-			case 0: // Event Phase
-				phase = 1;
+			case PHASE_CLASSIC:
+				me->RemoveAurasDueToSpell(SPELL_ANTICAC);
+				me->RemoveAurasDueToSpell(SPELL_HIT_TANK_FROST);
 				break;
-			case 1: // Frost Phase
-				phase_Timer = 1200000;
-
-				if(Vrille_Timer <= diff)
-				{
-					DoCastVictim(SPELL_FROST_VRILLE);
-					Vrille_Timer = urand(17000,22000);
-				}
-				else
-					Vrille_Timer -= diff;
-
-				if(AuraFrost_Timer <= diff)
-				{
-					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
-					AuraFrost_Timer = urand(27000,35000);
-				}
-				else
-					AuraFrost_Timer -= diff;
-
-				if(Blizzard_Timer <= diff)
-				{
-					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
-					Blizzard_Timer = urand(12000,25000);
-				}
-				else
-					Blizzard_Timer -= diff;
-
-				if(Glacon_Timer <= diff)
-				{
-					// todo : 6 cibles dans le raid
-					Glacon_Timer = urand(18000,22000);
-				}
-				else
-					Glacon_Timer -= diff;
-
-				if(FrostExplode_Timer <= diff)
-				{
-					DoCastVictim(SPELL_AURA_BLIZZARD);
-					FrostExplode_Timer = urand(40000,50000);
-				}
-				else
-					FrostExplode_Timer -= diff;
-
-				if(FrostZone_Timer <= diff)
-				{
-					DoCast(SelectUnit(SELECT_TARGET_RANDOM,0),SPELL_AURA_BLIZZARD);
-					FrostZone_Timer = urand(17000,22000);
-				}
-				else
-					FrostZone_Timer -= diff;
-
-				if(FrostDirect_Timer <= diff)
-				{
-					// todo : 10 cibles dans le raid
-					FrostDirect_Timer = urand(6000,8000);
-				}
-				else
-					FrostDirect_Timer -= diff;
-
+			case PHASE_RAGE:
+				ModifyAuraStack(SPELL_HIT_TANK_FROST);
+				ModifyAuraStack(SPELL_ANTICAC);
 				break;
-			case 2: // Shadow Phase
-				phase_Timer = 1200000;
-				break;
-			case 3: // Fire Phase
-				phase_Timer = 60000;
-				break;
-			default :
+			case PHASE_CRAZY:
+				ModifyAuraStack(SPELL_MYSTIC_BUFFER);
+				ModifyAuraStack(SPELL_HIT_TANK_FROST);
+				ModifyAuraStack(SPELL_ANTICAC);
 				break;
 		}
 	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		if(CheckPercentLife(90) && phase == PHASE_INIT)
+		{
+			phase = PHASE_RAGE;
+			ModifyAuraStack(SPELL_PRISMATIC_SHIELD);
+		}
+
+		if(CheckPercentLife(90) && (phase == PHASE_RAGE || phase == PHASE_CLASSIC))
+		{
+			if(phase_Timer <= diff)
+			{
+				phase = (phase == PHASE_RAGE) ? PHASE_CLASSIC : PHASE_RAGE;
+				SwitchPhase();
+				phase_Timer = (phase == PHASE_RAGE) ? 45000 : 60000;
+			}
+			else
+				phase_Timer -= diff;
+		}
+
+		if(CheckPercentLife(15))
+		{
+			phase = PHASE_CRAZY;
+			SwitchPhase();
+		}
+
+		UpdateEvent(diff);
+		UpdateEvent(diff,phase);
+		DoMeleeAttackIfReady();
+    }
 };
+
+CreatureAI* GetAI_boss_event_anniv(Creature* pCreature)
+{
+    return new boss_event_annivAI(pCreature);
+}

@@ -429,7 +429,6 @@ struct MANGOS_DLL_DECL swarming_shadowAI : public LibDevFSAI
     void UpdateAI(const uint32 diff)
 	{	
 		UpdateEvent(diff);
-
 	}
 };
 
