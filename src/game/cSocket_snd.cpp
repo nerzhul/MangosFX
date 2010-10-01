@@ -1,17 +1,17 @@
 #include <Policies/SingletonImp.h>
 #include <SFML/Network.hpp>
 #include "World.h"
-#include "ClusterSocket.h"
+#include "cSocket_snd.h"
 
-ClusterSocket::ClusterSocket()
+cSocket_snd::cSocket_snd()
 {
 }
 
-ClusterSocket::~ClusterSocket()
+cSocket_snd::~cSocket_snd()
 {
 }
 
-void ClusterSocket::run()
+void cSocket_snd::run()
 {
 	while(!World::IsStopped())
 	{
