@@ -21,7 +21,7 @@ void cSocketTCP::InitConnect(std::string addr, uint16 port)
 
 void cSocketTCP::Connect()
 {
-	if(!m_sock.Connect(m_port,m_address))
+	if(m_sock.Connect(m_port,m_address) != Socket::Status::Done)
 	{
 		error_log("Sock_err: Could not bind %s:%u",m_address.c_str(),m_port);
 		isConnected = false;
@@ -78,7 +78,8 @@ void cSocketTCP::CheckState(Socket::Status st)
 			error_log("Socket Error for %s:%u",m_address.c_str(),m_port);
 			return;
 		case 2 /*Socket::Status::Disconnected*/:
-			error_log("Connection on %s:%u lost...",m_address.c_str(),m_port);
+			error_log("Link with %s:%u lost...",m_address.c_str(),m_port);
+			ACE_Based::Thread::Sleep(5000);
 			isConnected = false;
 			return;
 		case 0 /*Socket::Done)*/:

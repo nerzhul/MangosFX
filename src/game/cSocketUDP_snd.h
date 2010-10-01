@@ -12,12 +12,12 @@ class cSocketUDP_snd
 		cSocketUDP_snd();
 		~cSocketUDP_snd();
 		
-		void InitConnect(char* buff, std::string addr, uint16 port);
+		void InitConnect(Packet buff, std::string addr, uint16 port);
 		void SendPacket();
 		
 	private:
 		bool _init;
-		char* m_data;
+		Packet m_data;
 		std::string m_address;
 		uint16 m_port;
 };

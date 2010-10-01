@@ -5,7 +5,6 @@
 cSocketUDP_snd::cSocketUDP_snd()
 {
 	m_address = "";
-	m_data = "";
 	m_port = 0;
 	_init = false;
 }
@@ -14,9 +13,9 @@ cSocketUDP_snd::~cSocketUDP_snd()
 {
 }
 
-void cSocketUDP_snd::InitConnect(char* buff, std::string addr, uint16 port)
+void cSocketUDP_snd::InitConnect(Packet buff, std::string addr, uint16 port)
 {
-	if(!buff || buff == "" || addr == "" || port == 0 || port > 65534)
+	if(buff.CheckSize() || addr == "" || port == 0 || port > 65534)
 		return;
 
 	m_data = buff;
@@ -31,7 +30,7 @@ void cSocketUDP_snd::SendPacket()
 
 	// Todo : show opcode
 	SocketUDP sock;
-	if(sock.Send(m_data,sizeof(m_data),m_address,m_port) != Socket::Done)
+	if(sock.Send(m_data,m_address,m_port) != Socket::Done)
 	{
 		error_log("UDP Transmission to %s:%u failed",m_address.c_str(),m_port);
 		return;
