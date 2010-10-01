@@ -13,10 +13,17 @@ cSocketTCP_snd::~cSocketTCP_snd()
 {
 }
 
-void cSocketTCP_snd::run()
+void cSocketTCP_snd::InitConnect(std::string addr, uint16 port)
 {
-	while(!World::IsStopped())
-	{
-		ACE_Based::Thread::Sleep(50);
-	}
+}
+
+bool cSocketTCP_snd::Connect()
+{
+
+	return true;
+}
+
+void cSocketTCP_snd::SendPacket(WorldPacket* data)
+{
+
 }
