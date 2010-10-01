@@ -564,6 +564,7 @@ scripts/world/mob_generic_creature.cpp \
 scripts/world/npc_innkeeper.cpp \
 scripts/world/npc_professions.cpp \
 scripts/world/npcs_special.cpp \
+scripts/custom/custom_event_arthas.cpp \
 system/ScriptLoader.cpp \
 system/ScriptLoader.h \
 system/system.cpp \
