@@ -1859,6 +1859,14 @@
 				RelativePath="..\..\src\game\cSocketTCP_snd.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\game\cSocketUDP_snd.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\cSocketUDP_snd.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"
