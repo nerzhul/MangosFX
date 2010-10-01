@@ -48,7 +48,6 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
-	randomGroup			= false;
 	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
