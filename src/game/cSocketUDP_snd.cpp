@@ -38,4 +38,5 @@ void cSocketUDP_snd::SendPacket()
 	}
 
 	sLog.outDebug("UDP Packet Sent to %s:%u data %s",m_address.c_str(),m_port,m_data);
+	sock.Close();
 }

@@ -342,8 +342,8 @@ libmangosgame_a_SOURCES = \
 	PriestSpellHandler.h \
 	ShamanSpellHandler.cpp \
 	ShamanSpellHandler.h \
-	cSocketTCP_snd.cpp \
-	cSocketTCP_snd.h \
+	cSocketTCP.cpp \
+	cSocketTCP.h \
 	cSocketUDP_snd.cpp \
 	cSocketUDP_snd.h
 

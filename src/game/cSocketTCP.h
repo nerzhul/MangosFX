@@ -6,15 +6,19 @@
 
 using namespace sf;
 
-class cSocketTCP_snd
+class cSocketTCP: public ACE_Based::Runnable
 {
 	public:
-		cSocketTCP_snd();
-		~cSocketTCP_snd();
+		cSocketTCP();
+		~cSocketTCP();
 		void InitConnect(std::string addr, uint16 port);
-		bool Connect();
-		void SendPacket(WorldPacket* data);
+		void Connect();
+		void Close();
+		void SendPacket(Packet pkt);
+		void run();
 	private:
+		void CheckState(Socket::Status st);
+
 		bool isConnected;
 
 		std::string m_address;
