@@ -21,7 +21,7 @@ void cSocketTCP::InitConnect(std::string addr, uint16 port)
 
 void cSocketTCP::Connect()
 {
-	if(m_sock.Connect(m_port,m_address) != Socket::Status::Done)
+	if(m_sock.Connect(m_port,m_address) != 0)
 	{
 		error_log("Sock_err: Could not bind %s:%u",m_address.c_str(),m_port);
 		isConnected = false;
