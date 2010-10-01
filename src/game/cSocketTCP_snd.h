@@ -17,6 +17,8 @@ class cSocketTCP_snd
 	private:
 		bool isConnected;
 
+		std::string m_address;
+		uint16 m_port;
 		SocketTCP m_sock;
 };
 
