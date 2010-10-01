@@ -63,6 +63,8 @@ void cSocketTCP::run()
 
 		Packet pck;
 		CheckState(m_sock.Receive(pck));
+
+		ACE_Based::Thread::Sleep(50);
 	}
 	if(m_sock.IsValid())
 		m_sock.Close();
