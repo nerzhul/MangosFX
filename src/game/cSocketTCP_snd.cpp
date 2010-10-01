@@ -1,17 +1,19 @@
 #include <Policies/SingletonImp.h>
 #include <SFML/Network.hpp>
 #include "World.h"
-#include "cSocket_snd.h"
+#include "cSocketTCP_snd.h"
 
-cSocket_snd::cSocket_snd()
+using namespace sf;
+
+cSocketTCP_snd::cSocketTCP_snd()
 {
 }
 
-cSocket_snd::~cSocket_snd()
+cSocketTCP_snd::~cSocketTCP_snd()
 {
 }
 
-void cSocket_snd::run()
+void cSocketTCP_snd::run()
 {
 	while(!World::IsStopped())
 	{

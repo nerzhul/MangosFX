@@ -1852,11 +1852,11 @@
 			Name="Clusters"
 			>
 			<File
-				RelativePath="..\..\src\game\cSocket_snd.cpp"
+				RelativePath="..\..\src\game\cSocketTCP_snd.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\cSocket_snd.h"
+				RelativePath="..\..\src\game\cSocketTCP_snd.h"
 				>
 			</File>
 		</Filter>
