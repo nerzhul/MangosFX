@@ -74,15 +74,18 @@ struct MANGOS_DLL_DECL boss_event_annivAI : public LibDevFSAI
 			case PHASE_CLASSIC:
 				me->RemoveAurasDueToSpell(SPELL_ANTICAC);
 				me->RemoveAurasDueToSpell(SPELL_HIT_TANK_FROST);
+				me->SetDisplayId(28641);
 				break;
 			case PHASE_RAGE:
 				ModifyAuraStack(SPELL_HIT_TANK_FROST);
 				ModifyAuraStack(SPELL_ANTICAC);
+				me->SetDisplayId(31952);
 				break;
 			case PHASE_CRAZY:
 				ModifyAuraStack(SPELL_MYSTIC_BUFFER);
 				ModifyAuraStack(SPELL_HIT_TANK_FROST);
 				ModifyAuraStack(SPELL_ANTICAC);
+				me->SetDisplayId(20939);
 				break;
 		}
 	}
