@@ -126,3 +126,13 @@ CreatureAI* GetAI_boss_event_anniv(Creature* pCreature)
 {
     return new boss_event_annivAI(pCreature);
 }
+
+void AddSC_ia_custom()
+{
+    Script *newscript;
+
+    newscript = new Script;
+    newscript->Name = "boss_event_anniv";
+    newscript->GetAI = &GetAI_boss_event_anniv;
+    newscript->RegisterSelf();
+}

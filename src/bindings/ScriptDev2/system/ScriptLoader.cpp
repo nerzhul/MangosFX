@@ -483,6 +483,7 @@ extern void AddSC_trashboss_baltarus();
 extern void AddSC_trashboss_ragefire();
 extern void AddSC_boss_halion();
 extern void AddSC_instance_rubis_sanctum();
+extern void AddSC_ia_custom();
 
 void AddScripts()
 {
@@ -965,4 +966,5 @@ void AddScripts()
 	AddSC_trashboss_ragefire();
 	AddSC_boss_halion();
 	AddSC_instance_rubis_sanctum();
+	AddSC_ia_custom();
 }

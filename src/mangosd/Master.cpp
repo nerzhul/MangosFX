@@ -342,11 +342,11 @@ int Master::Run()
         // go down and shutdown the server
     }
 
-	cSocketTCP* cS_TCP = new cSocketTCP();
+	/*cSocketTCP* cS_TCP = new cSocketTCP();
 	cS_TCP->InitConnect("localhost",80);
 	cS_TCP->Connect();
 	ACE_Based::Thread test_TCP(cS_TCP);
-	test_TCP.setPriority(ACE_Based::Highest);
+	test_TCP.setPriority(ACE_Based::Highest);*/
 
     sWorldSocketMgr->Wait ();
 
