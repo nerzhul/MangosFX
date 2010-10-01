@@ -73,9 +73,12 @@ enum GroupType                                              // group type flags?
     GROUPTYPE_BG     = 0x01,
     GROUPTYPE_RAID   = 0x02,
     GROUPTYPE_BGRAID = GROUPTYPE_BG | GROUPTYPE_RAID,       // mask
-    // 0x04?
-    GROUPTYPE_LFD    = 0x08,
-    // 0x10, leave/change group?, I saw this flag when leaving group and after leaving BG while in group
+	// will show vote kick option, dungeon guide instead of leader
+	GROUPTYPE_RANDOM = 0x04,
+	// will show LFG icon at minimap, roles at party portrait, possibly only this one for premade lfg group
+	GROUPTYPE_LFD = 0x08,
+	// mask, party with only random players have this (checked 3.3.x), not sure about premade
+	GROUPTYPE_RNDLFD = GROUPTYPE_RANDOM | GROUPTYPE_LFD
 };
 
 enum GroupFlagMask
@@ -190,8 +193,8 @@ class MANGOS_DLL_SPEC Group
         void   RemoveAllInvites();
         bool   AddLeaderInvite(Player *player);
         bool   AddMember(const uint64 &guid, const char* name);
-		void   SetRandomInstanceGroup(bool random = true) { randomGroup = random; }
-		bool   IsRandomInstanceGroup() { return randomGroup; }
+		void   SetRandomInstanceGroup(bool random = true) { random ? (m_groupType = GroupType(uint8(m_groupType) + GROUPTYPE_RNDLFD)) : (m_groupType & ~GROUPTYPE_RNDLFD); }
+		bool   IsRandomInstanceGroup() { return (m_groupType & GROUPTYPE_RNDLFD); }
 		void   SetWGGroup(bool wgg = true) { WGGroup = wgg; }
 		bool   IsWGGroup() { return WGGroup; }
                                                             // method: 0=just remove, 1=kick
@@ -311,7 +314,7 @@ class MANGOS_DLL_SPEC Group
                 SendUpdate();
         }
 
-        void SetTargetIcon(uint8 id, uint64 whoGuid, uint64 targetGuid);
+		void SetTargetIcon(uint8 id, uint64 whoGuid, uint64 targetGuid);
 
         Difficulty GetDifficulty(bool isRaid) const { return isRaid ? m_raidDifficulty : m_dungeonDifficulty; }
         Difficulty GetDungeonDifficulty() const { return m_dungeonDifficulty; }
@@ -461,7 +464,6 @@ class MANGOS_DLL_SPEC Group
         Rolls               RollId;
         BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
-		bool				randomGroup;
 		bool				WGGroup;
 };
 #endif
