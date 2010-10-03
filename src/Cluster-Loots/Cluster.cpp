@@ -1,5 +1,3 @@
-#include "Cluster.h"
-#include "ClusterSpec.h"
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
@@ -9,6 +7,10 @@
 #include <ace/OS_NS_signal.h>
 #include <ace/TP_Reactor.h>
 #include <ace/Dev_Poll_Reactor.h>
+
+#include "Cluster.h"
+#include "ClusterSpec.h"
+#include "TCPListener.h"
 
 #ifdef WIN32
 #include "ServiceWin32.h"
@@ -43,9 +45,12 @@ int Cluster::Run()
     ///- Catch termination signals
     _HookSignals();
 
-    ///- Launch WorldRunnable thread
+    ///- Launch Cluster thread
     ACE_Based::Thread cluster_thread(new ClusterLoot);
     cluster_thread.setPriority(ACE_Based::Highest);
+
+	ACE_Based::Thread sockListener_thread(new TCPListener(2598));
+	sockListener_thread.setPriority(ACE_Based::Highest);
 
 	///- Handle affinity for multiple processors and process priority on Windows
     #ifdef WIN32

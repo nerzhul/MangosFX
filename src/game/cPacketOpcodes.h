@@ -43,7 +43,7 @@ cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_PING_RESP",				C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_CLUSTER_TYPE",				C_ALL,&cClusterSession::Handle_SetClusterType},
 	{"C_SMSG_RPC_COMMAND_TEST",			C_ALL,&cClusterSession::Handle_ServerSide},
-	{"C_CMSG_RPC_COMMAND_TEST_RESP",	C_ALL,&cClusterSession::Handle_ShowRPCTestResp},
+	{"C_CMSG_RPC_COMMAND_TEST_RESP",	C_ALL,&cClusterSession::Handle_Null},
 };
 
 #endif
