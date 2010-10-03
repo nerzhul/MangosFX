@@ -139,60 +139,6 @@ bool Cluster::_StartDB()
         WorldDatabase.HaltDelayThread();
         return false;
     }
-
-    dbstring = sConfig.GetStringDefault("CharacterDatabaseInfo", "");
-    if(dbstring.empty())
-    {
-        sLog.outError("Character Database not specified in configuration file");
-
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        return false;
-    }
-    sLog.outString("Character Database: %s", dbstring.c_str());
-
-    ///- Initialise the Character database
-    if(!CharacterDatabase.Initialize(dbstring.c_str()))
-    {
-        sLog.outError("Cannot connect to Character database %s",dbstring.c_str());
-
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        return false;
-    }
-
-    if(!CharacterDatabase.CheckRequiredField("character_db_version",REVISION_DB_CHARACTERS))
-    {
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        CharacterDatabase.HaltDelayThread();
-        return false;
-    }
-
-    ///- Get login database info from configuration file
-    dbstring = sConfig.GetStringDefault("LoginDatabaseInfo", "");
-    if(dbstring.empty())
-    {
-        sLog.outError("Login database not specified in configuration file");
-
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        CharacterDatabase.HaltDelayThread();
-        return false;
-    }
-
-    ///- Initialise the login database
-    sLog.outString("Login Database: %s", dbstring.c_str() );
-    if(!loginDatabase.Initialize(dbstring.c_str()))
-    {
-        sLog.outError("Cannot connect to login database %s",dbstring.c_str());
-
-        ///- Wait for already started DB delay threads to end
-        WorldDatabase.HaltDelayThread();
-        CharacterDatabase.HaltDelayThread();
-        return false;
-    }
-
     return true;
 }
 

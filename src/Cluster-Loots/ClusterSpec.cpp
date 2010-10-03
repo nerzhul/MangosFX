@@ -65,21 +65,9 @@ void ClusterLoot::SetInitialSettings()
 
 	// For other clusters, modify loaded tables there
 
-	sLog.outString( "Loading Items..." );
-    sClusterObjectMgr.LoadItemPrototypes();
-
-	sLog.outString( "Loading Creature templates..." );
-    sClusterObjectMgr.LoadCreatureTemplates();
-
-	sLog.outString( "Loading Game Object Templates..." );
-    sClusterObjectMgr.LoadGameobjectInfo();
-
-	sLog.outString( "Loading Quests..." );
-    sClusterObjectMgr.LoadQuests();
-
 	sLog.outString( "Loading Loot Tables..." );
     sLog.outString();
-    LoadLootTables();
+    sClusterObjectMgr.LoadLoots();
     sLog.outString( ">>> Loot Tables loaded" );
     sLog.outString();
 
@@ -141,6 +129,6 @@ void ClusterLoot::Wait()
 {
 	while(!MustStop())
 	{
-		ACE_Based::Thread::Sleep(100);
+		ACE_Based::Thread::Sleep(500);
 	}
 }

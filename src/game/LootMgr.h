@@ -200,6 +200,27 @@ class LootTemplate
         LootGroups        Groups;                           // groups have own (optimised) processing, grouped entries go there
 };
 
+class LootTemplate::LootGroup                               // A set of loot definitions for items (refs are not allowed)
+{
+    public:
+        void AddEntry(LootStoreItem& item);                 // Adds an entry to the group (at loading stage)
+        bool HasQuestDrop() const;                          // True if group includes at least 1 quest drop entry
+        bool HasQuestDropForPlayer(Player const * player) const;
+                                                            // The same for active quests of the player
+        void Process(Loot& loot) const;                     // Rolls an item from the group (if any) and adds the item to the loot
+        float RawTotalChance() const;                       // Overall chance for the group (without equal chanced items)
+        float TotalChance() const;                          // Overall chance for the group
+
+        void Verify(LootStore const& lootstore, uint32 id, uint32 group_id) const;
+        void CollectLootIds(LootIdSet& set) const;
+        void CheckLootRefs(LootIdSet* ref_set) const;
+    private:
+        LootStoreItemList ExplicitlyChanced;                // Entries with chances defined in DB
+        LootStoreItemList EqualChanced;                     // Zero chances - every entry takes the same chance
+
+        LootStoreItem const * Roll() const;                 // Rolls an item from the group, returns NULL if all miss their chances
+};
+
 //=====================================================
 
 class LootValidatorRef :  public Reference<Loot, LootValidatorRef>

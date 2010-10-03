@@ -15,6 +15,7 @@ class cSocketTCP: public ACE_Based::Runnable
 		void Connect();
 		void Close();
 		void SendPacket(Packet pkt);
+		void SendRPCCommand(Packet pkt);
 		void run();
 
 		SocketTCP* getSocket() { return m_sock; }

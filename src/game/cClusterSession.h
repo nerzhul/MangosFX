@@ -23,6 +23,8 @@ class cClusterSession
 		void Handle_ClusterPing(WorldPacket &pck);
 		void Handle_SetClusterType(WorldPacket &pck);
 
+		void Handle_ShowRPCTestResp(WorldPacket &pck);
+
 	private:
 		ClusterType m_type;
 
