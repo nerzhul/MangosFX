@@ -1868,10 +1868,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\cPacketOperators.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\cSocketTCP.cpp"
 				>
 			</File>

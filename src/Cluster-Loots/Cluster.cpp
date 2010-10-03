@@ -1,6 +1,5 @@
 #include "Cluster.h"
 #include "ClusterSpec.h"
-#include "CORBAThread.h"
 #include <Log.h>
 #include <Timer.h>
 #include "revision_sql.h"
@@ -40,10 +39,6 @@ int Cluster::Run()
 
     ///- Initialize the World
     sClusterLoot.SetInitialSettings();
-
-	///- Launch CORBA thread
-    ACE_Based::Thread corba_thread(new CORBAThread);
-    corba_thread.setPriority(ACE_Based::Highest);
 
     ///- Catch termination signals
     _HookSignals();
@@ -99,42 +94,7 @@ int Cluster::Run()
     uint32 realCurrTime, realPrevTime;
     realCurrTime = realPrevTime = getMSTime();
 
-    ///- Start up freeze catcher thread
-    /*ACE_Based::Thread* freeze_thread = NULL;
-    if(uint32 freeze_delay = sConfig.GetIntDefault("MaxCoreStuckTime", 0))
-    {
-        FreezeDetectorRunnable *fdr = new FreezeDetectorRunnable();
-        fdr->SetDelayTime(freeze_delay*1000);
-        freeze_thread = new ACE_Based::Thread(fdr);
-        freeze_thread->setPriority(ACE_Based::Highest);
-    }*/
-
-    ///- Launch the world listener socket
-    /*uint16 wsport = sWorld.getConfig (CONFIG_PORT_WORLD);
-    std::string bind_ip = sConfig.GetStringDefault ("BindIP", "0.0.0.0");
-
-    if (sWorldSocketMgr->StartNetwork (wsport, bind_ip) == -1)
-    {
-        sLog.outError ("Failed to start network");
-        Log::WaitBeforeContinueIfNeed();
-        World::StopNow(ERROR_EXIT_CODE);
-        // go down and shutdown the server
-    }
-
-    sWorldSocketMgr->Wait ();*/
-
-    ///- Stop freeze protection before shutdown tasks
-    /*if (freeze_thread)
-    {
-        freeze_thread->destroy();
-        delete freeze_thread;
-    }*/
-
-	sClusterLoot.Wait();
-
-	// Stop CORBA Thread
-	CORBAThread::StopNOW();
-	corba_thread.wait();
+ 	sClusterLoot.Wait();
 
     ///- Remove signal handling before leaving
     _UnhookSignals();
