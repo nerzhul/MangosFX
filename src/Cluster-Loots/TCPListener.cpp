@@ -10,8 +10,12 @@ TCPListener::TCPListener(uint16 port): m_port(port)
 
 TCPListener::~TCPListener()
 {
-	for(std::vector<ACE_Based::Thread*>::iterator itr = m_sessions.begin();itr != m_sessions.end();++itr)
-		((ClusterSession*)(*itr)->current());
+	for(std::vector<ClusterSession*>::iterator itr = m_sessions.begin();itr != m_sessions.end();)
+	{
+		std::vector<ClusterSession*>::iterator itr2 = itr+1;
+		delete (*itr);
+		itr = itr2;
+	}
 
 	m_sessions.clear();
 }
@@ -41,6 +45,7 @@ void TCPListener::run()
 		sess->SetParams(&Client,ClientAddress.ToString());
 		ACE_Based::Thread* session = new ACE_Based::Thread(sess);
 		session->setPriority(ACE_Based::Highest);
-		m_sessions.push_back(session);
+		m_sessions.push_back(sess);
+		ACE_Based::Thread::Sleep(100);
 	}
 }

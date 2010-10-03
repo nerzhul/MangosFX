@@ -28,6 +28,7 @@ void ClusterSession::run()
 			HandlePacket(pkt);
 		if(pkt)
 			delete pkt;
+		ACE_Based::Thread::Sleep(100);
 	}
 }
 
