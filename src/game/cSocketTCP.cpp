@@ -91,7 +91,7 @@ void cSocketTCP::run()
 		if(m_session)
 			m_session->Update();
 
-		ACE_Based::Thread::Sleep(50);
+		ACE_Based::Thread::Sleep(100);
 	}
 	Close();
 }
@@ -106,6 +106,7 @@ bool cSocketTCP::CheckState(Socket::Status st)
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s:%u lost...",m_address.c_str(),m_port);
 			ACE_Based::Thread::Sleep(5000);
+			m_sock->Close();
 			isConnected = false;
 			return false;
 		case 0 /*Socket::Done)*/:
