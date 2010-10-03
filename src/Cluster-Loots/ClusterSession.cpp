@@ -4,29 +4,30 @@
 
 ClusterSession::ClusterSession()
 {
+	m_addr = "<error>";
 }
 
-void ClusterSession::SetParams(SocketTCP sock, std::string addr)
+ClusterSession::~ClusterSession()
+{
+	m_sock->Close();
+	delete m_sock;
+}
+
+void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 {
 	m_sock = sock;
 	m_addr = addr;
 }
 
-ClusterSession::~ClusterSession()
-{
-	m_sock.Close();
-}
-
 void ClusterSession::run()
 {
-	while(m_sock.IsValid())
+	while(true)
 	{
-		error_log("boucle");
-		Packet* pkt;
-		if (CheckState(m_sock.Receive(*pkt)))
+		Packet* pkt = new Packet();
+		if (m_sock->Receive(*pkt) == Socket::Done)
 			HandlePacket(pkt);
-
-		ACE_Based::Thread::Sleep(300);
+		if(pkt)
+			delete pkt;
 	}
 }
 
@@ -40,7 +41,7 @@ bool ClusterSession::CheckState(Socket::Status st)
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s lost...",m_addr.c_str());
 			ACE_Based::Thread::Sleep(5000);
-			m_sock.Close();
+			m_sock->Close();
 			return false;
 		case 0 /*Socket::Done)*/:
 			return true;

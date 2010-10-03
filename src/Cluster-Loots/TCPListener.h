@@ -12,7 +12,7 @@ class TCPListener: public ACE_Based::Runnable
 	private:
 		void run();
 
-		std::vector<ClusterSession*> m_sessions;
+		std::vector<ACE_Based::Thread*> m_sessions;
 		uint16 m_port;
 };
 #endif

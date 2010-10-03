@@ -9,12 +9,13 @@ class ClusterSession: public ACE_Based::Runnable
 	public:
 		ClusterSession();
 		~ClusterSession();
-		void SetParams(SocketTCP sock, std::string str);
+		void SetParams(SocketTCP* sock, std::string str);
+	protected:
 		void run();
 	private:
 		bool CheckState(Socket::Status st);
 		void HandlePacket(Packet* pck);
-		SocketTCP m_sock;
+		SocketTCP* m_sock;
 		std::string m_addr;
 };
 #endif
