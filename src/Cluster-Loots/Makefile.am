@@ -17,7 +17,7 @@
 ## Process this file with automake to produce Makefile.in
 
 ## CPP flags for includes, defines, etc.
-AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../dep/include -I$(srcdir)/../framework -I$(srcdir)/../shared  -I$(srcdir)/../game -I$(srcdir) -DSYSCONFDIR=\"$(sysconfdir)/\"
+AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../dep/include -I$(srcdir)/../../dep/SFML/include -I$(srcdir)/../framework -I$(srcdir)/../shared  -I$(srcdir)/../game -I$(srcdir) -DSYSCONFDIR=\"$(sysconfdir)/\"
 
 ## Build world daemon as standalone program
 bin_PROGRAMS = mangosFX-LootCluster
@@ -29,6 +29,8 @@ mangosFX_LootCluster_SOURCES = \
 	ClusterSpec.h \
 	cObjectMgr.cpp \
 	cObjectMgr.h \
+	TCPListener.cpp \
+	TCPListener.h \
 	Main.cpp
 
 ## Link world daemon against the shared library
@@ -42,7 +44,7 @@ mangosFX_LootCluster_LDADD = \
 	../../dep/src/g3dlite/libg3dlite.a \
 	../framework/libmangosframework.a 
 
-mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -export-dynamic
+mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -lsfml-network -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
