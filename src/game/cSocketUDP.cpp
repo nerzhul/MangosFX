@@ -1,19 +1,19 @@
 #include <Log.h>
 #include "World.h"
-#include "cSocketUDP_snd.h"
+#include "cSocketUDP.h"
 
-cSocketUDP_snd::cSocketUDP_snd()
+cSocketUDP::cSocketUDP()
 {
 	m_address = "";
 	m_port = 0;
 	_init = false;
 }
 
-cSocketUDP_snd::~cSocketUDP_snd()
+cSocketUDP::~cSocketUDP()
 {
 }
 
-void cSocketUDP_snd::InitConnect(Packet buff, std::string addr, uint16 port)
+void cSocketUDP::InitConnect(Packet buff, std::string addr, uint16 port)
 {
 	if(buff.GetDataSize() > 0 || addr == "" || port == 0 || port > 65534)
 		return;
@@ -24,7 +24,7 @@ void cSocketUDP_snd::InitConnect(Packet buff, std::string addr, uint16 port)
 	_init = true;
 }
 
-void cSocketUDP_snd::SendPacket()
+void cSocketUDP::SendPacket()
 {
 	if(!_init)
 		return;

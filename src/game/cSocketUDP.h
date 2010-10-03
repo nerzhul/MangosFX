@@ -2,15 +2,14 @@
 #define __C_SOCKET_UDP_SND_H_
 
 #include <Common.h>
-#include <SFML/Network.hpp>
 
-using namespace sf;
+#include "cIncludes.h"
 
-class cSocketUDP_snd
+class cSocketUDP
 {
 	public:
-		cSocketUDP_snd();
-		~cSocketUDP_snd();
+		cSocketUDP();
+		~cSocketUDP();
 		
 		void InitConnect(Packet buff, std::string addr, uint16 port);
 		void SendPacket();

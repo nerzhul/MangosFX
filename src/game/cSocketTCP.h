@@ -2,9 +2,8 @@
 #define __C_SOCKET_TCP_SND_H_
 
 #include <Common.h>
-#include <SFML/Network.hpp>
 
-using namespace sf;
+#include "cIncludes.h"
 
 class cSocketTCP: public ACE_Based::Runnable
 {

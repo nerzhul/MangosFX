@@ -1,9 +1,6 @@
 #include <Policies/SingletonImp.h>
-#include <SFML/Network.hpp>
 #include "World.h"
 #include "cSocketTCP.h"
-
-using namespace sf;
 
 cSocketTCP::cSocketTCP() : isConnected(false)
 {

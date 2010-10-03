@@ -1852,6 +1852,22 @@
 			Name="ClusterSockets"
 			>
 			<File
+				RelativePath="..\..\src\game\cClusterSession.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\cClusterSession.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\cIncludes.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\cPacketOpcodes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\cPacketOperators.h"
 				>
 			</File>
@@ -1864,11 +1880,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\cSocketUDP_snd.cpp"
+				RelativePath="..\..\src\game\cSocketUDP.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\cSocketUDP_snd.h"
+				RelativePath="..\..\src\game\cSocketUDP.h"
 				>
 			</File>
 		</Filter>
