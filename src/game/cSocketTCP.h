@@ -4,6 +4,7 @@
 #include <Common.h>
 
 #include "cIncludes.h"
+#include "cClusterSession.h"
 
 class cSocketTCP: public ACE_Based::Runnable
 {
@@ -15,14 +16,16 @@ class cSocketTCP: public ACE_Based::Runnable
 		void Close();
 		void SendPacket(Packet pkt);
 		void run();
-	private:
-		void CheckState(Socket::Status st);
 
+		SocketTCP* getSocket() { return m_sock; }
+	private:
+		bool CheckState(Socket::Status st);
+		void HandlePacket(Packet* pck);
 		bool isConnected;
 
 		std::string m_address;
 		uint16 m_port;
-		SocketTCP m_sock;
+		SocketTCP* m_sock;
+		cClusterSession* m_session;
 };
-
 #endif

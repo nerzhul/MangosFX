@@ -3,10 +3,30 @@
 
 #include "cIncludes.h"
 
+class cSocketTCP;
+enum ClusterType;
+
 class cClusterSession
 {
 	public:
-		cClusterSession(){}
-		~cClusterSession(){}
+		cClusterSession(cSocketTCP* sock);
+		~cClusterSession();
+
+		void Update();
+		void QueuePacket(WorldPacket* new_packet);
+		void SendPacket(Packet pck);
+
+		// Handlers
+		void Handle_Null(WorldPacket& pck) {}
+		void Handle_ServerSide(WorldPacket &pck) {}
+
+		void Handle_ClusterPing(WorldPacket &pck);
+		void Handle_SetClusterType(WorldPacket &pck);
+
+	private:
+		ClusterType m_type;
+
+		cSocketTCP* m_sock;
+		ACE_Based::LockedQueue<WorldPacket*, ACE_Thread_Mutex> _recvQueue;
 };
 #endif

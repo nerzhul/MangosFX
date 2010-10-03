@@ -3,21 +3,43 @@
 
 #include "cIncludes.h"
 
+#include "cClusterSession.h"
+
 enum cPckOpcodes
 {
 	C_CMSG_NULL, //0x00
 	C_CMSG_PING,
 	C_SMSG_PING_RESP,
 	C_SMSG_PING,
-	C_CMSG_PING_RESP, //0x04
+	C_CMSG_PING_RESP,
+	C_CMSG_CLUSTER_TYPE,
 
-	MAX_C_OPCODES = 0x05,
+	MAX_C_OPCODES = 0x06,
+};
+
+enum ClusterType
+{
+	C_NULL	=	0x00,
+	C_LOOT	=	0x01,
+	C_BG	=	0x02,
+
+	C_ALL	=	0xFF,
 };
 
 struct cPacketOpcodeHandler
 {
 	const char* name;
-	void (WorldSession::*handler)(Packet& recv_data);
+	ClusterType cType;
+	void (cClusterSession::*handler)(WorldPacket& recv_data);
+};
+
+cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
+	{"C_CMSG_NULL",			C_ALL,&cClusterSession::Handle_Null},
+	{"C_CMSG_PING",			C_ALL,&cClusterSession::Handle_ClusterPing},
+	{"C_SMSG_PING_RESP",	C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_SMSG_PING",			C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_CMSG_PING_RESP",	C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_CMSG_CLUSTER_TYPE",	C_ALL,&cClusterSession::Handle_SetClusterType},
 };
 
 #endif
