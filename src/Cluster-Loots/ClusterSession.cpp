@@ -70,8 +70,21 @@ void ClusterSession::HandlePacket(Packet* pck)
 
 void ClusterSession::SendClusterIdentity()
 {
-	Packet* pkt;
-	*pkt << Uint16(C_CMSG_CLUSTER_TYPE);
-	*pkt << Uint8(C_LOOT);
-	m_sock->Send((Packet&)*pkt);
+	Packet pkt;
+	pkt << Uint16(C_CMSG_CLUSTER_TYPE);
+	pkt << Uint8(C_LOOT);
+	SendPacket(&pkt);
+}
+
+void ClusterSession::SendPacket(const Packet* pck)
+{
+	if(!m_sock || !m_sock->IsValid())
+	{
+		delete pck;
+		return;
+	}
+	
+	Socket::Status st = m_sock->Send((Packet&)*pkt);
+	CheckState(st);
+	delete pck;	
 }

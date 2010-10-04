@@ -10,6 +10,7 @@ class ClusterSession: public ACE_Based::Runnable
 		ClusterSession();
 		~ClusterSession();
 		void SetParams(SocketTCP* sock, std::string str);
+		void SendPacket(const Packet* pkt);
 	protected:
 		void run();
 	private:
