@@ -73,5 +73,5 @@ void ClusterSession::SendClusterIdentity()
 	Packet pkt;
 	pkt << uint16(C_CMSG_CLUSTER_TYPE);
 	pkt << uint8(C_LOOT);
-	m_sock->SendPacket(&pkt);
+	m_sock->Send(&pkt);
 }
