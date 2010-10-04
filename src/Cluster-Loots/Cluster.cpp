@@ -49,7 +49,7 @@ int Cluster::Run()
     ACE_Based::Thread cluster_thread(new ClusterLoot);
     cluster_thread.setPriority(ACE_Based::Highest);
 
-	ACE_Based::Thread sockListener_thread(new TCPListener(2598));
+	ACE_Based::Thread sockListener_thread(new TCPListener(sConfig.GetIntDefault("LootClusterPort",3695)));
 	sockListener_thread.setPriority(ACE_Based::Highest);
 
 	///- Handle affinity for multiple processors and process priority on Windows

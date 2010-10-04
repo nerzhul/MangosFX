@@ -345,7 +345,7 @@ int Master::Run()
     }
 
 	cSocketTCP* cS_TCP = new cSocketTCP();
-	cS_TCP->InitConnect("blackdiamondserver.com",22);
+	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","blackdiamondserver.com"),sConfig.GetIntDefault("LootClusterPort",3695));
 	cS_TCP->Connect();
 	Packet pkt;
 	pkt << sf::Uint16(0x02) << sf::Uint32(0x04);
