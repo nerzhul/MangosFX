@@ -11,6 +11,7 @@ class ClusterSession: public ACE_Based::Runnable
 		~ClusterSession();
 		void SetParams(SocketTCP* sock, std::string str);
 		void SendPacket(const Packet* pkt);
+		void SendPacket(Packet pkt) { SendPacket(&pkt); }
 	protected:
 		void run();
 	private:
