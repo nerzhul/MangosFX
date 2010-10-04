@@ -116,7 +116,7 @@ bool cSocketTCP::CheckState(Socket::Status st)
 		case 0 /*Socket::Done*/:
 			return true;
 		case 1:
-			error_log("Socket isn't ready yet !");
+			//error_log("Socket isn't ready yet !");
 			return false;
 	}
 	return true;
