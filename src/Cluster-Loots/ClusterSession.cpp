@@ -27,7 +27,6 @@ void ClusterSession::run()
 	{
 		Packet pkt;
 		Socket::Status st = m_sock->Receive(pkt);
-		error_log("Size : %u",pkt.GetDataSize());
 		if(CheckState(st))
 			HandlePacket(&pkt);
 		ACE_Based::Thread::Sleep(100);
@@ -58,9 +57,10 @@ void ClusterSession::HandlePacket(Packet* pck)
 {
 	if(pck->GetDataSize() < 2)
 	{
-		error_log("Packet size for Cluster is wrong...");
+		//error_log("Packet size for Cluster is wrong...");
 		return;
 	}
+	error_log("Size : %u",pkt.GetDataSize());
 
 	uint32 opcode = 0;
 	*pck >> opcode;
