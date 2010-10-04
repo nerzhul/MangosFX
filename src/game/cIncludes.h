@@ -2,8 +2,6 @@
 #define __C_INCLUDES_H_
 
 #include <SFML/Network.hpp>
-#include "cClusterSession.h"
-#include "cSocketTCP.h"
 using namespace sf;
 
 enum ClusterType
