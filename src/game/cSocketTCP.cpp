@@ -32,6 +32,7 @@ void cSocketTCP::Connect()
 		isConnected = false;
 		return;
 	}
+	m_sock->SetBlocking(false);
 	isConnected = true;
 }
 
@@ -133,4 +134,5 @@ void cSocketTCP::HandlePacket(Packet* pck)
 	*pck >> opcode;
 	WorldPacket packet(opcode);
 	packet << pck->GetData();
+	error_log("Pck recv %u",packet->GetOpcode());
 }
