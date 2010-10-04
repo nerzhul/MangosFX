@@ -31,7 +31,9 @@ mangosFX_LootCluster_SOURCES = \
 	cObjectMgr.h \
 	TCPListener.cpp \
 	TCPListener.h \
-	Main.cpp
+	Main.cpp \
+	ClusterSession.cpp \
+	ClusterSession.h
 
 ## Link world daemon against the shared library
 mangosFX_LootCluster_LDADD = \
