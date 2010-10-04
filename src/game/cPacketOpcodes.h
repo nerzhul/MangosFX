@@ -26,7 +26,7 @@ struct cPacketOpcodeHandler
 	void (cClusterSession::*handler)(WorldPacket& recv_data);
 };
 
-cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
+static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_NULL",						C_ALL,&cClusterSession::Handle_Null},
 	{"C_CMSG_PING",						C_ALL,&cClusterSession::Handle_ClusterPing},
 	{"C_SMSG_PING_RESP",				C_ALL,&cClusterSession::Handle_ServerSide},
