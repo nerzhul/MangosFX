@@ -28,7 +28,7 @@ void cClusterSession::Update()
 		cPacketOpcodeHandler opHandle = cPckOpH[packet->GetOpcode()];
 		try
 		{
-			if((m_type & opHandle.cType) || packet->GetOpcode() == C_CMSG_CLUSTER_TYPE)
+			if((m_type & opHandle.cType) || packet->GetOpcode() == C_SMSG_CLUSTER_TYPE)
 				(this->*opHandle.handler)(*packet);
 			else
 				error_log("One cluster tries to get non owned packet...");
@@ -67,9 +67,8 @@ void cClusterSession::Handle_ClusterPing(WorldPacket &pck)
 	uint8 ping;
 	pck >> ping;
 	Packet packet;
-	packet << uint8(C_CMSG_PING_RESP);
-	packet << uint8(ping);
-	SendPacket(packet);
+	packet << uint16(C_CMSG_PING_RESP) << uint8(ping);
+	SendPacket(&packet);
 }
 
 void cClusterSession::Handle_SetClusterType(WorldPacket &pck)
@@ -82,4 +81,11 @@ void cClusterSession::Handle_SetClusterType(WorldPacket &pck)
 	}
 	pck >> type;
 	m_type = ClusterType(type);
+}
+
+void cClusterSession::SendPing()
+{
+	Packet pkt;
+	pkt << Uint16(C_CMSG_PING) << Uint8(urand(0,10));
+	SendPacket(&pkt);
 }

@@ -14,7 +14,6 @@ class ClusterSession: public ACE_Based::Runnable
 		void SetParams(SocketTCP* sock, std::string str);
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pkt);
-		void SendPacket(Packet pkt) { SendPacket(&pkt); }
 
 		void Update();
 
@@ -30,6 +29,7 @@ class ClusterSession: public ACE_Based::Runnable
 		bool CheckState(Socket::Status st);
 		void HandlePacket(Packet* pck);
 		void SendClusterIdentity();
+		void SendPing();
 
 		bool mustStop;
 		SocketTCP* m_sock;

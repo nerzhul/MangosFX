@@ -16,7 +16,6 @@ class cClusterSession
 		void Update();
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pck);
-		void SendPacket(Packet pkt) { SendPacket(&pkt); }
 
 		// Handlers
 		void Handle_Null(WorldPacket& pck) {}
@@ -26,6 +25,8 @@ class cClusterSession
 		void Handle_ClusterPing(WorldPacket &pck);
 		void Handle_SetClusterType(WorldPacket &pck);
 	private:
+		void SendPing();
+
 		ClusterType m_type;
 
 		cSocketTCP* m_sock;

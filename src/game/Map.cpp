@@ -3673,7 +3673,6 @@ WorldObject* Map::GetWorldObject(uint64 guid)
 void Map::SendObjectUpdates()
 {
 	UpdateDataMapType update_players;
-	update_players.clear();
 
 	uint32 i=0;
 	while(!i_objectsToClientUpdate.empty())
@@ -3690,7 +3689,7 @@ void Map::SendObjectUpdates()
 	WorldPacket packet;                                     // here we allocate a std::vector with a size of 0x10000
 	for(UpdateDataMapType::iterator iter = update_players.begin(); iter != update_players.end(); ++iter)
 	{
-		if(iter->second)
+		if(&(iter->second))
 			iter->second.BuildPacket(&packet);
 		if(iter->first && iter->first->GetSession())
 			iter->first->GetSession()->SendPacket(&packet);

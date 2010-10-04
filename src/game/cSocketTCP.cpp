@@ -2,6 +2,7 @@
 #include "World.h"
 #include "WorldPacket.h"
 #include "cSocketTCP.h"
+#include "cPacketOpcodes.h"
 #include "cClusterSession.h"
 
 cSocketTCP::cSocketTCP() : isConnected(false), m_session(NULL)
@@ -111,10 +112,25 @@ void cSocketTCP::HandlePacket(Packet* pck)
 		return;
 	}
 
+	// Get opcode
 	uint16 opcode = 0;
 	*pck >> opcode;
+	if(!opcode)
+		return;
+
+	if(opcode >= MAX_C_OPCODES)
+	{
+		error_log("Cluster receive unhandled opcode %u",opcode);
+		return;
+	}
+
+	// Recopy data into WorldPacket
 	WorldPacket packet(opcode);
-	packet << pck->GetData();
+	for(uint32 i=2;i<pck->GetDataSize();i++)
+		packet << pck->GetData()[i];
+
+	packet.hexlike();
+	// Pointer to keep data alive
 	WorldPacket* pkt = new WorldPacket(packet);
 	if(m_session)
 		m_session->QueuePacket(pkt);
