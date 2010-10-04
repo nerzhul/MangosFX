@@ -134,7 +134,7 @@ void cSocketTCP::HandlePacket(Packet* pck)
 	*pck >> opcode;
 	WorldPacket packet(opcode);
 	packet << pck->GetData();
-	WorldPacket* pkt = new WorldPacket(pck);
+	WorldPacket* pkt = new WorldPacket(packet);
 	if(m_session)
 		m_session->QueuePacket(pkt);
 }
