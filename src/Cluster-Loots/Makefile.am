@@ -44,6 +44,7 @@ mangosFX_LootCluster_LDADD = \
 	../shared/vmap/libmangosvmaps.a \
 	../shared/libmangosshared.a \
 	../../dep/src/g3dlite/libg3dlite.a \
+	../../dep/recastnavigation/Detour/libdetour.a \
 	../framework/libmangosframework.a 
 
 mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -lsfml-network -export-dynamic
