@@ -42,11 +42,7 @@ void cSocketTCP::SendPacket(const Packet* pkt)
 		error_log("Socket for %s:%u is closed...",m_address.c_str(),m_port);
 		return;
 	}
-	Packet pck;
-	pck << pkt->GetData();
-	error_log("pkt size : %u data %s",pck.GetDataSize(),pck.GetData().c_str());
-	
-	Socket::Status st = m_sock->Send(pck);
+	Socket::Status st = m_sock->Send(pkt);
 	CheckState(st);
 }
 
