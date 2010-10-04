@@ -70,8 +70,8 @@ void ClusterSession::HandlePacket(Packet* pck)
 
 void ClusterSession::SendClusterIdentity()
 {
-	Packet pkt;
-	pkt << uint16(C_CMSG_CLUSTER_TYPE);
-	pkt << uint8(C_LOOT);
-	m_sock->Send(&pkt);
+	Packet* pkt;
+	*pkt << uint16(C_CMSG_CLUSTER_TYPE);
+	*pkt << uint8(C_LOOT);
+	m_sock->Send((Packet&)*pkt);
 }
