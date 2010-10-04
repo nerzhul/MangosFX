@@ -84,7 +84,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 		return;
 	}
 	
-	Socket::Status st = m_sock->Send((Packet&)*pkt);
+	Socket::Status st = m_sock->Send((Packet&)*pck);
 	CheckState(st);
 	delete pck;	
 }
