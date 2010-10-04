@@ -43,6 +43,7 @@
 
 #include <CORBAThread.h>
 #include <cSocketTCP.h>
+#include <cClusterSession.h>
 
 #include "revision_sql.h"
 
