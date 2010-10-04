@@ -60,7 +60,7 @@ void ClusterSession::HandlePacket(Packet* pck)
 		//error_log("Packet size for Cluster is wrong...");
 		return;
 	}
-	error_log("Size : %u",pkt.GetDataSize());
+	error_log("Size : %u",pck->GetDataSize());
 
 	uint32 opcode = 0;
 	*pck >> opcode;
