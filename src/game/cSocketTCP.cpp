@@ -43,7 +43,7 @@ void cSocketTCP::SendPacket(const Packet* pkt)
 		return;
 	}
 	error_log("Packet Size %u, Data %s",pkt->GetDataSize(),pkt->GetData());
-	Socket::Status st = m_sock->Send(*pkt);
+	Socket::Status st = m_sock->Send((Packet&)*pkt);
 	CheckState(st);
 }
 
