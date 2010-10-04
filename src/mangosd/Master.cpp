@@ -44,6 +44,7 @@
 #include <CORBAThread.h>
 #include <cSocketTCP.h>
 #include <cClusterSession.h>
+#include <SFML/Network.hpp>
 
 #include "revision_sql.h"
 
