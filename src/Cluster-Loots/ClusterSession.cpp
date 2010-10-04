@@ -22,6 +22,7 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
+	m_sock->SetBlocking(false);
 	while(!mustStop)
 	{
 		error_log("TEST");
