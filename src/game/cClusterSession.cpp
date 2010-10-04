@@ -63,13 +63,13 @@ void cClusterSession::SendPacket(const Packet* pck)
 
 void cClusterSession::Handle_ClusterPing(WorldPacket &pck)
 {
-	sLog.outDebug("C_CMSG_PING received...");
+	sLog.outDebug("C_SMSG_PING received...");
 	uint8 ping;
 	pck >> ping;
 	Packet packet;
-	packet << C_SMSG_PING_RESP;
-	packet << ping;
-	SendPacket(&packet);
+	packet << uint8(C_CMSG_PING_RESP);
+	packet << uint8(ping);
+	SendPacket(packet);
 }
 
 void cClusterSession::Handle_SetClusterType(WorldPacket &pck)

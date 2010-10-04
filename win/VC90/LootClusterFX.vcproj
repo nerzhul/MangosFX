@@ -651,6 +651,10 @@
 			Name="ClusterSpec"
 			>
 			<File
+				RelativePath="..\..\src\Cluster-Loots\ClusterOpcodes.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Cluster-Loots\ClusterSession.cpp"
 				>
 			</File>

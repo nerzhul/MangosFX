@@ -3681,8 +3681,7 @@ void Map::SendObjectUpdates()
 		i++;
 		Object* obj = *i_objectsToClientUpdate.begin();
 		i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
-		if(obj)
-			obj->BuildUpdateData(update_players);
+		if(obj)	obj->BuildUpdateData(update_players);
 
 		if(i>100000)
 			sLog.outError("SendObjectUpdates() infinite Loop");
@@ -3695,6 +3694,7 @@ void Map::SendObjectUpdates()
 		iter->first->GetSession()->SendPacket(&packet);
 		packet.clear();                                     // clean the string
 	}
+	update_players.clear();
 }
 
 uint32 Map::GenerateLocalLowGuid(HighGuid guidhigh)

@@ -1,5 +1,5 @@
-#ifndef __C_SOCKET_TCP_SND_H_
-#define __C_SOCKET_TCP_SND_H_
+#ifndef __C_SOCKET_TCP_H_
+#define __C_SOCKET_TCP_H_
 
 #include <Common.h>
 
@@ -17,7 +17,6 @@ class cSocketTCP: public ACE_Based::Runnable
 		void Connect();
 		void Close();
 		void SendPacket(const Packet* pkt);
-		void SendRPCCommand(Packet pkt);
 		void run();
 
 		SocketTCP* getSocket() { return m_sock; }

@@ -345,7 +345,7 @@ int Master::Run()
     }
 
 	cSocketTCP* cS_TCP = new cSocketTCP();
-	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","blackdiamondserver.com"),sConfig.GetIntDefault("LootClusterPort",3695));
+	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","localhost"),sConfig.GetIntDefault("LootClusterPort",3695));
 	cS_TCP->Connect();
 	ACE_Based::Thread test_TCP(cS_TCP);
 	test_TCP.setPriority(ACE_Based::Highest);

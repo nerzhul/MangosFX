@@ -47,25 +47,6 @@ void cSocketTCP::SendPacket(const Packet* pkt)
 	CheckState(st);
 }
 
-void cSocketTCP::SendRPCCommand(Packet pkt)
-{
-	m_sock->Send(pkt);
-	Packet pck;
-	while(true)
-	{
-		m_sock->Receive(pck);
-		uint16 op,op2;
-		uint8 test1;
-		pkt >> op;
-		pck >> op2;
-		pkt >> test1;
-		uint8 test2;
-		pck >> test2;
-		error_log("pkt1 %u: %u pkt2 Mu: %u",op,test1,op2,test2);
-		ACE_Based::Thread::Sleep(50);
-	}
-}
-
 void cSocketTCP::Close()
 {
 	if(m_sock->IsValid())

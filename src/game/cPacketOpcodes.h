@@ -7,7 +7,7 @@
 
 enum cPckOpcodes
 {
-	C_CMSG_NULL, //0x00
+	C_CMSG_NULL						= 0x00, //0x00
 	C_CMSG_PING,
 	C_SMSG_PING_RESP,
 	C_SMSG_PING,
@@ -28,10 +28,10 @@ struct cPacketOpcodeHandler
 
 static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_NULL",						C_ALL,&cClusterSession::Handle_Null},
-	{"C_CMSG_PING",						C_ALL,&cClusterSession::Handle_ClusterPing},
-	{"C_SMSG_PING_RESP",				C_ALL,&cClusterSession::Handle_ServerSide},
-	{"C_SMSG_PING",						C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_SMSG_PING",						C_ALL,&cClusterSession::Handle_ClusterPing},
 	{"C_CMSG_PING_RESP",				C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_CMSG_PING",						C_ALL,&cClusterSession::Handle_ServerSide},
+	{"C_SMSG_PING_RESP",				C_ALL,&cClusterSession::Handle_Null},
 	{"C_CMSG_CLUSTER_TYPE",				C_ALL,&cClusterSession::Handle_SetClusterType},
 	{"C_SMSG_RPC_COMMAND_TEST",			C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_RPC_COMMAND_TEST_RESP",	C_ALL,&cClusterSession::Handle_Null},

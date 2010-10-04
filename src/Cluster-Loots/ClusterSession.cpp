@@ -2,6 +2,7 @@
 #include <WorldPacket.h>
 #include <cPacketOpcodes.h>
 #include <cIncludes.h>
+#include "ClusterOpcodes.h"
 #include "ClusterSession.h"
 
 ClusterSession::ClusterSession()
@@ -14,6 +15,15 @@ ClusterSession::~ClusterSession()
 {
 	m_sock->Close();
 	sLog.outBasic("Closing connection with %s",m_addr.c_str());
+	///- empty incoming packet queue
+    WorldPacket* packet;
+    while(_recvQueue.next(packet))
+        delete packet;
+}
+
+void ClusterSession::QueuePacket(WorldPacket* new_packet)
+{
+    _recvQueue.add(new_packet);
 }
 
 void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
@@ -26,7 +36,7 @@ void ClusterSession::run()
 {
 	m_sock->SetBlocking(false);
 	SendClusterIdentity();
-	while(!mustStop)
+	while(!mustStop && m_sock->IsValid())
 	{
 		Packet pkt;
 		Socket::Status st = m_sock->Receive(pkt);
@@ -64,7 +74,13 @@ void ClusterSession::HandlePacket(Packet* pck)
 		return;
 	}
 	
-	// TODO: handle with opcode table
+	uint16 opcode = 0;
+	*pck >> opcode;
+	WorldPacket packet(opcode);
+	packet << pck->GetData();
+	WorldPacket* pkt = new WorldPacket(packet);
+	QueuePacket(pkt);
+
 	delete pck;
 }
 
@@ -83,4 +99,41 @@ void ClusterSession::SendPacket(const Packet* pck)
 	
 	Socket::Status st = m_sock->Send((Packet&)*pck);
 	CheckState(st);
+}
+
+void ClusterSession::Update()
+{
+	WorldPacket* packet;
+	while (_recvQueue.next(packet) && m_sock && m_sock->IsValid())
+    {
+		PacketOpcodeHandler opHandle = PckOpH[packet->GetOpcode()];
+		try
+		{
+			(this->*opHandle.handler)(*packet);
+		}
+		catch(ByteBufferException &)
+        {
+            if(sLog.IsOutDebug())
+            {
+                sLog.outDebug("Dumping error causing packet:");
+                packet->hexlike();
+            }
+        }
+		catch(std::exception &e)
+		{
+			error_log("FATAL STD ERROR : %s",e.what());
+		}
+		delete packet;
+	}
+}
+
+void ClusterSession::Handle_ClusterPing(WorldPacket &pck)
+{
+	sLog.outDebug("C_CMSG_PING received...");
+	uint8 ping;
+	pck >> ping;
+	Packet packet;
+	packet << uint8(C_SMSG_PING_RESP);
+	packet << uint8(ping);
+	SendPacket(packet);
 }

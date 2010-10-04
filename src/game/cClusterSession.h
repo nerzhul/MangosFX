@@ -1,5 +1,5 @@
-#ifndef __C_CLUSTER_SESSION_
-#define __C_CLUSTER_SESSION_
+#ifndef __C_CLUSTER_SESSION_H_
+#define __C_CLUSTER_SESSION_H_
 
 #include "cIncludes.h"
 #include "WorldPacket.h"
@@ -16,16 +16,15 @@ class cClusterSession
 		void Update();
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pck);
+		void SendPacket(Packet pkt) { SendPacket(&pkt); }
 
 		// Handlers
 		void Handle_Null(WorldPacket& pck) {}
 		void Handle_ServerSide(WorldPacket &pck) {}
+		void Handle_Unhandled(WorldPacket& pck) { error_log("Unhandled Packet opcode 0x%x recvd",pck.GetOpcode()); }
 
 		void Handle_ClusterPing(WorldPacket &pck);
 		void Handle_SetClusterType(WorldPacket &pck);
-
-		void Handle_ShowRPCTestResp(WorldPacket &pck);
-
 	private:
 		ClusterType m_type;
 
