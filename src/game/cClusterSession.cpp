@@ -49,9 +49,12 @@ void cClusterSession::Update()
 	}
 }
 
-void cClusterSession::SendPacket(Packet pck)
+void cClusterSession::SendPacket(const Packet* pck)
 {
-	if(pck.GetDataSize() == 0)
+	if(!pck)
+		return;
+
+	if(pck->GetDataSize() == 0)
 		return;
 
 	if(m_sock->getSocket()->IsValid())
@@ -66,7 +69,7 @@ void cClusterSession::Handle_ClusterPing(WorldPacket &pck)
 	Packet packet;
 	packet << C_SMSG_PING_RESP;
 	packet << ping;
-	SendPacket(packet);
+	SendPacket(&packet);
 }
 
 void cClusterSession::Handle_SetClusterType(WorldPacket &pck)

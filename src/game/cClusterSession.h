@@ -14,7 +14,7 @@ class cClusterSession
 
 		void Update();
 		void QueuePacket(WorldPacket* new_packet);
-		void SendPacket(Packet pck);
+		void SendPacket(const Packet* pck);
 
 		// Handlers
 		void Handle_Null(WorldPacket& pck) {}

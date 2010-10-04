@@ -3673,6 +3673,7 @@ WorldObject* Map::GetWorldObject(uint64 guid)
 void Map::SendObjectUpdates()
 {
 	UpdateDataMapType update_players;
+	update_players.clear();
 
 	uint32 i=0;
 	while(!i_objectsToClientUpdate.empty())

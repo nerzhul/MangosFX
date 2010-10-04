@@ -5,12 +5,13 @@
 ClusterSession::ClusterSession()
 {
 	m_addr = "<error>";
+	mustStop = false;
 }
 
 ClusterSession::~ClusterSession()
 {
 	m_sock->Close();
-	delete m_sock;
+	sLog.outBasic("Closing connection with %s",m_addr.c_str());
 }
 
 void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
@@ -21,13 +22,14 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	while(true)
+	while(!mustStop)
 	{
-		Packet* pkt = new Packet();
-		if (m_sock->Receive(*pkt) == Socket::Done)
-			HandlePacket(pkt);
-		if(pkt)
-			delete pkt;
+		error_log("TEST");
+		Packet pkt;
+		Socket::Status st = m_sock->Receive(pkt);
+		error_log("Size : %u",pkt.GetDataSize());
+		if(CheckState(st))
+			HandlePacket(&pkt);
 		ACE_Based::Thread::Sleep(100);
 	}
 }
@@ -38,11 +40,11 @@ bool ClusterSession::CheckState(Socket::Status st)
 	{
 		case 3 /*Socket::Status::Error*/:
 			error_log("Socket Error for %s",m_addr.c_str());
+			mustStop = true;
 			return false;
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s lost...",m_addr.c_str());
-			ACE_Based::Thread::Sleep(5000);
-			m_sock->Close();
+			mustStop = true;
 			return false;
 		case 0 /*Socket::Done)*/:
 			return true;
@@ -62,4 +64,5 @@ void ClusterSession::HandlePacket(Packet* pck)
 	*pck >> opcode;
 	WorldPacket packet(opcode);
 	packet << pck->GetData();
+	error_log("opcode %u",opcode);
 }

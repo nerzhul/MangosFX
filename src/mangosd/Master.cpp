@@ -343,12 +343,15 @@ int Master::Run()
     }
 
 	cSocketTCP* cS_TCP = new cSocketTCP();
-	cS_TCP->InitConnect("localhost",2598);
+	cS_TCP->InitConnect("blackdiamondserver.com",22);
 	cS_TCP->Connect();
+	Packet pkt;
+	pkt << sf::Uint16(0x02) << sf::Uint32(0x04);
+	cS_TCP->getSession()->SendPacket(&pkt);
 	ACE_Based::Thread test_TCP(cS_TCP);
 	test_TCP.setPriority(ACE_Based::Highest);
 
-    sWorldSocketMgr->Wait ();
+    sWorldSocketMgr->Wait();
 
     ///- Stop freeze protection before shutdown tasks
     if (freeze_thread)

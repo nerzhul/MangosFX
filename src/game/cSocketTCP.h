@@ -14,11 +14,12 @@ class cSocketTCP: public ACE_Based::Runnable
 		void InitConnect(std::string addr, uint16 port);
 		void Connect();
 		void Close();
-		void SendPacket(Packet pkt);
+		void SendPacket(const Packet* pkt);
 		void SendRPCCommand(Packet pkt);
 		void run();
 
 		SocketTCP* getSocket() { return m_sock; }
+		cClusterSession* getSession() { return m_session; }
 	private:
 		bool CheckState(Socket::Status st);
 		void HandlePacket(Packet* pck);

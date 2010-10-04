@@ -31,18 +31,20 @@ void cSocketTCP::Connect()
 		isConnected = false;
 		return;
 	}
-
 	isConnected = true;
 }
 
-void cSocketTCP::SendPacket(Packet pkt)
+void cSocketTCP::SendPacket(const Packet* pkt)
 {
 	if(!isConnected)
 	{
 		error_log("Socket for %s:%u is closed...",m_address.c_str(),m_port);
 		return;
 	}
-	CheckState(m_sock->Send(pkt));
+	Packet pck;
+	pck << pkt->GetData();
+	Socket::Status st = m_sock->Send(pck);
+	CheckState(st);
 }
 
 void cSocketTCP::SendRPCCommand(Packet pkt)
@@ -102,6 +104,8 @@ bool cSocketTCP::CheckState(Socket::Status st)
 	{
 		case 3 /*Socket::Status::Error*/:
 			error_log("Socket Error for %s:%u",m_address.c_str(),m_port);
+			m_sock->Close();
+			isConnected = false;
 			return false;
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s:%u lost...",m_address.c_str(),m_port);
@@ -109,8 +113,11 @@ bool cSocketTCP::CheckState(Socket::Status st)
 			m_sock->Close();
 			isConnected = false;
 			return false;
-		case 0 /*Socket::Done)*/:
+		case 0 /*Socket::Done*/:
 			return true;
+		case 1:
+			error_log("Socket isn't ready yet !");
+			return false;
 	}
 	return true;
 }
