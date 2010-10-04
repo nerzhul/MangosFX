@@ -4,7 +4,6 @@
 #include "cIncludes.h"
 
 class cSocketTCP;
-enum ClusterType;
 
 class cClusterSession
 {

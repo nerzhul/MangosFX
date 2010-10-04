@@ -19,15 +19,6 @@ enum cPckOpcodes
 	MAX_C_OPCODES,
 };
 
-enum ClusterType
-{
-	C_NULL	=	0x00,
-	C_LOOT	=	0x01,
-	C_BG	=	0x02,
-
-	C_ALL	=	0xFF,
-};
-
 struct cPacketOpcodeHandler
 {
 	const char* name;
