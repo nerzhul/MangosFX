@@ -344,8 +344,8 @@ libmangosgame_a_SOURCES = \
 	ShamanSpellHandler.h \
 	cSocketTCP.cpp \
 	cSocketTCP.h \
-	cSocketUDP_snd.cpp \
-	cSocketUDP_snd.h
+	cSocketUDP.cpp \
+	cSocketUDP.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN
