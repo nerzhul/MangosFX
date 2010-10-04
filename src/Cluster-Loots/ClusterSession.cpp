@@ -1,5 +1,7 @@
 #include <Log.h>
 #include <WorldPacket.h>
+#include <cPacketOpcodes.h>
+#include <cIncludes.h>
 #include "ClusterSession.h"
 
 ClusterSession::ClusterSession()
@@ -23,6 +25,7 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 void ClusterSession::run()
 {
 	m_sock->SetBlocking(false);
+	SendClusterIdentity();
 	while(!mustStop)
 	{
 		Packet pkt;
@@ -60,15 +63,15 @@ void ClusterSession::HandlePacket(Packet* pck)
 		//error_log("Packet size for Cluster is wrong...");
 		return;
 	}
-	error_log("Size : %u",pck->GetDataSize());
+	
+	// TODO: handle with opcode table
+	delete pck;
+}
 
-	uint16 opcode = 0;
-	uint32 _data = 0;
-	std::string str;
-	*pck >> opcode;
-	*pck >> _data;
-	*pck >> str;
-	/*WorldPacket packet(opcode);
-	packet << pck->GetData();*/
-	error_log("opcode %u data %u str %s",opcode,_data,str.c_str());
+void ClusterSession::SendClusterIdentity()
+{
+	Packet pkt;
+	pkt << uint16(C_CMSG_CLUSTER_TYPE);
+	pkt << uint8(C_LOOT);
+	m_sock->SendPacket(&pkt);
 }

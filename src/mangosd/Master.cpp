@@ -347,11 +347,11 @@ int Master::Run()
 	cSocketTCP* cS_TCP = new cSocketTCP();
 	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","blackdiamondserver.com"),sConfig.GetIntDefault("LootClusterPort",3695));
 	cS_TCP->Connect();
-	Packet pkt;
+	/*Packet pkt;
 	pkt << uint16(0x3D);
 	pkt << uint32(0xFF);
 	pkt << std::string("Tototiti");
-	cS_TCP->getSession()->SendPacket(&pkt);
+	cS_TCP->getSession()->SendPacket(&pkt);*/
 	ACE_Based::Thread test_TCP(cS_TCP);
 	test_TCP.setPriority(ACE_Based::Highest);
 

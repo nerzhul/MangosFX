@@ -15,6 +15,7 @@ class ClusterSession: public ACE_Based::Runnable
 	private:
 		bool CheckState(Socket::Status st);
 		void HandlePacket(Packet* pck);
+		void SendClusterIdentity();
 		bool mustStop;
 		SocketTCP* m_sock;
 		std::string m_addr;
