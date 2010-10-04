@@ -2,6 +2,8 @@
 #define __C_CLUSTER_SESSION_
 
 #include "cIncludes.h"
+#include "WorldPacket.h"
+#include <ace/Atomic_Op.h>
 
 class cSocketTCP;
 
