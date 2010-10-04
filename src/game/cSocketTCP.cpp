@@ -44,7 +44,7 @@ void cSocketTCP::SendPacket(const Packet* pkt)
 	}
 	Packet pck;
 	pck << pkt->GetData();
-	error_log("pkt size : %u data %s",pck.GetDataSize(),pck.GetData());
+	error_log("pkt size : %u data %s",pck.GetDataSize(),pck.GetData().c_str());
 	
 	Socket::Status st = m_sock->Send(pck);
 	CheckState(st);
