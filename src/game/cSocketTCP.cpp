@@ -134,5 +134,5 @@ void cSocketTCP::HandlePacket(Packet* pck)
 	*pck >> opcode;
 	WorldPacket packet(opcode);
 	packet << pck->GetData();
-	error_log("Pck recv %u",packet->GetOpcode());
+	error_log("Pck recv %u",packet.GetOpcode());
 }
