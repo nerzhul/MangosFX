@@ -62,9 +62,13 @@ void ClusterSession::HandlePacket(Packet* pck)
 	}
 	error_log("Size : %u",pck->GetDataSize());
 
-	uint32 opcode = 0;
+	uint16 opcode = 0;
+	uint32 _data = 0;
+	std::string str;
 	*pck >> opcode;
-	WorldPacket packet(opcode);
-	packet << pck->GetData();
-	error_log("opcode %u",opcode);
+	*pck >> _data;
+	*pck >> str;
+	/*WorldPacket packet(opcode);
+	packet << pck->GetData();*/
+	error_log("opcode %u data %u str %s",opcode,_data,str.c_str());
 }
