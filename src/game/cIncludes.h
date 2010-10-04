@@ -1,5 +1,5 @@
 #ifndef __C_INCLUDES_H_
-#define __C_INCLUDES_H
+#define __C_INCLUDES_H_
 
 #include <SFML/Network.hpp>
 using namespace sf;
