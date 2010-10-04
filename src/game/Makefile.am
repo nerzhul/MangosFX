@@ -348,7 +348,7 @@ libmangosgame_a_SOURCES = \
 	cSocketUDP.h \
 	cClusterSession.cpp \
 	cClusterSession.h \
-	cIncludes.h \
+	cIncludes.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN
