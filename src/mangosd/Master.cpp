@@ -348,8 +348,8 @@ int Master::Run()
 	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","blackdiamondserver.com"),sConfig.GetIntDefault("LootClusterPort",3695));
 	cS_TCP->Connect();
 	Packet pkt;
-	pkt.Append(sf::Uint16(0x02),sizeof(sf::Uint16));
-	pkt.Append(sf::Uint32(0x04),sizeof(sf::Uint32));
+	std::string str << uint16(0x02) << uint32(0x04);
+	pkt << str;
 	cS_TCP->getSession()->SendPacket(&pkt);
 	ACE_Based::Thread test_TCP(cS_TCP);
 	test_TCP.setPriority(ACE_Based::Highest);
