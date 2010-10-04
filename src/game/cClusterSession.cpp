@@ -28,7 +28,7 @@ void cClusterSession::Update()
 		cPacketOpcodeHandler opHandle = cPckOpH[packet->GetOpcode()];
 		try
 		{
-			if(m_type & opHandle.cType)
+			if((m_type & opHandle.cType) || packet->GetOpcode() == C_CMSG_CLUSTER_TYPE)
 				(this->*opHandle.handler)(*packet);
 			else
 				error_log("One cluster tries to get non owned packet...");
