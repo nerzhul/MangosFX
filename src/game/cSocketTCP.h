@@ -6,6 +6,8 @@
 #include "cIncludes.h"
 #include "cClusterSession.h"
 
+class cClusterSession;
+
 class cSocketTCP: public ACE_Based::Runnable
 {
 	public:

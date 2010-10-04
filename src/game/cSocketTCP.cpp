@@ -1,8 +1,8 @@
 #include <Policies/SingletonImp.h>
 #include "World.h"
 #include "WorldPacket.h"
-#include "cClusterSession.h"
 #include "cSocketTCP.h"
+#include "cClusterSession.h"
 
 cSocketTCP::cSocketTCP() : isConnected(false), m_session(NULL)
 {
