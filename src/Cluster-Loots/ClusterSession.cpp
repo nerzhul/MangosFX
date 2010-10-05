@@ -1,5 +1,5 @@
 #include <Log.h>
-#include <util.h>
+#include <Util.h>
 #include <WorldPacket.h>
 #include <cPacketOpcodes.h>
 #include <cIncludes.h>
@@ -122,7 +122,7 @@ void ClusterSession::SendClusterIdentity()
 void ClusterSession::SendPing()
 {
 	Packet pkt;
-	pkt << Uint16(C_SMSG_PING) << Uint8(urand(0,10));
+	pkt << Uint16(C_SMSG_PING) << Uint8(urand(0,5));
 	SendPacket(&pkt);
 }
 
