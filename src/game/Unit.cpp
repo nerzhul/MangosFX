@@ -12844,10 +12844,6 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
 
 		if (periodicTime)
         {
-			// Apply periodic time mod
-            if (modOwner)
-                modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_ACTIVATION_TIME, periodicTime);
-
 			bool applyHaste = spellProto->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE;
 			if (!applyHaste)
             {
@@ -12872,6 +12868,10 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
                 periodicTime = int32(GetFloatValue(UNIT_MOD_CAST_SPEED) * periodicTime);
                 duration = periodicTime * ticks;
             }
+			
+			// Apply periodic time mod
+            if (modOwner)
+                modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_ACTIVATION_TIME, periodicTime);
         }
 
         int32 mechanic = GetEffectMechanic(spellProto, effect_index);

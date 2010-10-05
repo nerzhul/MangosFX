@@ -678,7 +678,7 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "completerecup",	SEC_PLAYER,			false, &ChatHandler::HandleCompleteRecupCommand,		"",	NULL },
 		{ "recuperation",	SEC_GAMEMASTER,		false, &ChatHandler::HandleRecuperationCommand,			"",	NULL },
 		{ "autorecup",		SEC_PLAYER,			false, &ChatHandler::HandleAutoRecuperationCommand,		"",	NULL },
-		{ "spellinfo"	,	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleGetSpellInfoCommand,			"",	NULL },
+		{ "spellinfo"	,	SEC_ADMINISTRATOR,	true,  &ChatHandler::HandleGetSpellInfoCommand,			"",	NULL },
 		{ "diamond",		SEC_GAMEMASTER,		false, &ChatHandler::HandleDiamondCommand,				"",	NULL },
 		{ "wgstart",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspStartCommand,     "", NULL },
 		{ "wgtimer",        SEC_ADMINISTRATOR,  false, &ChatHandler::HandleWintergraspTimerCommand,     "", NULL },
