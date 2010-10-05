@@ -36,8 +36,11 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	m_sock->SetBlocking(false);
 	SendClusterIdentity();
+	SendPing();
+	SendPing();
+	SendPing();
+	SendPing();
 	SendPing();
 	while(!mustStop)
 	{
@@ -45,6 +48,7 @@ void ClusterSession::run()
 		Socket::Status st = m_sock->Receive(pkt);
 		if(CheckState(st))
 			HandlePacket(&pkt);
+		Update();
 		ACE_Based::Thread::Sleep(100);
 	}
 	m_sock->Close();
@@ -56,8 +60,8 @@ bool ClusterSession::CheckState(Socket::Status st)
 	switch(st)
 	{
 		case 3 /*Socket::Status::Error*/:
-			/*error_log("Socket Error for %s",m_addr.c_str());
-			mustStop = true;*/
+			error_log("Socket Error for %s",m_addr.c_str());
+			/*mustStop = true;*/
 			return false;
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s lost...",m_addr.c_str());
@@ -65,24 +69,31 @@ bool ClusterSession::CheckState(Socket::Status st)
 			return false;
 		case 0 /*Socket::Done)*/:
 			return true;
+		case 1 /*Socket::NotReady*/:
+			error_log("Socket isn't ready !");
+			return false;
 	}
 	return true;
 }
 
 void ClusterSession::HandlePacket(Packet* pck)
 {
+	error_log("TEST size %u",pck->GetDataSize());
 	if(pck->GetDataSize() < 2)
 	{
 		//error_log("Packet size for Cluster is wrong...");
 		return;
 	}
 	
+	error_log("TEST5");
+
 	// Get opcode
 	uint16 opcode = 0;
 	*pck >> opcode;
 	if(!opcode)
 		return;
 
+	error_log("opcode %u",opcode);
 	if(opcode >= MAX_C_OPCODES)
 	{
 		error_log("Cluster receive unhandled opcode %u",opcode);
@@ -120,6 +131,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 	if(!m_sock || !m_sock->IsValid())
 		return;
 	Socket::Status st = m_sock->Send((Packet&)*pck);
+	//m_sock->SetBlocking(false);
 	CheckState(st);
 }
 

@@ -66,8 +66,9 @@ void cClusterSession::Handle_ClusterPing(WorldPacket &pck)
 	sLog.outDebug("C_SMSG_PING received...");
 	uint8 ping;
 	pck >> ping;
+
 	Packet packet;
-	packet << uint16(C_CMSG_PING_RESP) << uint8(ping);
+	packet << Uint16(C_CMSG_PING_RESP) << Uint8(ping) << "\0";
 	SendPacket(&packet);
 }
 

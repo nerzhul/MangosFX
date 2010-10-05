@@ -24,9 +24,10 @@ class cClusterSession
 
 		void Handle_ClusterPing(WorldPacket &pck);
 		void Handle_SetClusterType(WorldPacket &pck);
-	private:
+
 		void SendPing();
 
+	private:
 		ClusterType m_type;
 
 		cSocketTCP* m_sock;

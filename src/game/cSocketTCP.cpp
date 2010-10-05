@@ -33,7 +33,6 @@ void cSocketTCP::Connect()
 		isConnected = false;
 		return;
 	}
-	m_sock->SetBlocking(false);
 	isConnected = true;
 }
 
@@ -44,18 +43,26 @@ void cSocketTCP::SendPacket(const Packet* pkt)
 		error_log("Socket for %s:%u is closed...",m_address.c_str(),m_port);
 		return;
 	}
+	if(!m_sock || !m_sock->IsValid())
+	{
+		error_log("Socket for %s:%u is invalid...",m_address.c_str(),m_port);
+		return;
+	}
 	Socket::Status st = m_sock->Send((Packet&)*pkt);
 	CheckState(st);
 }
 
 void cSocketTCP::Close()
 {
-	if(m_sock->IsValid())
-		m_sock->Close();
+	m_sock->Close();
 }
 
 void cSocketTCP::run()
 {
+	if(m_session)
+		m_session->SendPing();
+
+	//m_sock->SetBlocking(false);
 	while(!World::IsStopped())
 	{
 		if(!isConnected)
@@ -71,6 +78,9 @@ void cSocketTCP::run()
 		Packet pck;
 		if(CheckState(m_sock->Receive(pck)))
 			HandlePacket(&pck);
+
+		if(m_session)
+			m_session->SendPing();
 
 		if(m_session)
 			m_session->Update();
@@ -98,7 +108,7 @@ bool cSocketTCP::CheckState(Socket::Status st)
 		case 0 /*Socket::Done*/:
 			return true;
 		case 1:
-			//error_log("Socket isn't ready yet !");
+			error_log("Socket isn't ready yet !");
 			return false;
 	}
 	return true;
@@ -129,7 +139,6 @@ void cSocketTCP::HandlePacket(Packet* pck)
 	for(uint32 i=2;i<pck->GetDataSize();i++)
 		packet << pck->GetData()[i];
 
-	packet.hexlike();
 	// Pointer to keep data alive
 	WorldPacket* pkt = new WorldPacket(packet);
 	if(m_session)

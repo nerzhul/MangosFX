@@ -45,7 +45,7 @@ void TCPListener::run()
 		sess->SetParams(&Client,ClientAddress.ToString());
 		ACE_Based::Thread* session = new ACE_Based::Thread(sess);
 		session->setPriority(ACE_Based::Highest);
-		m_sessions.push_back(sess);
+		//m_sessions.push_back(sess);
 		ACE_Based::Thread::Sleep(100);
 	}
 }
