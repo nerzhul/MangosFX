@@ -54,7 +54,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
 			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
-				&& (*itr)->GetCaster() == m_caster)
+				&& (*itr)->GetCaster() == spell->GetCaster())
 			{
 				if((*itr)->GetAuraMaxDuration() < 9000)
 				{
