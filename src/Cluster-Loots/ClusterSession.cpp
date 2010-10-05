@@ -36,7 +36,7 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	//SendClusterIdentity();
+	SendClusterIdentity();
 	while(!mustStop)
 	{
 		Packet pkt;
@@ -73,7 +73,6 @@ bool ClusterSession::CheckState(Socket::Status st)
 
 void ClusterSession::HandlePacket(Packet* pck)
 {
-	error_log("TEST size %u",pck->GetDataSize());
 	if(pck->GetDataSize() < 2)
 	{
 		//error_log("Packet size for Cluster is wrong...");
@@ -86,7 +85,6 @@ void ClusterSession::HandlePacket(Packet* pck)
 	if(!opcode)
 		return;
 
-	error_log("opcode %u",opcode);
 	if(opcode >= MAX_C_OPCODES)
 	{
 		error_log("Cluster receive unhandled opcode %u",opcode);

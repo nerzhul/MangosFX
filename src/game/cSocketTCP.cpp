@@ -79,9 +79,6 @@ void cSocketTCP::run()
 			HandlePacket(&pck);
 
 		if(m_session)
-			m_session->SendPing();
-
-		if(m_session)
 			m_session->Update();
 
 		ACE_Based::Thread::Sleep(100);
