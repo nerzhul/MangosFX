@@ -35,10 +35,10 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
         }
     }
     // Shred
-    if(spell->m_spellInfo->SpellFamilyFlags2 & FLAG_SHRED)
+    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED)
     {
-            weaponDmgMod = true;
-            spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
+		weaponDmgMod = true;
+		spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
     }
 	
 	// Mangle (Cat): CP
@@ -47,6 +47,25 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
         if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER)
             ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
     }
+	
+	if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && m_caster->HasAura(54815))
+	{
+		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+        for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
+        {
+			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
+				&& (*itr)->GetCaster() == m_caster)
+			{
+				if((*itr)->GetAuraMaxDuration() < 9000)
+				{
+					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 2000);
+					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 2000);
+					(*itr)->SendAuraUpdate(false);
+				}
+			}
+		}
+	}
+	
 }
 
 void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i)
@@ -65,7 +84,6 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
         damage += int32(used_energy * multiple);
         m_caster->SetPower(POWER_ENERGY,energy-used_energy);
     }
-    // Rake
     else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_RAKE && spell->m_spellInfo->Effect[2]==SPELL_EFFECT_ADD_COMBO_POINTS)
     {
         // $AP*0.01 bonus
@@ -74,7 +92,6 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 		if(m_caster->HasAura(54821))
 			m_caster->CastSpell(unitTarget,54820,true);
     }
-    // Swipe
     else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_SWIPE)
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.08f);
@@ -92,23 +109,6 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 				{
 					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 3000);
 					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 3000);
-					(*itr)->SendAuraUpdate(false);
-				}
-			}
-		}
-	}
-	else if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && m_caster->HasAura(54815))
-	{
-		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
-        for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
-        {
-			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
-				&& (*itr)->GetCaster() == m_caster)
-			{
-				if((*itr)->GetAuraMaxDuration() < 9000)
-				{
-					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 2000);
-					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 2000);
 					(*itr)->SendAuraUpdate(false);
 				}
 			}
