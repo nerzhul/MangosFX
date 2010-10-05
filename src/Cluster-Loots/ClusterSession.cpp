@@ -56,7 +56,7 @@ bool ClusterSession::CheckState(Socket::Status st)
 	{
 		case 3 /*Socket::Status::Error*/:
 			error_log("Socket Error for %s",m_addr.c_str());
-			/*mustStop = true;*/
+			mustStop = true;
 			return false;
 		case 2 /*Socket::Status::Disconnected*/:
 			error_log("Link with %s lost...",m_addr.c_str());
