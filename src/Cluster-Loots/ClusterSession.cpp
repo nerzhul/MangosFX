@@ -65,7 +65,7 @@ bool ClusterSession::CheckState(Socket::Status st)
 		case 0 /*Socket::Done)*/:
 			return true;
 		case 1 /*Socket::NotReady*/:
-			error_log("Socket isn't ready !");
+			//error_log("Socket isn't ready !");
 			return false;
 	}
 	return true;
@@ -79,8 +79,6 @@ void ClusterSession::HandlePacket(Packet* pck)
 		//error_log("Packet size for Cluster is wrong...");
 		return;
 	}
-	
-	error_log("TEST5");
 
 	// Get opcode
 	uint16 opcode = 0;

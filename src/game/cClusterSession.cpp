@@ -29,10 +29,10 @@ void cClusterSession::Update()
 		cPacketOpcodeHandler opHandle = cPckOpH[packet->GetOpcode()];
 		try
 		{
-			if((m_type & opHandle.cType) || packet->GetOpcode() == C_SMSG_CLUSTER_TYPE)
+			//if((m_type & opHandle.cType) || packet->GetOpcode() == C_SMSG_CLUSTER_TYPE)
 				(this->*opHandle.handler)(*packet);
-			else
-				error_log("One cluster tries to get non owned packet...");
+			/*else
+				error_log("One cluster tries to get non owned packet...");*/
 		}
 		catch(ByteBufferException &)
         {
