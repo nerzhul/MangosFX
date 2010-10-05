@@ -162,7 +162,7 @@ void ClusterSession::Handle_ClusterPing(WorldPacket &pck)
 	uint8 ping;
 	pck >> ping;
 	Packet packet;
-	packet << uint8(C_SMSG_PING_RESP);
+	packet << uint16(C_SMSG_PING_RESP);
 	packet << uint8(ping);
 	SendPacket(&packet);
 }
