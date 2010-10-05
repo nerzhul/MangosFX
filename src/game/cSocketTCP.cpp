@@ -33,6 +33,9 @@ void cSocketTCP::Connect()
 		isConnected = false;
 		return;
 	}
+	m_sock->SetBlocking(false);
+	if(m_session)
+		m_session->SendPing();
 	isConnected = true;
 }
 
@@ -59,10 +62,6 @@ void cSocketTCP::Close()
 
 void cSocketTCP::run()
 {
-	if(m_session)
-		m_session->SendPing();
-
-	//m_sock->SetBlocking(false);
 	while(!World::IsStopped())
 	{
 		if(!isConnected)

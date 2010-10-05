@@ -36,12 +36,7 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	SendClusterIdentity();
-	SendPing();
-	SendPing();
-	SendPing();
-	SendPing();
-	SendPing();
+	//SendClusterIdentity();
 	while(!mustStop)
 	{
 		Packet pkt;
