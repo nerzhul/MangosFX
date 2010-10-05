@@ -1,3 +1,4 @@
+#include <util.h>
 #include "cClusterSession.h"
 #include "cSocketTCP.h"
 #include "cPacketOpcodes.h"
