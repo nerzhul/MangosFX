@@ -344,11 +344,24 @@ int Master::Run()
         // go down and shutdown the server
     }
 
-	cSocketTCP* cS_TCP = new cSocketTCP();
+	/*cSocketTCP* cS_TCP = new cSocketTCP();
 	cS_TCP->InitConnect(sConfig.GetStringDefault("LootClusterAddr","localhost"),sConfig.GetIntDefault("LootClusterPort",3695));
 	cS_TCP->Connect();
 	ACE_Based::Thread test_TCP(cS_TCP);
-	test_TCP.setPriority(ACE_Based::Highest);
+	test_TCP.setPriority(ACE_Based::Highest);*/
+
+	cRPCCommandHandler* rpc_h = new cRPCCommandHandler(C_LOOT);
+	Packet ask;
+	ask << uint16(0x01) << uint8(5);
+	Packet* resp_h = rpc_h->getResponse(&ask);
+	uint16 opcode = 0;
+	uint8 _data = 0;
+	if(resp_h)
+	{
+		error_log("Size %u",resp_h->GetDataSize());
+		*resp_h >> opcode >> _data;
+	}
+	error_log("resp_h opcode %u %u",opcode,_data);
 
     sWorldSocketMgr->Wait();
 

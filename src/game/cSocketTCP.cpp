@@ -1,4 +1,5 @@
 #include <Policies/SingletonImp.h>
+#include <Config/Config.h>
 #include "World.h"
 #include "WorldPacket.h"
 #include "cSocketTCP.h"
@@ -139,4 +140,65 @@ void cSocketTCP::HandlePacket(Packet* pck)
 	WorldPacket* pkt = new WorldPacket(packet);
 	if(m_session)
 		m_session->QueuePacket(pkt);
+}
+
+cRPCCommandHandler::cRPCCommandHandler(ClusterType _type)
+{
+	m_sock = new SocketTCP();
+	switch(_type)
+	{
+		case C_LOOT:
+			m_addr = sConfig.GetStringDefault("LootClusterAddr","localhost");
+			m_port = sConfig.GetIntDefault("LootClusterPort",3695);
+			break;
+		default:
+			break;
+	}
+}
+
+cRPCCommandHandler::~cRPCCommandHandler()
+{
+	if(m_sock)
+	{
+		m_sock->Close();
+		delete m_sock;
+		m_sock = NULL;
+	}
+}
+
+Packet* cRPCCommandHandler::getResponse(const Packet* pck)
+{
+	Packet resp;
+
+	if(!m_sock)
+	{
+		error_log("Socket error for Cluster %s:%u",m_addr,m_port);
+		return NULL;
+	}
+
+	if(m_sock->Connect(m_port,m_addr) != 0)
+	{
+		error_log("Connect to Cluster %s:%u failed for RPC",m_addr,m_port);
+		return NULL;
+	}
+	
+	m_sock->SetBlocking(true);
+
+	if(m_sock->Send((Packet&)*pck) != 0)
+	{
+		error_log("Sending Packet to Cluster %s:%u failed for RPC",m_addr,m_port);
+		return NULL;
+	}
+
+	if(m_sock->Receive(resp) != 0)
+	{
+		error_log("Receiving Packet forum Cluster %s:%u fail on RPC",m_addr,m_port);
+		return NULL;
+	}
+
+	Packet* resp_ = new Packet();
+	for(uint32 i=0;i<pck->GetDataSize();i++)
+		*resp_ << uint8(resp.GetData()[i]);
+	m_sock->Close();
+	return resp_;
 }

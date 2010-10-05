@@ -31,4 +31,17 @@ class cSocketTCP: public ACE_Based::Runnable
 		SocketTCP* m_sock;
 		cClusterSession* m_session;
 };
+
+class cRPCCommandHandler
+{
+	public:
+		cRPCCommandHandler(ClusterType _type);
+		~cRPCCommandHandler();
+		Packet* getResponse(const Packet* pck);
+	private:
+		SocketTCP* m_sock;
+		std::string m_addr;
+		uint16 m_port;
+};
+
 #endif
