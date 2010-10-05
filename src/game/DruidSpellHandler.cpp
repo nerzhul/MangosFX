@@ -48,7 +48,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
             ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
     }
 	
-	if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && m_caster->HasAura(54815))
+	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && spell->GetCaster()->HasAura(54815))
 	{
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
