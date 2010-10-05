@@ -1,4 +1,3 @@
-#include "util.h"
 #include "cClusterSession.h"
 #include "cSocketTCP.h"
 #include "cPacketOpcodes.h"
@@ -88,6 +87,6 @@ void cClusterSession::Handle_SetClusterType(WorldPacket &pck)
 void cClusterSession::SendPing()
 {
 	Packet pkt;
-	pkt << Uint16(C_CMSG_PING) << Uint8(urand(0,10));
+	pkt << Uint16(C_CMSG_PING) << Uint8(0x5);
 	SendPacket(&pkt);
 }
