@@ -8,12 +8,17 @@ enum BossSpells
     SPELL_TEAR_GAS                = 71617, // to switch phase
     SPELL_TEAR_GAS_1              = 71618, // triggered, remove if not needed
     SPELL_CREATE_CONCOCTION       = 71621,
-    SPELL_CHOKING_GAS             = 71278, // p2 p3, cast by bomb, not sure
-    SPELL_CHOKING_GAS_EXPLODE     = 71279, // p2 p3, casted after 20 sec by fioles
-    SPELL_MALLEABLE_GOO           = 72296, // p2 p3
+    SPELL_MALLEABLE_GOO           = 72296, // p2 p3 ok
     SPELL_GUZZLE_POTIONS          = 73122, // p3 proc MUTATED_STR on cast
     SPELL_MUTATED_STRENGTH        = 71603, // p3
     SPELL_MUTATED_PLAGUE          = 72672, // p3
+
+// p2 p3
+	NPC_CHOKING_GAS				  = 38159,
+	SPELL_SUMMON_CHOKING_GAS	  = 71273, // ok
+    SPELL_CHOKING_GAS             = 71259, // cast by bomb, not sure
+    SPELL_CHOKING_GAS_EXPLODE     = 71280, // ok
+
 // p1 p2 exp 2
     NPC_GAS_CLOUD                 = 37562,
     SPELL_GASEOUS_BLOAT           = 70672, // verify stack decrease
@@ -43,7 +48,8 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
     boss_putricideAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEvent(
+		AddEventOnCaster(SPELL_MALLEABLE_GOO,20000,20000,0,PHASE_80);
+		AddEventOnCaster(SPELL_MALLEABLE_GOO,20000,20000,0,PHASE_35);
     }
 
 	Phases phase;
@@ -128,6 +134,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 		}
 
 		UpdateEvent(diff);
+		UpdateEvent(diff,phase);
 		DoMeleeAttackIfReady();
     }
 };
@@ -237,6 +244,36 @@ CreatureAI* GetAI_gas_cloud(Creature* pCreature)
     return new gas_cloudAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL choking_gasAI : public LibDevFSAI
+{
+    choking_gasAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+		me->ForcedDespawn(21000);
+		AddEventOnMe(SPELL_CHOKING_GAS_EXPLODE,10000,DAY*HOUR);
+		DoCastMe(SPELL_CHOKING_GAS,true);
+    }
+
+	uint32 explode_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		explode_Timer = 20000;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_choking_gas(Creature* pCreature)
+{
+    return new choking_gasAI(pCreature);
+}
+
 void AddSC_ICC_Putricide()
 {
 	Script* NewScript;
@@ -253,5 +290,10 @@ void AddSC_ICC_Putricide()
 	NewScript = new Script;
     NewScript->Name = "putricide_gas_cloud";
     NewScript->GetAI = &GetAI_gas_cloud;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "putricide_choking_gas";
+    NewScript->GetAI = &GetAI_choking_gas;
     NewScript->RegisterSelf();
 }
