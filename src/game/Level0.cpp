@@ -96,7 +96,7 @@ bool ChatHandler::HandleServerInfoCommand(const char* /*args*/)
 
     PSendSysMessage("MangosFX rev 1461 based on Mangos 9313 developped by Ner'zhul");
     PSendSysMessage(LANG_USING_SCRIPT_LIB,"LibDevFS rev 128, ICC 9.1");
-	PSendSysMessage("Cluster(s) : 1 (C_LOOTS-Beta)");
+	PSendSysMessage("Cluster(s) : 2 (C_LOOTS-Beta, C_BG-Beta)");
     PSendSysMessage(LANG_CONNECTED_USERS, activeClientsNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
     PSendSysMessage(LANG_UPTIME, str.c_str());
 

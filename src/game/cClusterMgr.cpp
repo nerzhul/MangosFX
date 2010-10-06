@@ -17,5 +17,5 @@ cSocketTCP* ClusterMgr::getCluster(ClusterType _type)
 	if(itr == m_clustermap.end())
 		return NULL;
 
-	return itr->first;
+	return itr->second;
 }

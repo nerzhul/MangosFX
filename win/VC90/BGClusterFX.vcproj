@@ -687,6 +687,10 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Battleground"
+			>
+		</Filter>
 		<File
 			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
 			>
