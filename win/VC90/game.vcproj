@@ -1852,6 +1852,14 @@
 			Name="ClusterSockets"
 			>
 			<File
+				RelativePath="..\..\src\game\cClusterMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\game\cClusterMgr.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\game\cClusterSession.cpp"
 				>
 			</File>

@@ -44,6 +44,7 @@
 #include <CORBAThread.h>
 #include <cSocketTCP.h>
 #include <cClusterSession.h>
+#include <cClusterMgr.h>
 #include <SFML/Network.hpp>
 
 #include "revision_sql.h"
@@ -346,11 +347,13 @@ int Master::Run()
 
 	cSocketTCP* cSLOOT_TCP = new cSocketTCP(C_LOOT);
 	cSLOOT_TCP->Connect();
+	sClusterMgr.RegisterCluster(cSLOOT_TCP,C_LOOT);
 	ACE_Based::Thread cluster_loot(cSLOOT_TCP);
 	cluster_loot.setPriority(ACE_Based::Highest);
 
 	cSocketTCP* cSBG_TCP = new cSocketTCP(C_BG);
 	cSBG_TCP->Connect();
+	sClusterMgr.RegisterCluster(cSBG_TCP,C_BG);
 	ACE_Based::Thread cluster_bg(cSBG_TCP);
 	cluster_bg.setPriority(ACE_Based::Highest);
 
