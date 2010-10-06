@@ -10,6 +10,8 @@ typedef std::map<ClusterType,cSocketTCP*> ClusterMap;
 class ClusterMgr
 {
 	public:
+		ClusterMgr() { m_clustermap.clear(); }
+		~ClusterMgr() {};
 		void RegisterCluster(cSocketTCP* sock, ClusterType _type);
 		cSocketTCP* getCluster(ClusterType _type);
 	private:
