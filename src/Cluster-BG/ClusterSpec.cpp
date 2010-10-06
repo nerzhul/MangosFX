@@ -65,12 +65,6 @@ void ClusterBG::SetInitialSettings()
 
 	// For other clusters, modify loaded tables there
 
-	sLog.outString( "Loading Loot Tables..." );
-    sLog.outString();
-    sClusterObjectMgr.LoadLoots();
-    sLog.outString( ">>> Loot Tables loaded" );
-    sLog.outString();
-
 	sLog.outString( "CLUSTER: ClusterBG initialized" );
 
 	uint32 uStartInterval = getMSTimeDiff(uStartTime, getMSTime());

@@ -49,7 +49,7 @@ int Cluster::Run()
     ACE_Based::Thread cluster_thread(new ClusterBG);
     cluster_thread.setPriority(ACE_Based::Highest);
 
-	ACE_Based::Thread sockListener_thread(new TCPListener(sConfig.GetIntDefault("LootClusterPort",3695)));
+	ACE_Based::Thread sockListener_thread(new TCPListener(sConfig.GetIntDefault("BGClusterPort",4238)));
 	sockListener_thread.setPriority(ACE_Based::Highest);
 
 	///- Handle affinity for multiple processors and process priority on Windows
@@ -69,7 +69,7 @@ int Cluster::Run()
 
                 if(!curAff )
                 {
-                    sLog.outError("Processors marked in UseProcessors bitmask (hex) %x not accessible for LootClusterFX. Accessible processors bitmask (hex): %x",Aff,appAff);
+                    sLog.outError("Processors marked in UseProcessors bitmask (hex) %x not accessible for BGClusterFX. Accessible processors bitmask (hex): %x",Aff,appAff);
                 }
                 else
                 {
@@ -88,9 +88,9 @@ int Cluster::Run()
         if(Prio)
         {
             if(SetPriorityClass(hProcess,HIGH_PRIORITY_CLASS))
-                sLog.outString("LootClusterFX process priority class set to HIGH");
+                sLog.outString("BGClusterFX process priority class set to HIGH");
             else
-                sLog.outError("ERROR: Can't set LootClusterFX process priority class.");
+                sLog.outError("ERROR: Can't set BGClusterFX process priority class.");
             sLog.outString();
         }
     }

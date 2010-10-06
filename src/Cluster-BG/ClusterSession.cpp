@@ -106,7 +106,7 @@ void ClusterSession::SendClusterIdentity()
 {
 	Packet pkt;
 	pkt << Uint16(C_SMSG_CLUSTER_TYPE);
-	pkt << Uint8(C_LOOT);
+	pkt << Uint8(C_BG);
 	SendPacket(&pkt);
 }
 

@@ -12,8 +12,8 @@
 
 #ifdef WIN32
 #include "ServiceWin32.h"
-char serviceName[] = "LootClusterFX";
-char serviceLongName[] = "MaNGOSFX loot service";
+char serviceName[] = "BGClusterFX";
+char serviceLongName[] = "MaNGOSFX BG service";
 char serviceDescription[] = "Massive Network Game Object Server";
 /*
  * -1 - not in service mode
@@ -133,7 +133,7 @@ extern int main(int argc, char **argv)
 	sLog.outTitle( " //         //     //   //     //     //  //     //    //   //     //   //   " );
 	sLog.outTitle( "//     ////// //////   ////// ////// ////// //////    //   ////// //   //    " );
 	sLog.outTitle( "-----------------------------------------------------------------------------" );
-	sLog.outTitle( "Frost Sapphire Studios Loot Cluster");
+	sLog.outTitle( "Frost Sapphire Studios BG Cluster");
     sLog.outString("Using configuration file %s.", cfg_file);
 
     sLog.outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
@@ -154,5 +154,5 @@ extern int main(int argc, char **argv)
     // at sMaster return function exist with codes
     // 0 - normal shutdown
     // 1 - shutdown at error
-    // 2 - restart command used, this code can be used by restarter for restart LootClusterFX
+    // 2 - restart command used, this code can be used by restarter for restart BGootClusterFX
 }

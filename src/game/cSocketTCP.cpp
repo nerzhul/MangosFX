@@ -6,9 +6,32 @@
 #include "cPacketOpcodes.h"
 #include "cClusterSession.h"
 
-cSocketTCP::cSocketTCP() : isConnected(false), m_session(NULL)
+cSocketTCP::cSocketTCP(ClusterType _type)
 {
 	m_sock = new SocketTCP();
+	switch(_type)
+	{
+		case C_LOOT:
+			m_address = "localhost";
+			m_port = 3695;
+			break;
+		case C_BG:
+			m_address = "localhost;
+			m_port = 4238;
+			break;
+		default:
+			m_address = "localhost";
+			m_port = 3695;
+			break;
+	}
+	m_session = new cClusterSession(this);
+}
+cSocketTCP::cSocketTCP(std::string addr, uint16 port) : isConnected(false), m_session(NULL)
+{
+	m_sock = new SocketTCP();
+	m_address = addr;
+	m_port = port;
+	m_session = new cClusterSession(this);
 }
 
 cSocketTCP::~cSocketTCP()
@@ -17,13 +40,6 @@ cSocketTCP::~cSocketTCP()
 	m_sock = NULL;
 	delete m_session;
 	m_session = NULL;
-}
-
-void cSocketTCP::InitConnect(std::string addr, uint16 port)
-{
-	m_address = addr;
-	m_port = port;
-	m_session = new cClusterSession(this);
 }
 
 void cSocketTCP::Connect()

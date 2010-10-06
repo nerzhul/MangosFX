@@ -11,9 +11,9 @@ class cClusterSession;
 class cSocketTCP: public ACE_Based::Runnable
 {
 	public:
-		cSocketTCP();
+		cSocketTCP(ClusterType _type);
+		cSocketTCP(std::string addr, uint16 port);
 		~cSocketTCP();
-		void InitConnect(std::string addr, uint16 port);
 		void Connect();
 		void Close();
 		void SendPacket(const Packet* pkt);

@@ -20,8 +20,8 @@
 AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(top_builddir)/src/shared -I$(srcdir)/../../dep/include -I$(srcdir)/../../dep/SFML/include -I$(srcdir)/../framework -I$(srcdir)/../shared  -I$(srcdir)/../game -I$(srcdir) -DSYSCONFDIR=\"$(sysconfdir)/\"
 
 ## Build world daemon as standalone program
-bin_PROGRAMS = mangosFX-LootCluster
-mangosFX_LootCluster_SOURCES = \
+bin_PROGRAMS = mangosFX-BGCluster
+mangosFX_BGCluster_SOURCES = \
 	CliCommand.cpp \
 	Cluster.cpp \
 	Cluster.h \
@@ -37,7 +37,7 @@ mangosFX_LootCluster_SOURCES = \
 	ClusterSession.h
 
 ## Link world daemon against the shared library
-mangosFX_LootCluster_LDADD = \
+mangosFX_BGCluster_LDADD = \
 	../game/libmangosgame.a \
 	../shared/Database/libmangosdatabase.a \
 	../shared/Config/libmangosconfig.a \
@@ -48,7 +48,7 @@ mangosFX_LootCluster_LDADD = \
 	../../dep/recastnavigation/Detour/libdetour.a \
 	../framework/libmangosframework.a 
 
-mangosFX_LootCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -lsfml-network -export-dynamic
+mangosFX_BGCluster_LDFLAGS = -L$(libdir) $(MANGOS_LIBS) -lsfml-network -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
