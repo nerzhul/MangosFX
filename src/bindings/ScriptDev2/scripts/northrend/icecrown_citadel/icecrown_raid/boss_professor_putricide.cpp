@@ -3,20 +3,19 @@
 
 enum BossSpells
 {
-    SPELL_SLIME_PUDDLE            = 70346,
+    SPELL_SLIME_PUDDLE            = 70343,
     SPELL_UNSTABLE_EXPERIMENT     = 71968, // p1 p2 choose experience
     SPELL_TEAR_GAS                = 71617, // to switch phase
     SPELL_TEAR_GAS_1              = 71618, // triggered, remove if not needed
-    SPELL_CREATE_CONCOCTION       = 71621,
-    SPELL_MALLEABLE_GOO           = 72296, // p2 p3 ok
-    SPELL_GUZZLE_POTIONS          = 73122, // p3 proc MUTATED_STR on cast
-    SPELL_MUTATED_STRENGTH        = 71603, // p3
-    SPELL_MUTATED_PLAGUE          = 72672, // p3
+    SPELL_CREATE_CONCOCTION       = 71621, // ok
+    SPELL_MALLEABLE_GOO           = 72296, // ok, to test
+    SPELL_GUZZLE_POTIONS          = 73122, // ok, to test
+    SPELL_MUTATED_PLAGUE          = 72672, // ok, to test
 
 // p2 p3
-	NPC_CHOKING_GAS				  = 38159,
+	NPC_CHOKING_GAS				  = 38159, // ok
 	SPELL_SUMMON_CHOKING_GAS	  = 71273, // ok
-    SPELL_CHOKING_GAS             = 71259, // cast by bomb, not sure
+    SPELL_CHOKING_GAS             = 71259, // ok
     SPELL_CHOKING_GAS_EXPLODE     = 71280, // ok
 
 // p1 p2 exp 2
@@ -49,17 +48,23 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
     {
         InitInstance();
 		AddEventOnCaster(SPELL_MALLEABLE_GOO,20000,20000,0,PHASE_80);
+		AddEventOnCaster(SPELL_MALLEABLE_GOO,21000,20000,0,PHASE_80);
 		AddEventOnCaster(SPELL_MALLEABLE_GOO,20000,20000,0,PHASE_35);
+		AddEventOnCaster(SPELL_MALLEABLE_GOO,21000,20000,0,PHASE_35);
     }
 
 	Phases phase;
 	bool experience;
+	uint32 summonChoking_Timer;
+	uint32 mutatedPlague_Timer;
 
     void Reset()
     {
 		ResetTimers();
 		experience = false;
 		phase = PHASE_INIT;
+		summonChoking_Timer = 30000;
+		mutatedPlague_Timer = 20000;
     }
 
     void Aggro(Unit* pWho)
@@ -69,6 +74,27 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 
 	void KilledUnit(Unit* who)
 	{
+	}
+
+	void DamageDeal(Unit* pWho, uint32 &dmg)
+	{
+		if(dmg >= pWho->GetHealth() && pWho->HasAura(SPELL_MUTATED_PLAGUE))
+		{
+			me->CastStop();
+			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL ||
+					m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC)
+			{
+				if(Aura* aur = pWho->GetAura(SPELL_MUTATED_PLAGUE))
+					for(uint8 i=0;i<aur->GetStackAmount();i++)
+						DoCastMe(72748,true); // heal
+			}
+			else
+			{
+				if(Aura* aur = pWho->GetAura(SPELL_MUTATED_PLAGUE))
+					for(uint8 i=0;i<aur->GetStackAmount();i++)
+						DoCastMe(72747,true);
+			}
+		}
 	}
 
 	void SpellHit(Unit* pWho, const SpellEntry* spell)
@@ -124,13 +150,45 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 		if(CheckPercentLife(80) && phase == PHASE_INIT)
 		{
 			StunAndGo();
+			phase = PHASE_80;
+			me->CastStop();
+			DoCastMe(SPELL_CREATE_CONCOCTION);
 			return;
 		}
 
 		if(CheckPercentLife(35) && phase == PHASE_80)
 		{
 			StunAndGo();
+			phase = PHASE_35;
+			me->CastStop();
+			DoCastMe(SPELL_GUZZLE_POTIONS,true);
+			ModifyAuraStack(SPELL_MUTATED_PLAGUE,1,me->getVictim());
 			return;
+		}
+
+		if(phase == PHASE_80 || phase == PHASE_35)
+		{
+			if(summonChoking_Timer <= diff)
+			{
+				CallCreature(NPC_CHOKING_GAS,23000,ON_ME,NOTHING);
+				if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL ||
+					m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC)
+					CallCreature(NPC_CHOKING_GAS,23000,ON_ME,NOTHING);
+				summonChoking_Timer = 60000;
+			}
+			else
+				summonChoking_Timer -= diff;
+		}
+
+		if(phase == PHASE_35)
+		{
+			if(mutatedPlague_Timer <= diff)
+			{
+				ModifyAuraStack(SPELL_MUTATED_PLAGUE,1,me->getVictim());
+				mutatedPlague_Timer = 35000;
+			}
+			else
+				mutatedPlague_Timer -= diff;
 		}
 
 		UpdateEvent(diff);
@@ -250,17 +308,14 @@ struct MANGOS_DLL_DECL choking_gasAI : public LibDevFSAI
     {
         InitInstance();
 		MakeHostileInvisibleStalker();
-		me->ForcedDespawn(21000);
+		SetCombatMovement(false);
 		AddEventOnMe(SPELL_CHOKING_GAS_EXPLODE,10000,DAY*HOUR);
 		DoCastMe(SPELL_CHOKING_GAS,true);
     }
 
-	uint32 explode_Timer;
-
     void Reset()
     {
 		ResetTimers();
-		explode_Timer = 20000;
     }
 
     void UpdateAI(const uint32 diff)
