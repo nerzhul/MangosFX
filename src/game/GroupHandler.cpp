@@ -906,6 +906,10 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
     _player->SendRaidInfo();
 }
 
+void WorldSession::HandleLockWarningResponse(WorldPacket &recv_data)
+{
+	recv_data.hexlike();
+}
 /*void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 {
     sLog.outDebug( "WORLD: got CMSG_GROUP_CANCEL." );

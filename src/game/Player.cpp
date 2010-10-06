@@ -314,6 +314,8 @@ UpdateMask Player::updateVisualBits;
 
 Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputationMgr(this)
 {
+	m_timed_bind = 0;
+	bindTimer = false;
     m_transport = 0;
 
     m_speakTime = 0;
@@ -1128,6 +1130,23 @@ void Player::Update( uint32 p_time )
 {
     if(!IsInWorld())
         return;
+
+	if(bindTimer)
+	{
+		if(m_timed_bind <= p_time)
+		{
+			if(GetMap())
+			{
+				InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(GetMap()->GetInstanceId());
+				if(mapSave)
+					BindToInstance(mapSave,true);
+			}
+			bindTimer = false;
+			m_timed_bind = 0;
+		}
+		else
+			m_timed_bind -= p_time;
+	}
 
     // undelivered mail
     if(m_nextMailDelivereTime && m_nextMailDelivereTime <= time(NULL))

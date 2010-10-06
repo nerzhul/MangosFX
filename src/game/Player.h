@@ -2277,7 +2277,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void RegisterCalendarEvent(uint64 eventId) { m_calendarEvents.insert(eventId); }
 		cEventSet GetCalendarEvents() { return m_calendarEvents; }
 		bool RemoveCalendarEvent(uint64 eventId);
-
+		void SetTimedBind(uint32 time) { m_timed_bind = time; }
+		void SetInBinding(bool bind) { bindTimer = bind; }
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2590,6 +2591,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool daily_random_BG_done;
 
 		cEventSet m_calendarEvents;
+
+		uint32 m_timed_bind;
+		bool bindTimer;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

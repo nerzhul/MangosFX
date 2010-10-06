@@ -2502,13 +2502,7 @@ bool InstanceMap::Add(Player *player)
                     // bind to the group or keep using the group save
                     if(!groupBind)
 					{
-						WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
-						pck << uint32(60000);
-						pck << uint32(256);
-						pck << uint8(1);
-						player->GetSession()->SendPacket(&pck);
-						// old
-						//pGroup->BindToInstance(mapSave, false);
+						pGroup->BindToInstance(mapSave, false);
 					}
 					else
                     {
@@ -2532,14 +2526,34 @@ bool InstanceMap::Add(Player *player)
                         // if the group/leader is permanently bound to the instance
                         // players also become permanently bound when they enter
                         if(groupBind->perm)
-                            player->BindToInstance(mapSave, true);
+						{
+							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
+							pck << uint32(60000);
+							pck << uint32(256);
+							pck << uint8(1);
+							player->GetSession()->SendPacket(&pck);
+							player->SetTimedBind(60000);
+							player->SetInBinding(true);
+							// old
+                            //player->BindToInstance(mapSave, true);
+						}
                     }
                 }
                 else
                 {
                     // set up a solo bind or continue using it
                     if(!playerBind)
-                        player->BindToInstance(mapSave, false);
+					{
+						WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
+						pck << uint32(60000);
+						pck << uint32(256);
+						pck << uint8(1);
+						player->GetSession()->SendPacket(&pck);
+						player->SetTimedBind(60000);
+						player->SetInBinding(true);
+                        // old 
+						//player->BindToInstance(mapSave, false);
+					}
                     else
 					{
                         // cannot jump to a different instance without resetting it
