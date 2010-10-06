@@ -2,7 +2,7 @@
 #define _COBJECTMGR_H
 
 #include <Common.h>
-/*
+
 class cObjectMgr
 {
 	public:
@@ -12,6 +12,6 @@ class cObjectMgr
 		uint64 m_bgId;
 };
 
-#define sClusterObjectMgr MaNGOS::Singleton<cObjectMgr>::Instance()*/
+#define sClusterObjectMgr MaNGOS::Singleton<cObjectMgr>::Instance()
 
 #endif

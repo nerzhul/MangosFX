@@ -7,7 +7,7 @@
 class cBattleGround
 {
 	public:
-		cBattleGround() {}
+		cBattleGround();
 		~cBattleGround() {}
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);
@@ -15,7 +15,11 @@ class cBattleGround
 		typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }
+
+		void setId(uint64 id) { m_Id = id; }
+		uint64 getId() { return m_Id; }
 	protected:
+		uint64 m_Id;
 		/* Player lists, those need to be accessible by inherited classes */
         BattleGroundPlayerMap  m_Players;
 };

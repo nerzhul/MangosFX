@@ -212,3 +212,8 @@ void cBattleGround::SendWarningToAll(std::string msg)
             if (plr->GetSession())
                 plr->GetSession()->SendPacket(&data);
 }
+
+cBattleGround::cBattleGround(): m_Id(0)
+{
+	m_Players.clear();
+}

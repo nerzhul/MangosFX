@@ -638,6 +638,14 @@
 		<Filter
 			Name="Replicat"
 			>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cObjectMgr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cObjectMgr.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="ClusterSpec"
@@ -663,11 +671,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\Cluster-BG\cObjectMgr.cpp"
+				RelativePath="..\..\src\Cluster-BG\TCPListener.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\Cluster-BG\cObjectMgr.h"
+				RelativePath="..\..\src\Cluster-BG\TCPListener.h"
 				>
 			</File>
 		</Filter>
@@ -701,6 +709,14 @@
 		</Filter>
 		<File
 			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\Cluster-BG\Cluster.cpp"
+			>
+		</File>
+		<File
+			RelativePath="..\..\src\Cluster-BG\Cluster.h"
 			>
 		</File>
 		<File

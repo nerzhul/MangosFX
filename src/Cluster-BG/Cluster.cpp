@@ -42,7 +42,7 @@ int Cluster::Run()
 
     ///- Initialize the World
     sClusterBG.SetInitialSettings();
-	//sClusterObjectMgr.Initialize();
+	sClusterObjectMgr.Initialize();
 
     ///- Catch termination signals
     _HookSignals();
