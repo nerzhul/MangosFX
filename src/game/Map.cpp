@@ -2534,6 +2534,7 @@ bool InstanceMap::Add(Player *player)
 							player->GetSession()->SendPacket(&pck);
 							player->SetTimedBind(60000);
 							player->SetInBinding(true);
+							player->SetBindingState(true);
 							// old
                             //player->BindToInstance(mapSave, true);
 						}
@@ -2551,6 +2552,7 @@ bool InstanceMap::Add(Player *player)
 						player->GetSession()->SendPacket(&pck);
 						player->SetTimedBind(60000);
 						player->SetInBinding(true);
+						player->SetBindingState(false);
                         // old 
 						//player->BindToInstance(mapSave, false);
 					}

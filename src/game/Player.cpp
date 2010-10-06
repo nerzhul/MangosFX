@@ -316,6 +316,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 {
 	m_timed_bind = 0;
 	bindTimer = false;
+	bindingState = false;
+
     m_transport = 0;
 
     m_speakTime = 0;
@@ -1137,7 +1139,7 @@ void Player::Update( uint32 p_time )
 		{
 			if(GetMap())
 				if(InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(GetMap()->GetInstanceId()))
-					BindToInstance(mapSave,true);
+					BindToInstance(mapSave,bindingState);
 			bindTimer = false;
 			m_timed_bind = 0;
 		}

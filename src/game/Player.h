@@ -2279,6 +2279,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool RemoveCalendarEvent(uint64 eventId);
 		void SetTimedBind(uint32 time) { m_timed_bind = time; }
 		void SetInBinding(bool bind) { bindTimer = bind; }
+		void SetBindingState(bool bind) { bindingState = bind; }
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2594,6 +2595,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
 		uint32 m_timed_bind;
 		bool bindTimer;
+		bool bindingState;
 };
 
 void AddItemsSetItem(Player*player,Item *item);
