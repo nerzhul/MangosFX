@@ -580,7 +580,7 @@ class BattleGround
 		void RewardAchievementToPlayer(Player* plr, uint32 entry);
 		void RewardAchievementToTeam(uint32 team, uint32 entry);
 
-		void UpdatemPlayers();
+		//void UpdatemPlayers();
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
