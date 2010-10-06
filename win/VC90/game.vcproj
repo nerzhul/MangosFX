@@ -1849,7 +1849,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ClusterSockets"
+			Name="Cluster"
 			>
 			<File
 				RelativePath="..\..\src\game\cClusterMgr.cpp"
@@ -1871,26 +1871,38 @@
 				RelativePath="..\..\src\game\cIncludes.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\game\cPacketOpcodes.h"
+			<Filter
+				Name="Sockets"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.cpp"
+				<File
+					RelativePath="..\..\src\game\cPacketOpcodes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketTCP.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketTCP.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketUDP.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketUDP.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Handlers"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.h"
-				>
-			</File>
+				<File
+					RelativePath="..\..\src\game\BattleGroundCHandler.cpp"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

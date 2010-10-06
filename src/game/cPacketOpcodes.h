@@ -19,6 +19,7 @@ enum cPckOpcodes
 	C_SMSG_GET_LOOTS,
 	C_SMSG_RETRANSMIT_PACKET,
 	C_SMSG_RETRANSMIT_PACKET_ON_LIST,
+	C_CMSG_BG_M_PLAYERS_MOD, // uint64(guid) uint64(time) uint32(team)
 
 	MAX_C_OPCODES,
 };
@@ -43,6 +44,7 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_GET_LOOTS",					C_LOOT,&cClusterSession::Handle_Null},
 	{"C_SMSG_RETRANSMIT_PACKET",			C_ALL,&cClusterSession::Handle_Null},
 	{"C_SMSG_RETRANSMIT_PACKET_ON_LIST",	C_ALL,&cClusterSession::Handle_Null},
+	{"C_CMSG_BG_M_PLAYERS_MOD",				C_ALL,&cClusterSession::Handle_Null},
 };
 
 #endif

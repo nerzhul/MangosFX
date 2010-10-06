@@ -639,14 +639,6 @@
 			Name="Replicat"
 			>
 			<File
-				RelativePath="..\..\src\Cluster-BG\cBattleGround.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\Cluster-BG\cBattleGround.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\Cluster-BG\cObjectMgr.cpp"
 				>
 			</File>
@@ -698,6 +690,14 @@
 		<Filter
 			Name="Battleground"
 			>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGround.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGround.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
