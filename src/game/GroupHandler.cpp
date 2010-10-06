@@ -909,6 +909,7 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
 void WorldSession::HandleLockWarningResponse(WorldPacket &recv_data)
 {
 	recv_data.hexlike();
+	error_log("%u",recv_data.size());
 }
 /*void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 {
