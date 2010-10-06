@@ -2296,6 +2296,10 @@
 						Name="icecrown_raid"
 						>
 						<File
+							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_raid\boss_cannoneer_battle.cpp"
+							>
+						</File>
+						<File
 							RelativePath="..\scripts\northrend\icecrown_citadel\icecrown_raid\boss_deathbringer_saurfang.cpp"
 							>
 						</File>
