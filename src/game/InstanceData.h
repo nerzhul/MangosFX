@@ -27,6 +27,7 @@ class Player;
 class GameObject;
 class Creature;
 
+#define DATA_NB_BOSS_DOWN 65536
 class MANGOS_DLL_SPEC InstanceData
 {
     public:

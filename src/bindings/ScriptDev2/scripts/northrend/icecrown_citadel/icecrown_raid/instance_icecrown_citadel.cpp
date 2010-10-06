@@ -679,6 +679,33 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
                 return m_auiEncounter[TYPE_LICHKING];
 			case DATA_DREAMWALKER_GUARD:
 				return m_uiDreamwalkerGuardDone;
+			case DATA_NB_BOSS_DOWN:
+				uint32 down = 0;
+				if(m_auiEncounter[TYPE_MARROWGAR] == DONE)
+					down+=1;
+				if(m_auiEncounter[TYPE_DEATHWHISPER] == DONE)
+					down+=2;
+				if(m_auiEncounter[TYPE_BATTLE_OF_CANNONS] == DONE)
+					down+=4;
+				if(m_auiEncounter[TYPE_SAURFANG] == DONE)
+					down+=8;
+				if(m_auiEncounter[TYPE_FESTERGUT] == DONE)
+					down+=16;
+				if(m_auiEncounter[TYPE_ROTFACE] == DONE)
+					down+=32;
+				if(m_auiEncounter[TYPE_PUTRICIDE] == DONE)
+					down+=64;
+				if(m_auiEncounter[TYPE_PRINCE_COUNCIL] == DONE)
+					down+=128;
+				if(m_auiEncounter[TYPE_LANATHEL] == DONE)
+					down+=256;
+				if(m_auiEncounter[TYPE_DREAMWALKER] == DONE)
+					down+=512;
+				if(m_auiEncounter[TYPE_SINDRAGOSA] == DONE)
+					down+=1024;
+				if(m_auiEncounter[TYPE_LICHKING] == DONE)
+					down+=2048;
+				return down;
         }
         return 0;
     }

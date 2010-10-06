@@ -327,6 +327,19 @@ struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
 			case TYPE_ANUBARAK:
 			case TYPE_TRY:
 				return m_auiEncounter[uiType];
+			case DATA_NB_BOSS_DOWN:
+				uint32 down = 0;
+				if(m_auiEncounter[TYPE_EVENT_BEAST] == DONE)
+					down+=1;
+				if(m_auiEncounter[TYPE_JARAXXUS] == DONE)
+					down+=2;
+				if(m_auiEncounter[TYPE_CHAMPIONS] == DONE)
+					down+=4;
+				if(m_auiEncounter[TYPE_VALKYRS] == DONE)
+					down+=8;
+				if(m_auiEncounter[TYPE_ANUBARAK] == DONE)
+					down+=16;
+				return down;
         }
         return 0;
     }

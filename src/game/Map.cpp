@@ -2478,7 +2478,7 @@ bool InstanceMap::Add(Player *player)
                     sLog.outError("InstanceMap::Add: player %s(%d) is permanently bound to instance %d,%d,%d,%d,%d,%d but he is being put in instance %d,%d,%d,%d,%d,%d", player->GetName(), player->GetGUIDLow(), playerBind->save->GetMapId(), playerBind->save->GetInstanceId(), playerBind->save->GetDifficulty(), playerBind->save->GetPlayerCount(), playerBind->save->GetGroupCount(), playerBind->save->CanReset(), mapSave->GetMapId(), mapSave->GetInstanceId(), mapSave->GetDifficulty(), mapSave->GetPlayerCount(), mapSave->GetGroupCount(), mapSave->CanReset());
 					if (WorldSafeLocsEntry const *ClosestGrave = sObjectMgr.GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam() ))
 						player->RepopAtGraveyard();
-					else 
+					else
 						player->RelocateToHomebind();
                 }
             }
@@ -2531,8 +2531,11 @@ bool InstanceMap::Add(Player *player)
 							{
 								WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
 								pck << uint32(60000);
-								pck << uint32(256);
-								pck << uint8(1);
+								if(i_data)
+									pck << uint32(i_data->GetData(DATA_NB_BOSS_DOWN));
+								else
+									pck << uint32(0);
+								pck << uint8(0);
 								player->GetSession()->SendPacket(&pck);
 								player->SetTimedBind(60000);
 								player->SetInBinding(true);
@@ -2548,19 +2551,7 @@ bool InstanceMap::Add(Player *player)
                     // set up a solo bind or continue using it
                     if(!playerBind)
 					{
-						if(!player->isGameMaster())
-						{
-							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
-							pck << uint32(60000);
-							pck << uint32(256);
-							pck << uint8(1);
-							player->GetSession()->SendPacket(&pck);
-							player->SetTimedBind(60000);
-							player->SetInBinding(true);
-							player->SetBindingState(false);
-						}
-                        // old 
-						//player->BindToInstance(mapSave, false);
+						player->BindToInstance(mapSave, false);
 					}
                     else
 					{
