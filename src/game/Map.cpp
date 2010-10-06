@@ -2525,7 +2525,7 @@ bool InstanceMap::Add(Player *player)
                         }
                         // if the group/leader is permanently bound to the instance
                         // players also become permanently bound when they enter
-                        if(groupBind->perm)
+                        if(groupBind->perm && !player->isGameMaster())
 						{
 							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
 							pck << uint32(60000);
@@ -2542,7 +2542,7 @@ bool InstanceMap::Add(Player *player)
                 else
                 {
                     // set up a solo bind or continue using it
-                    if(!playerBind)
+                    if(!playerBind && !player->isGameMaster())
 					{
 						WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
 						pck << uint32(60000);
