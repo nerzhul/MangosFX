@@ -34,7 +34,9 @@ mangosFX_BGCluster_SOURCES = \
 	TCPListener.h \
 	Main.cpp \
 	ClusterSession.cpp \
-	ClusterSession.h
+	ClusterSession.h \
+	cBattleGround.cpp \
+	cBattleGround.h
 
 ## Link world daemon against the shared library
 mangosFX_BGCluster_LDADD = \

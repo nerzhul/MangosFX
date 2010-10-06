@@ -23,6 +23,9 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_Unhandled(WorldPacket& pck) { error_log("Unhandled Packet opcode 0x%x recvd",pck.GetOpcode()); }
 
 		void Handle_ClusterPing(WorldPacket &pck);
+
+		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
+		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);
 	protected:
 		void run();
 	private:

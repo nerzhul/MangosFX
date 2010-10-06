@@ -85,6 +85,60 @@ void cClusterSession::Handle_SetClusterType(WorldPacket &pck)
 	m_type = ClusterType(type);
 }
 
+void cClusterSession::Handle_RetransmitPacket(WorldPacket &pck)
+{
+	uint64 plGUID;
+	uint16 datasize;
+
+	pck >> plGUID;
+	pck >> datasize;
+
+	Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(plGUID, 0, HIGHGUID_PLAYER));
+	if(!plr)
+		return;
+	uint16 opcode;
+	pck >> opcode;
+	
+	WorldPacket data(opcode,300);
+	for(uint16 i=0;i<datasize;i++)
+	{
+		uint8 tmp;
+		pck >> tmp;
+		data << uint8(tmp);
+	}
+	// test data
+	plr->GetSession()->SendPacket(&data);
+}
+
+void cClusterSession::Handle_RetransmitPacketOnList(WorldPacket &pck)
+{
+	uint16 datasize;
+	pck >> datasize;
+
+	uint16 opcode;
+	pck >> opcode;
+	
+	WorldPacket data(opcode,datasize+1);
+	for(uint16 j=0;j<datasize;j++)
+	{
+		uint8 tmp;
+		pck >> uint8(tmp);
+		data << uint8(tmp);
+	}
+
+	uint16 nbpl = 0;
+	pck >> nbpl;
+	for(uint16 i=0;i<nbpl;i++)
+	{
+		uint64 plGUID;
+		pck >> plGUID;
+		Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(plGUID, 0, HIGHGUID_PLAYER));
+		if(!plr)
+			continue;
+		plr->GetSession()->SendPacket(&data);
+	}
+}
+
 void cClusterSession::SendPing()
 {
 	Packet pkt;

@@ -162,3 +162,42 @@ void ClusterSession::Handle_ClusterPing(WorldPacket &pck)
 	packet << uint8(ping);
 	SendPacket(&packet);
 }
+
+void ClusterSession::SendMonoPlayerPacket(uint64 guid,WorldPacket &pck)
+{
+	Packet pkt;
+	pkt << uint64(guid);
+	pkt << uint16(pck.size());
+	pkt << uint16(pck.GetOpcode());
+	for(uint16 i=0;i<pck.size();i++)
+	{	
+		uint8 tmp;
+		pck >> uint8(tmp);
+		pkt << uint8(tmp);
+	}
+	// todo : verify packet to transmit
+	error_log("Packet size %u",pkt.GetDataSize());
+	SendPacket(&pkt);
+}
+
+void ClusterSession::SendMultiPlayerPacket(std::vector<uint64> GUIDs,WorldPacket &pck)
+{
+	Packet pkt;
+	pkt << uint16(pck.size());
+	pkt << uint16(pck.GetOpcode());
+
+	for(uint16 i=0;i<pck.size();i++)
+	{	
+		uint8 tmp;
+		pck >> uint8(tmp);
+		pkt << uint8(tmp);
+	}
+
+	pkt << uint16(GUIDs.size());
+	for(std::vector<uint64>::const_iterator itr = GUIDs.begin();itr != GUIDs.end();++itr)
+		pkt << uint64(*itr);
+
+	// todo : verify packet to transmit
+	error_log("Packet size %u",pkt.GetDataSize());
+	SendPacket(&pkt);
+}

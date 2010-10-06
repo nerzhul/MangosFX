@@ -12,14 +12,18 @@ struct PacketOpcodeHandler
 };
 
 static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
-	{"C_CMSG_NULL",						&ClusterSession::Handle_Null},
-	{"C_CMSG_PING",						&ClusterSession::Handle_ClusterPing},
-	{"C_SMSG_PING_RESP",				&ClusterSession::Handle_Null},
-	{"C_SMSG_PING",						&ClusterSession::Handle_ClientSide},
-	{"C_CMSG_PING_RESP",				&ClusterSession::Handle_Null},
-	{"C_SMSG_CLUSTER_TYPE",				&ClusterSession::Handle_ClientSide},
-	{"C_SMSG_RPC_COMMAND_TEST",			&ClusterSession::Handle_ClientSide},
-	{"C_CMSG_RPC_COMMAND_TEST_RESP",	&ClusterSession::Handle_Null},
+	{"C_CMSG_NULL",							&ClusterSession::Handle_Null},
+	{"C_CMSG_PING",							&ClusterSession::Handle_ClusterPing},
+	{"C_SMSG_PING_RESP",					&ClusterSession::Handle_Null},
+	{"C_SMSG_PING",							&ClusterSession::Handle_ClientSide},
+	{"C_CMSG_PING_RESP",					&ClusterSession::Handle_Null},
+	{"C_SMSG_CLUSTER_TYPE",					&ClusterSession::Handle_ClientSide},
+	{"C_SMSG_RPC_COMMAND_TEST",				&ClusterSession::Handle_ClientSide},
+	{"C_CMSG_RPC_COMMAND_TEST_RESP",		&ClusterSession::Handle_Null},
+	{"C_CMSG_GET_LOOTS",					&cClusterSession::Handle_Null},
+	{"C_SMSG_GET_LOOTS",					&cClusterSession::Handle_Null},
+	{"C_SMSG_RETRANSMIT_PACKET",			&cClusterSession::Handle_Null},
+	{"C_SMSG_RETRANSMIT_PACKET_ON_LIST",	&cClusterSession::Handle_Null},
 };
 
 #endif

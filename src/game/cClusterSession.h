@@ -24,6 +24,8 @@ class cClusterSession
 
 		void Handle_ClusterPing(WorldPacket &pck);
 		void Handle_SetClusterType(WorldPacket &pck);
+		void Handle_RetransmitPacket(WorldPacket &pck);
+		void Handle_RetransmitPacketOnList(WorldPacket &pck);
 
 		void SendPing();
 
