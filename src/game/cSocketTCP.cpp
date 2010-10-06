@@ -51,8 +51,6 @@ void cSocketTCP::Connect()
 		return;
 	}
 	m_sock->SetBlocking(false);
-	if(m_session)
-		m_session->SendPing();
 	isConnected = true;
 }
 

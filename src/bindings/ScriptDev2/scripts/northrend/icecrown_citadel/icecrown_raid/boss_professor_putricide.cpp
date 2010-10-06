@@ -4,16 +4,16 @@
 enum BossSpells
 {
     SPELL_SLIME_PUDDLE            = 70346,
-    SPELL_UNSTABLE_EXPERIMENT     = 71968,
-    SPELL_TEAR_GAS                = 71617,
-    SPELL_TEAR_GAS_1              = 71618,
+    SPELL_UNSTABLE_EXPERIMENT     = 71968, // choose experience
+    SPELL_TEAR_GAS                = 71617, // to switch phase
+    SPELL_TEAR_GAS_1              = 71618, // triggered, remove if not needed
     SPELL_CREATE_CONCOCTION       = 71621,
-    SPELL_CHOKING_GAS             = 71278,
-    SPELL_CHOKING_GAS_EXPLODE     = 71279,
-    SPELL_MALLEABLE_GOO           = 72296,
-    SPELL_GUZZLE_POTIONS          = 73122,
-    SPELL_MUTATED_STRENGTH        = 71603,
-    SPELL_MUTATED_PLAGUE          = 72672,
+    SPELL_CHOKING_GAS             = 71278, // p2 p3, cast by bomb, not sure
+    SPELL_CHOKING_GAS_EXPLODE     = 71279, // p2 p3, casted after 20 sec by fioles
+    SPELL_MALLEABLE_GOO           = 72296, // p2 p3
+    SPELL_GUZZLE_POTIONS          = 73122, // p3 proc MUTATED_STR on cast
+    SPELL_MUTATED_STRENGTH        = 71603, // p3
+    SPELL_MUTATED_PLAGUE          = 72672, // p3
 //
     NPC_GAS_CLOUD                 = 37562,
     SPELL_GASEOUS_BLOAT           = 70672,
@@ -56,8 +56,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 
     void Aggro(Unit* pWho)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, IN_PROGRESS);
+        SetInstanceData(TYPE_PUTRICIDE, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
@@ -66,8 +65,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 
     void JustDied(Unit* pKiller)
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, DONE);
+        SetInstanceData(TYPE_PUTRICIDE, DONE);
 
 		switch(m_difficulty)
 		{
@@ -90,12 +88,12 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
 
     void JustReachedHome()
     {
-        if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, FAIL);
+        SetInstanceData(TYPE_PUTRICIDE, FAIL);
     }
 
 	void StunAndGo()
 	{
+		DoCastVictim(SPELL_TEAR_GAS);
 		// Todo : cast stun, timed text, special flags...
 	}
 

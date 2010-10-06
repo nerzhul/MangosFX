@@ -5999,6 +5999,15 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 					}
 					return;
 				}
+				case 71968:
+				{
+					if(urand(0,1))
+						m_caster->CastSpell(m_caster,71412,true);
+					else
+						m_caster->CastSpell(m_caster,71414,true);
+
+					return;
+				}
             }
 	        break;
 			
