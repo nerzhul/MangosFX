@@ -56,7 +56,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
 				&& (*itr)->GetCaster() == spell->GetCaster())
 			{
-				if((*itr)->GetAuraMaxDuration() < 9000)
+				if((*itr)->GetAuraMaxDuration() < 18000)
 				{
 					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 2000);
 					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 2000);
@@ -105,7 +105,7 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && (*itr)->GetSpellProto()->SpellIconID == 225
 				&& (*itr)->GetCaster() == m_caster)
 			{
-				if((*itr)->GetAuraMaxDuration() < 21000)
+				if((*itr)->GetAuraMaxDuration() < 24000)
 				{
 					(*itr)->SetAuraMaxDuration((*itr)->GetAuraMaxDuration() + 3000);
 					(*itr)->SetAuraDuration((*itr)->GetAuraDuration() + 3000);
