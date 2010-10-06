@@ -5,6 +5,7 @@
 #include "cPacketOpcodes.h"
 #include "WorldPacket.h"
 #include "ObjectAccessor.h"
+#include "Player.h"
 
 cClusterSession::cClusterSession(cSocketTCP* sock): m_sock(sock),m_type(C_NULL)
 {
