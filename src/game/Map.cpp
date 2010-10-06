@@ -2525,16 +2525,19 @@ bool InstanceMap::Add(Player *player)
                         }
                         // if the group/leader is permanently bound to the instance
                         // players also become permanently bound when they enter
-                        if(groupBind->perm && !player->isGameMaster())
+                        if(groupBind->perm)
 						{
-							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
-							pck << uint32(60000);
-							pck << uint32(256);
-							pck << uint8(1);
-							player->GetSession()->SendPacket(&pck);
-							player->SetTimedBind(60000);
-							player->SetInBinding(true);
-							player->SetBindingState(true);
+							if(!player->isGameMaster())
+							{
+								WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
+								pck << uint32(60000);
+								pck << uint32(256);
+								pck << uint8(1);
+								player->GetSession()->SendPacket(&pck);
+								player->SetTimedBind(60000);
+								player->SetInBinding(true);
+								player->SetBindingState(true);
+							}
 							// old
                             //player->BindToInstance(mapSave, true);
 						}
@@ -2543,16 +2546,19 @@ bool InstanceMap::Add(Player *player)
                 else
                 {
                     // set up a solo bind or continue using it
-                    if(!playerBind && !player->isGameMaster())
+                    if(!playerBind)
 					{
-						WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
-						pck << uint32(60000);
-						pck << uint32(256);
-						pck << uint8(1);
-						player->GetSession()->SendPacket(&pck);
-						player->SetTimedBind(60000);
-						player->SetInBinding(true);
-						player->SetBindingState(false);
+						if(!player->isGameMaster())
+						{
+							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
+							pck << uint32(60000);
+							pck << uint32(256);
+							pck << uint8(1);
+							player->GetSession()->SendPacket(&pck);
+							player->SetTimedBind(60000);
+							player->SetInBinding(true);
+							player->SetBindingState(false);
+						}
                         // old 
 						//player->BindToInstance(mapSave, false);
 					}
