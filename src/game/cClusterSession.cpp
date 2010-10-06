@@ -125,7 +125,7 @@ void cClusterSession::Handle_RetransmitPacketOnList(WorldPacket &pck)
 	for(uint16 j=0;j<datasize;j++)
 	{
 		uint8 tmp;
-		pck >> uint8(tmp);
+		pck >> tmp;
 		data << uint8(tmp);
 	}
 
