@@ -26,6 +26,8 @@ int m_ServiceStatus = -1;
 
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
 DatabaseType LocalisationDatabase;
+DatabaseType loginDatabase;
+DatabaseType CharacterDatabase;
 
 /// Print out the usage string for this program on the console.
 void usage(const char *prog)
