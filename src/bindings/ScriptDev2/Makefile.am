@@ -363,6 +363,7 @@ scripts/northrend/icecrown_citadel/icecrown_raid/instance_icecrown_citadel.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/icecrown_citadel.h \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lord_marrowgar.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lady_deathwhisper.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_cannoneer_battle.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_deathbringer_saurfang.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lich_king.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_prince_council.cpp \
