@@ -37,6 +37,8 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_CLUSTER_TYPE",				C_ALL,&cClusterSession::Handle_SetClusterType},
 	{"C_SMSG_RPC_COMMAND_TEST",			C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_RPC_COMMAND_TEST_RESP",	C_ALL,&cClusterSession::Handle_Null},
+	{"C_CMSG_GET_LOOTS",				C_ALL,&cClusterSession::Handle_Null},
+	{"C_SMSG_GET_LOOTS",				C_LOOT,&cClusterSession::Handle_Null},
 };
 
 #endif
