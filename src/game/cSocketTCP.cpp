@@ -16,7 +16,7 @@ cSocketTCP::cSocketTCP(ClusterType _type)
 			m_port = 3695;
 			break;
 		case C_BG:
-			m_address = "localhost;
+			m_address = "localhost";
 			m_port = 4238;
 			break;
 		default:
