@@ -2559,7 +2559,7 @@ bool InstanceMap::Add(Player *player)
                         // cannot jump to a different instance without resetting it
 						if(playerBind->save != mapSave)
 						{
-							if (WorldSafeLocsEntry const *ClosestGrave = sObjectMgr.GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam() ))
+							if(WorldSafeLocsEntry const *ClosestGrave = sObjectMgr.GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam() ))
 								player->RepopAtGraveyard();
 							else 
 								player->RelocateToHomebind();

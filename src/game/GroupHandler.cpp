@@ -17,6 +17,7 @@
  */
 
 #include "Common.h"
+#include "InstanceSaveMgr.h"
 #include "Database/DatabaseEnv.h"
 #include "Opcodes.h"
 #include "Log.h"
@@ -908,8 +909,28 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
 
 void WorldSession::HandleLockWarningResponse(WorldPacket &recv_data)
 {
-	recv_data.hexlike();
-	error_log("%u",recv_data.size());
+	uint8 resp;
+	recv_data >> resp;
+	
+	if(!_player)
+		return;
+
+	if(_player->isGameMaster())
+		return;
+
+	if(resp)
+	{
+		if(_player->GetMap())
+			if(InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(_player->GetMap()->GetInstanceId()))
+				_player->BindToInstance(mapSave,true);
+	}
+	else
+	{
+		if(WorldSafeLocsEntry const *ClosestGrave = sObjectMgr.GetClosestGraveYard(_player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId(), _player->GetTeam() ))
+			_player->RepopAtGraveyard();
+		else 
+			_player->RelocateToHomebind();
+	}
 }
 /*void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )
 {

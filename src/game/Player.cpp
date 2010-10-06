@@ -1136,11 +1136,8 @@ void Player::Update( uint32 p_time )
 		if(m_timed_bind <= p_time)
 		{
 			if(GetMap())
-			{
-				InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(GetMap()->GetInstanceId());
-				if(mapSave)
+				if(InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(GetMap()->GetInstanceId()))
 					BindToInstance(mapSave,true);
-			}
 			bindTimer = false;
 			m_timed_bind = 0;
 		}
