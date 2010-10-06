@@ -418,10 +418,14 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			uint8 phase = 0, uint32 TextId = 0,	uint16 Repeat = 1, bool front = true)
 			{ AddEvent(SpellId,Timer,NormTimer,Diff,TARGET_ME,phase,TextId, true, Repeat,front); }	
 			
+		void AddEventOnCaster(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
+			uint8 phase = 0, uint32 TextId = 0,	bool MaxPriority = false, uint16 Repeat = 1, bool front = true)
+			{ AddEvent(SpellId,Timer,NormTimer,Diff,TARGET_HAS_MANA,phase,TextId,MaxPriority,Repeat,front); }
+		
 		void AddEventOnTank(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
 			uint8 phase = 0, uint32 TextId = 0,	bool MaxPriority = false, uint16 Repeat = 1, bool front = true)
 			{ AddEvent(SpellId,Timer,NormTimer,Diff,TARGET_MAIN,phase,TextId,MaxPriority,Repeat,front); }
-			
+
 		void AddEventMaxPrioOnTank(uint32 SpellId, uint32 Timer, uint32 NormTimer, uint32 Diff = 0,
 			uint8 phase = 0, uint32 TextId = 0,	uint16 Repeat = 1, bool front = true)
 			{ AddEvent(SpellId, Timer, NormTimer, Diff, TARGET_MAIN, phase, TextId, true, Repeat, front); }	

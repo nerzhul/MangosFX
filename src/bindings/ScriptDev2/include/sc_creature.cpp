@@ -208,7 +208,9 @@ void ScriptedAI::DoCastHasMana(uint32 uiSpellId, bool bTriggered, bool InFront)
     if (!pTarget || me->IsNonMeleeSpellCasted(false) || !pTarget->isAlive())
         return;
 
-	if(pTarget->getPowerType() != POWER_MANA)
+	if(pTarget->getPowerType() != POWER_MANA || 
+		(pTarget->getPowerType() == POWER_MANA &&
+		pTarget->GetPower(POWER_MANA) < (100*pTarget->getLevel())))
 	{
 		int search=0;
 		do
@@ -216,7 +218,8 @@ void ScriptedAI::DoCastHasMana(uint32 uiSpellId, bool bTriggered, bool InFront)
 			pTarget = SelectUnit(SELECT_TARGET_RANDOM, 0);
 			search++;
 		}
-		while(pTarget && pTarget->getPowerType() != POWER_MANA && search < 30);
+		while(pTarget && (pTarget->getPowerType() != POWER_MANA || 
+			(pTarget->getPowerType() == POWER_MANA && pTarget->GetPower(POWER_MANA) < (100*pTarget->getLevel()))) && search < 50);
 	}
 
 	if(!pTarget)
