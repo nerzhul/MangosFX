@@ -53,7 +53,7 @@ mangos_worldd_LDADD = \
 	../../dep/src/gsoap/libgsoap.a
 
 mangos_worldd_LDFLAGS = -L../../dep/src/g3dlite -L../../dep/src/gsoap -L../bindings/ScriptDev2/ -L$(libdir) $(MANGOS_LIBS) 
-mangos_worldd_LDFLAGS += -lomnithread -lomniORB4 -lomniDynamic4 -lomniCodeSets4 -lomnisslTP4 -lCOS4 -lCOSDynamic4 -lsfml-network -export-dynamic
+mangos_worldd_LDFLAGS += -lsfml-network -export-dynamic
 
 install-data-hook:
 	@list='$(sysconf_DATA)'
