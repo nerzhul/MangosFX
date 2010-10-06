@@ -147,7 +147,7 @@ extern int main(int argc, char **argv)
     /// \todo Why do we need this 'Master'? Can't all of this be in the Main as for Realmd?
     
 	
-	 return sCluster.Run(); */
+	 return sCluster.Run();
 
     // at sMaster return function exist with codes
     // 0 - normal shutdown
