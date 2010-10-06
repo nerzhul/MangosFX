@@ -4,6 +4,7 @@
 #include "cOpcodeHandler.h"
 #include "cPacketOpcodes.h"
 #include "WorldPacket.h"
+#include "ObjectAccessor.h"
 
 cClusterSession::cClusterSession(cSocketTCP* sock): m_sock(sock),m_type(C_NULL)
 {

@@ -348,7 +348,8 @@ libmangosgame_a_SOURCES = \
 	cClusterSession.h \
 	cIncludes.h \
 	cClusterMgr.cpp \
-	cClusterMgr.h
+	cClusterMgr.h \
+	cOpcodeHandler.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN
