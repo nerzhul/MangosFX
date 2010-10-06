@@ -172,7 +172,7 @@ void ClusterSession::SendMonoPlayerPacket(uint64 guid,WorldPacket &pck)
 	for(uint16 i=0;i<pck.size();i++)
 	{	
 		uint8 tmp;
-		pck >> uint8(tmp);
+		pck >> tmp;
 		pkt << uint8(tmp);
 	}
 	// todo : verify packet to transmit
@@ -189,7 +189,7 @@ void ClusterSession::SendMultiPlayerPacket(std::vector<uint64> GUIDs,WorldPacket
 	for(uint16 i=0;i<pck.size();i++)
 	{	
 		uint8 tmp;
-		pck >> uint8(tmp);
+		pck >> tmp;
 		pkt << uint8(tmp);
 	}
 
