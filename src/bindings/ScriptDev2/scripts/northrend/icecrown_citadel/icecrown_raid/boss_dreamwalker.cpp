@@ -76,6 +76,7 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SendPortrait(me,false);
 		pop_Timer = 12000;
 		eventStarted = false;
 		lowHsaid = false;
@@ -98,6 +99,8 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 	{
 		if(pInstance && pInstance->GetData(TYPE_DREAMWALKER) == DONE)
 			return;
+
+		SendPortrait();					
 
 		eventStarted = true;
 		pop_Timer = 12000;

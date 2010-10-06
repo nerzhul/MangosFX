@@ -2,14 +2,15 @@
 #include <Timer.h>
 #include "revision_sql.h"
 #include <Config/Config.h>
-#include <Policies/SingletonImp.h>
 #include <Database/DatabaseEnv.h>
+#include <Policies/SingletonImp.h>
 #include <ace/OS_NS_signal.h>
 #include <ace/TP_Reactor.h>
 #include <ace/Dev_Poll_Reactor.h>
 
 #include "Cluster.h"
 #include "ClusterSpec.h"
+#include "cObjectMgr.h"
 #include "TCPListener.h"
 
 #ifdef WIN32
@@ -41,6 +42,7 @@ int Cluster::Run()
 
     ///- Initialize the World
     sClusterBG.SetInitialSettings();
+	//sClusterObjectMgr.Initialize();
 
     ///- Catch termination signals
     _HookSignals();
@@ -109,10 +111,8 @@ int Cluster::Run()
     cluster_thread.wait();
 
     ///- Wait for DB delay threads to end
-    CharacterDatabase.HaltDelayThread();
     WorldDatabase.HaltDelayThread();
-    loginDatabase.HaltDelayThread();
-
+ 
     sLog.outString( "Halting process..." );
 
     ///- Exit the process with specified return value

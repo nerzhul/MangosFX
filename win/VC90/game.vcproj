@@ -1875,6 +1875,10 @@
 				Name="Sockets"
 				>
 				<File
+					RelativePath="..\..\src\game\cOpcodeHandler.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\cPacketOpcodes.h"
 					>
 				</File>

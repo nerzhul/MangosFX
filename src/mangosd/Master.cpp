@@ -357,7 +357,7 @@ int Master::Run()
 	ACE_Based::Thread cluster_bg(cSBG_TCP);
 	cluster_bg.setPriority(ACE_Based::Highest);
 
-	cRPCCommandHandler* rpc_h = new cRPCCommandHandler(C_LOOT);
+	/*cRPCCommandHandler* rpc_h = new cRPCCommandHandler(C_LOOT);
 	Packet ask;
 	ask << uint16(0x01) << uint8(5);
 	Packet* resp_h = rpc_h->getResponse(&ask);
@@ -368,7 +368,7 @@ int Master::Run()
 		error_log("Size %u",resp_h->GetDataSize());
 		*resp_h >> opcode >> _data;
 	}
-	error_log("resp_h opcode %u %u",opcode,_data);
+	error_log("resp_h opcode %u %u",opcode,_data);*/
 
     sWorldSocketMgr->Wait();
 

@@ -1,11 +1,11 @@
-#include "Common.h"
-#include "Database/DatabaseEnv.h"
-#include "Config/Config.h"
-#include "Log.h"
-#include "Cluster.h"
-#include "SystemConfig.h"
-#include "revision.h"
-#include "revision_nr.h"
+#include <Common.h>
+#include <Database/DatabaseEnv.h>
+#include <Config/Config.h>
+#include <Log.h>
+//#include "Cluster.h"
+#include <SystemConfig.h>
+#include <revision.h>
+#include <revision_nr.h>
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include <ace/Version.h>
@@ -23,12 +23,10 @@ char serviceDescription[] = "Massive Network Game Object Server";
  */
 int m_ServiceStatus = -1;
 #endif
-
+/*
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
-DatabaseType CharacterDatabase;                             ///< Accessor to the character database
-DatabaseType loginDatabase;                                 ///< Accessor to the realm/login database
 DatabaseType LocalisationDatabase;
-
+*/
 /// Print out the usage string for this program on the console.
 void usage(const char *prog)
 {
@@ -48,7 +46,7 @@ void usage(const char *prog)
 extern int main(int argc, char **argv)
 {
 	// - Construct Memory Manager Instance
-    MaNGOS::Singleton<MemoryManager>::Instance();
+    /*MaNGOS::Singleton<MemoryManager>::Instance();
 
     //char *leak = new char[1000];                          // test leak detection
 
@@ -116,8 +114,8 @@ extern int main(int argc, char **argv)
         #endif
         ++c;
     }
-
-    if (!sConfig.SetSource(cfg_file))
+*/
+    /*if (!sConfig.SetSource(cfg_file))
     {
         sLog.outError("Could not find configuration file %s.", cfg_file);
         Log::WaitBeforeContinueIfNeed();
@@ -149,7 +147,7 @@ extern int main(int argc, char **argv)
     /// \todo Why do we need this 'Master'? Can't all of this be in the Main as for Realmd?
     
 	
-	 return sCluster.Run(); // TODO
+	 return sCluster.Run(); */
 
     // at sMaster return function exist with codes
     // 0 - normal shutdown

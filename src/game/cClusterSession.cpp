@@ -1,6 +1,7 @@
 #include <Util.h>
 #include "cClusterSession.h"
 #include "cSocketTCP.h"
+#include "cOpcodeHandler.h"
 #include "cPacketOpcodes.h"
 #include "WorldPacket.h"
 

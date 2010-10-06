@@ -2501,8 +2501,16 @@ bool InstanceMap::Add(Player *player)
                     }
                     // bind to the group or keep using the group save
                     if(!groupBind)
-                        pGroup->BindToInstance(mapSave, false);
-                    else
+					{
+						WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
+						pck << uint32(60000);
+						pck << uint32(256);
+						pck << uint8(1);
+						player->GetSession()->SendPacket(&pck);
+						// old
+						//pGroup->BindToInstance(mapSave, false);
+					}
+					else
                     {
                         // cannot jump to a different instance without resetting it
                         if(groupBind->save != mapSave)
@@ -2561,7 +2569,7 @@ bool InstanceMap::Add(Player *player)
     // this will acquire the same mutex so it cannot be in the previous block
     Map::Add(player);
 
-    if (i_data)
+    if (i_data)		
         i_data->OnPlayerEnter(player);
 
     return true;
