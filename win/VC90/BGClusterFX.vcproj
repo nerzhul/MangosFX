@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9,00"
 	Name="ClusterFX-BG"
-	ProjectGUID="{5C2CCE09-5A68-4A1F-9A9F-88711B7B6609}"
+	ProjectGUID="{6AEE23F9-CAE7-4203-A871-3D1B1F3DF974}"
 	RootNamespace="BGClusterFX"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="0"
@@ -688,6 +688,10 @@
 			</File>
 		</Filter>
 		<File
+			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
+			>
+		</File>
+		<File
 			RelativePath="..\..\src\Cluster-BG\Cluster.cpp"
 			>
 		</File>
@@ -697,10 +701,6 @@
 		</File>
 		<File
 			RelativePath="..\..\src\Cluster-BG\icon1.ico"
-			>
-		</File>
-		<File
-			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
 			>
 		</File>
 		<File
