@@ -102,7 +102,7 @@ void ClusterSession::HandlePacket(Packet* pck)
 	// Recopy data into WorldPacket
 	WorldPacket packet(opcode);
 	for(uint32 i=2;i<pck->GetDataSize();i++)
-		packet << pck->GetData()[i];
+		packet << uint8(pck->GetData()[i]);
 
 	packet.hexlike();
 	// Pointer to keep data alive

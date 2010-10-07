@@ -49,11 +49,6 @@ static uint64 readUint64(sf::Packet* Packet, uint32 pos)
 static uint32 readUint32(sf::Packet* Packet, uint32 pos)
 {
 	uint32 value = 0;
-	error_log("%u",Packet->GetData()[pos+3]);
-	error_log("%u",Packet->GetData()[pos+2]);
-	error_log("%u",Packet->GetData()[pos+1]);
-	error_log("%u",Packet->GetData()[pos+0]);
-
 	value += uint8(Packet->GetData()[pos+3]);
 	value += uint8(Packet->GetData()[pos+2])*256;
 	value += uint8(Packet->GetData()[pos+1])*65536;
