@@ -346,12 +346,19 @@ void BattleGround::Update(uint32 diff)
     // remove offline players from bg after 5 minutes
     if (!m_OfflineQueue.empty())
     {
-        BattleGroundPlayerMap::iterator itr = m_Players.find(*(m_OfflineQueue.begin()));
-        if (itr != m_Players.end())
+		uint64 tmpGuid = *(m_OfflineQueue.begin());
+		Packet pkt;
+		pkt << uint16(C_CMSG_IS_IN_BG) << uint64(m_Id) << uint64(tmpGuid);
+		if(sClusterMgr.getBoolValue(&pkt,C_BG))
+        /*BattleGroundPlayerMap::iterator itr = m_Players.find(*(m_OfflineQueue.begin()));
+        if (itr != m_Players.end())*/
         {
-            if (itr->second.OfflineRemoveTime <= sWorld.GetGameTime())
+			Packet pkt;
+			pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(tmpGuid);
+			uint32 time = sClusterMgr.getUint32Value(&pkt,C_BG)
+            if(/*itr->second.OfflineRemoveTime*/time <= sWorld.GetGameTime())
             {
-                RemovePlayerAtLeave(itr->first, true, true);// remove player from BG
+				RemovePlayerAtLeave(/*itr->first*/tmpGuid, true, true);// remove player from BG
                 m_OfflineQueue.pop_front();                 // remove from offline queue
                 //do not use itr for anything, because it is erased in RemovePlayerAtLeave()
             }
@@ -511,13 +518,15 @@ void BattleGround::Update(uint32 diff)
         if (m_EndTime <= 0)
         {
             m_EndTime = 0;
-            BattleGroundPlayerMap::iterator itr, next;
+			std::vector<uint64> players = GetRemotePlayers();
+			for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+            /*BattleGroundPlayerMap::iterator itr, next;
             for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)
-            {
+            {*/
                 next = itr;
                 ++next;
                 //itr is erased here!
-                RemovePlayerAtLeave(itr->first, true, true);// remove player from BG
+                RemovePlayerAtLeave(/*itr->first*/*itr, true, true);// remove player from BG
                 // do not change any battleground's private variables
             }
         }
@@ -1173,7 +1182,8 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 	bool participant = IsPlayerInBattleGround(guid);
 	
     // Remove from lists/maps
-    /*BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
+    /* TODO: call this function
+	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
     {
         UpdatePlayersCountByTeam(team, true);               // -1 player
@@ -1355,12 +1365,17 @@ void BattleGround::AddPlayer(Player *plr)
     uint64 guid = plr->GetGUID();
     uint32 team = plr->GetBGTeam();
 
-    BattleGroundPlayer bp;
+    /*BattleGroundPlayer bp;
     bp.OfflineRemoveTime = 0;
-    bp.Team = team;
+    bp.Team = team;*/
 
     // Add to list/maps
-    m_Players[guid] = bp;
+	Packet pkt;
+	pkt << uint16(C_CMSG_BG_REG_PLAYER);
+	pkt << uint64(m_Id) << uint64(guid) << uint32(0) << uint32(team);
+	sClusterMgr.getNullValue(&pkt,C_BG);
+
+    //m_Players[guid] = bp;
 
     UpdatePlayersCountByTeam(team, false);                  // +1 player
 
@@ -1464,7 +1479,12 @@ void BattleGround::EventPlayerLoggedIn(Player* player, uint64 plr_guid)
             break;
         }
     }
-    m_Players[plr_guid].OfflineRemoveTime = 0;
+
+	Packet pkt;
+	pkt << uint16(C_CMSG_BG_REG_PLAYER);
+	pkt << uint64(m_Id) << uint64(guid) << uint32(0) << uint32(player->GetBGTeam());
+	sClusterMgr.getNullValue(&pkt,C_BG);
+    //m_Players[plr_guid].OfflineRemoveTime = 0;
     PlayerAddedToBGCheckIfBGIsRunning(player);
     // if battleground is starting, then add preparation aura
     // we don't have to do that, because preparation aura isn't removed when player logs out
@@ -1475,7 +1495,13 @@ void BattleGround::EventPlayerLoggedOut(Player* player)
 {
     // player is correct pointer, it is checked in WorldSession::LogoutPlayer()
     m_OfflineQueue.push_back(player->GetGUID());
-    m_Players[player->GetGUID()].OfflineRemoveTime = sWorld.GetGameTime() + MAX_OFFLINE_TIME;
+
+	Packet pkt;
+	pkt << uint16(C_CMSG_BG_REG_PLAYER);
+	pkt << uint64(m_Id) << uint64(guid) << uint32(sWorld.GetGameTime() + MAX_OFFLINE_TIME) << uint32(player->GetBGTeam());
+	sClusterMgr.getNullValue(&pkt,C_BG);
+
+    //m_Players[player->GetGUID()].OfflineRemoveTime = sWorld.GetGameTime() + MAX_OFFLINE_TIME;
     if (GetStatus() == STATUS_IN_PROGRESS)
     {
         // drop flag and handle other cleanups

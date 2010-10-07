@@ -30,6 +30,7 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_GetRewardPlayers(WorldPacket &pck);
 		void Handle_IsInBG(WorldPacket &pck);
 		void Handle_GetBgTeam(WorldPacket &pck);
+		void Handle_Updt_Plr(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

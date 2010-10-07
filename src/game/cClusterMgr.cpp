@@ -47,6 +47,7 @@ uint64 ClusterMgr::getUint64Value(const sf::Packet *pck, ClusterType _type)
 	*resp >> opcode >> value;
 
 	delete rpc;
+	delete resp;
 	return value;
 }
 
@@ -76,7 +77,24 @@ uint32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 	*resp >> opcode >> value;
 
 	delete rpc;
+	delete resp;
 	return value;
+}
+
+void ClusterMgr::getNullValue(const sf::Packet *pck, ClusterType _type)
+{
+	if(_type == C_ALL || _type == C_NULL)
+		return;
+
+	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
+	rpc->getResponse(pck);
+
+	if(!resp)
+	{
+		delete rpc;
+		return;
+	}
+	delete rpc;
 }
 
 bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
@@ -105,6 +123,7 @@ bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
 	*resp >> opcode >> value;
 
 	delete rpc;
+	delete resp;
 	return (value != 0) ? true : false;
 }
 
@@ -139,6 +158,7 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 		vValues.push_back(tmp);
 	}
 	delete rpc;
+	delete resp;
 	return vValues;
 }
 

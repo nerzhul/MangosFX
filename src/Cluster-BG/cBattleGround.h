@@ -4,6 +4,12 @@
 #include <Common.h>
 #include <BattleGround.h>
 
+struct cBattleGroundPlayer
+{
+    time_t  OfflineRemoveTime;                              // for tracking and removing offline players from queue after 5 minutes
+    uint32  Team;                                           // Player's team
+};
+
 class cBattleGround
 {
 	public:
@@ -14,12 +20,14 @@ class cBattleGround
 
 		virtual void Reset();
 
-		typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
+		typedef std::map<uint64, cBattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }
 		std::vector<uint64> getPlayerList();
 		bool IsPlayerInBattleGround(uint64 guid);
 		uint32 GetPlayerTeam(uint64 guid);
+
+		void SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team);
 
 		virtual void RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket);
 

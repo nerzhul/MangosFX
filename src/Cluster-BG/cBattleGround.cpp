@@ -240,7 +240,7 @@ std::vector<uint64> cBattleGround::getPlayerList()
 	return players;
 }
 
-uint32 BattleGround::GetPlayerTeam(uint64 guid)
+uint32 cBattleGround::GetPlayerTeam(uint64 guid)
 {
     BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
     if (itr!=m_Players.end())
@@ -248,7 +248,7 @@ uint32 BattleGround::GetPlayerTeam(uint64 guid)
     return 0;
 }
 
-bool BattleGround::IsPlayerInBattleGround(uint64 guid)
+bool cBattleGround::IsPlayerInBattleGround(uint64 guid)
 {
     BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
@@ -265,4 +265,13 @@ void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPa
         UpdatePlayersCountByTeam(team, true);               // -1 player
         m_Players.erase(itr);
 	}
+}
+
+void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team)
+{
+	BattleGroundPlayer bp;
+    bp.OfflineRemoveTime = offlineTime;
+    bp.Team = team;
+
+	m_Players[guid] = bp;
 }

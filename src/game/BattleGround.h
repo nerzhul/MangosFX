@@ -386,9 +386,9 @@ class BattleGround
         bool isBattleGround() const { return !m_IsArena; }
         bool isRated() const        { return m_IsRated; }
 
-        typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
+        /*typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
-        uint32 GetPlayersSize() const { return m_Players.size(); }
+        uint32 GetPlayersSize() const { return m_Players.size(); }*/
 
         typedef std::map<uint64, BattleGroundScore*> BattleGroundScoreMap;
         BattleGroundScoreMap::const_iterator GetPlayerScoresBegin() const { return m_PlayerScores.begin(); }
@@ -595,7 +595,7 @@ class BattleGround
         virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
 
         /* Player lists, those need to be accessible by inherited classes */
-        BattleGroundPlayerMap  m_Players;
+        B//attleGroundPlayerMap  m_Players;
 
         /*
         these are important variables used for starting messages

@@ -1,6 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include <Log.h>
 #include <ObjectDefines.h>
+#include <cPacketOpcodes.h>
 #include "cBattleGroundMgr.h"
 #include "cObjectMgr.h"
 #include "cBattleGround.h"
@@ -84,6 +85,38 @@ void ClusterSession::Handle_IsInBG(WorldPacket &pck)
 	bool inBG = cBG->IsPlayerInBattleGround(plGuid);
 	Packet pck;
 	pck << uint16(C_SMSG_GET_BOOL) << uint8(inBG);
+	SendPacket(&pck);
+}
+
+void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
+{
+	uint64 bgId,plGuid;
+	pck >> bgId >> plGuid;
+
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+	uint32 team = cBG->GetPlayerTeam(plGuid);
+
+	Packet pck;
+	pck << uint16(C_SMSG_GET_UINT32) << uint32(team);
+	SendPacket(&pck);
+}
+
+void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
+{
+	uint64 bgId,plGuid;
+	pck >> bgId >> plGuid;
+
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+
+	uint32 off,team;
+	pck >> off >> team;
+	cBG->SetPlayerValues(plGuid,off,team);
+	Packet pck;
+	pck << uint16(C_CMSG_NULL);
 	SendPacket(&pck);
 }
 
