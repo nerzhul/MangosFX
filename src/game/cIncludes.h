@@ -23,15 +23,11 @@ static sf::Packet& operator <<(sf::Packet& Packet, uint64 Data)
 
 static sf::Packet& operator >>(sf::Packet& Packet, uint64& Data)
 {
-	WorldPacket buffer(0);
-	uint32 data;
-
+	uint32 data=0,data2=0;
 	Packet >> data;
-	buffer << uint32(data);
-	Packet >> data;
-	buffer << uint32(data);
-
-	buffer >> uint64(Data);
+	Packet >> data2;
+	
+	Data = data*pow(2,32)+data2;
     return Packet;
 }
 
