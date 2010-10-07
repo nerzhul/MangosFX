@@ -35,6 +35,7 @@
 #include "GridNotifiersImpl.h"
 #include "cSocketTCP.h"
 #include "cClusterMgr.h"
+#include "cPacketOpcodes.h"
 
 namespace MaNGOS
 {
