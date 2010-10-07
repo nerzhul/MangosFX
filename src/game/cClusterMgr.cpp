@@ -113,6 +113,7 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 	
 	uint32 vSize = readUint32(resp,2);
 
+	error_log("vSize %u",vSize);
 	uint32 pos=6;
 	for(uint32 i=0;i<vSize;i++)
 	{
