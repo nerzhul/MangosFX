@@ -553,34 +553,39 @@ void BattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, flo
 
 void BattleGround::SendPacketToAll(WorldPacket *packet)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
         if (plr)
             plr->GetSession()->SendPacket(packet);
         else
-            sLog.outError("BattleGround:SendPacketToAll: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:SendPacketToAll: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
     }
 }
 
 void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender, bool self)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
         if (!plr)
         {
-            sLog.outError("BattleGround:SendPacketToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:SendPacketToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
         if (!self && sender == plr)
             continue;
 
+		// todo: handle team
         uint32 team = itr->second.Team;
         if(!team) team = plr->GetTeam();
 
@@ -600,18 +605,21 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
 {
     WorldPacket data;
 
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:PlaySoundToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:PlaySoundToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
+		// TODO : utiliser la retransmission directe via le cluster
         uint32 team = itr->second.Team;
         if(!team) team = plr->GetTeam();
 
@@ -625,18 +633,21 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
 
 void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:CastSpellOnTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:CastSpellOnTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
+		// Todo : handle with cluster
         uint32 team = itr->second.Team;
         if(!team) team = plr->GetTeam();
 
@@ -647,15 +658,17 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
 
 void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
@@ -669,12 +682,14 @@ void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
 
 void BattleGround::RewardHonorTeamDaily(uint32 WinningTeamID)
 {
-	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+	//for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
 	{
-		if (itr->second.OfflineRemoveTime)
-			continue;
+		/*if (itr->second.OfflineRemoveTime)
+			continue;*/
 		
-		Player *plr = sObjectMgr.GetPlayer(itr->first);
+		Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 		
 		if (!plr)
 			continue;
@@ -717,15 +732,17 @@ void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, 
     if (!factionEntry)
         return;
 
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:RewardReputationToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:RewardReputationToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
@@ -739,15 +756,17 @@ void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, 
 
 void BattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:RewardXpToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:RewardXpToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
             continue;
         }
 
@@ -767,18 +786,14 @@ void BattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID
     }
 }
 
-void BattleGround::UpdateWorldState(uint32 Field, uint32 Value)
+void BattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 {
     WorldPacket data;
     sBattleGroundMgr.BuildUpdateWorldStatePacket(&data, Field, Value);
-    SendPacketToAll(&data);
-}
-
-void BattleGround::UpdateWorldStateForPlayer(uint32 Field, uint32 Value, Player *Source)
-{
-    WorldPacket data;
-    sBattleGroundMgr.BuildUpdateWorldStatePacket(&data, Field, Value);
-    Source->GetSession()->SendPacket(&data);
+	if(Source)
+		Source->GetSession()->SendPacket(&data);
+	else
+		SendPacketToAll(&data);
 }
 
 void BattleGround::EndBattleGround(uint32 winner)
@@ -2211,15 +2226,18 @@ void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
 
 void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
 {
-	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+	//for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        //Player *plr = sObjectMgr.GetPlayer(itr->first);
+		Player *plr = sObjectMgr.GetPlayer(*itr);
 
         if (!plr)
         {
-            sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            //sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
             continue;
         }
 
@@ -2238,10 +2256,18 @@ void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
     }
 }
 
+std::vector<uint64> BattleGround::GetRemotePlayers()
+{
+	Packet pkt;
+	pkt << uint16(C_CMSG_GET_BG_REW_PLAYERS) << uint64(m_Id);
+	std::vector<uint64> players;
+	players = sClusterMgr.getUint64Vector(&pkt,C_BG);
+	return players;
+}
+
 void BattleGround::SendBattleGroundCommand(std::string command)
 {
 	Packet pck;
-	pck << uint16(C_CMSG_SEND_COMMAND) << uint64(m_Id);
-
-
+	pck << uint16(C_CMSG_SEND_COMMAND) << uint64(m_Id) << std::string(command);
+	sClusterMgr.sendCommand(&pck,C_BG);
 }

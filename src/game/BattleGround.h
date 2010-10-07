@@ -440,8 +440,7 @@ class BattleGround
         void RewardItem(Player *plr, uint32 item_id, uint32 count);
         void RewardQuestComplete(Player *plr);
         void RewardSpellCast(Player *plr, uint32 spell_id);
-        void UpdateWorldState(uint32 Field, uint32 Value);
-        void UpdateWorldStateForPlayer(uint32 Field, uint32 Value, Player *Source);
+        void UpdateWorldState(uint32 Field, uint32 Value,Player *Source = NULL);
         void EndBattleGround(uint32 winner);
         void BlockMovement(Player *plr);
 
@@ -608,6 +607,7 @@ class BattleGround
 
         bool   m_BuffChange;
 		void SendBattleGroundCommand(std::string command);
+		std::vector<uint64> GetRemotePlayers();
     private:
         /* Battleground */
         BattleGroundTypeId m_TypeID;

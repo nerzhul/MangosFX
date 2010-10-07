@@ -24,10 +24,11 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_RETRANSMIT_PACKET",			C_ALL,&cClusterSession::Handle_Null},
 	{"C_SMSG_RETRANSMIT_PACKET_ON_LIST",	C_ALL,&cClusterSession::Handle_Null},
 	{"C_CMSG_BG_M_PLAYERS_MOD",				C_ALL,&cClusterSession::Handle_ServerSide},
-	{"C_CMSG_SEND_COMMAND",					C_ALL,&ClusterSession::Handle_ServerSide},
-	{"C_SMSG_COMMAND_OK",					C_ALL,&ClusterSession::Handle_Null},
+	{"C_CMSG_BG_SEND_COMMAND",				C_ALL,&ClusterSession::Handle_ServerSide},
 	{"C_CMSG_GET_BG_ID",					C_BG,&ClusterSession::Handle_ServerSide},
 	{"C_SMSG_GET_BG_ID",					C_BG,&ClusterSession::Handle_Null},
+	{"C_CMSG_GET_BG_REW_PLAYERS",			&ClusterSession::Handle_ServerSide},
+	{"C_SMSG_GET_BG_REW_PLAYERS",			&ClusterSession::Handle_Null},
 };
 
 #endif

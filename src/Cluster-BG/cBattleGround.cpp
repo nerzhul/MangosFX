@@ -222,3 +222,17 @@ void cBattleGround::Reset()
 {
 	m_Players.clear();
 }
+
+std::vector<uint64> cBattleGround::getPlayerList()
+{
+	std::vector<uint64> players;
+	players.clear();
+
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+		players.push_back(itr->first);
+	}
+	return players;
+}

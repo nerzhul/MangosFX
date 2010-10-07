@@ -17,6 +17,7 @@ class cBattleGround
 		typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }
+		std::vector<uint64> getPlayerList();
 
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }

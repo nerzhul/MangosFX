@@ -49,3 +49,47 @@ uint64 ClusterMgr::getUint64Value(const sf::Packet *pck, ClusterType _type)
 	delete rpc;
 	return value;
 }
+
+std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterType _type)
+{
+	std::vector<uint64> vValues;
+	vValues.clear();
+
+	if(_type == C_ALL || _type == C_NULL)
+		return vValues;
+
+	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
+	Packet* resp = rpc->getResponse(&pck);
+
+	if(!resp)
+	{
+		delete rpc;
+		return vValues;
+	}
+	
+	uint16 opcode;
+	uint32 vSize;
+	*resp >> opcode >> vSize;
+
+	
+
+	for(uint32 i=0;i<vSize;i++)
+	{
+		uint32 tmp;
+		*resp >> tmp;
+		vValues.push_back(tmp);
+	}
+	delete rpc;
+	return vValues;
+}
+
+void ClusterMgr::sendCommand(const sf::Packet *pck, ClusterType _type)
+{
+	if(_type == C_ALL || _type == C_NULL)
+		return 0;
+
+	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
+	rpc->getResponse(&pck);
+
+	delete rpc;
+}
