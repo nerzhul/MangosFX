@@ -3,6 +3,8 @@
 
 #include <SFML/Network.hpp>
 #include <Common.h>
+#include <Log.h>
+
 using namespace sf;
 
 enum ClusterType
