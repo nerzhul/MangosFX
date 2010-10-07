@@ -27,7 +27,7 @@ uint64 ClusterMgr::getUint64Value(const sf::Packet *pck, ClusterType _type)
 		return 0;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
-	Packet* resp = rpc->getResponse(&pck);
+	Packet* resp = rpc->getResponse(pck);
 
 	if(!resp)
 	{
@@ -56,7 +56,7 @@ uint32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 		return 0;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
-	Packet* resp = rpc->getResponse(&pck);
+	Packet* resp = rpc->getResponse(pck);
 
 	if(!resp)
 	{
@@ -85,7 +85,7 @@ bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
 		return false;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
-	Packet* resp = rpc->getResponse(&pck);
+	Packet* resp = rpc->getResponse(pck);
 
 	if(!resp)
 	{
@@ -118,7 +118,7 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 		return vValues;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
-	Packet* resp = rpc->getResponse(&pck);
+	Packet* resp = rpc->getResponse(pck);
 
 	if(!resp)
 	{
@@ -148,7 +148,7 @@ void ClusterMgr::sendCommand(const sf::Packet *pck, ClusterType _type)
 		return 0;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
-	rpc->getResponse(&pck);
+	rpc->getResponse(pck);
 
 	delete rpc;
 }
