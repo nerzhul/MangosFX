@@ -211,7 +211,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	}
 
 	Packet* resp_ = new Packet();
-	for(uint32 i=0;i<pck->GetDataSize();i++)
+	for(uint32 i=0;i<resp.GetDataSize();i++)
 	{
 		error_log("resp %u : %u",i,resp.GetData()[i]);
 		*resp_ << uint8(resp.GetData()[i]);
