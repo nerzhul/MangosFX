@@ -379,7 +379,7 @@ class BattleGround
             else
                 return m_InvitedHorde;
         }
-        bool HasFreeSlots() const;
+        bool HasFreeSlots();
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
 
         bool isArena() const        { return m_IsArena; }

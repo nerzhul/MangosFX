@@ -1568,7 +1568,7 @@ uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
     return 0;
 }
 
-bool BattleGround::HasFreeSlots() const
+bool BattleGround::HasFreeSlots()
 {
 	std::vector<uint64> players = GetRemotePlayers();
 	return /*GetPlayersSize()*/uint32(players.size()) < GetMaxPlayers();
