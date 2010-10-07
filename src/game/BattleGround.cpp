@@ -356,7 +356,7 @@ void BattleGround::Update(uint32 diff)
         {
 			Packet pkt;
 			pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(tmpGuid);
-			uint32 time = sClusterMgr.getUint32Value(&pkt,C_BG)
+			uint32 time = sClusterMgr.getUint32Value(&pkt,C_BG);
             if(/*itr->second.OfflineRemoveTime*/time <= sWorld.GetGameTime())
             {
 				RemovePlayerAtLeave(/*itr->first*/tmpGuid, true, true);// remove player from BG
@@ -429,7 +429,8 @@ void BattleGround::Update(uint32 diff)
     /***           BATTLEGROUND STARTING SYSTEM            ***/
     /*********************************************************/
 
-    if (GetStatus() == STATUS_WAIT_JOIN && GetPlayersSize())
+	std::vector<uint64> players = GetRemotePlayers();
+    if (GetStatus() == STATUS_WAIT_JOIN && /*GetPlayersSize()*/players.size())
     {
         ModifyStartDelayTime(diff);
 
@@ -524,8 +525,8 @@ void BattleGround::Update(uint32 diff)
 			std::vector<uint64> players = GetRemotePlayers();
 			for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
             /*BattleGroundPlayerMap::iterator itr, next;
-            for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)
-            {*/
+            for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)*/
+            {
                 /*next = itr;
                 ++next;*/
                 //itr is erased here!
