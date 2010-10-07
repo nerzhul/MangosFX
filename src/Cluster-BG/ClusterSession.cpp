@@ -147,6 +147,7 @@ void ClusterSession::Update()
 	while (_recvQueue.next(packet) && m_sock && m_sock->IsValid())
     {
 		PacketOpcodeHandler opHandle = PckOpH[packet->GetOpcode()];
+		error_log("Packet %u recv",packet->GetOpcode());
 		try
 		{
 			(this->*opHandle.handler)(*packet);
