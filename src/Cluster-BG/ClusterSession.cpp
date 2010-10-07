@@ -122,7 +122,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 	if(!m_sock || !m_sock->IsValid())
 		return;
 	uint16 opcode;
-	*pck >> opcode;
+	&pck >> opcode;
 
 	error_log("size %u opcode %u",pck->GetDataSize(),opcode);
 	Socket::Status st = m_sock->Send((Packet&)*pck);
