@@ -33,15 +33,16 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 {
 	m_sock = sock;
 	m_addr = addr;
-	/*if(isRPC)
-		m_sock->SetBlocking(false);*/
+	if(isRPC)
+		m_sock->SetBlocking(true);
 }
 
 void ClusterSession::run()
 {
 	if(!isRPC)
 		SendClusterIdentity();
-	while(!mustStop)
+
+	do
 	{
 		Packet pkt;
 		Socket::Status st = m_sock->Receive(pkt);
@@ -50,6 +51,7 @@ void ClusterSession::run()
 		Update();
 		ACE_Based::Thread::Sleep(100);
 	}
+	while(!mustStop && !isRPC);
 	m_sock->Close();
 	sLog.outBasic("Closing connection with %s",m_addr.c_str());
 }
@@ -135,8 +137,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 	}
 
 	Socket::Status st = m_sock->Send((Packet&)*pck);
-	//m_sock->SetBlocking(false);
-	if(CheckState(st) != 0 || isRPC)
+	if(CheckState(st) != 0)
 		m_sock->Close();
 }
 

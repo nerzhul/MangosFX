@@ -175,18 +175,10 @@ cRPCCommandHandler::cRPCCommandHandler(ClusterType _type)
 
 cRPCCommandHandler::~cRPCCommandHandler()
 {
-	if(m_sock)
-	{
-		m_sock->Close();
-		delete m_sock;
-		m_sock = NULL;
-	}
 }
 
 Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 {
-	Packet resp;
-
 	if(!m_sock)
 	{
 		error_log("Socket error for Cluster %s:%u",m_addr.c_str(),m_port);
@@ -208,6 +200,8 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	}
 
 	m_sock->SetBlocking(true);
+
+	Packet resp;
 
 	if(m_sock->Receive(resp) != 0)
 	{
