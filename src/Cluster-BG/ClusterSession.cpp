@@ -16,7 +16,7 @@ ClusterSession::ClusterSession()
 
 ClusterSession::~ClusterSession()
 {
-	m_sock->Close();
+	//m_sock->Close();
 	sLog.outBasic("Closing connection with %s and Destroying Thread",m_addr.c_str());
 	///- empty incoming packet queue
     WorldPacket* packet;
@@ -52,7 +52,7 @@ void ClusterSession::run()
 		ACE_Based::Thread::Sleep(100);
 	}
 	while(!mustStop && !isRPC);
-	m_sock->Close();
+	//m_sock->Close();
 	sLog.outBasic("Closing connection with %s",m_addr.c_str());
 }
 
@@ -130,11 +130,11 @@ void ClusterSession::SendPacket(const Packet* pck)
 	if(!m_sock)
 		return;
 
-	if(!m_sock->IsValid())
+	/*if(!m_sock->IsValid())
 	{
 		m_sock->Close();
 		return;
-	}
+	}*/
 
 	Socket::Status st = m_sock->Send((Packet&)*pck);
 	CheckState(st);
