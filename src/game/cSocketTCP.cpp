@@ -199,8 +199,6 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 		m_sock->Close();
 		return NULL;
 	}
-	
-	m_sock->SetBlocking(true);
 
 	if(m_sock->Send((Packet&)*pck) != 0)
 	{
@@ -208,6 +206,8 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 		m_sock->Close();
 		return NULL;
 	}
+
+	m_sock->SetBlocking(true);
 
 	if(m_sock->Receive(resp) != 0)
 	{

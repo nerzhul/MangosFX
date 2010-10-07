@@ -33,8 +33,8 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 {
 	m_sock = sock;
 	m_addr = addr;
-	if(isRPC)
-		m_sock->SetBlocking(true);
+	/*if(isRPC)
+		m_sock->SetBlocking(false);*/
 }
 
 void ClusterSession::run()
