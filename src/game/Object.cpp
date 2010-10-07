@@ -1295,6 +1295,9 @@ bool WorldObject::IsWithinLOS(float ox, float oy, float oz) const
     float x,y,z;
     GetPosition(x,y,z);
     VMAP::IVMapManager *vMapManager = VMAP::VMapFactory::createOrGetVMapManager();
+	if(!vMapManager)
+		return false;
+
     return vMapManager->isInLineOfSight(GetMapId(), x, y, z+2.0f, ox, oy, oz+2.0f);
 }
 
