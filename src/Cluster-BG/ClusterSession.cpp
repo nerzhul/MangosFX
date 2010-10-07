@@ -11,6 +11,7 @@ ClusterSession::ClusterSession()
 {
 	m_addr = "<error>";
 	mustStop = false;
+	isRPC = false;
 }
 
 ClusterSession::~ClusterSession()
@@ -32,6 +33,8 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 {
 	m_sock = sock;
 	m_addr = addr;
+	if(isRPC)
+		m_sock->SetBlocking(true);
 }
 
 void ClusterSession::run()

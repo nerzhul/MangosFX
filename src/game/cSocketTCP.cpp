@@ -211,7 +211,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 
 	if(m_sock->Receive(resp) != 0)
 	{
-		error_log("Receiving Packet forum Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
+		error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
 		m_sock->Close();
 		return NULL;
 	}
