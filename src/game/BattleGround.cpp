@@ -1170,7 +1170,7 @@ void BattleGround::BlockMovement(Player *plr)
 void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
 {
     uint32 team = GetPlayerTeam(guid);
-	bool participant = IsPlayerInBattleGround();
+	bool participant = IsPlayerInBattleGround(guid);
 	
     // Remove from lists/maps
     /*BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
