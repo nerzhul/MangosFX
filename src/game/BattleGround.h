@@ -595,7 +595,7 @@ class BattleGround
         virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
 
         /* Player lists, those need to be accessible by inherited classes */
-        B//attleGroundPlayerMap  m_Players;
+        //BattleGroundPlayerMap  m_Players;
 
         /*
         these are important variables used for starting messages
