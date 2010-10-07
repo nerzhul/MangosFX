@@ -11,7 +11,9 @@ class cBattleGroundMgr
 		cBattleGroundMgr() {}
 		~cBattleGroundMgr() {}
 		uint64 CreateBattleGround();
+		void DropBattleGround(uint64 id);
 		cBattleGround* getBattleGround(uint64 id);
+
 	private:
 		cBattleGroundMap m_BGMap;
 };

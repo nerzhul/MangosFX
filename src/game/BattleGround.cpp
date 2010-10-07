@@ -318,10 +318,12 @@ BattleGround::~BattleGround()
         m_Map->SetUnload();
 
     // remove from bg free slot queue
-    this->RemoveFromBGFreeSlotQueue();
+    RemoveFromBGFreeSlotQueue();
 
     for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
         delete itr->second;
+
+	SendBattleGroundCommand("Drop");
 }
 
 void BattleGround::Update(uint32 diff)

@@ -28,6 +28,15 @@ cBattleGround* cBattleGroundMgr::getBattleGround(uint64 id)
 	return itr->second;
 }
 
+void cBattleGroundMgr::DropBattleGround(uint64 id)
+{
+	cBattleGround* bg = getBattleGround(id);
+	if(!bg)
+		return;
+	m_BGMap[id] = NULL;
+	delete bg;
+}
+
 void ClusterSession::Handle_BG_m_Players_mod(WorldPacket &pck)
 {
 	uint64 bgId, plGuid, time;
@@ -129,6 +138,8 @@ void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
 
 	if(command == "Reset")
 		cBG->Reset();
+	else if(command == "Drop")
+		sClusterBGMgr.DropBattleGround(id);
 
 	SendNullPacket();
 }
