@@ -127,3 +127,17 @@ void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
 	std::string command;
 	pck >> command;
 }
+
+void ClusterSession::Handle_BGGetOfflineTime(WorldPacket &pck)
+{
+	uint64 bgId, plGuid;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+
+	uint32 offTime = cBG->GetPlayerOfflineTime(plGuid);
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_UINT32) << uint32(offTime);
+	SendPacket(&pkt);
+
+}

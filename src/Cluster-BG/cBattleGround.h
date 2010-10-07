@@ -26,6 +26,7 @@ class cBattleGround
 		std::vector<uint64> getPlayerList();
 		bool IsPlayerInBattleGround(uint64 guid);
 		uint32 GetPlayerTeam(uint64 guid);
+		uint32 GetPlayerOfflineTime(uint64 guid);
 
 		void SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team);
 

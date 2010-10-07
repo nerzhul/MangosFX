@@ -256,6 +256,14 @@ bool cBattleGround::IsPlayerInBattleGround(uint64 guid)
     return false;
 }
 
+uint32 cBattleGround::GetPlayerOfflineTime(uint64 guid)
+{
+	BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
+    if (itr != m_Players.end())
+        return uint32(itr->second.OfflineRemoveTime);
+    return 0;
+}
+
 void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
 {
 	uint32 team = GetPlayerTeam(guid);
