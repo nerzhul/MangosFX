@@ -30,4 +30,18 @@ static sf::Packet& operator >>(sf::Packet& Packet, uint64& Data)
     return Packet;
 }
 
+static uint64 readUint64(sf::Packet Packet, uint32 pos)
+{
+	uint64 value = 0;
+	value += uint8(Packet.GetData()[pos+3]);
+	value += uint8(Packet.GetData()[pos+2])*256;
+	value += uint8(Packet.GetData()[pos+1])*65536;
+	value += uint8(Packet.GetData()[pos+0])*16777216;
+	value += uint8(Packet.GetData()[pos+7])*4294967296;
+	value += uint8(Packet.GetData()[pos+6])*1099511627776;
+	value += uint8(Packet.GetData()[pos+5])*281474976710656;
+	value += uint8(Packet.GetData()[pos+4])*72057594037927936;
+	return value;
+}
+
 #endif
