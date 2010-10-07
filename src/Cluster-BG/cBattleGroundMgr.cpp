@@ -83,9 +83,9 @@ void ClusterSession::Handle_IsInBG(WorldPacket &pck)
 		return;
 
 	bool inBG = cBG->IsPlayerInBattleGround(plGuid);
-	Packet pck;
-	pck << uint16(C_SMSG_GET_BOOL) << uint8(inBG);
-	SendPacket(&pck);
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_BOOL) << uint8(inBG);
+	SendPacket(&pkt);
 }
 
 void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
@@ -98,9 +98,9 @@ void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
 		return;
 	uint32 team = cBG->GetPlayerTeam(plGuid);
 
-	Packet pck;
-	pck << uint16(C_SMSG_GET_UINT32) << uint32(team);
-	SendPacket(&pck);
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_UINT32) << uint32(team);
+	SendPacket(&pkt);
 }
 
 void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
@@ -115,9 +115,9 @@ void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
 	uint32 off,team;
 	pck >> off >> team;
 	cBG->SetPlayerValues(plGuid,off,team);
-	Packet pck;
+	Packet pkt;
 	pck << uint16(C_CMSG_NULL);
-	SendPacket(&pck);
+	SendPacket(&pkt);
 }
 
 void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)

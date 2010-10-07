@@ -258,6 +258,7 @@ bool cBattleGround::IsPlayerInBattleGround(uint64 guid)
 
 void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
 {
+	uint32 team = GetPlayerTeam(guid);
 
 	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
@@ -269,7 +270,7 @@ void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPa
 
 void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team)
 {
-	BattleGroundPlayer bp;
+	cBattleGroundPlayer bp;
     bp.OfflineRemoveTime = offlineTime;
     bp.Team = team;
 

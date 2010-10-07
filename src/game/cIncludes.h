@@ -27,7 +27,7 @@ static sf::Packet& operator >>(sf::Packet& Packet, uint64& Data)
 	Packet >> data;
 	Packet >> data2;
 	
-	Data = data*pow(2,32)+data2;
+	Data = data*pow(2.0f,32.0f)+data2;
     return Packet;
 }
 
