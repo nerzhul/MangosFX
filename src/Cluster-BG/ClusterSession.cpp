@@ -65,9 +65,10 @@ bool ClusterSession::CheckState(Socket::Status st)
 			mustStop = true;
 			return false;
 		case 0 /*Socket::Done)*/:
+			if(isRPC)
 			return true;
 		case 1 /*Socket::NotReady*/:
-			//error_log("Socket isn't ready !");
+			error_log("Socket isn't ready !");
 			return false;
 	}
 	return true;
@@ -132,11 +133,8 @@ void ClusterSession::SendPacket(const Packet* pck)
 
 	Socket::Status st = m_sock->Send((Packet&)*pck);
 	//m_sock->SetBlocking(false);
-	if(CheckState(st) != 0)
-	{
+	if(CheckState(st) != 0 || isRPC)
 		m_sock->Close();
-		return;
-	}
 }
 
 void ClusterSession::SendNullPacket()
