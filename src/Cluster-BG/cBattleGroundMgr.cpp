@@ -65,15 +65,19 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 {
 	uint64 id;
 	pck >> id;
+	error_log("%u",GUID_LOPART(id));
 	
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(id);
 	if(!cBG)
 	{
-		SendNullPacket();
+		Packet pkt;
+		pkt << uint16(C_SMSG_GET_V_UINT64);
+		pkt << uint32(0);
+		SendPacket(&pkt);
 		return;
 	}
-	Packet pkt;
 
+	Packet pkt;
 	pkt << uint16(C_SMSG_GET_V_UINT64);
 	std::vector<uint64> players = cBG->getPlayerList();
 	error_log("%u",players.size());
