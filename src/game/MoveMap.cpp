@@ -75,21 +75,21 @@ void Map::LoadNavMesh(int gx, int gy)
     if (header->magic != DT_NAVMESH_MAGIC)
     {
         sLog.outError("Error: %03u%02i%02i.mmtile has an invalid header", i_id, gx, gy);
-        dtFree(data);
+        delete [] data;
         return;
     }
     if (header->version != DT_NAVMESH_VERSION)
     {
         sLog.outError("Error: %03u%02i%02i.mmtile was built with Detour v%i, expected v%i",
                               i_id, gx, gy,                 header->version, DT_NAVMESH_VERSION);
-        dtFree(data);
+        delete [] data;
         return;
     }
 
     if(!m_navMesh->addTile(data, length, DT_TILE_FREE_DATA))
     {
         sLog.outDebug("Error: could not load %03u%02i%02i.mmtile into navmesh or data is already Loaded", i_id, gx, gy);
-        dtFree(data);
+		delete [] data;
         return;
     }
 
