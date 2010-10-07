@@ -36,7 +36,8 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	//SendClusterIdentity();
+	if(!isRPC)
+		SendClusterIdentity();
 	while(!mustStop)
 	{
 		Packet pkt;
@@ -59,7 +60,8 @@ bool ClusterSession::CheckState(Socket::Status st)
 			mustStop = true;
 			return false;
 		case 2 /*Socket::Status::Disconnected*/:
-			error_log("Link with %s lost...",m_addr.c_str());
+			if(!isRPC)
+				error_log("Link with %s lost...",m_addr.c_str());
 			mustStop = true;
 			return false;
 		case 0 /*Socket::Done)*/:
@@ -121,7 +123,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 {
 	if(!m_sock || !m_sock->IsValid())
 		return;
-	error_log("size %u opcode %u",pck->GetDataSize(),pck->GetData()[4]);
+	error_log("size %u opcode %u",pck->GetDataSize(),pck->GetData()[3]);
 	Socket::Status st = m_sock->Send((Packet&)*pck);
 	//m_sock->SetBlocking(false);
 	CheckState(st);

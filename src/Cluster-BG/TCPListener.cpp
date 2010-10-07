@@ -6,6 +6,7 @@
 TCPListener::TCPListener(uint16 port): m_port(port)
 {
 	m_sessions.clear();
+	isRPC = false;
 }
 
 TCPListener::~TCPListener()
@@ -39,9 +40,9 @@ void TCPListener::run()
 		if (Listener.Accept(Client, &ClientAddress) != Socket::Done)
 			continue;
 
-		// Todo: verify client connection
 		sLog.outBasic("Incoming connection from %s accepted",ClientAddress.ToString().c_str());
 		ClusterSession* sess = new ClusterSession;
+		sess->SetRPC(isRPC);
 		sess->SetParams(&Client,ClientAddress.ToString());
 		ACE_Based::Thread* session = new ACE_Based::Thread(sess);
 		session->setPriority(ACE_Based::Highest);

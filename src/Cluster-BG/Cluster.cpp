@@ -54,6 +54,11 @@ int Cluster::Run()
 	ACE_Based::Thread sockListener_thread(new TCPListener(sConfig.GetIntDefault("BGClusterPort",4238)));
 	sockListener_thread.setPriority(ACE_Based::Highest);
 
+	TCPListener* RPC = new TCPListener(sConfig.GetIntDefault("BGRPCClusterPort",4239));
+	RPC->SetRPC(true);
+	ACE_Based::Thread RPCListener_thread();
+	RPCListener_thread.setPriority(ACE_Based::Highest);
+
 	///- Handle affinity for multiple processors and process priority on Windows
     #ifdef WIN32
     {

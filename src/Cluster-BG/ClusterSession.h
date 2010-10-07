@@ -12,6 +12,7 @@ class ClusterSession: public ACE_Based::Runnable
 		ClusterSession();
 		~ClusterSession();
 		void SetParams(SocketTCP* sock, std::string str);
+		void SetRPC(bool rpc) { isRPC = rpc; }
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pkt);
 		void SendNullPacket();
@@ -49,6 +50,7 @@ class ClusterSession: public ACE_Based::Runnable
 		void SendPing();
 
 		bool mustStop;
+		bool isRPC;
 		SocketTCP* m_sock;
 		std::string m_addr;
 
