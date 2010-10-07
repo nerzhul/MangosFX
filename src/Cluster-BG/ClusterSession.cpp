@@ -99,6 +99,10 @@ void ClusterSession::HandlePacket(Packet* pck)
 		return;
 	}
 
+	WorldPacket test(opcode);
+	test << uint64(9);
+	test.hexlike();
+
 	// Recopy data into WorldPacket
 	WorldPacket packet(opcode);
 	for(uint32 i=2;i<pck->GetDataSize();i++)
