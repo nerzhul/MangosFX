@@ -33,8 +33,8 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 {
 	m_sock = sock;
 	m_addr = addr;
-	if(isRPC)
-		m_sock->SetBlocking(true);
+	/*if(isRPC)
+		m_sock->SetBlocking(true);*/
 }
 
 void ClusterSession::run()
@@ -137,8 +137,7 @@ void ClusterSession::SendPacket(const Packet* pck)
 	}
 
 	Socket::Status st = m_sock->Send((Packet&)*pck);
-	if(CheckState(st) != 0)
-		m_sock->Close();
+	CheckState(st);
 }
 
 void ClusterSession::SendNullPacket()

@@ -17,7 +17,9 @@ enum ClusterType
 static sf::Packet& operator <<(sf::Packet& Packet, uint64 Data)
 {
     uint64 ToWrite = htonl(Data);
+	error_log("PacketSize %u",Packet.GetDataSize());
     Packet.Append(&ToWrite, sizeof(ToWrite));
+	error_log("PacketSize %u",Packet.GetDataSize());
     return Packet;
 }
 

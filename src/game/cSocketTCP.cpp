@@ -166,7 +166,7 @@ cRPCCommandHandler::cRPCCommandHandler(ClusterType _type)
 			m_port = sConfig.GetIntDefault("LootClusterPort",3695);
 			break;
 		case C_BG:
-			m_addr = sConfig.GetStringDefault("BGClusterAddr","blackdiamondserver.com");
+			m_addr = sConfig.GetStringDefault("BGClusterAddr","192.168.1.12");
 			m_port = sConfig.GetIntDefault("BGClusterPort",4239);;
 		default:
 			break;
@@ -199,20 +199,23 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 		return NULL;
 	}
 
-	m_sock->SetBlocking(true);
+	//m_sock->SetBlocking(true);
 
 	Packet resp;
 
-	if(m_sock->Receive(resp) != 0)
+	while(m_sock->Receive(resp) != 0)
 	{
-		error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
-		m_sock->Close();
-		return NULL;
+		//error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
+		/*m_sock->Close();
+		return NULL;*/
 	}
 
 	Packet* resp_ = new Packet();
 	for(uint32 i=0;i<pck->GetDataSize();i++)
+	{
+		error_log("resp %u : %u",i,resp.GetData()[i]);
 		*resp_ << uint8(resp.GetData()[i]);
+	}
 	m_sock->Close();
 	return resp_;
 }

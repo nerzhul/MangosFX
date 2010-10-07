@@ -89,7 +89,7 @@ void TargetedMovementGeneratorMedium<T,D>::_setTargetLocation(T &owner, bool upd
 
     if(!i_path)
         i_path = new PathInfo(&owner, x, y, z);
-    else if (updateRequired)
+    else if(i_path && updateRequired)
         i_path->Update(x, y, z);
 
     //timer.stop();
