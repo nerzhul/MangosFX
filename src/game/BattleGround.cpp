@@ -903,28 +903,40 @@ void BattleGround::EndBattleGround(uint32 winner)
         }
     }
 
-    for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        uint32 team = itr->second.Team;
+		Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
+        if (!plr)
+        {
+            sLog.outError("BattleGround:EndBattleGround Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*/*itr));
+            continue;
+        }
+		uint32 team = plr->GetTeam()/*itr->second.Team*/;
 
-        if (itr->second.OfflineRemoveTime)
+		Packet pkt;
+		pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(tmpGuid);
+        if (/*itr->second.OfflineRemoveTime*/sClusterMgr.getUint32Value(&pkt,C_BG))
         {
             //if rated arena match - make member lost!
             if (isArena() && isRated() && winner_arena_team && loser_arena_team)
             {
                 if (team == winner)
-                    winner_arena_team->OfflineMemberLost(itr->first, loser_rating);
+                    winner_arena_team->OfflineMemberLost(/*itr->first*/*itr, loser_rating);
                 else
-                    loser_arena_team->OfflineMemberLost(itr->first, winner_rating);
+                    loser_arena_team->OfflineMemberLost(/*itr->first*/*itr, winner_rating);
             }
             continue;
         }
-        Player *plr = sObjectMgr.GetPlayer(itr->first);
+        /*
+		upded tmp for bg team
+		Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
         if (!plr)
         {
-            sLog.outError("BattleGround:EndBattleGround Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            sLog.outError("BattleGround:EndBattleGround Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
             continue;
-        }
+        }*/
 
         // should remove spirit of redemption
         if (plr->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
@@ -1338,7 +1350,8 @@ void BattleGround::Reset()
     m_InvitedHorde = 0;
     m_InBGFreeSlotQueue = false;
 
-    m_Players.clear();
+    // need do the same
+	//m_Players.clear();
 
     for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
         delete itr->second;
@@ -1486,7 +1499,7 @@ void BattleGround::EventPlayerLoggedIn(Player* player, uint64 plr_guid)
 
 	Packet pkt;
 	pkt << uint16(C_CMSG_BG_REG_PLAYER);
-	pkt << uint64(m_Id) << uint64(guid) << uint32(0) << uint32(player->GetBGTeam());
+	pkt << uint64(m_Id) << uint64(plr_guid) << uint32(0) << uint32(player->GetBGTeam());
 	sClusterMgr.getNullValue(&pkt,C_BG);
     //m_Players[plr_guid].OfflineRemoveTime = 0;
     PlayerAddedToBGCheckIfBGIsRunning(player);
@@ -1502,7 +1515,7 @@ void BattleGround::EventPlayerLoggedOut(Player* player)
 
 	Packet pkt;
 	pkt << uint16(C_CMSG_BG_REG_PLAYER);
-	pkt << uint64(m_Id) << uint64(guid) << uint32(sWorld.GetGameTime() + MAX_OFFLINE_TIME) << uint32(player->GetBGTeam());
+	pkt << uint64(m_Id) << uint64(player->GetGUID()) << uint32(sWorld.GetGameTime() + MAX_OFFLINE_TIME) << uint32(player->GetBGTeam());
 	sClusterMgr.getNullValue(&pkt,C_BG);
 
     //m_Players[player->GetGUID()].OfflineRemoveTime = sWorld.GetGameTime() + MAX_OFFLINE_TIME;
@@ -1558,7 +1571,8 @@ uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
 
 bool BattleGround::HasFreeSlots() const
 {
-    return GetPlayersSize() < GetMaxPlayers();
+	std::vector<uint64> players = GetRemotePlayers();
+	return /*GetPlayersSize()*/players.size() < GetMaxPlayers();
 }
 
 void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
