@@ -217,3 +217,8 @@ cBattleGround::cBattleGround(): m_Id(0)
 {
 	m_Players.clear();
 }
+
+void cBattleGround::Reset()
+{
+	m_Players.clear();
+}

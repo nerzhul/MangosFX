@@ -26,6 +26,7 @@ class ClusterSession: public ACE_Based::Runnable
 
 		// BG
 		void Handle_BG_m_Players_mod(WorldPacket &pck);
+		void Handle_GenerateBGId(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

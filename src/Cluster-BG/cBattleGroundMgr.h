@@ -10,7 +10,7 @@ class cBattleGroundMgr
 	public:
 		cBattleGroundMgr() {}
 		~cBattleGroundMgr() {}
-		void CreateBattleGround();
+		uint64 CreateBattleGround();
 		cBattleGround* getBattleGround(uint64 id);
 	private:
 		cBattleGroundMap m_BGMap;

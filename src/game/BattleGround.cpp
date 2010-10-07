@@ -34,6 +34,7 @@
 #include "Formulas.h"
 #include "GridNotifiersImpl.h"
 #include "cSocketTCP.h"
+#include "cClusterMgr.h"
 
 namespace MaNGOS
 {
@@ -279,6 +280,12 @@ BattleGround::BattleGround()
     m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
     m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
+
+	m_Id = 0;
+	Packet pck;
+	pck << uint16(C_CMSG_GET_BG_ID);
+	m_Id = sClusterMgr.getUint64Value(&pck,C_BG);
+
 }
 
 BattleGround::~BattleGround()
@@ -2229,4 +2236,12 @@ void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
         if (team == TeamID)
             plr->GetAchievementMgr().DoCompleteAchivement(pAE);
     }
+}
+
+void BattleGround::SendBattleGroundCommand(std::string command)
+{
+	Packet pck;
+	pck << uint16(C_CMSG_SEND_COMMAND) << uint64(m_Id);
+
+
 }

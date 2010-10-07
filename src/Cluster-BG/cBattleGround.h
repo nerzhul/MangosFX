@@ -12,6 +12,8 @@ class cBattleGround
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);
 
+		virtual void Reset();
+
 		typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }

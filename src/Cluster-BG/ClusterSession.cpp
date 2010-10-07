@@ -75,7 +75,7 @@ void ClusterSession::HandlePacket(Packet* pck)
 {
 	if(pck->GetDataSize() < 2)
 	{
-		//error_log("Packet size for Cluster is wrong...");
+		error_log("Packet size for Cluster is wrong...");
 		return;
 	}
 

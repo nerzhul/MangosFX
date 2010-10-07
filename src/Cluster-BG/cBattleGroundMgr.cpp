@@ -8,12 +8,14 @@
 
 INSTANTIATE_SINGLETON_1(cBattleGroundMgr);
 
-void cBattleGroundMgr::CreateBattleGround()
+uint64 cBattleGroundMgr::CreateBattleGround()
 {
 	cBattleGround* cBG = new cBattleGround();
-	cBG->setId(sClusterObjectMgr.getNewBGId());
-	m_BGMap[cBG->getId()] = cBG;
-	sLog.outBasic("Create new BattleGround with id %u",GUID_LOPART(cBG->getId()));
+	uint64 newId = sClusterObjectMgr.getNewBGId();
+	cBG->setId(newId);
+	m_BGMap[newId] = cBG;
+	sLog.outBasic("Create new BattleGround with id %u",GUID_LOPART(newId));
+	return newId;
 }
 
 cBattleGround* cBattleGroundMgr::getBattleGround(uint64 id)
@@ -38,6 +40,13 @@ void ClusterSession::Handle_BG_m_Players_mod(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 		return;
-
 	// @TODO : modify datas on BG
+}
+
+void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)
+{
+	uint64 id = sClusterBGMgr.CreateBattleGround();
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_BG_ID) << uint64(id);
+	SendPacket(&pkt);
 }

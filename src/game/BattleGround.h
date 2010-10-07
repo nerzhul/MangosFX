@@ -607,7 +607,7 @@ class BattleGround
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
 
         bool   m_BuffChange;
-
+		void SendBattleGroundCommand(std::string command);
     private:
         /* Battleground */
         BattleGroundTypeId m_TypeID;
@@ -669,6 +669,8 @@ class BattleGround
         float m_TeamStartLocO[BG_TEAMS_COUNT];
 
 		bool m_RandomBG;
+
+		uint64 m_Id;
 };
 
 // helper functions for world state list fill

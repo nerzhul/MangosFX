@@ -14,6 +14,7 @@ class ClusterMgr
 		~ClusterMgr() {};
 		void RegisterCluster(cSocketTCP* sock, ClusterType _type);
 		cSocketTCP* getCluster(ClusterType _type);
+		uint64 getUint64Value(const Packet* pck, ClusterType _type);
 	private:
 		ClusterMap m_clustermap;
 };
