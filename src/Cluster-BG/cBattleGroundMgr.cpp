@@ -76,6 +76,7 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 
 	pkt << uint16(C_SMSG_GET_V_UINT64);
 	std::vector<uint64> players = cBG->getPlayerList();
+	error_log("%u",players.size());
 	pkt << uint32(players.size());
 	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
 		pkt << uint64(*itr);
