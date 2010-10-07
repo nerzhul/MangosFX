@@ -93,15 +93,12 @@ void ClusterSession::HandlePacket(Packet* pck)
 	if(!opcode)
 		return;
 
+	error_log("Received Opcode %u",opcode);
 	if(opcode >= MAX_C_OPCODES)
 	{
 		error_log("Cluster receive unhandled opcode %u",opcode);
 		return;
 	}
-
-	WorldPacket test(opcode);
-	test << uint64(9);
-	test.hexlike();
 
 	// Recopy data into WorldPacket
 	WorldPacket packet(opcode);
