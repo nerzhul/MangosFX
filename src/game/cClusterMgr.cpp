@@ -88,12 +88,6 @@ void ClusterMgr::getNullValue(const sf::Packet *pck, ClusterType _type)
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
 	rpc->getResponse(pck);
-
-	if(!resp)
-	{
-		delete rpc;
-		return;
-	}
 	delete rpc;
 }
 
