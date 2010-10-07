@@ -123,6 +123,13 @@ void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
 	std::string command;
 	pck >> command;
 
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+
+	if(command == "Reset")
+		cBG->Reset();
+
 	SendNullPacket();
 }
 
