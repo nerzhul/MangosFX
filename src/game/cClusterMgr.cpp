@@ -34,7 +34,7 @@ uint64 ClusterMgr::getUint64Value(const sf::Packet *pck, ClusterType _type)
 		delete rpc;
 		return 0;
 	}
-	uint64 value = readUint64(*resp,2);
+	uint64 value = readUint64(resp,2);
 	//delete rpc; crashfix
 	delete resp;
 	return value;
@@ -54,14 +54,10 @@ uint32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 		return 0;
 	}
 
-	uint32 value = 0;
-	value += uint8(resp->GetData()[5]);
-	value += uint8(resp->GetData()[4])*256;
-	value += uint8(resp->GetData()[3])*65536;
-	value += uint8(resp->GetData()[2])*16777216;
+	uint32 value = readUint32(resp,2);
 
 	delete rpc;
-	delete resp;
+	//delete resp;
 	return value;
 }
 
@@ -115,16 +111,12 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 		return vValues;
 	}
 	
-	uint32 vSize = 0;
-	vSize += uint8(resp->GetData()[5]);
-	vSize += uint8(resp->GetData()[4])*256;
-	vSize += uint8(resp->GetData()[3])*65536;
-	vSize += uint8(resp->GetData()[2])*16777216;
+	uint32 vSize = readUint32(resp,2);
 
 	uint32 pos=6;
 	for(uint32 i=0;i<vSize;i++)
 	{
-		uint32 tmp = readUint64(*resp,pos);
+		uint32 tmp = readUint64(resp,pos);
 		pos+=8;
 		vValues.push_back(tmp);
 	}

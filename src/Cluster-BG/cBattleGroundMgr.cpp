@@ -67,10 +67,11 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 	pck >> id;
 	
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(id);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 	Packet pkt;
 
 	pkt << uint16(C_SMSG_GET_V_UINT64);
@@ -89,10 +90,11 @@ void ClusterSession::Handle_IsInBG(WorldPacket &pck)
 	pck >> bgId >> plGuid;
 
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 
 	bool inBG = cBG->IsPlayerInBattleGround(plGuid);
 	Packet pkt;
@@ -106,10 +108,11 @@ void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
 	pck >> bgId >> plGuid;
 
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 	uint32 team = cBG->GetPlayerTeam(plGuid);
 	SendUint32(team);
 }
@@ -120,10 +123,11 @@ void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
 	pck >> bgId >> plGuid;
 
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 
 	uint32 off,team;
 	pck >> off >> team;
@@ -140,10 +144,11 @@ void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
 	pck >> command;
 
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(id);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 
 	if(command == "Reset")
 		cBG->Reset();
@@ -158,10 +163,11 @@ void ClusterSession::Handle_BGGetOfflineTime(WorldPacket &pck)
 	uint64 bgId, plGuid;
 	pck >> bgId >> plGuid;
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 
 	uint32 offTime = cBG->GetPlayerOfflineTime(plGuid);
 	SendUint32(offTime);
@@ -172,10 +178,11 @@ void ClusterSession::Handle_BGGetPlayerNumberByTeam(WorldPacket &pck)
 	uint64 bgId, plGuid;
 	pck >> bgId >> plGuid;
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 	uint32 team;
 	pck >> team;
 	uint32 pCount = cBG->GetPlayersCountByTeam(team);
@@ -187,10 +194,11 @@ void ClusterSession::Handle_BGRemovePlayerAtLeave(WorldPacket &pck)
 	uint64 bgId, plGuid;
 	pck >> bgId >> plGuid;
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	error_log("TEST");
 	if(!cBG)
+	{
+		SendNullPacket();
 		return;
-	error_log("TEST2");
+	}
 	cBG->RemovePlayerAtLeave(plGuid,false,false);
 	SendNullPacket();
 }
