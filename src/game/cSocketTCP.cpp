@@ -167,7 +167,7 @@ cRPCCommandHandler::cRPCCommandHandler(ClusterType _type)
 			break;
 		case C_BG:
 			m_addr = sConfig.GetStringDefault("BGClusterAddr","localhost");
-			m_port = sConfig.GetIntDefault("BGClusterPort",4238);;
+			m_port = sConfig.GetIntDefault("BGClusterPort",4239);;
 		default:
 			break;
 	}
