@@ -147,6 +147,13 @@ void ClusterSession::SendNullPacket()
 	SendPacket(&pkt);
 }
 
+void ClusterSession::SendBoolPacket(bool _bool)
+{
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_BOOL) << uint8(_bool ? 1 : 0);
+	SendPacket(&pkt);
+}
+
 void ClusterSession::SendUint32(uint32 value)
 {
 	Packet pkt;

@@ -89,7 +89,7 @@ bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
 	value += uint8(resp->GetData()[3]);
 
 	delete rpc;
-	delete resp;
+	//delete resp;
 	return (value != 0) ? true : false;
 }
 
@@ -121,7 +121,7 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 		vValues.push_back(tmp);
 	}
 	delete rpc;
-	delete resp;
+	//delete resp;
 	return vValues;
 }
 

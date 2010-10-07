@@ -75,7 +75,6 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 	Packet pkt;
 
 	pkt << uint16(C_SMSG_GET_V_UINT64);
-
 	std::vector<uint64> players = cBG->getPlayerList();
 	pkt << uint32(players.size());
 	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
@@ -92,7 +91,7 @@ void ClusterSession::Handle_IsInBG(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 	{
-		SendNullPacket();
+		SendBoolPacket(false);
 		return;
 	}
 
@@ -110,7 +109,7 @@ void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 	{
-		SendNullPacket();
+		SendUint32(0);
 		return;
 	}
 	uint32 team = cBG->GetPlayerTeam(plGuid);
@@ -165,7 +164,7 @@ void ClusterSession::Handle_BGGetOfflineTime(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 	{
-		SendNullPacket();
+		SendUint32(0);
 		return;
 	}
 
@@ -180,7 +179,7 @@ void ClusterSession::Handle_BGGetPlayerNumberByTeam(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 	{
-		SendNullPacket();
+		SendUint32(0);
 		return;
 	}
 	uint32 team;

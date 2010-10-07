@@ -16,6 +16,7 @@ class ClusterSession: public ACE_Based::Runnable
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pkt);
 		void SendNullPacket();
+		void SendBoolPacket(bool _bool);
 		void SendUint32(uint32 value);
 
 		void Update();
