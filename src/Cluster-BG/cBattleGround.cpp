@@ -278,9 +278,13 @@ void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPa
 
 void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team)
 {
+	if(!IsPlayerInBattleGround(guid))
+		UpdatePlayersCountByTeam(team,false);
+
 	cBattleGroundPlayer bp;
     bp.OfflineRemoveTime = offlineTime;
     bp.Team = team;
 
 	m_Players[guid] = bp;
+
 }

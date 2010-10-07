@@ -97,10 +97,7 @@ void ClusterSession::Handle_GetBgTeam(WorldPacket &pck)
 	if(!cBG)
 		return;
 	uint32 team = cBG->GetPlayerTeam(plGuid);
-
-	Packet pkt;
-	pkt << uint16(C_SMSG_GET_UINT32) << uint32(team);
-	SendPacket(&pkt);
+	SendUint32(team);
 }
 
 void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
@@ -115,9 +112,8 @@ void ClusterSession::Handle_Updt_Plr(WorldPacket &pck)
 	uint32 off,team;
 	pck >> off >> team;
 	cBG->SetPlayerValues(plGuid,off,team);
-	Packet pkt;
-	pck << uint16(C_CMSG_NULL);
-	SendPacket(&pkt);
+
+	SendNullPacket();
 }
 
 void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
@@ -126,18 +122,42 @@ void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)
 	pck >> id;
 	std::string command;
 	pck >> command;
+
+	SendNullPacket();
 }
 
 void ClusterSession::Handle_BGGetOfflineTime(WorldPacket &pck)
 {
 	uint64 bgId, plGuid;
+	pck >> bgId >> plGuid;
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 		return;
 
 	uint32 offTime = cBG->GetPlayerOfflineTime(plGuid);
-	Packet pkt;
-	pkt << uint16(C_SMSG_GET_UINT32) << uint32(offTime);
-	SendPacket(&pkt);
+	SendUint32(offTime);
+}
 
+void ClusterSession::Handle_BGGetPlayerNumberByTeam(WorldPacket &pck)
+{
+	uint64 bgId, plGuid;
+	pck >> bgId >> plGuid;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+	uint32 team;
+	pck >> team;
+	uint32 pCount = cBG->GetPlayersCountByTeam(team);
+	SendUint32(pCount);
+}
+
+void ClusterSession::Handle_BGRemovePlayerAtLeave(WorldPacket &pck)
+{
+	uint64 bgId, plGuid;
+	pck >> bgId >> plGuid;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+	cBG->RemovePlayerAtLeave(plGuid,false,false);
+	SendNullPacket();
 }

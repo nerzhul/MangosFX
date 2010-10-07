@@ -459,15 +459,15 @@ class BattleGround
         virtual void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
 
         static BattleGroundTeamId GetTeamIndexByTeamId(uint32 Team) { return Team == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE; }
-        uint32 GetPlayersCountByTeam(uint32 Team) const { return m_PlayersCount[GetTeamIndexByTeamId(Team)]; }
+        /*uint32 GetPlayersCountByTeam(uint32 Team) const { return m_PlayersCount[GetTeamIndexByTeamId(Team)]; }*/
         uint32 GetAlivePlayersCountByTeam(uint32 Team);   // used in arenas to correctly handle death in spirit of redemption / last stand etc. (killer = killed) cases
-        void UpdatePlayersCountByTeam(uint32 Team, bool remove)
+        /*void UpdatePlayersCountByTeam(uint32 Team, bool remove)
         {
             if (remove)
                 --m_PlayersCount[GetTeamIndexByTeamId(Team)];
             else
                 ++m_PlayersCount[GetTeamIndexByTeamId(Team)];
-        }
+        }*/
 
         // used for rated arena battles
         void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId; }
@@ -645,7 +645,7 @@ class BattleGround
         Group *m_BgRaids[BG_TEAMS_COUNT];                                // 0 - alliance, 1 - horde
 
         /* Players count by team */
-        uint32 m_PlayersCount[BG_TEAMS_COUNT];
+        //uint32 m_PlayersCount[BG_TEAMS_COUNT];
 
         /* Arena team ids by team */
         uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];

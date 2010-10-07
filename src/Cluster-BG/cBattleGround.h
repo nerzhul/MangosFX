@@ -33,6 +33,8 @@ class cBattleGround
 		virtual void RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket);
 
 		static BattleGroundTeamId GetTeamIndexByTeamId(uint32 Team) { return Team == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE; }
+
+		uint32 GetPlayersCountByTeam(uint32 Team) const { return m_PlayersCount[GetTeamIndexByTeamId(Team)]; }
 		void UpdatePlayersCountByTeam(uint32 Team, bool remove)
         {
             if (remove)

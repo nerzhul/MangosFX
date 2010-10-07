@@ -14,6 +14,8 @@ class ClusterSession: public ACE_Based::Runnable
 		void SetParams(SocketTCP* sock, std::string str);
 		void QueuePacket(WorldPacket* new_packet);
 		void SendPacket(const Packet* pkt);
+		void SendNullPacket();
+		void SendUint32(uint32 value);
 
 		void Update();
 
@@ -29,10 +31,12 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_GenerateBGId(WorldPacket &pck);
 		void Handle_GetRewardPlayers(WorldPacket &pck);
 		void Handle_BGGetOfflineTime(WorldPacket &pck);
+		void Handle_BGRemovePlayerAtLeave(WorldPacket &pck);
 		void Handle_IsInBG(WorldPacket &pck);
 		void Handle_GetBgTeam(WorldPacket &pck);
 		void Handle_Updt_Plr(WorldPacket &pck);
 		void Handle_GetBGCommand(WorldPacket &pck);
+		void Handle_BGGetPlayerNumberByTeam(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

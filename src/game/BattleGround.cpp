@@ -264,8 +264,8 @@ BattleGround::BattleGround()
     m_BgRaids[BG_TEAM_ALLIANCE]         = NULL;
     m_BgRaids[BG_TEAM_HORDE]            = NULL;
 
-    m_PlayersCount[BG_TEAM_ALLIANCE]    = 0;
-    m_PlayersCount[BG_TEAM_HORDE]       = 0;
+    /*m_PlayersCount[BG_TEAM_ALLIANCE]    = 0;
+    m_PlayersCount[BG_TEAM_HORDE]       = 0;*/
 
     m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
     m_TeamScores[BG_TEAM_HORDE]         = 0;
@@ -371,7 +371,14 @@ void BattleGround::Update(uint32 diff)
     /*********************************************************/
 
     // if less then minimum players are in on one side, then start premature finish timer
-    if (GetStatus() == STATUS_IN_PROGRESS && !isArena() && sBattleGroundMgr.GetPrematureFinishTime() && (GetPlayersCountByTeam(ALLIANCE) < GetMinPlayersPerTeam() || GetPlayersCountByTeam(HORDE) < GetMinPlayersPerTeam()))
+
+	Packet pck;
+	pck << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(ALLIANCE);
+	uint32 pAcount = sClusterMgr.getUint32Value(&pck,C_BG);
+	Packet pkt;
+	pkt << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(HORDE);
+	uint32 pHcount = sClusterMgr.getUint32Value(&pkt,C_BG);
+    if (GetStatus() == STATUS_IN_PROGRESS && !isArena() && sBattleGroundMgr.GetPrematureFinishTime() && (pAcount < GetMinPlayersPerTeam() || pHcount < GetMinPlayersPerTeam()))
     {
         if (!m_PrematureCountDown)
         {
@@ -382,9 +389,9 @@ void BattleGround::Update(uint32 diff)
         {
             // time's up!
             uint32 winner = 0;
-            if (GetPlayersCountByTeam(ALLIANCE) >= GetMinPlayersPerTeam())
+            if (pAcount >= GetMinPlayersPerTeam())
                 winner = ALLIANCE;
-            else if (GetPlayersCountByTeam(HORDE) >= GetMinPlayersPerTeam())
+            else if (pHcount >= GetMinPlayersPerTeam())
                 winner = HORDE;
 
             EndBattleGround(winner);
@@ -1197,6 +1204,9 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 	bool participant = IsPlayerInBattleGround(guid);
 	
     // Remove from lists/maps
+	Packet pck;
+	pck << uint16(C_CMSG_BG_RM_PLR_LEAVE) << uint64(m_Id) << uint64(guid);
+	sClusterMgr.getNullValue(&pck,C_BG);
     /* TODO: call this function
 	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
@@ -1351,6 +1361,7 @@ void BattleGround::Reset()
 
     // need do the same
 	//m_Players.clear();
+	SendBattleGroundCommand("Reset");
 
     for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
         delete itr->second;
@@ -1393,7 +1404,7 @@ void BattleGround::AddPlayer(Player *plr)
 
     //m_Players[guid] = bp;
 
-    UpdatePlayersCountByTeam(team, false);                  // +1 player
+    //UpdatePlayersCountByTeam(team, false);                  // +1 player
 
     WorldPacket data;
     sBattleGroundMgr.BuildPlayerJoinedBattleGroundPacket(&data, plr);
@@ -1525,8 +1536,16 @@ void BattleGround::EventPlayerLoggedOut(Player* player)
 
         // 1 player is logging out, if it is the last, then end arena!
         if (isArena())
-            if (GetAlivePlayersCountByTeam(player->GetTeam()) <= 1 && GetPlayersCountByTeam(GetOtherTeam(player->GetTeam())))
+		{
+			Packet pck;
+			pck << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(ALLIANCE);
+			uint32 pAcount = sClusterMgr.getUint32Value(&pck,C_BG);
+			Packet pck2;
+			pck2 << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(HORDE);
+			uint32 pHcount = sClusterMgr.getUint32Value(&pck2,C_BG);
+            if (pAcount <= 1 && pHcount)
                 EndBattleGround(GetOtherTeam(player->GetTeam()));
+		}
     }
 }
 
@@ -2086,12 +2105,18 @@ uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team)
 
 void BattleGround::CheckArenaWinConditions()
 {
-    if (!GetAlivePlayersCountByTeam(ALLIANCE) && GetPlayersCountByTeam(HORDE))
+	Packet pck;
+	pck << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(ALLIANCE);
+	uint32 pAcount = sClusterMgr.getUint32Value(&pck,C_BG);
+	Packet pck2;
+	pck2 << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(HORDE);
+	uint32 pHcount = sClusterMgr.getUint32Value(&pck2,C_BG);
+    if (!pAcount && pHcount)
 	{
 		RewardAchievementToTeam(HORDE,397);
         EndBattleGround(HORDE);
 	}
-    else if (GetPlayersCountByTeam(ALLIANCE) && !GetAlivePlayersCountByTeam(HORDE))
+    else if (pAcount && !GetAlivePlayersCountByTeam(HORDE))
 	{
         EndBattleGround(ALLIANCE);
 		RewardAchievementToTeam(ALLIANCE,397);

@@ -126,6 +126,20 @@ void ClusterSession::SendPacket(const Packet* pck)
 	CheckState(st);
 }
 
+void ClusterSession::SendNullPacket()
+{
+	Packet pkt;
+	pkt << uint16(C_CMSG_NULL);
+	SendPacket(&pkt);
+}
+
+void ClusterSession::SendUint32(uint32 value)
+{
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_UINT32) << uint32(value);
+	SendPacket(&pkt);
+}
+
 void ClusterSession::Update()
 {
 	WorldPacket* packet;
