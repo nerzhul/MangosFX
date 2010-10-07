@@ -477,9 +477,11 @@ void BattleGround::Update(uint32 diff)
             if (isArena())
             {
                 //TODO : add arena sound PlaySoundToAll(SOUND_ARENA_START);
-
-                for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player *plr = sObjectMgr.GetPlayer(itr->first))
+				
+				std::vector<uint64> players = GetRemotePlayers();
+				for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+                //for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                    if (Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr))
 					{
 						WorldPacket status;
 						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
@@ -493,11 +495,11 @@ void BattleGround::Update(uint32 diff)
             }
             else
             {
-
                 PlaySoundToAll(SOUND_BG_START);
-
-                for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player* plr = sObjectMgr.GetPlayer(itr->first))
+				std::vector<uint64> players = GetRemotePlayers();
+				for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+               // for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                    if (Player* plr = sObjectMgr.GetPlayer(/*itr->first*/*itr))
                         plr->RemoveAurasDueToSpell(SPELL_PREPARATION);
                 //Announce BG starting
                 if (sWorld.getConfig(CONFIG_BATTLEGROUND_QUEUE_ANNOUNCER_ENABLE))
@@ -524,8 +526,8 @@ void BattleGround::Update(uint32 diff)
             /*BattleGroundPlayerMap::iterator itr, next;
             for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)
             {*/
-                next = itr;
-                ++next;
+                /*next = itr;
+                ++next;*/
                 //itr is erased here!
                 RemovePlayerAtLeave(/*itr->first*/*itr, true, true);// remove player from BG
                 // do not change any battleground's private variables
