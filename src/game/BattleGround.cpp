@@ -429,7 +429,6 @@ void BattleGround::Update(uint32 diff)
     /***           BATTLEGROUND STARTING SYSTEM            ***/
     /*********************************************************/
 
-	std::vector<uint64> players = GetRemotePlayers();
     if (GetStatus() == STATUS_WAIT_JOIN && /*GetPlayersSize()*/players.size())
     {
         ModifyStartDelayTime(diff);
@@ -916,7 +915,7 @@ void BattleGround::EndBattleGround(uint32 winner)
 		uint32 team = plr->GetTeam()/*itr->second.Team*/;
 
 		Packet pkt;
-		pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(tmpGuid);
+		pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(*itr);
         if (/*itr->second.OfflineRemoveTime*/sClusterMgr.getUint32Value(&pkt,C_BG))
         {
             //if rated arena match - make member lost!
@@ -1572,7 +1571,7 @@ uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
 bool BattleGround::HasFreeSlots() const
 {
 	std::vector<uint64> players = GetRemotePlayers();
-	return /*GetPlayersSize()*/players.size() < GetMaxPlayers();
+	return /*GetPlayersSize()*/uint32(players.size()) < GetMaxPlayers();
 }
 
 void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
