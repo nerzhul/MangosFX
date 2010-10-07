@@ -35,7 +35,7 @@ uint64 ClusterMgr::getUint64Value(const sf::Packet *pck, ClusterType _type)
 		return 0;
 	}
 
-	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(uint64))
+	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(uint64)))
 	{
 		error_log("Packet error on uint64 RPC");
 		delete rpc;
@@ -64,7 +64,7 @@ uint32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 		return 0;
 	}
 
-	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(uint32))
+	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(uint32)))
 	{
 		error_log("Packet error on uint32 RPC");
 		delete rpc;
@@ -93,7 +93,7 @@ bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
 		return false;
 	}
 
-	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(bool))
+	if(resp->GetDataSize() != (sizeof(uint16) + sizeof(bool)))
 	{
 		error_log("Packet error on bool RPC");
 		delete rpc;
