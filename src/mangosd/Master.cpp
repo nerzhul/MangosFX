@@ -346,24 +346,11 @@ int Master::Run()
 	ACE_Based::Thread cluster_loot(cSLOOT_TCP);
 	cluster_loot.setPriority(ACE_Based::Highest);
 
-	cSocketTCP* cSBG_TCP = new cSocketTCP(C_BG);
+	/*cSocketTCP* cSBG_TCP = new cSocketTCP(C_BG);
 	cSBG_TCP->Connect();
 	sClusterMgr.RegisterCluster(cSBG_TCP,C_BG);
 	ACE_Based::Thread cluster_bg(cSBG_TCP);
-	cluster_bg.setPriority(ACE_Based::Highest);
-
-	/*cRPCCommandHandler* rpc_h = new cRPCCommandHandler(C_LOOT);
-	Packet ask;
-	ask << uint16(0x01) << uint8(5);
-	Packet* resp_h = rpc_h->getResponse(&ask);
-	uint16 opcode = 0;
-	uint8 _data = 0;
-	if(resp_h)
-	{
-		error_log("Size %u",resp_h->GetDataSize());
-		*resp_h >> opcode >> _data;
-	}
-	error_log("resp_h opcode %u %u",opcode,_data);*/
+	cluster_bg.setPriority(ACE_Based::Highest);*/
 
     sWorldSocketMgr->Wait();
 

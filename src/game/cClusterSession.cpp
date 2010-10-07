@@ -80,10 +80,7 @@ void cClusterSession::Handle_SetClusterType(WorldPacket &pck)
 {
 	uint8 type = m_type;
 	if(m_type > C_NULL)
-	{
-		error_log("Cluster type already sent...");
 		return;
-	}
 	pck >> type;
 	m_type = ClusterType(type);
 }

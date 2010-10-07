@@ -285,10 +285,11 @@ BattleGround::BattleGround()
     m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
 
 	m_Id = 0;
+	error_log("BattleGround Id to set");
 	Packet pck;
 	pck << uint16(C_CMSG_GET_BG_ID);
 	m_Id = sClusterMgr.getUint64Value(&pck,C_BG);
-	sLog.outDetail("BattleGround Id set to %u",GUID_LOPART(m_Id));
+	error_log("BattleGround Id set to %u",GUID_LOPART(m_Id));
 
 }
 
