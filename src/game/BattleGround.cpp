@@ -288,7 +288,7 @@ BattleGround::BattleGround()
 	Packet pck;
 	pck << uint16(C_CMSG_GET_BG_ID);
 	m_Id = sClusterMgr.getUint64Value(&pck,C_BG);
-	error_log("BattleGround Id set to %u",GUID_LOPART(m_Id));
+	sLog.outBasic("BattleGround Id set to %u",GUID_LOPART(m_Id));
 
 }
 

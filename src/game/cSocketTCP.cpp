@@ -182,6 +182,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	if(!m_sock)
 	{
 		error_log("Socket error for Cluster %s:%u",m_addr.c_str(),m_port);
+		//delete pck;
 		return NULL;
 	}
 
@@ -189,6 +190,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	{
 		error_log("Connect to Cluster %s:%u failed for RPC",m_addr.c_str(),m_port);
 		m_sock->Close();
+		//delete pck;
 		return NULL;
 	}
 
@@ -196,6 +198,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	{
 		error_log("Sending Packet to Cluster %s:%u failed for RPC",m_addr.c_str(),m_port);
 		m_sock->Close();
+		//delete pck;
 		return NULL;
 	}
 
@@ -207,15 +210,15 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	{
 		error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
 		m_sock->Close();
+		//delete pck;
 		return NULL;
 	}
 
 	Packet* resp_ = new Packet();
 	for(uint32 i=0;i<resp.GetDataSize();i++)
-	{
-		error_log("resp %u : %u",i,resp.GetData()[i]);
 		*resp_ << uint8(resp.GetData()[i]);
-	}
+
 	m_sock->Close();
+	//delete pck;
 	return resp_;
 }
