@@ -26,9 +26,13 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_BG_M_PLAYERS_MOD",				C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_BG_SEND_COMMAND",				C_ALL,&ClusterSession::Handle_ServerSide},
 	{"C_CMSG_GET_BG_ID",					C_BG,&ClusterSession::Handle_ServerSide},
-	{"C_SMSG_GET_BG_ID",					C_BG,&ClusterSession::Handle_Null},
-	{"C_CMSG_GET_BG_REW_PLAYERS",			&ClusterSession::Handle_ServerSide},
-	{"C_SMSG_GET_BG_REW_PLAYERS",			&ClusterSession::Handle_Null},
+	{"C_SMSG_GET_UINT64",					C_ALL,&ClusterSession::Handle_Null},
+	{"C_CMSG_GET_BG_REW_PLAYERS",			C_BG,&ClusterSession::Handle_ServerSide},
+	{"C_SMSG_GET_V_UINT64",					C_ALL,&ClusterSession::Handle_Null},
+	{"C_CMSG_IS_IN_BG",						C_BG,&ClusterSession::Handle_ServerSide},
+	{"C_SMSG_GET_BOOL",						C_ALL,&ClusterSession::Handle_Null},
+	{"C_SMSG_GET_UINT32",					C_ALL,&ClusterSession::Handle_Null},
+	{"C_CMSG_GET_BG_TEAM",					C_BG,&ClusterSession::Handle_Null},
 };
 
 #endif

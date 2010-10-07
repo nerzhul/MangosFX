@@ -202,8 +202,10 @@ namespace MaNGOS
 template<class Do>
 void BattleGround::BroadcastWorker(Do& _do)
 {
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(/*itr->first*/*itr, 0, HIGHGUID_PLAYER)))
             _do(plr);
 }
 
@@ -586,7 +588,7 @@ void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *
             continue;
 
 		// todo: handle team
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -620,7 +622,7 @@ void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
         }
 
 		// TODO : utiliser la retransmission directe via le cluster
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -647,8 +649,7 @@ void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
             continue;
         }
 
-		// Todo : handle with cluster
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -672,7 +673,7 @@ void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
             continue;
         }
 
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -694,7 +695,7 @@ void BattleGround::RewardHonorTeamDaily(uint32 WinningTeamID)
 		if (!plr)
 			continue;
 		
-		uint32 team = itr->second.Team;
+		uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
 		if(!team) 
 			team = plr->GetTeam();
 		plr->RewardHonorEndBattlegroud(team == WinningTeamID);
@@ -746,7 +747,7 @@ void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, 
             continue;
         }
 
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -770,7 +771,7 @@ void BattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID
             continue;
         }
 
-        uint32 team = itr->second.Team;
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!team) team = plr->GetTeam();
 
         if (team == TeamID)
@@ -1168,16 +1169,17 @@ void BattleGround::BlockMovement(Player *plr)
 void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
 {
     uint32 team = GetPlayerTeam(guid);
-    bool participant = false;
+	bool participant = IsPlayerInBattleGround();
+	
     // Remove from lists/maps
-    BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
+    /*BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
     {
         UpdatePlayersCountByTeam(team, true);               // -1 player
         m_Players.erase(itr);
         // check if the player was a participant of the match, or only entered through gm command (goname)
         participant = true;
-    }
+    }*/
 
     BattleGroundScoreMap::iterator itr2 = m_PlayerScores.find(guid);
     if (itr2 != m_PlayerScores.end())
@@ -1597,10 +1599,12 @@ uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
 uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
 {
 	uint32 finaldamage = 0;
-	for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
 	{
-		uint32 team = itr->second.Team;
-		Player *plr = sObjectMgr.GetPlayer(itr->first);
+		uint32 team = GetPlayerTeam(*itr)/*itr->second.Team*/;
+		Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 		if (!plr)
 			continue; 
 		if(!team) team = plr->GetTeam();
@@ -1957,9 +1961,11 @@ void BattleGround::HandleKillPlayer( Player *player, Player *killer )
         UpdatePlayerScore(killer, SCORE_HONORABLE_KILLS, 1);
         UpdatePlayerScore(killer, SCORE_KILLING_BLOWS, 1);
 
-        for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+		std::vector<uint64> players = GetRemotePlayers();
+		for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+        //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
         {
-            Player *plr = sObjectMgr.GetPlayer(itr->first);
+            Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
 
             if (!plr || plr == killer)
                 continue;
@@ -1978,18 +1984,26 @@ void BattleGround::HandleKillPlayer( Player *player, Player *killer )
 // used in same faction arena matches mainly
 uint32 BattleGround::GetPlayerTeam(uint64 guid)
 {
-    BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
+	Packet pkt;
+	pkt << uint16(C_CMSG_GET_BG_TEAM) << uint64(m_Id) << uint64(guid);
+	return sClusterMgr.getUint32Value(&pkt,C_BG);
+
+    /*BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
     if (itr!=m_Players.end())
         return itr->second.Team;
-    return 0;
+    return 0;*/
 }
 
 bool BattleGround::IsPlayerInBattleGround(uint64 guid)
 {
-    BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
+	Packet pkt;
+	pkt << uint16(C_CMSG_IS_IN_BG) << uint64(m_Id) << uint64(guid);
+	return sClusterMgr.getBoolValue(&pkt,C_BG);
+
+    /*BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
         return true;
-    return false;
+    return false;*/
 }
 
 void BattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
@@ -2012,11 +2026,13 @@ void BattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
 uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team) const
 {
     int count = 0;
-    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
-        if (itr->second.Team == Team)
+        if (/*itr->second.Team*/GetPlayerTeam(*itr) == Team)
         {
-            Player * pl = sObjectMgr.GetPlayer(itr->first);
+            Player * pl = sObjectMgr.GetPlayer(/*itr->first*/*itr);
             if (pl && pl->isAlive())
                 ++count;
         }
@@ -2183,8 +2199,10 @@ void BattleGround::SendWarningToAll(int32 entry, ...)
     data << (uint32)(strlen(msg.c_str())+1);
     data << msg.c_str();
     data << (uint8)0;
-    for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(/*itr->first*/*itr, 0, HIGHGUID_PLAYER)))
             if (plr->GetSession())
                 plr->GetSession()->SendPacket(&data);
 }
@@ -2203,8 +2221,10 @@ void BattleGround::SendWarningToAll(std::string msg)
     data << (uint32)(strlen(msg.c_str())+1);
     data << msg.c_str();
     data << (uint8)0;
-    for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+    //for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(/*itr->first*/*itr, 0, HIGHGUID_PLAYER)))
             if (plr->GetSession())
                 plr->GetSession()->SendPacket(&data);
 }
@@ -2248,7 +2268,7 @@ void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
 			continue;
 		}
 
-        uint32 TeamID = itr->second.Team;
+        uint32 TeamID = GetPlayerTeam(*itr)/*itr->second.Team*/;
         if(!TeamID) TeamID = plr->GetTeam();
 
         if (team == TeamID)

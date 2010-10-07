@@ -47,7 +47,7 @@ void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)
 {
 	uint64 id = sClusterBGMgr.CreateBattleGround();
 	Packet pkt;
-	pkt << uint16(C_SMSG_GET_BG_ID) << uint64(id);
+	pkt << uint16(C_SMSG_GET_UINT64) << uint64(id);
 	SendPacket(&pkt);
 }
 
@@ -62,7 +62,7 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 
 	Packet pkt;
 
-	pkt << uint16(C_SMSG_GET_BG_REW_PLAYERS);
+	pkt << uint16(C_SMSG_GET_V_UINT64);
 
 	std::vector<uint64> players = cBG->getPlayerList();
 	pkt << uint32(players.size());
@@ -70,6 +70,21 @@ void ClusterSession::Handle_GetRewardPlayers(WorldPacket &pck)
 		pkt << uint64(*itr);
 
 	SendPacket(&pkt);
+}
+
+void ClusterSession::Handle_IsInBG(WorldPacket &pck)
+{
+	uint64 bgId,plGuid;
+	pck >> bgId >> plGuid;
+
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+		return;
+
+	bool inBG = cBG->IsPlayerInBattleGround(plGuid);
+	Packet pck;
+	pck << uint16(C_SMSG_GET_BOOL) << uint8(inBG);
+	SendPacket(&pck);
 }
 
 void ClusterSession::Handle_GetBGCommand(WorldPacket &pck)

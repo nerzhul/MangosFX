@@ -216,6 +216,9 @@ void cBattleGround::SendWarningToAll(std::string msg)
 cBattleGround::cBattleGround(): m_Id(0)
 {
 	m_Players.clear();
+
+	m_PlayersCount[BG_TEAM_ALLIANCE] = 0;
+	m_PlayersCount[BG_TEAM_HORDE] = 0;
 }
 
 void cBattleGround::Reset()
@@ -235,4 +238,31 @@ std::vector<uint64> cBattleGround::getPlayerList()
 		players.push_back(itr->first);
 	}
 	return players;
+}
+
+uint32 BattleGround::GetPlayerTeam(uint64 guid)
+{
+    BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
+    if (itr!=m_Players.end())
+        return itr->second.Team;
+    return 0;
+}
+
+bool BattleGround::IsPlayerInBattleGround(uint64 guid)
+{
+    BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);
+    if (itr != m_Players.end())
+        return true;
+    return false;
+}
+
+void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
+{
+
+	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
+    if (itr != m_Players.end())
+    {
+        UpdatePlayersCountByTeam(team, true);               // -1 player
+        m_Players.erase(itr);
+	}
 }
