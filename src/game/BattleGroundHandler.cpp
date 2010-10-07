@@ -96,6 +96,8 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
 
     sLog.outDebug( "WORLD: Recvd CMSG_BATTLEMASTER_JOIN Message from (GUID: %u TypeId:%u)", GUID_LOPART(guid), bgTypeId_);
 
+	return;
+
     // can do this, since it's battleground, not arena
     BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(bgTypeId, 0);
 
