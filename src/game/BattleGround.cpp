@@ -2024,7 +2024,7 @@ void BattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
     plr->GetSession()->SendPacket(&data);
 }
 
-uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team) const
+uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team)
 {
     int count = 0;
 	std::vector<uint64> players = GetRemotePlayers();
@@ -2289,6 +2289,6 @@ std::vector<uint64> BattleGround::GetRemotePlayers()
 void BattleGround::SendBattleGroundCommand(std::string command)
 {
 	Packet pck;
-	pck << uint16(C_CMSG_SEND_COMMAND) << uint64(m_Id) << std::string(command);
+	pck << uint16(C_CMSG_BG_SEND_COMMAND) << uint64(m_Id) << std::string(command);
 	sClusterMgr.sendCommand(&pck,C_BG);
 }
