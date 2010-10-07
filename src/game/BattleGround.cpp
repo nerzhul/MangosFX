@@ -2352,9 +2352,7 @@ std::vector<uint64> BattleGround::GetRemotePlayers()
 {
 	Packet pkt;
 	pkt << uint16(C_CMSG_GET_BG_REW_PLAYERS) << uint64(m_Id);
-	std::vector<uint64> players;
-	players = sClusterMgr.getUint64Vector(&pkt,C_BG);
-	return players;
+	return sClusterMgr.getUint64Vector(&pkt,C_BG);
 }
 
 void BattleGround::SendBattleGroundCommand(std::string command)
