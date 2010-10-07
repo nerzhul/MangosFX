@@ -24,6 +24,8 @@ char serviceDescription[] = "Massive Network Game Object Server";
 int m_ServiceStatus = -1;
 #endif
 
+#define CLUSTER_VERSION	0.1.4
+
 DatabaseType WorldDatabase;                                 ///< Accessor to the world database
 DatabaseType LocalisationDatabase;
 DatabaseType loginDatabase;
@@ -133,7 +135,7 @@ extern int main(int argc, char **argv)
 	sLog.outTitle( " //         //     //   //     //     //  //     //    //   //     //   //   " );
 	sLog.outTitle( "//     ////// //////   ////// ////// ////// //////    //   ////// //   //    " );
 	sLog.outTitle( "-----------------------------------------------------------------------------" );
-	sLog.outTitle( "Frost Sapphire Studios BG Cluster");
+	sLog.outTitle( "Frost Sapphire Studios BG Cluster Revision %u",CLUSTER_VERSION);
     sLog.outString("Using configuration file %s.", cfg_file);
 
     sLog.outDetail("%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));

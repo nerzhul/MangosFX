@@ -145,7 +145,7 @@ std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterTy
 void ClusterMgr::sendCommand(const sf::Packet *pck, ClusterType _type)
 {
 	if(_type == C_ALL || _type == C_NULL)
-		return 0;
+		return;
 
 	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
 	rpc->getResponse(pck);
