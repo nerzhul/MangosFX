@@ -35,6 +35,7 @@ static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_GET_UINT32",					&ClusterSession::Handle_Null},
 	{"C_CMSG_GET_BG_TEAM",					&ClusterSession::Handle_GetBgTeam},
 	{"C_CMSG_BG_REG_PLAYER",				&ClusterSession::Handle_Updt_Plr},
+	{"C_CMSG_PLR_GET_OFFLINE_TIME",			&ClusterSession::Handle_BGGetOfflineTime},
 };
 
 #endif

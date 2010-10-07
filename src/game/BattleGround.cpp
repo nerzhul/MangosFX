@@ -326,7 +326,8 @@ BattleGround::~BattleGround()
 
 void BattleGround::Update(uint32 diff)
 {
-    if (!GetPlayersSize())
+	std::vector<uint64> players = GetRemotePlayers();
+	if (!/*GetPlayersSize()*/players.size())
     {
         // BG is empty
         // if there are no players invited, delete BG
