@@ -196,6 +196,7 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	if(m_sock->Connect(m_port,m_addr) != 0)
 	{
 		error_log("Connect to Cluster %s:%u failed for RPC",m_addr.c_str(),m_port);
+		m_sock->Close();
 		return NULL;
 	}
 	
@@ -204,12 +205,14 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 	if(m_sock->Send((Packet&)*pck) != 0)
 	{
 		error_log("Sending Packet to Cluster %s:%u failed for RPC",m_addr.c_str(),m_port);
+		m_sock->Close();
 		return NULL;
 	}
 
 	if(m_sock->Receive(resp) != 0)
 	{
 		error_log("Receiving Packet forum Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
+		m_sock->Close();
 		return NULL;
 	}
 
