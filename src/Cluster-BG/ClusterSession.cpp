@@ -36,7 +36,7 @@ void ClusterSession::SetParams(SocketTCP* sock, std::string addr)
 
 void ClusterSession::run()
 {
-	SendClusterIdentity();
+	//SendClusterIdentity();
 	while(!mustStop)
 	{
 		Packet pkt;
@@ -147,7 +147,6 @@ void ClusterSession::Update()
 	while (_recvQueue.next(packet) && m_sock && m_sock->IsValid())
     {
 		PacketOpcodeHandler opHandle = PckOpH[packet->GetOpcode()];
-		error_log("Packet %u recv",packet->GetOpcode());
 		try
 		{
 			(this->*opHandle.handler)(*packet);
@@ -191,8 +190,6 @@ void ClusterSession::SendMonoPlayerPacket(uint64 guid,WorldPacket &pck)
 		pck >> tmp;
 		pkt << uint8(tmp);
 	}
-	// todo : verify packet to transmit
-	error_log("Packet size %u",pkt.GetDataSize());
 	SendPacket(&pkt);
 }
 
@@ -212,8 +209,5 @@ void ClusterSession::SendMultiPlayerPacket(std::vector<uint64> GUIDs,WorldPacket
 	pkt << uint16(GUIDs.size());
 	for(std::vector<uint64>::const_iterator itr = GUIDs.begin();itr != GUIDs.end();++itr)
 		pkt << uint64(*itr);
-
-	// todo : verify packet to transmit
-	error_log("Packet size %u",pkt.GetDataSize());
 	SendPacket(&pkt);
 }
