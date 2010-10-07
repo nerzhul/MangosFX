@@ -199,15 +199,15 @@ Packet* cRPCCommandHandler::getResponse(const Packet* pck)
 		return NULL;
 	}
 
-	//m_sock->SetBlocking(true);
+	m_sock->SetBlocking(true);
 
 	Packet resp;
 
-	while(m_sock->Receive(resp) != 0)
+	if(m_sock->Receive(resp) != 0)
 	{
-		//error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
-		/*m_sock->Close();
-		return NULL;*/
+		error_log("Receiving Packet from Cluster %s:%u fail on RPC",m_addr.c_str(),m_port);
+		m_sock->Close();
+		return NULL;
 	}
 
 	Packet* resp_ = new Packet();
