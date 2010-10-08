@@ -1322,7 +1322,7 @@ void BattleGroundMgr::BuildPvpLogDataPacket(WorldPacket *data, BattleGround *bg)
         }
         for(int i = 1; i >= 0; --i)
         {
-            uint32 at_id = bg->m_ArenaTeamIds[i];
+			uint32 at_id = bg->GetArenaTeamIdForTeam((i==0)?ALLIANCE:HORDE);
             ArenaTeam * at = sObjectMgr.GetArenaTeamById(at_id);
             if (at)
                 *data << at->GetName();

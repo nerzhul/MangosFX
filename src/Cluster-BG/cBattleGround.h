@@ -48,6 +48,8 @@ class cBattleGround
 		void BlockMovement(Player *plr);
 
 		void StartBattleGround();
+		void EndNow();
+
 		void AddPlayer(Player *plr);
 
 		void AddOrSetPlayerToCorrectBgGroup(Player *plr, uint64 plr_guid, uint32 team);
@@ -65,10 +67,51 @@ class cBattleGround
 		void DoorOpen(uint64 const& guid);
 		void OnObjectDBLoad(Creature* /*creature*/);
 		uint64 GetSingleCreatureGuid(uint8 event1, uint8 event2);
+		void OnObjectDBLoad(GameObject* /*obj*/);
 
+		bool IsDoor(uint8 event1, uint8 event2);
+		void OpenDoorEvent(uint8 event1, uint8 event2 = 0);
+
+		void SpawnEvent(uint8 event1, uint8 event2, bool spawn);
+		void SpawnBGObject(uint64 const& guid, uint32 respawntime);
+		void SpawnBGCreature(uint64 const& guid, uint32 respawntime);
+
+		bool DelObject(uint32 type);
+
+		void SendMessageToAll(int32 entry, ChatMsg type, Player const* source = NULL);
+		void SendYellToAll(int32 entry, uint32 language, uint64 const& guid);
+		void PSendMessageToAll(int32 entry, ChatMsg type, Player const* source, ...  );
+
+		// specialized version with 2 string id args
+        void SendMessage2ToAll(int32 entry, ChatMsg type, Player const* source, int32 strId1 = 0, int32 strId2 = 0);
+        void SendYell2ToAll(int32 entry, uint32 language, uint64 const& guid, int32 arg1, int32 arg2);
 
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);
+
+		void HandleTriggerBuff(uint64 const& go_guid);
+		virtual void HandleKillPlayer(Player *player, Player *killer);
+        virtual void HandleKillUnit(Creature* /*unit*/, Player* /*killer*/) { return; };
+
+		void PlayerAddedToBGCheckIfBGIsRunning(Player* plr);
+		uint32 GetAlivePlayersCountByTeam(uint32 Team);
+		void CheckArenaWinConditions();
+
+		void SetBgRaid(uint32 TeamID, Group *bg_raid);
+
+		/* Death related */
+        virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
+
+		void UpdateArenaWorldState();
+		GameObject* GetBGObject(uint32 type);
+		bool DelCreature(uint32 type);
+		Creature* AddCreature(uint32 entry, uint32 type, uint32 teamval, float x, float y, float z, float o, uint32 respawntime = 0);
+		bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
+		Creature* GetBGCreature(uint32 type);
+
+		void SetBracket(PvPDifficultyEntry const* bracketEntry);
+
+		bool IsTeamScoreInRange(uint32 team, uint32 minScore, uint32 maxScore) const;
 
 		virtual void Reset();
 

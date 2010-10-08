@@ -385,6 +385,7 @@ void cBattleGround::RemoveFromBGFreeSlotQueue()
 
 uint32 cBattleGround::GetFreeSlotsForTeam(uint32 Team) const
 {
+	return 0;
 }
 
 bool cBattleGround::HasFreeSlots()
@@ -398,10 +399,12 @@ void cBattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 
 uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
 {
+	return 0;
 }
 
 uint32 cBattleGround::GetDamageDoneForTeam(uint32 TeamID)
 {
+	return 0;
 }
 
 bool cBattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime)
@@ -421,23 +424,71 @@ void cBattleGround::OnObjectDBLoad(Creature* creature)
 {
 }
 
-uint64 BattleGround::GetSingleCreatureGuid(uint8 event1, uint8 event2)
+uint64 cBattleGround::GetSingleCreatureGuid(uint8 event1, uint8 event2)
 {
 	return 0;
 }
 
-std::vector<uint64> cBattleGround::getPlayerList()
+void cBattleGround::OnObjectDBLoad(GameObject* obj)
 {
-	std::vector<uint64> players;
-	players.clear();
+}
 
-	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-    {
-        if (itr->second.OfflineRemoveTime)
-            continue;
-		players.push_back(itr->first);
-	}
-	return players;
+bool cBattleGround::IsDoor(uint8 event1, uint8 event2)
+{
+	return true;
+}
+
+void cBattleGround::OpenDoorEvent(uint8 event1, uint8 event2 /*=0*/)
+{
+}
+
+void cBattleGround::SpawnEvent(uint8 event1, uint8 event2, bool spawn)
+{
+}
+
+void cBattleGround::SpawnBGObject(uint64 const& guid, uint32 respawntime)
+{
+}
+
+void cBattleGround::SpawnBGCreature(uint64 const& guid, uint32 respawntime)
+{
+}
+
+bool cBattleGround::DelObject(uint32 type)
+{
+	return true;
+}
+
+void cBattleGround::SendMessageToAll(int32 entry, ChatMsg type, Player const* source)
+{
+}
+
+void cBattleGround::SendYellToAll(int32 entry, uint32 language, uint64 const& guid)
+{
+}
+
+void cBattleGround::PSendMessageToAll(int32 entry, ChatMsg type, Player const* source, ...)
+{
+}
+
+void cBattleGround::SendMessage2ToAll(int32 entry, ChatMsg type, Player const* source, int32 arg1, int32 arg2)
+{
+}
+
+void cBattleGround::SendYell2ToAll(int32 entry, uint32 language, uint64 const& guid, int32 arg1, int32 arg2)
+{
+}
+
+void cBattleGround::EndNow()
+{
+}
+
+void cBattleGround::HandleTriggerBuff(uint64 const& go_guid)
+{
+}
+
+void cBattleGround::HandleKillPlayer(Player *player, Player *killer)
+{
 }
 
 uint32 cBattleGround::GetPlayerTeam(uint64 guid)
@@ -456,6 +507,129 @@ bool cBattleGround::IsPlayerInBattleGround(uint64 guid)
     return false;
 }
 
+void cBattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
+{
+}
+
+uint32 cBattleGround::GetAlivePlayersCountByTeam(uint32 Team)
+{
+	return 0;
+}
+
+void cBattleGround::CheckArenaWinConditions()
+{
+}
+
+void cBattleGround::SetBgRaid( uint32 TeamID, Group *bg_raid )
+{
+}
+
+WorldSafeLocsEntry const* BattleGround::GetClosestGraveYard( Player* player )
+{
+	return NULL;
+}
+
+bool cBattleGround::IsTeamScoreInRange(uint32 team, uint32 minScore, uint32 maxScore) const
+{
+    return true;
+}
+
+void cBattleGround::SetBracket( PvPDifficultyEntry const* bracketEntry )
+{
+}
+
+void cBattleGround::UpdateArenaWorldState()
+{
+}
+
+GameObject* cBattleGround::GetBGObject(uint32 type)
+{
+    return NULL;
+}
+
+bool cBattleGround::DelCreature(uint32 type)
+{
+    return true;
+}
+
+Creature* cBattleGround::AddCreature(uint32 entry, uint32 type, uint32 teamval, float x, float y, float z, float o, uint32 respawntime)
+{
+    return  NULL;
+}
+
+bool cBattleGround::AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team)
+{
+    return true;
+}
+
+Creature* cBattleGround::GetBGCreature(uint32 type)
+{
+    return NULL;
+}
+
+std::vector<uint64> cBattleGround::getPlayerList()
+{
+	std::vector<uint64> players;
+	players.clear();
+
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+		players.push_back(itr->first);
+	}
+	return players;
+}
+
+void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
+{
+	if(!plr)
+		return;
+
+	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
+	if (!pAE)
+    {
+        sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
+        return;
+    }
+	
+	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
+}
+
+void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
+{
+	std::vector<uint64> players = GetRemotePlayers();
+	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
+	//for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        /*if (itr->second.OfflineRemoveTime)
+            continue;*/
+        //Player *plr = sObjectMgr.GetPlayer(itr->first);
+		Player *plr = sObjectMgr.GetPlayer(*itr);
+
+        if (!plr)
+        {
+            //sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
+            continue;
+        }
+
+		AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
+		if (!pAE)
+		{
+			sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
+			continue;
+		}
+
+        uint32 TeamID = GetPlayerTeam(*itr)/*itr->second.Team*/;
+        if(!TeamID) TeamID = plr->GetTeam();
+
+        if (team == TeamID)
+            plr->GetAchievementMgr().DoCompleteAchivement(pAE);
+    }
+}
+
+
+// Cluster special functions
 uint32 cBattleGround::GetPlayerOfflineTime(uint64 guid)
 {
 	BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);

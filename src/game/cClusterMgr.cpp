@@ -82,7 +82,7 @@ float ClusterMgr::getFloatValue(const sf::Packet *pck, ClusterType _type)
 	return value;
 }
 
-int32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
+int32 ClusterMgr::getInt32Value(const sf::Packet *pck, ClusterType _type)
 {
 	if(_type == C_ALL || _type == C_NULL)
 		return 0;
