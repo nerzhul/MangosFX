@@ -14,6 +14,8 @@ class cBattleGroundMgr
 		void DropBattleGround(uint64 id);
 		cBattleGround* getBattleGround(uint64 id);
 
+		void BuildPlaySoundPacket(WorldPacket *data, uint32 soundid);
+		void BuildUpdateWorldStatePacket(WorldPacket *data, uint32 field, uint32 value);
 	private:
 		cBattleGroundMap m_BGMap;
 };

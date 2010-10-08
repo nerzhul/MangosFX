@@ -2,6 +2,7 @@
 #include <Log.h>
 #include <ObjectDefines.h>
 #include <cPacketOpcodes.h>
+#include <Opcodes.h>
 #include "cBattleGroundMgr.h"
 #include "cObjectMgr.h"
 #include "cBattleGround.h"
@@ -35,6 +36,19 @@ void cBattleGroundMgr::DropBattleGround(uint64 id)
 		return;
 	m_BGMap[id] = NULL;
 	delete bg;
+}
+
+void cBattleGroundMgr::BuildPlaySoundPacket(WorldPacket *data, uint32 soundid)
+{
+    data->Initialize(SMSG_PLAY_SOUND, 4);
+    *data << uint32(soundid);
+}
+
+void cBattleGroundMgr::BuildUpdateWorldStatePacket(WorldPacket *data, uint32 field, uint32 value)
+{
+    data->Initialize(SMSG_UPDATE_WORLD_STATE, 4+4);
+    *data << uint32(field);
+    *data << uint32(value);
 }
 
 void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)

@@ -1,6 +1,7 @@
 #include <ObjectMgr.h>
 #include <WorldPacket.h>
 #include "cBattleGround.h"
+#include "cBattleGroundMgr.h"
 
 namespace ClusterFX
 {
@@ -270,42 +271,205 @@ void cBattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, fl
 
 void cBattleGround::SendPacketToAll(WorldPacket *packet)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+        if (plr)
+            plr->GetSession()->SendPacket(packet);
+        else
+            sLog.outError("BattleGround:SendPacketToAll: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));*/
+    }
+
 }
 
 void cBattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender, bool self)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->firs/*itr);
+        if (!plr)
+        {
+            sLog.outError("BattleGround:SendPacketToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+        if (!self && sender == plr)
+            continue;
+
+		// todo: handle team
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+            plr->GetSession()->SendPacket(packet);*/
+    }
 }
 
 void cBattleGround::PlaySoundToAll(uint32 SoundID)
 {
+	WorldPacket data;
+    sClusterBGMgr.BuildPlaySoundPacket(&data, SoundID);
+    SendPacketToAll(&data);
 }
 
 void cBattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:PlaySoundToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+		// TODO : utiliser la retransmission directe via le cluster
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+        {
+            sClusterBGMgr.BuildPlaySoundPacket(&data, SoundID);
+            plr->GetSession()->SendPacket(&data);
+        }*/
+    }
 }
 
 void cBattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:CastSpellOnTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first**itr));
+            continue;
+        }
+
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+            plr->CastSpell(plr, SpellID, true);*/
+    }
 }
 
 void cBattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+            UpdatePlayerScore(plr, SCORE_BONUS_HONOR, Honor);*/
+    }
 }
 
 void cBattleGround::RewardHonorTeamDaily(uint32 WinningTeamID)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	{
+		if (itr->second.OfflineRemoveTime)
+			continue;
+		
+		/*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+		
+		if (!plr)
+			continue;
+		
+		uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+		if(!team) 
+			team = plr->GetTeam();
+		plr->RewardHonorEndBattlegroud(team == WinningTeamID);*/
+	}
 }
 
 void cBattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID)
 {
+	FactionEntry const* factionEntry = sFactionStore.LookupEntry(faction_id);
+
+    if (!factionEntry)
+        return;
+
+    for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:RewardReputationToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+            plr->GetReputationMgr().ModifyReputation(factionEntry, Reputation);*/
+    }
 }
 
 void cBattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID)
 {
+	for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+        if (itr->second.OfflineRemoveTime)
+            continue;
+        /*Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+
+        if (!plr)
+        {
+            sLog.outError("BattleGround:RewardXpToTeam: Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+        uint32 team = GetPlayerTeam(*itr)/*itr->second.Team;
+        if(!team) team = plr->GetTeam();
+
+        if (team == TeamID)
+        {
+            uint32 gain = Xp;
+            if(gain == 0 && percentOfLevel != 0)
+            {
+                percentOfLevel = percentOfLevel / 100;
+                gain = uint32(float(plr->GetUInt32Value(PLAYER_NEXT_LEVEL_XP))*percentOfLevel);
+            }
+            plr->GiveXP(gain, NULL);
+        }*/
+    }
 }
 
 void cBattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 {
+	WorldPacket data;
+    sClusterBGMgr.BuildUpdateWorldStatePacket(&data, Field, Value);
+	/*if(Source)
+		Source->GetSession()->SendPacket(&data);
+	else*/
+		SendPacketToAll(&data);
 }
 
 void cBattleGround::EndBattleGround(uint32 winner)
