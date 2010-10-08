@@ -383,6 +383,26 @@ void cBattleGround::RemoveFromBGFreeSlotQueue()
 {
 }
 
+uint32 cBattleGround::GetFreeSlotsForTeam(uint32 Team) const
+{
+}
+
+bool cBattleGround::HasFreeSlots()
+{
+	return GetPlayersSize() < GetMaxPlayers();
+}
+
+void cBattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
+{
+}
+
+uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
+{
+}
+
+uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
+{
+}
 std::vector<uint64> cBattleGround::getPlayerList()
 {
 	std::vector<uint64> players;
@@ -435,8 +455,5 @@ void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team
 	m_Players[guid] = bp;
 }
 
-bool cBattleGround::HasFreeSlots()
-{
-	return GetPlayersSize() < GetMaxPlayers();
-}
+
 

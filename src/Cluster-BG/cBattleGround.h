@@ -55,6 +55,11 @@ class cBattleGround
 		void EventPlayerLoggedOut(Player* player);
 		void AddToBGFreeSlotQueue();
 		void RemoveFromBGFreeSlotQueue();
+		uint32 GetFreeSlotsForTeam(uint32 Team) const;
+		void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
+		uint32 GetPlayerScore(Player *Source, uint32 type);
+		GetDamageDoneForTeam(uint32 TeamID);
+
 
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);
