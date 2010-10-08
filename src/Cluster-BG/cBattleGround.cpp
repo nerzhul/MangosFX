@@ -250,9 +250,137 @@ cBattleGround::cBattleGround(): m_Id(0)
 
 	m_Players.clear();
 }
+
+cBattleGround::~cBattleGround()
+{
+}
+
+void cBattleGround::Update(uint32 diff)
+{
+}
+
+void cBattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
+{
+    BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
+    m_TeamStartLocX[idx] = X;
+    m_TeamStartLocY[idx] = Y;
+    m_TeamStartLocZ[idx] = Z;
+    m_TeamStartLocO[idx] = O;
+}
+
+void cBattleGround::SendPacketToAll(WorldPacket *packet)
+{
+}
+
+void cBattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender, bool self)
+{
+}
+
+void cBattleGround::PlaySoundToAll(uint32 SoundID)
+{
+}
+
+void cBattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
+{
+}
+
+void cBattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
+{
+}
+
+void cBattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
+{
+}
+
+void cBattleGround::RewardHonorTeamDaily(uint32 WinningTeamID)
+{
+}
+
+void cBattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID)
+{
+}
+
+void cBattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID)
+{
+}
+
+void cBattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
+{
+}
+
+void cBattleGround::EndBattleGround(uint32 winner)
+{
+}
+
+uint32 cBattleGround::GetBonusHonorFromKill(uint32 kills) const
+{
+    //variable kills means how many honorable kills you scored (so we need kills * honor_for_one_kill)
+    return MaNGOS::Honor::hk_honor_at_level(GetMaxLevel(), kills);
+}
+
+uint32 cBattleGround::GetBattlemasterEntry() const
+{
+}
+
+void cBattleGround::RewardSpellCast(Player *plr, uint32 spell_id)
+{
+}
+
+void cBattleGround::RewardItem(Player *plr, uint32 item_id, uint32 count)
+{
+}
+
+void cBattleGround::RewardQuestComplete(Player *plr)
+{
+}
+
+void cBattleGround::BlockMovement(Player *plr)
+{
+}
+
+void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
+{
+	uint32 team = GetPlayerTeam(guid);
+
+	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
+    if (itr != m_Players.end())
+    {
+        UpdatePlayersCountByTeam(team, true);               // -1 player
+        m_Players.erase(itr);
+	}
+}
+
 void cBattleGround::Reset()
 {
 	m_Players.clear();
+}
+
+void cBattleGround::StartBattleGround()
+{
+}
+
+void cBattleGround::AddPlayer(Player *plr)
+{
+}
+
+void cBattleGround::AddOrSetPlayerToCorrectBgGroup(Player *plr, uint64 plr_guid, uint32 team)
+{
+}
+
+void cBattleGround::EventPlayerLoggedIn(Player* player, uint64 plr_guid)
+{
+}
+
+void cBattleGround::EventPlayerLoggedOut(Player* player)
+{
+}
+
+void cBattleGround::AddToBGFreeSlotQueue()
+{
+}
+
+void cBattleGround::RemoveFromBGFreeSlotQueue()
+{
 }
 
 std::vector<uint64> cBattleGround::getPlayerList()
@@ -293,17 +421,7 @@ uint32 cBattleGround::GetPlayerOfflineTime(uint64 guid)
     return 0;
 }
 
-void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
-{
-	uint32 team = GetPlayerTeam(guid);
 
-	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
-    if (itr != m_Players.end())
-    {
-        UpdatePlayersCountByTeam(team, true);               // -1 player
-        m_Players.erase(itr);
-	}
-}
 
 void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team)
 {
@@ -322,11 +440,3 @@ bool cBattleGround::HasFreeSlots()
 	return GetPlayersSize() < GetMaxPlayers();
 }
 
-void cBattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
-{
-    BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
-    m_TeamStartLocX[idx] = X;
-    m_TeamStartLocY[idx] = Y;
-    m_TeamStartLocZ[idx] = Z;
-    m_TeamStartLocO[idx] = O;
-}

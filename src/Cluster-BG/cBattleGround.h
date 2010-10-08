@@ -14,7 +14,48 @@ class cBattleGround
 {
 	public:
 		cBattleGround();
-		~cBattleGround() {}
+		~cBattleGround();
+
+		virtual void Update(uint32 diff);                   // must be implemented in BG subclass of BG specific update code, but must in begginning call parent version
+        virtual bool SetupBattleGround()                    // must be implemented in BG subclass
+        {
+            return true;
+        }
+        virtual void Reset();                               // resets all common properties for battlegrounds, must be implemented and called in BG subclass
+        virtual void StartingEventCloseDoors() {}
+        virtual void StartingEventOpenDoors() {}
+		virtual void OnCreatureCreate(Creature* /*cr*/) {}
+		virtual void OnGameObjectCreate(GameObject* /*go*/) {}
+		virtual void EventPlayerDamageGO(Player* /*player*/, GameObject* /*target_obj*/, uint32 /*eventId*/) {}
+
+		void SendPacketToAll(WorldPacket *packet);
+
+		void SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender = NULL, bool self = true);
+		void PlaySoundToAll(uint32 SoundID);
+		void PlaySoundToTeam(uint32 SoundID, uint32 TeamID);
+		void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
+		void RewardHonorToTeam(uint32 Honor, uint32 TeamID);
+		void RewardHonorTeamDaily(uint32 TeamID);
+		void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
+		void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
+		void UpdateWorldState(uint32 Field, uint32 Value,Player *Source = NULL);
+		void EndBattleGround(uint32 winner);
+		uint32 GetBonusHonorFromKill(uint32 kills) const;
+		uint32 GetBattlemasterEntry() const;
+		void RewardSpellCast(Player *plr, uint32 spell_id);
+		void RewardItem(Player *plr, uint32 item_id, uint32 count);
+		void RewardQuestComplete(Player *plr);
+		void BlockMovement(Player *plr);
+
+		void StartBattleGround();
+		void AddPlayer(Player *plr);
+
+		void AddOrSetPlayerToCorrectBgGroup(Player *plr, uint64 plr_guid, uint32 team);
+		void EventPlayerLoggedIn(Player* player, uint64 plr_guid);
+		void EventPlayerLoggedOut(Player* player);
+		void AddToBGFreeSlotQueue();
+		void RemoveFromBGFreeSlotQueue();
+
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);
 
