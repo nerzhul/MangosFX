@@ -4,6 +4,17 @@
 #include <Common.h>
 #include <BattleGround.h>
 
+namespace ClusterFX
+{
+    namespace Honor
+    {
+        inline uint32 hk_honor_at_level(uint32 level, uint32 count=1)
+        {
+            return (uint32)ceil(count*(-0.53177f + 0.59357f * exp((level +23.54042f) / 23.07859f )));
+        }
+    }
+}
+
 struct cBattleGroundPlayer
 {
     time_t  OfflineRemoveTime;                              // for tracking and removing offline players from queue after 5 minutes
@@ -60,7 +71,7 @@ class cBattleGround
 		uint32 GetFreeSlotsForTeam(uint32 Team) const;
 		void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
 		uint32 GetPlayerScore(Player *Source, uint32 type);
-		GetDamageDoneForTeam(uint32 TeamID);
+		uint32 GetDamageDoneForTeam(uint32 TeamID);
 
 		bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime = 0);
 		void DoorClose(uint64 const& guid);
@@ -113,11 +124,12 @@ class cBattleGround
 
 		bool IsTeamScoreInRange(uint32 team, uint32 minScore, uint32 maxScore) const;
 
-		virtual void Reset();
-
 		BattleGroundTypeId GetTypeID(bool GetRandom = false) const { return GetRandom ? m_RandomTypeID : m_TypeID; }
 		void SetTypeID(BattleGroundTypeId TypeID) { m_TypeID = TypeID; }
 		void SetRandomTypeID(BattleGroundTypeId TypeID) { m_RandomTypeID = TypeID; }
+
+		void RewardAchievementToPlayer(Player* plr, uint32 entry);
+		void RewardAchievementToTeam(uint32 team, uint32 entry);
 
 		typedef std::map<uint64, cBattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
@@ -191,6 +203,8 @@ class cBattleGround
 
 		/* Arena team ids by team */
         uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
+
+		int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
 
 		/* Limits */
 		uint32 m_LevelMin;

@@ -24,7 +24,6 @@ static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_GET_LOOTS",							&ClusterSession::Handle_ClientSide},
 	{"C_SMSG_RETRANSMIT_PACKET",					&ClusterSession::Handle_ClientSide},
 	{"C_SMSG_RETRANSMIT_PACKET_ON_LIST",			&ClusterSession::Handle_ClientSide},
-	{"C_CMSG_BG_M_PLAYERS_MOD",						&ClusterSession::Handle_BG_m_Players_mod},
 	{"C_CMSG_BG_SEND_COMMAND",						&ClusterSession::Handle_GetBGCommand},
 	{"C_CMSG_GET_BG_ID",							&ClusterSession::Handle_GenerateBGId},
 	{"C_SMSG_GET_UINT64",							&ClusterSession::Handle_ClientSide},

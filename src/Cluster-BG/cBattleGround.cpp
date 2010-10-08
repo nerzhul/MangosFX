@@ -315,11 +315,12 @@ void cBattleGround::EndBattleGround(uint32 winner)
 uint32 cBattleGround::GetBonusHonorFromKill(uint32 kills) const
 {
     //variable kills means how many honorable kills you scored (so we need kills * honor_for_one_kill)
-    return MaNGOS::Honor::hk_honor_at_level(GetMaxLevel(), kills);
+    return ClusterFX::Honor::hk_honor_at_level(GetMaxLevel(), kills);
 }
 
 uint32 cBattleGround::GetBattlemasterEntry() const
 {
+	return 0;
 }
 
 void cBattleGround::RewardSpellCast(Player *plr, uint32 spell_id)
@@ -567,6 +568,16 @@ Creature* cBattleGround::GetBGCreature(uint32 type)
     return NULL;
 }
 
+void cBattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
+{
+}
+
+void cBattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
+{
+}
+
+// Cluster special functions
+
 std::vector<uint64> cBattleGround::getPlayerList()
 {
 	std::vector<uint64> players;
@@ -581,55 +592,6 @@ std::vector<uint64> cBattleGround::getPlayerList()
 	return players;
 }
 
-void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
-{
-	if(!plr)
-		return;
-
-	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
-	if (!pAE)
-    {
-        sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
-        return;
-    }
-	
-	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
-}
-
-void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
-{
-	std::vector<uint64> players = GetRemotePlayers();
-	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-	//for(BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-    {
-        /*if (itr->second.OfflineRemoveTime)
-            continue;*/
-        //Player *plr = sObjectMgr.GetPlayer(itr->first);
-		Player *plr = sObjectMgr.GetPlayer(*itr);
-
-        if (!plr)
-        {
-            //sLog.outError("BattleGround:RewardHonorToTeam: Player (GUID: %u) not found!", GUID_LOPART(itr->first));
-            continue;
-        }
-
-		AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
-		if (!pAE)
-		{
-			sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
-			continue;
-		}
-
-        uint32 TeamID = GetPlayerTeam(*itr)/*itr->second.Team*/;
-        if(!TeamID) TeamID = plr->GetTeam();
-
-        if (team == TeamID)
-            plr->GetAchievementMgr().DoCompleteAchivement(pAE);
-    }
-}
-
-
-// Cluster special functions
 uint32 cBattleGround::GetPlayerOfflineTime(uint64 guid)
 {
 	BattleGroundPlayerMap::const_iterator itr = m_Players.find(guid);

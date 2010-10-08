@@ -353,22 +353,22 @@ void ClusterSession::Handle_BGSetLimit(WorldPacket &pck)
 	switch(limit)
 	{
 		case 0:
-			res = cBG->SetMaxPlayers(value);
+			cBG->SetMaxPlayers(value);
 			break;
 		case 1:
-			res = cBG->SetMinPlayers(value);
+			cBG->SetMinPlayers(value);
 			break;
 		case 2:
-			res = cBG->SetLevelRange(value,cBG->GetMaxLevel());
+			cBG->SetLevelRange(value,cBG->GetMaxLevel());
 			break;
 		case 3:
-			res = cBG->SetLevelRange(cBG->GetMinLevel(),value);
+			cBG->SetLevelRange(cBG->GetMinLevel(),value);
 			break;
 		case 4:
-			res = cBG->GetMaxPlayersPerTeam(value);
+			cBG->SetMaxPlayersPerTeam(value);
 			break;
 		case 5:
-			res = cBG->GetMinPlayersPerTeam(value);
+			cBG->SetMinPlayersPerTeam(value);
 			break;
 	}
 	SendNullPacket();
@@ -421,7 +421,7 @@ void ClusterSession::Handle_BGSetTypeId(WorldPacket &pck)
 	uint32 typeId;
 	pck >> data >> typeId;
 	if(data == 0)
-		cBG->SetTypeID(typeId);
+		cBG->SetTypeID(BattleGroundTypeId(typeId));
 	else
-		cBG->SetRandomTypeID(typeId);
+		cBG->SetRandomTypeID(BattleGroundTypeId(typeId));
 }
