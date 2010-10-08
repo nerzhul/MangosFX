@@ -56,6 +56,9 @@ class cBattleGround
 		virtual void OnGameObjectCreate(GameObject* /*go*/) {}
 		virtual void EventPlayerDamageGO(Player* /*player*/, GameObject* /*target_obj*/, uint32 /*eventId*/) {}
 
+		template<class Do>
+		void BroadcastWorker(Do& _do);
+
 		void SendPacketToAll(WorldPacket *packet);
 
 		void SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender = NULL, bool self = true);
@@ -213,6 +216,7 @@ class cBattleGround
 
 		BattleGroundStatus GetStatus() const { return m_Status; }
 		void SetStatus(BattleGroundStatus Status) { m_Status = Status; }
+		BattleGroundBracketId GetBracketId() const { return m_BracketId; }
 
 		void SetArenaType(uint8 type)       { m_ArenaType = type; }
 		void SetArenaorBGType(bool _isArena) { m_IsArena = _isArena; }
@@ -246,6 +250,7 @@ class cBattleGround
 
 		BattleGroundStatus m_Status;
 		uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
+		BattleGroundBracketId m_BracketId;
 
 		uint32 m_StartTime;
 		int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
@@ -257,6 +262,9 @@ class cBattleGround
         uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
 
 		int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
+
+		/* virtual score-array - get's used in bg-subclasses */
+        int32 m_TeamScores[BG_TEAMS_COUNT];
 
 		/* Limits */
 		uint32 m_LevelMin;

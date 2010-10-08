@@ -1,5 +1,6 @@
 #include "ClusterSpec.h"
 #include "cObjectMgr.h"
+#include "cBattleGroundMgr.h"
 #include <Timer.h>
 #include <Config/Config.h>
 #include <Database/DatabaseEnv.h>
@@ -32,7 +33,8 @@ void ClusterBG::run()
 		// Updates
 		realCurrTime = getMSTime();
         uint32 diff = getMSTimeDiff(realPrevTime,realCurrTime);
-
+		
+		sClusterBGMgr.Update(diff);
 		// Main update there if need
 		realPrevTime = realCurrTime;
 		if (diff <=  CLUSTER_SLEEP_CONST+prevSleepTime)

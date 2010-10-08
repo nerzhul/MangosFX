@@ -97,6 +97,10 @@ BattleGroundQueueTypeId cBattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgTyp
     }
 }
 
+void cBattleGroundMgr::Update(uint32 diff)
+{
+}
+
 // Packets
 
 void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)

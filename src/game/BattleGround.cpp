@@ -218,7 +218,7 @@ BattleGround::BattleGround()
     //m_Status            = STATUS_NONE;
     m_ClientInstanceID  = 0;
     //m_EndTime           = 0;
-    m_BracketId         = BG_BRACKET_ID_FIRST;
+    //m_BracketId         = BG_BRACKET_ID_FIRST;
     m_InvitedAlliance   = 0;
     m_InvitedHorde      = 0;
     //m_ArenaType         = 0;
@@ -267,8 +267,8 @@ BattleGround::BattleGround()
     /*m_PlayersCount[BG_TEAM_ALLIANCE]    = 0;
     m_PlayersCount[BG_TEAM_HORDE]       = 0;*/
 
-    m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
-    m_TeamScores[BG_TEAM_HORDE]         = 0;
+    /*m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
+    m_TeamScores[BG_TEAM_HORDE]         = 0;*/
 
     m_PrematureCountDown = false;
 	m_TimerArenaDone = false;
@@ -2144,7 +2144,7 @@ bool BattleGround::DelCreature(uint32 type)
 
 Creature* BattleGround::AddCreature(uint32 entry, uint32 type, uint32 teamval, float x, float y, float z, float o, uint32 respawntime)
 {
-    Map * map = GetBgMap();
+    Map* map = GetBgMap();
     if (!map)
         return NULL;
 
