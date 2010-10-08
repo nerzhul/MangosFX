@@ -253,6 +253,18 @@ void ClusterSession::Handle_BGGetArenaTeamRatingChange(WorldPacket &pck)
 	SendUint32(cBG->GetArenaTeamRatingChangeForTeam(team));
 }
 
+void ClusterSession::Handle_BGHasFreeSlots(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendBoolPacket(false);
+		return;
+	}
+	SendBoolPacket(cBG->HasFreeSlots());
+}
 void ClusterSession::Handle_BGGetLimit(WorldPacket &pck)
 {
 	uint64 bgId;

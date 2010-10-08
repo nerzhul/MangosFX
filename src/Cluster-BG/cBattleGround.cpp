@@ -300,5 +300,9 @@ void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team
     bp.Team = team;
 
 	m_Players[guid] = bp;
+}
 
+bool cBattleGround::HasFreeSlots()
+{
+	return GetPlayersSize() < GetMaxPlayers();
 }

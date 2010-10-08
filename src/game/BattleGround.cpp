@@ -1592,8 +1592,9 @@ uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
 
 bool BattleGround::HasFreeSlots()
 {
-	std::vector<uint64> players = GetRemotePlayers();
-	return /*GetPlayersSize()*/uint32(players.size()) < GetMaxPlayers();
+	Packet pck;
+	pck << uint16(C_CMSG_BG_HAS_FREE_SLOTS) << uint64(m_Id);
+	return sClusterMgr.getBoolValue(&pck,C_BG);
 }
 
 void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
