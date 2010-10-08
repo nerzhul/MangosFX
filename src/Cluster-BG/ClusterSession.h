@@ -49,6 +49,8 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_BGHasFreeSlots(WorldPacket &pck);
 		void Handle_BGGetTeamStartLoc(WorldPacket &pck);
 		void Handle_BGSetTeamStartLoc(WorldPacket &pck);
+		void Handle_BGGetTypeId(WorldPacket &pck);
+		void Handle_BGSetTypeId(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

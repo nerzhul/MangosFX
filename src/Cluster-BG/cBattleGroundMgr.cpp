@@ -391,3 +391,37 @@ void ClusterSession::Handle_BGSetTeamStartLoc(WorldPacket &pck)
 
 	SendNullPacket();
 }
+
+void ClusterSession::Handle_BGGetTypeId(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendUint32(0);
+		return;
+	}
+	uint8 random;
+	pck >> random;
+	SendUint32(cBG->GetTypeID(random > 0 ? true : false));
+}
+
+void ClusterSession::Handle_BGSetTypeId(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendNullPacket();
+		return;
+	}
+	uint8 data;
+	uint32 typeId;
+	pck >> data >> typeId;
+	if(data == 0)
+		cBG->SetTypeID(typeId);
+	else
+		cBG->SetRandomTypeID(typeId);
+}

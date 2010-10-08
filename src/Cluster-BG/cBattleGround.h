@@ -20,10 +20,15 @@ class cBattleGround
 
 		virtual void Reset();
 
+		BattleGroundTypeId GetTypeID(bool GetRandom = false) const { return GetRandom ? m_RandomTypeID : m_TypeID; }
+		void SetTypeID(BattleGroundTypeId TypeID) { m_TypeID = TypeID; }
+		void SetRandomTypeID(BattleGroundTypeId TypeID) { m_RandomTypeID = TypeID; }
+
 		typedef std::map<uint64, cBattleGroundPlayer> BattleGroundPlayerMap;
         BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }
 		std::vector<uint64> getPlayerList();
+
 		bool IsPlayerInBattleGround(uint64 guid);
 		uint32 GetPlayerTeam(uint64 guid);
 		uint32 GetPlayerOfflineTime(uint64 guid);
@@ -82,6 +87,9 @@ class cBattleGround
 		uint64 m_Id;
 		/* Player lists, those need to be accessible by inherited classes */
         BattleGroundPlayerMap  m_Players;
+	private:
+		BattleGroundTypeId m_TypeID;
+        BattleGroundTypeId m_RandomTypeID;
 
 		/* Players count by team */
         uint32 m_PlayersCount[BG_TEAMS_COUNT];

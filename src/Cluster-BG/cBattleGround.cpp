@@ -215,6 +215,9 @@ void cBattleGround::SendWarningToAll(std::string msg)
 
 cBattleGround::cBattleGround(): m_Id(0)
 {
+	m_TypeID            = BattleGroundTypeId(0);
+    m_RandomTypeID      = BattleGroundTypeId(0);
+
 	m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
     m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;
 

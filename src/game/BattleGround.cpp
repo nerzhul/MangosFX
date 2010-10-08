@@ -212,8 +212,8 @@ void BattleGround::BroadcastWorker(Do& _do)
 
 BattleGround::BattleGround()
 {
-    m_TypeID            = BattleGroundTypeId(0);
-    m_RandomTypeID      = BattleGroundTypeId(0);
+    /*m_TypeID            = BattleGroundTypeId(0);
+    m_RandomTypeID      = BattleGroundTypeId(0);*/
     m_InstanceID        = 0;
     m_Status            = STATUS_NONE;
     m_ClientInstanceID  = 0;
@@ -494,7 +494,7 @@ void BattleGround::Update(uint32 diff)
                     if (Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr))
 					{
 						WorldPacket status;
-						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(m_TypeID, GetArenaType());
+						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
 						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
 						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
 						plr->GetSession()->SendPacket(&status);
@@ -1562,7 +1562,7 @@ void BattleGround::AddToBGFreeSlotQueue()
     // make sure to add only once
     if (!m_InBGFreeSlotQueue && isBattleGround())
     {
-        sBattleGroundMgr.BGFreeSlotQueue[m_TypeID].push_front(this);
+        sBattleGroundMgr.BGFreeSlotQueue[GetTypeID()].push_front(this);
         m_InBGFreeSlotQueue = true;
     }
 }
@@ -1572,12 +1572,13 @@ void BattleGround::RemoveFromBGFreeSlotQueue()
 {
     // set to be able to re-add if needed
     m_InBGFreeSlotQueue = false;
+	BattleGroundTypeId typeId = GetTypeID();
     // uncomment this code when battlegrounds will work like instances
-    for (BGFreeSlotQueueType::iterator itr = sBattleGroundMgr.BGFreeSlotQueue[m_TypeID].begin(); itr != sBattleGroundMgr.BGFreeSlotQueue[m_TypeID].end(); ++itr)
+    for (BGFreeSlotQueueType::iterator itr = sBattleGroundMgr.BGFreeSlotQueue[typeId].begin(); itr != sBattleGroundMgr.BGFreeSlotQueue[typeId].end(); ++itr)
     {
         if ((*itr)->GetInstanceID() == m_InstanceID)
         {
-            sBattleGroundMgr.BGFreeSlotQueue[m_TypeID].erase(itr);
+            sBattleGroundMgr.BGFreeSlotQueue[typeId].erase(itr);
             return;
         }
     }

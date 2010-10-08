@@ -322,7 +322,11 @@ class BattleGround
         /* Battleground */
         // Get methods:
         char const* GetName() const         { return m_Name; }
-        BattleGroundTypeId GetTypeID(bool GetRandom = false) const { return GetRandom ? m_RandomTypeID : m_TypeID; }
+        BattleGroundTypeId GetTypeID(bool GetRandom = false) const { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GETTYPEID) << uint64(m_Id) << uint8(GetRandom ? 1:0);
+			return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG)); }
+
         BattleGroundBracketId GetBracketId() const { return m_BracketId; }
         uint32 GetInstanceID() const        { return m_InstanceID; }
         BattleGroundStatus GetStatus() const { return m_Status; }
@@ -370,8 +374,17 @@ class BattleGround
 
         // Set methods:
         void SetName(char const* Name)      { m_Name = Name; }
-        void SetTypeID(BattleGroundTypeId TypeID) { m_TypeID = TypeID; }
-        void SetRandomTypeID(BattleGroundTypeId TypeID) { m_RandomTypeID = TypeID; }
+        void SetTypeID(BattleGroundTypeId TypeID) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SETTYPEID) << uint8(0) << uint32(TypeID);
+			sClusterMgr.getNullValue(&pck,C_BG);
+
+			/*m_TypeID = TypeID;*/ }
+        void SetRandomTypeID(BattleGroundTypeId TypeID) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SETTYPEID) << uint8(1) << uint32(TypeID);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			/*m_RandomTypeID = TypeID;*/ }
         //here we can count minlevel and maxlevel for players
         void SetBracket(PvPDifficultyEntry const* bracketEntry);
         void SetInstanceID(uint32 InstanceID) { m_InstanceID = InstanceID; }
@@ -694,8 +707,8 @@ class BattleGround
 		std::vector<uint64> GetRemotePlayers();
     private:
         /* Battleground */
-        BattleGroundTypeId m_TypeID;
-        BattleGroundTypeId m_RandomTypeID;
+        /*BattleGroundTypeId m_TypeID;
+        BattleGroundTypeId m_RandomTypeID;*/
         uint32 m_InstanceID;                                //BattleGround Instance's GUID!
         BattleGroundStatus m_Status;
         uint32 m_ClientInstanceID;                          //the instance-id which is sent to the client and without any other internal use

@@ -49,6 +49,8 @@ static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_GET_FLOAT",							&ClusterSession::Handle_Null},
 	{"C_SMSG_GET_INT32",							&ClusterSession::Handle_Null},
 	{"C_CMSG_SET_TEAM_START_LOC",					&ClusterSession::Handle_BGSetTeamStartLoc},
+	{"C_CMSG_BG_GETTYPEID",							&ClusterSession::Handle_BGGetTypeId},
+	{"C_CMSG_BG_SETTYPEID",							&ClusterSession::Handle_BGSetTypeId},
 };
 
 #endif
