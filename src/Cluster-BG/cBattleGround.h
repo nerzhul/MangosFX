@@ -66,6 +66,16 @@ class cBattleGround
 
 		bool HasFreeSlots();
 
+		void SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O);
+		void GetTeamStartLoc(uint32 TeamID, float &X, float &Y, float &Z, float &O) const
+        {
+            BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
+            X = m_TeamStartLocX[idx];
+            Y = m_TeamStartLocY[idx];
+            Z = m_TeamStartLocZ[idx];
+            O = m_TeamStartLocO[idx];
+        }
+
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
 	protected:
@@ -86,6 +96,12 @@ class cBattleGround
         uint32 m_MaxPlayers;
         uint32 m_MinPlayersPerTeam;
         uint32 m_MinPlayers;
+
+		/* Start location */
+		float m_TeamStartLocX[BG_TEAMS_COUNT];
+        float m_TeamStartLocY[BG_TEAMS_COUNT];
+        float m_TeamStartLocZ[BG_TEAMS_COUNT];
+        float m_TeamStartLocO[BG_TEAMS_COUNT];
 };
 
 #endif

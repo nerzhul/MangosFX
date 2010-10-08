@@ -232,9 +232,21 @@ cBattleGround::cBattleGround(): m_Id(0)
     m_MinPlayersPerTeam = 0;
     m_MinPlayers        = 0;
 
+	m_TeamStartLocX[BG_TEAM_ALLIANCE]   = 0;
+    m_TeamStartLocX[BG_TEAM_HORDE]      = 0;
+
+    m_TeamStartLocY[BG_TEAM_ALLIANCE]   = 0;
+    m_TeamStartLocY[BG_TEAM_HORDE]      = 0;
+
+    m_TeamStartLocZ[BG_TEAM_ALLIANCE]   = 0;
+    m_TeamStartLocZ[BG_TEAM_HORDE]      = 0;
+
+    m_TeamStartLocO[BG_TEAM_ALLIANCE]   = 0;
+    m_TeamStartLocO[BG_TEAM_HORDE]      = 0;
+
+
 	m_Players.clear();
 }
-
 void cBattleGround::Reset()
 {
 	m_Players.clear();
@@ -305,4 +317,13 @@ void cBattleGround::SetPlayerValues(uint64 guid, uint32 offlineTime, uint32 team
 bool cBattleGround::HasFreeSlots()
 {
 	return GetPlayersSize() < GetMaxPlayers();
+}
+
+void cBattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
+{
+    BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
+    m_TeamStartLocX[idx] = X;
+    m_TeamStartLocY[idx] = Y;
+    m_TeamStartLocZ[idx] = Z;
+    m_TeamStartLocO[idx] = O;
 }

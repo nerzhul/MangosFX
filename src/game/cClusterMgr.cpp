@@ -61,6 +61,27 @@ uint32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 	return value;
 }
 
+float ClusterMgr::getFloatValue(const sf::Packet *pck, ClusterType _type)
+{
+	if(_type == C_ALL || _type == C_NULL)
+		return 0;
+
+	cRPCCommandHandler* rpc = new cRPCCommandHandler(_type);
+	Packet* resp = rpc->getResponse(pck);
+
+	if(!resp)
+	{
+		delete rpc;
+		return 0;
+	}
+
+	float value = 0/*readUint32(resp,2)*/;
+	*resp >> value;
+	delete rpc;
+	//delete resp;
+	return value;
+}
+
 int32 ClusterMgr::getUint32Value(const sf::Packet *pck, ClusterType _type)
 {
 	if(_type == C_ALL || _type == C_NULL)

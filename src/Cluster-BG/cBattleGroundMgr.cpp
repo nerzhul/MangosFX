@@ -245,12 +245,12 @@ void ClusterSession::Handle_BGGetArenaTeamRatingChange(WorldPacket &pck)
 	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
 	if(!cBG)
 	{
-		SendUint32(0);
+		SendInt32(0);
 		return;
 	}
 	uint32 team;
 	pck >> team;
-	SendUint32(cBG->GetArenaTeamRatingChangeForTeam(team));
+	SendInt32(cBG->GetArenaTeamRatingChangeForTeam(team));
 }
 
 void ClusterSession::Handle_BGHasFreeSlots(WorldPacket &pck)
@@ -302,6 +302,40 @@ void ClusterSession::Handle_BGGetLimit(WorldPacket &pck)
 	SendUint32(res);
 }
 
+void ClusterSession::Handle_BGGetTeamStartLoc(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendFloat(0);
+		return;
+	}
+	uint8 pos;
+	uint32 team;
+	pck >> pos;
+	pck >> team;
+	float x,y,z,o, toSend=0;
+	cBG->GetTeamStartLoc(team,x,y,z,o);
+	switch(pos)
+	{
+		case 0:
+			toSend = x;
+			break;
+		case 1:
+			toSend = y;
+			break;
+		case 2:
+			toSend = z;
+			break;
+		case 3:
+			toSend = o;
+			break;
+	}
+	SendFloat(toSend);
+}
+
 void ClusterSession::Handle_BGSetLimit(WorldPacket &pck)
 {
 	uint64 bgId;
@@ -337,5 +371,23 @@ void ClusterSession::Handle_BGSetLimit(WorldPacket &pck)
 			res = cBG->GetMinPlayersPerTeam(value);
 			break;
 	}
+	SendNullPacket();
+}
+
+void ClusterSession::Handle_BGSetTeamStartLoc(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendNullPacket();
+		return;
+	}
+	uint32 team;
+	float x,y,z,o;
+	pck >> team >> x >> y >> z >> o;
+	cBG->SetTeamStartLoc(team,x,y,z,o);
+
 	SendNullPacket();
 }

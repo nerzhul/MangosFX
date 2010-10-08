@@ -17,7 +17,9 @@ class ClusterSession: public ACE_Based::Runnable
 		void SendPacket(const Packet* pkt);
 		void SendNullPacket();
 		void SendBoolPacket(bool _bool);
+		void SendInt32(int32 value);
 		void SendUint32(uint32 value);
+		void SendFloat(float value);
 
 		void Update();
 
@@ -45,6 +47,8 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_BGGetLimit(WorldPacket &pck);
 		void Handle_BGSetLimit(WorldPacket &pck);
 		void Handle_BGHasFreeSlots(WorldPacket &pck);
+		void Handle_BGGetTeamStartLoc(WorldPacket &pck);
+		void Handle_BGSetTeamStartLoc(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

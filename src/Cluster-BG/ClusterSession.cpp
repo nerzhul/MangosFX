@@ -162,6 +162,20 @@ void ClusterSession::SendUint32(uint32 value)
 	SendPacket(&pkt);
 }
 
+void ClusterSession::SendInt32(int32 value)
+{
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_INT32) << int32(value);
+	SendPacket(&pkt);
+}
+
+void ClusterSession::SendFloat(float value)
+{
+	Packet pkt;
+	pkt << uint16(C_SMSG_GET_FLOAT) << float(value);
+	SendPacket(&pkt);
+}
+
 void ClusterSession::Update()
 {
 	WorldPacket* packet;

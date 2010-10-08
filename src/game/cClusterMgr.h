@@ -19,6 +19,7 @@ class ClusterMgr
 		bool getBoolValue(const Packet* pck, ClusterType _type);
 		int32 getInt32Value(const Packet* pck, ClusterType _type);
 		uint32 getUint32Value(const Packet* pck, ClusterType _type);
+		float getFloatValue(const Packet* pck, ClusterType _type);
 		uint64 getUint64Value(const Packet* pck, ClusterType _type);
 
 		std::vector<uint64> getUint64Vector(const Packet* pck, ClusterType _type);

@@ -465,10 +465,22 @@ class BattleGround
         void GetTeamStartLoc(uint32 TeamID, float &X, float &Y, float &Z, float &O) const
         {
             BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
-            X = m_TeamStartLocX[idx];
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(0) << uint32(TeamID);
+			X = sClusterMgr.getFloatValue(&pck,C_BG);
+			Packet pck2;
+			pck2 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(1) << uint32(TeamID);
+			Y = sClusterMgr.getFloatValue(&pck2,C_BG);
+			Packet pck3;
+			pck3 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(2) << uint32(TeamID);
+			Z = sClusterMgr.getFloatValue(&pck3,C_BG);
+			Packet pck4;
+			pck4 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(3) << uint32(TeamID);
+			O = sClusterMgr.getFloatValue(&pck4,C_BG);
+            /*X = m_TeamStartLocX[idx];
             Y = m_TeamStartLocY[idx];
             Z = m_TeamStartLocZ[idx];
-            O = m_TeamStartLocO[idx];
+            O = m_TeamStartLocO[idx];*/
         }
 
         /* Packet Transfer */
@@ -735,10 +747,10 @@ class BattleGround
         /* Start location */
         uint32 m_MapId;
         BattleGroundMap* m_Map;
-        float m_TeamStartLocX[BG_TEAMS_COUNT];
+        /*float m_TeamStartLocX[BG_TEAMS_COUNT];
         float m_TeamStartLocY[BG_TEAMS_COUNT];
         float m_TeamStartLocZ[BG_TEAMS_COUNT];
-        float m_TeamStartLocO[BG_TEAMS_COUNT];
+        float m_TeamStartLocO[BG_TEAMS_COUNT];*/
 
 		bool m_RandomBG;
 

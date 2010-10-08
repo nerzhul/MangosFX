@@ -243,7 +243,7 @@ BattleGround::BattleGround()
     m_MapId             = 0;
     m_Map               = NULL;
 
-    m_TeamStartLocX[BG_TEAM_ALLIANCE]   = 0;
+    /*m_TeamStartLocX[BG_TEAM_ALLIANCE]   = 0;
     m_TeamStartLocX[BG_TEAM_HORDE]      = 0;
 
     m_TeamStartLocY[BG_TEAM_ALLIANCE]   = 0;
@@ -253,7 +253,7 @@ BattleGround::BattleGround()
     m_TeamStartLocZ[BG_TEAM_HORDE]      = 0;
 
     m_TeamStartLocO[BG_TEAM_ALLIANCE]   = 0;
-    m_TeamStartLocO[BG_TEAM_HORDE]      = 0;
+    m_TeamStartLocO[BG_TEAM_HORDE]      = 0;*/
 
     /*m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
     m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;*/
@@ -569,11 +569,15 @@ void BattleGround::Update(uint32 diff)
 
 void BattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
 {
-    BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
+	Packet pck;
+	pck << uint16(C_CMSG_SET_TEAM_START_LOC);
+	pck << uint64(m_Id) << uint32(TeamID) << float(X) << float(Y) << float(Z) << float(O);
+	sClusterMgr.getNullValue(&pck,C_BG);
+    /*BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
     m_TeamStartLocX[idx] = X;
     m_TeamStartLocY[idx] = Y;
     m_TeamStartLocZ[idx] = Z;
-    m_TeamStartLocO[idx] = O;
+    m_TeamStartLocO[idx] = O;*/
 }
 
 void BattleGround::SendPacketToAll(WorldPacket *packet)
@@ -822,7 +826,7 @@ void BattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 
 void BattleGround::EndBattleGround(uint32 winner)
 {
-    this->RemoveFromBGFreeSlotQueue();
+    RemoveFromBGFreeSlotQueue();
 
     ArenaTeam * winner_arena_team = NULL;
     ArenaTeam * loser_arena_team = NULL;

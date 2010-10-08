@@ -45,6 +45,10 @@ static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_BG_GET_LIMIT",							&ClusterSession::Handle_BGGetLimit},
 	{"C_CMSG_BG_SET_LIMIT",							&ClusterSession::Handle_BGSetLimit},
 	{"C_CMSG_BG_HAS_FREE_SLOTS",					&ClusterSession::Handle_BGHasFreeSlots},
+	{"C_CMSG_BG_GET_TEAM_START_LOC",				&ClusterSession::Handle_BGGetTeamStartLoc},
+	{"C_SMSG_GET_FLOAT",							&ClusterSession::Handle_Null},
+	{"C_SMSG_GET_INT32",							&ClusterSession::Handle_Null},
+	{"C_CMSG_SET_TEAM_START_LOC",					&ClusterSession::Handle_BGSetTeamStartLoc},
 };
 
 #endif
