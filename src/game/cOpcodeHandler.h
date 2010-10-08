@@ -23,7 +23,6 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_SMSG_GET_LOOTS",					C_LOOT,&cClusterSession::Handle_Null},
 	{"C_SMSG_RETRANSMIT_PACKET",			C_ALL,&cClusterSession::Handle_Null},
 	{"C_SMSG_RETRANSMIT_PACKET_ON_LIST",	C_ALL,&cClusterSession::Handle_Null},
-	{"C_CMSG_BG_M_PLAYERS_MOD",				C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_BG_SEND_COMMAND",				C_ALL,&cClusterSession::Handle_ServerSide},
 	{"C_CMSG_GET_BG_ID",					C_BG,&cClusterSession::Handle_ServerSide},
 	{"C_SMSG_GET_UINT64",					C_ALL,&cClusterSession::Handle_Null},
@@ -37,6 +36,8 @@ static cPacketOpcodeHandler cPckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_PLR_GET_OFFLINE_TIME",			C_BG,&cClusterSession::Handle_Null},
 	{"C_CMSG_BG_RM_PLR_LEAVE",				C_BG,&cClusterSession::Handle_ServerSide},
 	{"C_GET_PL_NB_TEAM",					C_BG,&cClusterSession::Handle_ServerSide},
+	{"C_CMSG_BG_SET_ARENA_TEAM",			C_BG,&cClusterSession::Handle_ServerSide},
+	{"C_CMSG_BG_GET_ARENA_TEAM",			C_BG,&cClusterSession::Handle_Null},
 };
 
 #endif

@@ -93,7 +93,6 @@ bool ClusterMgr::getBoolValue(const sf::Packet *pck, ClusterType _type)
 	return (value != 0) ? true : false;
 }
 
-
 std::vector<uint64> ClusterMgr::getUint64Vector(const sf::Packet *pck, ClusterType _type)
 {
 	std::vector<uint64> vValues;

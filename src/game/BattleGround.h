@@ -23,6 +23,7 @@
 #include "SharedDefines.h"
 #include "DBCEnums.h"
 #include "ByteBuffer.h"
+#include "cClusterMgr.h"
 
 // magic event-numbers
 #define BG_EVENT_NONE 255
@@ -470,8 +471,18 @@ class BattleGround
         }*/
 
         // used for rated arena battles
-        void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId; }
-        uint32 GetArenaTeamIdForTeam(uint32 Team) const             { return m_ArenaTeamIds[GetTeamIndexByTeamId(Team)]; }
+        void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { 
+			Packet pkt;
+			pkt << uint16(C_CMSG_BG_SET_ARENA_TEAM);
+			pkt << uint64(m_Id) << uint32(Team) << uint32(ArenaTeamId);
+			sClusterMgr.getNullValue(&pkt,C_BG);
+			/*m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId;*/ }
+        uint32 GetArenaTeamIdForTeam(uint32 Team) const             { 
+			Packet pkt;
+			pkt << uint16(C_CMSG_BG_GET_ARENA_TEAM);
+			pkt << uint64(m_Id) << uint32(Team);
+			return sClusterMgr.getUint32Value(&pkt,C_BG);
+			/* m_ArenaTeamIds[GetTeamIndexByTeamId(Team)];*/ }
         void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange; }
         int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const    { return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)]; }
         void CheckArenaWinConditions();
@@ -648,7 +659,7 @@ class BattleGround
         //uint32 m_PlayersCount[BG_TEAMS_COUNT];
 
         /* Arena team ids by team */
-        uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
+		//uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
 
         int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
 

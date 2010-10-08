@@ -215,10 +215,13 @@ void cBattleGround::SendWarningToAll(std::string msg)
 
 cBattleGround::cBattleGround(): m_Id(0)
 {
-	m_Players.clear();
+	m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
+    m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;
 
 	m_PlayersCount[BG_TEAM_ALLIANCE] = 0;
 	m_PlayersCount[BG_TEAM_HORDE] = 0;
+
+	m_Players.clear();
 }
 
 void cBattleGround::Reset()

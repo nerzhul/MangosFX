@@ -43,6 +43,9 @@ class cBattleGround
                 ++m_PlayersCount[GetTeamIndexByTeamId(Team)];
         }
 
+		void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId; }
+        uint32 GetArenaTeamIdForTeam(uint32 Team) const             { return m_ArenaTeamIds[GetTeamIndexByTeamId(Team)]; }
+
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
 	protected:
@@ -52,6 +55,9 @@ class cBattleGround
 
 		/* Players count by team */
         uint32 m_PlayersCount[BG_TEAMS_COUNT];
+
+		/* Arena team ids by team */
+        uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
 };
 
 #endif

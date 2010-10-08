@@ -37,22 +37,6 @@ void cBattleGroundMgr::DropBattleGround(uint64 id)
 	delete bg;
 }
 
-void ClusterSession::Handle_BG_m_Players_mod(WorldPacket &pck)
-{
-	uint64 bgId, plGuid, time;
-	uint32 team;
-	uint8 del;
-	pck >> bgId;
-	pck >> plGuid;
-	pck >> time;
-	pck >> team;
-	pck >> del;
-	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
-	if(!cBG)
-		return;
-	// @TODO : modify datas on BG
-}
-
 void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)
 {
 	uint64 id = sClusterBGMgr.CreateBattleGround();
@@ -203,4 +187,36 @@ void ClusterSession::Handle_BGRemovePlayerAtLeave(WorldPacket &pck)
 	}
 	cBG->RemovePlayerAtLeave(plGuid,false,false);
 	SendNullPacket();
+}
+
+void ClusterSession::Handle_BGSetArenaTeam(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendNullPacket();
+		return;
+	}
+	uint32 team,arenaTeamId;
+	pck >> team;
+	pck >> arenaTeamId;
+	cBG->SetArenaTeamIdForTeam(team,arenaTeamId);
+	SendNullPacket();
+}
+
+void ClusterSession::Handle_BGGetArenaTeam(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendUint32(0);
+		return;
+	}
+	uint32 team;
+	pck >> team;
+	SendUint32(cBG->GetArenaTeamIdForTeam(team));
 }

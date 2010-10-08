@@ -29,7 +29,6 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_ClusterPing(WorldPacket &pck);
 
 		// BG
-		void Handle_BG_m_Players_mod(WorldPacket &pck);
 		void Handle_GenerateBGId(WorldPacket &pck);
 		void Handle_GetRewardPlayers(WorldPacket &pck);
 		void Handle_BGGetOfflineTime(WorldPacket &pck);
@@ -39,6 +38,8 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_Updt_Plr(WorldPacket &pck);
 		void Handle_GetBGCommand(WorldPacket &pck);
 		void Handle_BGGetPlayerNumberByTeam(WorldPacket &pck);
+		void Handle_BGSetArenaTeam(WorldPacket &pck);
+		void Handle_BGGetArenaTeam(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);
