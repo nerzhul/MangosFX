@@ -60,6 +60,12 @@ class cBattleGround
 		uint32 GetPlayerScore(Player *Source, uint32 type);
 		GetDamageDoneForTeam(uint32 TeamID);
 
+		bool AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime = 0);
+		void DoorClose(uint64 const& guid);
+		void DoorOpen(uint64 const& guid);
+		void OnObjectDBLoad(Creature* /*creature*/);
+		uint64 GetSingleCreatureGuid(uint8 event1, uint8 event2);
+
 
 		void SendWarningToAll(int32 entry, ...);
 		void SendWarningToAll(std::string str);

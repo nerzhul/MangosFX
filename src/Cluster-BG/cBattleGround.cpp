@@ -400,9 +400,32 @@ uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
 {
 }
 
-uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
+uint32 cBattleGround::GetDamageDoneForTeam(uint32 TeamID)
 {
 }
+
+bool cBattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float z, float o, float rotation0, float rotation1, float rotation2, float rotation3, uint32 respawnTime)
+{
+	return true;
+}
+
+void cBattleGround::DoorClose(uint64 const& guid)
+{
+}
+
+void BattleGround::DoorOpen(uint64 const& guid)
+{
+}
+
+void cBattleGround::OnObjectDBLoad(Creature* creature)
+{
+}
+
+uint64 BattleGround::GetSingleCreatureGuid(uint8 event1, uint8 event2)
+{
+	return 0;
+}
+
 std::vector<uint64> cBattleGround::getPlayerList()
 {
 	std::vector<uint64> players;
