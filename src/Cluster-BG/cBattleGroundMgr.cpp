@@ -206,6 +206,23 @@ void ClusterSession::Handle_BGSetArenaTeam(WorldPacket &pck)
 	SendNullPacket();
 }
 
+void ClusterSession::Handle_BGSetArenaTeamRatingChange(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendNullPacket();
+		return;
+	}
+	uint32 team,rChange;
+	pck >> team;
+	pck >> rChange;
+	cBG->SetArenaTeamRatingChangeForTeam(team,rChange);
+	SendNullPacket();
+}
+
 void ClusterSession::Handle_BGGetArenaTeam(WorldPacket &pck)
 {
 	uint64 bgId;
@@ -219,4 +236,19 @@ void ClusterSession::Handle_BGGetArenaTeam(WorldPacket &pck)
 	uint32 team;
 	pck >> team;
 	SendUint32(cBG->GetArenaTeamIdForTeam(team));
+}
+
+void ClusterSession::Handle_BGGetArenaTeamRatingChange(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendUint32(0);
+		return;
+	}
+	uint32 team;
+	pck >> team;
+	SendUint32(cBG->GetArenaTeamRatingChangeForTeam(team));
 }
