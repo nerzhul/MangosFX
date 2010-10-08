@@ -42,6 +42,8 @@ static PacketOpcodeHandler PckOpH[MAX_C_OPCODES] = {
 	{"C_CMSG_BG_GET_ARENA_TEAM",					&ClusterSession::Handle_BGGetArenaTeam},
 	{"C_CMSG_BG_SET_ARENA_TEAM_RATING_CHANGE",		&ClusterSession::Handle_BGSetArenaTeamRatingChange},
 	{"C_CMSG_BG_GET_ARENA_TEAM_RATING_CHANGE",		&ClusterSession::Handle_BGGetArenaTeamRatingChange},
+	{"C_CMSG_BG_GET_LIMIT",							&ClusterSession::Handle_BGGetLimit},
+	{"C_CMSG_BG_SET_LIMIT",							&ClusterSession::Handle_BGSetLimit},
 };
 
 #endif

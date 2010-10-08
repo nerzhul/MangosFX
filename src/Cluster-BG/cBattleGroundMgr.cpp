@@ -252,3 +252,78 @@ void ClusterSession::Handle_BGGetArenaTeamRatingChange(WorldPacket &pck)
 	pck >> team;
 	SendUint32(cBG->GetArenaTeamRatingChangeForTeam(team));
 }
+
+void ClusterSession::Handle_BGGetLimit(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendUint32(0);
+		return;
+	}
+	uint8 limit;
+	pck >> limit;
+	uint32 res = 0;
+	switch(limit)
+	{
+		case 0:
+			res = cBG->GetMaxPlayers();
+			break;
+		case 1:
+			res = cBG->GetMinPlayers();
+			break;
+		case 2:
+			res = cBG->GetMinLevel();
+			break;
+		case 3:
+			res = cBG->GetMaxLevel();
+			break;
+		case 4:
+			res = cBG->GetMaxPlayersPerTeam();
+			break;
+		case 5:
+			res = cBG->GetMinPlayersPerTeam();
+			break;
+	}
+	SendUint32(res);
+}
+
+void ClusterSession::Handle_BGSetLimit(WorldPacket &pck)
+{
+	uint64 bgId;
+	pck >> bgId;
+	cBattleGround* cBG = sClusterBGMgr.getBattleGround(bgId);
+	if(!cBG)
+	{
+		SendNullPacket();
+		return;
+	}
+	uint8 limit;
+	pck >> limit;
+	uint32 value;
+	pck >> value;
+	switch(limit)
+	{
+		case 0:
+			res = cBG->SetMaxPlayers(value);
+			break;
+		case 1:
+			res = cBG->SetMinPlayers(value);
+			break;
+		case 2:
+			res = cBG->SetLevelRange(value,cBG->GetMaxLevel());
+			break;
+		case 3:
+			res = cBG->SetLevelRange(cBG->GetMinLevel(),value);
+			break;
+		case 4:
+			res = cBG->GetMaxPlayersPerTeam(value);
+			break;
+		case 5:
+			res = cBG->GetMinPlayersPerTeam(value);
+			break;
+	}
+	SendNullPacket();
+}

@@ -42,6 +42,8 @@ class ClusterSession: public ACE_Based::Runnable
 		void Handle_BGGetArenaTeam(WorldPacket &pck);
 		void Handle_BGSetArenaTeamRatingChange(WorldPacket &pck);
 		void Handle_BGGetArenaTeamRatingChange(WorldPacket &pck);
+		void Handle_BGGetLimit(WorldPacket &pck);
+		void Handle_BGSetLimit(WorldPacket &pck);
 
 		void SendMonoPlayerPacket(uint64 guid, WorldPacket &pck);
 		void SendMultiPlayerPacket(std::vector<uint64> GUIDs, WorldPacket &pck);

@@ -48,6 +48,23 @@ class cBattleGround
 		void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange; }
         int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const    { return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)]; }
 
+
+		uint32 GetMaxPlayers() const        { return m_MaxPlayers; }
+        uint32 GetMinPlayers() const        { return m_MinPlayers; }
+
+		uint32 GetMinLevel() const          { return m_LevelMin; }
+        uint32 GetMaxLevel() const          { return m_LevelMax; }
+
+		uint32 GetMaxPlayersPerTeam() const { return m_MaxPlayersPerTeam; }
+        uint32 GetMinPlayersPerTeam() const { return m_MinPlayersPerTeam; }
+
+		void SetMaxPlayersPerTeam(uint32 MaxPlayers) { m_MaxPlayersPerTeam = MaxPlayers; }
+        void SetMinPlayersPerTeam(uint32 MinPlayers) { m_MinPlayersPerTeam = MinPlayers; }
+
+		void SetMaxPlayers(uint32 MaxPlayers) { m_MaxPlayers = MaxPlayers; }
+        void SetMinPlayers(uint32 MinPlayers) { m_MinPlayers = MinPlayers; }
+        void SetLevelRange(uint32 min, uint32 max) { m_LevelMin = min; m_LevelMax = max; }
+
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
 	protected:
@@ -60,6 +77,14 @@ class cBattleGround
 
 		/* Arena team ids by team */
         uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
+
+		/* Limits */
+		uint32 m_LevelMin;
+        uint32 m_LevelMax;
+        uint32 m_MaxPlayersPerTeam;
+        uint32 m_MaxPlayers;
+        uint32 m_MinPlayersPerTeam;
+        uint32 m_MinPlayers;
 };
 
 #endif

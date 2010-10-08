@@ -24,6 +24,7 @@
 #include "DBCEnums.h"
 #include "ByteBuffer.h"
 #include "cClusterMgr.h"
+#include "cPacketOpcodes.h"
 
 // magic event-numbers
 #define BG_EVENT_NONE 255
@@ -328,14 +329,38 @@ class BattleGround
         uint32 GetClientInstanceID() const  { return m_ClientInstanceID; }
         uint32 GetStartTime() const         { return m_StartTime; }
         uint32 GetEndTime() const           { return m_EndTime; }
-        uint32 GetMaxPlayers() const        { return m_MaxPlayers; }
-        uint32 GetMinPlayers() const        { return m_MinPlayers; }
+		uint32 GetMaxPlayers() const        { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(0);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+		/*m_MaxPlayers;*/ }
+        uint32 GetMinPlayers() const        { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(1);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+			/*return m_MinPlayers;*/ }
 
-        uint32 GetMinLevel() const          { return m_LevelMin; }
-        uint32 GetMaxLevel() const          { return m_LevelMax; }
+        uint32 GetMinLevel() const          { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(2);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+			/*return m_LevelMin;*/ }
+        uint32 GetMaxLevel() const          { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(3);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+			/*return m_LevelMax;*/ }
 
-        uint32 GetMaxPlayersPerTeam() const { return m_MaxPlayersPerTeam; }
-        uint32 GetMinPlayersPerTeam() const { return m_MinPlayersPerTeam; }
+        uint32 GetMaxPlayersPerTeam() const { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(4);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+			/*return m_MaxPlayersPerTeam;*/ }
+        uint32 GetMinPlayersPerTeam() const { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(5);
+			return sClusterMgr.getUint32Value(&pck,C_BG);
+			/*return m_MinPlayersPerTeam;*/ }
 
         int32 GetStartDelayTime() const     { return m_StartDelayTime; }
         uint8 GetArenaType() const          { return m_ArenaType; }
@@ -354,10 +379,28 @@ class BattleGround
         void SetClientInstanceID(uint32 InstanceID) { m_ClientInstanceID = InstanceID; }
         void SetStartTime(uint32 Time)      { m_StartTime = Time; }
         void SetEndTime(uint32 Time)        { m_EndTime = Time; }
-        void SetMaxPlayers(uint32 MaxPlayers) { m_MaxPlayers = MaxPlayers; }
-        void SetMinPlayers(uint32 MinPlayers) { m_MinPlayers = MinPlayers; }
-        void SetLevelRange(uint32 min, uint32 max) { m_LevelMin = min; m_LevelMax = max; }
-        void SetRated(bool state)           { m_IsRated = state; }
+        
+		void SetMaxPlayers(uint32 MaxPlayers) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(0) << uint32(MaxPlayers);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			/*m_MaxPlayers = MaxPlayers;*/ }
+        void SetMinPlayers(uint32 MinPlayers) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(1) << uint32(MinPlayers);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			/*m_MinPlayers = MinPlayers;*/ }
+        void SetLevelRange(uint32 min, uint32 max) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(2) << uint32(min);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			Packet pck2;
+			pck2 << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(3) << uint32(max);
+			sClusterMgr.getNullValue(&pck2,C_BG);
+			/*m_LevelMin = min; m_LevelMax = max;*/
+		}
+        
+		void SetRated(bool state)           { m_IsRated = state; }
         void SetArenaType(uint8 type)       { m_ArenaType = type; }
         void SetArenaorBGType(bool _isArena) { m_IsArena = _isArena; }
         void SetWinner(uint8 winner)        { m_Winner = winner; }
@@ -365,8 +408,16 @@ class BattleGround
         void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
         void SetStartDelayTime(int Time)    { m_StartDelayTime = Time; }
 
-        void SetMaxPlayersPerTeam(uint32 MaxPlayers) { m_MaxPlayersPerTeam = MaxPlayers; }
-        void SetMinPlayersPerTeam(uint32 MinPlayers) { m_MinPlayersPerTeam = MinPlayers; }
+        void SetMaxPlayersPerTeam(uint32 MaxPlayers) { 
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(4) << uint32(MaxPlayers);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			/*m_MaxPlayersPerTeam = MaxPlayers;*/ }
+        void SetMinPlayersPerTeam(uint32 MinPlayers) {
+			Packet pck;
+			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(5) << uint32(MinPlayers);
+			sClusterMgr.getNullValue(&pck,C_BG);
+			/*m_MinPlayersPerTeam = MinPlayers;*/ }
 
         void AddToBGFreeSlotQueue();                        //this queue will be useful when more battlegrounds instances will be available
         void RemoveFromBGFreeSlotQueue();                   //this method could delete whole BG instance, if another free is available
@@ -674,12 +725,12 @@ class BattleGround
         //int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
 
         /* Limits */
-        uint32 m_LevelMin;
+        /*uint32 m_LevelMin;
         uint32 m_LevelMax;
         uint32 m_MaxPlayersPerTeam;
         uint32 m_MaxPlayers;
         uint32 m_MinPlayersPerTeam;
-        uint32 m_MinPlayers;
+        uint32 m_MinPlayers;*/
 
         /* Start location */
         uint32 m_MapId;

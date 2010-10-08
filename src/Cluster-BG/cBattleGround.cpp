@@ -223,6 +223,14 @@ cBattleGround::cBattleGround(): m_Id(0)
 
 	m_PlayersCount[BG_TEAM_ALLIANCE] = 0;
 	m_PlayersCount[BG_TEAM_HORDE] = 0;
+	
+	m_LevelMin          = 0;
+    m_LevelMax          = 0;
+
+	m_MaxPlayersPerTeam = 0;
+    m_MaxPlayers        = 0;
+    m_MinPlayersPerTeam = 0;
+    m_MinPlayers        = 0;
 
 	m_Players.clear();
 }
