@@ -1,5 +1,6 @@
 #include <ObjectMgr.h>
 #include <WorldPacket.h>
+#include <BattleGround.h>
 #include "cBattleGround.h"
 #include "cBattleGroundMgr.h"
 
@@ -218,6 +219,15 @@ cBattleGround::cBattleGround(): m_Id(0)
 {
 	m_TypeID            = BattleGroundTypeId(0);
     m_RandomTypeID      = BattleGroundTypeId(0);
+
+	m_Status            = STATUS_NONE;
+
+	m_ArenaType         = 0;
+	m_StartTime         = 0;
+	m_EndTime           = 0;
+
+	m_IsArena           = false;
+	m_IsRated           = false;
 
 	m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
     m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;
@@ -484,28 +494,127 @@ uint32 cBattleGround::GetBonusHonorFromKill(uint32 kills) const
 
 uint32 cBattleGround::GetBattlemasterEntry() const
 {
-	return 0;
+	switch(GetTypeID(true))
+    {
+        case BATTLEGROUND_AV: return 15972;
+        case BATTLEGROUND_WS: return 14623;
+        case BATTLEGROUND_AB: return 14879;
+        case BATTLEGROUND_EY: return 22516;
+        case BATTLEGROUND_NA: return 20200;
+        default:              return 0;
+    }
 }
 
 void cBattleGround::RewardSpellCast(Player *plr, uint32 spell_id)
 {
+	// 'Inactive' this aura prevents the player from gaining honor points and battleground tokens
+    /*if (plr->GetDummyAura(SPELL_AURA_PLAYER_INACTIVE))
+        return;
+
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spell_id);
+    if(!spellInfo)
+    {
+        sLog.outError("Battleground reward casting spell %u not exist.",spell_id);
+        return;
+    }
+
+    plr->CastSpell(plr, spellInfo, true);*/
 }
 
 void cBattleGround::RewardItem(Player *plr, uint32 item_id, uint32 count)
 {
+	// 'Inactive' this aura prevents the player from gaining honor points and battleground tokens
+    /*if (plr->GetDummyAura(SPELL_AURA_PLAYER_INACTIVE))
+        return;
+
+    ItemPosCountVec dest;
+    uint32 no_space_count = 0;
+    uint8 msg = plr->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item_id, count, &no_space_count );
+
+    if( msg == EQUIP_ERR_ITEM_NOT_FOUND)
+    {
+        sLog.outErrorDb("Battleground reward item (Entry %u) not exist in `item_template`.",item_id);
+        return;
+    }
+
+    if( msg != EQUIP_ERR_OK )                               // convert to possible store amount
+        count -= no_space_count;
+
+    if( count != 0 && !dest.empty())                        // can add some
+        if (Item* item = plr->StoreNewItem( dest, item_id, true, 0))
+            plr->SendNewItem(item,count,true,false);
+
+    if (no_space_count > 0)
+        SendRewardMarkByMail(plr,item_id,no_space_count);*/
+}
+
+void cBattleGround::SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count)
+{
+    uint32 bmEntry = GetBattlemasterEntry();
+    if (!bmEntry)
+        return;
+
+    /*ItemPrototype const* markProto = ObjectMgr::GetItemPrototype(mark);
+    if (!markProto)
+        return;
+
+    if (Item* markItem = Item::CreateItem(mark,count,plr))
+    {
+        // save new item before send
+        markItem->SaveToDB();                               // save for prevent lost at next mail load, if send fail then item will deleted
+
+        // subject: item name
+        std::string subject = markProto->Name1;
+        int loc_idx = plr->GetSession()->GetSessionDbLocaleIndex();
+        if (loc_idx >= 0 )
+            if (ItemLocale const *il = sObjectMgr.GetItemLocale(markProto->ItemId))
+                if (il->Name.size() > size_t(loc_idx) && !il->Name[loc_idx].empty())
+                    subject = il->Name[loc_idx];
+
+        // text
+        std::string textFormat = plr->GetSession()->GetMangosString(LANG_BG_MARK_BY_MAIL);
+        char textBuf[300];
+        snprintf(textBuf,300,textFormat.c_str(),GetName(),GetName());
+
+        MailDraft(subject, textBuf)
+            .AddItem(markItem)
+            .SendMailTo(plr, MailSender(MAIL_CREATURE, bmEntry));
+    }*/
 }
 
 void cBattleGround::RewardQuestComplete(Player *plr)
 {
+	uint32 quest;
+    switch(GetTypeID(true))
+    {
+        case BATTLEGROUND_AV:
+            quest = SPELL_AV_QUEST_REWARD;
+            break;
+        case BATTLEGROUND_WS:
+            quest = SPELL_WS_QUEST_REWARD;
+            break;
+        case BATTLEGROUND_AB:
+            quest = SPELL_AB_QUEST_REWARD;
+            break;
+        case BATTLEGROUND_EY:
+            quest = SPELL_EY_QUEST_REWARD;
+            break;
+        default:
+            return;
+    }
+
+    RewardSpellCast(plr, quest);
 }
 
 void cBattleGround::BlockMovement(Player *plr)
 {
+    //plr->SetClientControl(plr, 0);                          // movement disabled NOTE: the effect will be automatically removed by client when the player is teleported from the battleground, so no need to send with uint8(1) in RemovePlayerAtLeave()
 }
 
 void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPacket)
 {
 	uint32 team = GetPlayerTeam(guid);
+	bool participant = IsPlayerInBattleGround(guid);
 
 	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
@@ -513,11 +622,154 @@ void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPa
         UpdatePlayersCountByTeam(team, true);               // -1 player
         m_Players.erase(itr);
 	}
+
+	BattleGroundScoreMap::iterator itr2 = m_PlayerScores.find(guid);
+    if (itr2 != m_PlayerScores.end())
+    {
+        delete itr2->second;                                // delete player's score
+        m_PlayerScores.erase(itr2);
+    }
+
+    /*Player *plr = sObjectMgr.GetPlayer(guid);
+
+    // should remove spirit of redemption
+    if (plr && plr->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
+        plr->RemoveSpellsCausingAura(SPELL_AURA_MOD_SHAPESHIFT);
+
+    if(plr && !plr->isAlive())                              // resurrect on exit
+    {
+        plr->ResurrectPlayer(1.0f);
+        plr->SpawnCorpseBones();
+    }*/
+
+    //RemovePlayer(plr, guid);                                // BG subclass specific code
+
+    if(participant) // if the player was a match participant, remove auras, calc rating, update queue
+    {
+        BattleGroundTypeId bgTypeId = GetTypeID();
+        BattleGroundQueueTypeId bgQueueTypeId = sClusterBGMgr.BGQueueTypeId(GetTypeID(), GetArenaType());
+        /*if (plr)
+        {
+            plr->ClearAfkReports();
+
+            if(!team) team = plr->GetTeam();
+
+			plr->RemoveAurasDueToSpell(SPELL_AURA_PVP_HEALING); 
+
+            // if arena, remove the specific arena auras
+            if (isArena())
+            {
+                plr->RemoveArenaAuras(true);                // removes debuffs / dots etc., we don't want the player to die after porting out
+                bgTypeId=BATTLEGROUND_AA;                   // set the bg type to all arenas (it will be used for queue refreshing)
+
+                // unsummon current and summon old pet if there was one and there isn't a current pet
+                plr->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT);
+                plr->ResummonPetTemporaryUnSummonedIfAny();
+
+                if (isRated() && GetStatus() == STATUS_IN_PROGRESS)
+                {
+                    //left a rated match while the encounter was in progress, consider as loser
+                    ArenaTeam * winner_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(team)));
+                    ArenaTeam * loser_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(team));
+                    if (winner_arena_team && loser_arena_team)
+                        loser_arena_team->MemberLost(plr,winner_arena_team->GetRating());
+                }
+            }
+            if (SendPacket)
+            {
+                WorldPacket data;
+                sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_NONE, 0, 0, 0);
+                plr->GetSession()->SendPacket(&data);
+            }
+
+            // this call is important, because player, when joins to battleground, this method is not called, so it must be called when leaving bg
+            plr->RemoveBattleGroundQueueId(bgQueueTypeId);
+        }
+        else
+        // removing offline participant
+        {
+            if (isRated() && GetStatus() == STATUS_IN_PROGRESS)
+            {
+                //left a rated match while the encounter was in progress, consider as loser
+                ArenaTeam * others_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(team)));
+                ArenaTeam * players_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(team));
+                if (others_arena_team && players_arena_team)
+                    players_arena_team->OfflineMemberLost(guid, others_arena_team->GetRating());
+            }
+        }*/
+
+        // remove from raid group if player is member
+        /*if (Group *group = GetBgRaid(team))
+        {
+            if( !group->RemoveMember(guid, 0) )             // group was disbanded
+            {
+                SetBgRaid(team, NULL);
+                delete group;
+            }
+        }*/
+        //DecreaseInvitedCount(team);
+        //we should update battleground queue, but only if bg isn't ending
+        if (isBattleGround() && GetStatus() < STATUS_WAIT_LEAVE)
+        {
+            // a player has left the battleground, so there are free slots -> add to queue
+            AddToBGFreeSlotQueue();
+            //sBattleGroundMgr.ScheduleQueueUpdate(0, 0, bgQueueTypeId, bgTypeId, GetBracketId());
+        }
+
+        // Let others know
+        WorldPacket data;
+        sClusterBGMgr.BuildPlayerLeftBattleGroundPacket(&data, guid);
+        //SendPacketToTeam(team, &data, plr, false);
+    }
+
+    /*if (plr)
+    {
+        // Do next only if found in battleground
+        plr->SetBattleGroundId(0, BATTLEGROUND_TYPE_NONE);  // We're not in BG.
+        // reset destination bg team
+        plr->SetBGTeam(0);
+
+        if (Transport)
+            plr->TeleportToBGEntryPoint();
+
+        sLog.outDetail("BATTLEGROUND: Removed player %s from BattleGround.", plr->GetName());
+    }*/
+
+    //battleground object will be deleted next BattleGround::Update() call
 }
 
 void cBattleGround::Reset()
 {
+	SetWinner(WINNER_NONE);
+    SetStatus(STATUS_WAIT_QUEUE);
+    SetStartTime(0);
+    SetEndTime(0);
+    SetArenaType(0);
+    SetRated(false);
+
+    //m_Events = 0;
+
+    // door-event2 is always 0
+    //m_ActiveEvents[BG_EVENT_DOOR] = 0;
+    if (isArena())
+    {
+        //m_ActiveEvents[ARENA_BUFF_EVENT] = BG_EVENT_NONE;
+        //m_ArenaBuffSpawned = false;
+    }
+
+    /*if (m_InvitedAlliance > 0 || m_InvitedHorde > 0)
+        sLog.outError("BattleGround system: bad counter, m_InvitedAlliance: %d, m_InvitedHorde: %d", m_InvitedAlliance, m_InvitedHorde);*/
+
+    /*m_InvitedAlliance = 0;
+    m_InvitedHorde = 0;
+    m_InBGFreeSlotQueue = false;*/
+
+    // need do the same
 	m_Players.clear();
+
+    for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
+        delete itr->second;
+    m_PlayerScores.clear();
 }
 
 void cBattleGround::StartBattleGround()

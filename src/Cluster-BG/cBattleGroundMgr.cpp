@@ -51,6 +51,54 @@ void cBattleGroundMgr::BuildUpdateWorldStatePacket(WorldPacket *data, uint32 fie
     *data << uint32(value);
 }
 
+void cBattleGroundMgr::BuildPlayerLeftBattleGroundPacket(WorldPacket *data, const uint64& guid)
+{
+    data->Initialize(SMSG_BATTLEGROUND_PLAYER_LEFT, 8);
+    *data << uint64(guid);
+}
+
+BattleGroundQueueTypeId cBattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType)
+{
+    switch(bgTypeId)
+    {
+        case BATTLEGROUND_WS:
+            return BATTLEGROUND_QUEUE_WS;
+        case BATTLEGROUND_AB:
+            return BATTLEGROUND_QUEUE_AB;
+        case BATTLEGROUND_AV:
+            return BATTLEGROUND_QUEUE_AV;
+        case BATTLEGROUND_EY:
+            return BATTLEGROUND_QUEUE_EY;
+        case BATTLEGROUND_SA:
+            return BATTLEGROUND_QUEUE_SA;
+        case BATTLEGROUND_IC:
+            return BATTLEGROUND_QUEUE_IC;
+        case BATTLEGROUND_RB:
+            return BATTLEGROUND_QUEUE_RANDOM;
+        case BATTLEGROUND_AA:
+        case BATTLEGROUND_NA:
+        case BATTLEGROUND_RL:
+        case BATTLEGROUND_BE:
+        case BATTLEGROUND_DS:
+        case BATTLEGROUND_RV:
+            switch(arenaType)
+            {
+                case ARENA_TYPE_2v2:
+                    return BATTLEGROUND_QUEUE_2v2;
+                case ARENA_TYPE_3v3:
+                    return BATTLEGROUND_QUEUE_3v3;
+                case ARENA_TYPE_5v5:
+                    return BATTLEGROUND_QUEUE_5v5;
+                default:
+                    return BATTLEGROUND_QUEUE_NONE;
+            }
+        default:
+            return BATTLEGROUND_QUEUE_NONE;
+    }
+}
+
+// Packets
+
 void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)
 {
 	uint64 id = sClusterBGMgr.CreateBattleGround();

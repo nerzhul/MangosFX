@@ -21,6 +21,23 @@ struct cBattleGroundPlayer
     uint32  Team;                                           // Player's team
 };
 
+// handle the queue types and bg types separately to enable joining queue for different sized arenas at the same time
+/*enum BattleGroundQueueTypeId
+{
+    BATTLEGROUND_QUEUE_NONE     = 0,
+    BATTLEGROUND_QUEUE_AV       = 1,
+    BATTLEGROUND_QUEUE_WS       = 2,
+    BATTLEGROUND_QUEUE_AB       = 3,
+    BATTLEGROUND_QUEUE_EY       = 4,
+    BATTLEGROUND_QUEUE_SA       = 5,
+    BATTLEGROUND_QUEUE_IC       = 6,
+    BATTLEGROUND_QUEUE_2v2      = 7,
+    BATTLEGROUND_QUEUE_3v3      = 8,
+    BATTLEGROUND_QUEUE_5v5      = 9,
+	BATTLEGROUND_QUEUE_RANDOM	= 10
+};
+#define MAX_BATTLEGROUND_QUEUE_TYPES 11*/
+
 class cBattleGround
 {
 	public:
@@ -47,6 +64,7 @@ class cBattleGround
 		void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
 		void RewardHonorToTeam(uint32 Honor, uint32 TeamID);
 		void RewardHonorTeamDaily(uint32 TeamID);
+		void SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count);
 		void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
 		void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
 		void UpdateWorldState(uint32 Field, uint32 Value,Player *Source = NULL);
@@ -136,6 +154,11 @@ class cBattleGround
         uint32 GetPlayersSize() const { return m_Players.size(); }
 		std::vector<uint64> getPlayerList();
 
+		typedef std::map<uint64, BattleGroundScore*> BattleGroundScoreMap;
+        BattleGroundScoreMap::const_iterator GetPlayerScoresBegin() const { return m_PlayerScores.begin(); }
+        BattleGroundScoreMap::const_iterator GetPlayerScoresEnd() const { return m_PlayerScores.end(); }
+        uint32 GetPlayerScoresSize() const { return m_PlayerScores.size(); }
+
 		bool IsPlayerInBattleGround(uint64 guid);
 		uint32 GetPlayerTeam(uint64 guid);
 		uint32 GetPlayerOfflineTime(uint64 guid);
@@ -188,15 +211,44 @@ class cBattleGround
             O = m_TeamStartLocO[idx];
         }
 
+		BattleGroundStatus GetStatus() const { return m_Status; }
+		void SetStatus(BattleGroundStatus Status) { m_Status = Status; }
+
+		void SetArenaType(uint8 type)       { m_ArenaType = type; }
+		void SetArenaorBGType(bool _isArena) { m_IsArena = _isArena; }
+		uint8 GetArenaType() const          { return m_ArenaType; }
+		void SetRated(bool state)           { m_IsRated = state; }
+
+		void SetWinner(uint8 winner)        { m_Winner = winner; }
+		uint8 GetWinner() const             { return m_Winner; }
+
+		bool isArena() const        { return m_IsArena; }
+        bool isBattleGround() const { return !m_IsArena; }
+        bool isRated() const        { return m_IsRated; }
+
+		void SetStartTime(uint32 Time)      { m_StartTime = Time; }
+        void SetEndTime(uint32 Time)        { m_EndTime = Time; }
+		uint32 GetStartTime() const         { return m_StartTime; }
+        uint32 GetEndTime() const           { return m_EndTime; }
+
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
 	protected:
 		uint64 m_Id;
 		/* Player lists, those need to be accessible by inherited classes */
         BattleGroundPlayerMap  m_Players;
+		/* Scorekeeping */
+
+        BattleGroundScoreMap m_PlayerScores;                // Player scores
 	private:
 		BattleGroundTypeId m_TypeID;
         BattleGroundTypeId m_RandomTypeID;
+
+		BattleGroundStatus m_Status;
+		uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
+
+		uint32 m_StartTime;
+		int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
 
 		/* Players count by team */
         uint32 m_PlayersCount[BG_TEAMS_COUNT];
@@ -219,6 +271,10 @@ class cBattleGround
         float m_TeamStartLocY[BG_TEAMS_COUNT];
         float m_TeamStartLocZ[BG_TEAMS_COUNT];
         float m_TeamStartLocO[BG_TEAMS_COUNT];
+
+		uint8  m_ArenaType;                                 // 2=2v2, 3=3v3, 5=5v5
+		bool   m_IsArena;
+		bool   m_IsRated;                                   // is this battle rated?
 };
 
 #endif
