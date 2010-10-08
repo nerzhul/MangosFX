@@ -218,6 +218,9 @@ cBattleGround::cBattleGround(): m_Id(0)
 	m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
     m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;
 
+	m_ArenaTeamRatingChanges[BG_TEAM_ALLIANCE]   = 0;
+    m_ArenaTeamRatingChanges[BG_TEAM_HORDE]      = 0;
+
 	m_PlayersCount[BG_TEAM_ALLIANCE] = 0;
 	m_PlayersCount[BG_TEAM_HORDE] = 0;
 

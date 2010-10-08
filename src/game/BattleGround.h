@@ -483,8 +483,18 @@ class BattleGround
 			pkt << uint64(m_Id) << uint32(Team);
 			return sClusterMgr.getUint32Value(&pkt,C_BG);
 			/* m_ArenaTeamIds[GetTeamIndexByTeamId(Team)];*/ }
-        void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange; }
-        int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const    { return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)]; }
+        void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { 
+			Packet pkt;
+			pkt << uint16(C_CMSG_BG_SET_ARENA_TEAM_RATING_CHANGE);
+			pkt << uint64(m_Id) << uint32(Team) << int32(RatingChange);
+			sClusterMgr.getNullValue(&pkt,C_BG);
+			/*m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange;*/ }
+        int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const    { 
+			Packet pkt;
+			pkt << uint16(C_CMSG_BG_GET_ARENA_TEAM_RATING_CHANGE);
+			pkt << uint64(m_Id) << uint32(Team);
+			return sClusterMgr.getInt32Value(&pkt,C_BG);
+			/*return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)];*/ }
         void CheckArenaWinConditions();
 
         /* Triggers handle */
@@ -661,7 +671,7 @@ class BattleGround
         /* Arena team ids by team */
 		//uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
 
-        int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
+        //int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
 
         /* Limits */
         uint32 m_LevelMin;

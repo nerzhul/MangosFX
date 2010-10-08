@@ -17,6 +17,7 @@ class ClusterMgr
 
 		void getNullValue(const Packet* pck, ClusterType _type);
 		bool getBoolValue(const Packet* pck, ClusterType _type);
+		int32 getInt32Value(const Packet* pck, ClusterType _type);
 		uint32 getUint32Value(const Packet* pck, ClusterType _type);
 		uint64 getUint64Value(const Packet* pck, ClusterType _type);
 

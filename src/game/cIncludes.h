@@ -55,4 +55,14 @@ static uint32 readUint32(sf::Packet* Packet, uint32 pos)
 	value += uint8(Packet->GetData()[pos+0])*16777216;
 	return value;
 }
+
+static int32 readInt32(sf::Packet* Packet, uint32 pos)
+{
+	int32 value = 0;
+	value += uint8(Packet->GetData()[pos+3]);
+	value += uint8(Packet->GetData()[pos+2])*256;
+	value += uint8(Packet->GetData()[pos+1])*65536;
+	value += uint8(Packet->GetData()[pos+0])*16777216;
+	return value;
+}
 #endif
