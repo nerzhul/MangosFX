@@ -10,7 +10,7 @@
 
 INSTANTIATE_SINGLETON_1(cBattleGroundMgr);
 
-cBattleGroundmgr::cBattleGroundMgr()
+cBattleGroundMgr::cBattleGroundMgr()
 {
 	for(uint32 i = BATTLEGROUND_TYPE_NONE; i < MAX_BATTLEGROUND_TYPE_ID; i++)
         m_BattleGrounds[i].clear();
@@ -29,7 +29,7 @@ uint64 cBattleGroundMgr::CreateBattleGround()
 
 cBattleGround* cBattleGroundMgr::getBattleGround(uint64 id)
 {
-	cBattleGroundMap::iterator itr = m_BGMap.find(id);
+	cBattleGroundSet::iterator itr = m_BGMap.find(id);
 	if(itr == m_BGMap.end())
 		return NULL;
 

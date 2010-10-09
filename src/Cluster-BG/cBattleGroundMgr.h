@@ -23,8 +23,9 @@ class cBattleGroundMgr
 		BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
 		uint32 GetPrematureFinishTime() const;
 
-		void RemoveBattleGround(uint64 instanceID, BattleGroundTypeId bgTypeId) { m_BattleGrounds[bgTypeId].erase(instanceID); 
-		void AddBattleGround(uint64 InstanceID, BattleGroundTypeId bgTypeId, cBattleGround* BG) { m_BattleGrounds[bgTypeId][InstanceID] = BG; };
+		void RemoveBattleGround(uint64 instanceID, BattleGroundTypeId bgTypeId) { m_BattleGrounds[bgTypeId].erase(instanceID); }
+		void AddBattleGround(uint64 InstanceID, BattleGroundTypeId bgTypeId, cBattleGround* BG) { m_BattleGrounds[bgTypeId][InstanceID] = BG; }
+
 	private:
 		cBattleGroundSet m_BGMap;
 

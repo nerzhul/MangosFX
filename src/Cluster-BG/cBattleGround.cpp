@@ -318,7 +318,7 @@ cBattleGround::~cBattleGround()
         // remove from battlegrounds
     }
 
-    //sBattleGroundMgr.RemoveBattleGround(GetInstanceID(), GetTypeID());
+    sClusterBGMgr.RemoveBattleGround(GetInstanceID(), GetTypeID());
 
     // unload map
     // map can be null at bg destruction
@@ -915,7 +915,7 @@ void cBattleGround::EndBattleGround(uint32 winner)
 
         //plr->CombatStopWithPets(true);
 
-        BlockMovement(plr);
+        //BlockMovement(plr);
 
         /*sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
         plr->GetSession()->SendPacket(&data);
