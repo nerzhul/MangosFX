@@ -50,16 +50,14 @@ void BattleGroundRV::Update(uint32 diff)
         // teleport buggers
         if(m_uiTeleport < diff)
         {
-			std::vector<uint64> players = GetRemotePlayers();
-			for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-            //for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+            /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
             {
-                Player * plr = sObjectMgr.GetPlayer(/*itr->first*/*itr);
+                Player * plr = sObjectMgr.GetPlayer(itr->first);
                 if (plr && plr->GetPositionZ() < 27)
                     plr->TeleportTo(618, plr->GetPositionX(), plr->GetPositionY(), 29, plr->GetOrientation(), false);
                 if (plr && plr->GetPositionZ() < 27)
                     plr->TeleportTo(618, plr->GetPositionX(), plr->GetPositionY(), 29, plr->GetOrientation(), false);
-            }
+            }*/
             m_uiTeleport = 1000;
         }
         else

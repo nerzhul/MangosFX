@@ -267,33 +267,29 @@ void BattleGroundSA::Update(uint32 diff)
 
 void BattleGroundSA::ApplyStuckBuffOnPlayers()
 {
-	std::vector<uint64> players = GetRemotePlayers();
-	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-    //for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
+    /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
 	{
-		if(Player* p = sObjectMgr.GetPlayer(/*itr->first*/*itr))
+		if(Player* p = sObjectMgr.GetPlayer(itr->first))
 		{
 			p->ResurrectPlayer(100.0f);
 			p->CastStop();
 			p->ExitVehicle();
 			p->CastSpell(p,BG_SA_END_ROUND,false);
 		}
-	}
+	}*/
 }
 void BattleGroundSA::RelocateAllPlayers(bool reseting)
 {
-	std::vector<uint64> players = GetRemotePlayers();
-	for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-    //for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
+    /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end();++itr)
 	{
-		if(Player* p = sObjectMgr.GetPlayer(/*itr->first*/*itr))
+		if(Player* p = sObjectMgr.GetPlayer(itr->first*itr))
 		{
 			if(reseting || (p->GetTeam() == ALLIANCE && attackers == BG_TEAM_ALLIANCE || 
 				p->GetTeam() == HORDE && attackers == BG_TEAM_HORDE))
 				TeleportPlayer(p);
 			p->ResurrectPlayer(100.0f);
 		}
-	}
+	}*/
 }
 
 void BattleGroundSA::UpdateCatapults(bool usable)

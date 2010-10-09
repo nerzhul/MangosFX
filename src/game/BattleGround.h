@@ -326,8 +326,6 @@ class BattleGround
 			pck << uint16(C_CMSG_BG_GETTYPEID) << uint64(m_Id) << uint8(GetRandom ? 1:0);
 			return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG)); }
 
-        BattleGroundBracketId GetBracketId() const { return m_BracketId; }
-        uint32 GetEndTime() const           { return m_EndTime; }
 		uint32 GetMaxPlayers() const        { 
 			Packet pck;
 			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(0);
@@ -362,7 +360,6 @@ class BattleGround
 			/*return m_MinPlayersPerTeam;*/ }
 
         int32 GetStartDelayTime() const     { return m_StartDelayTime; }
-        uint8 GetArenaType() const          { return m_ArenaType; }
         uint8 GetWinner() const             { return m_Winner; }
         uint32 GetBattlemasterEntry() const;
         uint32 GetBonusHonorFromKill(uint32 kills) const;
@@ -382,7 +379,6 @@ class BattleGround
 			/*m_RandomTypeID = TypeID;*/ }
         //here we can count minlevel and maxlevel for players
         void SetBracket(PvPDifficultyEntry const* bracketEntry);
-        void SetEndTime(uint32 Time)        { m_EndTime = Time; }
         
 		void SetMaxPlayers(uint32 MaxPlayers) { 
 			Packet pck;
@@ -405,8 +401,6 @@ class BattleGround
 		}
         
 		void SetRated(bool state)           { m_IsRated = state; }
-        void SetArenaType(uint8 type)       { m_ArenaType = type; }
-        void SetArenaorBGType(bool _isArena) { m_IsArena = _isArena; }
         void SetWinner(uint8 winner)        { m_Winner = winner; }
 
         void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
@@ -429,13 +423,7 @@ class BattleGround
         bool HasFreeSlots();
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
 
-        bool isArena() const        { return m_IsArena; }
-        bool isBattleGround() const { return !m_IsArena; }
         bool isRated() const        { return m_IsRated; }
-
-        /*typedef std::map<uint64, BattleGroundPlayer> BattleGroundPlayerMap;
-        BattleGroundPlayerMap const& GetPlayers() const { return m_Players; }
-        uint32 GetPlayersSize() const { return m_Players.size(); }*/
 
         typedef std::map<uint64, BattleGroundScore*> BattleGroundScoreMap;
         BattleGroundScoreMap::const_iterator GetPlayerScoresBegin() const { return m_PlayerScores.begin(); }
@@ -660,6 +648,13 @@ class BattleGround
 		uint32 GetClientInstanceID() { return 0; }
 		void SetClientInstanceID(uint32 cId) { }
 		uint32 GetStartTime() { return 0; }
+		uint32 GetEndTime() { return 0; }
+		BattleGroundBracketId GetBracketId() { return BattleGroundBracketId(0); }
+		void SetArenaType(uint8 aT) { }
+		uint8 GetArenaType() { return 0; }
+		void SetArenaorBGType(bool _isArena) { }
+		bool isArena() const { return true; }
+		bool isBattleGround() { return true; }
 
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
@@ -675,9 +670,6 @@ class BattleGround
         // must be implemented in BG subclass
         virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
 
-        /* Player lists, those need to be accessible by inherited classes */
-        //BattleGroundPlayerMap  m_Players;
-
         /*
         these are important variables used for starting messages
         */
@@ -687,22 +679,13 @@ class BattleGround
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
 
         bool   m_BuffChange;
-		void SendBattleGroundCommand(std::string command);
-		std::vector<uint64> GetRemotePlayers();
     private:
-        bool m_ArenaBuffSpawned;                            // to cache if arenabuff event is started (cause bool is faster than checking IsActiveEvent)
-        int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
-        BattleGroundBracketId m_BracketId;
-        uint8  m_ArenaType;                                 // 2=2v2, 3=3v3, 5=5v5
         bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
         bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave
-        bool   m_IsArena;
         uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
         int32  m_StartDelayTime;
         bool   m_IsRated;                                   // is this battle rated?
         bool   m_PrematureCountDown;
-		bool   m_TimerArenaDone;
-        uint32 m_PrematureCountDownTimer;
         char const *m_Name;
 
         /* Player lists */

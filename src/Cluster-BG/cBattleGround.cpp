@@ -1388,11 +1388,11 @@ void cBattleGround::EventPlayerLoggedOut(Player* player)
 void cBattleGround::AddToBGFreeSlotQueue()
 {
 	// make sure to add only once
-    /*if (!m_InBGFreeSlotQueue && isBattleGround())
+    if (!m_InBGFreeSlotQueue && isBattleGround())
     {
-        sBattleGroundMgr.BGFreeSlotQueue[GetTypeID()].push_front(this);
+        //sBattleGroundMgr.BGFreeSlotQueue[GetTypeID()].push_front(this);
         m_InBGFreeSlotQueue = true;
-    }*/
+    }
 }
 
 void cBattleGround::RemoveFromBGFreeSlotQueue()
