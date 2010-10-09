@@ -10,12 +10,19 @@
 
 INSTANTIATE_SINGLETON_1(cBattleGroundMgr);
 
+cBattleGroundmgr::cBattleGroundMgr()
+{
+	for(uint32 i = BATTLEGROUND_TYPE_NONE; i < MAX_BATTLEGROUND_TYPE_ID; i++)
+        m_BattleGrounds[i].clear();
+}
+
 uint64 cBattleGroundMgr::CreateBattleGround()
 {
 	cBattleGround* cBG = new cBattleGround();
 	uint64 newId = sClusterObjectMgr.getNewBGId();
 	cBG->setId(newId);
 	m_BGMap[newId] = cBG;
+	AddBattleGround(newId,cBG->GetTypeID(true),cBG);
 	sLog.outBasic("Create new BattleGround with id %u",GUID_LOPART(newId));
 	return newId;
 }

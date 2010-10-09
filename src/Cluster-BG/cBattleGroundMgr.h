@@ -5,11 +5,12 @@
 #include <BattleGround.h>
 #include "cBattleGround.h"
 
-typedef std::map<uint64,cBattleGround*> cBattleGroundMap;
+typedef std::map<uint64,cBattleGround*> cBattleGroundSet;
+
 class cBattleGroundMgr
 {
 	public:
-		cBattleGroundMgr() {}
+		cBattleGroundMgr();
 		~cBattleGroundMgr() {}
 		uint64 CreateBattleGround();
 		void Update(uint32 diff);
@@ -21,8 +22,14 @@ class cBattleGroundMgr
 		void BuildPlayerLeftBattleGroundPacket(WorldPacket *data, const uint64& guid);
 		BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
 		uint32 GetPrematureFinishTime() const;
+
+		void RemoveBattleGround(uint64 instanceID, BattleGroundTypeId bgTypeId) { m_BattleGrounds[bgTypeId].erase(instanceID); 
+		void AddBattleGround(uint64 InstanceID, BattleGroundTypeId bgTypeId, cBattleGround* BG) { m_BattleGrounds[bgTypeId][InstanceID] = BG; };
 	private:
-		cBattleGroundMap m_BGMap;
+		cBattleGroundSet m_BGMap;
+
+		/* Battlegrounds */
+        cBattleGroundSet m_BattleGrounds[MAX_BATTLEGROUND_TYPE_ID];
 };
 
 #define sClusterBGMgr MaNGOS::Singleton<cBattleGroundMgr>::Instance()

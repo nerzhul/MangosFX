@@ -915,7 +915,7 @@ void cBattleGround::EndBattleGround(uint32 winner)
 
         //plr->CombatStopWithPets(true);
 
-        //BlockMovement(plr);
+        BlockMovement(plr);
 
         /*sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
         plr->GetSession()->SendPacket(&data);
