@@ -589,43 +589,11 @@ void BattleGround::AddOrSetPlayerToCorrectBgGroup(Player *plr, uint64 plr_guid, 
 // This method should be called when player logs into running battleground
 void BattleGround::EventPlayerLoggedIn(Player* player, uint64 plr_guid)
 {
-    // player is correct pointer
-    for(std::deque<uint64>::iterator itr = m_OfflineQueue.begin(); itr != m_OfflineQueue.end(); ++itr)
-    {
-        if (*itr == plr_guid)
-        {
-            m_OfflineQueue.erase(itr);
-            break;
-        }
-    }
-
-	Packet pkt;
-	pkt << uint16(C_CMSG_BG_REG_PLAYER);
-	pkt << uint64(m_Id) << uint64(plr_guid) << uint32(0) << uint32(player->GetBGTeam());
-	sClusterMgr.getNullValue(&pkt,C_BG);
-    //m_Players[plr_guid].OfflineRemoveTime = 0;
-    PlayerAddedToBGCheckIfBGIsRunning(player);
-    // if battleground is starting, then add preparation aura
-    // we don't have to do that, because preparation aura isn't removed when player logs out
 }
 
 // This method should be called when player logs out from running battleground
 void BattleGround::EventPlayerLoggedOut(Player* player)
 {
-    // player is correct pointer, it is checked in WorldSession::LogoutPlayer()
-    m_OfflineQueue.push_back(player->GetGUID());
-
-	Packet pkt;
-	pkt << uint16(C_CMSG_BG_REG_PLAYER);
-	pkt << uint64(m_Id) << uint64(player->GetGUID()) << uint32(sWorld.GetGameTime() + MAX_OFFLINE_TIME) << uint32(player->GetBGTeam());
-	sClusterMgr.getNullValue(&pkt,C_BG);
-
-    //m_Players[player->GetGUID()].OfflineRemoveTime = sWorld.GetGameTime() + MAX_OFFLINE_TIME;
-    if (GetStatus() == STATUS_IN_PROGRESS)
-    {
-        // drop flag and handle other cleanups
-        RemovePlayer(player, player->GetGUID());
-    }
 }
 
 /* This method should be called only once ... it adds pointer to queue */
@@ -1010,14 +978,6 @@ void BattleGround::HandleTriggerBuff(uint64 const& go_guid)
     if (!obj || obj->GetGoType() != GAMEOBJECT_TYPE_TRAP || !obj->isSpawned())
         return;
 
-    // static buffs are already handled just by database and don't need
-    // battleground code
-    if (!m_BuffChange)
-    {
-        obj->SetLootState(GO_JUST_DEACTIVATED);             // can be despawned or destroyed
-        return;
-    }
-
     // change buff type, when buff is used:
     // TODO this can be done when poolsystem works for instances
     int32 index = m_BgObjects.size() - 1;
@@ -1032,20 +992,6 @@ void BattleGround::HandleTriggerBuff(uint64 const& go_guid)
     //randomly select new buff
     uint8 buff = urand(0, 2);
     uint32 entry = obj->GetEntry();
-    if (m_BuffChange && entry != Buff_Entries[buff])
-    {
-        //despawn current buff
-        SpawnBGObject(m_BgObjects[index], RESPAWN_ONE_DAY);
-        //set index for new one
-        for (uint8 currBuffTypeIndex = 0; currBuffTypeIndex < 3; ++currBuffTypeIndex)
-        {
-            if (entry == Buff_Entries[currBuffTypeIndex])
-            {
-                index -= currBuffTypeIndex;
-                index += buff;
-            }
-        }
-    }
 
     SpawnBGObject(m_BgObjects[index], BUFF_RESPAWN_TIME);
 }

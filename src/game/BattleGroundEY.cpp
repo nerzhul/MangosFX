@@ -30,7 +30,7 @@
 
 BattleGroundEY::BattleGroundEY()
 {
-    m_BuffChange = true;
+    SetBuffChange(true);
     m_BgObjects.resize(BG_EY_OBJECT_MAX);
 
 	m_BgTimer = 0;

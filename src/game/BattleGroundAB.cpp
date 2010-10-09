@@ -30,7 +30,7 @@
 
 BattleGroundAB::BattleGroundAB()
 {
-    m_BuffChange = true;
+    SetBuffChange(true);
     m_BgObjects.resize(BG_AB_OBJECT_MAX);
 	m_BgTimer = 0;
 

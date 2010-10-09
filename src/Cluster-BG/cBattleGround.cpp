@@ -1730,14 +1730,14 @@ void cBattleGround::HandleTriggerBuff(uint64 const& go_guid)
 {
 	/*GameObject *obj = GetBgMap()->GetGameObject(go_guid);
     if (!obj || obj->GetGoType() != GAMEOBJECT_TYPE_TRAP || !obj->isSpawned())
-        return;
+        return;*/
 
     // static buffs are already handled just by database and don't need
     // battleground code
     if (!m_BuffChange)
     {
-        obj->SetLootState(GO_JUST_DEACTIVATED);             // can be despawned or destroyed
-        return;
+        /*obj->SetLootState(GO_JUST_DEACTIVATED);             // can be despawned or destroyed
+        return;*/
     }
 
     // change buff type, when buff is used:
@@ -1747,13 +1747,13 @@ void cBattleGround::HandleTriggerBuff(uint64 const& go_guid)
         index--;
     if (index < 0)
     {
-        sLog.outError("BattleGround (Type: %u) has buff gameobject (Guid: %u Entry: %u Type:%u) but it hasn't that object in its internal data",GetTypeID(),GUID_LOPART(go_guid),obj->GetEntry(),obj->GetGoType());
+        //sLog.outError("BattleGround (Type: %u) has buff gameobject (Guid: %u Entry: %u Type:%u) but it hasn't that object in its internal data",GetTypeID(),GUID_LOPART(go_guid),obj->GetEntry(),obj->GetGoType());
         return;
     }
 
     //randomly select new buff
     uint8 buff = urand(0, 2);
-    uint32 entry = obj->GetEntry();
+    /*uint32 entry = obj->GetEntry();
     if (m_BuffChange && entry != Buff_Entries[buff])
     {
         //despawn current buff

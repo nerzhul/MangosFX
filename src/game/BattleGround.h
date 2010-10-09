@@ -420,10 +420,6 @@ class BattleGround
 
         void StartBattleGround();
 
-        /* Location */
-        void SetMapId(uint32 MapID) { m_MapId = MapID; }
-        uint32 GetMapId() const { return m_MapId; }
-
         /* Map pointers */
         void SetBgMap(BattleGroundMap* map) { m_Map = map; }
         BattleGroundMap* GetBgMap()
@@ -619,8 +615,6 @@ class BattleGround
 		bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
 		Creature* GetBGCreature(uint32 type);
 
-		bool IsRandomBG() { return m_RandomBG; }
-		void SetRandomBG(bool apply) { m_RandomBG = apply; }
 		void RewardAchievementToPlayer(Player* plr, uint32 entry);
 		void RewardAchievementToTeam(uint32 team, uint32 entry);
 
@@ -645,6 +639,11 @@ class BattleGround
 		void SetRated(bool rated) { }
 		bool isRated()  { return true; }
 		uint8 GetWinner() { return 0; }
+		void SetMapId(uint32 map) { }
+		uint32 GetMapId() const { return 0; }
+		bool IsRandomBG() { return true; }
+		void SetRandomBG(bool random = true) { }
+		void SetBuffChange(bool bChange) { }
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
@@ -666,22 +665,12 @@ class BattleGround
         BattleGroundStartTimeIntervals  m_StartDelayTimes[BG_STARTING_EVENT_COUNT];
         //this must be filled in constructors!
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
-
-        bool   m_BuffChange;
     private:
-        /* Player lists */
-        std::vector<uint64> m_ResurrectQueue;               // Player GUID
-        std::deque<uint64> m_OfflineQueue;                  // Player GUID
-
         /* Raid Group */
         Group *m_BgRaids[BG_TEAMS_COUNT];                                // 0 - alliance, 1 - horde
 
         /* Start location */
-        uint32 m_MapId;
         BattleGroundMap* m_Map;
-
-		bool m_RandomBG;
-
 		uint64 m_Id;
 };
 
