@@ -346,11 +346,11 @@ int Master::Run()
 	ACE_Based::Thread cluster_loot(cSLOOT_TCP);
 	cluster_loot.setPriority(ACE_Based::Highest);
 
-	/*cSocketTCP* cSBG_TCP = new cSocketTCP(C_BG);
+	cSocketTCP* cSBG_TCP = new cSocketTCP(C_BG);
 	cSBG_TCP->Connect();
 	sClusterMgr.RegisterCluster(cSBG_TCP,C_BG);
 	ACE_Based::Thread cluster_bg(cSBG_TCP);
-	cluster_bg.setPriority(ACE_Based::Highest);*/
+	cluster_bg.setPriority(ACE_Based::Highest);
 
     sWorldSocketMgr->Wait();
 
