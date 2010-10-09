@@ -22,7 +22,6 @@ uint64 cBattleGroundMgr::CreateBattleGround()
 	uint64 newId = sClusterObjectMgr.getNewBGId();
 	cBG->setId(newId);
 	m_BGMap[newId] = cBG;
-	AddBattleGround(newId,cBG->GetTypeID(true),cBG);
 	sLog.outBasic("Create new BattleGround with id %u",GUID_LOPART(newId));
 	return newId;
 }

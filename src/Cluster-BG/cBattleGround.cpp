@@ -1240,7 +1240,7 @@ void cBattleGround::StartBattleGround()
     // add bg to update list
     // This must be done here, because we need to have already invited some players when first BG::Update() method is executed
     // and it doesn't matter if we call StartBattleGround() more times, because m_BattleGrounds is a map and instance id never changes
-	//sBattleGroundMgr.AddBattleGround(GetInstanceID(), IsRandomBG() ? BATTLEGROUND_RB : GetTypeID(), this);
+	sClusterBGMgr.AddBattleGround(GetInstanceID(), IsRandomBG() ? BATTLEGROUND_RB : GetTypeID(), this);
 }
 
 void cBattleGround::AddPlayer(Player *plr)
@@ -1862,10 +1862,10 @@ void cBattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
     /*BlockMovement(plr);
 
     sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
-    plr->GetSession()->SendPacket(&data);
-
-    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetEndTime(), GetStartTime(), GetArenaType());
     plr->GetSession()->SendPacket(&data);*/
+
+    sClusterBGMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetEndTime(), GetStartTime(), GetArenaType());
+    //plr->GetSession()->SendPacket(&data);
 }
 
 uint32 cBattleGround::GetAlivePlayersCountByTeam(uint32 Team)

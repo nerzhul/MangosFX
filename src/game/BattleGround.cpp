@@ -688,10 +688,6 @@ void BattleGround::EndBattleGround(uint32 winner)
         sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
         plr->GetSession()->SendPacket(&data);
 
-        BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
-        plr->GetSession()->SendPacket(&data);
-        plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);
     }
 
     if (isArena() && isRated() && winner_arena_team && loser_arena_team)
@@ -977,50 +973,10 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 // this method is called when no players remains in battleground
 void BattleGround::Reset()
 {
-    SetWinner(WINNER_NONE);
-    SetStatus(STATUS_WAIT_QUEUE);
-    SetStartTime(0);
-    SetEndTime(0);
-    SetArenaType(0);
-    SetRated(false);
-
-    m_Events = 0;
-
-    // door-event2 is always 0
-    m_ActiveEvents[BG_EVENT_DOOR] = 0;
-    if (isArena())
-    {
-        m_ActiveEvents[ARENA_BUFF_EVENT] = BG_EVENT_NONE;
-        m_ArenaBuffSpawned = false;
-    }
-
-    if (m_InvitedAlliance > 0 || m_InvitedHorde > 0)
-        sLog.outError("BattleGround system: bad counter, m_InvitedAlliance: %d, m_InvitedHorde: %d", m_InvitedAlliance, m_InvitedHorde);
-
-    m_InvitedAlliance = 0;
-    m_InvitedHorde = 0;
-    m_InBGFreeSlotQueue = false;
-
-    // need do the same
-	//m_Players.clear();
-	SendBattleGroundCommand("Reset");
-
-    for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
-        delete itr->second;
-    m_PlayerScores.clear();
 }
 
 void BattleGround::StartBattleGround()
 {
-    SetStartTime(0);
-
-    // add BG to free slot queue
-    AddToBGFreeSlotQueue();
-
-    // add bg to update list
-    // This must be done here, because we need to have already invited some players when first BG::Update() method is executed
-    // and it doesn't matter if we call StartBattleGround() more times, because m_BattleGrounds is a map and instance id never changes
-	sBattleGroundMgr.AddBattleGround(GetInstanceID(), IsRandomBG() ? BATTLEGROUND_RB : GetTypeID(), this);
 }
 
 void BattleGround::AddPlayer(Player *plr)
@@ -1211,6 +1167,7 @@ void BattleGround::RemoveFromBGFreeSlotQueue()
 // returns the number how many players can join battleground to MaxPlayersPerTeam
 uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
 {
+	return 0;
 }
 
 bool BattleGround::HasFreeSlots()
@@ -1698,19 +1655,11 @@ bool BattleGround::IsPlayerInBattleGround(uint64 guid)
 
 void BattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
 {
-    if (GetStatus() != STATUS_WAIT_LEAVE)
-        return;
-
-    WorldPacket data;
-    BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-
     BlockMovement(plr);
-
+	WorldPacket data(0);
     sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
     plr->GetSession()->SendPacket(&data);
 
-    sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, GetEndTime(), GetStartTime(), GetArenaType());
-    plr->GetSession()->SendPacket(&data);
 }
 
 uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team)

@@ -327,8 +327,6 @@ class BattleGround
 			return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG)); }
 
         BattleGroundBracketId GetBracketId() const { return m_BracketId; }
-        uint32 GetClientInstanceID() const  { return m_ClientInstanceID; }
-        uint32 GetStartTime() const         { return m_StartTime; }
         uint32 GetEndTime() const           { return m_EndTime; }
 		uint32 GetMaxPlayers() const        { 
 			Packet pck;
@@ -384,8 +382,6 @@ class BattleGround
 			/*m_RandomTypeID = TypeID;*/ }
         //here we can count minlevel and maxlevel for players
         void SetBracket(PvPDifficultyEntry const* bracketEntry);
-        void SetClientInstanceID(uint32 InstanceID) { m_ClientInstanceID = InstanceID; }
-        void SetStartTime(uint32 Time)      { m_StartTime = Time; }
         void SetEndTime(uint32 Time)        { m_EndTime = Time; }
         
 		void SetMaxPlayers(uint32 MaxPlayers) { 
@@ -522,15 +518,7 @@ class BattleGround
         virtual void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
 
         static BattleGroundTeamId GetTeamIndexByTeamId(uint32 Team) { return Team == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE; }
-        /*uint32 GetPlayersCountByTeam(uint32 Team) const { return m_PlayersCount[GetTeamIndexByTeamId(Team)]; }*/
         uint32 GetAlivePlayersCountByTeam(uint32 Team);   // used in arenas to correctly handle death in spirit of redemption / last stand etc. (killer = killed) cases
-        /*void UpdatePlayersCountByTeam(uint32 Team, bool remove)
-        {
-            if (remove)
-                --m_PlayersCount[GetTeamIndexByTeamId(Team)];
-            else
-                ++m_PlayersCount[GetTeamIndexByTeamId(Team)];
-        }*/
 
         // used for rated arena battles
         void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { 
@@ -662,10 +650,16 @@ class BattleGround
 		void RewardAchievementToPlayer(Player* plr, uint32 entry);
 		void RewardAchievementToTeam(uint32 team, uint32 entry);
 
+		/* To handle with cluster */
 		void SetInstanceID(uint32 instanceId) { /* TODO : send to server*/ }
 		uint32 GetInstanceID() { /* Must Callback from server */return 0; }
 		BattleGroundStatus GetStatus() const { return BattleGroundStatus(0);  /* Must Handle With Server */}
 		void SetStatus(BattleGroundStatus status) { /* Handle with server*/ }
+		void IncreaseInvitedCount(uint32 team) { }
+		void DecreaseInvitedCount(uint32 team) { }
+		uint32 GetClientInstanceID() { return 0; }
+		void SetClientInstanceID(uint32 cId) { }
+		uint32 GetStartTime() { return 0; }
 
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
@@ -696,9 +690,6 @@ class BattleGround
 		void SendBattleGroundCommand(std::string command);
 		std::vector<uint64> GetRemotePlayers();
     private:
-        /* Battleground */
-        uint32 m_ClientInstanceID;                          //the instance-id which is sent to the client and without any other internal use
-        uint32 m_StartTime;
         bool m_ArenaBuffSpawned;                            // to cache if arenabuff event is started (cause bool is faster than checking IsActiveEvent)
         int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
         BattleGroundBracketId m_BracketId;
