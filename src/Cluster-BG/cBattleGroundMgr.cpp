@@ -64,6 +64,58 @@ void cBattleGroundMgr::BuildPlayerLeftBattleGroundPacket(WorldPacket *data, cons
     *data << uint64(guid);
 }
 
+void cBattleGroundMgr::BuildBattleGroundStatusPacket(WorldPacket *data, cBattleGround *bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, uint8 arenatype)
+{
+    // we can be in 2 queues in same time...
+
+    if (StatusID == 0 || !bg)
+    {
+        data->Initialize(SMSG_BATTLEFIELD_STATUS, 4+8);
+        *data << uint32(QueueSlot);                         // queue id (0...1)
+        *data << uint64(0);
+        return;
+    }
+
+    data->Initialize(SMSG_BATTLEFIELD_STATUS, (4+8+1+1+4+1+4+4+4));
+    *data << uint32(QueueSlot);                             // queue id (0...1) - player can be in 2 queues in time
+    // uint64 in client
+
+	BattleGroundTypeId _bgTypeId = bg->GetTypeID();
+	if(bg->IsRandomBG() && StatusID != STATUS_IN_PROGRESS)
+		_bgTypeId = BATTLEGROUND_RB;
+
+    *data << uint64( uint64(arenatype) | (uint64(0x0D) << 8) | (uint64(_bgTypeId) << 16) | (uint64(0x1F90) << 48) );
+    *data << uint8(0);                                      // 3.3.0
+    *data << uint8(0);                                      // 3.3.0
+    *data << uint32(bg->GetClientInstanceID());
+    // alliance/horde for BG and skirmish/rated for Arenas
+    // following displays the minimap-icon 0 = faction icon 1 = arenaicon
+    *data << uint8(bg->isRated());
+    *data << uint32(StatusID);                              // status
+    switch(StatusID)
+    {
+        case STATUS_WAIT_QUEUE:                             // status_in_queue
+            *data << uint32(Time1);                         // average wait time, milliseconds
+            *data << uint32(Time2);                         // time in queue, updated every minute!, milliseconds
+            break;
+        case STATUS_WAIT_JOIN:                              // status_invite
+            *data << uint32(bg->GetMapId());                // map id
+			*data << uint64(0);                             // 3.3.5, unknown
+            *data << uint32(Time1);                         // time to remove from queue, milliseconds
+            break;
+        case STATUS_IN_PROGRESS:                            // status_in_progress
+            *data << uint32(bg->GetMapId());                // map id
+			*data << uint64(0);                             // 3.3.5, unknown
+            *data << uint32(Time1);                         // time to bg auto leave, 0 at bg start, 120000 after bg end, milliseconds
+            *data << uint32(Time2);                         // time from bg start, milliseconds
+            *data << uint8(0x1);                            // Lua_GetBattlefieldArenaFaction (bool)
+            break;
+        default:
+            sLog.outError("Unknown BG status!");
+            break;
+    }
+}
+
 BattleGroundQueueTypeId cBattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType)
 {
     switch(bgTypeId)

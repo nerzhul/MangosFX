@@ -112,6 +112,7 @@ class cBattleGround
 		BGCreatures m_BgCreatures;
 
 		uint32 GetInstanceID() const        { return m_InstanceID; }
+		void SetInstanceID(uint32 InstanceID) { m_InstanceID = InstanceID; }
 
 		void SpawnEvent(uint8 event1, uint8 event2, bool spawn);
 		void SpawnBGObject(uint64 const& guid, uint32 respawntime);
@@ -190,6 +191,8 @@ class cBattleGround
             else
                 ++m_PlayersCount[GetTeamIndexByTeamId(Team)];
         }
+		void DecreaseInvitedCount(uint32 team)      { (team == ALLIANCE) ? --m_InvitedAlliance : --m_InvitedHorde; }
+		void IncreaseInvitedCount(uint32 team)      { (team == ALLIANCE) ? ++m_InvitedAlliance : ++m_InvitedHorde; }
 
 		void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId; }
         uint32 GetArenaTeamIdForTeam(uint32 Team) const             { return m_ArenaTeamIds[GetTeamIndexByTeamId(Team)]; }
@@ -246,6 +249,7 @@ class cBattleGround
 		bool isArena() const        { return m_IsArena; }
         bool isBattleGround() const { return !m_IsArena; }
         bool isRated() const        { return m_IsRated; }
+		bool IsRandomBG() { return m_RandomBG; }
 
 		void SetStartTime(uint32 Time)      { m_StartTime = Time; }
 		void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
@@ -255,9 +259,13 @@ class cBattleGround
         uint32 GetEndTime() const           { return m_EndTime; }
 
 		int32 GetStartDelayTime() const     { return m_StartDelayTime; }
+		uint32 GetClientInstanceID() const  { return m_ClientInstanceID; }
+		uint32 GetMapId() const { return m_MapId; }
 
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
+
+		std::map<uint8, uint8> m_ActiveEvents;
 
 	protected:
 		uint64 m_Id;

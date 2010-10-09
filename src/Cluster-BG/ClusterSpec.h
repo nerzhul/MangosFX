@@ -1,8 +1,9 @@
 #ifndef _ClusterBG_H
 #define _ClusterBG_H
 
-#include "Common.h"
-#include "Policies/Singleton.h"
+#include <Common.h>
+#include <Policies/Singleton.h>
+#include "ClusterSession.h"
 
 #define CLUSTER_SLEEP_CONST 50
 enum ShutdownExitCode
@@ -11,6 +12,8 @@ enum ShutdownExitCode
     ERROR_EXIT_CODE    = 1,
     RESTART_EXIT_CODE  = 2,
 };
+
+typedef std::map <uint32,ClusterSession*> MangosSessionMap;
 
 class ClusterBG : public ACE_Based::Runnable
 {
@@ -35,6 +38,8 @@ class ClusterBG : public ACE_Based::Runnable
 		static volatile bool m_stopEvent;
 		static uint8 m_ExitCode;
 		time_t m_gameTime;
+
+		MangosSessionMap m_sessions;
 };
 #define sClusterBG MaNGOS::Singleton<ClusterBG>::Instance()
 #endif

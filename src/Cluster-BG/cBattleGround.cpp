@@ -477,16 +477,16 @@ void cBattleGround::Update(uint32 diff)
             if (isArena())
             {
                 //TODO : add arena sound PlaySoundToAll(SOUND_ARENA_START);
-                /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player *plr = sObjectMgr.GetPlayer(itr->first))
+                for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                    if(/*Player *plr = sObjectMgr.GetPlayer(*/itr->first/*)*/)
 					{
 						WorldPacket status;
-						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
-						plr->GetSession()->SendPacket(&status);
-						plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
-					} */ 
+						BattleGroundQueueTypeId bgQueueTypeId = sClusterBGMgr.BGQueueTypeId(GetTypeID(), GetArenaType());
+						uint32 queueSlot = 0/*plr->GetBattleGroundQueueIndex(bgQueueTypeId)*/;
+						sClusterBGMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
+						/*plr->GetSession()->SendPacket(&status);
+						plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);*/
+					} 
 
                 CheckArenaWinConditions();
             }
@@ -1165,7 +1165,7 @@ void cBattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPa
                 delete group;
             }
         }*/
-        //DecreaseInvitedCount(team);
+        DecreaseInvitedCount(team);
         //we should update battleground queue, but only if bg isn't ending
         if (isBattleGround() && GetStatus() < STATUS_WAIT_LEAVE)
         {
@@ -1205,22 +1205,22 @@ void cBattleGround::Reset()
     SetArenaType(0);
     SetRated(false);
 
-    //m_Events = 0;
+    m_Events = 0;
 
     // door-event2 is always 0
-    //m_ActiveEvents[BG_EVENT_DOOR] = 0;
+    m_ActiveEvents[BG_EVENT_DOOR] = 0;
     if (isArena())
     {
-        //m_ActiveEvents[ARENA_BUFF_EVENT] = BG_EVENT_NONE;
-        //m_ArenaBuffSpawned = false;
+        m_ActiveEvents[ARENA_BUFF_EVENT] = BG_EVENT_NONE;
+        m_ArenaBuffSpawned = false;
     }
 
-    /*if (m_InvitedAlliance > 0 || m_InvitedHorde > 0)
-        sLog.outError("BattleGround system: bad counter, m_InvitedAlliance: %d, m_InvitedHorde: %d", m_InvitedAlliance, m_InvitedHorde);*/
+    if(m_InvitedAlliance > 0 || m_InvitedHorde > 0)
+        sLog.outError("BattleGround system: bad counter, m_InvitedAlliance: %d, m_InvitedHorde: %d", m_InvitedAlliance, m_InvitedHorde);
 
-    /*m_InvitedAlliance = 0;
+    m_InvitedAlliance = 0;
     m_InvitedHorde = 0;
-    m_InBGFreeSlotQueue = false;*/
+    m_InBGFreeSlotQueue = false;
 
     // need do the same
 	m_Players.clear();

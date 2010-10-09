@@ -6,6 +6,9 @@
 #include <cIncludes.h>
 #include <ace/Atomic_Op.h>
 
+typedef std::map<uint64,uint64> PlayerUIDMap;
+typedef std::map<uint16,uint64> PlayerServerMap;
+
 class ClusterSession: public ACE_Based::Runnable
 {
 	public:
@@ -61,6 +64,9 @@ class ClusterSession: public ACE_Based::Runnable
 		void HandlePacket(Packet* pck);
 		void SendClusterIdentity();
 		void SendPing();
+
+		PlayerServerMap m_playerbyserver;
+		PlayerUIDMap m_playerUIDs;
 
 		bool mustStop;
 		bool isRPC;

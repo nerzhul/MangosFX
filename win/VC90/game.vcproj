@@ -1887,14 +1887,6 @@
 					>
 				</File>
 			</Filter>
-			<Filter
-				Name="Handlers"
-				>
-				<File
-					RelativePath="..\..\src\game\BattleGroundCHandler.cpp"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

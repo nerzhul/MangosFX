@@ -13,6 +13,7 @@ uint8 ClusterBG::m_ExitCode = SHUTDOWN_EXIT_CODE;
 
 ClusterBG::ClusterBG()
 {
+	m_sessions.clear();
 }
 
 ClusterBG::~ClusterBG()

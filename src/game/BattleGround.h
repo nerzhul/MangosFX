@@ -327,8 +327,6 @@ class BattleGround
 			return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG)); }
 
         BattleGroundBracketId GetBracketId() const { return m_BracketId; }
-        uint32 GetInstanceID() const        { return m_InstanceID; }
-        BattleGroundStatus GetStatus() const { return m_Status; }
         uint32 GetClientInstanceID() const  { return m_ClientInstanceID; }
         uint32 GetStartTime() const         { return m_StartTime; }
         uint32 GetEndTime() const           { return m_EndTime; }
@@ -386,8 +384,6 @@ class BattleGround
 			/*m_RandomTypeID = TypeID;*/ }
         //here we can count minlevel and maxlevel for players
         void SetBracket(PvPDifficultyEntry const* bracketEntry);
-        void SetInstanceID(uint32 InstanceID) { m_InstanceID = InstanceID; }
-        void SetStatus(BattleGroundStatus Status) { m_Status = Status; }
         void SetClientInstanceID(uint32 InstanceID) { m_ClientInstanceID = InstanceID; }
         void SetStartTime(uint32 Time)      { m_StartTime = Time; }
         void SetEndTime(uint32 Time)        { m_EndTime = Time; }
@@ -434,15 +430,6 @@ class BattleGround
         void AddToBGFreeSlotQueue();                        //this queue will be useful when more battlegrounds instances will be available
         void RemoveFromBGFreeSlotQueue();                   //this method could delete whole BG instance, if another free is available
 
-        void DecreaseInvitedCount(uint32 team)      { (team == ALLIANCE) ? --m_InvitedAlliance : --m_InvitedHorde; }
-        void IncreaseInvitedCount(uint32 team)      { (team == ALLIANCE) ? ++m_InvitedAlliance : ++m_InvitedHorde; }
-        uint32 GetInvitedCount(uint32 team) const
-        {
-            if (team == ALLIANCE)
-                return m_InvitedAlliance;
-            else
-                return m_InvitedHorde;
-        }
         bool HasFreeSlots();
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
 
@@ -675,7 +662,11 @@ class BattleGround
 		void RewardAchievementToPlayer(Player* plr, uint32 entry);
 		void RewardAchievementToTeam(uint32 team, uint32 entry);
 
-		//void UpdatemPlayers();
+		void SetInstanceID(uint32 instanceId) { /* TODO : send to server*/ }
+		uint32 GetInstanceID() { /* Must Callback from server */return 0; }
+		BattleGroundStatus GetStatus() const { return BattleGroundStatus(0);  /* Must Handle With Server */}
+		void SetStatus(BattleGroundStatus status) { /* Handle with server*/ }
+
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
@@ -706,10 +697,6 @@ class BattleGround
 		std::vector<uint64> GetRemotePlayers();
     private:
         /* Battleground */
-        /*BattleGroundTypeId m_TypeID;
-        BattleGroundTypeId m_RandomTypeID;*/
-        uint32 m_InstanceID;                                //BattleGround Instance's GUID!
-        BattleGroundStatus m_Status;
         uint32 m_ClientInstanceID;                          //the instance-id which is sent to the client and without any other internal use
         uint32 m_StartTime;
         bool m_ArenaBuffSpawned;                            // to cache if arenabuff event is started (cause bool is faster than checking IsActiveEvent)
@@ -731,38 +718,14 @@ class BattleGround
         std::vector<uint64> m_ResurrectQueue;               // Player GUID
         std::deque<uint64> m_OfflineQueue;                  // Player GUID
 
-        /* Invited counters are useful for player invitation to BG - do not allow, if BG is started to one faction to have 2 more players than another faction */
-        /* Invited counters will be changed only when removing already invited player from queue, removing player from battleground and inviting player to BG */
-        /* Invited players counters*/
-        uint32 m_InvitedAlliance;
-        uint32 m_InvitedHorde;
-
         /* Raid Group */
         Group *m_BgRaids[BG_TEAMS_COUNT];                                // 0 - alliance, 1 - horde
 
-        /* Players count by team */
-        //uint32 m_PlayersCount[BG_TEAMS_COUNT];
-
-        /* Arena team ids by team */
-		//uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
-
-        //int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
-
         /* Limits */
-        /*uint32 m_LevelMin;
-        uint32 m_LevelMax;
-        uint32 m_MaxPlayersPerTeam;
-        uint32 m_MaxPlayers;
-        uint32 m_MinPlayersPerTeam;
-        uint32 m_MinPlayers;*/
 
         /* Start location */
         uint32 m_MapId;
         BattleGroundMap* m_Map;
-        /*float m_TeamStartLocX[BG_TEAMS_COUNT];
-        float m_TeamStartLocY[BG_TEAMS_COUNT];
-        float m_TeamStartLocZ[BG_TEAMS_COUNT];
-        float m_TeamStartLocO[BG_TEAMS_COUNT];*/
 
 		bool m_RandomBG;
 

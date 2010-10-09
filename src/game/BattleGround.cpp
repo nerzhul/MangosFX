@@ -247,136 +247,6 @@ BattleGround::~BattleGround()
 
 void BattleGround::Update(uint32 diff)
 {
-    /*********************************************************/
-    /***           BATTLEGROUND STARTING SYSTEM            ***/
-    /*********************************************************/
-
-    if (GetStatus() == STATUS_WAIT_JOIN && /*GetPlayersSize()*/players.size())
-    {
-        ModifyStartDelayTime(diff);
-
-        if (!(m_Events & BG_STARTING_EVENT_1))
-        {
-            m_Events |= BG_STARTING_EVENT_1;
-
-            // setup here, only when at least one player has ported to the map
-            if (!SetupBattleGround())
-            {
-                EndNow();
-                return;
-            }
-
-            StartingEventCloseDoors();
-            SetStartDelayTime(m_StartDelayTimes[BG_STARTING_EVENT_FIRST]);
-            //first start warning - 2 or 1 minute, only if defined
-            if (m_StartMessageIds[BG_STARTING_EVENT_FIRST])
-                SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_FIRST], CHAT_MSG_BG_SYSTEM_NEUTRAL);
-        }
-        // After 1 minute or 30 seconds, warning is signalled
-        else if (GetStartDelayTime() <= m_StartDelayTimes[BG_STARTING_EVENT_SECOND] && !(m_Events & BG_STARTING_EVENT_2))
-        {
-            m_Events |= BG_STARTING_EVENT_2;
-            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_SECOND], CHAT_MSG_BG_SYSTEM_NEUTRAL);
-        }
-        // After 30 or 15 seconds, warning is signalled
-        else if (GetStartDelayTime() <= m_StartDelayTimes[BG_STARTING_EVENT_THIRD] && !(m_Events & BG_STARTING_EVENT_3))
-        {
-            m_Events |= BG_STARTING_EVENT_3;
-            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_THIRD], CHAT_MSG_BG_SYSTEM_NEUTRAL);
-        }
-        // delay expired (atfer 2 or 1 minute)
-        else if (GetStartDelayTime() <= 0 && !(m_Events & BG_STARTING_EVENT_4))
-        {
-            m_Events |= BG_STARTING_EVENT_4;
-
-            StartingEventOpenDoors();
-
-            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_FOURTH], CHAT_MSG_BG_SYSTEM_NEUTRAL);
-            SetStatus(STATUS_IN_PROGRESS);
-            SetStartDelayTime(m_StartDelayTimes[BG_STARTING_EVENT_FOURTH]);
-
-            //remove preparation
-            if (isArena())
-            {
-                //TODO : add arena sound PlaySoundToAll(SOUND_ARENA_START);
-				
-				std::vector<uint64> players = GetRemotePlayers();
-				for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-                //for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player *plr = sObjectMgr.GetPlayer(/*itr->first*/*itr))
-					{
-						WorldPacket status;
-						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
-						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
-						plr->GetSession()->SendPacket(&status);
-						plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
-					}  
-
-                CheckArenaWinConditions();
-            }
-            else
-            {
-                PlaySoundToAll(SOUND_BG_START);
-				std::vector<uint64> players = GetRemotePlayers();
-				for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-               // for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
-                    if (Player* plr = sObjectMgr.GetPlayer(/*itr->first*/*itr))
-                        plr->RemoveAurasDueToSpell(SPELL_PREPARATION);
-                //Announce BG starting
-                if (sWorld.getConfig(CONFIG_BATTLEGROUND_QUEUE_ANNOUNCER_ENABLE))
-                {
-                    sWorld.SendWorldText(LANG_BG_STARTED_ANNOUNCE_WORLD, GetName(), GetMinLevel(), GetMaxLevel());
-                }
-            }
-        }
-    }
-
-    /*********************************************************/
-    /***           BATTLEGROUND ENDING SYSTEM              ***/
-    /*********************************************************/
-
-    if (GetStatus() == STATUS_WAIT_LEAVE)
-    {
-        // remove all players from battleground after 2 minutes
-        m_EndTime -= diff;
-        if (m_EndTime <= 0)
-        {
-            m_EndTime = 0;
-			std::vector<uint64> players = GetRemotePlayers();
-			for(std::vector<uint64>::iterator itr = players.begin(); itr != players.end(); ++itr)
-            /*BattleGroundPlayerMap::iterator itr, next;
-            for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)*/
-            {
-                /*next = itr;
-                ++next;*/
-                //itr is erased here!
-                RemovePlayerAtLeave(/*itr->first*/*itr, true, true);// remove player from BG
-                // do not change any battleground's private variables
-            }
-        }
-    }
-
-	if(isArena())
-	{
-		if(m_StartTime > uint32(ARENA_TIME_LIMIT) && !m_TimerArenaDone)
-		{
-			uint32 winner;
-			if(GetDamageDoneForTeam(ALLIANCE) > GetDamageDoneForTeam(HORDE))
-				winner = ALLIANCE;
-			else if (GetDamageDoneForTeam(HORDE) > GetDamageDoneForTeam(ALLIANCE))
-				winner = HORDE;
-			else
-				winner = 0;
-
-			m_TimerArenaDone = true;
-			
-			EndBattleGround(winner);
-		}
-	}
-
-    //update start time
-    m_StartTime += diff;
 }
 
 void BattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
@@ -1074,7 +944,6 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
                 delete group;
             }
         }
-        DecreaseInvitedCount(team);
         //we should update battleground queue, but only if bg isn't ending
         if (isBattleGround() && GetStatus() < STATUS_WAIT_LEAVE)
         {
@@ -1336,29 +1205,12 @@ void BattleGround::AddToBGFreeSlotQueue()
 /* This method removes this battleground from free queue - it must be called when deleting battleground - not used now*/
 void BattleGround::RemoveFromBGFreeSlotQueue()
 {
-    // set to be able to re-add if needed
-    m_InBGFreeSlotQueue = false;
-	BattleGroundTypeId typeId = GetTypeID();
-    // uncomment this code when battlegrounds will work like instances
-    for (BGFreeSlotQueueType::iterator itr = sBattleGroundMgr.BGFreeSlotQueue[typeId].begin(); itr != sBattleGroundMgr.BGFreeSlotQueue[typeId].end(); ++itr)
-    {
-        if ((*itr)->GetInstanceID() == m_InstanceID)
-        {
-            sBattleGroundMgr.BGFreeSlotQueue[typeId].erase(itr);
-            return;
-        }
-    }
 }
 
 // get the number of free slots for team
 // returns the number how many players can join battleground to MaxPlayersPerTeam
 uint32 BattleGround::GetFreeSlotsForTeam(uint32 Team) const
 {
-    //return free slot count to MaxPlayerPerTeam
-    if (GetStatus() == STATUS_WAIT_JOIN || GetStatus() == STATUS_IN_PROGRESS)
-        return (GetInvitedCount(Team) < GetMaxPlayersPerTeam()) ? GetMaxPlayersPerTeam() - GetInvitedCount(Team) : 0;
-
-    return 0;
 }
 
 bool BattleGround::HasFreeSlots()

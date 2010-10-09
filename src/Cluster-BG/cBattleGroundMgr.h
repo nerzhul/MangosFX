@@ -20,12 +20,13 @@ class cBattleGroundMgr
 		void BuildPlaySoundPacket(WorldPacket *data, uint32 soundid);
 		void BuildUpdateWorldStatePacket(WorldPacket *data, uint32 field, uint32 value);
 		void BuildPlayerLeftBattleGroundPacket(WorldPacket *data, const uint64& guid);
+		void BuildBattleGroundStatusPacket(WorldPacket *data, cBattleGround *bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, uint8 arenatype);
+
 		BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
 		uint32 GetPrematureFinishTime() const;
 
 		void RemoveBattleGround(uint64 instanceID, BattleGroundTypeId bgTypeId) { m_BattleGrounds[bgTypeId].erase(instanceID); }
 		void AddBattleGround(uint64 InstanceID, BattleGroundTypeId bgTypeId, cBattleGround* BG) { m_BattleGrounds[bgTypeId][InstanceID] = BG; }
-
 	private:
 		cBattleGroundSet m_BGMap;
 

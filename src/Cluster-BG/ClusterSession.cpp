@@ -12,6 +12,8 @@ ClusterSession::ClusterSession()
 	m_addr = "<error>";
 	mustStop = false;
 	isRPC = false;
+	m_playerbyserver.clear();
+	m_playerUIDs.clear();
 }
 
 ClusterSession::~ClusterSession()
