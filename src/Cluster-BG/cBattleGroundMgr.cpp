@@ -97,6 +97,11 @@ BattleGroundQueueTypeId cBattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgTyp
     }
 }
 
+uint32 cBattleGroundMgr::GetPrematureFinishTime() const
+{
+    return 5 * MINUTE * IN_MILLISECONDS;
+}
+
 void cBattleGroundMgr::Update(uint32 diff)
 {
 }

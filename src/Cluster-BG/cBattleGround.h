@@ -212,6 +212,13 @@ class cBattleGround
         void SetLevelRange(uint32 min, uint32 max) { m_LevelMin = min; m_LevelMax = max; }
 
 		bool HasFreeSlots();
+		uint32 GetInvitedCount(uint32 team) const
+        {
+            if (team == ALLIANCE)
+                return m_InvitedAlliance;
+            else
+                return m_InvitedHorde;
+        }
 
 		void SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O);
 		void GetTeamStartLoc(uint32 TeamID, float &X, float &Y, float &Z, float &O) const
@@ -240,12 +247,17 @@ class cBattleGround
         bool isRated() const        { return m_IsRated; }
 
 		void SetStartTime(uint32 Time)      { m_StartTime = Time; }
+		void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
+		void SetStartDelayTime(int Time)    { m_StartDelayTime = Time; }
         void SetEndTime(uint32 Time)        { m_EndTime = Time; }
 		uint32 GetStartTime() const         { return m_StartTime; }
         uint32 GetEndTime() const           { return m_EndTime; }
 
+		int32 GetStartDelayTime() const     { return m_StartDelayTime; }
+
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }
+
 	protected:
 		uint64 m_Id;
 		/* Player lists, those need to be accessible by inherited classes */
@@ -278,6 +290,7 @@ class cBattleGround
 		uint32 m_InvitedAlliance;
         uint32 m_InvitedHorde;
 
+		int32  m_StartDelayTime;
 		uint32 m_StartTime;
 		int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
 
@@ -293,6 +306,10 @@ class cBattleGround
 		bool   m_PrematureCountDown;
 		bool   m_TimerArenaDone;
         uint32 m_PrematureCountDownTimer;
+
+		std::deque<uint64> m_OfflineQueue;                  // Player GUID
+
+		bool m_ArenaBuffSpawned;                            // to cache if arenabuff event is started (cause bool is faster than checking IsActiveEvent)
 
 		/* Players count by team */
         uint32 m_PlayersCount[BG_TEAMS_COUNT];

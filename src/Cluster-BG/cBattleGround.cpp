@@ -5,6 +5,7 @@
 #include <Language.h>
 #include "cBattleGround.h"
 #include "cBattleGroundMgr.h"
+#include "ClusterSpec.h"
 
 namespace ClusterFX
 {
@@ -333,6 +334,215 @@ cBattleGround::~cBattleGround()
 
 void cBattleGround::Update(uint32 diff)
 {
+	if (!GetPlayersSize())
+    {
+        // BG is empty
+        // if there are no players invited, delete BG
+        // this will delete arena or bg object, where any player entered
+        // [[   but if you use battleground object again (more battles possible to be played on 1 instance)
+        //      then this condition should be removed and code:
+        //      if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
+        //          this->AddToFreeBGObjectsQueue(); // not yet implemented
+        //      should be used instead of current
+        // ]]
+        // BattleGround Template instance cannot be updated, because it would be deleted
+        if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
+            m_SetDeleteThis = true;
+        return;
+    }
+
+    // remove offline players from bg after 5 minutes
+    if (!m_OfflineQueue.empty())
+    {
+        BattleGroundPlayerMap::iterator itr = m_Players.find(*(m_OfflineQueue.begin()));
+        if (itr != m_Players.end())
+        {
+            if(itr->second.OfflineRemoveTime <= sClusterBG.GetGameTime())
+            {
+				RemovePlayerAtLeave(itr->first, true, true);// remove player from BG
+                m_OfflineQueue.pop_front();                 // remove from offline queue
+                //do not use itr for anything, because it is erased in RemovePlayerAtLeave()
+            }
+        }
+    }
+
+    /*********************************************************/
+    /***           BATTLEGROUND BALLANCE SYSTEM            ***/
+    /*********************************************************/
+
+    // if less then minimum players are in on one side, then start premature finish timer
+    if (GetStatus() == STATUS_IN_PROGRESS && !isArena() && sClusterBGMgr.GetPrematureFinishTime() && (GetPlayersCountByTeam(ALLIANCE) < GetMinPlayersPerTeam() || GetPlayersCountByTeam(HORDE) < GetMinPlayersPerTeam()))
+    {
+        if (!m_PrematureCountDown)
+        {
+            m_PrematureCountDown = true;
+            m_PrematureCountDownTimer = sClusterBGMgr.GetPrematureFinishTime();
+        }
+        else if (m_PrematureCountDownTimer < diff)
+        {
+            // time's up!
+            uint32 winner = 0;
+            if (GetPlayersCountByTeam(ALLIANCE) >= GetMinPlayersPerTeam())
+                winner = ALLIANCE;
+            else if (GetPlayersCountByTeam(HORDE) >= GetMinPlayersPerTeam())
+                winner = HORDE;
+
+            EndBattleGround(winner);
+            m_PrematureCountDown = false;
+        }
+        else
+        {
+            uint32 newtime = m_PrematureCountDownTimer - diff;
+            // announce every minute
+            if (newtime > (MINUTE * IN_MILLISECONDS))
+            {
+                if (newtime / (MINUTE * IN_MILLISECONDS) != m_PrematureCountDownTimer / (MINUTE * IN_MILLISECONDS))
+                    PSendMessageToAll(LANG_BATTLEGROUND_PREMATURE_FINISH_WARNING, CHAT_MSG_SYSTEM, NULL, (uint32)(m_PrematureCountDownTimer / (MINUTE * IN_MILLISECONDS)));
+            }
+            else
+            {
+                //announce every 15 seconds
+                if (newtime / (15 * IN_MILLISECONDS) != m_PrematureCountDownTimer / (15 * IN_MILLISECONDS))
+                    PSendMessageToAll(LANG_BATTLEGROUND_PREMATURE_FINISH_WARNING_SECS, CHAT_MSG_SYSTEM, NULL, (uint32)(m_PrematureCountDownTimer / IN_MILLISECONDS));
+            }
+            m_PrematureCountDownTimer = newtime;
+        }
+
+    }
+    else if (m_PrematureCountDown)
+        m_PrematureCountDown = false;
+
+    /*********************************************************/
+    /***           ARENA BUFF OBJECT SPAWNING              ***/
+    /*********************************************************/
+    if (isArena() && !m_ArenaBuffSpawned)
+    {
+        // 60 seconds after start the buffobjects in arena should get spawned
+        if (m_StartTime > uint32(m_StartDelayTimes[BG_STARTING_EVENT_FIRST] + ARENA_SPAWN_BUFF_OBJECTS))
+        {
+            SpawnEvent(ARENA_BUFF_EVENT, 0, true);
+            m_ArenaBuffSpawned = true;
+        }
+    }
+
+    /*********************************************************/
+    /***           BATTLEGROUND STARTING SYSTEM            ***/
+    /*********************************************************/
+
+    if (GetStatus() == STATUS_WAIT_JOIN && GetPlayersSize())
+    {
+        ModifyStartDelayTime(diff);
+
+        if (!(m_Events & BG_STARTING_EVENT_1))
+        {
+            m_Events |= BG_STARTING_EVENT_1;
+
+            // setup here, only when at least one player has ported to the map
+            if (!SetupBattleGround())
+            {
+                EndNow();
+                return;
+            }
+
+            StartingEventCloseDoors();
+            SetStartDelayTime(m_StartDelayTimes[BG_STARTING_EVENT_FIRST]);
+            //first start warning - 2 or 1 minute, only if defined
+            if (m_StartMessageIds[BG_STARTING_EVENT_FIRST])
+                SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_FIRST], CHAT_MSG_BG_SYSTEM_NEUTRAL);
+        }
+        // After 1 minute or 30 seconds, warning is signalled
+        else if (GetStartDelayTime() <= m_StartDelayTimes[BG_STARTING_EVENT_SECOND] && !(m_Events & BG_STARTING_EVENT_2))
+        {
+            m_Events |= BG_STARTING_EVENT_2;
+            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_SECOND], CHAT_MSG_BG_SYSTEM_NEUTRAL);
+        }
+        // After 30 or 15 seconds, warning is signalled
+        else if (GetStartDelayTime() <= m_StartDelayTimes[BG_STARTING_EVENT_THIRD] && !(m_Events & BG_STARTING_EVENT_3))
+        {
+            m_Events |= BG_STARTING_EVENT_3;
+            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_THIRD], CHAT_MSG_BG_SYSTEM_NEUTRAL);
+        }
+        // delay expired (atfer 2 or 1 minute)
+        else if (GetStartDelayTime() <= 0 && !(m_Events & BG_STARTING_EVENT_4))
+        {
+            m_Events |= BG_STARTING_EVENT_4;
+
+            StartingEventOpenDoors();
+
+            SendMessageToAll(m_StartMessageIds[BG_STARTING_EVENT_FOURTH], CHAT_MSG_BG_SYSTEM_NEUTRAL);
+            SetStatus(STATUS_IN_PROGRESS);
+            SetStartDelayTime(m_StartDelayTimes[BG_STARTING_EVENT_FOURTH]);
+
+            //remove preparation
+            if (isArena())
+            {
+                //TODO : add arena sound PlaySoundToAll(SOUND_ARENA_START);
+                /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                    if (Player *plr = sObjectMgr.GetPlayer(itr->first))
+					{
+						WorldPacket status;
+						BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
+						uint32 queueSlot = plr->GetBattleGroundQueueIndex(bgQueueTypeId);
+						sBattleGroundMgr.BuildBattleGroundStatusPacket(&status, this, queueSlot, GetStatus(), 0, GetStartTime(), GetArenaType());
+						plr->GetSession()->SendPacket(&status);
+						plr->RemoveAurasDueToSpell(SPELL_ARENA_PREPARATION);
+					} */ 
+
+                CheckArenaWinConditions();
+            }
+            else
+            {
+                PlaySoundToAll(SOUND_BG_START);
+               /*for(BattleGroundPlayerMap::const_iterator itr = GetPlayers().begin(); itr != GetPlayers().end(); ++itr)
+                  if (Player* plr = sObjectMgr.GetPlayer(itr->first))
+                      plr->RemoveAurasDueToSpell(SPELL_PREPARATION);*/
+            }
+        }
+    }
+
+    /*********************************************************/
+    /***           BATTLEGROUND ENDING SYSTEM              ***/
+    /*********************************************************/
+
+    if (GetStatus() == STATUS_WAIT_LEAVE)
+    {
+        // remove all players from battleground after 2 minutes
+        m_EndTime -= diff;
+        if (m_EndTime <= 0)
+        {
+            m_EndTime = 0;
+            BattleGroundPlayerMap::iterator itr, next;
+            for(itr = m_Players.begin(); itr != m_Players.end(); itr = next)
+            {
+                next = itr;
+                ++next;
+                //itr is erased here!
+                RemovePlayerAtLeave(itr->first, true, true);// remove player from BG
+                // do not change any battleground's private variables
+            }
+        }
+    }
+
+	if(isArena())
+	{
+		if(m_StartTime > uint32(ARENA_TIME_LIMIT) && !m_TimerArenaDone)
+		{
+			uint32 winner;
+			if(GetDamageDoneForTeam(ALLIANCE) > GetDamageDoneForTeam(HORDE))
+				winner = ALLIANCE;
+			else if (GetDamageDoneForTeam(HORDE) > GetDamageDoneForTeam(ALLIANCE))
+				winner = HORDE;
+			else
+				winner = 0;
+
+			m_TimerArenaDone = true;
+			
+			EndBattleGround(winner);
+		}
+	}
+
+    //update start time
+    m_StartTime += diff;
 }
 
 void cBattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)

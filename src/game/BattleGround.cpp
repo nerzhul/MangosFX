@@ -212,77 +212,10 @@ void BattleGround::BroadcastWorker(Do& _do)
 
 BattleGround::BattleGround()
 {
-    /*m_TypeID            = BattleGroundTypeId(0);
-    m_RandomTypeID      = BattleGroundTypeId(0);*/
-    //m_InstanceID        = 0;
-    //m_Status            = STATUS_NONE;
-    //m_ClientInstanceID  = 0;
-    //m_EndTime           = 0;
-    //m_BracketId         = BG_BRACKET_ID_FIRST;
-    /*m_InvitedAlliance   = 0;
-    m_InvitedHorde      = 0;*/
-    //m_ArenaType         = 0;
-    //m_IsArena           = false;
-    //m_Winner            = 2;
-    //m_StartTime         = 0;
-    //m_Events            = 0;
-    //m_IsRated           = false;
-    /*m_BuffChange        = false;
-    m_Name              = "";*/
-    /*m_LevelMin          = 0;
-    m_LevelMax          = 0;*/
-   /* m_InBGFreeSlotQueue = false;
-    m_SetDeleteThis     = false;
-	m_RandomBG			= false;*/
-
-    /*m_MaxPlayersPerTeam = 0;
-    m_MaxPlayers        = 0;
-    m_MinPlayersPerTeam = 0;
-    m_MinPlayers        = 0;*/
-
-    //m_MapId             = 0;
     m_Map               = NULL;
-
-    /*m_TeamStartLocX[BG_TEAM_ALLIANCE]   = 0;
-    m_TeamStartLocX[BG_TEAM_HORDE]      = 0;
-
-    m_TeamStartLocY[BG_TEAM_ALLIANCE]   = 0;
-    m_TeamStartLocY[BG_TEAM_HORDE]      = 0;
-
-    m_TeamStartLocZ[BG_TEAM_ALLIANCE]   = 0;
-    m_TeamStartLocZ[BG_TEAM_HORDE]      = 0;
-
-    m_TeamStartLocO[BG_TEAM_ALLIANCE]   = 0;
-    m_TeamStartLocO[BG_TEAM_HORDE]      = 0;*/
-
-    /*m_ArenaTeamIds[BG_TEAM_ALLIANCE]   = 0;
-    m_ArenaTeamIds[BG_TEAM_HORDE]      = 0;*/
-
-    /*m_ArenaTeamRatingChanges[BG_TEAM_ALLIANCE]   = 0;
-    m_ArenaTeamRatingChanges[BG_TEAM_HORDE]      = 0;*/
 
     m_BgRaids[BG_TEAM_ALLIANCE]         = NULL;
     m_BgRaids[BG_TEAM_HORDE]            = NULL;
-
-    /*m_PlayersCount[BG_TEAM_ALLIANCE]    = 0;
-    m_PlayersCount[BG_TEAM_HORDE]       = 0;*/
-
-    /*m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
-    m_TeamScores[BG_TEAM_HORDE]         = 0;*/
-
-    /*m_PrematureCountDown = false;
-	m_TimerArenaDone = false;
-    m_PrematureCountDown = 0;*/
-
-    /*m_StartDelayTimes[BG_STARTING_EVENT_FIRST]  = BG_START_DELAY_2M;
-    m_StartDelayTimes[BG_STARTING_EVENT_SECOND] = BG_START_DELAY_1M;
-    m_StartDelayTimes[BG_STARTING_EVENT_THIRD]  = BG_START_DELAY_30S;
-    m_StartDelayTimes[BG_STARTING_EVENT_FOURTH] = BG_START_DELAY_NONE;
-    //we must set to some default existing values
-    m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
-    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;*/
 
 	m_Id = 0;
 	Packet pck;
@@ -294,13 +227,6 @@ BattleGround::BattleGround()
 
 BattleGround::~BattleGround()
 {
-    // remove objects and creatures
-    // (this is done automatically in mapmanager update, when the instance is reset after the reset time)
-
-    /*int size = m_BgObjects.size();
-    for(int i = 0; i < size; ++i)
-        DelObject(i);*/
-
     if (GetInstanceID())                                    // not spam by useless queries in case BG templates
     {
         // delete creature and go respawn times
@@ -318,19 +244,13 @@ BattleGround::~BattleGround()
     if (m_Map)
         m_Map->SetUnload();
 
-    // remove from bg free slot queue
-    RemoveFromBGFreeSlotQueue();
-
-    for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
-        delete itr->second;
-
 	SendBattleGroundCommand("Drop");
 }
 
 void BattleGround::Update(uint32 diff)
 {
-	std::vector<uint64> players = GetRemotePlayers();
-	if (!/*GetPlayersSize()*/players.size())
+	/*std::vector<uint64> players = GetRemotePlayers();
+	if (!/*GetPlayersSize()players.size())
     {
         // BG is empty
         // if there are no players invited, delete BG
@@ -345,7 +265,7 @@ void BattleGround::Update(uint32 diff)
         if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
             m_SetDeleteThis = true;
         return;
-    }
+    }*/
 
     // remove offline players from bg after 5 minutes
     if (!m_OfflineQueue.empty())

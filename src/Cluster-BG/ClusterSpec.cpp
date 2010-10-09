@@ -34,6 +34,8 @@ void ClusterBG::run()
 		realCurrTime = getMSTime();
         uint32 diff = getMSTimeDiff(realPrevTime,realCurrTime);
 		
+		_UpdateGameTime();
+
 		sClusterBGMgr.Update(diff);
 		// Main update there if need
 		realPrevTime = realCurrTime;
@@ -65,12 +67,23 @@ void ClusterBG::SetInitialSettings()
 	LoadDBCStores("./");
     DetectDBCLang();
 
+	m_gameTime = time(NULL);
+
 	// For other clusters, modify loaded tables there
 
 	sLog.outString( "CLUSTER: ClusterBG initialized" );
 
 	uint32 uStartInterval = getMSTimeDiff(uStartTime, getMSTime());
 	sLog.outBasic( "CLUSTER STARTUP TIME: %i minutes %i seconds", uStartInterval / 60000, (uStartInterval % 60000) / 1000 );
+}
+
+// Update the game time
+void ClusterBG::_UpdateGameTime()
+{
+    ///- update the time
+    time_t thisTime = time(NULL);
+    uint32 elapsed = uint32(thisTime - m_gameTime);
+    m_gameTime = thisTime;
 }
 
 void ClusterBG::DetectDBCLang()

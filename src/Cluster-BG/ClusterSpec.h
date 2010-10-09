@@ -21,6 +21,9 @@ class ClusterBG : public ACE_Based::Runnable
 		void SetInitialSettings();
 		static void Wait();
 		static void StopNOW() { m_stopEvent = true; }
+		void _UpdateGameTime();
+		/// What time is it?
+        time_t const& GetGameTime() const { return m_gameTime; }
 
 	private:
 		static bool MustStop() { return m_stopEvent; }
@@ -31,6 +34,7 @@ class ClusterBG : public ACE_Based::Runnable
         uint32 m_availableDbcLocaleMask;                       // by loaded DBC
 		static volatile bool m_stopEvent;
 		static uint8 m_ExitCode;
+		time_t m_gameTime;
 };
 #define sClusterBG MaNGOS::Singleton<ClusterBG>::Instance()
 #endif

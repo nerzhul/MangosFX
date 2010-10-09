@@ -20,6 +20,7 @@ class cBattleGroundMgr
 		void BuildUpdateWorldStatePacket(WorldPacket *data, uint32 field, uint32 value);
 		void BuildPlayerLeftBattleGroundPacket(WorldPacket *data, const uint64& guid);
 		BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
+		uint32 GetPrematureFinishTime() const;
 	private:
 		cBattleGroundMap m_BGMap;
 };
