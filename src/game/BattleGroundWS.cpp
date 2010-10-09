@@ -157,7 +157,7 @@ void BattleGroundWS::RespawnFlag(uint32 Team, bool captured)
         SpawnEvent(WS_EVENT_FLAG_A, 0, true);
         SpawnEvent(WS_EVENT_FLAG_H, 0, true);
         SendMessageToAll(LANG_BG_WS_F_PLACED, CHAT_MSG_BG_SYSTEM_NEUTRAL);
-        PlaySoundToAll(BG_WS_SOUND_FLAGS_RESPAWNED);        // flag respawned sound...
+        //PlaySoundToAll(BG_WS_SOUND_FLAGS_RESPAWNED);        // flag respawned sound...
     }
 }
 
@@ -172,7 +172,7 @@ void BattleGroundWS::RespawnFlagAfterDrop(uint32 team)
     else
         SendMessageToAll(LANG_BG_WS_HORDE_FLAG_RESPAWNED, CHAT_MSG_BG_SYSTEM_NEUTRAL);
 
-    PlaySoundToAll(BG_WS_SOUND_FLAGS_RESPAWNED);
+    //PlaySoundToAll(BG_WS_SOUND_FLAGS_RESPAWNED);
 
     GameObject *obj = GetBgMap()->GetGameObject(GetDroppedFlagGUID(team));
     if (obj)
@@ -206,7 +206,7 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         Source->RemoveAurasDueToSpell(BG_WS_SPELL_WARSONG_FLAG);
         if (GetTeamScore(ALLIANCE) < BG_WS_MAX_TEAM_SCORE)
             AddPoint(ALLIANCE, 1);
-        PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
+        //PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
         RewardReputationToTeam(890, m_ReputationCapture, ALLIANCE);
     }
     else
@@ -220,11 +220,11 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         Source->RemoveAurasDueToSpell(BG_WS_SPELL_SILVERWING_FLAG);
         if (GetTeamScore(HORDE) < BG_WS_MAX_TEAM_SCORE)
             AddPoint(HORDE, 1);
-        PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
+        //PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
         RewardReputationToTeam(889, m_ReputationCapture, HORDE);
     }
     //for flag capture is reward 2 honorable kills
-    RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
+    //RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
     RewardXpToTeam(0, 0.6, Source->GetTeam());
 
     // despawn flags
@@ -356,7 +356,7 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
     {
         message_id = LANG_BG_WS_PICKEDUP_AF;
         type = CHAT_MSG_BG_SYSTEM_HORDE;
-        PlaySoundToAll(BG_WS_SOUND_ALLIANCE_FLAG_PICKED_UP);
+        //PlaySoundToAll(BG_WS_SOUND_ALLIANCE_FLAG_PICKED_UP);
         SpawnEvent(WS_EVENT_FLAG_A, 0, false);
         SetAllianceFlagPicker(Source->GetGUID());
         m_FlagState[BG_TEAM_ALLIANCE] = BG_WS_FLAG_STATE_ON_PLAYER;
@@ -372,7 +372,7 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
     {
         message_id = LANG_BG_WS_PICKEDUP_HF;
         type = CHAT_MSG_BG_SYSTEM_ALLIANCE;
-        PlaySoundToAll(BG_WS_SOUND_HORDE_FLAG_PICKED_UP);
+        //PlaySoundToAll(BG_WS_SOUND_HORDE_FLAG_PICKED_UP);
         SpawnEvent(WS_EVENT_FLAG_H, 0, false);
         SetHordeFlagPicker(Source->GetGUID());
         m_FlagState[BG_TEAM_HORDE] = BG_WS_FLAG_STATE_ON_PLAYER;
@@ -391,14 +391,14 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
             type = CHAT_MSG_BG_SYSTEM_ALLIANCE;
             UpdateFlagState(HORDE, BG_WS_FLAG_STATE_WAIT_RESPAWN);
             RespawnFlag(ALLIANCE, false);
-            PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
+            //PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
             UpdatePlayerScore(Source, SCORE_FLAG_RETURNS, 1);
         }
         else
         {
             message_id = LANG_BG_WS_PICKEDUP_AF;
             type = CHAT_MSG_BG_SYSTEM_HORDE;
-            PlaySoundToAll(BG_WS_SOUND_ALLIANCE_FLAG_PICKED_UP);
+            //PlaySoundToAll(BG_WS_SOUND_ALLIANCE_FLAG_PICKED_UP);
             SpawnEvent(WS_EVENT_FLAG_A, 0, false);
             SetAllianceFlagPicker(Source->GetGUID());
             Source->CastSpell(Source, BG_WS_SPELL_SILVERWING_FLAG, true);
@@ -419,14 +419,14 @@ void BattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* target
             type = CHAT_MSG_BG_SYSTEM_HORDE;
             UpdateFlagState(ALLIANCE, BG_WS_FLAG_STATE_WAIT_RESPAWN);
             RespawnFlag(HORDE, false);
-            PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
+            //PlaySoundToAll(BG_WS_SOUND_FLAG_RETURNED);
             UpdatePlayerScore(Source, SCORE_FLAG_RETURNS, 1);
         }
         else
         {
             message_id = LANG_BG_WS_PICKEDUP_HF;
             type = CHAT_MSG_BG_SYSTEM_ALLIANCE;
-            PlaySoundToAll(BG_WS_SOUND_HORDE_FLAG_PICKED_UP);
+            //PlaySoundToAll(BG_WS_SOUND_HORDE_FLAG_PICKED_UP);
             SpawnEvent(WS_EVENT_FLAG_H, 0, false);
             SetHordeFlagPicker(Source->GetGUID());
             Source->CastSpell(Source, BG_WS_SPELL_WARSONG_FLAG, true);
@@ -563,13 +563,13 @@ void BattleGroundWS::EndBattleGround(uint32 winner)
     //win reward
     if (winner)
 	{
-		RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
+		//RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
 		RewardXpToTeam(0, 0.8, winner);
 	}
     //complete map_end rewards (even if no team wins)
-    RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), ALLIANCE);
-    RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), HORDE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), ALLIANCE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), HORDE);
 	/*if(GetRemainingTimeInMinutes() >= 18)
 		RewardAchievementToTeam(winner,201);
 	if(GetTeamScore(winner) == 3 && GetTeamScore(winner == ALLIANCE ? HORDE : ALLIANCE) == 0)

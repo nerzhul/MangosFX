@@ -130,7 +130,7 @@ void BattleGroundEY::AddPoints(uint32 Team, uint32 Points)
     m_ExperienceTics[team_index] += Points;
     if (m_HonorScoreTics[team_index] >= m_HonorTics )
     {
-        RewardHonorToTeam(GetBonusHonorFromKill(1), Team);
+        //RewardHonorToTeam(GetBonusHonorFromKill(1), Team);
         m_HonorScoreTics[team_index] -= m_HonorTics;
     }
     if (m_ExperienceTics[team_index] >= BG_EY_ExperienceTicks )
@@ -280,13 +280,13 @@ void BattleGroundEY::EndBattleGround(uint32 winner)
     //win reward
     if (winner)
 	{
-		RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
+		//RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
 		RewardXpToTeam(0, 0.8, winner);
 	}
     //complete map reward
-    RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
-    RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
 
 	if(GetTeamScore(winner) == 1600)
 	{
@@ -483,7 +483,7 @@ void BattleGroundEY::RespawnFlag(bool send_message)
     if (send_message)
     {
         SendMessageToAll(LANG_BG_EY_RESETED_FLAG, CHAT_MSG_BG_SYSTEM_NEUTRAL);
-        PlaySoundToAll(BG_EY_SOUND_FLAG_RESET);             // flags respawned sound...
+        //PlaySoundToAll(BG_EY_SOUND_FLAG_RESET);             // flags respawned sound...
     }
 
     UpdateWorldState(NETHERSTORM_FLAG, 1);
@@ -561,12 +561,12 @@ void BattleGroundEY::EventPlayerClickedOnFlag(Player *Source, GameObject* target
     if (Source->GetTeam() == ALLIANCE)
     {
         UpdateWorldState(NETHERSTORM_FLAG_STATE_ALLIANCE, BG_EY_FLAG_STATE_ON_PLAYER);
-        PlaySoundToAll(BG_EY_SOUND_FLAG_PICKED_UP_ALLIANCE);
+        //PlaySoundToAll(BG_EY_SOUND_FLAG_PICKED_UP_ALLIANCE);
     }
     else
     {
         UpdateWorldState(NETHERSTORM_FLAG_STATE_HORDE, BG_EY_FLAG_STATE_ON_PLAYER);
-        PlaySoundToAll(BG_EY_SOUND_FLAG_PICKED_UP_HORDE);
+        //PlaySoundToAll(BG_EY_SOUND_FLAG_PICKED_UP_HORDE);
     }
 
     if (m_FlagState == BG_EY_FLAG_STATE_ON_BASE)
@@ -658,10 +658,10 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
 
     Source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
 
-    if (Source->GetTeam() == ALLIANCE)
+    /*if (Source->GetTeam() == ALLIANCE)
         PlaySoundToAll(BG_EY_SOUND_FLAG_CAPTURED_ALLIANCE);
     else
-        PlaySoundToAll(BG_EY_SOUND_FLAG_CAPTURED_HORDE);
+        PlaySoundToAll(BG_EY_SOUND_FLAG_CAPTURED_HORDE);*/
 
     SpawnEvent(BG_EY_EVENT_CAPTURE_FLAG, node, true);
 

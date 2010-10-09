@@ -1228,7 +1228,7 @@ void cBattleGround::AddPlayer(Player *plr)
     //UpdatePlayersCountByTeam(team, false);                  // +1 player
 
     WorldPacket data;
-    sBattleGroundMgr.BuildPlayerJoinedBattleGroundPacket(&data, plr);
+    sClusterBGMgr.BuildPlayerJoinedBattleGroundPacket(&data, plr);
     SendPacketToTeam(team, &data, plr, false);
 
 	plr->CastSpell(plr, SPELL_AURA_PVP_HEALING,true); 

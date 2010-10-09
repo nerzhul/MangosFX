@@ -397,11 +397,11 @@ void BattleGroundSA::EndRound()
 		else
 			RoundScores[round].winner = (attackers == BG_TEAM_ALLIANCE) ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE;
 
-		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
+		/*for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
 			if(GateStatus[i] == BG_SA_GATE_OK)
-				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE);
+				RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE);
 			else
-				WallLoose = true;
+				WallLoose = true;*/
 
 		/*if(!WallLoose)
 			RewardAchievementToTeam(attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE,1757);*/
@@ -428,14 +428,14 @@ void BattleGroundSA::EndRound()
 		InitAllObjects();
 		ResetGraveyards();
 
-		for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
+		/*for(uint8 i=BG_SA_GREEN_GATE;i<=BG_SA_ANCIENT_GATE;i++)
 			if(GateStatus[i] == BG_SA_GATE_OK)
-				BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
+				RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
 			else
 			{
 				GateStatus[i] = BG_SA_GATE_OK;
 				WallLoose = true;
-			}
+			}*/
 
 		/*if(!WallLoose)
 			RewardAchievementToTeam(attackers,1757);*/
@@ -835,7 +835,7 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 
 			const char* teamName = Source->GetTeam() == ALLIANCE ? "'Alliance" : "a Horde";
 			SendWarningToAll(fmtstring("L%s a pris la relique !",teamName));
-			BattleGround::RewardHonorToTeam(BG_SA_HONOR_RELIC_CAPTURED,Source->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
+			//RewardHonorToTeam(BG_SA_HONOR_RELIC_CAPTURED,Source->GetTeam() == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE);
 			EndRound();
 			break;
 		}
@@ -865,16 +865,16 @@ void BattleGroundSA::EventPlayerClickedOnFlag(Player *Source, GameObject *target
 void BattleGroundSA::EndBattleGround(uint32 winner)
 {
 	//honor reward for winning
-    if (winner == ALLIANCE)
+    /*if (winner == ALLIANCE)
         RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
     else if (winner == HORDE)
-        RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+        RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);*/
 
 	RewardHonorTeamDaily(winner);
 
     //complete map_end rewards (even if no team wins)
-    RewardHonorToTeam(GetBonusHonorFromKill(2), ALLIANCE);
-    RewardHonorToTeam(GetBonusHonorFromKill(2), HORDE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(2), ALLIANCE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(2), HORDE);
 
     BattleGround::EndBattleGround(winner);
 }
@@ -1268,7 +1268,7 @@ void BattleGroundSA::EventPlayerDamageGO(Player *player, GameObject* target_obj,
 	else
 		SendWarningToAll("La relique des titans est vulnerable !");
 
-	BattleGround::RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
+	BattleGround:://RewardHonorToTeam(BG_SA_HONOR_GATE_DESTROYED,attackers);
 
 	UpdatePlayerScore(player,SCORE_DESTROYED_WALL, 1);
     UpdatePlayerScore(player,SCORE_BONUS_HONOR,(GetBonusHonorFromKill(1)));

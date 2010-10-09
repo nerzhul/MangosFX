@@ -50,6 +50,12 @@ void cBattleGroundMgr::BuildPlaySoundPacket(WorldPacket *data, uint32 soundid)
     *data << uint32(soundid);
 }
 
+void cBattleGroundMgr::BuildPlayerJoinedBattleGroundPacket(WorldPacket *data, Player *plr)
+{
+    data->Initialize(SMSG_BATTLEGROUND_PLAYER_JOINED, 8);
+    *data << uint64(plr->GetGUID());
+}
+
 void cBattleGroundMgr::BuildUpdateWorldStatePacket(WorldPacket *data, uint32 field, uint32 value)
 {
     data->Initialize(SMSG_UPDATE_WORLD_STATE, 4+4);

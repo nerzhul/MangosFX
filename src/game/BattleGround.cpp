@@ -247,42 +247,6 @@ void BattleGround::Update(uint32 diff)
 
 void BattleGround::SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O)
 {
-	Packet pck;
-	pck << uint16(C_CMSG_SET_TEAM_START_LOC);
-	pck << uint64(m_Id) << uint32(TeamID) << float(X) << float(Y) << float(Z) << float(O);
-	sClusterMgr.getNullValue(&pck,C_BG);
-    /*BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
-    m_TeamStartLocX[idx] = X;
-    m_TeamStartLocY[idx] = Y;
-    m_TeamStartLocZ[idx] = Z;
-    m_TeamStartLocO[idx] = O;*/
-}
-
-void BattleGround::SendPacketToAll(WorldPacket *packet)
-{
-}
-
-void BattleGround::SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender, bool self)
-{
-}
-
-void BattleGround::PlaySoundToAll(uint32 SoundID)
-{
-    WorldPacket data;
-    sBattleGroundMgr.BuildPlaySoundPacket(&data, SoundID);
-    SendPacketToAll(&data);
-}
-
-void BattleGround::PlaySoundToTeam(uint32 SoundID, uint32 TeamID)
-{
-}
-
-void BattleGround::CastSpellOnTeam(uint32 SpellID, uint32 TeamID)
-{
-}
-
-void BattleGround::RewardHonorToTeam(uint32 Honor, uint32 TeamID)
-{
 }
 
 void BattleGround::RewardHonorTeamDaily(uint32 WinningTeamID)
@@ -323,12 +287,6 @@ void BattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID
 
 void BattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 {
-    WorldPacket data;
-    sBattleGroundMgr.BuildUpdateWorldStatePacket(&data, Field, Value);
-	if(Source)
-		Source->GetSession()->SendPacket(&data);
-	else
-		SendPacketToAll(&data);
 }
 
 void BattleGround::EndBattleGround(uint32 winner)
@@ -366,10 +324,6 @@ uint32 BattleGround::GetBattlemasterEntry() const
         case BATTLEGROUND_NA: return 20200;
         default:              return 0;
     }
-}
-
-void BattleGround::RewardMark(Player *plr,uint32 count)
-{
 }
 
 void BattleGround::RewardSpellCast(Player *plr, uint32 spell_id)
@@ -410,14 +364,8 @@ void BattleGround::RewardItem(Player *plr, uint32 item_id, uint32 count)
     if( count != 0 && !dest.empty())                        // can add some
         if (Item* item = plr->StoreNewItem( dest, item_id, true, 0))
             plr->SendNewItem(item,count,true,false);
-
-    if (no_space_count > 0)
-        SendRewardMarkByMail(plr,item_id,no_space_count);
 }
 
-void BattleGround::SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count)
-{
-}
 
 void BattleGround::RewardQuestComplete(Player *plr)
 {
@@ -531,10 +479,6 @@ void BattleGround::AddPlayer(Player *plr)
     //m_Players[guid] = bp;
 
     //UpdatePlayersCountByTeam(team, false);                  // +1 player
-
-    WorldPacket data;
-    sBattleGroundMgr.BuildPlayerJoinedBattleGroundPacket(&data, plr);
-    SendPacketToTeam(team, &data, plr, false);
 
 	plr->CastSpell(plr, SPELL_AURA_PVP_HEALING,true); 
 	plr->Unmount();

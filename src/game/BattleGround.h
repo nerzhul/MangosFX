@@ -424,45 +424,18 @@ class BattleGround
         }
 
         void SetTeamStartLoc(uint32 TeamID, float X, float Y, float Z, float O);
-        void GetTeamStartLoc(uint32 TeamID, float &X, float &Y, float &Z, float &O) const
-        {
-            BattleGroundTeamId idx = GetTeamIndexByTeamId(TeamID);
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(0) << uint32(TeamID);
-			X = sClusterMgr.getFloatValue(&pck,C_BG);
-			Packet pck2;
-			pck2 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(1) << uint32(TeamID);
-			Y = sClusterMgr.getFloatValue(&pck2,C_BG);
-			Packet pck3;
-			pck3 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(2) << uint32(TeamID);
-			Z = sClusterMgr.getFloatValue(&pck3,C_BG);
-			Packet pck4;
-			pck4 << uint16(C_CMSG_BG_GET_TEAM_START_LOC) << uint8(3) << uint32(TeamID);
-			O = sClusterMgr.getFloatValue(&pck4,C_BG);
-            /*X = m_TeamStartLocX[idx];
-            Y = m_TeamStartLocY[idx];
-            Z = m_TeamStartLocZ[idx];
-            O = m_TeamStartLocO[idx];*/
-        }
+        void GetTeamStartLoc(uint32 TeamID, float &X, float &Y, float &Z, float &O) const {}
 
         /* Packet Transfer */
         // method that should fill worldpacket with actual world states (not yet implemented for all battlegrounds!)
         virtual void FillInitialWorldStates(WorldPacket& /*data*/, uint32& /*count*/) {}
-        void SendPacketToTeam(uint32 TeamID, WorldPacket *packet, Player *sender = NULL, bool self = true);
-        void SendPacketToAll(WorldPacket *packet);
 
         template<class Do>
         void BroadcastWorker(Do& _do);
 
-        void PlaySoundToTeam(uint32 SoundID, uint32 TeamID);
-        void PlaySoundToAll(uint32 SoundID);
-        void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
-        void RewardHonorToTeam(uint32 Honor, uint32 TeamID);
 		void RewardHonorTeamDaily(uint32 TeamID);
         void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
-        void RewardMark(Player *plr,uint32 count);
         void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
-        void SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count);
         void RewardItem(Player *plr, uint32 item_id, uint32 count);
         void RewardQuestComplete(Player *plr);
         void RewardSpellCast(Player *plr, uint32 spell_id);

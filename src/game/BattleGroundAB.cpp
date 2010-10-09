@@ -89,12 +89,12 @@ void BattleGroundAB::Update(uint32 diff)
                     if (teamIndex == 0)
                     {
                         SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_ALLIANCE,NULL,LANG_BG_ALLY,_GetNodeNameId(node));
-                        PlaySoundToAll(BG_AB_SOUND_NODE_CAPTURED_ALLIANCE);
+                        //PlaySoundToAll(BG_AB_SOUND_NODE_CAPTURED_ALLIANCE);
                     }
                     else
                     {
                         SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_HORDE,NULL,LANG_BG_HORDE,_GetNodeNameId(node));
-                        PlaySoundToAll(BG_AB_SOUND_NODE_CAPTURED_HORDE);
+                        //PlaySoundToAll(BG_AB_SOUND_NODE_CAPTURED_HORDE);
                     }
                 }
             }
@@ -125,7 +125,7 @@ void BattleGroundAB::Update(uint32 diff)
                 }
                 if (m_HonorScoreTics[team] >= m_HonorTics)
                 {
-                    RewardHonorToTeam(GetBonusHonorFromKill(1), (team == BG_TEAM_ALLIANCE) ? ALLIANCE : HORDE);
+                    //RewardHonorToTeam(GetBonusHonorFromKill(1), (team == BG_TEAM_ALLIANCE) ? ALLIANCE : HORDE);
                     m_HonorScoreTics[team] -= m_HonorTics;
                 }
                 if (!m_IsInformedNearVictory && m_TeamScores[team] > BG_AB_WARNING_NEAR_VICTORY_SCORE)
@@ -134,7 +134,7 @@ void BattleGroundAB::Update(uint32 diff)
                         SendMessageToAll(LANG_BG_AB_A_NEAR_VICTORY, CHAT_MSG_BG_SYSTEM_NEUTRAL);
                     else
                         SendMessageToAll(LANG_BG_AB_H_NEAR_VICTORY, CHAT_MSG_BG_SYSTEM_NEUTRAL);
-                    PlaySoundToAll(BG_AB_SOUND_NEAR_VICTORY);
+                    //PlaySoundToAll(BG_AB_SOUND_NEAR_VICTORY);
                     m_IsInformedNearVictory = true;
                 }
                 
@@ -333,10 +333,10 @@ void BattleGroundAB::_NodeOccupied(uint8 node,Team team)
         if (m_Nodes[node] == GetTeamIndexByTeamId(team) + BG_AB_NODE_TYPE_OCCUPIED && !m_NodeTimers[i])
             ++capturedNodes;
     }
-    if (capturedNodes >= 5)
+    /*if (capturedNodes >= 5)
         CastSpellOnTeam(SPELL_AB_QUEST_REWARD_5_BASES, team);
     if (capturedNodes >= 4)
-        CastSpellOnTeam(SPELL_AB_QUEST_REWARD_4_BASES, team);
+        CastSpellOnTeam(SPELL_AB_QUEST_REWARD_4_BASES, team);*/
 }
 
 /* Invoked if a player used a banner as a gameobject */
@@ -444,7 +444,7 @@ void BattleGroundAB::EventPlayerClickedOnFlag(Player *source, GameObject* target
         else
             SendMessage2ToAll(LANG_BG_AB_NODE_TAKEN,CHAT_MSG_BG_SYSTEM_HORDE, NULL, LANG_BG_HORDE, _GetNodeNameId(node));
     }
-    PlaySoundToAll(sound);
+    //PlaySoundToAll(sound);
 }
 
 bool BattleGroundAB::SetupBattleGround()
@@ -500,14 +500,14 @@ void BattleGroundAB::EndBattleGround(uint32 winner)
     //win reward
 	if (winner)
 	{
-		RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
+		//RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
 		RewardXpToTeam(0, 0.8, winner);
 	}
 
     //complete map_end rewards (even if no team wins)
-    RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
-    RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
+    //RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
 	/*if(m_BgTimer <= 6*MINUTE*IN_MILLISECONDS)
 		RewardAchievementToTeam(winner,159);*/
 

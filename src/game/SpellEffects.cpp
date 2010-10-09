@@ -3068,13 +3068,6 @@ void Spell::DoCreateItem(uint32 i, uint32 itemtype)
         if(bgType == 0)
             player->UpdateCraftSkill(m_spellInfo->Id);
     }
-
-    // for battleground marks send by mail if not add all expected
-    if(no_space > 0 && bgType)
-    {
-        if(BattleGround* bg = sBattleGroundMgr.GetBattleGroundTemplate(BattleGroundTypeId(bgType)))
-            bg->SendRewardMarkByMail(player, newitemid, no_space);
-    }
 }
 
 void Spell::EffectCreateItem(uint32 i)
