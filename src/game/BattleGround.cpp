@@ -237,8 +237,6 @@ BattleGround::~BattleGround()
         // remove from battlegrounds
     }
 
-    sBattleGroundMgr.RemoveBattleGround(GetInstanceID(), GetTypeID());
-
     // unload map
     // map can be null at bg destruction
     if (m_Map)
@@ -249,112 +247,6 @@ BattleGround::~BattleGround()
 
 void BattleGround::Update(uint32 diff)
 {
-	/*std::vector<uint64> players = GetRemotePlayers();
-	if (!/*GetPlayersSize()players.size())
-    {
-        // BG is empty
-        // if there are no players invited, delete BG
-        // this will delete arena or bg object, where any player entered
-        // [[   but if you use battleground object again (more battles possible to be played on 1 instance)
-        //      then this condition should be removed and code:
-        //      if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
-        //          this->AddToFreeBGObjectsQueue(); // not yet implemented
-        //      should be used instead of current
-        // ]]
-        // BattleGround Template instance cannot be updated, because it would be deleted
-        if (!GetInvitedCount(HORDE) && !GetInvitedCount(ALLIANCE))
-            m_SetDeleteThis = true;
-        return;
-    }*/
-
-    // remove offline players from bg after 5 minutes
-    if (!m_OfflineQueue.empty())
-    {
-		uint64 tmpGuid = *(m_OfflineQueue.begin());
-		Packet pkt;
-		pkt << uint16(C_CMSG_IS_IN_BG) << uint64(m_Id) << uint64(tmpGuid);
-		if(sClusterMgr.getBoolValue(&pkt,C_BG))
-        /*BattleGroundPlayerMap::iterator itr = m_Players.find(*(m_OfflineQueue.begin()));
-        if (itr != m_Players.end())*/
-        {
-			Packet pkt;
-			pkt << uint16(C_CMSG_PLR_GET_OFFLINE_TIME) << uint64(m_Id) << uint64(tmpGuid);
-			uint32 time = sClusterMgr.getUint32Value(&pkt,C_BG);
-            if(/*itr->second.OfflineRemoveTime*/time <= sWorld.GetGameTime())
-            {
-				RemovePlayerAtLeave(/*itr->first*/tmpGuid, true, true);// remove player from BG
-                m_OfflineQueue.pop_front();                 // remove from offline queue
-                //do not use itr for anything, because it is erased in RemovePlayerAtLeave()
-            }
-        }
-    }
-
-    /*********************************************************/
-    /***           BATTLEGROUND BALLANCE SYSTEM            ***/
-    /*********************************************************/
-
-    // if less then minimum players are in on one side, then start premature finish timer
-
-	Packet pck;
-	pck << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(ALLIANCE);
-	uint32 pAcount = sClusterMgr.getUint32Value(&pck,C_BG);
-	Packet pkt;
-	pkt << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(HORDE);
-	uint32 pHcount = sClusterMgr.getUint32Value(&pkt,C_BG);
-    if (GetStatus() == STATUS_IN_PROGRESS && !isArena() && sBattleGroundMgr.GetPrematureFinishTime() && (pAcount < GetMinPlayersPerTeam() || pHcount < GetMinPlayersPerTeam()))
-    {
-        if (!m_PrematureCountDown)
-        {
-            m_PrematureCountDown = true;
-            m_PrematureCountDownTimer = sBattleGroundMgr.GetPrematureFinishTime();
-        }
-        else if (m_PrematureCountDownTimer < diff)
-        {
-            // time's up!
-            uint32 winner = 0;
-            if (pAcount >= GetMinPlayersPerTeam())
-                winner = ALLIANCE;
-            else if (pHcount >= GetMinPlayersPerTeam())
-                winner = HORDE;
-
-            EndBattleGround(winner);
-            m_PrematureCountDown = false;
-        }
-        else
-        {
-            uint32 newtime = m_PrematureCountDownTimer - diff;
-            // announce every minute
-            if (newtime > (MINUTE * IN_MILLISECONDS))
-            {
-                if (newtime / (MINUTE * IN_MILLISECONDS) != m_PrematureCountDownTimer / (MINUTE * IN_MILLISECONDS))
-                    PSendMessageToAll(LANG_BATTLEGROUND_PREMATURE_FINISH_WARNING, CHAT_MSG_SYSTEM, NULL, (uint32)(m_PrematureCountDownTimer / (MINUTE * IN_MILLISECONDS)));
-            }
-            else
-            {
-                //announce every 15 seconds
-                if (newtime / (15 * IN_MILLISECONDS) != m_PrematureCountDownTimer / (15 * IN_MILLISECONDS))
-                    PSendMessageToAll(LANG_BATTLEGROUND_PREMATURE_FINISH_WARNING_SECS, CHAT_MSG_SYSTEM, NULL, (uint32)(m_PrematureCountDownTimer / IN_MILLISECONDS));
-            }
-            m_PrematureCountDownTimer = newtime;
-        }
-
-    }
-    else if (m_PrematureCountDown)
-        m_PrematureCountDown = false;
-
-    /*********************************************************/
-    /***           ARENA BUFF OBJECT SPAWNING              ***/
-    /*********************************************************/
-    if (isArena() && !m_ArenaBuffSpawned)
-    {
-        // 60 seconds after start the buffobjects in arena should get spawned
-        if (m_StartTime > uint32(m_StartDelayTimes[BG_STARTING_EVENT_FIRST] + ARENA_SPAWN_BUFF_OBJECTS))
-        {
-            SpawnEvent(ARENA_BUFF_EVENT, 0, true);
-            m_ArenaBuffSpawned = true;
-        }
-    }
-
     /*********************************************************/
     /***           BATTLEGROUND STARTING SYSTEM            ***/
     /*********************************************************/
