@@ -67,7 +67,7 @@ void BattleGroundRL::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in constructor
     BattleGroundRLScore* sc = new BattleGroundRLScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    //m_PlayerScores[plr->GetGUID()] = sc; export this
 
     UpdateArenaWorldState();
 }

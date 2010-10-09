@@ -193,7 +193,7 @@ void BattleGroundAB::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in the constructor
     BattleGroundABScore* sc = new BattleGroundABScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    // export this m_PlayerScores[plr->GetGUID()] = sc;
 }
 
 void BattleGroundAB::RemovePlayer(Player * /*plr*/, uint64 /*guid*/)
@@ -566,7 +566,7 @@ WorldSafeLocsEntry const* BattleGroundAB::GetClosestGraveYard(Player* player)
 
 void BattleGroundAB::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 {
-    BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
+    /*BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
     if( itr == m_PlayerScores.end() )                         // player not found...
         return;
 
@@ -592,7 +592,7 @@ void BattleGroundAB::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
         default:
             BattleGround::UpdatePlayerScore(Source,type,value);
             break;
-    }
+    }*/
 }
 
 bool BattleGroundAB::IsAllNodesConrolledByTeam(uint32 team) const

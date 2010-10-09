@@ -467,12 +467,6 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
         participant = true;
     }*/
 
-    BattleGroundScoreMap::iterator itr2 = m_PlayerScores.find(guid);
-    if (itr2 != m_PlayerScores.end())
-    {
-        delete itr2->second;                                // delete player's score
-        m_PlayerScores.erase(itr2);
-    }
 
     Player *plr = sObjectMgr.GetPlayer(guid);
 
@@ -552,7 +546,6 @@ void BattleGround::AddPlayer(Player *plr)
     plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DAMAGE_DONE, ACHIEVEMENT_CRITERIA_CONDITION_MAP, GetMapId());
 
     // setup BG group membership
-    PlayerAddedToBGCheckIfBGIsRunning(plr);
     AddOrSetPlayerToCorrectBgGroup(plr, guid, team);
 
     // Log
@@ -622,61 +615,11 @@ bool BattleGround::HasFreeSlots()
 
 void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 {
-    //this procedure is called from virtual function implemented in bg subclass
-    BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
-
-    if(itr == m_PlayerScores.end())                         // player not found...
-        return;
-
-    switch(type)
-    {
-        case SCORE_KILLING_BLOWS:                           // Killing blows
-            itr->second->KillingBlows += value;
-            break;
-        case SCORE_DEATHS:                                  // Deaths
-            itr->second->Deaths += value;
-            break;
-        case SCORE_HONORABLE_KILLS:                         // Honorable kills
-            itr->second->HonorableKills += value;
-			if(itr->second->HonorableKills >= 0)
-				RewardAchievementToPlayer(Source,229);
-            break;
-        case SCORE_BONUS_HONOR:                             // Honor bonus
-            break;
-            //used only in EY, but in MSG_PVP_LOG_DATA opcode
-        case SCORE_DAMAGE_DONE:                             // Damage Done
-            itr->second->DamageDone += value;
-            break;
-        case SCORE_HEALING_DONE:                            // Healing Done
-            itr->second->HealingDone += value;
-            break;
-        default:
-            sLog.outError("BattleGround: Unknown player score type %u", type);
-            break;
-    }
 }
 
 uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
 {
-    BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
-
-    if(itr == m_PlayerScores.end()) // player not found...
-        return 0;
-
-    switch(type)
-    {
-        case SCORE_KILLING_BLOWS: // Killing blows
-            return itr->second->KillingBlows;
-        case SCORE_DEATHS: // Deaths
-            return itr->second->Deaths;
-        case SCORE_DAMAGE_DONE: // Damage Done
-            return itr->second->DamageDone;
-        case SCORE_HEALING_DONE: // Healing Done
-            return itr->second->HealingDone;
-        default:
-            sLog.outError("BattleGround: Unknown player score type %u", type);
-            return 0;
-    }
+	return 0;
 }
 
 uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
@@ -963,10 +906,6 @@ void BattleGround::SendYell2ToAll(int32 entry, uint32 language, uint64 const& gu
     BroadcastWorker(bg_do);
 }
 
-void BattleGround::EndNow()
-{
-}
-
 /*
 important notice:
 buffs aren't spawned/despawned when players captures anything
@@ -1024,15 +963,6 @@ bool BattleGround::IsPlayerInBattleGround(uint64 guid)
     if (itr != m_Players.end())
         return true;
     return false;*/
-}
-
-void BattleGround::PlayerAddedToBGCheckIfBGIsRunning(Player* plr)
-{
-    BlockMovement(plr);
-	WorldPacket data(0);
-    sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
-    plr->GetSession()->SendPacket(&data);
-
 }
 
 uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team)
@@ -1154,7 +1084,6 @@ bool BattleGround::AddSpiritGuide(uint32 type, float x, float y, float z, float 
     if (!pCreature)
     {
         sLog.outError("Can't create Spirit guide. BattleGround not created!");
-        EndNow();
         return false;
     }
 
@@ -1180,54 +1109,6 @@ Creature* BattleGround::GetBGCreature(uint32 type)
     if(!creature)
         sLog.outError("couldn't get creature %i",type);
     return creature;
-}
-
-void BattleGround::SendWarningToAll(int32 entry, ...)
-{
-    const char *format = sObjectMgr.GetMangosStringForDBCLocale(entry);
-    va_list ap;
-    char str [1024];
-    va_start(ap, entry);
-    vsnprintf(str,1024,format, ap);
-    va_end(ap);
-    std::string msg = (std::string)str;
-
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-
-    data << (uint8)CHAT_MSG_RAID_BOSS_EMOTE;
-    data << (uint32)LANG_UNIVERSAL;
-    data << (uint64)0;
-    data << (uint32)0;                                     // 2.1.0
-    data << (uint32)1;
-    data << (uint8)0; 
-    data << (uint64)0;
-    data << (uint32)(strlen(msg.c_str())+1);
-    data << msg.c_str();
-    data << (uint8)0;
-    /*for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
-            if (plr->GetSession())
-                plr->GetSession()->SendPacket(&data);*/
-}
-
-void BattleGround::SendWarningToAll(std::string msg)
-{
-    WorldPacket data(SMSG_MESSAGECHAT, 200);
-
-    data << (uint8)CHAT_MSG_RAID_BOSS_EMOTE;
-    data << (uint32)LANG_UNIVERSAL;
-    data << (uint64)0;
-    data << (uint32)0;                                     // 2.1.0
-    data << (uint32)1;
-    data << (uint8)0; 
-    data << (uint64)0;
-    data << (uint32)(strlen(msg.c_str())+1);
-    data << msg.c_str();
-    data << (uint8)0;
-    /*for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
-            if (plr->GetSession())
-                plr->GetSession()->SendPacket(&data);*/
 }
 
 void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)

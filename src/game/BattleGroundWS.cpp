@@ -135,7 +135,7 @@ void BattleGroundWS::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in constructor
     BattleGroundWGScore* sc = new BattleGroundWGScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    //m_PlayerScores[plr->GetGUID()] = sc; export this
 }
 
 void BattleGroundWS::RespawnFlag(uint32 Team, bool captured)
@@ -596,13 +596,14 @@ void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)
 void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 {
 
-    BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
+    /* export  all this
+	BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
     if(itr == m_PlayerScores.end())                         // player not found
-        return;
+        return;*/
 
     switch(type)
     {
-        case SCORE_FLAG_CAPTURES:                           // flags captured
+        /*case SCORE_FLAG_CAPTURES:                           // flags captured
             ((BattleGroundWGScore*)itr->second)->FlagCaptures += value;
 			if(((BattleGroundWGScore*)itr->second)->FlagCaptures == 3)
 				if(((BattleGroundWGScore*)itr->second)->Deaths == 0)
@@ -612,7 +613,7 @@ void BattleGroundWS::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
             ((BattleGroundWGScore*)itr->second)->FlagReturns += value;
 			if(((BattleGroundWGScore*)itr->second)->FlagReturns == 5)
 				RewardAchievementToPlayer(Source,872);
-            break;
+            break;*/
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
             break;

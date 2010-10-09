@@ -413,11 +413,6 @@ class BattleGround
         bool HasFreeSlots();
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
 
-        typedef std::map<uint64, BattleGroundScore*> BattleGroundScoreMap;
-        BattleGroundScoreMap::const_iterator GetPlayerScoresBegin() const { return m_PlayerScores.begin(); }
-        BattleGroundScoreMap::const_iterator GetPlayerScoresEnd() const { return m_PlayerScores.end(); }
-        uint32 GetPlayerScoresSize() const { return m_PlayerScores.size(); }
-
         void StartBattleGround();
 
         /* Map pointers */
@@ -644,24 +639,18 @@ class BattleGround
 		bool IsRandomBG() { return true; }
 		void SetRandomBG(bool random = true) { }
 		void SetBuffChange(bool bChange) { }
+		uint32 GetPlayerScoresSize() { return 0; }
+		void SendWarningToAll(int32 entry, ...) { }
+		void SendWarningToAll(std::string str) { }
     protected:
-        //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
-        void EndNow();
-        void PlayerAddedToBGCheckIfBGIsRunning(Player* plr);
 		BattleGroundMap* GetMap() { return m_Map; }
-		void SendWarningToAll(int32 entry, ...);
-		void SendWarningToAll(std::string str);
 
-        /* Scorekeeping */
-
-        BattleGroundScoreMap m_PlayerScores;                // Player scores
         // must be implemented in BG subclass
         virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
 
         /*
         these are important variables used for starting messages
         */
-        uint8 m_Events;
         BattleGroundStartTimeIntervals  m_StartDelayTimes[BG_STARTING_EVENT_COUNT];
         //this must be filled in constructors!
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];

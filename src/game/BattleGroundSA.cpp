@@ -487,7 +487,7 @@ void BattleGroundSA::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in constructor
     BattleGroundSAScore* sc = new BattleGroundSAScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    //m_PlayerScores[plr->GetGUID()] = sc; export this
 
 	TeleportPlayer(plr);
 }
@@ -559,7 +559,9 @@ void BattleGroundSA::HandleAreaTrigger(Player * /*Source*/, uint32 /*Trigger*/)
 void BattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 value)
 {
 
-    BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
+    /* export this
+	
+	BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
     if(itr == m_PlayerScores.end())                         // player not found...
         return;
     if(type == SCORE_DESTROYED_DEMOLISHER)
@@ -567,7 +569,7 @@ void BattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 value
     else if(type == SCORE_DESTROYED_WALL)
 		((BattleGroundSAScore*)itr->second)->gates_destroyed += value;
 	else
-		BattleGround::UpdatePlayerScore(Source,type,value);
+		BattleGround::UpdatePlayerScore(Source,type,value);*/
 }
 
 WorldSafeLocsEntry const* BattleGroundSA::GetClosestGraveYard(Player* player)

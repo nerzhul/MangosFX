@@ -340,7 +340,7 @@ void BattleGroundEY::AddPlayer(Player *plr)
 
     m_PlayersNearPoint[BG_EY_NODES_MAX].push_back(plr->GetGUID());
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    // export this m_PlayerScores[plr->GetGUID()] = sc;
 }
 
 void BattleGroundEY::RemovePlayer(Player *plr, uint64 guid)
@@ -692,7 +692,7 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
 
 void BattleGroundEY::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 {
-    BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
+    /*BattleGroundScoreMap::iterator itr = m_PlayerScores.find(Source->GetGUID());
     if(itr == m_PlayerScores.end())                         // player not found
         return;
 
@@ -707,7 +707,7 @@ void BattleGroundEY::UpdatePlayerScore(Player *Source, uint32 type, uint32 value
         default:
             BattleGround::UpdatePlayerScore(Source, type, value);
             break;
-    }
+    }*/
 }
 
 void BattleGroundEY::FillInitialWorldStates(WorldPacket& data, uint32& count)

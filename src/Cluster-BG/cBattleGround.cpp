@@ -192,10 +192,10 @@ void cBattleGround::SendWarningToAll(int32 entry, ...)
     data << (uint32)(strlen(msg.c_str())+1);
     data << msg.c_str();
     data << (uint8)0;
-    for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    /*for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
         if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
             if (plr->GetSession())
-                plr->GetSession()->SendPacket(&data);
+                plr->GetSession()->SendPacket(&data);*/
 }
 
 void cBattleGround::SendWarningToAll(std::string msg)
@@ -212,10 +212,10 @@ void cBattleGround::SendWarningToAll(std::string msg)
     data << (uint32)(strlen(msg.c_str())+1);
     data << msg.c_str();
     data << (uint8)0;
-    for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    /*for (BattleGroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
         if (Player *plr = ObjectAccessor::FindPlayer(MAKE_NEW_GUID(itr->first, 0, HIGHGUID_PLAYER)))
             if (plr->GetSession())
-                plr->GetSession()->SendPacket(&data);
+                plr->GetSession()->SendPacket(&data);*/
 }
 
 cBattleGround::cBattleGround(): m_Id(0)
@@ -1452,7 +1452,7 @@ uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
         default:
             sLog.outError("BattleGround: Unknown player score type %u", type);*/
             return 0;
-   //}
+   //}*/
 }
 
 uint32 cBattleGround::GetDamageDoneForTeam(uint32 TeamID)

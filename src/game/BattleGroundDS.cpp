@@ -83,7 +83,7 @@ void BattleGroundDS::AddPlayer(Player *plr)
 
 	UpdateArenaWorldState();
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    //m_PlayerScores[plr->GetGUID()] = sc; export this
 }
 
 void BattleGroundDS::RemovePlayer(Player * /*plr*/, uint64 /*guid*/)

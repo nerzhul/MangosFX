@@ -277,7 +277,7 @@ class cBattleGround
 		/*
         these are important variables used for starting messages
         */
-        uint8 m_Events;
+		uint8 m_Events;
 
 		BattleGroundStartTimeIntervals  m_StartDelayTimes[BG_STARTING_EVENT_COUNT];
         //this must be filled in constructors!

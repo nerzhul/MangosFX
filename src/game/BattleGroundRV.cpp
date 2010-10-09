@@ -80,7 +80,7 @@ void BattleGroundRV::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in constructor
     BattleGroundRVScore* sc = new BattleGroundRVScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    // m_PlayerScores[plr->GetGUID()] = sc; export this
 
     UpdateWorldState(0xe11, GetAlivePlayersCountByTeam(ALLIANCE));
     UpdateWorldState(0xe10, GetAlivePlayersCountByTeam(HORDE));

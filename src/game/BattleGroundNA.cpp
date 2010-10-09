@@ -67,7 +67,7 @@ void BattleGroundNA::AddPlayer(Player *plr)
     //create score and add it to map, default values are set in constructor
     BattleGroundNAScore* sc = new BattleGroundNAScore;
 
-    m_PlayerScores[plr->GetGUID()] = sc;
+    // m_PlayerScores[plr->GetGUID()] = sc; export this
 
     UpdateArenaWorldState();
 }
