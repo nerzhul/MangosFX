@@ -277,34 +277,8 @@ void Player::RewardHonorEndBattlegroud(bool win)
 		
 }
 
-void BattleGround::RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID)
-{
-}
-
-void BattleGround::RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID)
-{
-}
-
 void BattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 {
-}
-
-void BattleGround::EndBattleGround(uint32 winner)
-{
-    RemoveFromBGFreeSlotQueue();
-
-    ArenaTeam * winner_arena_team = NULL;
-    ArenaTeam * loser_arena_team = NULL;
-    uint32 loser_rating = 0;
-    uint32 winner_rating = 0;
-    WorldPacket data;
-    int32 winmsg_id = 0;
-
-    SetStatus(STATUS_WAIT_LEAVE);
-
-    // arena rating calculation
-    if (winmsg_id)
-        SendMessageToAll(winmsg_id, CHAT_MSG_BG_SYSTEM_NEUTRAL);
 }
 
 uint32 BattleGround::GetBonusHonorFromKill(uint32 kills) const
@@ -324,71 +298,6 @@ uint32 BattleGround::GetBattlemasterEntry() const
         case BATTLEGROUND_NA: return 20200;
         default:              return 0;
     }
-}
-
-void BattleGround::RewardSpellCast(Player *plr, uint32 spell_id)
-{
-    // 'Inactive' this aura prevents the player from gaining honor points and battleground tokens
-    if (plr->GetDummyAura(SPELL_AURA_PLAYER_INACTIVE))
-        return;
-
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spell_id);
-    if(!spellInfo)
-    {
-        sLog.outError("Battleground reward casting spell %u not exist.",spell_id);
-        return;
-    }
-
-    plr->CastSpell(plr, spellInfo, true);
-}
-
-void BattleGround::RewardItem(Player *plr, uint32 item_id, uint32 count)
-{
-    // 'Inactive' this aura prevents the player from gaining honor points and battleground tokens
-    if (plr->GetDummyAura(SPELL_AURA_PLAYER_INACTIVE))
-        return;
-
-    ItemPosCountVec dest;
-    uint32 no_space_count = 0;
-    uint8 msg = plr->CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, item_id, count, &no_space_count );
-
-    if( msg == EQUIP_ERR_ITEM_NOT_FOUND)
-    {
-        sLog.outErrorDb("Battleground reward item (Entry %u) not exist in `item_template`.",item_id);
-        return;
-    }
-
-    if( msg != EQUIP_ERR_OK )                               // convert to possible store amount
-        count -= no_space_count;
-
-    if( count != 0 && !dest.empty())                        // can add some
-        if (Item* item = plr->StoreNewItem( dest, item_id, true, 0))
-            plr->SendNewItem(item,count,true,false);
-}
-
-
-void BattleGround::RewardQuestComplete(Player *plr)
-{
-    uint32 quest;
-    switch(GetTypeID(true))
-    {
-        case BATTLEGROUND_AV:
-            quest = SPELL_AV_QUEST_REWARD;
-            break;
-        case BATTLEGROUND_WS:
-            quest = SPELL_WS_QUEST_REWARD;
-            break;
-        case BATTLEGROUND_AB:
-            quest = SPELL_AB_QUEST_REWARD;
-            break;
-        case BATTLEGROUND_EY:
-            quest = SPELL_EY_QUEST_REWARD;
-            break;
-        default:
-            return;
-    }
-
-    RewardSpellCast(plr, quest);
 }
 
 void BattleGround::BlockMovement(Player *plr)
@@ -840,16 +749,6 @@ void BattleGround::SendMessage2ToAll(int32 entry, ChatMsg type, Player const* so
     BroadcastWorker(bg_do);
 }
 
-void BattleGround::SendYell2ToAll(int32 entry, uint32 language, uint64 const& guid, int32 arg1, int32 arg2)
-{
-    Creature* source = GetBgMap()->GetCreature(guid);
-    if(!source)
-        return;
-    MaNGOS::BattleGround2YellBuilder bg_builder(language, entry, source, arg1, arg2);
-    MaNGOS::LocalizedPacketDo<MaNGOS::BattleGround2YellBuilder> bg_do(bg_builder);
-    BroadcastWorker(bg_do);
-}
-
 /*
 important notice:
 buffs aren't spawned/despawned when players captures anything
@@ -917,22 +816,6 @@ uint32 BattleGround::GetAlivePlayersCountByTeam(uint32 Team)
 
 void BattleGround::CheckArenaWinConditions()
 {
-	Packet pck;
-	pck << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(ALLIANCE);
-	uint32 pAcount = sClusterMgr.getUint32Value(&pck,C_BG);
-	Packet pck2;
-	pck2 << uint16(C_GET_PL_NB_TEAM) << uint64(m_Id) << uint32(HORDE);
-	uint32 pHcount = sClusterMgr.getUint32Value(&pck2,C_BG);
-    if (!pAcount && pHcount)
-	{
-		//RewardAchievementToTeam(HORDE,397);
-        EndBattleGround(HORDE);
-	}
-    else if (pAcount && !GetAlivePlayersCountByTeam(HORDE))
-	{
-        EndBattleGround(ALLIANCE);
-		//RewardAchievementToTeam(ALLIANCE,397);
-	}
 }
 
 void BattleGround::SetBgRaid( uint32 TeamID, Group *bg_raid )

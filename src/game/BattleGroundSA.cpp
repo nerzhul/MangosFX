@@ -28,9 +28,9 @@
 BattleGroundSA::BattleGroundSA()
 {
 	m_BgCreatures.resize(BG_SA_MAX_GY);
-    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_SA_START_ONE_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
-	m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_SA_HAS_BEGUN;
+    //m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_SA_START_ONE_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_SA_START_HALF_MINUTE;
+	//m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_SA_HAS_BEGUN;
     TimerEnabled = false;
 	for(uint8 i=0;i<BG_SA_MAX_GATES;i++)
 		GatesGUID[i] = 0;
@@ -876,7 +876,7 @@ void BattleGroundSA::EndBattleGround(uint32 winner)
     //RewardHonorToTeam(GetBonusHonorFromKill(2), ALLIANCE);
     //RewardHonorToTeam(GetBonusHonorFromKill(2), HORDE);
 
-    BattleGround::EndBattleGround(winner);
+    //BattleGround::EndBattleGround(winner);
 }
 
 uint32 BattleGroundSA::GetGateIDFromDestroyEventID(uint32 id)

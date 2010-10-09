@@ -34,10 +34,10 @@ BattleGroundAB::BattleGroundAB()
     m_BgObjects.resize(BG_AB_OBJECT_MAX);
 	m_BgTimer = 0;
 
-    m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
-    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AB_START_ONE_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_AB_START_HALF_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_AB_HAS_BEGUN;
+    //m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
+    //m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AB_START_ONE_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_AB_START_HALF_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_AB_HAS_BEGUN;
 }
 
 BattleGroundAB::~BattleGroundAB()
@@ -120,7 +120,7 @@ void BattleGroundAB::Update(uint32 diff)
                 m_ExperiencesTicks[team] += BG_AB_TickPoints[points];
                 if (m_ReputationScoreTics[team] >= m_ReputationTics)
                 {
-                    (team == BG_TEAM_ALLIANCE) ? RewardReputationToTeam(509, 10, ALLIANCE) : RewardReputationToTeam(510, 10, HORDE);
+                    //(team == BG_TEAM_ALLIANCE) ? RewardReputationToTeam(509, 10, ALLIANCE) : RewardReputationToTeam(510, 10, HORDE);
                     m_ReputationScoreTics[team] -= m_ReputationTics;
                 }
                 if (m_HonorScoreTics[team] >= m_HonorTics)
@@ -140,7 +140,7 @@ void BattleGroundAB::Update(uint32 diff)
                 
                 if (m_ExperiencesTicks[team] >= BG_AB_ExperiencesTicks)
                 {
-					RewardXpToTeam(0, 0.8, team);
+					//RewardXpToTeam(0, 0.8, team);
 					m_ExperiencesTicks[team] -= BG_AB_ExperiencesTicks;
 				}
 
@@ -502,7 +502,7 @@ void BattleGroundAB::EndBattleGround(uint32 winner)
 	{
 		//RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
-		RewardXpToTeam(0, 0.8, winner);
+		//RewardXpToTeam(0, 0.8, winner);
 	}
 
     //complete map_end rewards (even if no team wins)
@@ -519,10 +519,10 @@ void BattleGroundAB::EndBattleGround(uint32 winner)
 			RewardAchievementToTeam(winner,162);*/
 	}
 
-	RewardXpToTeam(0, 0.8, HORDE);
-	RewardXpToTeam(0, 0.8, ALLIANCE);
+	//RewardXpToTeam(0, 0.8, HORDE);
+	//RewardXpToTeam(0, 0.8, ALLIANCE);
 	
-    BattleGround::EndBattleGround(winner);
+    //BattleGround::EndBattleGround(winner);
 }
 
 WorldSafeLocsEntry const* BattleGroundAB::GetClosestGraveYard(Player* player)

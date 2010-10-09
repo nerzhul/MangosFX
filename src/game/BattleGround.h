@@ -362,50 +362,12 @@ class BattleGround
         uint32 GetBonusHonorFromKill(uint32 kills) const;
 
         // Set methods:
-        void SetTypeID(BattleGroundTypeId TypeID) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SETTYPEID) << uint8(0) << uint32(TypeID);
-			sClusterMgr.getNullValue(&pck,C_BG);
-
-			/*m_TypeID = TypeID;*/ }
-        void SetRandomTypeID(BattleGroundTypeId TypeID) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SETTYPEID) << uint8(1) << uint32(TypeID);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			/*m_RandomTypeID = TypeID;*/ }
+        void SetTypeID(BattleGroundTypeId TypeID) { }
+        void SetRandomTypeID(BattleGroundTypeId TypeID) { }
         //here we can count minlevel and maxlevel for players
         void SetBracket(PvPDifficultyEntry const* bracketEntry);
         
-		void SetMaxPlayers(uint32 MaxPlayers) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(0) << uint32(MaxPlayers);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			/*m_MaxPlayers = MaxPlayers;*/ }
-        void SetMinPlayers(uint32 MinPlayers) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(1) << uint32(MinPlayers);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			/*m_MinPlayers = MinPlayers;*/ }
-        void SetLevelRange(uint32 min, uint32 max) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(2) << uint32(min);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			Packet pck2;
-			pck2 << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(3) << uint32(max);
-			sClusterMgr.getNullValue(&pck2,C_BG);
-			/*m_LevelMin = min; m_LevelMax = max;*/
-		}
-        
-        void SetMaxPlayersPerTeam(uint32 MaxPlayers) { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(4) << uint32(MaxPlayers);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			/*m_MaxPlayersPerTeam = MaxPlayers;*/ }
-        void SetMinPlayersPerTeam(uint32 MinPlayers) {
-			Packet pck;
-			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(5) << uint32(MinPlayers);
-			sClusterMgr.getNullValue(&pck,C_BG);
-			/*m_MinPlayersPerTeam = MinPlayers;*/ }
+		
 
         void AddToBGFreeSlotQueue();                        //this queue will be useful when more battlegrounds instances will be available
         void RemoveFromBGFreeSlotQueue();                   //this method could delete whole BG instance, if another free is available
@@ -434,13 +396,7 @@ class BattleGround
         void BroadcastWorker(Do& _do);
 
 		void RewardHonorTeamDaily(uint32 TeamID);
-        void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
-        void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
-        void RewardItem(Player *plr, uint32 item_id, uint32 count);
-        void RewardQuestComplete(Player *plr);
-        void RewardSpellCast(Player *plr, uint32 spell_id);
         void UpdateWorldState(uint32 Field, uint32 Value,Player *Source = NULL);
-        void EndBattleGround(uint32 winner);
         void BlockMovement(Player *plr);
 
         void SendMessageToAll(int32 entry, ChatMsg type, Player const* source = NULL);
@@ -449,7 +405,6 @@ class BattleGround
 
         // specialized version with 2 string id args
         void SendMessage2ToAll(int32 entry, ChatMsg type, Player const* source, int32 strId1 = 0, int32 strId2 = 0);
-        void SendYell2ToAll(int32 entry, uint32 language, uint64 const& guid, int32 arg1, int32 arg2);
 
         /* Raid Group */
         Group *GetBgRaid(uint32 TeamID) const { return TeamID == ALLIANCE ? m_BgRaids[BG_TEAM_ALLIANCE] : m_BgRaids[BG_TEAM_HORDE]; }
@@ -461,30 +416,7 @@ class BattleGround
         uint32 GetAlivePlayersCountByTeam(uint32 Team);   // used in arenas to correctly handle death in spirit of redemption / last stand etc. (killer = killed) cases
 
         // used for rated arena battles
-        void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { 
-			Packet pkt;
-			pkt << uint16(C_CMSG_BG_SET_ARENA_TEAM);
-			pkt << uint64(m_Id) << uint32(Team) << uint32(ArenaTeamId);
-			sClusterMgr.getNullValue(&pkt,C_BG);
-			/*m_ArenaTeamIds[GetTeamIndexByTeamId(Team)] = ArenaTeamId;*/ }
-        uint32 GetArenaTeamIdForTeam(uint32 Team) const             { 
-			Packet pkt;
-			pkt << uint16(C_CMSG_BG_GET_ARENA_TEAM);
-			pkt << uint64(m_Id) << uint32(Team);
-			return sClusterMgr.getUint32Value(&pkt,C_BG);
-			/* m_ArenaTeamIds[GetTeamIndexByTeamId(Team)];*/ }
-        void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { 
-			Packet pkt;
-			pkt << uint16(C_CMSG_BG_SET_ARENA_TEAM_RATING_CHANGE);
-			pkt << uint64(m_Id) << uint32(Team) << int32(RatingChange);
-			sClusterMgr.getNullValue(&pkt,C_BG);
-			/*m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)] = RatingChange;*/ }
-        int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const    { 
-			Packet pkt;
-			pkt << uint16(C_CMSG_BG_GET_ARENA_TEAM_RATING_CHANGE);
-			pkt << uint64(m_Id) << uint32(Team);
-			return sClusterMgr.getInt32Value(&pkt,C_BG);
-			/*return m_ArenaTeamRatingChanges[GetTeamIndexByTeamId(Team)];*/ }
+        
         void CheckArenaWinConditions();
 
         /* Triggers handle */
@@ -583,6 +515,8 @@ class BattleGround
 		bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
 		Creature* GetBGCreature(uint32 type);
 
+
+
 		/* To handle with cluster */
 		void SetInstanceID(uint32 instanceId) { /* TODO : send to server*/ }
 		uint32 GetInstanceID() { /* Must Callback from server */return 0; }
@@ -612,18 +546,21 @@ class BattleGround
 		uint32 GetPlayerScoresSize() { return 0; }
 		void SendWarningToAll(int32 entry, ...) { }
 		void SendWarningToAll(std::string str) { }
+		void SetMaxPlayers(uint32 MaxPlayers) { }
+        void SetMinPlayers(uint32 MinPlayers) { }
+        void SetLevelRange(uint32 min, uint32 max) { }
+        
+        void SetMaxPlayersPerTeam(uint32 MaxPlayers) { }
+        void SetMinPlayersPerTeam(uint32 MinPlayers) { }
+		void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { }
+        uint32 GetArenaTeamIdForTeam(uint32 Team) const { return 0; }
+        void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { }
+        int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const { return 0; }
     protected:
 		BattleGroundMap* GetMap() { return m_Map; }
 
         // must be implemented in BG subclass
         virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
-
-        /*
-        these are important variables used for starting messages
-        */
-        BattleGroundStartTimeIntervals  m_StartDelayTimes[BG_STARTING_EVENT_COUNT];
-        //this must be filled in constructors!
-        uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
     private:
         /* Raid Group */
         Group *m_BgRaids[BG_TEAMS_COUNT];                                // 0 - alliance, 1 - horde

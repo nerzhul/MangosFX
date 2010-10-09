@@ -30,10 +30,10 @@
 
 BattleGroundWS::BattleGroundWS()
 {
-    m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
-    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
+    //m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
+    //m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
 }
 
 BattleGroundWS::~BattleGroundWS()
@@ -207,7 +207,7 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         if (GetTeamScore(ALLIANCE) < BG_WS_MAX_TEAM_SCORE)
             AddPoint(ALLIANCE, 1);
         //PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_ALLIANCE);
-        RewardReputationToTeam(890, m_ReputationCapture, ALLIANCE);
+        //RewardReputationToTeam(890, m_ReputationCapture, ALLIANCE);
     }
     else
     {
@@ -221,11 +221,11 @@ void BattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         if (GetTeamScore(HORDE) < BG_WS_MAX_TEAM_SCORE)
             AddPoint(HORDE, 1);
         //PlaySoundToAll(BG_WS_SOUND_FLAG_CAPTURED_HORDE);
-        RewardReputationToTeam(889, m_ReputationCapture, HORDE);
+        //RewardReputationToTeam(889, m_ReputationCapture, HORDE);
     }
     //for flag capture is reward 2 honorable kills
     //RewardHonorToTeam(GetBonusHonorFromKill(2), Source->GetTeam());
-    RewardXpToTeam(0, 0.6, Source->GetTeam());
+    //RewardXpToTeam(0, 0.6, Source->GetTeam());
 
     // despawn flags
     SpawnEvent(WS_EVENT_FLAG_A, 0, false);
@@ -565,7 +565,7 @@ void BattleGroundWS::EndBattleGround(uint32 winner)
 	{
 		//RewardHonorToTeam(GetBonusHonorFromKill(1), winner);
 		RewardHonorTeamDaily(winner);
-		RewardXpToTeam(0, 0.8, winner);
+		//RewardXpToTeam(0, 0.8, winner);
 	}
     //complete map_end rewards (even if no team wins)
     //RewardHonorToTeam(GetBonusHonorFromKill(m_HonorEndKills), ALLIANCE);
@@ -574,10 +574,10 @@ void BattleGroundWS::EndBattleGround(uint32 winner)
 		RewardAchievementToTeam(winner,201);
 	if(GetTeamScore(winner) == 3 && GetTeamScore(winner == ALLIANCE ? HORDE : ALLIANCE) == 0)
 		RewardAchievementToTeam(winner,168);*/
-    RewardXpToTeam(0, 0.8, ALLIANCE);
-    RewardXpToTeam(0, 0.8, HORDE);
+    //RewardXpToTeam(0, 0.8, ALLIANCE);
+    //RewardXpToTeam(0, 0.8, HORDE);
 
-    BattleGround::EndBattleGround(winner);
+    //BattleGround::EndBattleGround(winner);
 }
 
 void BattleGroundWS::HandleKillPlayer(Player *player, Player *killer)

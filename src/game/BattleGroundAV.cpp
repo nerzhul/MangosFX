@@ -33,10 +33,10 @@ BattleGroundAV::BattleGroundAV()
 {
 	m_BgObjects.resize(BG_AV_OBJECT_MAX);
 
-    m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
-    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AV_START_ONE_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_AV_START_HALF_MINUTE;
-    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_AV_HAS_BEGUN;
+    //m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
+    //m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AV_START_ONE_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_AV_START_HALF_MINUTE;
+    //m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_AV_HAS_BEGUN;
 }
 
 BattleGroundAV::~BattleGroundAV()
@@ -53,10 +53,10 @@ void BattleGroundAV::HandleKillPlayer(Player *player, Player *killer)
 	uint32 team = killer->GetTeam();
 	if(player->GetGUID() != killer->GetGUID())
 	{
-		if(team == HORDE)
+		/*if(team == HORDE)
 			RewardReputationToTeam(HORDE_REP,1,HORDE);
 		else
-			RewardReputationToTeam(ALLIANCE_REP,1,ALLIANCE);
+			RewardReputationToTeam(ALLIANCE_REP,1,ALLIANCE);*/
 	}
 
 }
@@ -73,14 +73,14 @@ void BattleGroundAV::HandleKillUnit(Creature *creature, Player *killer)
     {
         /*case BG_AV_BOSS_A:
             CastSpellOnTeam(BG_AV_BOSS_KILL_QUEST_SPELL, HORDE);   // this is a spell which finishes a quest where a player has to kill the boss
-            RewardReputationToTeam(BG_AV_FACTION_H, m_RepBoss, HORDE);
+            //RewardReputationToTeam(BG_AV_FACTION_H, m_RepBoss, HORDE);
             //RewardHonorToTeam(GetBonusHonorFromKill(BG_AV_KILL_BOSS), HORDE);
             SendYellToAll(LANG_BG_AV_A_GENERAL_DEAD, LANG_UNIVERSAL, GetSingleCreatureGuid(BG_AV_HERALD, 0));
             EndBattleGround(HORDE);
             break;
         case BG_AV_BOSS_H:
             CastSpellOnTeam(BG_AV_BOSS_KILL_QUEST_SPELL, ALLIANCE); // this is a spell which finishes a quest where a player has to kill the boss
-            RewardReputationToTeam(BG_AV_FACTION_A, m_RepBoss, ALLIANCE);
+            //RewardReputationToTeam(BG_AV_FACTION_A, m_RepBoss, ALLIANCE);
             //RewardHonorToTeam(GetBonusHonorFromKill(BG_AV_KILL_BOSS), ALLIANCE);
             SendYellToAll(LANG_BG_AV_H_GENERAL_DEAD, LANG_UNIVERSAL, GetSingleCreatureGuid(BG_AV_HERALD, 0));
             EndBattleGround(ALLIANCE);
@@ -88,7 +88,7 @@ void BattleGroundAV::HandleKillUnit(Creature *creature, Player *killer)
         case BG_AV_CAPTAIN_A:
             if (IsActiveEvent(BG_AV_NodeEventCaptainDead_A, 0))
                 return;
-            RewardReputationToTeam(BG_AV_FACTION_H, m_RepCaptain, HORDE);
+            //RewardReputationToTeam(BG_AV_FACTION_H, m_RepCaptain, HORDE);
             //RewardHonorToTeam(GetBonusHonorFromKill(BG_AV_KILL_CAPTAIN), HORDE);
             UpdateScore(BG_TEAM_ALLIANCE, (-1) * BG_AV_RES_CAPTAIN);
             // spawn destroyed aura
@@ -97,7 +97,7 @@ void BattleGroundAV::HandleKillUnit(Creature *creature, Player *killer)
         case BG_AV_CAPTAIN_H:
             if (IsActiveEvent(BG_AV_NodeEventCaptainDead_H, 0))
                 return;
-            RewardReputationToTeam(BG_AV_FACTION_A, m_RepCaptain, ALLIANCE);
+            //RewardReputationToTeam(BG_AV_FACTION_A, m_RepCaptain, ALLIANCE);
             //RewardHonorToTeam(GetBonusHonorFromKill(BG_AV_KILL_CAPTAIN), ALLIANCE);
             UpdateScore(BG_TEAM_HORDE, (-1) * BG_AV_RES_CAPTAIN);
             // spawn destroyed aura
@@ -178,7 +178,7 @@ void BattleGroundAV::HandleQuestComplete(uint32 questid, Player *player)
         case BG_AV_QUEST_H_COMMANDER3:
             m_Team_QuestStatus[team][3]++;
             reputation = 5;
-            RewardReputationToTeam(team, 1, player->GetTeam());
+            //RewardReputationToTeam(team, 1, player->GetTeam());
             if (m_Team_QuestStatus[team][1] == 30)
                 sLog.outDebug("BattleGroundAV: Quest %i completed (need to implement some events here", questid);
             break;
@@ -243,7 +243,7 @@ void BattleGroundAV::HandleQuestComplete(uint32 questid, Player *player)
             break;
     }
     /*if (reputation)
-        RewardReputationToTeam((player->GetTeam() == ALLIANCE) ? BG_ALLIANCE : BG_HORDE, reputation, player->GetTeam());*/
+        //RewardReputationToTeam((player->GetTeam() == ALLIANCE) ? BG_ALLIANCE : BG_HORDE, reputation, player->GetTeam());*/
 }
 
 void BattleGroundAV::UpdateScore(BattleGroundTeamId team, int32 points )
@@ -258,7 +258,7 @@ void BattleGroundAV::UpdateScore(BattleGroundTeamId team, int32 points )
         {
             m_TeamScores[team] = 0;
             // other team will win:
-            EndBattleGround((team == BG_TEAM_ALLIANCE)? HORDE : ALLIANCE);
+            //EndBattleGround((team == BG_TEAM_ALLIANCE)? HORDE : ALLIANCE);
         }
         else if (!m_IsInformedNearLose[team] && m_TeamScores[team] < BG_AV_SCORE_NEAR_LOSE)
         {
@@ -934,7 +934,7 @@ void BattleGroundAV::EventPlayerDefendsPoint(Player* player)
     PopulateNode(node, player);                                     // spawn node-creatures (defender for example)
 	DefendNode(node,team);                                  // set the right variables for nodeinfo
     ModifySpawnMode(node,RESPAWN_IMMEDIATELY,team);
-	SendYell2ToAll(791, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD],( team == ALLIANCE ) ? 757:758, GetNodeName(node));
+	//SendYell2ToAll(791, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD],( team == ALLIANCE ) ? 757:758, GetNodeName(node));
         
 	if (IsTower(node))
     {
@@ -991,7 +991,7 @@ void BattleGroundAV::EventPlayerAssaultsPoint(Player* player)
     PopulateNode(node, player);
     AssaultNode(node, team);                                // update nodeinfo variables
 
-	SendYell2ToAll(764, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( team == ALLIANCE ) ? 757:758);
+	//SendYell2ToAll(764, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( team == ALLIANCE ) ? 757:758);
     
     if (IsTower(node))
 		UpdatePlayerScore(player, SCORE_TOWERS_ASSAULTED, 1);
@@ -1162,14 +1162,14 @@ void BattleGroundAV::SpawnNodeEnd(BG_AV_Nodes node)
 		SpawnFlammes(node);
 		MapDestroyedTower(node);
 		UpdateScore(BattleGroundTeamId(GetOtherTeam(owner)), (-1) * BG_AV_RES_TOWER);
-		RewardReputationToTeam((owner == ALLIANCE) ? 730 : 729, BG_AV_REP_TOWER, owner);
+		//RewardReputationToTeam((owner == ALLIANCE) ? 730 : 729, BG_AV_REP_TOWER, owner);
 		//RewardHonorToTeam(GetBonusHonorFromKill(BG_AV_KILL_TOWER), owner);
-		SendYell2ToAll(759, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( owner == ALLIANCE ) ? 757:758);
+		//SendYell2ToAll(759, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( owner == ALLIANCE ) ? 757:758);
 	}
 	else
 	{
 		MapCaptureGrave(node);
-		SendYell2ToAll(761, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( owner == ALLIANCE ) ? 757:758);
+		//SendYell2ToAll(761, LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], GetNodeName(node), ( owner == ALLIANCE ) ? 757:758);
 		SpawnCapturedGrave(node,owner);
         ModifySpawnMode(node,RESPAWN_IMMEDIATELY,owner);
 	}
@@ -1551,7 +1551,7 @@ void BattleGroundAV::ChangeMineOwner(uint8 mine, uint32 team)
     {
         //PlaySoundToAll((team == ALLIANCE) ? BG_AV_SOUND_ALLIANCE_GOOD : BG_AV_SOUND_HORDE_GOOD);
         m_Mine_Reclaim_Timer[mine] = BG_AV_MINE_RECLAIM_TIMER;
-        SendYell2ToAll(765 , LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], (team == ALLIANCE ) ? 757 : 758, (mine == BG_AV_NORTH_MINE) ? 766 : 767);
+        //SendYell2ToAll(765 , LANG_UNIVERSAL, m_DB_Creature[BG_AV_CREATURE_HERALD], (team == ALLIANCE ) ? 757 : 758, (mine == BG_AV_NORTH_MINE) ? 766 : 767);
     }
 	SendMineWorldStates(BG_AV_NORTH_MINE);
 	SendMineWorldStates(BG_AV_SOUTH_MINE);
