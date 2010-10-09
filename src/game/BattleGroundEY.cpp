@@ -294,8 +294,8 @@ void BattleGroundEY::EndBattleGround(uint32 winner)
 			RewardAchievementToTeam(winner,683); BAD ID*/ 
 	}
 
-	if(m_BgTimer <= 6 * MINUTE * IN_MILLISECONDS)
-		RewardAchievementToTeam(winner,214);
+	/*if(m_BgTimer <= 6 * MINUTE * IN_MILLISECONDS)
+		RewardAchievementToTeam(winner,214);*/
     
     RewardXpToTeam(0, 0.8, ALLIANCE);
     RewardXpToTeam(0, 0.8, HORDE);
@@ -507,11 +507,11 @@ void BattleGroundEY::HandleKillPlayer(Player *player, Player *killer)
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
 
-	if(player->HasAura(23505))
+	/*if(player->HasAura(23505))
 		RewardAchievementToPlayer(killer,1258);
 	
 	if(killer->HasAura(23505))
-		RewardAchievementToPlayer(killer,233);
+		RewardAchievementToPlayer(killer,233);*/
 
     BattleGround::HandleKillPlayer(player, killer);
     EventPlayerDroppedFlag(player);
@@ -650,7 +650,7 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
     if (GetStatus() != STATUS_IN_PROGRESS || GetFlagPickerGUID() != Source->GetGUID())
         return;
 
-	RewardAchievementToPlayer(Source,212);
+	//RewardAchievementToPlayer(Source,212);
 
     SetFlagPicker(0);
     m_FlagState = BG_EY_FLAG_STATE_WAIT_RESPAWN;
@@ -682,8 +682,8 @@ void BattleGroundEY::EventPlayerCapturedFlag(Player *Source, BG_EY_Nodes node)
     if (m_TeamPointsCount[team_id] > 0)
         AddPoints(Source->GetTeam(), BG_EY_FlagPoints[m_TeamPointsCount[team_id] - 1]);
 	
-	if (m_TeamPointsCount[team_id] == 4)
-		RewardAchievementToPlayer(Source,211);
+	/*if (m_TeamPointsCount[team_id] == 4)
+		RewardAchievementToPlayer(Source,211);*/
 
 	RewardXpToTeam(0, 0.6, Source->GetTeam());
 	

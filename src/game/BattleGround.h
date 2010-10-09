@@ -610,9 +610,6 @@ class BattleGround
 		bool AddSpiritGuide(uint32 type, float x, float y, float z, float o, uint32 team);
 		Creature* GetBGCreature(uint32 type);
 
-		void RewardAchievementToPlayer(Player* plr, uint32 entry);
-		void RewardAchievementToTeam(uint32 team, uint32 entry);
-
 		/* To handle with cluster */
 		void SetInstanceID(uint32 instanceId) { /* TODO : send to server*/ }
 		uint32 GetInstanceID() { /* Must Callback from server */return 0; }

@@ -382,8 +382,8 @@ void BattleGroundSA::EndRound()
 {
 	RoundScores[round].time = TotalTime;
 
-	if(TotalTime <= 240000)
-		RewardAchievementToTeam(attackers,1310);
+	/*if(TotalTime <= 240000)
+		RewardAchievementToTeam(attackers,1310);*/
     
     ToggleTimer();
 
@@ -403,8 +403,8 @@ void BattleGroundSA::EndRound()
 			else
 				WallLoose = true;
 
-		if(!WallLoose)
-			RewardAchievementToTeam(attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE,1757);
+		/*if(!WallLoose)
+			RewardAchievementToTeam(attackers == BG_TEAM_ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE,1757);*/
 
 		// define the winter of the BG
 		if(RoundScores[0].time < RoundScores[1].time)
@@ -437,8 +437,8 @@ void BattleGroundSA::EndRound()
 				WallLoose = true;
 			}
 
-		if(!WallLoose)
-			RewardAchievementToTeam(attackers,1757);
+		/*if(!WallLoose)
+			RewardAchievementToTeam(attackers,1757);*/
 
 		ResetWorldStates();
 

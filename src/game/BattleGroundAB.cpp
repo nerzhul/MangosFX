@@ -508,15 +508,15 @@ void BattleGroundAB::EndBattleGround(uint32 winner)
     //complete map_end rewards (even if no team wins)
     RewardHonorToTeam(GetBonusHonorFromKill(1), HORDE);
     RewardHonorToTeam(GetBonusHonorFromKill(1), ALLIANCE);
-	if(m_BgTimer <= 6*MINUTE*IN_MILLISECONDS)
-		RewardAchievementToTeam(winner,159);
+	/*if(m_BgTimer <= 6*MINUTE*IN_MILLISECONDS)
+		RewardAchievementToTeam(winner,159);*/
 
 	if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_ALLIANCE : BG_TEAM_HORDE] >= 1600)
 	{
-		if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE] == 0)
+		/*if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE] == 0)
 			RewardAchievementToTeam(winner,165);
 		if(m_TeamScores[winner == ALLIANCE ? BG_TEAM_HORDE : BG_TEAM_ALLIANCE] >= 1590)
-			RewardAchievementToTeam(winner,162);
+			RewardAchievementToTeam(winner,162);*/
 	}
 
 	RewardXpToTeam(0, 0.8, HORDE);

@@ -981,13 +981,13 @@ void BattleGround::CheckArenaWinConditions()
 	uint32 pHcount = sClusterMgr.getUint32Value(&pck2,C_BG);
     if (!pAcount && pHcount)
 	{
-		RewardAchievementToTeam(HORDE,397);
+		//RewardAchievementToTeam(HORDE,397);
         EndBattleGround(HORDE);
 	}
     else if (pAcount && !GetAlivePlayersCountByTeam(HORDE))
 	{
         EndBattleGround(ALLIANCE);
-		RewardAchievementToTeam(ALLIANCE,397);
+		//RewardAchievementToTeam(ALLIANCE,397);
 	}
 }
 
@@ -1109,23 +1109,4 @@ Creature* BattleGround::GetBGCreature(uint32 type)
     if(!creature)
         sLog.outError("couldn't get creature %i",type);
     return creature;
-}
-
-void BattleGround::RewardAchievementToPlayer(Player* plr, uint32 entry)
-{
-	if(!plr)
-		return;
-
-	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(entry);
-	if (!pAE)
-    {
-        sLog.outError("DoCompleteAchievement called for not existing achievement %u", entry);
-        return;
-    }
-	
-	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
-}
-
-void BattleGround::RewardAchievementToTeam(uint32 team, uint32 entry)
-{
 }
