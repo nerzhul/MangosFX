@@ -1512,12 +1512,20 @@ void BattleGround::DoorOpen(uint64 const& guid)
 
 void cBattleGround::OnObjectDBLoad(Creature* creature)
 {
-	/*const BattleGroundEventIdx eventId = sBattleGroundMgr.GetCreatureEventIndex(creature->GetDBTableGUIDLow());
+    /*const BattleGroundEventIdx eventId = sBattleGroundMgr.GetGameObjectEventIndex(obj->GetDBTableGUIDLow());
     if (eventId.event1 == BG_EVENT_NONE)
         return;
-    m_EventObjects[MAKE_PAIR32(eventId.event1, eventId.event2)].creatures.push_back(creature->GetGUID());
+    m_EventObjects[MAKE_PAIR32(eventId.event1, eventId.event2)].gameobjects.push_back(obj->GetGUID());
     if (!IsActiveEvent(eventId.event1, eventId.event2))
-        SpawnBGCreature(creature->GetGUID(), RESPAWN_ONE_DAY);*/
+    {
+        SpawnBGObject(obj->GetGUID(), RESPAWN_ONE_DAY);
+    }
+    else
+    {
+        // it's possible, that doors aren't spawned anymore (wsg)
+        if (GetStatus() >= STATUS_IN_PROGRESS && IsDoor(eventId.event1, eventId.event2))
+            DoorOpen(obj->GetGUID());
+    }*/
 }
 
 uint64 cBattleGround::GetSingleCreatureGuid(uint8 event1, uint8 event2)

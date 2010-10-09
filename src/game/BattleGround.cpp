@@ -590,23 +590,9 @@ void BattleGround::OnObjectDBLoad(GameObject* obj)
     else
     {
         // it's possible, that doors aren't spawned anymore (wsg)
-        if (GetStatus() >= STATUS_IN_PROGRESS && IsDoor(eventId.event1, eventId.event2))
-            DoorOpen(obj->GetGUID());
+        /*if (GetStatus() >= STATUS_IN_PROGRESS && IsDoor(eventId.event1, eventId.event2))
+            DoorOpen(obj->GetGUID());*/
     }
-}
-
-bool BattleGround::IsDoor(uint8 event1, uint8 event2)
-{
-    if (event1 == BG_EVENT_DOOR)
-    {
-        if (event2 > 0)
-        {
-            sLog.outError("BattleGround too high event2 for event1:%i", event1);
-            return false;
-        }
-        return true;
-    }
-    return false;
 }
 
 void BattleGround::OpenDoorEvent(uint8 event1, uint8 event2 /*=0*/)

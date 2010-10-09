@@ -320,43 +320,6 @@ class BattleGround
 
         /* Battleground */
         // Get methods:
-        BattleGroundTypeId GetTypeID(bool GetRandom = false) const { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GETTYPEID) << uint64(m_Id) << uint8(GetRandom ? 1:0);
-			return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG)); }
-
-		uint32 GetMaxPlayers() const        { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(0);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-		/*m_MaxPlayers;*/ }
-        uint32 GetMinPlayers() const        { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(1);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-			/*return m_MinPlayers;*/ }
-
-        uint32 GetMinLevel() const          { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(2);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-			/*return m_LevelMin;*/ }
-        uint32 GetMaxLevel() const          { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(3);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-			/*return m_LevelMax;*/ }
-
-        uint32 GetMaxPlayersPerTeam() const { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(4);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-			/*return m_MaxPlayersPerTeam;*/ }
-        uint32 GetMinPlayersPerTeam() const { 
-			Packet pck;
-			pck << uint16(C_CMSG_BG_GET_LIMIT) << uint64(m_Id) << uint8(5);
-			return sClusterMgr.getUint32Value(&pck,C_BG);
-			/*return m_MinPlayersPerTeam;*/ }
 
         uint32 GetBattlemasterEntry() const;
         uint32 GetBonusHonorFromKill(uint32 kills) const;
@@ -450,7 +413,7 @@ class BattleGround
         void OnObjectDBLoad(GameObject* /*obj*/);
         // (de-)spawns creatures and gameobjects from an event
         void SpawnEvent(uint8 event1, uint8 event2, bool spawn);
-        bool IsActiveEvent(uint8 event1, uint8 event2)
+        bool IsActiveEvent(uint8 event1, uint8 event2) // Dont forget to export event system !!!
         {
             if (m_ActiveEvents.find(event1) == m_ActiveEvents.end())
                 return false;
@@ -459,9 +422,8 @@ class BattleGround
         uint64 GetSingleCreatureGuid(uint8 event1, uint8 event2);
 
         void OpenDoorEvent(uint8 event1, uint8 event2 = 0);
-        bool IsDoor(uint8 event1, uint8 event2);
 
-        /* other things */
+		/* other things */
         virtual void OnCreatureRespawn(Creature* /*creature*/) {}
 
         void HandleTriggerBuff(uint64 const& go_guid);
@@ -549,13 +511,19 @@ class BattleGround
 		void SetMaxPlayers(uint32 MaxPlayers) { }
         void SetMinPlayers(uint32 MinPlayers) { }
         void SetLevelRange(uint32 min, uint32 max) { }
-        
         void SetMaxPlayersPerTeam(uint32 MaxPlayers) { }
         void SetMinPlayersPerTeam(uint32 MinPlayers) { }
 		void SetArenaTeamIdForTeam(uint32 Team, uint32 ArenaTeamId) { }
         uint32 GetArenaTeamIdForTeam(uint32 Team) const { return 0; }
         void SetArenaTeamRatingChangeForTeam(uint32 Team, int32 RatingChange) { }
         int32 GetArenaTeamRatingChangeForTeam(uint32 Team) const { return 0; }
+		BattleGroundTypeId GetTypeID(bool GetRandom = false) const { return BattleGroundTypeId(0); }
+		uint32 GetMaxPlayers() const        { return 0; }
+		uint32 GetMinPlayers() const        { return 0; }
+        uint32 GetMinLevel() const          { return 0; }
+        uint32 GetMaxLevel() const          { return 0; }
+        uint32 GetMaxPlayersPerTeam() const { return 0; }
+        uint32 GetMinPlayersPerTeam() const { return 0; }
     protected:
 		BattleGroundMap* GetMap() { return m_Map; }
 
