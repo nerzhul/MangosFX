@@ -2,6 +2,7 @@
 #include <WorldPacket.h>
 #include <BattleGround.h>
 #include <GridNotifiers.h>
+#include <Language.h>
 #include "cBattleGround.h"
 #include "cBattleGroundMgr.h"
 
@@ -221,6 +222,17 @@ cBattleGround::cBattleGround(): m_Id(0)
 	m_TypeID            = BattleGroundTypeId(0);
     m_RandomTypeID      = BattleGroundTypeId(0);
 
+	m_InstanceID        = 0;
+	m_ClientInstanceID  = 0;
+
+	m_InvitedAlliance   = 0;
+    m_InvitedHorde      = 0;
+
+	m_Events            = 0;
+
+	m_BuffChange        = false;
+    m_Name              = "";
+
 	m_Status            = STATUS_NONE;
 	m_BracketId         = BG_BRACKET_ID_FIRST;
 
@@ -263,12 +275,60 @@ cBattleGround::cBattleGround(): m_Id(0)
     m_TeamStartLocO[BG_TEAM_ALLIANCE]   = 0;
     m_TeamStartLocO[BG_TEAM_HORDE]      = 0;
 
+	m_InBGFreeSlotQueue = false;
+    m_SetDeleteThis     = false;
+	m_RandomBG			= false;
+
+	m_MapId             = 0;
+
+	m_PrematureCountDown = false;
+	m_TimerArenaDone = false;
+    m_PrematureCountDown = 0;
+
+	m_StartDelayTimes[BG_STARTING_EVENT_FIRST]  = BG_START_DELAY_2M;
+    m_StartDelayTimes[BG_STARTING_EVENT_SECOND] = BG_START_DELAY_1M;
+    m_StartDelayTimes[BG_STARTING_EVENT_THIRD]  = BG_START_DELAY_30S;
+    m_StartDelayTimes[BG_STARTING_EVENT_FOURTH] = BG_START_DELAY_NONE;
+    //we must set to some default existing values
+    m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
+    m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_WS_START_ONE_MINUTE;
+    m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_WS_START_HALF_MINUTE;
+    m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_WS_HAS_BEGUN;
 
 	m_Players.clear();
 }
 
 cBattleGround::~cBattleGround()
 {
+	// remove objects and creatures
+    // (this is done automatically in mapmanager update, when the instance is reset after the reset time)
+
+    int size = m_BgObjects.size();
+    for(int i = 0; i < size; ++i)
+        DelObject(i);
+
+    if (GetInstanceID())                                    // not spam by useless queries in case BG templates
+    {
+        // delete creature and go respawn times
+        /*WorldDatabase.PExecute("DELETE FROM creature_respawn WHERE instance = '%u'",GetInstanceID());
+        WorldDatabase.PExecute("DELETE FROM gameobject_respawn WHERE instance = '%u'",GetInstanceID());
+        // delete instance from db
+        CharacterDatabase.PExecute("DELETE FROM instance WHERE id = '%u'",GetInstanceID());*/
+        // remove from battlegrounds
+    }
+
+    //sBattleGroundMgr.RemoveBattleGround(GetInstanceID(), GetTypeID());
+
+    // unload map
+    // map can be null at bg destruction
+    /*if (m_Map)
+        m_Map->SetUnload();*/
+
+    // remove from bg free slot queue
+    RemoveFromBGFreeSlotQueue();
+
+    for(BattleGroundScoreMap::const_iterator itr = m_PlayerScores.begin(); itr != m_PlayerScores.end(); ++itr)
+        delete itr->second;
 }
 
 void cBattleGround::Update(uint32 diff)

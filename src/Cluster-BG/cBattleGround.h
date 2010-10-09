@@ -104,6 +104,15 @@ class cBattleGround
 		bool IsDoor(uint8 event1, uint8 event2);
 		void OpenDoorEvent(uint8 event1, uint8 event2 = 0);
 
+		// TODO: make this protected:
+        typedef std::vector<uint64> BGObjects;
+        typedef std::vector<uint64> BGCreatures;
+        // TODO drop m_BGObjects
+        BGObjects m_BgObjects;
+		BGCreatures m_BgCreatures;
+
+		uint32 GetInstanceID() const        { return m_InstanceID; }
+
 		void SpawnEvent(uint8 event1, uint8 event2, bool spawn);
 		void SpawnBGObject(uint64 const& guid, uint32 respawntime);
 		void SpawnBGCreature(uint64 const& guid, uint32 respawntime);
@@ -244,16 +253,46 @@ class cBattleGround
 		/* Scorekeeping */
 
         BattleGroundScoreMap m_PlayerScores;                // Player scores
+
+		/*
+        these are important variables used for starting messages
+        */
+        uint8 m_Events;
+
+		BattleGroundStartTimeIntervals  m_StartDelayTimes[BG_STARTING_EVENT_COUNT];
+        //this must be filled in constructors!
+        uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
+
+		bool   m_BuffChange;
 	private:
 		BattleGroundTypeId m_TypeID;
         BattleGroundTypeId m_RandomTypeID;
+
+		uint32 m_InstanceID;                                //BattleGround Instance's GUID!
+		uint32 m_ClientInstanceID;                          //the instance-id which is sent to the client and without any other internal use
 
 		BattleGroundStatus m_Status;
 		uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
 		BattleGroundBracketId m_BracketId;
 
+		uint32 m_InvitedAlliance;
+        uint32 m_InvitedHorde;
+
 		uint32 m_StartTime;
 		int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
+
+		char const *m_Name;
+
+		bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
+        bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave
+		bool m_RandomBG;
+
+		/* Start location */
+        uint32 m_MapId;
+
+		bool   m_PrematureCountDown;
+		bool   m_TimerArenaDone;
+        uint32 m_PrematureCountDownTimer;
 
 		/* Players count by team */
         uint32 m_PlayersCount[BG_TEAMS_COUNT];
