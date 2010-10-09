@@ -320,7 +320,6 @@ class BattleGround
 
         /* Battleground */
         // Get methods:
-        char const* GetName() const         { return m_Name; }
         BattleGroundTypeId GetTypeID(bool GetRandom = false) const { 
 			Packet pck;
 			pck << uint16(C_CMSG_BG_GETTYPEID) << uint64(m_Id) << uint8(GetRandom ? 1:0);
@@ -359,13 +358,10 @@ class BattleGround
 			return sClusterMgr.getUint32Value(&pck,C_BG);
 			/*return m_MinPlayersPerTeam;*/ }
 
-        int32 GetStartDelayTime() const     { return m_StartDelayTime; }
-        uint8 GetWinner() const             { return m_Winner; }
         uint32 GetBattlemasterEntry() const;
         uint32 GetBonusHonorFromKill(uint32 kills) const;
 
         // Set methods:
-        void SetName(char const* Name)      { m_Name = Name; }
         void SetTypeID(BattleGroundTypeId TypeID) { 
 			Packet pck;
 			pck << uint16(C_CMSG_BG_SETTYPEID) << uint8(0) << uint32(TypeID);
@@ -400,12 +396,6 @@ class BattleGround
 			/*m_LevelMin = min; m_LevelMax = max;*/
 		}
         
-		void SetRated(bool state)           { m_IsRated = state; }
-        void SetWinner(uint8 winner)        { m_Winner = winner; }
-
-        void ModifyStartDelayTime(int diff) { m_StartDelayTime -= diff; }
-        void SetStartDelayTime(int Time)    { m_StartDelayTime = Time; }
-
         void SetMaxPlayersPerTeam(uint32 MaxPlayers) { 
 			Packet pck;
 			pck << uint16(C_CMSG_BG_SET_LIMIT) << uint64(m_Id) << uint8(4) << uint32(MaxPlayers);
@@ -422,8 +412,6 @@ class BattleGround
 
         bool HasFreeSlots();
         uint32 GetFreeSlotsForTeam(uint32 Team) const;
-
-        bool isRated() const        { return m_IsRated; }
 
         typedef std::map<uint64, BattleGroundScore*> BattleGroundScoreMap;
         BattleGroundScoreMap::const_iterator GetPlayerScoresBegin() const { return m_PlayerScores.begin(); }
@@ -603,8 +591,6 @@ class BattleGround
         static uint32 GetOtherTeam(uint32 teamId){ return (teamId) ? ((teamId == ALLIANCE) ? HORDE : ALLIANCE) : 0; }
         bool IsPlayerInBattleGround(uint64 guid);
 
-        void SetDeleteThis() {m_SetDeleteThis = true;}
-
         /* virtual score-array - get's used in bg-subclasses */
         int32 m_TeamScores[BG_TEAMS_COUNT];
 
@@ -655,7 +641,10 @@ class BattleGround
 		void SetArenaorBGType(bool _isArena) { }
 		bool isArena() const { return true; }
 		bool isBattleGround() { return true; }
-
+		bool GetDeleteThis() { return true; }
+		void SetRated(bool rated) { }
+		bool isRated()  { return true; }
+		uint8 GetWinner() { return 0; }
     protected:
         //this method is called, when BG cannot spawn its own spirit guide, or something is wrong, It correctly ends BattleGround
         void EndNow();
@@ -680,22 +669,12 @@ class BattleGround
 
         bool   m_BuffChange;
     private:
-        bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
-        bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave
-        uint8  m_Winner;                                    // 0=alliance, 1=horde, 2=none
-        int32  m_StartDelayTime;
-        bool   m_IsRated;                                   // is this battle rated?
-        bool   m_PrematureCountDown;
-        char const *m_Name;
-
         /* Player lists */
         std::vector<uint64> m_ResurrectQueue;               // Player GUID
         std::deque<uint64> m_OfflineQueue;                  // Player GUID
 
         /* Raid Group */
         Group *m_BgRaids[BG_TEAMS_COUNT];                                // 0 - alliance, 1 - horde
-
-        /* Limits */
 
         /* Start location */
         uint32 m_MapId;

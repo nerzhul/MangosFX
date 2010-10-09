@@ -67,7 +67,6 @@ class cBattleGround
 		void CastSpellOnTeam(uint32 SpellID, uint32 TeamID);
 		void RewardHonorToTeam(uint32 Honor, uint32 TeamID);
 		void RewardHonorTeamDaily(uint32 TeamID);
-		void SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count);
 		void RewardReputationToTeam(uint32 faction_id, uint32 Reputation, uint32 TeamID);
 		void RewardXpToTeam(uint32 Xp, float percentOfLevel, uint32 TeamID);
 		void UpdateWorldState(uint32 Field, uint32 Value,Player *Source = NULL);
@@ -302,8 +301,6 @@ class cBattleGround
 		int32  m_StartDelayTime;
 		uint32 m_StartTime;
 		int32 m_EndTime;                                    // it is set to 120000 when bg is ending and it decreases itself
-
-		char const *m_Name;
 
 		bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
         bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave

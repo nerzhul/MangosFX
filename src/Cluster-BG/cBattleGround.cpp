@@ -232,7 +232,6 @@ cBattleGround::cBattleGround(): m_Id(0)
 	m_Events            = 0;
 
 	m_BuffChange        = false;
-    m_Name              = "";
 
 	m_Status            = STATUS_NONE;
 	m_BracketId         = BG_BRACKET_ID_FIRST;
@@ -1004,40 +1003,6 @@ void cBattleGround::RewardItem(Player *plr, uint32 item_id, uint32 count)
 
     if (no_space_count > 0)
         SendRewardMarkByMail(plr,item_id,no_space_count);*/
-}
-
-void cBattleGround::SendRewardMarkByMail(Player *plr,uint32 mark, uint32 count)
-{
-    uint32 bmEntry = GetBattlemasterEntry();
-    if (!bmEntry)
-        return;
-
-    /*ItemPrototype const* markProto = ObjectMgr::GetItemPrototype(mark);
-    if (!markProto)
-        return;
-
-    if (Item* markItem = Item::CreateItem(mark,count,plr))
-    {
-        // save new item before send
-        markItem->SaveToDB();                               // save for prevent lost at next mail load, if send fail then item will deleted
-
-        // subject: item name
-        std::string subject = markProto->Name1;
-        int loc_idx = plr->GetSession()->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0 )
-            if (ItemLocale const *il = sObjectMgr.GetItemLocale(markProto->ItemId))
-                if (il->Name.size() > size_t(loc_idx) && !il->Name[loc_idx].empty())
-                    subject = il->Name[loc_idx];
-
-        // text
-        std::string textFormat = plr->GetSession()->GetMangosString(LANG_BG_MARK_BY_MAIL);
-        char textBuf[300];
-        snprintf(textBuf,300,textFormat.c_str(),GetName(),GetName());
-
-        MailDraft(subject, textBuf)
-            .AddItem(markItem)
-            .SendMailTo(plr, MailSender(MAIL_CREATURE, bmEntry));
-    }*/
 }
 
 void cBattleGround::RewardQuestComplete(Player *plr)
