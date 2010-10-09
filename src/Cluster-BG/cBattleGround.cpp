@@ -759,6 +759,189 @@ void cBattleGround::UpdateWorldState(uint32 Field, uint32 Value,Player *Source)
 
 void cBattleGround::EndBattleGround(uint32 winner)
 {
+	RemoveFromBGFreeSlotQueue();
+
+    ArenaTeam * winner_arena_team = NULL;
+    ArenaTeam * loser_arena_team = NULL;
+    uint32 loser_rating = 0;
+    uint32 winner_rating = 0;
+    WorldPacket data;
+    int32 winmsg_id = 0;
+
+    if (winner == ALLIANCE)
+    {
+        winmsg_id = isBattleGround() ? LANG_BG_A_WINS : LANG_ARENA_GOLD_WINS;
+
+        PlaySoundToAll(SOUND_ALLIANCE_WINS);                // alliance wins sound
+
+        SetWinner(WINNER_ALLIANCE);
+    }
+    else if (winner == HORDE)
+    {
+        winmsg_id = isBattleGround() ? LANG_BG_H_WINS : LANG_ARENA_GREEN_WINS;
+
+        PlaySoundToAll(SOUND_HORDE_WINS);                   // horde wins sound
+
+        SetWinner(WINNER_HORDE);
+    }
+    else
+    {
+        SetWinner(3);
+    }
+
+    SetStatus(STATUS_WAIT_LEAVE);
+    //we must set it this way, because end time is sent in packet!
+    m_EndTime = TIME_TO_AUTOREMOVE;
+
+    // arena rating calculation
+    if (isArena() && isRated() && winner)
+    {
+        /*winner_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(winner));
+        loser_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(winner)));*/
+        if (winner_arena_team && loser_arena_team)
+        {
+            /*loser_rating = loser_arena_team->GetStats().rating;
+            winner_rating = winner_arena_team->GetStats().rating;
+            int32 winner_change = winner_arena_team->WonAgainst(loser_rating);*/
+			
+			/*switch(winner_arena_team->GetType())
+			{
+				case 2:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,399);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,400);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,401);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1159);
+					break;
+				case 3:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,402);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,403);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,405);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1160);
+					break;
+				case 5:
+					if(winner_rating + winner_change >= 1550)
+						RewardAchievementToTeam(winner,406);
+					if(winner_rating + winner_change >= 1750)
+						RewardAchievementToTeam(winner,407);
+					if(winner_rating + winner_change >= 2000)
+						RewardAchievementToTeam(winner,404);
+					if(winner_rating + winner_change >= 2200)
+						RewardAchievementToTeam(winner,1161);
+					break;
+			}*/
+            //int32 loser_change = loser_arena_team->LostAgainst(winner_rating);
+            //sLog.outDebug("--- Winner rating: %u, Loser rating: %u, Winner change: %u, Losser change: %u ---", winner_rating, loser_rating, winner_change, loser_change);
+            /*SetArenaTeamRatingChangeForTeam(winner, winner_change);
+            SetArenaTeamRatingChangeForTeam(GetOtherTeam(winner), loser_change);*/
+        }
+        else
+        {
+            SetArenaTeamRatingChangeForTeam(ALLIANCE, 0);
+            SetArenaTeamRatingChangeForTeam(HORDE, 0);
+        }
+    }
+
+    for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+    {
+		uint32 team = itr->second.Team;
+
+        if (itr->second.OfflineRemoveTime)
+        {
+            //if rated arena match - make member lost!
+            if (isArena() && isRated() && winner_arena_team && loser_arena_team)
+            {
+                /*if (team == winner)
+                    winner_arena_team->OfflineMemberLost(itr->first*itr, loser_rating);
+                else
+                    loser_arena_team->OfflineMemberLost(itr->first*itr, winner_rating);*/
+            }
+            continue;
+        }
+        /*
+		Player *plr = sObjectMgr.GetPlayer(/*itr->first*itr);
+        if (!plr)
+        {
+            sLog.outError("BattleGround:EndBattleGround Player (GUID: %u) not found!", GUID_LOPART(/*itr->first*itr));
+            continue;
+        }
+
+        // should remove spirit of redemption
+        if (plr->HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
+            plr->RemoveSpellsCausingAura(SPELL_AURA_MOD_SHAPESHIFT);
+
+        if (!plr->isAlive())
+        {
+            plr->ResurrectPlayer(1.0f);
+            plr->SpawnCorpseBones();
+        }
+        else
+        {
+            //needed cause else in av some creatures will kill the players at the end
+            plr->CombatStop();
+            plr->getHostileRefManager().deleteReferences();
+        }*/
+
+        // per player calculation
+        if (isArena() && isRated() && winner_arena_team && loser_arena_team)
+        {
+            if (team == winner)
+            {
+                // update achievement BEFORE personal rating update
+                /*ArenaTeamMember* member = winner_arena_team->GetMember(plr->GetGUID());
+                if (member)
+                    plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_WIN_RATED_ARENA, member->personal_rating);*/
+
+                //winner_arena_team->MemberWon(plr,loser_rating);
+            }
+            else
+            {
+                //loser_arena_team->MemberLost(plr,winner_rating);
+
+                // Arena lost => reset the win_rated_arena having the "no_loose" condition
+                //plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_WIN_RATED_ARENA, ACHIEVEMENT_CRITERIA_CONDITION_NO_LOOSE);
+            }
+        }
+
+        /*if (team == winner)
+            RewardQuestComplete(plr);*/
+
+        //plr->CombatStopWithPets(true);
+
+        //BlockMovement(plr);
+
+        /*sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
+        plr->GetSession()->SendPacket(&data);
+
+        BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
+        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
+        plr->GetSession()->SendPacket(&data);
+        plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);*/
+    }
+
+    if (isArena() && isRated() && winner_arena_team && loser_arena_team)
+    {
+        // update arena points only after increasing the player's match count!
+        //obsolete: winner_arena_team->UpdateArenaPointsHelper();
+        //obsolete: loser_arena_team->UpdateArenaPointsHelper();
+        // save the stat changes
+        /*winner_arena_team->SaveToDB();
+        loser_arena_team->SaveToDB();
+        // send updated arena team stats to players
+        // this way all arena team members will get notified, not only the ones who participated in this match
+        winner_arena_team->NotifyStatsChanged();
+        loser_arena_team->NotifyStatsChanged();*/
+    }
+
+    if (winmsg_id)
+        SendMessageToAll(winmsg_id, CHAT_MSG_BG_SYSTEM_NEUTRAL);
 }
 
 uint32 cBattleGround::GetBonusHonorFromKill(uint32 kills) const
@@ -1062,18 +1245,144 @@ void cBattleGround::StartBattleGround()
 
 void cBattleGround::AddPlayer(Player *plr)
 {
+	/*// remove afk from player
+    if (plr->HasFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK))
+        plr->ToggleAFK();
+
+    // score struct must be created in inherited class
+
+    uint64 guid = plr->GetGUID();
+    uint32 team = plr->GetBGTeam();
+
+    BattleGroundPlayer bp;
+    bp.OfflineRemoveTime = 0;
+    bp.Team = team;
+
+    m_Players[guid] = bp;
+
+    //UpdatePlayersCountByTeam(team, false);                  // +1 player
+
+    WorldPacket data;
+    sBattleGroundMgr.BuildPlayerJoinedBattleGroundPacket(&data, plr);
+    SendPacketToTeam(team, &data, plr, false);
+
+	plr->CastSpell(plr, SPELL_AURA_PVP_HEALING,true); 
+	plr->Unmount();
+	plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);*/
+
+    // add arena specific auras
+    if (isArena())
+    {
+       /* plr->RemoveArenaSpellCooldowns();
+        plr->RemoveArenaAuras();
+        plr->RemoveAllEnchantments(TEMP_ENCHANTMENT_SLOT);
+        if(team == ALLIANCE)                                // gold
+        {
+            if (plr->GetTeam() == HORDE)
+                plr->CastSpell(plr, SPELL_HORDE_GOLD_FLAG,true);
+            else
+                plr->CastSpell(plr, SPELL_ALLIANCE_GOLD_FLAG,true);
+        }
+        else                                                // green
+        {
+            if (plr->GetTeam() == HORDE)
+                plr->CastSpell(plr, SPELL_HORDE_GREEN_FLAG,true);
+            else
+                plr->CastSpell(plr, SPELL_ALLIANCE_GREEN_FLAG,true);
+        }
+
+        plr->DestroyConjuredItems(true);
+        plr->UnsummonPetTemporaryIfAny();*/
+
+        if(GetStatus() == STATUS_WAIT_JOIN)                 // not started yet
+        {
+           /* plr->CastSpell(plr, SPELL_ARENA_PREPARATION, true);
+
+            plr->SetHealth(plr->GetMaxHealth());
+            plr->SetPower(POWER_MANA, plr->GetMaxPower(POWER_MANA));*/
+        }
+
+		/*WorldPacket data(SMSG_ARENA_OPPONENT_UPDATE, 8);
+		data << uint64(plr->GetGUID());
+		SendPacketToTeam(team, &data, plr, true);*/
+    }
+    else
+    {
+        /*if(GetStatus() == STATUS_WAIT_JOIN)                 // not started yet
+            plr->CastSpell(plr, SPELL_PREPARATION, true);   // reduces all mana cost of spells.*/
+    }
+
+    /*plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HEALING_DONE, ACHIEVEMENT_CRITERIA_CONDITION_MAP, GetMapId());
+    plr->GetAchievementMgr().ResetAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_DAMAGE_DONE, ACHIEVEMENT_CRITERIA_CONDITION_MAP, GetMapId());*/
+
+    // setup BG group membership
+    PlayerAddedToBGCheckIfBGIsRunning(plr);
+    //AddOrSetPlayerToCorrectBgGroup(plr, guid, team);
+
+    // Log
+    sLog.outDetail("BATTLEGROUND: Player %s joined the battle.", plr->GetName());
 }
 
 void cBattleGround::AddOrSetPlayerToCorrectBgGroup(Player *plr, uint64 plr_guid, uint32 team)
 {
+	/*Group* group = GetBgRaid(team);
+    if(!group)                                      // first player joined
+    {
+        group = new Group;
+        SetBgRaid(team, group);
+        group->Create(plr_guid, plr->GetName());
+    }
+    else                                            // raid already exist
+    {
+        if (group->IsMember(plr_guid))
+        {
+            uint8 subgroup = group->GetMemberGroup(plr_guid);
+            plr->SetBattleGroundRaid(group, subgroup);
+        }
+        else
+        {
+            group->AddMember(plr_guid, plr->GetName());
+            if (Group* originalGroup = plr->GetOriginalGroup())
+                if (originalGroup->IsLeader(plr_guid))
+                    group->ChangeLeader(plr_guid);
+        }
+    }*/
 }
 
 void cBattleGround::EventPlayerLoggedIn(Player* player, uint64 plr_guid)
 {
+	for(std::deque<uint64>::iterator itr = m_OfflineQueue.begin(); itr != m_OfflineQueue.end(); ++itr)
+    {
+        if (*itr == plr_guid)
+        {
+            m_OfflineQueue.erase(itr);
+            break;
+        }
+    }
+
+    m_Players[plr_guid].OfflineRemoveTime = 0;
+    PlayerAddedToBGCheckIfBGIsRunning(player);
+    // if battleground is starting, then add preparation aura
+    // we don't have to do that, because preparation aura isn't removed when player logs out
 }
 
 void cBattleGround::EventPlayerLoggedOut(Player* player)
 {
+	// player is correct pointer, it is checked in WorldSession::LogoutPlayer()
+    m_OfflineQueue.push_back(player->GetGUID());
+
+    //m_Players[player->GetGUID()].OfflineRemoveTime = sWorld.GetGameTime() + MAX_OFFLINE_TIME;
+    if (GetStatus() == STATUS_IN_PROGRESS)
+    {
+        // drop flag and handle other cleanups
+        RemovePlayer(player, player->GetGUID());
+
+        // 1 player is logging out, if it is the last, then end arena!
+        /*if (isArena())
+            if (GetAlivePlayersCountByTeam(player->GetTeam()) <= 1 && GetPlayersCountByTeam(GetOtherTeam(player->GetTeam())))
+                EndBattleGround(GetOtherTeam(player->GetTeam()));*/
+
+    }
 }
 
 void cBattleGround::AddToBGFreeSlotQueue()

@@ -133,6 +133,7 @@ class cBattleGround
 		void HandleTriggerBuff(uint64 const& go_guid);
 		virtual void HandleKillPlayer(Player *player, Player *killer);
         virtual void HandleKillUnit(Creature* /*unit*/, Player* /*killer*/) { return; };
+		virtual void RemovePlayer(Player * /*player*/, uint64 /*guid*/) {}
 
 		void PlayerAddedToBGCheckIfBGIsRunning(Player* plr);
 		uint32 GetAlivePlayersCountByTeam(uint32 Team);
