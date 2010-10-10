@@ -26,8 +26,6 @@
 #include "Language.h"
 #include "AccountMgr.h"
 #include "SystemConfig.h"
-#include "revision.h"
-#include "revision_nr.h"
 #include "Util.h"
 #include "WorldSession.h"
 #include "GossipDef.h"
