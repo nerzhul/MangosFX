@@ -592,7 +592,7 @@ FORCE:
 LTMANGOS_CURRENT = 0
 LTMANGOS_REVISION = 0
 LTMANGOS_AGE = 0
-libmangosscript_la_LIBFLAGS = -lsfml-network -version-info $(LTMANGOS_CURRENT):$(LTMANGOS_REVISION):$(LTMANGOS_AGE)
+libmangosscript_la_LIBFLAGS = -version-info $(LTMANGOS_CURRENT):$(LTMANGOS_REVISION):$(LTMANGOS_AGE)
 
 ## Additional files to include when running 'make dist'
 # Scripts defaults.
