@@ -706,6 +706,14 @@
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundMgr.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundWS.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundWS.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"

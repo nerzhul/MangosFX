@@ -101,24 +101,7 @@ class BattleGroundWS : public BattleGround
         /* Construction */
         BattleGroundWS();
         ~BattleGroundWS();
-        void Update(uint32 diff);
-
-        /* inherited from BattlegroundClass */
-        virtual void AddPlayer(Player *plr);
-        virtual void StartingEventCloseDoors();
-        virtual void StartingEventOpenDoors();
-
-        /* BG Flags */
-        uint64 GetAllianceFlagPickerGUID() const    { return m_FlagKeepers[BG_TEAM_ALLIANCE]; }
-        uint64 GetHordeFlagPickerGUID() const       { return m_FlagKeepers[BG_TEAM_HORDE]; }
-        void SetAllianceFlagPicker(uint64 guid)     { m_FlagKeepers[BG_TEAM_ALLIANCE] = guid; }
-        void SetHordeFlagPicker(uint64 guid)        { m_FlagKeepers[BG_TEAM_HORDE] = guid; }
-        bool IsAllianceFlagPickedup() const         { return m_FlagKeepers[BG_TEAM_ALLIANCE] != 0; }
-        bool IsHordeFlagPickedup() const            { return m_FlagKeepers[BG_TEAM_HORDE] != 0; }
-        void RespawnFlag(uint32 Team, bool captured);
-        void RespawnFlagAfterDrop(uint32 Team);
-        uint8 GetFlagState(uint32 team)             { return m_FlagState[GetTeamIndexByTeamId(team)]; }
-
+        
         /* Battleground Events */
         virtual void EventPlayerDroppedFlag(Player *Source);
         virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
@@ -135,29 +118,7 @@ class BattleGroundWS : public BattleGround
         void UpdateFlagState(uint32 team, uint32 value);
         void UpdateTeamScore(uint32 team);
         void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
-        void SetDroppedFlagGUID(uint64 guid, uint32 TeamID)  { m_DroppedFlagGUID[GetTeamIndexByTeamId(TeamID)] = guid;}
-        uint64 GetDroppedFlagGUID(uint32 TeamID)             { return m_DroppedFlagGUID[GetTeamIndexByTeamId(TeamID)];}
         virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
 
-        /* Scorekeeping */
-        uint32 GetTeamScore(uint32 TeamID) const            { return m_TeamScores[GetTeamIndexByTeamId(TeamID)]; }
-        void AddPoint(uint32 TeamID, uint32 Points = 1)     { m_TeamScores[GetTeamIndexByTeamId(TeamID)] += Points; }
-        void SetTeamPoint(uint32 TeamID, uint32 Points = 0) { m_TeamScores[GetTeamIndexByTeamId(TeamID)] = Points; }
-        void RemovePoint(uint32 TeamID, uint32 Points = 1)  { m_TeamScores[GetTeamIndexByTeamId(TeamID)] -= Points; }
-        
-        uint32 GetRemainingTimeInMinutes() { return (uint32)ceil(float(m_EndTimer) / (MINUTE * IN_MILLISECONDS)); }
-    private:
-        uint64 m_FlagKeepers[BG_TEAMS_COUNT];
-
-        uint64 m_DroppedFlagGUID[BG_TEAMS_COUNT];
-        uint8 m_FlagState[BG_TEAMS_COUNT];
-        int32 m_FlagsTimer[BG_TEAMS_COUNT];
-        int32 m_FlagsDropTimer[BG_TEAMS_COUNT];
-
-        uint32 m_ReputationCapture;
-        uint32 m_HonorWinKills;
-        uint32 m_HonorEndKills;
-        uint32 m_EndTimer;
-        uint32 m_LastCapturedFlagTeam;
 };
 #endif

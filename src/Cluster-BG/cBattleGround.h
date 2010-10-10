@@ -284,6 +284,8 @@ class cBattleGround
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
 
 		bool   m_BuffChange;
+		/* virtual score-array - get's used in bg-subclasses */
+        int32 m_TeamScores[BG_TEAMS_COUNT];
 	private:
 		BattleGroundTypeId m_TypeID;
         BattleGroundTypeId m_RandomTypeID;
@@ -324,9 +326,6 @@ class cBattleGround
         uint32 m_ArenaTeamIds[BG_TEAMS_COUNT];
 
 		int32 m_ArenaTeamRatingChanges[BG_TEAMS_COUNT];
-
-		/* virtual score-array - get's used in bg-subclasses */
-        int32 m_TeamScores[BG_TEAMS_COUNT];
 
 		/* Limits */
 		uint32 m_LevelMin;
