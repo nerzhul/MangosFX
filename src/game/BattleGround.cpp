@@ -216,10 +216,6 @@ BattleGround::BattleGround()
     m_BgRaids[BG_TEAM_HORDE]            = NULL;
 
 	m_Id = 0;
-	Packet pck;
-	pck << uint16(C_CMSG_GET_BG_ID);
-	m_Id = sClusterMgr.getUint64Value(&pck,C_BG);
-	sLog.outBasic("BattleGround Id set to %u",GUID_LOPART(m_Id));
 
 }
 
@@ -597,7 +593,7 @@ void BattleGround::OnObjectDBLoad(GameObject* obj)
 
 void BattleGround::OpenDoorEvent(uint8 event1, uint8 event2 /*=0*/)
 {
-    if (!IsDoor(event1, event2))
+    /*if (!IsDoor(event1, event2))
     {
         sLog.outError("BattleGround:OpenDoorEvent this is no door event1:%u event2:%u", event1, event2);
         return;
@@ -609,7 +605,7 @@ void BattleGround::OpenDoorEvent(uint8 event1, uint8 event2 /*=0*/)
     }
     BGObjects::const_iterator itr = m_EventObjects[MAKE_PAIR32(event1, event2)].gameobjects.begin();
     for(; itr != m_EventObjects[MAKE_PAIR32(event1, event2)].gameobjects.end(); ++itr)
-        DoorOpen(*itr);
+        DoorOpen(*itr);*/
 }
 
 void BattleGround::SpawnEvent(uint8 event1, uint8 event2, bool spawn)
