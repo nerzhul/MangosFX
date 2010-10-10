@@ -699,6 +699,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAB.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAB.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundMgr.cpp"
 				>
 			</File>

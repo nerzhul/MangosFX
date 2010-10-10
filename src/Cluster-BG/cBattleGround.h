@@ -267,6 +267,7 @@ class cBattleGround
 		std::map<uint8, uint8> m_ActiveEvents;
 
 	protected:
+		void SetBuffChange(bool bChange) { m_BuffChange = bChange; }
 		uint64 m_Id;
 		/* Player lists, those need to be accessible by inherited classes */
         BattleGroundPlayerMap  m_Players;
@@ -283,7 +284,7 @@ class cBattleGround
         //this must be filled in constructors!
         uint32 m_StartMessageIds[BG_STARTING_EVENT_COUNT];
 
-		bool   m_BuffChange;
+		
 		/* virtual score-array - get's used in bg-subclasses */
         int32 m_TeamScores[BG_TEAMS_COUNT];
 	private:
@@ -307,6 +308,7 @@ class cBattleGround
 		bool   m_InBGFreeSlotQueue;                         // used to make sure that BG is only once inserted into the BattleGroundMgr.BGFreeSlotQueue[bgTypeId] deque
         bool   m_SetDeleteThis;                             // used for safe deletion of the bg after end / all players leave
 		bool m_RandomBG;
+		bool   m_BuffChange;
 
 		/* Start location */
         uint32 m_MapId;
