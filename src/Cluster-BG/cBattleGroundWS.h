@@ -83,21 +83,40 @@ class cBattleGroundWS : public cBattleGround
 
 		void Update(uint32 diff);
 
-		/* inherited from BattlegroundClass */
-        virtual void AddPlayer(Player *plr);
-        virtual void StartingEventCloseDoors();
-        virtual void StartingEventOpenDoors();
-
 	protected:
 		/* Scorekeeping */
         uint32 GetTeamScore(uint32 TeamID) const            { return m_TeamScores[GetTeamIndexByTeamId(TeamID)]; }
         void AddPoint(uint32 TeamID, uint32 Points = 1)     { m_TeamScores[GetTeamIndexByTeamId(TeamID)] += Points; }
         void SetTeamPoint(uint32 TeamID, uint32 Points = 0) { m_TeamScores[GetTeamIndexByTeamId(TeamID)] = Points; }
         void RemovePoint(uint32 TeamID, uint32 Points = 1)  { m_TeamScores[GetTeamIndexByTeamId(TeamID)] -= Points; }
+
+		/* inherited from BattlegroundClass */
+        virtual void AddPlayer(Player *plr);
+        virtual void StartingEventCloseDoors();
+        virtual void StartingEventOpenDoors();
+
+		/* Battleground Events */
+        virtual void EventPlayerDroppedFlag(Player *Source);
+        virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
+        virtual void EventPlayerCapturedFlag(Player *Source);
+
+		
+        void RemovePlayer(Player *plr, uint64 guid);
+        void HandleAreaTrigger(Player *Source, uint32 Trigger);
+        void HandleKillPlayer(Player *player, Player *killer);
+        bool SetupBattleGround();
+        virtual void Reset();
+        void EndBattleGround(uint32 winner);
+        virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
+
+        void UpdateTeamScore(uint32 team);
+        void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
+        virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
         
 	private:
 		void RespawnFlag(uint32 Team, bool captured);
         void RespawnFlagAfterDrop(uint32 Team);
+		void UpdateFlagState(uint32 team, uint32 value);
 
 		/* BG Flags */
         uint64 GetAllianceFlagPickerGUID() const    { return m_FlagKeepers[BG_TEAM_ALLIANCE]; }

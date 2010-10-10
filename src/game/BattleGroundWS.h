@@ -102,23 +102,5 @@ class BattleGroundWS : public BattleGround
         BattleGroundWS();
         ~BattleGroundWS();
         
-        /* Battleground Events */
-        virtual void EventPlayerDroppedFlag(Player *Source);
-        virtual void EventPlayerClickedOnFlag(Player *Source, GameObject* target_obj);
-        virtual void EventPlayerCapturedFlag(Player *Source);
-
-        void RemovePlayer(Player *plr, uint64 guid);
-        void HandleAreaTrigger(Player *Source, uint32 Trigger);
-        void HandleKillPlayer(Player *player, Player *killer);
-        bool SetupBattleGround();
-        virtual void Reset();
-        void EndBattleGround(uint32 winner);
-        virtual WorldSafeLocsEntry const* GetClosestGraveYard(Player* player);
-
-        void UpdateFlagState(uint32 team, uint32 value);
-        void UpdateTeamScore(uint32 team);
-        void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
-        virtual void FillInitialWorldStates(WorldPacket& data, uint32& count);
-
 };
 #endif
