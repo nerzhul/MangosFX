@@ -1,4 +1,5 @@
 #include <Language.h>
+#include <Player.h>
 #include "cBattleGroundWS.h"
 
 cBattleGroundWS::cBattleGroundWS()
@@ -234,7 +235,7 @@ void cBattleGroundWS::EventPlayerCapturedFlag(Player *Source)
         m_FlagsTimer[GetTeamIndexByTeamId(Source->GetTeam()) ? 0 : 1] = BG_WS_FLAG_RESPAWN_TIME;
     }
 }
-void BattleGroundWS::EventPlayerDroppedFlag(Player *Source)
+void cBattleGroundWS::EventPlayerDroppedFlag(Player *Source)
 {
     if (GetStatus() != STATUS_IN_PROGRESS)
     {
@@ -411,7 +412,7 @@ void cBattleGroundWS::EventPlayerClickedOnFlag(Player *Source, GameObject* targe
     }
 
     if (!message_id)
-        return;
+		return;
 
     SendMessageToAll(message_id, type, Source);
     Source->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_ENTER_PVP_COMBAT);
@@ -504,7 +505,7 @@ bool cBattleGroundWS::SetupBattleGround()
     return true;
 }
 
-void BattleGroundWS::Reset()
+void cBattleGroundWS::Reset()
 {
     //call parent's class reset
     cBattleGround::Reset();
@@ -521,7 +522,7 @@ void BattleGroundWS::Reset()
         m_FlagState[i]       = BG_WS_FLAG_STATE_ON_BASE;
         m_TeamScores[i]      = 0;
     }
-    bool isBGWeekend = BattleGroundMgr::IsBGWeekend(GetTypeID());
+    bool isBGWeekend = /*BattleGroundMgr::IsBGWeekend(GetTypeID())*/ false;
     m_ReputationCapture = (isBGWeekend) ? 45 : 35;
     m_HonorWinKills = (isBGWeekend) ? 3 : 1;
     m_HonorEndKills = (isBGWeekend) ? 4 : 2;
