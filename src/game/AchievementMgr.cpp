@@ -793,8 +793,10 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                         {
                             if (bg->GetTypeID(true) != BATTLEGROUND_AB)
                                 continue;
-                            if(!((BattleGroundAB*)bg)->IsTeamScores500Disadvantage(GetPlayer()->GetTeam()))
-                                continue;
+                            /* ClusterFX
+							
+							if(!((BattleGroundAB*)bg)->IsTeamScores500Disadvantage(GetPlayer()->GetTeam()))
+                                continue;*/
                             break;
                         }
                         case 156:                           // AB, win while controlling all 5 flags (all nodes)

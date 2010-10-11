@@ -24,7 +24,8 @@ class BattleGround;
 class BattleGroundAB : public BattleGround
 {
     friend class BattleGroundMgr;
-
+	BattleGroundAB();
+	~BattleGroundAB();
     
 };
 #endif

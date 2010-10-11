@@ -30,14 +30,6 @@
 
 BattleGroundAB::BattleGroundAB()
 {
-    SetBuffChange(true);
-    m_BgObjects.resize(BG_AB_OBJECT_MAX);
-	m_BgTimer = 0;
-
-    //m_StartMessageIds[BG_STARTING_EVENT_FIRST]  = 0;
-    //m_StartMessageIds[BG_STARTING_EVENT_SECOND] = LANG_BG_AB_START_ONE_MINUTE;
-    //m_StartMessageIds[BG_STARTING_EVENT_THIRD]  = LANG_BG_AB_START_HALF_MINUTE;
-    //m_StartMessageIds[BG_STARTING_EVENT_FOURTH] = LANG_BG_AB_HAS_BEGUN;
 }
 
 BattleGroundAB::~BattleGroundAB()

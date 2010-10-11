@@ -5101,7 +5101,7 @@ void Spell::EffectSummonObjectWild(uint32 i)
                     if(pl->GetTeam() == team)
                         team = HORDE;
 
-                    ((BattleGroundWS*)bg)->SetDroppedFlagGUID(pGameObj->GetGUID(),team);
+                    // ((BattleGroundWS*)bg)->SetDroppedFlagGUID(pGameObj->GetGUID(),team); ClusterFX
                 }
                 break;
             }

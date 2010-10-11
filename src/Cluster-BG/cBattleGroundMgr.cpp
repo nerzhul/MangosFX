@@ -1,6 +1,7 @@
 #include <Policies/SingletonImp.h>
 #include <Log.h>
 #include <ObjectDefines.h>
+#include <Player.h>
 #include <cPacketOpcodes.h>
 #include <Opcodes.h>
 #include "cBattleGroundMgr.h"

@@ -251,7 +251,9 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
     {
         case BATTLEGROUND_WS:
             {
-                uint32 count1 = 0;                                  //always constant zero?
+                /*
+				Rewrite this
+				uint32 count1 = 0;                                  //always constant zero?
                 uint32 count2 = 0;                                  //count of next fields
 
                 Player *ali_plr = sObjectMgr.GetPlayer(((BattleGroundWS*)bg)->GetAllianceFlagPickerGUID());
@@ -264,12 +266,6 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
 
                 WorldPacket data(MSG_BATTLEGROUND_PLAYER_POSITIONS, (4+4+16*count1+16*count2));
                 data << count1;                                     // alliance flag holders count - obsolete, now always 0
-                /*for(uint8 i = 0; i < count1; ++i)
-                {
-                    data << uint64(0);                              // guid
-                    data << (float)0;                               // x
-                    data << (float)0;                               // y
-                }*/
                 data << count2;                                     // horde flag holders count - obsolete, now count of next fields
                 if (ali_plr)
                 {
@@ -284,7 +280,7 @@ void WorldSession::HandleBattleGroundPlayerPositionsOpcode( WorldPacket & /*recv
                     data << (float)horde_plr->GetPositionY();
                 }
 
-                SendPacket(&data);
+                SendPacket(&data);*/
             }
             break;
         case BATTLEGROUND_EY:
