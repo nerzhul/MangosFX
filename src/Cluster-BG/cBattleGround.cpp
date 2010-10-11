@@ -1434,7 +1434,7 @@ void cBattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 
 uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
 {
-	/*BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
+	BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
 
     if(itr == m_PlayerScores.end()) // player not found...
         return 0;
@@ -1452,7 +1452,7 @@ uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
         default:
             sLog.outError("BattleGround: Unknown player score type %u", type);*/
             return 0;
-   //}*/
+   }
 }
 
 uint32 cBattleGround::GetDamageDoneForTeam(uint32 TeamID)

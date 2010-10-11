@@ -466,11 +466,6 @@ void BattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
 {
 }
 
-uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
-{
-	return 0;
-}
-
 uint32 BattleGround::GetDamageDoneForTeam(uint32 TeamID)
 {
 	uint32 finaldamage = 0;
