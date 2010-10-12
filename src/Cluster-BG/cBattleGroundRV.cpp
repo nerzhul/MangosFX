@@ -1,6 +1,6 @@
 #include <Player.h>
 #include "cBattleGround.h"
-#include "ccBattleGroundRV.h"
+#include "cBattleGroundRV.h"
 #include <GameObject.h>
 #include <Language.h>
 
@@ -58,7 +58,7 @@ void cBattleGroundRV::AddPlayer(Player *plr)
 {
     cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    cBattleGroundRVScore* sc = new cBattleGroundRVScore;
+    BattleGroundRVScore* sc = new cBattleGroundRVScore;
 	
     // m_PlayerScores[plr->GetGUID()] = sc; export this
 	
