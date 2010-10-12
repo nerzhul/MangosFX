@@ -465,7 +465,7 @@ void cBattleGroundSA::StartingEventOpenDoors()
 
 void cBattleGroundSA::AddPlayer(Player *plr)
 {
-    BattleGround::AddPlayer(plr);
+    cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
     BattleGroundSAScore* sc = new BattleGroundSAScore;
 	
@@ -548,7 +548,7 @@ void cBattleGroundSA::UpdatePlayerScore(Player* Source, uint32 type, uint32 valu
 	 else if(type == SCORE_DESTROYED_WALL)
 	 ((BattleGroundSAScore*)itr->second)->gates_destroyed += value;
 	 else
-	 BattleGround::UpdatePlayerScore(Source,type,value);
+	 cBattleGround::UpdatePlayerScore(Source,type,value);
 }
 
 WorldSafeLocsEntry const* cBattleGroundSA::GetClosestGraveYard(Player* player)
