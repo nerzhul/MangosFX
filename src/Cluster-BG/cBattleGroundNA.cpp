@@ -44,7 +44,7 @@ void cBattleGroundNA::AddPlayer(Player *plr)
 {
     cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    BattleGroundNAScore* sc = new cBattleGroundNAScore;
+    BattleGroundNAScore* sc = new BattleGroundNAScore;
 	
     // m_PlayerScores[plr->GetGUID()] = sc; export this
 	
@@ -71,7 +71,7 @@ void cBattleGroundNA::HandleKillPlayer(Player *player, Player *killer)
         return;
     }
 	
-    BattleGround::HandleKillPlayer(player,killer);
+    cBattleGround::HandleKillPlayer(player,killer);
 	
     UpdateArenaWorldState();
     CheckArenaWinConditions();

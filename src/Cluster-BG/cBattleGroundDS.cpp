@@ -57,7 +57,7 @@ void cBattleGroundDS::AddPlayer(Player *plr)
 {
     cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    BattleGroundDSScore* sc = new cBattleGroundDSScore;
+    BattleGroundDSScore* sc = new BattleGroundDSScore;
 	
 	UpdateArenaWorldState();
 	
