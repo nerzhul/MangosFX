@@ -1128,14 +1128,14 @@ void BattleGroundMgr::DeleteAllBattleGrounds()
 {
     for(uint32 i = BATTLEGROUND_TYPE_NONE; i < MAX_BATTLEGROUND_TYPE_ID; i++)
     {
-        for(BattleGroundSet::iterator itr = m_BattleGrounds[i].begin(); itr != m_BattleGrounds[i].end();)
+        /*for(BattleGroundSet::iterator itr = m_BattleGrounds[i].begin(); itr != m_BattleGrounds[i].end();)
         {
             BattleGround * bg = itr->second;
             m_BattleGrounds[i].erase(itr++);
             if (!m_ClientBattleGroundIds[i][bg->GetBracketId()].empty())
                 m_ClientBattleGroundIds[i][bg->GetBracketId()].erase(bg->GetClientInstanceID());
             delete bg;
-        }
+        }*/
     }
 
     // destroy template battlegrounds that listed only in queues (other already terminated)
@@ -1153,7 +1153,7 @@ void BattleGroundMgr::Update(uint32 diff)
     BattleGroundSet::iterator itr, next;
     for(uint32 i = BATTLEGROUND_TYPE_NONE; i < MAX_BATTLEGROUND_TYPE_ID; i++)
     {
-        itr = m_BattleGrounds[i].begin();
+        /*itr = m_BattleGrounds[i].begin();
         // skip updating battleground template
         if (itr != m_BattleGrounds[i].end())
             ++itr;
@@ -1172,7 +1172,7 @@ void BattleGroundMgr::Update(uint32 diff)
                     m_ClientBattleGroundIds[i][bg->GetBracketId()].erase(bg->GetClientInstanceID());
                 delete bg;
             }
-        }
+        }*/
     }
 
     // update scheduled queues
@@ -1375,11 +1375,11 @@ BattleGround * BattleGroundMgr::GetBattleGroundThroughClientInstance(uint32 inst
     if (bg->isArena())
         return GetBattleGround(instanceId, bgTypeId);
 
-    for(BattleGroundSet::iterator itr = m_BattleGrounds[bgTypeId].begin(); itr != m_BattleGrounds[bgTypeId].end(); ++itr)
+    /*for(BattleGroundSet::iterator itr = m_BattleGrounds[bgTypeId].begin(); itr != m_BattleGrounds[bgTypeId].end(); ++itr)
     {
         if (itr->second->GetClientInstanceID() == instanceId)
             return itr->second;
-    }
+    }*/
     return NULL;
 }
 
@@ -1389,22 +1389,22 @@ BattleGround * BattleGroundMgr::GetBattleGround(uint32 InstanceID, BattleGroundT
     BattleGroundSet::iterator itr;
     if (bgTypeId == BATTLEGROUND_TYPE_NONE)
     {
-        for(uint32 i = BATTLEGROUND_AV; i < MAX_BATTLEGROUND_TYPE_ID; i++)
+        /*for(uint32 i = BATTLEGROUND_AV; i < MAX_BATTLEGROUND_TYPE_ID; i++)
         {
             itr = m_BattleGrounds[i].find(InstanceID);
             if (itr != m_BattleGrounds[i].end())
                 return itr->second;
-        }
+        }*/
         return NULL;
     }
-    itr = m_BattleGrounds[bgTypeId].find(InstanceID);
-    return ( (itr != m_BattleGrounds[bgTypeId].end()) ? itr->second : NULL );
+    /*itr = m_BattleGrounds[bgTypeId].find(InstanceID);*/
+    return ( /*(itr != m_BattleGrounds[bgTypeId].end()) ? itr->second : */NULL );
 }
 
 BattleGround * BattleGroundMgr::GetBattleGroundTemplate(BattleGroundTypeId bgTypeId)
 {
     //map is sorted and we can be sure that lowest instance id has only BG template
-    return m_BattleGrounds[bgTypeId].empty() ? NULL : m_BattleGrounds[bgTypeId].begin()->second;
+    return /*m_BattleGrounds[bgTypeId].empty() ?*/ NULL /*: m_BattleGrounds[bgTypeId].begin()->second*/;
 }
 
 uint32 BattleGroundMgr::CreateClientVisibleInstanceId(BattleGroundTypeId bgTypeId, BattleGroundBracketId bracket_id)
@@ -1573,7 +1573,7 @@ uint32 BattleGroundMgr::CreateBattleGround(BattleGroundTypeId bgTypeId, bool IsA
     bg->SetLevelRange(LevelMin, LevelMax);
 
     // add bg to update list
-    AddBattleGround(bg->GetInstanceID(), bg->GetTypeID(), bg);
+    //AddBattleGround(bg->GetInstanceID(), bg->GetTypeID(), bg);
 
     // return some not-null value, bgTypeId is good enough for me
     return bgTypeId;
