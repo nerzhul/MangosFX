@@ -29,6 +29,9 @@ class cBattleGroundMgr
 		void RemoveBattleGround(uint64 instanceID, BattleGroundTypeId bgTypeId) { m_BattleGrounds[bgTypeId].erase(instanceID); }
 		void AddBattleGround(uint64 InstanceID, BattleGroundTypeId bgTypeId, cBattleGround* BG) { m_BattleGrounds[bgTypeId][InstanceID] = BG; }
 	private:
+		void DeleteAllBattleGrounds();
+	
+	
 		cBattleGroundSet m_BGMap;
 
 		/* Battlegrounds */

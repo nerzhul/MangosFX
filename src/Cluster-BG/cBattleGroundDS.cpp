@@ -1,6 +1,6 @@
 #include <Player.h>
 #include "cBattleGround.h"
-#include "ccBattleGroundDS.h"
+#include "cBattleGroundDS.h"
 #include <Language.h>
 
 cBattleGroundDS::cBattleGroundDS()
@@ -23,7 +23,7 @@ cBattleGroundDS::~cBattleGroundDS()
 
 void cBattleGroundDS::Update(uint32 diff)
 {
-    BattleGround::Update(diff);
+    cBattleGround::Update(diff);
 	if (GetStatus() == STATUS_IN_PROGRESS)
 	{
 		// knockback
@@ -57,7 +57,7 @@ void cBattleGroundDS::AddPlayer(Player *plr)
 {
     cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    cBattleGroundDSScore* sc = new cBattleGroundDSScore;
+    BattleGroundDSScore* sc = new cBattleGroundDSScore;
 	
 	UpdateArenaWorldState();
 	

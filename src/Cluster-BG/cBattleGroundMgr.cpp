@@ -17,6 +17,16 @@ cBattleGroundMgr::cBattleGroundMgr()
         m_BattleGrounds[i].clear();
 }
 
+cBattleGroundMgr::~cBattleGroundMgr()
+{
+    DeleteAllBattleGrounds();
+}
+
+void cBattleGroundMgr::DeleteAllBattleGrounds()
+{
+}
+
+
 uint64 cBattleGroundMgr::CreateBattleGround()
 {
 	cBattleGround* cBG = new cBattleGround();

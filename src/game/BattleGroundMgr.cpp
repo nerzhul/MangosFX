@@ -1116,15 +1116,12 @@ void BGQueueRemoveEvent::Abort(uint64 /*e_time*/)
 
 BattleGroundMgr::BattleGroundMgr() : m_AutoDistributionTimeChecker(0), m_ArenaTesting(false)
 {
-    for(uint32 i = BATTLEGROUND_TYPE_NONE; i < MAX_BATTLEGROUND_TYPE_ID; i++)
-        m_BattleGrounds[i].clear();
     m_NextRatingDiscardUpdate = sWorld.getConfig(CONFIG_ARENA_RATING_DISCARD_TIMER);
     m_Testing=false;
 }
 
 BattleGroundMgr::~BattleGroundMgr()
 {
-    DeleteAllBattleGrounds();
 }
 
 void BattleGroundMgr::DeleteAllBattleGrounds()
@@ -1365,12 +1362,6 @@ void BattleGroundMgr::BuildUpdateWorldStatePacket(WorldPacket *data, uint32 fiel
     data->Initialize(SMSG_UPDATE_WORLD_STATE, 4+4);
     *data << uint32(field);
     *data << uint32(value);
-}
-
-void BattleGroundMgr::BuildPlaySoundPacket(WorldPacket *data, uint32 soundid)
-{
-    data->Initialize(SMSG_PLAY_SOUND, 4);
-    *data << uint32(soundid);
 }
 
 BattleGround * BattleGroundMgr::GetBattleGroundThroughClientInstance(uint32 instanceId, BattleGroundTypeId bgTypeId)
