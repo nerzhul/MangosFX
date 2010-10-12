@@ -455,7 +455,7 @@ void BattleGroundEY::Reset()
     m_DroppedFlagGUID = 0;
     m_PointAddingTimer = 0;
     m_TowerCapCheckTimer = 0;
-    bool isBGWeekend = BattleGroundMgr::IsBGWeekend(GetTypeID());
+    bool isBGWeekend = /*BattleGroundMgr::IsBGWeekend(GetTypeID())*/false;
     m_HonorTics = (isBGWeekend) ? BG_EY_EYWeekendHonorTicks : BG_EY_NotEYWeekendHonorTicks;
 
     for(uint8 i = 0; i < BG_EY_NODES_MAX; ++i)

@@ -68,6 +68,17 @@ void ClusterBG::SetInitialSettings()
 	LoadDBCStores("./");
     DetectDBCLang();
 
+	sLog.outString( "Loading BattleMasters..." );
+    sBattleGroundMgr.LoadBattleMastersEntry();
+
+	sLog.outString( "Loading BattleGround event indexes..." );
+    sClusterBGMgr.LoadBattleEventIndexes();
+
+	///- Initialize Battlegrounds
+    sLog.outString( "Starting BattleGround System" );
+    sClusterBGMgr.CreateInitialBattleGrounds();
+    sClusterBGMgr.InitAutomaticArenaPointDistribution();
+
 	m_gameTime = time(NULL);
 
 	// For other clusters, modify loaded tables there

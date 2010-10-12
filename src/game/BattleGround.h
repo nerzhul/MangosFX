@@ -413,12 +413,7 @@ class BattleGround
         void OnObjectDBLoad(GameObject* /*obj*/);
         // (de-)spawns creatures and gameobjects from an event
         void SpawnEvent(uint8 event1, uint8 event2, bool spawn);
-        bool IsActiveEvent(uint8 event1, uint8 event2) // Dont forget to export event system !!!
-        {
-            if (m_ActiveEvents.find(event1) == m_ActiveEvents.end())
-                return false;
-            return m_ActiveEvents[event1] == event2;
-        }
+        
         uint64 GetSingleCreatureGuid(uint8 event1, uint8 event2);
 
         void OpenDoorEvent(uint8 event1, uint8 event2 = 0);
@@ -451,17 +446,9 @@ class BattleGround
 
         /* virtual score-array - get's used in bg-subclasses */
         int32 m_TeamScores[BG_TEAMS_COUNT];
+  
 
-        struct EventObjects
-        {
-            BGObjects gameobjects;
-            BGCreatures creatures;
-        };
 
-        // cause we create it dynamicly i use a map - to avoid resizing when
-        // using vector - also it contains 2*events concatenated with PAIR32
-        // this is needed to avoid overhead of a 2dimensional std::map
-        std::map<uint32, EventObjects> m_EventObjects;
         // this must be filled first in BattleGroundXY::Reset().. else
         // creatures will get added wrong
         // door-events are automaticly added - but _ALL_ other must be in this vector

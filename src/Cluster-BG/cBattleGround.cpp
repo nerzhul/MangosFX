@@ -1512,34 +1512,26 @@ void BattleGround::DoorOpen(uint64 const& guid)
 
 void cBattleGround::OnObjectDBLoad(Creature* creature)
 {
-    /*const BattleGroundEventIdx eventId = sBattleGroundMgr.GetGameObjectEventIndex(obj->GetDBTableGUIDLow());
+    const BattleGroundEventIdx eventId = sClusterBGMgr.GetCreatureEventIndex(creature->GetDBTableGUIDLow());
     if (eventId.event1 == BG_EVENT_NONE)
         return;
-    m_EventObjects[MAKE_PAIR32(eventId.event1, eventId.event2)].gameobjects.push_back(obj->GetGUID());
+    m_EventObjects[MAKE_PAIR32(eventId.event1, eventId.event2)].creatures.push_back(creature->GetGUID());
     if (!IsActiveEvent(eventId.event1, eventId.event2))
-    {
-        SpawnBGObject(obj->GetGUID(), RESPAWN_ONE_DAY);
-    }
-    else
-    {
-        // it's possible, that doors aren't spawned anymore (wsg)
-        if (GetStatus() >= STATUS_IN_PROGRESS && IsDoor(eventId.event1, eventId.event2))
-            DoorOpen(obj->GetGUID());
-    }*/
+        SpawnBGCreature(creature->GetGUID(), RESPAWN_ONE_DAY);
 }
 
 uint64 cBattleGround::GetSingleCreatureGuid(uint8 event1, uint8 event2)
 {
-	/*BGCreatures::const_iterator itr = m_EventObjects[MAKE_PAIR32(event1, event2)].creatures.begin();
+	BGCreatures::const_iterator itr = m_EventObjects[MAKE_PAIR32(event1, event2)].creatures.begin();
     if (itr != m_EventObjects[MAKE_PAIR32(event1, event2)].creatures.end())
-        return *itr;*/
+        return *itr;
 
 	return 0;
 }
 
 void cBattleGround::OnObjectDBLoad(GameObject* obj)
 {
-	/*const BattleGroundEventIdx eventId = sBattleGroundMgr.GetGameObjectEventIndex(obj->GetDBTableGUIDLow());
+	const BattleGroundEventIdx eventId = sClusterBGMgr.GetGameObjectEventIndex(obj->GetDBTableGUIDLow());
     if (eventId.event1 == BG_EVENT_NONE)
         return;
     m_EventObjects[MAKE_PAIR32(eventId.event1, eventId.event2)].gameobjects.push_back(obj->GetGUID());
@@ -1552,7 +1544,7 @@ void cBattleGround::OnObjectDBLoad(GameObject* obj)
         // it's possible, that doors aren't spawned anymore (wsg)
         if (GetStatus() >= STATUS_IN_PROGRESS && IsDoor(eventId.event1, eventId.event2))
             DoorOpen(obj->GetGUID());
-    }*/
+    }
 }
 
 bool cBattleGround::IsDoor(uint8 event1, uint8 event2)

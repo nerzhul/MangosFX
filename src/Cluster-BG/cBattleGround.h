@@ -110,6 +110,23 @@ class cBattleGround
         BGObjects m_BgObjects;
 		BGCreatures m_BgCreatures;
 
+		struct EventObjects
+        {
+            BGObjects gameobjects;
+            BGCreatures creatures;
+        };
+
+		// cause we create it dynamicly i use a map - to avoid resizing when
+        // using vector - also it contains 2*events concatenated with PAIR32
+        // this is needed to avoid overhead of a 2dimensional std::map
+        std::map<uint32, EventObjects> m_EventObjects;
+
+		bool IsActiveEvent(uint8 event1, uint8 event2) // Dont forget to export event system !!!
+        {
+            if (m_ActiveEvents.find(event1) == m_ActiveEvents.end())
+                return false;
+            return m_ActiveEvents[event1] == event2;
+        }
 		uint32 GetInstanceID() const        { return m_InstanceID; }
 		void SetInstanceID(uint32 InstanceID) { m_InstanceID = InstanceID; }
 
@@ -260,6 +277,11 @@ class cBattleGround
 		int32 GetStartDelayTime() const     { return m_StartDelayTime; }
 		uint32 GetClientInstanceID() const  { return m_ClientInstanceID; }
 		uint32 GetMapId() const { return m_MapId; }
+		void SetClientInstanceID(uint32 id) { m_ClientInstanceID = id; }
+		void SetRandomBG(bool random) { m_RandomBG = random; }
+		void SetMapId(uint32 id) { m_MapId = id; }
+
+		bool GetDeleteThis() { return m_SetDeleteThis; }
 
 		void setId(uint64 id) { m_Id = id; }
 		uint64 getId() { return m_Id; }

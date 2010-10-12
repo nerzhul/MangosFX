@@ -631,7 +631,7 @@ bool ChatHandler::HandleReloadItemRequiredTragetCommand(const char*)
 bool ChatHandler::HandleReloadBattleEventCommand(const char*)
 {
     sLog.outString( "Re-Loading BattleGround Eventindexes..." );
-    sBattleGroundMgr.LoadBattleEventIndexes();
+    //sBattleGroundMgr.LoadBattleEventIndexes();
     SendGlobalSysMessage("DB table `gameobject_battleground` and `creature_battleground` reloaded.");
     return true;
 }
@@ -6397,7 +6397,7 @@ bool ChatHandler::HandleSendMessageCommand(const char* args)
 
 bool ChatHandler::HandleFlushArenaPointsCommand(const char * /*args*/)
 {
-    sBattleGroundMgr.DistributeArenaPoints();
+    //sBattleGroundMgr.DistributeArenaPoints();
     return true;
 }
 

@@ -1425,12 +1425,6 @@ void World::SetInitialWorldSettings()
     sLog.outString( "Loading GameObjects for quests..." );
     sObjectMgr.LoadGameObjectForQuests();
 
-    sLog.outString( "Loading BattleMasters..." );
-    sBattleGroundMgr.LoadBattleMastersEntry();
-
-    sLog.outString( "Loading BattleGround event indexes..." );
-    sBattleGroundMgr.LoadBattleEventIndexes();
-
     sLog.outString( "Loading GameTeleports..." );
     sObjectMgr.LoadGameTele();
 
@@ -1535,11 +1529,6 @@ void World::SetInitialWorldSettings()
 	///- Initialize Looking For Group
  	sLog.outString("Starting Looking For Group System");
 	sLFGMgr.InitLFG();
-
-    ///- Initialize Battlegrounds
-    sLog.outString( "Starting BattleGround System" );
-    sBattleGroundMgr.CreateInitialBattleGrounds();
-    sBattleGroundMgr.InitAutomaticArenaPointDistribution();
 
 	/// - Initialize mmaps
 	sLog.outString("Loading All MMaps...");

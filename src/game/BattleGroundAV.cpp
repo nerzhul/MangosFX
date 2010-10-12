@@ -66,7 +66,7 @@ void BattleGroundAV::HandleKillUnit(Creature *creature, Player *killer)
     sLog.outDebug("BattleGroundAV: HandleKillUnit %i", creature->GetEntry());
     if (GetStatus() != STATUS_IN_PROGRESS)
         return;
-    uint8 event1 = (sBattleGroundMgr.GetCreatureEventIndex(creature->GetDBTableGUIDLow())).event1;
+    uint8 event1 = 0/*(sBattleGroundMgr.GetCreatureEventIndex(creature->GetDBTableGUIDLow())).event1*/;
     if (event1 == BG_EVENT_NONE)
         return;
     switch(event1)

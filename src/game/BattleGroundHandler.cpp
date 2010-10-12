@@ -53,7 +53,7 @@ void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket & recv_data)
     if (!pCreature->IsStopped())
         pCreature->StopMoving();
 
-    BattleGroundTypeId bgTypeId = sBattleGroundMgr.GetBattleMasterBG(pCreature->GetEntry());
+    /*BattleGroundTypeId bgTypeId = sBattleGroundMgr.GetBattleMasterBG(pCreature->GetEntry());
 
     if (bgTypeId == BATTLEGROUND_TYPE_NONE)
         return;
@@ -65,7 +65,7 @@ void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket & recv_data)
         return;
     }
 
-    SendBattlegGroundList(guid, bgTypeId);
+    SendBattlegGroundList(guid, bgTypeId);*/
 }
 
 void WorldSession::SendBattlegGroundList( uint64 guid, BattleGroundTypeId bgTypeId )
