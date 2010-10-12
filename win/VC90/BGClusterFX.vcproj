@@ -723,11 +723,83 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAV.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAV.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundBE.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundBE.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundDS.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundDS.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundEY.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundEY.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundIC.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundIC.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundMgr.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundMgr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundNA.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundNA.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundRL.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundRL.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundRV.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundRV.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundSA.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundSA.h"
 				>
 			</File>
 			<File

@@ -87,10 +87,10 @@ void WorldSession::HandleMoveWorldportAckOpcode()
 			WorldLocation wloc = bgSA->GetTPDest(GetPlayer());
 			bgSAf = true;
 			GetPlayer()->Relocate(wloc.coord_x, wloc.coord_y, wloc.coord_z, wloc.orientation);
-		}
+		}*/
 
 	if(!bgSAf)
-		GetPlayer()->Relocate(loc.coord_x, loc.coord_y, loc.coord_z, loc.orientation);*/
+		GetPlayer()->Relocate(loc.coord_x, loc.coord_y, loc.coord_z, loc.orientation);
 
     GetPlayer()->SendInitialPacketsBeforeAddToMap();
     // the CanEnter checks are done in TeleporTo but conditions may change
