@@ -467,7 +467,7 @@ void cBattleGroundSA::AddPlayer(Player *plr)
 {
     BattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    cBattleGroundSAScore* sc = new cBattleGroundSAScore;
+    BattleGroundSAScore* sc = new BattleGroundSAScore;
 	
     //m_PlayerScores[plr->GetGUID()] = sc; export this
 	
