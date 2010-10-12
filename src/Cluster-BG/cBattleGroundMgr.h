@@ -11,7 +11,7 @@ class cBattleGroundMgr
 {
 	public:
 		cBattleGroundMgr();
-		~cBattleGroundMgr() {}
+		~cBattleGroundMgr();
 		uint64 CreateBattleGround();
 		void Update(uint32 diff);
 		void DropBattleGround(uint64 id);
