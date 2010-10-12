@@ -1572,6 +1572,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveSpellCooldown(uint32 spell_id, bool update = false);
         void RemoveSpellCategoryCooldown(uint32 cat, bool update = false);
         void SendClearCooldown( uint32 spell_id, Unit* target );
+	
+		GlobalCooldownMgr& GetGlobalCooldownMgr() { return m_GlobalCooldownMgr; }
 
         void RemoveArenaSpellCooldowns();
         void RemoveAllSpellCooldown();
@@ -2412,6 +2414,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         SpellCooldowns m_spellCooldowns;
 		PlayerTalentMap *m_talents[MAX_TALENT_SPECS]; //dualspec
         uint32 m_lastPotionId;                              // last used health/mana potion in combat, that block next potion use
+		
+		GlobalCooldownMgr m_GlobalCooldownMgr;
 
         uint32 m_activeSpec;
         uint32 m_specsCount;

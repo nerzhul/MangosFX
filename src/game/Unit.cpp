@@ -219,6 +219,22 @@ void Unit::BuildVehicleInfo(Unit *target)
 	SendMessageToSet(&data, GetTypeId() == TYPEID_PLAYER ? true : false);
 }
 
+bool GlobalCooldownMgr::HasGlobalCooldown(SpellEntry const* spellInfo) const
+{
+	GlobalCooldownList::const_iterator itr = m_GlobalCooldowns.find(spellInfo->StartRecoveryCategory);
+	return itr != m_GlobalCooldowns.end() && itr->second.duration && getMSTimeDiff(itr->second.cast_time, getMSTime()) < itr->second.duration;
+}
+
+void GlobalCooldownMgr::AddGlobalCooldown(SpellEntry const* spellInfo, uint32 gcd)
+{
+	m_GlobalCooldowns[spellInfo->StartRecoveryCategory] = GlobalCooldown(gcd, getMSTime());
+}
+
+void GlobalCooldownMgr::CancelGlobalCooldown(SpellEntry const* spellInfo)
+{
+	m_GlobalCooldowns[spellInfo->StartRecoveryCategory].duration = 0;
+}
+
 Unit::Unit()
 : WorldObject(), i_motionMaster(this), m_ThreatManager(this), m_HostileRefManager(this),
 m_vehicle(NULL), m_vehicleKit(NULL), m_unitTypeMask(UNIT_MASK_NONE)
@@ -15932,8 +15948,6 @@ void Unit::DoPetAction(Player* owner, uint8 flag, uint32 spellid, uint64 guid1, 
         case ACT_ENABLED:                                   // 0xC1    spell
         {
             Unit* unit_target = NULL;
-            if (((Creature*)pet)->GetGlobalCooldown() > 0)
-                return;
 
             if(guid2)
                 unit_target = ObjectAccessor::GetUnit(*owner,guid2);
@@ -15945,6 +15959,9 @@ void Unit::DoPetAction(Player* owner, uint8 flag, uint32 spellid, uint64 guid1, 
                 sLog.outError("WORLD: unknown PET spell id %i", spellid);
                 return;
             }
+			
+			if (pet->GetCharmInfo() && pet->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
+				return;
 
             for(uint32 i = 0; i < 3;++i)
             {
