@@ -15,17 +15,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef __BATTLEGROUNDAA_H
-#define __BATTLEGROUNDAA_H
+
+#ifndef _C_BATTLEGROUNDABG_H_
+#define _C_BATTLEGROUNDABG_H_
 
 class BattleGround;
 
-class BattleGroundAA : public BattleGround
+class BattleGroundABGScore : public BattleGroundScore
+{
+    public:
+        BattleGroundABGScore() {};
+        virtual ~BattleGroundABGScore() {};
+};
+
+class cBattleGroundABG : public cBattleGround
 {
     friend class BattleGroundMgr;
 
     public:
-        BattleGroundAA();
-        ~BattleGroundAA();
+        cBattleGroundABG();
+        ~cBattleGroundABG();
+        void Update(uint32 diff);
+
+        /* inherited from BattlegroundClass */
+        virtual void AddPlayer(Player *plr);
+        virtual void StartingEventCloseDoors();
+        virtual void StartingEventOpenDoors();
+
+        void RemovePlayer(Player *plr,uint64 guid);
+        void HandleAreaTrigger(Player *Source, uint32 Trigger);
+        //bool SetupBattleGround();
+
+        /* Scorekeeping */
+        void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
+
+    private:
 };
 #endif

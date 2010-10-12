@@ -699,11 +699,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAA.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundAA.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundAB.cpp"
 				>
 			</File>
 			<File
 				RelativePath="..\..\src\Cluster-BG\cBattleGroundAB.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundABG.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\cBattleGroundABG.h"
 				>
 			</File>
 			<File

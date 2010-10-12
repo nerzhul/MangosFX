@@ -1432,7 +1432,7 @@ void cBattleGround::UpdatePlayerScore(Player *Source, uint32 type, uint32 value)
     }*/
 }
 
-uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
+uint32 cBattleGround::GetPlayerScore(Player *Source, uint32 type)
 {
 	BattleGroundScoreMap::const_iterator itr = m_PlayerScores.find(Source->GetGUID());
 
@@ -1450,7 +1450,7 @@ uint32 BattleGround::GetPlayerScore(Player *Source, uint32 type)
         case SCORE_HEALING_DONE: // Healing Done
             return itr->second->HealingDone;
         default:
-            sLog.outError("BattleGround: Unknown player score type %u", type);*/
+            sLog.outError("BattleGround: Unknown player score type %u", type);
             return 0;
    }
 }
