@@ -1,6 +1,6 @@
 #include <Player.h>
 #include "cBattleGround.h"
-#include "ccBattleGroundSA.h"
+#include "cBattleGroundSA.h"
 #include <Language.h>
 #include <ObjectMgr.h>
 #include <WorldPacket.h>
