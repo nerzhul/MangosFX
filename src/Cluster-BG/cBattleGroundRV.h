@@ -3,6 +3,14 @@
 
 #include "cBattleGround.h"
 
+class BattleGroundRVScore : public BattleGroundScore
+{
+public:
+	BattleGroundRVScore() {};
+	virtual BattleGroundRVScore() {};
+	//TODO fix me
+};
+
 class cBattleGroundRV : public cBattleGround
 {
     friend class BattleGroundMgr;

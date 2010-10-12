@@ -2,6 +2,7 @@
 #include "cBattleGround.h"
 #include "cBattleGroundRL.h"
 #include <WorldPacket.h>
+#include <Language.h>
 
 cBattleGroundRL::cBattleGroundRL()
 {
