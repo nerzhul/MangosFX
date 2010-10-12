@@ -44,7 +44,7 @@ void cBattleGroundBE::AddPlayer(Player *plr)
 {
     cBattleGround::AddPlayer(plr);
     //create score and add it to map, default values are set in constructor
-    cBattleGroundBEScore* sc = new cBattleGroundBEScore;
+    cBattleGroundBEScore* sc = new BattleGroundBEScore;
 	
     //m_PlayerScores[plr->GetGUID()] = sc; export this
 	
