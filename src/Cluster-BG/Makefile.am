@@ -53,6 +53,8 @@ mangosFX_BGCluster_SOURCES = \
 	cBattleGroundNA.h \
 	cBattleGroundRL.cpp \
 	cBattleGroundRL.h \
+	cBattleGroundRV.cpp \
+	cBattleGroundRV.h
 
 
 ## Link world daemon against the shared library

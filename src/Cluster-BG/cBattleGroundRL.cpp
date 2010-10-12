@@ -1,6 +1,6 @@
 #include <Player.h>
 #include "cBattleGround.h"
-#include "ccBattleGroundRL.h"
+#include "cBattleGroundRL.h"
 #include <WorldPacket.h>
 
 cBattleGroundRL::cBattleGroundRL()

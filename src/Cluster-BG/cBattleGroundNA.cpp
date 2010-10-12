@@ -1,5 +1,5 @@
 #include <Player.h>
-#include "BattleGround.h"
+#include "cBattleGround.h"
 #include "cBattleGroundNA.h"
 #include <Language.h>
 
