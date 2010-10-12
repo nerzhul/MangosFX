@@ -35,20 +35,5 @@ class BattleGroundABG : public BattleGround
     public:
         BattleGroundABG();
         ~BattleGroundABG();
-        void Update(uint32 diff);
-
-        /* inherited from BattlegroundClass */
-        virtual void AddPlayer(Player *plr);
-        virtual void StartingEventCloseDoors();
-        virtual void StartingEventOpenDoors();
-
-        void RemovePlayer(Player *plr,uint64 guid);
-        void HandleAreaTrigger(Player *Source, uint32 Trigger);
-        //bool SetupBattleGround();
-
-        /* Scorekeeping */
-        void UpdatePlayerScore(Player *Source, uint32 type, uint32 value);
-
-    private:
 };
 #endif
