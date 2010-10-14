@@ -20302,18 +20302,7 @@ bool Player::InArena() const
 
 bool Player::GetBGAccessByLevel(BattleGroundTypeId bgTypeId) const
 {
-    // get a template bg instead of running one
-    BattleGround *bg = sBattleGroundMgr.GetBattleGroundTemplate(bgTypeId);
-    if(!bg)
-        return false;
-
-    // limit check leel to dbc compatible level range
-    uint32 level = getLevel();
-    if (level > DEFAULT_MAX_LEVEL)
-        level = DEFAULT_MAX_LEVEL;
-
-    if(level < bg->GetMinLevel() || level > bg->GetMaxLevel())
-        return false;
+    // TODO: CLUSTER request
 
     return true;
 }

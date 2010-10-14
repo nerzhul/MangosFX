@@ -53,26 +53,27 @@ void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket & recv_data)
     if (!pCreature->IsStopped())
         pCreature->StopMoving();
 
-    /*BattleGroundTypeId bgTypeId = sBattleGroundMgr.GetBattleMasterBG(pCreature->GetEntry());
+    BattleGroundTypeId bgTypeId = sBattleGroundMgr.GetBattleMasterBG(pCreature->GetEntry());
 
     if (bgTypeId == BATTLEGROUND_TYPE_NONE)
         return;
 
-    if (!_player->GetBGAccessByLevel(bgTypeId))
+    if(!_player->GetBGAccessByLevel(bgTypeId))
     {
         // temp, must be gossip message...
         SendNotification(LANG_YOUR_BG_LEVEL_REQ_ERROR);
         return;
     }
 
-    SendBattlegGroundList(guid, bgTypeId);*/
+    SendBattlegGroundList(guid, bgTypeId);
 }
 
 void WorldSession::SendBattlegGroundList( uint64 guid, BattleGroundTypeId bgTypeId )
 {
-    WorldPacket data;
+    /* TODO CLUSTER
+	WorldPacket data;
     sBattleGroundMgr.BuildBattleGroundListPacket(&data, guid, _player, bgTypeId, 0);
-    SendPacket( &data );
+    SendPacket( &data );*/
 }
 
 void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )

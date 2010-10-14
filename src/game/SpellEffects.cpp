@@ -2458,10 +2458,10 @@ void Spell::EffectJump(uint32 i)
         return;
     }
 
-    uint32 speed_z = m_spellInfo->EffectMiscValue[eff_idx];
+    uint32 speed_z = m_spellInfo->EffectMiscValue[i];
 	if (!speed_z)
 		speed_z = 10;
-	uint32 time = m_spellInfo->EffectMiscValueB[eff_idx];
+	uint32 time = m_spellInfo->EffectMiscValueB[i];
 	if (!time)
 		time = speed_z * 10;
 

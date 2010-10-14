@@ -93,3 +93,25 @@ bool BattleGroundMgr::IsBGWeekend(BattleGroundTypeId bgTypeId)
 {
     return IsHolidayActive(BGTypeToWeekendHolidayId(bgTypeId));
 }
+
+HolidayIds BattleGroundMgr::BGTypeToWeekendHolidayId(BattleGroundTypeId bgTypeId)
+{
+    switch (bgTypeId)
+    {
+        case BATTLEGROUND_AV: return HOLIDAY_CALL_TO_ARMS_AV;
+        case BATTLEGROUND_EY: return HOLIDAY_CALL_TO_ARMS_EY;
+        case BATTLEGROUND_WS: return HOLIDAY_CALL_TO_ARMS_WS;
+        case BATTLEGROUND_SA: return HOLIDAY_CALL_TO_ARMS_SA;
+		case BATTLEGROUND_AB: return HOLIDAY_CALL_TO_ARMS_AB;
+        default: return HOLIDAY_NONE;
+    }
+}
+
+void BattleGroundMgr::RemovePlayerFromQueue(uint64 plGUID, BattleGroundQueueTypeId bgQTypeId, bool decrease)
+{
+}
+
+BattleGroundTypeId BattleGroundMgr::GetBattleMasterBG(uint32 entry) const
+{
+	return BATTLEGROUND_TYPE_NONE;
+}

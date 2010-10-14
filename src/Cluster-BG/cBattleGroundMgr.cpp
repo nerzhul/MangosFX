@@ -2079,6 +2079,22 @@ void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint
     }
 }
 
+bool cBattleGroundMgr::GetBGAccessByLevel(BattleGroundTypeId bgTypeId,uint32 level) const
+{
+    // get a template bg instead of running one
+    cBattleGround *bg = GetBattleGroundTemplate(bgTypeId);
+    if(!bg)
+        return false;
+
+    // limit check leel to dbc compatible level range
+    if (level > DEFAULT_MAX_LEVEL)
+        level = DEFAULT_MAX_LEVEL;
+
+    if(level < bg->GetMinLevel() || level > bg->GetMaxLevel())
+        return false;
+
+    return true;
+}
 // Packets
 
 void ClusterSession::Handle_GenerateBGId(WorldPacket &pck)

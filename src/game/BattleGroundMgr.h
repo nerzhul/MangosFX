@@ -45,6 +45,9 @@ class BattleGroundMgr
         void Update(uint32 diff);
 		static BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
 		static bool IsBGWeekend(BattleGroundTypeId bgTypeId);
+		void RemovePlayerFromQueue(uint64 plGUID, BattleGroundQueueTypeId bgQTypeId, bool decrease);
+		BattleGroundTypeId GetBattleMasterBG(uint32 entry) const;
+		static HolidayIds BGTypeToWeekendHolidayId(BattleGroundTypeId bgTypeId);
     private:
         
         bool   m_ArenaTesting;

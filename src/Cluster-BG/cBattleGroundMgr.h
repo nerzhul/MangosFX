@@ -238,6 +238,8 @@ class cBattleGroundMgr
             return m_GameObjectBattleEventIndexMap.find(-1)->second;
         }
 
+		bool GetBGAccessByLevel(BattleGroundTypeId bgTypeId,uint32 level) const;
+
 		static bool IsArenaType(BattleGroundTypeId bgTypeId);
         static bool IsBattleGroundType(BattleGroundTypeId bgTypeId) { return !cBattleGroundMgr::IsArenaType(bgTypeId); }
         static BattleGroundTypeId BGTemplateId(BattleGroundQueueTypeId bgQueueTypeId);

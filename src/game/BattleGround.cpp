@@ -307,9 +307,6 @@ void BattleGround::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
 	bool participant = IsPlayerInBattleGround(guid);
 	
     // Remove from lists/maps
-	Packet pck;
-	pck << uint16(C_CMSG_BG_RM_PLR_LEAVE) << uint64(m_Id) << uint64(guid);
-	sClusterMgr.getNullValue(&pck,C_BG);
     /* TODO: call this function
 	BattleGroundPlayerMap::iterator itr = m_Players.find(guid);
     if (itr != m_Players.end())
