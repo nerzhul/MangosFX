@@ -69,7 +69,7 @@ void ClusterBG::SetInitialSettings()
     DetectDBCLang();
 
 	sLog.outString( "Loading BattleMasters..." );
-    sBattleGroundMgr.LoadBattleMastersEntry();
+    sClusterBGMgr.LoadBattleMastersEntry();
 
 	sLog.outString( "Loading BattleGround event indexes..." );
     sClusterBGMgr.LoadBattleEventIndexes();

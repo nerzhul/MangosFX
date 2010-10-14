@@ -2458,7 +2458,14 @@ void Spell::EffectJump(uint32 i)
         return;
     }
 
-    m_caster->NearTeleportTo(x, y, z, o, true);
+    uint32 speed_z = m_spellInfo->EffectMiscValue[eff_idx];
+	if (!speed_z)
+		speed_z = 10;
+	uint32 time = m_spellInfo->EffectMiscValueB[eff_idx];
+	if (!time)
+		time = speed_z * 10;
+
+	m_caster->MonsterJump(x, y, z, o, time, speed_z);
 }
 
 void Spell::EffectTeleportUnits(uint32 i)

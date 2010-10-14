@@ -1442,6 +1442,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         void NearTeleportTo(float x, float y, float z, float orientation, bool casting = false);
 
 		void MonsterMove(float x, float y, float z, uint32 transitTime);
+		void MonsterJump(float x, float y, float z, float o, uint32 transitTime, uint32 verticalSpeed);
 
         void SendMonsterMove(float NewPosX, float NewPosY, float NewPosZ, SplineType type, SplineFlags flags, uint32 Time, Player* player = NULL, ...);
 		template<typename PathElem, typename PathNode>

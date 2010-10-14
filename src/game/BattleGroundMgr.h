@@ -43,6 +43,8 @@ class BattleGroundMgr
         BattleGroundMgr();
         ~BattleGroundMgr();
         void Update(uint32 diff);
+		static BattleGroundQueueTypeId BGQueueTypeId(BattleGroundTypeId bgTypeId, uint8 arenaType);
+		static bool IsBGWeekend(BattleGroundTypeId bgTypeId);
     private:
         
         bool   m_ArenaTesting;
