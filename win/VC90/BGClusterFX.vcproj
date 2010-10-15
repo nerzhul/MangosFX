@@ -811,6 +811,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Units"
+			>
+			<File
+				RelativePath="..\..\src\Cluster-BG\VirtualPlayer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\Cluster-BG\VirtualPlayer.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="..\..\src\Cluster-BG\BGClusterFX.rc"
 			>

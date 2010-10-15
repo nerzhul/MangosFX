@@ -172,7 +172,7 @@ class cBattleGroundMgr
 		void BuildPlayerLeftBattleGroundPacket(WorldPacket *data, const uint64& guid);
 		void BuildBattleGroundStatusPacket(WorldPacket *data, cBattleGround *bg, uint8 QueueSlot, uint8 StatusID, uint32 Time1, uint32 Time2, uint8 arenatype);
 		void BuildPlayerJoinedBattleGroundPacket(WorldPacket *data, Player *plr);
-        void BuildBattleGroundListPacket(WorldPacket *data, const uint64& guid, Player *plr, BattleGroundTypeId bgTypeId, uint8 fromWhere);
+        void BuildBattleGroundListPacket(WorldPacket *data, const uint64& guid, BattleGroundTypeId bgTypeId, uint8 fromWhere, uint32 level);
         void BuildPvpLogDataPacket(WorldPacket *data, cBattleGround *bg);
 
 

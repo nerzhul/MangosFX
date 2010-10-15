@@ -6,6 +6,7 @@
 #include <Opcodes.h>
 #include <ArenaTeam.h>
 #include <ObjectMgr.h>
+#include <Language.h>
 
 #include "cBattleGroundMgr.h"
 #include "cObjectMgr.h"
@@ -2023,11 +2024,8 @@ void cBattleGroundMgr::DistributeArenaPoints()
     }
 }
 
-void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint64& guid, Player* plr, BattleGroundTypeId bgTypeId, uint8 fromWhere)
+void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint64& guid, BattleGroundTypeId bgTypeId, uint8 fromWhere, uint32 level)
 {
-    if (!plr)
-        return;
-
     data->Initialize(SMSG_BATTLEFIELD_LIST);
     *data << uint64(guid);                                  // battlemaster guid
     *data << uint8(fromWhere);                              // from where you joined
@@ -2045,12 +2043,12 @@ void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint
     *data << uint8(isRandom);                               // 3.3.3 isRandom
     if(isRandom)
     {
-		uint32 hk = ClusterFX::Honor::hk_honor_at_level(plr->getLevel(),plr->HasDoneRandomBattleGround() ? 15 : 30);
+		uint32 hk = ClusterFX::Honor::hk_honor_at_level(level,/*plr->HasDoneRandomBattleGround() ? */15 /*: 30*/);
         // Rewards (random)
         *data << uint8(1);                                  // 3.3.3 hasWin_Random
         *data << uint32(hk);                              // 3.3.3 winHonor_Random
-		*data << uint32(plr->HasDoneRandomBattleGround() ? 0 : 25);	// 3.3.3 winArena_Random
-        *data << uint32(ClusterFX::Honor::hk_honor_at_level(plr->getLevel(),5));                               // 3.3.3 lossHonor_Random
+		*data << uint32(/*plr->HasDoneRandomBattleGround() ?*/ 0/* : 25*/);	// 3.3.3 winArena_Random
+        *data << uint32(ClusterFX::Honor::hk_honor_at_level(level,5));                               // 3.3.3 lossHonor_Random
     }
     if(bgTypeId == BATTLEGROUND_AA)                         // arena
     {
@@ -2065,7 +2063,7 @@ void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint
         if(cBattleGround* bgTemplate = sClusterBGMgr.GetBattleGroundTemplate(bgTypeId))
         {
             // expected bracket entry
-            if(PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bgTemplate->GetMapId(),plr->getLevel()))
+            if(PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bgTemplate->GetMapId(),level))
             {
                 BattleGroundBracketId bracketId = bracketEntry->GetBracketId();
                 for(std::set<uint32>::iterator itr = m_ClientBattleGroundIds[bgTypeId][bracketId].begin(); itr != m_ClientBattleGroundIds[bgTypeId][bracketId].end();++itr)
@@ -2082,7 +2080,7 @@ void cBattleGroundMgr::BuildBattleGroundListPacket(WorldPacket *data, const uint
 bool cBattleGroundMgr::GetBGAccessByLevel(BattleGroundTypeId bgTypeId,uint32 level) const
 {
     // get a template bg instead of running one
-    cBattleGround *bg = GetBattleGroundTemplate(bgTypeId);
+    cBattleGround *bg = sClusterBGMgr.GetBattleGroundTemplate(bgTypeId);
     if(!bg)
         return false;
 
@@ -2484,4 +2482,222 @@ void ClusterSession::Handle_BGSetTypeId(WorldPacket &pck)
 		cBG->SetTypeID(BattleGroundTypeId(typeId));
 	else
 		cBG->SetRandomTypeID(BattleGroundTypeId(typeId));
+	SendNullPacket();
+}
+
+
+
+
+// Ok
+void ClusterSession::Handle_BattleMasterHello(WorldPacket &pck)
+{
+	uint32 entry,level;
+	pck >> entry >> level;
+	BattleGroundTypeId bgTypeId = sClusterBGMgr.GetBattleMasterBG(entry);
+
+    if (bgTypeId == BATTLEGROUND_TYPE_NONE)
+	{
+		SendNullPacket();
+        return;
+	}
+
+	uint64 guid;
+	pck >> guid;
+
+	if(!sClusterBGMgr.GetBGAccessByLevel(bgTypeId,level))
+    {
+        SendNotification(LANG_YOUR_BG_LEVEL_REQ_ERROR,guid);
+		SendNullPacket();
+        return;
+    }
+
+	SendNullPacket();
+
+
+	WorldPacket data;
+    sClusterBGMgr.BuildBattleGroundListPacket(&data, guid, bgTypeId, 0, level);
+	SendMonoPlayerPacket(guid,data);
+}
+
+void ClusterSession::Handle_BattleMasterJoin(WorldPacket &data)
+{
+	uint64 plGUID, guid;
+    uint32 bgTypeId_, level;
+    uint32 instanceId;
+    uint8 joinAsGroup;
+    bool isPremade = false;
+    Group * grp;
+
+	data >> plGUID;
+	data >> level;
+    data >> guid;                                      // battlemaster guid
+    data >> bgTypeId_;                                 // battleground type id (DBC id)
+    data >> instanceId;                                // instance id, 0 if First Available selected
+    data >> joinAsGroup;                               // join as group
+
+	if (!sBattlemasterListStore.LookupEntry(bgTypeId_))
+	{
+		SendNullPacket();
+        return;
+	}
+
+    BattleGroundTypeId bgTypeId = BattleGroundTypeId(bgTypeId_);
+
+    sLog.outDebug( "WORLD: Recvd CMSG_BATTLEMASTER_JOIN Message from (GUID: %u TypeId:%u)", GUID_LOPART(guid), bgTypeId_);
+
+    // can do this, since it's battleground, not arena
+    BattleGroundQueueTypeId bgQueueTypeId = sClusterBGMgr.BGQueueTypeId(bgTypeId, 0);
+
+	// get bg instance or bg template if instance not found
+    cBattleGround *bg = NULL;
+    if (instanceId)
+        bg = sClusterBGMgr.GetBattleGroundThroughClientInstance(instanceId, bgTypeId);
+
+    if (!bg && !(bg = sClusterBGMgr.GetBattleGroundTemplate(bgTypeId)))
+    {
+        sLog.outError("Battleground: no available bg / template found");
+		SendNullPacket();
+        return;
+    }
+
+    // expected bracket entry
+    PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(),level);
+    if (!bracketEntry)
+        return;
+
+    GroupJoinBattlegroundResult err;
+
+	// check queue conditions
+    if (!joinAsGroup)
+    {
+		uint8 canjoin;
+		data >> canjoin;
+        // check Deserter debuff
+        if (!canjoin)
+        {
+            WorldPacket data;
+			sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_GROUP_JOIN_BATTLEGROUND_DESERTERS);
+			SendNullPacket();
+            SendMonoPlayerPacket(plGUID,data);
+            return;
+        }
+
+		uint32 bgQueueRandom;
+		data >> bgQueueRandom;
+		if (bgQueueRandom < PLAYER_MAX_BATTLEGROUND_QUEUES)
+		{
+			//player is already in random queue
+			WorldPacket data;
+			sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_IN_RANDOM_BG);
+			SendNullPacket();
+            SendMonoPlayerPacket(plGUID,data);
+			return;
+
+		}
+
+		uint8 inBGqueue;
+		data >> inBGqueue;
+		if(inBGqueue && bgTypeId == BATTLEGROUND_RB)
+		{
+			//player is already in queue, can't start random queue
+			WorldPacket data;
+			sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_IN_NON_RANDOM_BG);
+			SendNullPacket();
+            SendMonoPlayerPacket(plGUID,data);
+			return;
+		}
+
+        // check if already in queue
+		uint32 bgQueue;
+		data >> bgQueue;
+        if (bgQueue < PLAYER_MAX_BATTLEGROUND_QUEUES)
+            return;
+
+        // check if has free queue slots
+		uint8 freeQueue;
+		data >> freeQueue;
+        if (!freeQueue)
+        {
+			WorldPacket data;
+			sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, ERR_BATTLEGROUND_TOO_MANY_QUEUES);
+			SendNullPacket();
+            SendMonoPlayerPacket(plGUID,data);
+            return;
+		}
+    }
+    else
+    {
+        /*
+		Handle this
+		grp = _player->GetGroup();
+        // no group found, error
+        if (!grp)
+            return;
+        if(grp->GetLeaderGUID() != _player->GetGUID())
+            return;
+        err = grp->CanJoinBattleGroundQueue(bg, bgQueueTypeId, 0, bg->GetMaxPlayersPerTeam(), false, 0);
+		isPremade = (grp->GetMembersCount() >= bg->GetMinPlayersPerTeam());*/
+    }
+    // if we're here, then the conditions to join a bg are met. We can proceed in joining.
+
+	
+	
+    // _player->GetGroup() was already checked, grp is already initialized
+    BattleGroundQueue& bgQueue = sClusterBGMgr.m_BattleGroundQueues[bgQueueTypeId];
+    if (joinAsGroup)
+    {
+        GroupQueueInfo * ginfo;
+		uint32 avgTime;
+		
+		if(err > 0)
+		{
+
+			sLog.outDebug("Battleground: the following players are joining as group:");
+			ginfo = bgQueue.AddGroup(_player, grp, bgTypeId, bracketEntry, 0, false, isPremade, 0);
+			avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
+		}
+
+        for(GroupReference *itr = grp->GetFirstMember(); itr != NULL; itr = itr->next())
+        {
+            Player *member = itr->getSource();
+            if(!member)
+				continue;                                   // this should never happen
+
+            WorldPacket data;
+           
+			if(err <= 0)
+			{
+				sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, err);
+				SendMonoPlayerPacket(plGUID,data);
+				continue;
+			}
+
+			// add to queue
+			uint32 queueSlot = member->AddBattleGroundQueueId(bgQueueTypeId);
+			
+			// send status packet (in queue)
+            sClusterBGMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, ginfo->ArenaType);
+            SendMonoPlayerPacket(plGUID,data);
+            sClusterBGMgr.BuildGroupJoinedBattlegroundPacket(&data, err);
+            SendMonoPlayerPacket(plGUID,data);
+            sLog.outDebug("Battleground: player joined queue for bg queue type %u bg type %u: GUID %u, NAME %s",bgQueueTypeId,bgTypeId,member->GetGUIDLow(), member->GetName());
+        }
+        sLog.outDebug("Battleground: group end");
+    }
+    else
+    {
+        GroupQueueInfo * ginfo = bgQueue.AddGroup(_player, NULL, bgTypeId, bracketEntry, 0, false, isPremade, 0);
+        uint32 avgTime = bgQueue.GetAverageQueueWaitTime(ginfo, bracketEntry->GetBracketId());
+        // already checked if queueSlot is valid, now just get it
+        uint32 queueSlot = _player->AddBattleGroundQueueId(bgQueueTypeId);
+
+        WorldPacket data;
+                                                            // send status packet (in queue)
+        sClusterBGMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_QUEUE, avgTime, 0, ginfo->ArenaType);
+        SendMonoPlayerPacket(plGUID,data);
+        sLog.outDebug("Battleground: player joined queue for bg queue type %u bg type %u: GUID %u, NAME %s",bgQueueTypeId,bgTypeId,plGUID, _player->GetName());
+    }
+    sClusterBGMgr.ScheduleQueueUpdate(0, 0, bgQueueTypeId, bgTypeId, bracketEntry->GetBracketId());
+
+	SendNullPacket();
 }

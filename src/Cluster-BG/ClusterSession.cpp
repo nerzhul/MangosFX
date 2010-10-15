@@ -3,6 +3,7 @@
 #include <WorldPacket.h>
 #include <cPacketOpcodes.h>
 #include <cIncludes.h>
+#include <ObjectMgr.h>
 
 #include "ClusterOpcodes.h"
 #include "ClusterSession.h"
@@ -218,6 +219,7 @@ void ClusterSession::Handle_ClusterPing(WorldPacket &pck)
 void ClusterSession::SendMonoPlayerPacket(uint64 guid,WorldPacket &pck)
 {
 	Packet pkt;
+	pkt << uint16(C_SMSG_RETRANSMIT_PACKET);
 	pkt << uint64(guid);
 	pkt << uint16(pck.size());
 	pkt << uint16(pck.GetOpcode());
@@ -227,6 +229,7 @@ void ClusterSession::SendMonoPlayerPacket(uint64 guid,WorldPacket &pck)
 		pck >> tmp;
 		pkt << uint8(tmp);
 	}
+	// TODO : take the good cluster
 	SendPacket(&pkt);
 }
 
@@ -247,4 +250,22 @@ void ClusterSession::SendMultiPlayerPacket(std::vector<uint64> GUIDs,WorldPacket
 	for(std::vector<uint64>::const_iterator itr = GUIDs.begin();itr != GUIDs.end();++itr)
 		pkt << uint64(*itr);
 	SendPacket(&pkt);
+}
+
+void ClusterSession::SendNotification(int32 string_id, uint64 guid, ...)
+{
+    char const* format = ""/*sObjectMgr.GetMangosString(string_id,GetSessionDbLocaleIndex())*/;
+    if(format)
+    {
+        va_list ap;
+        char szStr [1024];
+        szStr[0] = '\0';
+        va_start(ap, string_id);
+        vsnprintf( szStr, 1024, format, ap );
+        va_end(ap);
+
+        WorldPacket data(SMSG_NOTIFICATION, (strlen(szStr)+1));
+        data << szStr;
+        SendMonoPlayerPacket(guid,data);
+    }
 }

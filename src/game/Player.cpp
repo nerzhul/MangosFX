@@ -20302,9 +20302,9 @@ bool Player::InArena() const
 
 bool Player::GetBGAccessByLevel(BattleGroundTypeId bgTypeId) const
 {
-    // TODO: CLUSTER request
-
-    return true;
+	Packet pck;
+	pck << uint16(C_CMSG_GET_BGACCESS_BY_LEVEL) << uint32(bgTypeId) << uint32(getLevel());
+	return sClusterMgr.getBoolValue(&pck,C_BG);
 }
 
 float Player::GetReputationPriceDiscount( Creature const* pCreature ) const

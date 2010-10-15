@@ -113,5 +113,7 @@ void BattleGroundMgr::RemovePlayerFromQueue(uint64 plGUID, BattleGroundQueueType
 
 BattleGroundTypeId BattleGroundMgr::GetBattleMasterBG(uint32 entry) const
 {
-	return BATTLEGROUND_TYPE_NONE;
+	Packet pck;
+	pck << uint16(C_CMSG_GET_BATTLEMASTER_BG) << uint32(entry);
+	return BattleGroundTypeId(sClusterMgr.getUint32Value(&pck,C_BG));
 }
