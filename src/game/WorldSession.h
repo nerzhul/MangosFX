@@ -430,6 +430,7 @@ class MANGOS_DLL_SPEC WorldSession
         void HandleMoveTimeSkippedOpcode(WorldPacket &recv_data);
 
         void HandleRequestRaidInfoOpcode( WorldPacket & recv_data );
+		void HandleLockWarningResponse(WorldPacket & recv_data);
 
         void HandleBattlefieldStatusOpcode(WorldPacket &recv_data);
         void HandleBattleMasterHelloOpcode(WorldPacket &recv_data);

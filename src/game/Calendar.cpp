@@ -123,7 +123,7 @@ void CalendarMgr::Send(Player* plr)
 
         const MapEntry* map = sMapStore.LookupEntry(mapid);
 
-		uint32 delay = uint32(mapDiff->resetTime / DAY * sWorld.getConfig(RATE_INSTANCE_RESET_TIME)) * DAY;
+		uint32 delay = sInstanceSaveMgr.GetMaxResetTimeFor(mapDiff);
 		if (delay < DAY) // the reset_delay must be at least one day
 			delay = DAY;
         data << uint32(mapid);

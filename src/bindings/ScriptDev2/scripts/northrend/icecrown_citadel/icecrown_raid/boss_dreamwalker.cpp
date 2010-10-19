@@ -76,6 +76,7 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		SendPortrait(me,false);
 		pop_Timer = 12000;
 		eventStarted = false;
 		lowHsaid = false;
@@ -101,6 +102,7 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 
 		eventStarted = true;
 		pop_Timer = 12000;
+		SendPortrait();
 		if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
 			Yell(17251,"Des intrus se sont introduits dans le sanctuaire. Hatez vous d'achever le dragon vert. Ne gardez que les os et les tendons pour la réanimation !",LichKing);
 		ModifyAuraStack(SPELL_DREAMWALKER_CORRUPT);

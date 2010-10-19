@@ -29,6 +29,7 @@
 #include "Group.h"
 #include "LFGMgr.h"
 #include "SocialMgr.h"
+#include "InstanceSaveMgr.h"
 #include "Chat.h"
 #include "Util.h"
 
@@ -904,6 +905,31 @@ void WorldSession::HandleRequestPartyMemberStatsOpcode( WorldPacket &recv_data )
 {
     // every time the player checks the character screen
     _player->SendRaidInfo();
+}
+
+void WorldSession::HandleLockWarningResponse(WorldPacket &recv_data)
+{
+	uint8 resp;
+	recv_data >> resp;
+	if(!_player)
+		return;
+	
+	if(_player->isGameMaster())
+		return;
+	
+	if(resp)
+	{
+		if(_player->GetMap())
+			if(InstanceSave *mapSave = sInstanceSaveMgr.GetInstanceSave(_player->GetMap()->GetInstanceId()))
+				_player->BindToInstance(mapSave,true);
+	}
+	else
+	{
+		if(WorldSafeLocsEntry const *ClosestGrave = sObjectMgr.GetClosestGraveYard(_player->GetPositionX(), _player->GetPositionY(), _player->GetPositionZ(), _player->GetMapId(), _player->GetTeam() ))
+			_player->RepopAtGraveyard();
+		else 
+			_player->RelocateToHomebind();
+	}
 }
 
 /*void WorldSession::HandleGroupCancelOpcode( WorldPacket & recv_data )

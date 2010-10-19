@@ -1573,6 +1573,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveSpellCategoryCooldown(uint32 cat, bool update = false);
         void SendClearCooldown( uint32 spell_id, Unit* target );
 
+		GlobalCooldownMgr& GetGlobalCooldownMgr() { return m_GlobalCooldownMgr; }
+
         void RemoveArenaSpellCooldowns();
         void RemoveAllSpellCooldown();
         void _LoadSpellCooldowns(QueryResult *result);
@@ -2278,6 +2280,10 @@ class MANGOS_DLL_SPEC Player : public Unit
 		cEventSet GetCalendarEvents() { return m_calendarEvents; }
 		bool RemoveCalendarEvent(uint64 eventId);
 
+		void SetTimedBind(uint32 time) { m_timed_bind = time; }
+		void SetInBinding(bool bind) { bindTimer = bind; }
+		void SetBindingState(bool bind) { bindingState = bind; }
+
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2410,6 +2416,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         SpellCooldowns m_spellCooldowns;
 		PlayerTalentMap *m_talents[MAX_TALENT_SPECS]; //dualspec
         uint32 m_lastPotionId;                              // last used health/mana potion in combat, that block next potion use
+
+		GlobalCooldownMgr m_GlobalCooldownMgr;
 
         uint32 m_activeSpec;
         uint32 m_specsCount;
@@ -2590,6 +2598,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool daily_random_BG_done;
 
 		cEventSet m_calendarEvents;
+		uint32 m_timed_bind;
+		bool bindTimer;
+		bool bindingState;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

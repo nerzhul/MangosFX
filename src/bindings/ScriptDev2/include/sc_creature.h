@@ -519,7 +519,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void MakeInvisibleStalker();
 		void MakeHostileInvisibleStalker();
-	
+		
+		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 	private:
 		
 		SpellEvents EventShVect;

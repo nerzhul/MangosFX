@@ -487,6 +487,10 @@ class Spell
 		int32 getDamage() { return damage; }
 
 	protected:
+		
+		bool HasGlobalCooldown();
+		void TriggerGlobalCooldown();
+		void CancelGlobalCooldown();
 
         void SendLoot(uint64 guid, LootType loottype);
         bool IgnoreItemRequirements() const;                        // some item use spells have unexpected reagent data
