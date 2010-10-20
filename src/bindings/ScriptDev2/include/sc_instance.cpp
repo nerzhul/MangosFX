@@ -119,3 +119,19 @@ void ScriptedInstance::AutoFreeze(Creature* cr)
 	cr->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 	cr->CastSpell(cr,66830,false);
 }
+
+Player* ScriptedInstance::GetClosestPlayer(Unit* u, float maxRange)
+{
+	float minDist = 0.0f;
+	Player* nearestPlayer = NULL;
+	Map::PlayerList const& lPlayers = u->GetMap()->GetPlayers();
+	for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+		if(Player* plr = itr->getSource())
+			if(plr != u && (!nearestPlayer || minDist > plr->GetDistance2d(u)))
+			{
+				nearestPlayer = plr;
+				minDist = plr->GetDistance2d(u);
+			}
+
+	return nearestPlayer;
+}

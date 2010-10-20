@@ -4,18 +4,19 @@
 enum Spells
 {
 	//** phase 1,2,3
-	SPELL_INFEST						=	70541,
+	SPELL_INFEST						=	70541, // ok
 	//** phase 1
-	SPELL_SUMMON_SHAMBLING_HORROR		=	70372,
-	SPELL_SUMMON_DRUDGE_GHOULS			=	70358,
-	SPELL_NECROTIC_PLAGUE				=	70337,
-	SPELL_PLAGUE_SIPHON					=	74074,
+	SPELL_SUMMON_SHAMBLING_HORROR		=	70372, // ok
+	SPELL_SUMMON_DRUDGE_GHOULS			=	70358, // ok
+	SPELL_NECROTIC_PLAGUE				=	70337, // ok
+	SPELL_PLAGUE_SIPHON					=	74074, // ok
+
 	// Heroic only
 	SPELL_SUMMON_SHADOW_TRAP			=	73539,
 	SPELL_PROC_SHADOW_TRAP				=	73529,
 	// Shambling horror
-	SPELL_SHOCKWAVE						=	72149,
-	SPELL_ENRAGE						=	72143,
+	SPELL_SHOCKWAVE						=	72149, // ok
+	SPELL_ENRAGE_SH						=	72143, // ok
 	
 	//** phase 2,3
 	SPELL_SOUL_REAPER					=	69409,
@@ -40,6 +41,7 @@ enum Spells
 	NPC_TERENAS_MENETHIL				=	36823,
 	NPC_SPIRIT_WARDEN					=	36824,
 	SPELL_HARVESTED_SOUL				=	74322, // for players
+
 	// Teneras Menethil
 	SPELL_LIGHTS_FAVOR					=	69382, // only in normal mode
 	SPELL_RESTORE_SOUL					=	72595,
@@ -71,6 +73,13 @@ enum Spells
 
 const static float FrostmourneCoords[3] = {481.0f,-2522.0f,1000.0f};
 
+enum Phase 
+{
+	PHASE_100	= 1,
+	PHASE_TR_1	= 2,
+	PHASE_70	= 3,
+};
+
 struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 {
     boss_iccraid_lichkingAI(Creature* pCreature) : LibDevFSAI(pCreature)
@@ -78,16 +87,26 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
         InitInstance();
 		AddEnrageTimer(10000);
 		AddTextEvent(17365,"Rencontrez votre tragique fin !",10000,TEN_MINS);
+		AddEvent(SPELL_SUMMON_SHAMBLING_HORROR,15000,60000,0,TARGET_RANDOM,PHASE_100);
+		AddEvent(SPELL_SUMMON_DRUDGE_GHOULS,25000,20000,0,TARGET_RANDOM,PHASE_100);
     }
+
+	Phase phase;
+	uint32 necrotic_Timer;
+	uint64 necroticTarget;
 
     void Reset()
     {
 		ResetTimers();
+		necroticTarget = 0;
+		necrotic_Timer = 6000;
+		phase = PHASE_100;
     }
 
     void Aggro(Unit* pWho)
     {
         SetInstanceData(TYPE_LICHKING, IN_PROGRESS);
+		ModifyAuraStack(SPELL_INFEST);
     }
 
 	void KilledUnit(Unit* who)
@@ -125,6 +144,95 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+		me->RemoveAurasDueToSpell(SPELL_INFEST);
+    }
+
+	void SwitchPhase()
+	{
+		switch(phase)
+		{
+			case PHASE_100:
+				phase = PHASE_TR_1;
+				break;
+			case PHASE_TR_1:
+				phase = PHASE_70;
+				break;
+			default:
+				break;
+		}
+	}
+
+	Player* getPlayerTarget()
+	{
+		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+		if (!lPlayers.isEmpty())
+		{
+			uint32 _rand = urand(0,lPlayers.getSize());
+			uint16 i=0;
+			for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			{
+				if(i == _rand)
+				{
+					if(Player* pPlayer = itr->getSource())
+						return pPlayer;
+				}
+				i++;
+			}
+		}
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		if(phase == PHASE_100)
+		{
+			if(necrotic_Timer <= diff)
+			{
+				if(Unit* u = pInstance->GetUnitInMap(necroticTarget))
+				{
+					if(!u->isAlive() || !u->HasAura(SPELL_NECROTIC_PLAGUE))
+					{
+						Player* plr = pInstance->GetClosestPlayer(u);
+						ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
+						necroticTarget = plr->GetGUID();
+						ModifyAuraStack(SPELL_PLAGUE_SIPHON);
+					}
+				}
+				else
+				{
+					Player* plr = getPlayerTarget();
+					ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
+					necroticTarget = plr->GetGUID();
+				}
+				necrotic_Timer = 500;
+			}
+			else
+				necrotic_Timer -= diff;
+		}
+		UpdateEvent(diff);
+		UpdateEvent(diff,phase);
+		DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
+{
+    return new boss_iccraid_lichkingAI(pCreature);
+}struct MANGOS_DLL_DECL lk_shambling_horrorAI : public LibDevFSAI
+{
+    lk_shambling_horrorAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEventOnTank(SPELL_SHOCKWAVE,5000,8000,5000);
+		AddEventOnme(SPELL_ENRAGE_SH,16000,30000);
+    }
+
+    void Reset()
+    {
+		ResetTimers();
+		AggroAllPlayers();
     }
 
     void UpdateAI(const uint32 diff)
@@ -137,9 +245,9 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
     }
 };
 
-CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
+CreatureAI* GetAI_boss_lk_shambling_horror(Creature* pCreature)
 {
-    return new boss_iccraid_lichkingAI(pCreature);
+    return new lk_shambling_horrorAI(pCreature);
 }
 
 struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
@@ -304,6 +412,11 @@ void AddSC_ICC_LichKing()
     NewScript = new Script;
     NewScript->Name = "boss_iccraid_lichking";
     NewScript->GetAI = &GetAI_boss_iccraid_lichking;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "boss_iccraid_shambling_horror";
+    NewScript->GetAI = &GetAI_boss_lk_shambling_horror;
     NewScript->RegisterSelf();
 
 	NewScript = new Script;

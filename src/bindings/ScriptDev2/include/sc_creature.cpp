@@ -244,8 +244,8 @@ void ScriptedAI::DoCastPlayer(uint32 uiSpellId, bool bTriggered, bool InFront)
 					if(InFront)
 						me->SetInFront(pPlayer);
 					me->CastSpell(pPlayer, uiSpellId, bTriggered);
+					return;
 				}
-				return;
 			}
 			i++;
 		}
