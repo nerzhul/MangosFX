@@ -2529,7 +2529,10 @@ bool InstanceMap::Add(Player *player)
 							{
 								WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
 								pck << uint32(60000);
-								pck << uint32(256);
+								if(GetInstanceData())
+									pck << uint32(GetInstanceData()->GetData(DATA_NB_BOSS_DOWN));
+								else
+									pck << uint32(0);
 								pck << uint8(1);
 								player->GetSession()->SendPacket(&pck);
 								player->SetTimedBind(60000);
@@ -2548,7 +2551,10 @@ bool InstanceMap::Add(Player *player)
 						{
 							WorldPacket pck(SMSG_INSTANCE_LOCK_WARNING_QUERY);
 							pck << uint32(60000);
-							pck << uint32(256);
+							if(GetInstanceData())
+								pck << uint32(GetInstanceData()->GetData(DATA_NB_BOSS_DOWN));
+							else
+								pck << uint32(0);
 							pck << uint8(1);
 							player->GetSession()->SendPacket(&pck);
 							player->SetTimedBind(60000);
