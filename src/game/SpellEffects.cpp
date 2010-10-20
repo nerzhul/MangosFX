@@ -3072,8 +3072,8 @@ void Spell::DoCreateItem(uint32 i, uint32 itemtype)
     // for battleground marks send by mail if not add all expected
     if(no_space > 0 && bgType)
     {
-        if(BattleGround* bg = sBattleGroundMgr.GetBattleGroundTemplate(BattleGroundTypeId(bgType)))
-            bg->SendRewardMarkByMail(player, newitemid, no_space);
+        /*if(BattleGround* bg = sBattleGroundMgr.GetBattleGroundTemplate(BattleGroundTypeId(bgType)))
+            bg->SendRewardMarkByMail(player, newitemid, no_space);*/
     }
 }
 

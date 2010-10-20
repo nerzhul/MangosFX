@@ -12854,7 +12854,6 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
     if (duration > 0)
     {	
 		Player* modOwner = GetSpellModOwner();
-
 		if (modOwner)
             modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_DURATION, duration);
 
@@ -12958,7 +12957,6 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
             }
         }
     }
-
     return duration;
 }
 

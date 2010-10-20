@@ -462,11 +462,7 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
     //sLog.outDebug("Aura: construct Spellid : %u, Aura : %u Duration : %d Target : %d Damage : %d", m_spellProto->Id, m_spellProto->EffectApplyAuraName[eff], m_maxduration, m_spellProto->EffectImplicitTargetA[eff],damage);
 
     m_effIndex = eff;
-    /*SetModifier(AuraType(m_spellProto->EffectApplyAuraName[eff]), damage, m_spellProto->EffectAmplitude[eff], m_spellProto->EffectMiscValue[eff]);
-
-    // Apply periodic time mod
-    if(modOwner && m_modifier.periodictime)
-        modOwner->ApplySpellMod(GetId(), SPELLMOD_ACTIVATION_TIME, m_modifier.periodictime);*/
+    //SetModifier(AuraType(m_spellProto->EffectApplyAuraName[eff]), damage, m_spellProto->EffectAmplitude[eff], m_spellProto->EffectMiscValue[eff]);
 
     // Start periodic on next tick or at aura apply
     if (!(m_spellProto->AttributesEx5 & SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY))
@@ -678,9 +674,9 @@ void Aura::Update(uint32 diff)
         if(m_periodicTimer <= 0) // tick also at m_periodicTimer==0 to prevent lost last tick in case max m_duration == (max m_periodicTimer)*N
         {
             // update before applying (aura can be removed in TriggerSpell or PeriodicTick calls)
-            if(GetSpellProto()->AttributesEx & (SPELL_ATTR_EX_CHANNELED_1 | SPELL_ATTR_EX_CHANNELED_2))
+            /*if(GetSpellProto()->AttributesEx & (SPELL_ATTR_EX_CHANNELED_1 | SPELL_ATTR_EX_CHANNELED_2))
                 m_periodicTimer += GetChannelPeriodic();
-            else
+            else*/
                 m_periodicTimer += m_modifier.periodictime;
             ++m_periodicTick;                               // for some infinity auras in some cases can overflow and reset
             PeriodicTick();

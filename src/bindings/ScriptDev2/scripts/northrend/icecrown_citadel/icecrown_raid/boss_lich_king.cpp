@@ -164,14 +164,12 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 				break;
 			case PHASE_TR_1:
 				phase = PHASE_70;
-				defile_Timer = 31500;
 				break;
 			case PHASE_70:
 				phase = PHASE_TR_2;
 				break;
 			case PHASE_TR_2:
 				phase = PHASE_40;
-				defile_Timer = 31500;
 				break;
 			default:
 				break;
@@ -246,7 +244,7 @@ struct MANGOS_DLL_DECL lk_shambling_horrorAI : public LibDevFSAI
     {
         InitInstance();
 		AddEventOnTank(SPELL_SHOCKWAVE,5000,8000,5000);
-		AddEventOnme(SPELL_ENRAGE_SH,16000,30000);
+		AddEventOnMe(SPELL_ENRAGE_SH,16000,30000);
     }
 
     void Reset()

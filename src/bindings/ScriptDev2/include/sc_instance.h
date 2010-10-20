@@ -74,6 +74,6 @@ class MANGOS_DLL_DECL ScriptedInstance : public InstanceData
 		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
 		void AutoFreeze(Creature* cr);
 
-		void GetClosestPlayer(Unit* u, float maxRange = 100.0f);
+		Player* GetClosestPlayer(Unit* u, float maxRange = 100.0f);
 };
 #endif
