@@ -357,6 +357,37 @@ struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
                 return m_auiEncounter[uiType];
 			case DATA_YOGG_TENTACLES_FROZEN:
 				return TentaclesCanAttack ? 1 : 0;
+			case DATA_NB_BOSS_DOWN:
+				uint32 down = 0;
+				if(m_auiEncounter[TYPE_LEVIATHAN] == DONE)
+					down+=1;
+				if(m_auiEncounter[TYPE_IGNIS] == DONE)
+					down+=2;
+				if(m_auiEncounter[TYPE_RAZORSCALE] == DONE)
+					down+=4;
+				if(m_auiEncounter[TYPE_XT002] == DONE)
+					down+=8;
+				if(m_auiEncounter[TYPE_ASSEMBLY] == DONE)
+					down+=16;
+				if(m_auiEncounter[TYPE_KOLOGARN] == DONE)
+					down+=32;
+				if(m_auiEncounter[TYPE_AURIAYA] == DONE)
+					down+=64;
+				if(m_auiEncounter[TYPE_MIMIRON] == DONE)
+					down+=128;
+				if(m_auiEncounter[TYPE_HODIR] == DONE)
+					down+=256;
+				if(m_auiEncounter[TYPE_THORIM] == DONE)
+					down+=512;
+				if(m_auiEncounter[TYPE_FREYA] == DONE)
+					down+=1024;
+				if(m_auiEncounter[TYPE_VEZAX] == DONE)
+					down+=2048;
+				if(m_auiEncounter[TYPE_YOGGSARON] == DONE)
+					down+=4096;
+				if(m_auiEncounter[TYPE_ALGALON] == DONE)
+					down+=8192;
+				return down;
         }
 
         return 0;
