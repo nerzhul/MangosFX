@@ -14,13 +14,17 @@ enum Spells
 	// Heroic only
 	SPELL_SUMMON_SHADOW_TRAP			=	73539,
 	SPELL_PROC_SHADOW_TRAP				=	73529,
+
 	// Shambling horror
 	SPELL_SHOCKWAVE						=	72149, // ok
 	SPELL_ENRAGE_SH						=	72143, // ok
 	
 	//** phase 2,3
 	SPELL_SOUL_REAPER					=	69409,
-	SPELL_DEFILE						=	72754,
+	SPELL_DEFILE						=	72762, // ok
+	SPELL_DEFILE_DOT					=	72743, // ok
+	SPELL_DEFILE_SIZE					=	74164, // ok
+	NPC_DEFILE							=	38757,
 	
 	//** phase 2
 	SPELL_SUMMON_VALKYR					=	69037,
@@ -78,6 +82,8 @@ enum Phase
 	PHASE_100	= 1,
 	PHASE_TR_1	= 2,
 	PHASE_70	= 3,
+	PHASE_TR_2	= 4,
+	PHASE_40	= 5,
 };
 
 struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
@@ -89,6 +95,8 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 		AddTextEvent(17365,"Rencontrez votre tragique fin !",10000,TEN_MINS);
 		AddEvent(SPELL_SUMMON_SHAMBLING_HORROR,15000,60000,0,TARGET_RANDOM,PHASE_100);
 		AddEvent(SPELL_SUMMON_DRUDGE_GHOULS,25000,20000,0,TARGET_RANDOM,PHASE_100);
+		AddEvent(SPELL_DEFILE,30000,30000,0,TARGET_RANDOM,PHASE_70);
+		AddEvent(SPELL_DEFILE,30000,30000,0,TARGET_RANDOM,PHASE_40);
     }
 
 	Phase phase;
@@ -156,6 +164,14 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 				break;
 			case PHASE_TR_1:
 				phase = PHASE_70;
+				defile_Timer = 31500;
+				break;
+			case PHASE_70:
+				phase = PHASE_TR_2;
+				break;
+			case PHASE_TR_2:
+				phase = PHASE_40;
+				defile_Timer = 31500;
 				break;
 			default:
 				break;
@@ -211,16 +227,20 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 			else
 				necrotic_Timer -= diff;
 		}
+
 		UpdateEvent(diff);
 		UpdateEvent(diff,phase);
-		DoMeleeAttackIfReady();
+		if(phase == PHASE_100 || phase == PHASE_70 || phase == PHASE_40)
+			DoMeleeAttackIfReady();
     }
 };
 
 CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
 {
     return new boss_iccraid_lichkingAI(pCreature);
-}struct MANGOS_DLL_DECL lk_shambling_horrorAI : public LibDevFSAI
+}
+
+struct MANGOS_DLL_DECL lk_shambling_horrorAI : public LibDevFSAI
 {
     lk_shambling_horrorAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
@@ -248,6 +268,49 @@ CreatureAI* GetAI_boss_iccraid_lichking(Creature* pCreature)
 CreatureAI* GetAI_boss_lk_shambling_horror(Creature* pCreature)
 {
     return new lk_shambling_horrorAI(pCreature);
+}
+
+struct MANGOS_DLL_DECL lk_defileAI : public LibDevFSAI
+{
+    lk_defileAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		MakeHostileInvisibleStalker();
+		ModifyAuraStack(SPELL_DEFILE_DOT);
+		me->ForcedDespawn(31000);
+    }
+
+	uint8 stack;
+    void Reset()
+    {
+		ResetTimers();
+		AggroAllPlayers();
+		stack = 1;
+    }
+
+	void DamageDeal(Unit* pWho, uint32 &dmg)
+	{
+		if(pWho->GetDistance2d(me) < 12+stack*5/100*12)
+		{
+			ModifyAuraStack(SPELL_DEFILE_SIZE);
+			stack++;
+		}
+		else
+			dmg = 0;
+	}
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+
+		UpdateEvent(diff);
+    }
+};
+
+CreatureAI* GetAI_boss_lk_defile(Creature* pCreature)
+{
+    return new lk_defileAI(pCreature);
 }
 
 struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
@@ -417,6 +480,11 @@ void AddSC_ICC_LichKing()
 	NewScript = new Script;
     NewScript->Name = "boss_iccraid_shambling_horror";
     NewScript->GetAI = &GetAI_boss_lk_shambling_horror;
+    NewScript->RegisterSelf();
+
+	NewScript = new Script;
+    NewScript->Name = "boss_iccraid_defile";
+    NewScript->GetAI = &GetAI_boss_lk_defile;
     NewScript->RegisterSelf();
 
 	NewScript = new Script;
