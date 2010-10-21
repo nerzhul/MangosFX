@@ -467,9 +467,9 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
     // Start periodic on next tick or at aura apply
     if (!(m_spellProto->AttributesEx5 & SPELL_ATTR_EX5_START_PERIODIC_AT_APPLY))
     {
-        if(GetSpellProto()->AttributesEx & (SPELL_ATTR_EX_CHANNELED_1 | SPELL_ATTR_EX_CHANNELED_2))
+        /*if(GetSpellProto()->AttributesEx & (SPELL_ATTR_EX_CHANNELED_1 | SPELL_ATTR_EX_CHANNELED_2))
             m_periodicTimer += GetChannelPeriodic();
-        else
+        else*/
             m_periodicTimer += m_modifier.periodictime;
     }
 
