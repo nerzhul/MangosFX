@@ -518,6 +518,8 @@ bool IsPositiveEffect(uint32 spellId, uint32 effIndex)
             {
                 case 28441:                                 // AB Effect 000
                     return false;
+				case 54530:                                 // Opening
+					return true;
                 default:
                     break;
             }
