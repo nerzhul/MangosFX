@@ -374,7 +374,7 @@ uint32 InstanceSaveManager::GetMaxResetTimeFor(MapDifficulty const* mapDiff)
     if (!mapDiff || !mapDiff->resetTime)
         return 0;
 
-    uint32 delay = uint32(mapDiff->resetTime / DAY * sWorld.getConfig(RATE_INSTANCE_RESET_TIME)) * DAY;
+    uint32 delay = uint32(mapDiff->resetTime);
 
     if (delay < DAY) // the reset_delay must be at least one day
         delay = DAY;
@@ -496,7 +496,7 @@ void InstanceSaveManager::LoadResetTimes()
             continue;
 
         // the reset_delay must be at least one day
-        uint32 period =  (mapDiff->resetTime / DAY * sWorld.getRate(RATE_INSTANCE_RESET_TIME)) * DAY;
+        uint32 period = GetMaxResetTimeFor(mapDiff);
 
         time_t t = GetResetTimeFor(mapid,difficulty);
         if(!t)
