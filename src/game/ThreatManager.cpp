@@ -409,7 +409,10 @@ void ThreatManager::addThreat(Unit* pVictim, float pThreat, bool crit, SpellScho
         Unit *unit = pVictim->GetMisdirectionTarget();
         if (unit)
             if (Aura* pAura = unit->GetAura(63326,0)) // Glyph of Vigilance
-                reducedThreadPercent += pAura->GetSpellProto()->EffectBasePoints[0];
+			{
+				SpellEffectEntry const* spellEffect = pAura->GetSpellProto()->GetSpellEffect(0);
+				reducedThreadPercent += (spellEffect) ? spellEffect->EffectBasePoints : 0;
+			}
 
         float reducedThreat = threat * reducedThreadPercent / 100;
         threat -= reducedThreat;

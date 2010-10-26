@@ -173,25 +173,30 @@ bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 effIndex_1, uint32 spellId_
 
 inline bool IsSealSpell(SpellEntry const *spellInfo)
 {
+    SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions();
+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
     //Collection of all the seal family flags. No other paladin spell has any of those.
-    return spellInfo->SpellFamilyName == SPELLFAMILY_PALADIN &&
-        ( spellInfo->SpellFamilyFlags & SPELLFAMILYFLAG_PALADIN_SEALS ) &&
+    return classOptions && classOptions->SpellFamilyName == SPELLFAMILY_PALADIN &&
+        ( classOptions->SpellFamilyFlags & SPELLFAMILYFLAG_PALADIN_SEALS ) &&
         // avoid counting target triggered effect as seal for avoid remove it or seal by it.
-        spellInfo->EffectImplicitTargetA[0] == TARGET_SELF;
+        spellEffect && spellEffect->EffectImplicitTargetA == TARGET_SELF;
 }
 
 inline bool IsElementalShield(SpellEntry const *spellInfo)
 {
+    SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions();
     // family flags 10 (Lightning), 42 (Earth), 37 (Water), proc shield from T2 8 pieces bonus
-    return (spellInfo->SpellFamilyFlags & UI64LIT(0x42000000400)) || spellInfo->Id == 23552;
+    return (classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x42000000400)) || spellInfo->Id == 23552;
 }
 
 inline bool IsExplicitDiscoverySpell(SpellEntry const *spellInfo)
 {
-    return (((spellInfo->Effect[0] == SPELL_EFFECT_CREATE_RANDOM_ITEM
-		|| spellInfo->Effect[0] == SPELL_EFFECT_CREATE_ITEM_2)
-        && spellInfo->Effect[1] == SPELL_EFFECT_SCRIPT_EFFECT)
-        || spellInfo->Id == 64323);                         // Book of Glyph Mastery (Effect0==SPELL_EFFECT_SCRIPT_EFFECT without any other data)
+    SpellEffectEntry const* spellEffect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    SpellEffectEntry const* spellEffect1 = spellInfo->GetSpellEffect(EFFECT_INDEX_1);
+    return ((spellEffect0 && (spellEffect0->Effect == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
+        spellEffect0->Effect == SPELL_EFFECT_CREATE_ITEM_2) &&
+        (spellEffect1 && spellEffect1->Effect == SPELL_EFFECT_SCRIPT_EFFECT)) ||
+        spellInfo->Id == 64323);                         // Book of Glyph Mastery (Effect0==SPELL_EFFECT_SCRIPT_EFFECT without any other data)
 }
 
 inline bool IsLootCraftingSpell(SpellEntry const *spellInfo)
@@ -356,11 +361,14 @@ inline bool IsAreaEffectTarget( Targets target )
 
 inline bool IsAreaOfEffectSpell(SpellEntry const *spellInfo)
 {
-    if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[0])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[0])))
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
         return true;
-    if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[1])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[1])))
+    effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_1);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
         return true;
-    if(IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[2])) || IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetB[2])))
+    effectEntry = spellInfo->GetSpellEffect(EFFECT_INDEX_2);
+    if(effectEntry && (IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetA)) || IsAreaEffectTarget(Targets(effectEntry->EffectImplicitTargetB))))
         return true;
     return false;
 }
@@ -410,11 +418,13 @@ inline SpellSchoolMask GetSpellSchoolMask(SpellEntry const* spellInfo)
 
 inline uint32 GetSpellMechanicMask(SpellEntry const* spellInfo, int32 effect)
 {
+	SpellCategoriesEntry const* spellCategory = spellInfo->GetSpellCategories();
     uint32 mask = 0;
-    if (spellInfo->Mechanic)
-        mask |= 1 << (spellInfo->Mechanic - 1);
-    if (spellInfo->EffectMechanic[effect])
-        mask |= 1 << (spellInfo->EffectMechanic[effect] - 1);
+    if (spellCategory && spellCategory->Mechanic)
+        mask |= 1 << (spellCategory->Mechanic - 1);
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(effect));
+    if (effectEntry && effectEntry->EffectMechanic)
+        mask |= 1 << (effectEntry->EffectMechanic - 1);
     return mask;
 }
 
@@ -435,10 +445,12 @@ inline uint32 GetAllSpellMechanicMask(SpellEntry const* spellInfo)
 
 inline Mechanics GetEffectMechanic(SpellEntry const* spellInfo, int32 effect)
 {
-    if (spellInfo->EffectMechanic[effect])
-        return Mechanics(spellInfo->EffectMechanic[effect]);
-    if (spellInfo->Mechanic)
-        return Mechanics(spellInfo->Mechanic);
+    SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(effect));
+    if (effectEntry && effectEntry->EffectMechanic)
+        return Mechanics(effectEntry->EffectMechanic);
+    SpellCategoriesEntry const* spellCategory = spellInfo->GetSpellCategories();
+    if (spellCategory && spellCategory->Mechanic)
+        return Mechanics(spellCategory->Mechanic);
     return MECHANIC_NONE;
 }
 
