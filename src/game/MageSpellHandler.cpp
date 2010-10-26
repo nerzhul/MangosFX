@@ -33,7 +33,7 @@ bool MageSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffec
 			{
 				SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
 				
-				if (spellInfo->SpellFamilyName == SPELLFAMILY_MAGE &&
+				if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_MAGE &&
 					(GetSpellSchoolMask(spellInfo) & SPELL_SCHOOL_MASK_FROST) &&
 					spellInfo->Id != 11958 && GetSpellRecoveryTime(spellInfo) > 0)
 				{

@@ -32,7 +32,7 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
         for(Unit::AuraMap::iterator itr = suAuras.begin(); itr != suAuras.end(); ++itr)
         {
             spellInfo = (*itr).second->GetSpellProto();
-            if( spellInfo->SpellFamilyName == SPELLFAMILY_WARRIOR &&
+            if( spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARRIOR &&
                 (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000004000)) &&
                 (*itr).second->GetCasterGUID() == spell->GetCaster()->GetGUID())
             {

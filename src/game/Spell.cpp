@@ -2918,7 +2918,7 @@ void Spell::cast(bool skipCheck)
     {
         case SPELLFAMILY_GENERIC:
         {
-            if (m_spellInfo->Mechanic == MECHANIC_BANDAGE)  // Bandages
+            if (m_spellInfo->GetMechanic() == MECHANIC_BANDAGE)  // Bandages
                 AddPrecastSpell(11196);                     // Recently Bandaged
 			
 			switch(m_spellInfo->Id)
@@ -2962,7 +2962,7 @@ void Spell::cast(bool skipCheck)
         case SPELLFAMILY_PRIEST:
         {
             // Power Word: Shield
-            if (m_spellInfo->Mechanic == MECHANIC_SHIELD &&
+            if (m_spellInfo->GetMechanic() == MECHANIC_SHIELD &&
                 (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000001)))
                 AddPrecastSpell(6788);                      // Weakened Soul
             // Prayer of Mending (jump animation), we need formal caster instead original for correct animation
@@ -4752,7 +4752,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                         // at not self target
                         !IsCasterSourceTarget(m_spellInfo->EffectImplicitTargetA[i]) &&
                         // and target low level
-                        target->getLevel() + 10 < m_spellInfo->spellLevel)
+                        target->getLevel() + 10 < m_spellInfo->GetSpellLevel())
                     {
                         return SPELL_FAILED_LOWLEVEL;
                     }
@@ -5227,7 +5227,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if(!learn_spellproto)
                     return SPELL_FAILED_NOT_KNOWN;
 
-                if(m_spellInfo->spellLevel > pet->getLevel())
+                if(m_spellInfo->GetSpellLevel() > pet->getLevel())
                     return SPELL_FAILED_LOWLEVEL;
 
                 break;
@@ -5244,7 +5244,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 if(!learn_spellproto)
                     return SPELL_FAILED_NOT_KNOWN;
 
-                if(m_spellInfo->spellLevel > pet->getLevel())
+                if(m_spellInfo->GetSpellLevel() > pet->getLevel())
                     return SPELL_FAILED_LOWLEVEL;
 
                 break;
@@ -5939,24 +5939,24 @@ int32 Spell::CalculatePowerCost()
     }
 
     // Base powerCost
-    int32 powerCost = m_spellInfo->manaCost;
+    int32 powerCost = m_spellInfo->GetManaCost();
     // PCT cost from total amount
-    if (m_spellInfo->ManaCostPercentage)
+    if (m_spellInfo->GetManaCostPercentage())
     {
         switch (m_spellInfo->powerType)
         {
             // health as power used
             case POWER_HEALTH:
-                powerCost += m_spellInfo->ManaCostPercentage * m_caster->GetCreateHealth() / 100;
+                powerCost += m_spellInfo->GetManaCostPercentage() * m_caster->GetCreateHealth() / 100;
                 break;
             case POWER_MANA:
-                powerCost += m_spellInfo->ManaCostPercentage * m_caster->GetCreateMana() / 100;
+                powerCost += m_spellInfo->GetManaCostPercentage() * m_caster->GetCreateMana() / 100;
                 break;
             case POWER_RAGE:
             case POWER_FOCUS:
             case POWER_ENERGY:
             case POWER_HAPPINESS:
-                powerCost += m_spellInfo->ManaCostPercentage * m_caster->GetMaxPower(Powers(m_spellInfo->powerType)) / 100;
+                powerCost += m_spellInfo->GetManaCostPercentage() * m_caster->GetMaxPower(Powers(m_spellInfo->powerType)) / 100;
                 break;
             case POWER_RUNE:
             case POWER_RUNIC_POWER:
@@ -5978,7 +5978,7 @@ int32 Spell::CalculatePowerCost()
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, powerCost, this);
 
     if(m_spellInfo->Attributes & SPELL_ATTR_LEVEL_DAMAGE_CALCULATION)
-        powerCost = int32(powerCost/ (1.117f * m_spellInfo->spellLevel / m_caster->getLevel() -0.1327f));
+        powerCost = int32(powerCost/ (1.117f * m_spellInfo->GetSpellLevel() / m_caster->getLevel() -0.1327f));
 
     // PCT mod from user auras by school
     powerCost = int32(powerCost * (1.0f + m_caster->GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER + school)));
@@ -6836,7 +6836,7 @@ bool Spell::IsNeedSendToClient() const
 
 bool Spell::IsTriggeredSpellWithRedundentData() const
 {
-    return m_IsTriggeredSpell && (m_spellInfo->manaCost || m_spellInfo->ManaCostPercentage);
+    return m_IsTriggeredSpell && (m_spellInfo->GetManaCost() || m_spellInfo->GetManaCostPercentage());
 }
 
 bool Spell::HaveTargetsForEffect( uint8 effect ) const

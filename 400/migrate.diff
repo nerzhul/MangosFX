@@ -12,59 +12,6 @@ index 0000000..08b8f80
 +    add column `maxpower8` int(10) UNSIGNED DEFAULT '0' NOT NULL after `maxpower7`,
 +    add column `maxpower9` int(10) UNSIGNED DEFAULT '0' NOT NULL after `maxpower8`;
 
-diff --git a/mangos335/src/game/AchievementMgr.cpp b/mangos400/src/game/AchievementMgr.cpp
-index afac827..126d27a 100644
---- a/mangos335/src/game/AchievementMgr.cpp
-+++ b/mangos400/src/game/AchievementMgr.cpp
-@@ -172,7 +172,8 @@ bool AchievementCriteriaRequirement::IsValid(AchievementCriteriaEntry const* cri
-                     criteria->ID, criteria->requiredType,(requirementType==ACHIEVEMENT_CRITERIA_REQUIRE_S_AURA?"ACHIEVEMENT_CRITERIA_REQUIRE_S_AURA":"ACHIEVEMENT_CRITERIA_REQUIRE_T_AURA"),requirementType,aura.effect_idx);
-                 return false;
-             }
--            if (!spellEntry->EffectApplyAuraName[aura.effect_idx])
-+            SpellEffectEntry const* spellEffect = spellEntry->GetSpellEffect(SpellEffectIndex(aura.effect_idx));
-+            if (spellEffect && !spellEffect->EffectApplyAuraName)
-             {
-                 sLog.outErrorDb( "Table `achievement_criteria_requirement` (Entry: %u Type: %u) for requirement %s (%u) have non-aura spell effect (ID: %u Effect: %u), ignore.",
-                     criteria->ID, criteria->requiredType,(requirementType==ACHIEVEMENT_CRITERIA_REQUIRE_S_AURA?"ACHIEVEMENT_CRITERIA_REQUIRE_S_AURA":"ACHIEVEMENT_CRITERIA_REQUIRE_T_AURA"),requirementType,aura.spell_id,aura.effect_idx);
-
-diff --git a/man-gos335/src/game/BattleGround.cpp b/mangos400/src/game/BattleGround.cpp
-index 580f32d..a786ffa 100644
---- a/mangos335/src/game/BattleGround.cpp
-+++ b/mangos400/src/game/BattleGround.cpp
-@@ -1386,7 +1386,7 @@ bool BattleGround::AddObject(uint32 type, uint32 entry, float x, float y, float
-     // so we must create it specific for this instance
-     GameObject * go = new GameObject;
-     if(!go->Create(sObjectMgr.GenerateLowGuid(HIGHGUID_GAMEOBJECT),entry, GetBgMap(),
--        PHASEMASK_NORMAL, x,y,z,o,rotation0,rotation1,rotation2,rotation3,GO_ANIMPROGRESS_DEFAULT,GO_STATE_READY))
-+        PHASEMASK_NORMAL, x,y,z,o,rotation0,rotation1,rotation2,rotation3,100,GO_STATE_READY))
-     {
-         sLog.outErrorDb("Gameobject template %u not found in database! BattleGround not created!", entry);
-         sLog.outError("Cannot create gameobject template %u! BattleGround not created!", entry);
-
-diff --git a/mangos335/src/game/BattleGroundHandler.cpp b/mangos400/src/game/BattleGroundHandler.cpp
-index 6f5b2c8..8278b15 100644
---- a/mangos335/src/game/BattleGroundHandler.cpp
-+++ b/mangos400/src/game/BattleGroundHandler.cpp
-@@ -31,7 +31,6 @@
- #include "ArenaTeam.h"
- #include "Language.h"
- #include "ScriptCalls.h"
--#include "World.h"
- 
- void WorldSession::HandleBattlemasterHelloOpcode(WorldPacket & recv_data)
- {
-
-@@ -151,8 +150,7 @@ void WorldSession::HandleBattlemasterJoinOpcode( WorldPacket & recv_data )
-         if (grp->GetLeaderGuid() != _player->GetObjectGuid())
-             return;
-         err = grp->CanJoinBattleGroundQueue(bg, bgQueueTypeId, 0, bg->GetMaxPlayersPerTeam(), false, 0);
--        isPremade = sWorld.getConfig(CONFIG_UINT32_BATTLEGROUND_PREMADE_GROUP_WAIT_FOR_MATCH) &&
--            (grp->GetMembersCount() >= bg->GetMinPlayersPerTeam());
-+        isPremade = (grp->GetMembersCount() >= bg->GetMinPlayersPerTeam());
-     }
-     // if we're here, then the conditions to join a bg are met. We can proceed in joining.
- 
-
 diff --git a/mangos335/src/game/CharacterHandler.cpp b/mangos400/src/game/CharacterHandler.cpp
 index 08bf61e..22e708d 100644
 --- a/mangos335/src/game/CharacterHandler.cpp
@@ -79,218 +26,6 @@ index 08bf61e..22e708d 100644
      res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES,  "SELECT id, permanent, map, difficulty, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
      res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADAURAS,           "SELECT caster_guid,item_guid,spell,stackcount,remaincharges,basepoints0,basepoints1,basepoints2,maxduration0,maxduration1,maxduration2,remaintime0,remaintime1,remaintime2,effIndexMask FROM character_aura WHERE guid = '%u'", GUID_LOPART(m_guid));
 
-diff --git a/mangos335/src/game/Chat.cpp b/mangos400/src/game/Chat.cpp
-index ab91c6e..c1e42d1 100644
---- a/mangos335/src/game/Chat.cpp
-+++ b/mangos400/src/game/Chat.cpp
-@@ -1156,7 +1156,7 @@ void ChatHandler::ExecuteCommand(const char* text)
-                     if (m_session)
-                     {
-                         Player* p = m_session->GetPlayer();
--                        ObjectGuid sel_guid = p->GetSelectionGuid();
-+                        ObjectGuid sel_guid = p->GetSelection();
-                         sLog.outCommand(GetAccountId(),"Command: %s [Player: %s (Account: %u) X: %f Y: %f Z: %f Map: %u Selected: %s]",
-                             fullcmd.c_str(),p->GetName(),GetAccountId(),p->GetPositionX(),p->GetPositionY(),p->GetPositionZ(),p->GetMapId(),
-                             sel_guid.GetString().c_str());
-@@ -1849,7 +1849,7 @@ valid examples:
-                     }
-                     else if(linkedItem)
-                     {
--                        char* const* suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
-+                        DBCString suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
- 
-                         std::string expectedName = std::string(linkedItem->Name1);
-                         if (suffix)
-
-diff --git a/mangos335/src/game/Corpse.cpp b/mangos400/src/game/Corpse.cpp
-index 062a005..903f484 100644
---- a/mangos335/src/game/Corpse.cpp
-+++ b/mangos400/src/game/Corpse.cpp
-@@ -221,7 +221,7 @@ bool Corpse::LoadFromDB(uint32 lowguid, Field *fields)
-     SetUInt32Value( CORPSE_FIELD_BYTES_1, ((0x00) | (race << 8) | (gender << 16) | (skin << 24)) );
-     SetUInt32Value( CORPSE_FIELD_BYTES_2, ((face) | (hairstyle << 8) | (haircolor << 16) | (facialhair << 24)) );
- 
--    SetUInt32Value(CORPSE_FIELD_GUILD, guildId);
-+    //SetUInt32Value(CORPSE_FIELD_GUILD, guildId);
- 
-     uint32 flags = CORPSE_FLAG_UNK2;
-     if(playerFlags & PLAYER_FLAGS_HIDE_HELM)
-diff --git a/mangos335/src/game/Creature.cpp b/mangos400/src/game/Creature.cpp
-index ecdd7d0..f8a1fd1 100644
---- a/mangos335/src/game/Creature.cpp
-+++ b/mangos400/src/game/Creature.cpp
-
-+bool Creature::IsImmunedToSpell(SpellEntry const* spellInfo)
- {
-     if (!spellInfo)
-         return false;
- 
--    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->Mechanic - 1)))
-+    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->GetMechanic() - 1)))
-         return true;
- 
--    return Unit::IsImmuneToSpell(spellInfo);
-+    return Unit::IsImmunedToSpell(spellInfo);
- }
- 
--bool Creature::IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const
-+bool Creature::IsImmunedToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const
- {
--    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->EffectMechanic[index] - 1)))
-+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(index);
-+
-+    if (spellEffect && GetCreatureInfo()->MechanicImmuneMask & (1 << (spellEffect->EffectMechanic - 1)))
-         return true;
- 
-     // Taunt immunity special flag check
-     if (GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NOT_TAUNTABLE)
-     {
-         // Taunt aura apply check
--        if (spellInfo->Effect[index] == SPELL_EFFECT_APPLY_AURA)
-+        if (spellEffect && spellEffect->Effect == SPELL_EFFECT_APPLY_AURA)
-         {
--            if (spellInfo->EffectApplyAuraName[index] == SPELL_AURA_MOD_TAUNT)
-+            if (spellEffect && spellEffect->EffectApplyAuraName == SPELL_AURA_MOD_TAUNT)
-                 return true;
-         }
-         // Spell effect taunt check
--        else if (spellInfo->Effect[index] == SPELL_EFFECT_ATTACK_ME)
-+        else if (spellEffect && spellEffect->Effect == SPELL_EFFECT_ATTACK_ME)
-             return true;
-     }
- 
--    return Unit::IsImmuneToSpellEffect(spellInfo, index);
-+    return Unit::IsImmunedToSpellEffect(spellInfo, index);
- }
- 
-@@ -1549,10 +1551,13 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
-         bool bcontinue = true;
-         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
-         {
--            if( (spellInfo->Effect[j] == SPELL_EFFECT_SCHOOL_DAMAGE )       ||
--                (spellInfo->Effect[j] == SPELL_EFFECT_INSTAKILL)            ||
--                (spellInfo->Effect[j] == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
--                (spellInfo->Effect[j] == SPELL_EFFECT_HEALTH_LEECH )
-+            SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
-+            if(!spellEffect)
-+                continue;
-+            if( (spellEffect->Effect == SPELL_EFFECT_SCHOOL_DAMAGE )       ||
-+                (spellEffect->Effect == SPELL_EFFECT_INSTAKILL)            ||
-+                (spellEffect->Effect == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
-+                (spellEffect->Effect == SPELL_EFFECT_HEALTH_LEECH )
-                 )
-             {
-                 bcontinue = false;
-@@ -1561,7 +1566,7 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
-         }
-         if(bcontinue) continue;
- 
--        if(spellInfo->manaCost > GetPower(POWER_MANA))
-+        if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
-             continue;
-         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
-         float range = GetSpellMaxRange(srange);
-@@ -1573,16 +1578,16 @@ SpellEntry const *Creature::ReachWithSpellAttack(Unit *pVictim)
-         //    continue;
-         if( dist > range || dist < minrange )
-             continue;
--        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-             continue;
--        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-             continue;
-         return spellInfo;
-     }
-     return NULL;
- }
- 
-@@ -1601,7 +1606,8 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
-         bool bcontinue = true;
-         for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
-         {
--            if( (spellInfo->Effect[j] == SPELL_EFFECT_HEAL ) )
-+            SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
-+            if( spellEffect && (spellEffect->Effect == SPELL_EFFECT_HEAL) )
-             {
-                 bcontinue = false;
-                 break;
-@@ -1610,7 +1616,7 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
-         if(bcontinue)
-             continue;
- 
--        if(spellInfo->manaCost > GetPower(POWER_MANA))
-+        if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
-             continue;
-         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
-         float range = GetSpellMaxRange(srange);
-@@ -1622,9 +1628,9 @@ SpellEntry const *Creature::ReachWithSpellCure(Unit *pVictim)
-         //    continue;
-         if( dist > range || dist < minrange )
-             continue;
--        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-             continue;
--        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-             continue;
-         return spellInfo;
-     }
-
-@@ -1905,7 +1911,8 @@ bool Creature::LoadCreatureAddon(bool reload)
-             else
-                 AddSpellAuraHolder(holder);
- 
--            DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Spell: %u - Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, AdditionalSpellInfo->EffectApplyAuraName[EFFECT_INDEX_0],GetGUIDLow(),GetEntry());
-+            SpellEffectEntry const* effectEntry = AdditionalSpellInfo->GetSpellEffect(cAura->effect_idx);
-+            DEBUG_FILTER_LOG(LOG_FILTER_SPELL_CAST, "Spell: %u - Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, effectEntry ? effectEntry->EffectApplyAuraName : 0, GetGUIDLow(), GetEntry());
-         }
-     }
-     return true;
-@@ -2017,8 +2024,8 @@ void Creature::AddCreatureSpellCooldown(uint32 spellid)
-     if(cooldown)
-         _AddCreatureSpellCooldown(spellid, time(NULL) + cooldown/IN_MILLISECONDS);
- 
--    if(spellInfo->Category)
--        _AddCreatureCategoryCooldown(spellInfo->Category, time(NULL));
-+    if(uint32 category = spellInfo->GetCategory())
-+        _AddCreatureCategoryCooldown(category, time(NULL));
- }
- 
- bool Creature::HasCategoryCooldown(uint32 spell_id) const
-@@ -2027,8 +2034,8 @@ bool Creature::HasCategoryCooldown(uint32 spell_id) const
-     if(!spellInfo)
-         return false;
- 
--    CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.find(spellInfo->Category);
--    return (itr != m_CreatureCategoryCooldowns.end() && time_t(itr->second + (spellInfo->CategoryRecoveryTime / IN_MILLISECONDS)) > time(NULL));
-+    CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.find(spellInfo->GetCategory());
-+    return (itr != m_CreatureCategoryCooldowns.end() && time_t(itr->second + (spellInfo->GetCategoryRecoveryTime() / IN_MILLISECONDS)) > time(NULL));
- }
- 
- bool Creature::HasSpellCooldown(uint32 spell_id) const
-
-diff --git a/mangos335/src/game/CreatureAI.cpp b/mangos400/src/game/CreatureAI.cpp
-index 33cb568..6671e62 100644
---- a/mangos335/src/game/CreatureAI.cpp
-+++ b/mangos400/src/game/CreatureAI.cpp
-@@ -39,14 +39,14 @@ CanCastResult CreatureAI::CanCastSpell(Unit* pTarget, const SpellEntry *pSpell,
-         if (m_creature->hasUnitState(UNIT_STAT_CAN_NOT_REACT_OR_LOST_CONTROL))
-             return CAST_FAIL_STATE;
- 
--        if (pSpell->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-+        if (pSpell->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
-             return CAST_FAIL_STATE;
- 
--        if (pSpell->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-+        if (pSpell->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && m_creature->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
-             return CAST_FAIL_STATE;
- 
-         // Check for power (also done by Spell::CheckCast())
--        if (m_creature->GetPower((Powers)pSpell->powerType) < pSpell->manaCost)
-+        if (m_creature->GetPower((Powers)pSpell->powerType) < pSpell->GetManaCost())
-             return CAST_FAIL_POWER;
-     }
 diff --git a/mangos335/src/game/CreatureEventAI.cpp b/mangos400/src/game/CreatureEventAI.cpp
 index 21c8f68..4975242 100644
 --- a/mangos335/src/game/CreatureEventAI.cpp
@@ -1584,39 +1319,8 @@ index 8cf299d..1b86329 100644
  };
  
  // GCC have alternative #pragma pack() syntax and old gcc version not support pack(pop), also any gcc version not support it at some platform
-@@ -1851,11 +2094,6 @@ struct WorldSafeLocsEntry
- #pragma pack(pop)
- #endif
- 
--typedef std::set<uint32> SpellCategorySet;
--typedef std::map<uint32,SpellCategorySet > SpellCategoryStore;
--typedef std::set<uint32> PetFamilySpellsSet;
--typedef std::map<uint32,PetFamilySpellsSet > PetFamilySpellsStore;
--
- // Structures not used for casting to loaded DBC data and not required then packing
- struct MapDifficulty
- {
-@@ -1877,6 +2115,19 @@ struct TalentSpellPos
- 
- typedef std::map<uint32,TalentSpellPos> TalentSpellPosMap;
- 
-+struct SpellEffect
-+{
-+    SpellEffect()
-+    {
-+        effects[0] = NULL;
-+        effects[1] = NULL;
-+        effects[2] = NULL;
-+    }
-+    SpellEffectEntry const* effects[3];
-+};
-+
-+typedef std::map<uint32, SpellEffect> SpellEffectMap;
-+
- struct TaxiPathBySourceAndDestination
- {
-     TaxiPathBySourceAndDestination() : ID(0),price(0) {}
-diff --git a/mangos335/src/game/DuelHandler.cpp b/mangos400/src/game/DuelHandler.cpp
+
+ diff --git a/mangos335/src/game/DuelHandler.cpp b/mangos400/src/game/DuelHandler.cpp
 index d03d055..d94a9a5 100644
 --- a/mangos335/src/game/DuelHandler.cpp
 +++ b/mangos400/src/game/DuelHandler.cpp
@@ -2416,15 +2120,7 @@ diff --git a/mangos335/src/game/Level3.cpp b/mangos400/src/game/Level3.cpp
 index d8d30e2..87797f6 100644
 --- a/mangos335/src/game/Level3.cpp
 +++ b/mangos400/src/game/Level3.cpp
-@@ -2122,7 +2122,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(char* /*args*/)
-             continue;
- 
-         // skip server-side/triggered spells
--        if(spellInfo->spellLevel==0)
-+        if(spellInfo->GetSpellLevel()==0)
-             continue;
- 
-         // skip wrong class/race skills
+
 @@ -2130,7 +2130,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(char* /*args*/)
              continue;
  
@@ -4461,49 +4157,6 @@ diff --git a/mangos335/src/game/Player.h b/mangos400/src/game/Player.h
 index 7d705b6..60a2a42 100644
 --- a/mangos335/src/game/Player.h
 +++ b/mangos400/src/game/Player.h
-@@ -801,22 +801,25 @@ enum TradeSlots
- 
- enum TransferAbortReason
- {
--    TRANSFER_ABORT_NONE                     = 0x00,
--    TRANSFER_ABORT_ERROR                    = 0x01,
--    TRANSFER_ABORT_MAX_PLAYERS              = 0x02,         // Transfer Aborted: instance is full
--    TRANSFER_ABORT_NOT_FOUND                = 0x03,         // Transfer Aborted: instance not found
--    TRANSFER_ABORT_TOO_MANY_INSTANCES       = 0x04,         // You have entered too many instances recently.
--    TRANSFER_ABORT_ZONE_IN_COMBAT           = 0x06,         // Unable to zone in while an encounter is in progress.
--    TRANSFER_ABORT_INSUF_EXPAN_LVL          = 0x07,         // You must have <TBC,WotLK> expansion installed to access this area.
--    TRANSFER_ABORT_DIFFICULTY               = 0x08,         // <Normal,Heroic,Epic> difficulty mode is not available for %s.
--    TRANSFER_ABORT_UNIQUE_MESSAGE           = 0x09,         // Until you've escaped TLK's grasp, you cannot leave this place!
--    TRANSFER_ABORT_TOO_MANY_REALM_INSTANCES = 0x0A,         // Additional instances cannot be launched, please try again later.
--    TRANSFER_ABORT_NEED_GROUP               = 0x0B,         // 3.1
--    TRANSFER_ABORT_NOT_FOUND2               = 0x0C,         // 3.1
--    TRANSFER_ABORT_NOT_FOUND3               = 0x0D,         // 3.1
--    TRANSFER_ABORT_NOT_FOUND4               = 0x0E,         // 3.2
--    TRANSFER_ABORT_REALM_ONLY               = 0x0F,         // All players on party must be from the same realm.
--    TRANSFER_ABORT_MAP_NOT_ALLOWED          = 0x10,         // Map can't be entered at this time.
-+    TRANSFER_ABORT_NONE                         = 0x00,
-+    TRANSFER_ABORT_ERROR                        = 0x01,
-+    TRANSFER_ABORT_MAX_PLAYERS                  = 0x02,     // Transfer Aborted: instance is full
-+    TRANSFER_ABORT_NOT_FOUND                    = 0x03,     // Transfer Aborted: instance not found
-+    TRANSFER_ABORT_TOO_MANY_INSTANCES           = 0x04,     // You have entered too many instances recently.
-+    TRANSFER_ABORT_ZONE_IN_COMBAT               = 0x06,     // Unable to zone in while an encounter is in progress.
-+    TRANSFER_ABORT_INSUF_EXPAN_LVL              = 0x07,     // You must have <TBC,WotLK> expansion installed to access this area.
-+    TRANSFER_ABORT_DIFFICULTY                   = 0x08,     // <Normal,Heroic,Epic> difficulty mode is not available for %s.
-+    TRANSFER_ABORT_UNIQUE_MESSAGE               = 0x09,     // Until you've escaped TLK's grasp, you cannot leave this place!
-+    TRANSFER_ABORT_TOO_MANY_REALM_INSTANCES     = 0x0A,     // Additional instances cannot be launched, please try again later.
-+    TRANSFER_ABORT_NEED_GROUP                   = 0x0B,     // 3.1
-+    TRANSFER_ABORT_NOT_FOUND2                   = 0x0C,     // 3.1
-+    TRANSFER_ABORT_NOT_FOUND3                   = 0x0D,     // 3.1
-+    TRANSFER_ABORT_NOT_FOUND4                   = 0x0E,     // 3.2
-+    TRANSFER_ABORT_REALM_ONLY                   = 0x0F,     // All players on party must be from the same realm.
-+    TRANSFER_ABORT_MAP_NOT_ALLOWED              = 0x10,     // Map can't be entered at this time.
-+    // 0x11 not found
-+    TRANSFER_ABORT_LOCKED_TO_DIFFERENT_INSTANCE = 0x12,     // 4.0.1
-+    TRANSFER_ABORT_ALREADY_COMPLETED_ENCOUNTER  = 0x13,     // 4.0.1
- };
- 
- enum InstanceResetWarningType
-
 @@ -1421,11 +1424,10 @@ class MANGOS_DLL_SPEC Player : public Unit
          void RewardQuest( Quest const *pQuest, uint32 reward, Object* questGiver, bool announce = true );
  
@@ -4517,39 +4170,7 @@ index 7d705b6..60a2a42 100644
          bool SatisfyQuestRace( Quest const* qInfo, bool msg ) const;
          bool SatisfyQuestReputation( Quest const* qInfo, bool msg ) const;
          bool SatisfyQuestStatus( Quest const* qInfo, bool msg ) const;
-@@ -1497,7 +1499,7 @@ class MANGOS_DLL_SPEC Player : public Unit
-         void UpdateForQuestWorldObjects();
-         bool CanShareQuest(uint32 quest_id) const;
- 
--        void SendQuestCompleteEvent(uint32 quest_id);
-+        void SendQuestComplete( uint32 quest_id );
-         void SendQuestReward( Quest const *pQuest, uint32 XP, Object* questGiver );
-         void SendQuestFailed( uint32 quest_id );
-         void SendQuestTimerFailed( uint32 quest_id );
 
-@@ -1643,7 +1645,7 @@ class MANGOS_DLL_SPEC Player : public Unit
-         TrainerSpellState GetTrainerSpellState(TrainerSpell const* trainer_spell) const;
-         bool IsSpellFitByClassAndRace( uint32 spell_id ) const;
-         bool IsNeedCastPassiveSpellAtLearn(SpellEntry const* spellInfo) const;
--        bool IsImmuneToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const;
-+        bool IsImmunedToSpellEffect(SpellEntry const* spellInfo, SpellEffectIndex index) const;
- 
-         void SendProficiency(ItemClass itemClass, uint32 itemSubclassMask);
-         void SendInitialSpells();
-@@ -1656,8 +1658,8 @@ class MANGOS_DLL_SPEC Player : public Unit
-         void learnQuestRewardedSpells(Quest const* quest);
-         void learnSpellHighRank(uint32 spellid);
- 
--        uint32 GetFreeTalentPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS1); }
--        void SetFreeTalentPoints(uint32 points) { SetUInt32Value(PLAYER_CHARACTER_POINTS1,points); }
-+        uint32 GetFreeTalentPoints() const { return 0/*GetUInt32Value(PLAYER_CHARACTER_POINTS1)*/; }
-+        void SetFreeTalentPoints(uint32 points) { 0/*SetUInt32Value(PLAYER_CHARACTER_POINTS1,points)*/; }
-         void UpdateFreeTalentPoints(bool resetIfNeed = true);
-         bool resetTalents(bool no_cost = false, bool all_specs = false);
-         uint32 resetTalentsCost() const;
-
-
-         uint32 GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot);
 
 diff --git a/mangos335/src/game/QuestDef.cpp b/mangos400/src/game/QuestDef.cpp
 index 793465b..e2d86ca 100644
@@ -5577,14 +5198,7 @@ index c59658e..ab9916a 100644
 +    // different triggered (for caster) and precast (casted before apply effect to target) cases
 +    switch(m_spellInfo->GetSpellFamilyName())
      {
-         case SPELLFAMILY_GENERIC:
-         {
-             // Bandages
--            if (m_spellInfo->Mechanic == MECHANIC_BANDAGE)
-+            if (m_spellInfo->GetMechanic() == MECHANIC_BANDAGE)
-                 AddPrecastSpell(11196);                     // Recently Bandaged
-             // Stoneskin
-             else if (m_spellInfo->Id == 20594)
+
 @@ -2811,14 +2852,14 @@ void Spell::cast(bool skipCheck)
          case SPELLFAMILY_MAGE:
          {
@@ -5606,9 +5220,7 @@ index c59658e..ab9916a 100644
          case SPELLFAMILY_PRIEST:
          {
              // Power Word: Shield
--            if (m_spellInfo->Mechanic == MECHANIC_SHIELD &&
 -                (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000001)))
-+            if (m_spellInfo->GetMechanic() == MECHANIC_SHIELD &&
 +                (classOpt && classOpt->SpellFamilyFlags & UI64LIT(0x0000000000000001)))
                  AddPrecastSpell(6788);                      // Weakened Soul
              // Prayer of Mending (jump animation), we need formal caster instead original for correct animation
@@ -6255,12 +5867,7 @@ index c59658e..ab9916a 100644
  
                  if(!learn_spellproto)
                      return SPELL_FAILED_NOT_KNOWN;
- 
--                if(m_spellInfo->spellLevel > pet->getLevel())
-+                if(m_spellInfo->GetSpellLevel() > pet->getLevel())
-                     return SPELL_FAILED_LOWLEVEL;
- 
-                 break;
+
 @@ -4896,19 +4980,19 @@ SpellCastResult Spell::CheckCast(bool strict)
                  if(!pet)
                      return SPELL_FAILED_NO_PET;
@@ -6269,14 +5876,7 @@ index c59658e..ab9916a 100644
 +                SpellEntry const *learn_spellproto = sSpellStore.LookupEntry(spellEffect->EffectTriggerSpell);
  
                  if(!learn_spellproto)
-                     return SPELL_FAILED_NOT_KNOWN;
- 
--                if(m_spellInfo->spellLevel > pet->getLevel())
-+                if(m_spellInfo->GetSpellLevel() > pet->getLevel())
-                     return SPELL_FAILED_LOWLEVEL;
- 
-                 break;
-             }
+
              case SPELL_EFFECT_APPLY_GLYPH:
              {
 -                uint32 glyphId = m_spellInfo->EffectMiscValue[i];
@@ -6504,10 +6104,7 @@ index c59658e..ab9916a 100644
  
 @@ -5624,24 +5720,24 @@ int32 Spell::CalculatePowerCost()
      }
- 
-     // Base powerCost
--    int32 powerCost = m_spellInfo->manaCost;
-+    int32 powerCost = m_spellInfo->GetManaCost();
+
      // PCT cost from total amount
 -    if (m_spellInfo->ManaCostPercentage)
 +    if (uint32 manaCostPct = m_spellInfo->GetManaCostPercentage())
@@ -6532,15 +6129,6 @@ index c59658e..ab9916a 100644
                  break;
              case POWER_RUNE:
              case POWER_RUNIC_POWER:
-@@ -5663,7 +5759,7 @@ int32 Spell::CalculatePowerCost()
-         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_COST, powerCost, this);
- 
-     if(m_spellInfo->Attributes & SPELL_ATTR_LEVEL_DAMAGE_CALCULATION)
--        powerCost = int32(powerCost/ (1.117f * m_spellInfo->spellLevel / m_caster->getLevel() -0.1327f));
-+        powerCost = int32(powerCost/ (1.117f * m_spellInfo->GetSpellLevel() / m_caster->getLevel() -0.1327f));
- 
-     // PCT mod from user auras by school
-     powerCost = int32(powerCost * (1.0f + m_caster->GetFloatValue(UNIT_FIELD_POWER_COST_MULTIPLIER + school)));
 @@ -5769,11 +5865,14 @@ SpellCastResult Spell::CheckItems()
              SpellCastResult failReason = SPELL_CAST_OK;
              for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
@@ -6950,18 +6538,7 @@ index c59658e..ab9916a 100644
      {
          case SPELL_EFFECT_SUMMON_PLAYER:                    // from anywhere
              break;
-@@ -6392,10 +6510,9 @@ bool Spell::IsNeedSendToClient() const
-         m_spellInfo->speed > 0.0f || !m_triggeredByAuraSpell && !m_IsTriggeredSpell;
- }
- 
--
- bool Spell::IsTriggeredSpellWithRedundentData() const
- {
--    return m_IsTriggeredSpell && (m_spellInfo->manaCost || m_spellInfo->ManaCostPercentage);
-+    return m_IsTriggeredSpell && (m_spellInfo->GetManaCost() || m_spellInfo->GetManaCostPercentage());
- }
- 
- bool Spell::HaveTargetsForEffect(SpellEffectIndex effect) const
+
 @@ -6563,7 +6680,7 @@ SpellCastResult Spell::CanOpenLock(SpellEffectIndex effIndex, uint32 lockId, Ski
                  reqKey = true;
  
@@ -7043,245 +6620,6 @@ diff --git a/mangos335/src/game/Spell.h b/mangos400/src/game/Spell.h
 index 2bb7e40..60dadd6 100644
 --- a/mangos335/src/game/Spell.h
 +++ b/mangos400/src/game/Spell.h
-@@ -225,123 +225,121 @@ class Spell
-     friend void Unit::SetCurrentCastedSpell( Spell * pSpell );
-     public:
- 
--        void EffectEmpty(SpellEffectIndex eff_idx);
--        void EffectNULL(SpellEffectIndex eff_idx);
--        void EffectUnused(SpellEffectIndex eff_idx);
--        void EffectDistract(SpellEffectIndex eff_idx);
--        void EffectPull(SpellEffectIndex eff_idx);
--        void EffectSchoolDMG(SpellEffectIndex eff_idx);
--        void EffectEnvironmentalDMG(SpellEffectIndex eff_idx);
--        void EffectInstaKill(SpellEffectIndex eff_idx);
--        void EffectDummy(SpellEffectIndex eff_idx);
--        void EffectTeleportUnits(SpellEffectIndex eff_idx);
--        void EffectApplyAura(SpellEffectIndex eff_idx);
--        void EffectSendEvent(SpellEffectIndex eff_idx);
--        void EffectPowerBurn(SpellEffectIndex eff_idx);
--        void EffectPowerDrain(SpellEffectIndex eff_idx);
--        void EffectHeal(SpellEffectIndex eff_idx);
--        void EffectBind(SpellEffectIndex eff_idx);
--        void EffectHealthLeech(SpellEffectIndex eff_idx);
--        void EffectQuestComplete(SpellEffectIndex eff_idx);
--        void EffectCreateItem(SpellEffectIndex eff_idx);
--        void EffectCreateItem2(SpellEffectIndex eff_idx);
--        void EffectCreateRandomItem(SpellEffectIndex eff_idx);
--        void EffectPersistentAA(SpellEffectIndex eff_idx);
--        void EffectEnergize(SpellEffectIndex eff_idx);
--        void EffectOpenLock(SpellEffectIndex eff_idx);
--        void EffectSummonChangeItem(SpellEffectIndex eff_idx);
--        void EffectProficiency(SpellEffectIndex eff_idx);
--        void EffectApplyAreaAura(SpellEffectIndex eff_idx);
--        void EffectSummonType(SpellEffectIndex eff_idx);
--        void EffectLearnSpell(SpellEffectIndex eff_idx);
--        void EffectDispel(SpellEffectIndex eff_idx);
--        void EffectDualWield(SpellEffectIndex eff_idx);
--        void EffectPickPocket(SpellEffectIndex eff_idx);
--        void EffectAddFarsight(SpellEffectIndex eff_idx);
--        void EffectHealMechanical(SpellEffectIndex eff_idx);
--        void EffectJump(SpellEffectIndex eff_idx);
--        void EffectTeleUnitsFaceCaster(SpellEffectIndex eff_idx);
--        void EffectLearnSkill(SpellEffectIndex eff_idx);
--        void EffectAddHonor(SpellEffectIndex eff_idx);
--        void EffectTradeSkill(SpellEffectIndex eff_idx);
--        void EffectEnchantItemPerm(SpellEffectIndex eff_idx);
--        void EffectEnchantItemTmp(SpellEffectIndex eff_idx);
--        void EffectTameCreature(SpellEffectIndex eff_idx);
--        void EffectSummonPet(SpellEffectIndex eff_idx);
--        void EffectLearnPetSpell(SpellEffectIndex eff_idx);
--        void EffectWeaponDmg(SpellEffectIndex eff_idx);
--        void EffectClearQuest(SpellEffectIndex eff_idx);
--        void EffectForceCast(SpellEffectIndex eff_idx);
--        void EffectTriggerSpell(SpellEffectIndex eff_idx);
--        void EffectTriggerMissileSpell(SpellEffectIndex eff_idx);
--        void EffectThreat(SpellEffectIndex eff_idx);
--        void EffectRestoreItemCharges(SpellEffectIndex eff_idx);
--        void EffectHealMaxHealth(SpellEffectIndex eff_idx);
--        void EffectInterruptCast(SpellEffectIndex eff_idx);
--        void EffectSummonObjectWild(SpellEffectIndex eff_idx);
--        void EffectScriptEffect(SpellEffectIndex eff_idx);
--        void EffectSanctuary(SpellEffectIndex eff_idx);
--        void EffectAddComboPoints(SpellEffectIndex eff_idx);
--        void EffectDuel(SpellEffectIndex eff_idx);
--        void EffectStuck(SpellEffectIndex eff_idx);
--        void EffectSummonPlayer(SpellEffectIndex eff_idx);
--        void EffectActivateObject(SpellEffectIndex eff_idx);
--        void EffectApplyGlyph(SpellEffectIndex eff_idx);
--        void EffectEnchantHeldItem(SpellEffectIndex eff_idx);
--        void EffectSummonObject(SpellEffectIndex eff_idx);
--        void EffectResurrect(SpellEffectIndex eff_idx);
--        void EffectParry(SpellEffectIndex eff_idx);
--        void EffectBlock(SpellEffectIndex eff_idx);
--        void EffectLeapForward(SpellEffectIndex eff_idx);
--        void EffectLeapBack(SpellEffectIndex eff_idx);
--        void EffectTransmitted(SpellEffectIndex eff_idx);
--        void EffectDisEnchant(SpellEffectIndex eff_idx);
--        void EffectInebriate(SpellEffectIndex eff_idx);
--        void EffectFeedPet(SpellEffectIndex eff_idx);
--        void EffectDismissPet(SpellEffectIndex eff_idx);
--        void EffectReputation(SpellEffectIndex eff_idx);
--        void EffectSelfResurrect(SpellEffectIndex eff_idx);
--        void EffectSkinning(SpellEffectIndex eff_idx);
--        void EffectCharge(SpellEffectIndex eff_idx);
--        void EffectCharge2(SpellEffectIndex eff_idx);
--        void EffectProspecting(SpellEffectIndex eff_idx);
--        void EffectRedirectThreat(SpellEffectIndex eff_idx);
--        void EffectMilling(SpellEffectIndex eff_idx);
--        void EffectRenamePet(SpellEffectIndex eff_idx);
--        void EffectSendTaxi(SpellEffectIndex eff_idx);
--        void EffectKnockBack(SpellEffectIndex eff_idx);
--        void EffectPlayerPull(SpellEffectIndex eff_idx);
--        void EffectDispelMechanic(SpellEffectIndex eff_idx);
--        void EffectSummonDeadPet(SpellEffectIndex eff_idx);
--        void EffectSummonAllTotems(SpellEffectIndex eff_idx);
--        void EffectBreakPlayerTargeting (SpellEffectIndex eff_idx);
--        void EffectDestroyAllTotems(SpellEffectIndex eff_idx);
--        void EffectDurabilityDamage(SpellEffectIndex eff_idx);
--        void EffectSkill(SpellEffectIndex eff_idx);
--        void EffectTaunt(SpellEffectIndex eff_idx);
--        void EffectDurabilityDamagePCT(SpellEffectIndex eff_idx);
--        void EffectModifyThreatPercent(SpellEffectIndex eff_idx);
--        void EffectResurrectNew(SpellEffectIndex eff_idx);
--        void EffectAddExtraAttacks(SpellEffectIndex eff_idx);
--        void EffectSpiritHeal(SpellEffectIndex eff_idx);
--        void EffectSkinPlayerCorpse(SpellEffectIndex eff_idx);
--        void EffectStealBeneficialBuff(SpellEffectIndex eff_idx);
--        void EffectUnlearnSpecialization(SpellEffectIndex eff_idx);
--        void EffectHealPct(SpellEffectIndex eff_idx);
--        void EffectEnergisePct(SpellEffectIndex eff_idx);
--        void EffectTriggerSpellWithValue(SpellEffectIndex eff_idx);
--        void EffectTriggerRitualOfSummoning(SpellEffectIndex eff_idx);
--        void EffectKillCreditPersonal(SpellEffectIndex eff_idx);
--        void EffectKillCredit(SpellEffectIndex eff_idx);
--        void EffectQuestFail(SpellEffectIndex eff_idx);
--        void EffectActivateRune(SpellEffectIndex eff_idx);
--
--        void EffectTeachTaxiNode(SpellEffectIndex eff_idx);
--        void EffectTitanGrip(SpellEffectIndex eff_idx);
--        void EffectEnchantItemPrismatic(SpellEffectIndex eff_idx);
--        void EffectPlayMusic(SpellEffectIndex eff_idx);
--        void EffectSpecCount(SpellEffectIndex eff_idx);
--        void EffectActivateSpec(SpellEffectIndex eff_idx);
-+        void EffectEmpty(SpellEffectEntry const* effect);
-+        void EffectNULL(SpellEffectEntry const* effect);
-+        void EffectUnused(SpellEffectEntry const* effect);
-+        void EffectDistract(SpellEffectEntry const* effect);
-+        void EffectPull(SpellEffectEntry const* effect);
-+        void EffectSchoolDMG(SpellEffectEntry const* effect);
-+        void EffectEnvironmentalDMG(SpellEffectEntry const* effect);
-+        void EffectInstaKill(SpellEffectEntry const* effect);
-+        void EffectDummy(SpellEffectEntry const* effect);
-+        void EffectTeleportUnits(SpellEffectEntry const* effect);
-+        void EffectApplyAura(SpellEffectEntry const* effect);
-+        void EffectSendEvent(SpellEffectEntry const* effect);
-+        void EffectPowerBurn(SpellEffectEntry const* effect);
-+        void EffectPowerDrain(SpellEffectEntry const* effect);
-+        void EffectHeal(SpellEffectEntry const* effect);
-+        void EffectBind(SpellEffectEntry const* effect);
-+        void EffectHealthLeech(SpellEffectEntry const* effect);
-+        void EffectQuestComplete(SpellEffectEntry const* effect);
-+        void EffectCreateItem(SpellEffectEntry const* effect);
-+        void EffectCreateItem2(SpellEffectEntry const* effect);
-+        void EffectCreateRandomItem(SpellEffectEntry const* effect);
-+        void EffectPersistentAA(SpellEffectEntry const* effect);
-+        void EffectEnergize(SpellEffectEntry const* effect);
-+        void EffectOpenLock(SpellEffectEntry const* effect);
-+        void EffectSummonChangeItem(SpellEffectEntry const* effect);
-+        void EffectProficiency(SpellEffectEntry const* effect);
-+        void EffectApplyAreaAura(SpellEffectEntry const* effect);
-+        void EffectSummonType(SpellEffectEntry const* effect);
-+        void EffectLearnSpell(SpellEffectEntry const* effect);
-+        void EffectDispel(SpellEffectEntry const* effect);
-+        void EffectDualWield(SpellEffectEntry const* effect);
-+        void EffectPickPocket(SpellEffectEntry const* effect);
-+        void EffectAddFarsight(SpellEffectEntry const* effect);
-+        void EffectHealMechanical(SpellEffectEntry const* effect);
-+        void EffectJump(SpellEffectEntry const* effect);
-+        void EffectTeleUnitsFaceCaster(SpellEffectEntry const* effect);
-+        void EffectLearnSkill(SpellEffectEntry const* effect);
-+        void EffectAddHonor(SpellEffectEntry const* effect);
-+        void EffectTradeSkill(SpellEffectEntry const* effect);
-+        void EffectEnchantItemPerm(SpellEffectEntry const* effect);
-+        void EffectEnchantItemTmp(SpellEffectEntry const* effect);
-+        void EffectTameCreature(SpellEffectEntry const* effect);
-+        void EffectSummonPet(SpellEffectEntry const* effect);
-+        void EffectLearnPetSpell(SpellEffectEntry const* effect);
-+        void EffectWeaponDmg(SpellEffectEntry const* effect);
-+        void EffectForceCast(SpellEffectEntry const* effect);
-+        void EffectTriggerSpell(SpellEffectEntry const* effect);
-+        void EffectTriggerMissileSpell(SpellEffectEntry const* effect);
-+        void EffectThreat(SpellEffectEntry const* effect);
-+        void EffectRestoreItemCharges(SpellEffectEntry const* effect);
-+        void EffectHealMaxHealth(SpellEffectEntry const* effect);
-+        void EffectInterruptCast(SpellEffectEntry const* effect);
-+        void EffectSummonObjectWild(SpellEffectEntry const* effect);
-+        void EffectScriptEffect(SpellEffectEntry const* effect);
-+        void EffectSanctuary(SpellEffectEntry const* effect);
-+        void EffectAddComboPoints(SpellEffectEntry const* effect);
-+        void EffectDuel(SpellEffectEntry const* effect);
-+        void EffectStuck(SpellEffectEntry const* effect);
-+        void EffectSummonPlayer(SpellEffectEntry const* effect);
-+        void EffectActivateObject(SpellEffectEntry const* effect);
-+        void EffectApplyGlyph(SpellEffectEntry const* effect);
-+        void EffectEnchantHeldItem(SpellEffectEntry const* effect);
-+        void EffectSummonObject(SpellEffectEntry const* effect);
-+        void EffectResurrect(SpellEffectEntry const* effect);
-+        void EffectParry(SpellEffectEntry const* effect);
-+        void EffectBlock(SpellEffectEntry const* effect);
-+        void EffectLeapForward(SpellEffectEntry const* effect);
-+        void EffectLeapBack(SpellEffectEntry const* effect);
-+        void EffectTransmitted(SpellEffectEntry const* effect);
-+        void EffectDisEnchant(SpellEffectEntry const* effect);
-+        void EffectInebriate(SpellEffectEntry const* effect);
-+        void EffectFeedPet(SpellEffectEntry const* effect);
-+        void EffectDismissPet(SpellEffectEntry const* effect);
-+        void EffectReputation(SpellEffectEntry const* effect);
-+        void EffectSelfResurrect(SpellEffectEntry const* effect);
-+        void EffectSkinning(SpellEffectEntry const* effect);
-+        void EffectCharge(SpellEffectEntry const* effect);
-+        void EffectCharge2(SpellEffectEntry const* effect);
-+        void EffectProspecting(SpellEffectEntry const* effect);
-+        void EffectRedirectThreat(SpellEffectEntry const* effect);
-+        void EffectMilling(SpellEffectEntry const* effect);
-+        void EffectRenamePet(SpellEffectEntry const* effect);
-+        void EffectSendTaxi(SpellEffectEntry const* effect);
-+        void EffectKnockBack(SpellEffectEntry const* effect);
-+        void EffectPlayerPull(SpellEffectEntry const* effect);
-+        void EffectDispelMechanic(SpellEffectEntry const* effect);
-+        void EffectSummonDeadPet(SpellEffectEntry const* effect);
-+        void EffectSummonAllTotems(SpellEffectEntry const* effect);
-+        void EffectBreakPlayerTargeting (SpellEffectEntry const* effect);
-+        void EffectDestroyAllTotems(SpellEffectEntry const* effect);
-+        void EffectDurabilityDamage(SpellEffectEntry const* effect);
-+        void EffectSkill(SpellEffectEntry const* effect);
-+        void EffectTaunt(SpellEffectEntry const* effect);
-+        void EffectDurabilityDamagePCT(SpellEffectEntry const* effect);
-+        void EffectModifyThreatPercent(SpellEffectEntry const* effect);
-+        void EffectResurrectNew(SpellEffectEntry const* effect);
-+        void EffectAddExtraAttacks(SpellEffectEntry const* effect);
-+        void EffectSpiritHeal(SpellEffectEntry const* effect);
-+        void EffectSkinPlayerCorpse(SpellEffectEntry const* effect);
-+        void EffectStealBeneficialBuff(SpellEffectEntry const* effect);
-+        void EffectUnlearnSpecialization(SpellEffectEntry const* effect);
-+        void EffectHealPct(SpellEffectEntry const* effect);
-+        void EffectEnergisePct(SpellEffectEntry const* effect);
-+        void EffectTriggerSpellWithValue(SpellEffectEntry const* effect);
-+        void EffectTriggerRitualOfSummoning(SpellEffectEntry const* effect);
-+        void EffectKillCreditPersonal(SpellEffectEntry const* effect);
-+        void EffectKillCredit(SpellEffectEntry const* effect);
-+        void EffectQuestFail(SpellEffectEntry const* effect);
-+        void EffectActivateRune(SpellEffectEntry const* effect);
-+        void EffectTeachTaxiNode(SpellEffectEntry const* effect);
-+        void EffectTitanGrip(SpellEffectEntry const* effect);
-+        void EffectEnchantItemPrismatic(SpellEffectEntry const* effect);
-+        void EffectPlayMusic(SpellEffectEntry const* effect);
-+        void EffectSpecCount(SpellEffectEntry const* effect);
-+        void EffectActivateSpec(SpellEffectEntry const* effect);
- 
-         Spell(Unit* caster, SpellEntry const *info, bool triggered, ObjectGuid originalCasterGUID = ObjectGuid(), SpellEntry const* triggeredBy = NULL);
-         ~Spell();
 @@ -382,12 +380,12 @@ class Spell
          uint32 getState() const { return m_spellState; }
          void setState(uint32 state) { m_spellState = state; }
@@ -7301,60 +6639,7 @@ index 2bb7e40..60dadd6 100644
  
          void WriteSpellGoTargets( WorldPacket * data );
          void WriteAmmoToPacket( WorldPacket * data );
-@@ -424,6 +422,7 @@ class Spell
- 
-         SpellEntry const* m_spellInfo;
-         SpellEntry const* m_triggeredBySpellInfo;
-+        SpellInterruptsEntry const* m_spellInterrupts;
-         int32 m_currentBasePoints[MAX_EFFECT_INDEX];        // cache SpellEntry::CalculateSimpleValue and use for set custom base points
-         Item* m_CastItem;
-         uint8 m_cast_count;
-@@ -444,8 +443,8 @@ class Spell
-             return  m_spellInfo->Attributes & SPELL_ATTR_RANGED;
-         }
-         bool IsChannelActive() const { return m_caster->GetUInt32Value(UNIT_CHANNEL_SPELL) != 0; }
--        bool IsMeleeAttackResetSpell() const { return !m_IsTriggeredSpell && (m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK);  }
--        bool IsRangedAttackResetSpell() const { return !m_IsTriggeredSpell && IsRangedSpell() && (m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK); }
-+        bool IsMeleeAttackResetSpell() const { return !m_IsTriggeredSpell && m_spellInterrupts && (m_spellInterrupts->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK);  }
-+        bool IsRangedAttackResetSpell() const { return !m_IsTriggeredSpell && IsRangedSpell() && m_spellInterrupts && (m_spellInterrupts->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK); }
- 
-         bool IsDeletable() const { return !m_referencedFromCurrentSpell && !m_executedCurrently; }
-         void SetReferencedFromCurrent(bool yes) { m_referencedFromCurrentSpell = yes; }
-@@ -455,14 +454,14 @@ class Spell
-         uint64 GetDelayMoment() const { return m_delayMoment; }
- 
-         bool IsNeedSendToClient() const;                    // use for hide spell cast for client in case when cast not have client side affect (animation or log entries)
--        bool IsTriggeredSpellWithRedundentData() const;     // use for ignore some spell data for triggered spells like cast time, some triggered spells have redundent copy data from main spell for client use purpose
-+        bool IsTriggeredSpellWithRedundentData() const;     // use for ignore some spell data for triggered spells like cast time, some triggered spells have redundant copy data from main spell for client use purpose
- 
-         CurrentSpellTypes GetCurrentContainer();
- 
-         // caster types:
-         // formal spell caster, in game source of spell affects cast
-         Unit* GetCaster() const { return m_caster; }
--        // real source of cast affects, explcit caster, or DoT/HoT applier, or GO owner, or wild GO itself. Can be NULL
-+        // real source of cast affects, explicit caster, or DoT/HoT applier, or GO owner, or wild GO itself. Can be NULL
-         WorldObject* GetAffectiveCasterObject() const;
-         // limited version returning NULL in cases not Unit* caster object, need for Aura (auras currently not support non-Unit caster)
-         Unit* GetAffectiveCaster() const { return !m_originalCasterGUID.IsEmpty() ? m_originalCaster : m_caster; }
-@@ -733,7 +732,7 @@ namespace MaNGOS
-                         break;
-                     case SPELL_TARGETS_AOE_DAMAGE:
-                     {
--                        if(itr->getSource()->GetTypeId()==TYPEID_UNIT && ((Creature*)itr->getSource())->IsTotem())
-+                        if(itr->getSource()->GetTypeId()==TYPEID_UNIT && ((Creature*)itr->getSource())->isTotem())
-                             continue;
- 
-                         if (i_playerControled)
-@@ -808,7 +807,7 @@ namespace MaNGOS
-     #endif
- }
- 
--typedef void(Spell::*pEffect)(SpellEffectIndex eff_idx);
-+typedef void(Spell::*pEffect)(SpellEffectEntry const* spellEffect);
- 
- class SpellEvent : public BasicEvent
- {
+
 diff --git a/mangos335/src/game/SpellAuras.cpp b/mangos400/src/game/SpellAuras.cpp
 index cac3f9e..7473870 100644
 --- a/mangos335/src/game/SpellAuras.cpp
@@ -9670,15 +8955,7 @@ index 56c494e..80f873a 100644
              }
              break;
          }
-@@ -1840,7 +1862,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
-                     {
-                         SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
- 
--                        if (spellInfo->SpellFamilyName == SPELLFAMILY_MAGE &&
-+                        if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_MAGE &&
-                             (GetSpellSchoolMask(spellInfo) & SPELL_SCHOOL_MASK_FROST) &&
-                             spellInfo->Id != 11958 && GetSpellRecoveryTime(spellInfo) > 0)
-                         {
+
 @@ -1881,7 +1903,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
              }
  
@@ -9842,15 +9119,7 @@ index 56c494e..80f873a 100644
              {
                  Unit* target = unitTarget;
                  uint32 spellid;
-@@ -2220,7 +2247,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
-                     {
-                         SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
- 
--                        if (spellInfo->SpellFamilyName == SPELLFAMILY_HUNTER && spellInfo->Id != 23989 && GetSpellRecoveryTime(spellInfo) > 0 )
-+                        if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && spellInfo->Id != 23989 && GetSpellRecoveryTime(spellInfo) > 0 )
-                             ((Player*)m_caster)->RemoveSpellCooldown((itr++)->first,true);
-                         else
-                             ++itr;
+
 @@ -2254,7 +2281,7 @@ void Spell::EffectDummy(SpellEffectIndex eff_idx)
                      if (!pet || !unitTarget)
                          return;
@@ -10528,15 +9797,7 @@ index 56c494e..80f873a 100644
  
      // Some level depends spells
      int level_multiplier = 0;
-@@ -3689,7 +3694,7 @@ void Spell::EffectEnergize(SpellEffectIndex eff_idx)
-                     continue;
- 
-                 SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
--                if (spellInfo && (spellInfo->spellLevel < m_spellInfo->spellLevel || spellInfo->spellLevel > unitTarget->getLevel()))
-+                if (spellInfo && (spellInfo->GetSpellLevel() < m_spellInfo->GetSpellLevel() || spellInfo->GetSpellLevel() > unitTarget->getLevel()))
-                     continue;
- 
-                 elixirs.push_back(itr->first);
+
 @@ -3705,17 +3710,17 @@ void Spell::EffectEnergize(SpellEffectIndex eff_idx)
      }
  }
@@ -15657,15 +14918,6 @@ index 2614123..9fd5aa3 100644
              return true;
  
      if (!(spellInfo->AttributesEx & SPELL_ATTR_EX_UNAFFECTED_BY_SCHOOL_IMMUNE) &&         // unaffected by school immunity
-@@ -7012,7 +7047,7 @@ bool Unit::IsImmuneToSpell(SpellEntry const* spellInfo)
-                 return true;
-     }
- 
--    if(uint32 mechanic = spellInfo->Mechanic)
-+    if(uint32 mechanic = spellInfo->GetMechanic())
-     {
-         SpellImmuneList const& mechanicList = m_spellImmune[IMMUNITY_MECHANIC];
-         for(SpellImmuneList::const_iterator itr = mechanicList.begin(); itr != mechanicList.end(); ++itr)
 @@ -7028,16 +7063,20 @@ bool Unit::IsImmuneToSpell(SpellEntry const* spellInfo)
      return false;
  }

@@ -1527,7 +1527,7 @@ valid examples:
                     }
                     else if(linkedItem)
                     {
-                        char* const* suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
+                        DBCString suffix = itemSuffix?itemSuffix->nameSuffix:(itemProperty?itemProperty->nameSuffix:NULL);
 
                         std::string expectedName = std::string(linkedItem->Name1);
                         if (suffix)

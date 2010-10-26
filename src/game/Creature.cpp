@@ -1369,7 +1369,7 @@ bool Creature::IsImmunedToSpell(SpellEntry const* spellInfo)
     if (!spellInfo)
         return false;
 
-    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->Mechanic - 1)))
+    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->GetMechanic() - 1)))
         return true;
 
     return Unit::IsImmunedToSpell(spellInfo);
@@ -1377,20 +1377,22 @@ bool Creature::IsImmunedToSpell(SpellEntry const* spellInfo)
 
 bool Creature::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) const
 {
-    if (GetCreatureInfo()->MechanicImmuneMask & (1 << (spellInfo->EffectMechanic[index] - 1)))
+    SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(index));
+
+    if (spellEffect && GetCreatureInfo()->MechanicImmuneMask & (1 << (spellEffect->EffectMechanic - 1)))
         return true;
 
     // Taunt immunity special flag check
     if (GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_NOT_TAUNTABLE)
     {
         // Taunt aura apply check
-        if (spellInfo->Effect[index] == SPELL_EFFECT_APPLY_AURA)
+        if (spellEffect && spellEffect->Effect == SPELL_EFFECT_APPLY_AURA)
         {
-            if (spellInfo->EffectApplyAuraName[index] == SPELL_AURA_MOD_TAUNT)
+            if (spellEffect && spellEffect->EffectApplyAuraName == SPELL_AURA_MOD_TAUNT)
                 return true;
         }
         // Spell effect taunt check
-        else if (spellInfo->Effect[index] == SPELL_EFFECT_ATTACK_ME)
+        else if (spellEffect && spellEffect->Effect == SPELL_EFFECT_ATTACK_ME)
             return true;
     }
 
@@ -1414,12 +1416,16 @@ SpellEntry const *Creature::reachWithSpellAttack(Unit *pVictim)
         }
 
         bool bcontinue = true;
-        for(uint32 j=0;j<3;j++)
+        for(uint32 j=0;j<MAX_EFFECT_INDEX;j++)
         {
-            if( (spellInfo->Effect[j] == SPELL_EFFECT_SCHOOL_DAMAGE )       ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_INSTAKILL)            ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
-                (spellInfo->Effect[j] == SPELL_EFFECT_HEALTH_LEECH )
+			SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+            if(!spellEffect)
+                continue;
+
+            if( (spellEffect->Effect == SPELL_EFFECT_SCHOOL_DAMAGE )       ||
+                (spellEffect->Effect == SPELL_EFFECT_INSTAKILL)            ||
+                (spellEffect->Effect == SPELL_EFFECT_ENVIRONMENTAL_DAMAGE) ||
+                (spellEffect->Effect == SPELL_EFFECT_HEALTH_LEECH )
                 )
             {
                 bcontinue = false;
@@ -1428,7 +1434,7 @@ SpellEntry const *Creature::reachWithSpellAttack(Unit *pVictim)
         }
         if(bcontinue) continue;
 
-        if(spellInfo->manaCost > GetPower(POWER_MANA))
+        if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
             continue;
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
         float range = GetSpellMaxRange(srange);
@@ -1440,9 +1446,9 @@ SpellEntry const *Creature::reachWithSpellAttack(Unit *pVictim)
         //    continue;
         if( dist > range || dist < minrange )
             continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
             continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
             continue;
         return spellInfo;
     }
@@ -1466,9 +1472,10 @@ SpellEntry const *Creature::reachWithSpellCure(Unit *pVictim)
         }
 
         bool bcontinue = true;
-        for(uint32 j=0;j<3;j++)
+        for(uint32 j=0;j<MAX_EFFECT_INDEX;j++)
         {
-            if( (spellInfo->Effect[j] == SPELL_EFFECT_HEAL ) )
+            SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+            if( spellEffect && (spellEffect->Effect == SPELL_EFFECT_HEAL) )
             {
                 bcontinue = false;
                 break;
@@ -1476,7 +1483,7 @@ SpellEntry const *Creature::reachWithSpellCure(Unit *pVictim)
         }
         if(bcontinue) continue;
 
-        if(spellInfo->manaCost > GetPower(POWER_MANA))
+        if(spellInfo->GetManaCost() > GetPower(POWER_MANA))
             continue;
         SpellRangeEntry const* srange = sSpellRangeStore.LookupEntry(spellInfo->rangeIndex);
         float range = GetSpellMaxRange(srange);
@@ -1488,9 +1495,9 @@ SpellEntry const *Creature::reachWithSpellCure(Unit *pVictim)
         //    continue;
         if( dist > range || dist < minrange )
             continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_SILENCED))
             continue;
-        if(spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
+        if(spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY && HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED))
             continue;
         return spellInfo;
     }
@@ -1761,7 +1768,8 @@ bool Creature::LoadCreaturesAddon(bool reload)
 
             Aura* AdditionalAura = CreateAura(AdditionalSpellInfo, cAura->effect_idx, NULL, this, this, 0);
             AddAura(AdditionalAura);
-            sLog.outDebug("Spell: %u with Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, AdditionalSpellInfo->EffectApplyAuraName[0],GetGUIDLow(),GetEntry());
+			SpellEffectEntry const* effectEntry = AdditionalSpellInfo->GetSpellEffect(SpellEffectIndex(cAura->effect_idx));
+            sLog.outDebug("Spell: %u - Aura %u added to creature (GUIDLow: %u Entry: %u )", cAura->spell_id, effectEntry ? effectEntry->EffectApplyAuraName : 0, GetGUIDLow(), GetEntry());
         }
     }
     return true;
@@ -1834,10 +1842,10 @@ void Creature::AddCreatureSpellCooldown(uint32 spellid)
     if(cooldown)
         _AddCreatureSpellCooldown(spellid, time(NULL) + cooldown/IN_MILLISECONDS);
 
-    if(spellInfo->Category)
-        _AddCreatureCategoryCooldown(spellInfo->Category, time(NULL));
+    if(uint32 category = spellInfo->GetCategory())
+        _AddCreatureCategoryCooldown(category, time(NULL));
 
-    m_GlobalCooldown = spellInfo->StartRecoveryTime;
+	m_GlobalCooldown = spellInfo->GetStartRecoveryTime();
 }
 
 bool Creature::HasCategoryCooldown(uint32 spell_id) const
@@ -1847,11 +1855,11 @@ bool Creature::HasCategoryCooldown(uint32 spell_id) const
         return false;
 
     // check global cooldown if spell affected by it
-    if (spellInfo->StartRecoveryCategory > 0 && m_GlobalCooldown > 0)
+	if (spellInfo->GetStartRecoveryTime() > 0 && m_GlobalCooldown > 0)
         return true;
 
-    CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.find(spellInfo->Category);
-    return(itr != m_CreatureCategoryCooldowns.end() && time_t(itr->second + (spellInfo->CategoryRecoveryTime / IN_MILLISECONDS)) > time(NULL));
+    CreatureSpellCooldowns::const_iterator itr = m_CreatureCategoryCooldowns.find(spellInfo->GetCategory());
+    return (itr != m_CreatureCategoryCooldowns.end() && time_t(itr->second + (spellInfo->GetCategoryRecoveryTime() / IN_MILLISECONDS)) > time(NULL));
 }
 
 bool Creature::HasSpellCooldown(uint32 spell_id) const

@@ -7929,7 +7929,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     if (!spellInfo)
                         continue;
 
-                    if (spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & UI64LIT(0x2000))
+                    if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & UI64LIT(0x2000))
                     {
                         triggered_spell_id = spellInfo->Id;
                         break;
@@ -11053,7 +11053,7 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo)
                 return true;
     }
 
-    if(uint32 mechanic = spellInfo->Mechanic)
+    if(uint32 mechanic = spellInfo->GetMechanic())
     {
         SpellImmuneList const& mechanicList = m_spellImmune[IMMUNITY_MECHANIC];
         for(SpellImmuneList::const_iterator itr = mechanicList.begin(); itr != mechanicList.end(); ++itr)
@@ -11104,7 +11104,7 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
 
 		if(HasAura(47585) && (
 			spellInfo->EffectMechanic[index] & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK ||
-            spellInfo->Mechanic & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK))
+            spellInfo->GetMechanic() & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK))
 				return true;
 
         // Check for immune to application of harmful magical effects
@@ -11118,14 +11118,14 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
 		AuraList const& immuneMechanicAuraApply = GetAurasByType(SPELL_AURA_MECHANIC_IMMUNITY_MASK);
         for(AuraList::const_iterator i = immuneMechanicAuraApply.begin(); i != immuneMechanicAuraApply.end(); ++i)
 		{
-			if((*i)->GetId() == 46924 && spellInfo->Mechanic == 3) // Hack for disarm into blade storm
+			if((*i)->GetId() == 46924 && spellInfo->GetMechanic() == 3) // Hack for disarm into blade storm
 				return false;
 		
             if ((spellInfo->EffectMechanic[index] & (*i)->GetMiscValue() ||
-                spellInfo->Mechanic & (*i)->GetMiscValue()) ||
+                spellInfo->GetMechanic() & (*i)->GetMiscValue()) ||
                 ((*i)->GetId() == 46924 &&                                                // Bladestorm Immunity
                 spellInfo->EffectMechanic[index] & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK ||
-                spellInfo->Mechanic & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK))
+                spellInfo->GetMechanic() & IMMUNE_TO_MOVEMENT_IMPAIRMENT_AND_LOSS_CONTROL_MASK))
                 return true;
 		}
     }
@@ -11138,7 +11138,7 @@ bool Unit::IsDamageToThreatSpell(SpellEntry const * spellInfo) const
     if (!spellInfo)
         return false;
 
-    uint32 family = spellInfo->SpellFamilyName;
+    uint32 family = spellInfo->GetSpellFamilyName();
     uint64 flags = spellInfo->SpellFamilyFlags;
 
     if ((family == 5 && flags == 256) ||                    //Searing Pain

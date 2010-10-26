@@ -2141,6 +2141,19 @@ struct MapDifficulty
     uint32 maxPlayers;                                      // some heroic dungeons have 0 when expect same value as in normal dificulty case
 };
 
+struct SpellEffect
+{
+    SpellEffect()
+    {
+        effects[0] = NULL;
+        effects[1] = NULL;
+        effects[2] = NULL;
+    }
+    SpellEffectEntry const* effects[3];
+};
+
+typedef std::map<uint32, SpellEffect> SpellEffectMap;
+
 struct TalentSpellPos
 {
     TalentSpellPos() : talent_id(0), rank(0) {}

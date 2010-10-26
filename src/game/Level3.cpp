@@ -1868,7 +1868,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(const char* /*args*/)
             continue;
 
         // skip server-side/triggered spells
-        if(spellInfo->spellLevel==0)
+        if(spellInfo->GetSpellLevel()==0)
             continue;
 
         // skip wrong class/race skills
@@ -1876,7 +1876,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(const char* /*args*/)
             continue;
 
         // skip other spell families
-        if( spellInfo->SpellFamilyName != family)
+        if( spellInfo->GetSpellFamilyName() != family)
             continue;
 
         // skip spells with first rank learned as talent (and all talents then also)

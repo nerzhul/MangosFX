@@ -197,7 +197,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
     if(!spellInfo)
         return SPELL_NORMAL;
 
-    switch(spellInfo->SpellFamilyName)
+    switch(spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -827,7 +827,7 @@ SpellCastResult GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 
             return SPELL_FAILED_ONLY_SHAPESHIFT;
     }
 
-	if (spellInfo->SpellFamilyName == SPELLFAMILY_DRUID && (spellInfo->SpellFamilyFlags2 & 0x8) && form != FORM_CAT)
+	if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DRUID && (spellInfo->SpellFamilyFlags2 & 0x8) && form != FORM_CAT)
 		return SPELL_FAILED_ONLY_SHAPESHIFT;
 
     return SPELL_CAST_OK;
@@ -1346,7 +1346,7 @@ bool SpellMgr::canStackSpellRanks(SpellEntry const *spellInfo)
     // All stance spells. if any better way, change it.
     for (int i = 0; i < 3; ++i)
     {
-        switch(spellInfo->SpellFamilyName)
+        switch(spellInfo->GetSpellFamilyName())
         {
             case SPELLFAMILY_PALADIN:
                 // Paladin aura Spell
