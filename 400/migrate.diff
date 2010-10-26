@@ -25,32 +25,6 @@ index 08bf61e..22e708d 100644
      res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADGROUP,           "SELECT groupId FROM group_member WHERE memberGuid ='%u'", GUID_LOPART(m_guid));
      res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADBOUNDINSTANCES,  "SELECT id, permanent, map, difficulty, resettime FROM character_instance LEFT JOIN instance ON instance = id WHERE guid = '%u'", GUID_LOPART(m_guid));
      res &= SetPQuery(PLAYER_LOGIN_QUERY_LOADAURAS,           "SELECT caster_guid,item_guid,spell,stackcount,remaincharges,basepoints0,basepoints1,basepoints2,maxduration0,maxduration1,maxduration2,remaintime0,remaintime1,remaintime2,effIndexMask FROM character_aura WHERE guid = '%u'", GUID_LOPART(m_guid));
-diff --git a/mangos335/src/game/GossipDef.cpp b/mangos400/src/game/GossipDef.cpp
-index 06ac32a..27424b1 100644
---- a/mangos335/src/game/GossipDef.cpp
-+++ b/mangos400/src/game/GossipDef.cpp
-
-@@ -708,11 +708,24 @@ void PlayerMenu::SendQuestQueryResponse( Quest const *pQuest )
-     for (iI = 0; iI < QUEST_OBJECTIVES_COUNT; ++iI)
-         data << ObjectiveText[iI];
- 
-+    for(iI = 0; iI < 4; ++iI)                               // 4.0.0 currency reward id and count
-+    {
-+        data << uint32(0);
-+        data << uint32(0);
-+    }
-+
-+    for(iI = 0; iI < 4; ++iI)                               // 4.0.0 currency required id and count
-+    {
-+        data << uint32(0);
-+        data << uint32(0);
-+    }
-+
-     GetMenuSession()->SendPacket( &data );
-+
-     DEBUG_LOG( "WORLD: Sent SMSG_QUEST_QUERY_RESPONSE questid=%u", pQuest->GetQuestId() );
- }
-
 diff --git a/mangos335/src/game/GridNotifiers.cpp b/mangos400/src/game/GridNotifiers.cpp
 index ba2eb06..da6aa90 100644
 --- a/mangos335/src/game/GridNotifiers.cpp
