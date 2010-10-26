@@ -186,6 +186,13 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map *map, uint32 phaseMa
 			pvpWG->OnGameObjectCreate(this,true);
 		}
 
+	if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
+	{
+		SetUInt32Value(GAMEOBJECT_LEVEL, goinfo->transport.pause);
+		if (goinfo->transport.startOpen)
+			SetGoState(GO_STATE_ACTIVE);
+	}
+
 	SetZoneScript();
 
 	switch(GetEntry())
