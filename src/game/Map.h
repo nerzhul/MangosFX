@@ -368,11 +368,11 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
         {
             if(!i_mapEntry)
                 return false;
-            if(i_mapEntry->entrance_map < 0)
+            if(i_mapEntry->ghost_entrance_map < 0)
                 return false;
-            mapid = i_mapEntry->entrance_map;
-            x = i_mapEntry->entrance_x;
-            y = i_mapEntry->entrance_y;
+            mapid = i_mapEntry->ghost_entrance_map;
+            x = i_mapEntry->ghost_entrance_x;
+            y = i_mapEntry->ghost_entrance_y;
             return true;
         }
 

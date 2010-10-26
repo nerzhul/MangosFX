@@ -66,10 +66,18 @@ enum ItemModType
     ITEM_MOD_SPELL_POWER              = 45,
     ITEM_MOD_HEALTH_REGEN             = 46,
     ITEM_MOD_SPELL_PENETRATION        = 47,
-    ITEM_MOD_BLOCK_VALUE              = 48
+    ITEM_MOD_BLOCK_VALUE              = 48,
+    ITEM_MOD_MASTERY_RATING           = 49,
+    ITEM_MOD_EXTRA_ARMOR              = 50,
+    ITEM_MOD_FIRE_RESISTANCE          = 51,
+    ITEM_MOD_FROST_RESISTANCE         = 52,
+    ITEM_MOD_HOLY_RESISTANCE          = 53,
+    ITEM_MOD_SHADOW_RESISTANCE        = 54,
+    ITEM_MOD_NATURE_RESISTANCE        = 55,
+    ITEM_MOD_ARCANE_RESISTANCE        = 56
 };
 
-#define MAX_ITEM_MOD                    49
+#define MAX_ITEM_MOD                    57
 
 enum ItemSpelltriggerType
 {
@@ -137,6 +145,7 @@ enum ItemFlags2
 	ITEM_FLAGS2_ALLIANCE_ONLY                 = 0x00000002, // drop in loot, sell by vendor and equipping only for alliance
 	ITEM_FLAGS2_EXT_COST_REQUIRES_GOLD        = 0x00000004, // item cost include gold part in case extended cost use also
 	ITEM_FLAGS2_NEED_ROLL_DISABLED            = 0x00000100, // need roll during looting is not allowed for this item
+	ITEM_FLAGS2_CASTER_WEAPON                 = 0x00000200, // uses caster specific dbc file for DPS calculations
 };
 
 enum BAG_FAMILY_MASK
@@ -629,15 +638,7 @@ struct ItemPrototype
 
     uint32 GetMaxStackSize() const { return Stackable > 0 ? uint32(Stackable) : uint32(0x7FFFFFFF-1); }
 
-    float getDPS() const
-    {
-        if (Delay == 0)
-            return 0;
-        float temp = 0;
-        for (int i = 0; i < MAX_ITEM_PROTO_DAMAGES; ++i)
-            temp+=Damage[i].DamageMin + Damage[i].DamageMax;
-        return temp*500/Delay;
-    }
+    float getDPS() const;
 
     int32 getFeralBonus(int32 extraDPS = 0) const
     {
@@ -651,6 +652,10 @@ struct ItemPrototype
         }
         return 0;
     }
+
+	uint32 GetArmor() const;
+    float GetMinDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 0.7f + 0.5f); }
+    float GetMaxDamage() const { return floor(getDPS() * float(Delay) / 1000.0f * 1.3f + 0.5f); }
 
     bool IsPotion() const { return Class==ITEM_CLASS_CONSUMABLE && SubClass==ITEM_SUBCLASS_POTION; }
     bool IsConjuredConsumable() const { return Class == ITEM_CLASS_CONSUMABLE && (Flags & ITEM_FLAGS_CONJURED); }
