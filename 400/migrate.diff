@@ -2663,19 +2663,6 @@ index d8d30e2..87797f6 100644
              }
          }
      }
-@@ -4683,9 +4687,9 @@ bool ChatHandler::HandleResetHonorCommand(char* args)
- 
-     target->SetUInt32Value(PLAYER_FIELD_KILLS, 0);
-     target->SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, 0);
--    target->SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, 0);
--    target->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
--    target->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
-+    target->SetHonorPoints(0);
-+    //target->SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
-+    //target->SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
-     target->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL);
- 
-     return true;
 
 diff --git a/mangos335/src/game/Map.cpp b/mangos400/src/game/Map.cpp
 index 91c19e6..a0504c6 100644
@@ -14213,34 +14200,7 @@ diff --git a/mangos335/src/game/SpellMgr.h b/mangos400/src/game/SpellMgr.h
 index a5ccb70..ba92e70 100644
 --- a/mangos335/src/game/SpellMgr.h
 +++ b/mangos400/src/game/SpellMgr.h
-@@ -127,7 +127,12 @@ inline float GetSpellMaxRange(SpellRangeEntry const *range, bool friendly = fals
-         return 0;
-     return (friendly ? range->maxRangeFriendly : range->maxRange);
- }
--inline uint32 GetSpellRecoveryTime(SpellEntry const *spellInfo) { return spellInfo->RecoveryTime > spellInfo->CategoryRecoveryTime ? spellInfo->RecoveryTime : spellInfo->CategoryRecoveryTime; }
-+inline uint32 GetSpellRecoveryTime(SpellEntry const *spellInfo)
-+{
-+    if(SpellCooldownsEntry const* cooldowns = spellInfo->GetSpellCooldowns())
-+        return cooldowns->RecoveryTime > cooldowns->CategoryRecoveryTime ? cooldowns->RecoveryTime : cooldowns->CategoryRecoveryTime;
-+    return 0;
-+}
- int32 GetSpellDuration(SpellEntry const *spellInfo);
- int32 GetSpellMaxDuration(SpellEntry const *spellInfo);
- uint16 GetSpellAuraMaxTicks(SpellEntry const* spellInfo);
-@@ -136,8 +141,11 @@ WeaponAttackType GetWeaponAttackType(SpellEntry const *spellInfo);
- inline bool IsSpellHaveEffect(SpellEntry const *spellInfo, SpellEffects effect)
- {
-     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
--        if(SpellEffects(spellInfo->Effect[i])==effect)
--            return true;
-+    {
-+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-+            if(SpellEffects(effectEntry->Effect) == effect)
-+                return true;
-+    }
-     return false;
- }
- 
+
 @@ -147,7 +155,11 @@ inline bool IsSpellAppliesAura(SpellEntry const *spellInfo, uint32 effectMask)
      {
          if (effectMask & (1 << i))
@@ -14266,33 +14226,8 @@ index a5ccb70..ba92e70 100644
      {
          case SPELL_EFFECT_SCHOOL_DAMAGE:
          case SPELL_EFFECT_WEAPON_DAMAGE_NOSCHOOL:
-@@ -181,16 +196,22 @@ inline bool IsEffectHandledOnDelayedSpellLaunch(SpellEntry const *spellInfo, Spe
- inline bool IsSpellHaveAura(SpellEntry const *spellInfo, AuraType aura)
- {
-     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
--        if(AuraType(spellInfo->EffectApplyAuraName[i])==aura)
--            return true;
-+    {
-+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-+            if(AuraType(effectEntry->EffectApplyAuraName)==aura)
-+                return true;
-+    }
-     return false;
- }
- 
- inline bool IsSpellLastAuraEffect(SpellEntry const *spellInfo, SpellEffectIndex effecIdx)
- {
-     for(int i = effecIdx+1; i < MAX_EFFECT_INDEX; ++i)
--        if(spellInfo->EffectApplyAuraName[i])
--            return false;
-+    {
-+        if(SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i)))
-+            if(effectEntry->EffectApplyAuraName)
-+                return false;
-+    }
-     return true;
- }
- 
+
+
 @@ -198,33 +219,40 @@ bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 spellId_2);
  
  inline bool IsSealSpell(SpellEntry const *spellInfo)
@@ -14330,39 +14265,7 @@ index a5ccb70..ba92e70 100644
 +        (spellEffect1 && spellEffect1->Effect == SPELL_EFFECT_SCRIPT_EFFECT)) ||
 +        spellInfo->Id == 64323);                         // Book of Glyph Mastery (Effect0==SPELL_EFFECT_SCRIPT_EFFECT without any other data)
  }
- 
- inline bool IsLootCraftingSpell(SpellEntry const *spellInfo)
- {
--    return (spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
-+    SpellEffectEntry const* spellEffect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
-+    SpellTotemsEntry const* totems = spellInfo->GetSpellTotems();
-+    return (spellEffect0 && (spellEffect0->Effect == SPELL_EFFECT_CREATE_RANDOM_ITEM ||
-         // different random cards from Inscription (121==Virtuoso Inking Set category) r without explicit item
--        (spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_CREATE_ITEM_2 &&
--        (spellInfo->TotemCategory[0] != 0 || spellInfo->EffectItemType[0]==0)));
-+        (spellEffect0->Effect == SPELL_EFFECT_CREATE_ITEM_2 &&
-+        ((totems && totems->TotemCategory[0] != 0) || spellEffect0->EffectItemType==0))));
- }
- 
- int32 CompareAuraRanks(uint32 spellId_1, uint32 spellId_2);
-@@ -305,11 +333,15 @@ inline bool IsSpellWithCasterSourceTargetsOnly(SpellEntry const* spellInfo)
- {
-     for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
-     {
--        uint32 targetA = spellInfo->EffectImplicitTargetA[i];
-+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
-+        if(!effectEntry)
-+            continue;
-+
-+        uint32 targetA = effectEntry->EffectImplicitTargetA;
-         if(targetA && !IsCasterSourceTarget(targetA))
-             return false;
- 
--        uint32 targetB = spellInfo->EffectImplicitTargetB[i];
-+        uint32 targetB = effectEntry->EffectImplicitTargetB;
-         if(targetB && !IsCasterSourceTarget(targetB))
-             return false;
- 
+
 @@ -393,11 +425,14 @@ inline bool IsAreaEffectTarget( Targets target )
  
  inline bool IsAreaOfEffectSpell(SpellEntry const *spellInfo)
@@ -14435,25 +14338,7 @@ index a5ccb70..ba92e70 100644
 +        mask |= 1 << (effectEntry->EffectMechanic - 1);
      return mask;
  }
- 
- inline uint32 GetAllSpellMechanicMask(SpellEntry const* spellInfo)
- {
-+    SpellCategoriesEntry const* spellCategory = spellInfo->GetSpellCategories();
-     uint32 mask = 0;
--    if (spellInfo->Mechanic)
--        mask |= 1 << (spellInfo->Mechanic - 1);
-+    if (spellCategory && spellCategory->Mechanic)
-+        mask |= 1 << (spellCategory->Mechanic - 1);
-     for (int i=0; i< MAX_EFFECT_INDEX; ++i)
--        if (spellInfo->EffectMechanic[i])
--            mask |= 1 << (spellInfo->EffectMechanic[i]-1);
-+    {
-+        SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
-+        if (effectEntry && effectEntry->EffectMechanic)
-+            mask |= 1 << (effectEntry->EffectMechanic-1);
-+    }
-     return mask;
- }
+
  
  inline Mechanics GetEffectMechanic(SpellEntry const* spellInfo, SpellEffectIndex effect)
  {

@@ -359,7 +359,7 @@ class MANGOS_DLL_SPEC Aura
         void TriggerSpell();
         void TriggerSpellWithValue();
 
-        uint32 const *getAuraSpellClassMask() const { return  m_spellProto->GetEffectSpellClassMask(m_effIndex); }
+        uint32 const *getAuraSpellClassMask() const { return  m_spellProto->GetEffectSpellClassMask(SpellEffectIndex(m_effIndex)); }
         bool isAffectedOnSpell(SpellEntry const *spell) const;
 		
 		// fss mod for FSLibDev
