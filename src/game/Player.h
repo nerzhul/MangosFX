@@ -1538,8 +1538,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         }
         uint32 GetGlyph(uint8 slot) { return m_Glyphs[m_activeSpec][slot]; }
 
-        uint32 GetFreePrimaryProfessionPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS2); }
-        void SetFreePrimaryProfessions(uint16 profs) { SetUInt32Value(PLAYER_CHARACTER_POINTS2, profs); }
+        uint32 GetFreePrimaryProfessionPoints() const { return GetUInt32Value(PLAYER_CHARACTER_POINTS); }
+        void SetFreePrimaryProfessions(uint16 profs) { SetUInt32Value(PLAYER_CHARACTER_POINTS, profs); }
         void InitPrimaryProfessions();
 
         PlayerSpellMap const& GetSpellMap() const { return m_spells; }
@@ -1654,10 +1654,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         void RemoveFromGroup() { RemoveFromGroup(GetGroup(),GetGUID()); }
         void SendUpdateToOutOfRangeGroupMembers();
 
-        void SetInGuild(uint32 GuildId) { SetUInt32Value(PLAYER_GUILDID, GuildId); }
+        void SetInGuild(uint32 GuildId) { m_guildId = GuildId; }
         void SetRank(uint32 rankId){ SetUInt32Value(PLAYER_GUILDRANK, rankId); }
         void SetGuildIdInvited(uint32 GuildId) { m_GuildIdInvited = GuildId; }
-        uint32 GetGuildId() { return GetUInt32Value(PLAYER_GUILDID);  }
+        uint32 GetGuildId() { return m_guildId; }
 		Guild* getGuild();
         static uint32 GetGuildIdFromDB(uint64 guid);
         uint32 GetRank(){ return GetUInt32Value(PLAYER_GUILDRANK); }
@@ -1868,8 +1868,10 @@ class MANGOS_DLL_SPEC Player : public Unit
         void UpdateArenaFields();
         void UpdateHonorFields();
         bool RewardHonor(Unit *pVictim, uint32 groupsize, float honor = -1);
-        uint32 GetHonorPoints() { return GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY); }
-        uint32 GetArenaPoints() { return GetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY); }
+        uint32 GetHonorPoints() { return m_honorPoints; }
+        uint32 GetArenaPoints() { return m_arenaPoints; }
+        void SetHonorPoints(uint32 honor) { m_honorPoints = honor; }
+        void SetArenaPoints(uint32 arena) { m_arenaPoints = arena; }
         void ModifyHonorPoints( int32 value );
         void ModifyArenaPoints( int32 value );
         uint32 GetMaxPersonalArenaRatingRequirement(uint32 minarenaslot);
@@ -2379,6 +2381,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         /***                  HONOR SYSTEM                     ***/
         /*********************************************************/
         time_t m_lastHonorUpdateTime;
+		uint32 m_honorPoints;
+        uint32 m_arenaPoints;
 
         void outDebugValues() const;
         uint64 m_lootGuid;
@@ -2494,6 +2498,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         // Social
         PlayerSocial *m_social;
+		uint32 m_guildId;
 
         // Groups
         GroupReference m_group;

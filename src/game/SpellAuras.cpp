@@ -387,6 +387,10 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
 
     m_spellProto = spellproto;
 
+	m_spellEffect = spellproto->GetSpellEffect(m_effIndex);
+
+	ASSERT(m_spellEffect);
+
     m_currentBasePoints = currentBasePoints ? *currentBasePoints : m_spellProto->EffectBasePoints[eff]+1;
 
     m_isPassive = IsPassiveSpell(GetSpellProto());

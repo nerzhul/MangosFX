@@ -233,8 +233,8 @@ class MANGOS_DLL_SPEC Aura
         void SetModifier(AuraType t, int32 a, uint32 pt, int32 miscValue);
         Modifier*       GetModifier()       { return &m_modifier; }
         Modifier const* GetModifier() const { return &m_modifier; }
-        int32 GetMiscValue() const { return m_spellProto->EffectMiscValue[m_effIndex]; }
-        int32 GetMiscBValue() const { return m_spellProto->EffectMiscValueB[m_effIndex]; }
+        int32 GetMiscValue() const { return m_spellEffect ? m_spellEffect->EffectMiscValue : 0; }
+        int32 GetMiscBValue() const { return m_spellEffect ? m_spellEffect->EffectMiscValueB : 0; }
 
         SpellEntry const* GetSpellProto() const { return m_spellProto; }
         uint32 GetId() const{ return m_spellProto->Id; }
@@ -392,6 +392,7 @@ class MANGOS_DLL_SPEC Aura
         uint64 m_caster_guid;
         uint64 m_castItemGuid;                              // it is NOT safe to keep a pointer to the item because it may get deleted
         time_t m_applyTime;
+		SpellEffectEntry const* m_spellEffect;
 
         int32 m_currentBasePoints;                          // cache SpellEntry::EffectBasePoints and use for set custom base points
         int32 m_maxduration;                                // Max aura duration
