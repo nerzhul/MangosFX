@@ -261,7 +261,7 @@ static bool ReadDBCBuildFileText(const std::string& dbc_path, char const* locale
         return false;
 }
 
-static uint32 ReadDBCBuild(const std::string& dbc_path, LocaleNameStr const* localeNameStr = NULL)
+static uint32 ReadDBCBuild(const std::string& dbc_path, LocaleNameStr const*&localeNameStr)
 {
     std::string text;
 
@@ -307,9 +307,11 @@ static bool LoadDBC_assert_print(uint32 fsize,uint32 rsize, const std::string& f
 
 struct LocalData
 {
-    LocalData(uint32 build)
-		: main_build(build), availableDbcLocales(0xFFFFFFFF),checkedDbcLocaleBuilds(0) {}
+    LocalData(uint32 build, LocaleConstant loc)
+        : main_build(build), defaultLocale(loc), availableDbcLocales(0xFFFFFFFF),checkedDbcLocaleBuilds(0) {}
+
     uint32 main_build;
+	LocaleConstant defaultLocale;
 
     // bitmasks for index of fullLocaleNameList
     uint32 availableDbcLocales;
@@ -328,7 +330,7 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
     if (custom_entries)
         sql = new SqlDbc(&filename,custom_entries, idname,storage.GetFormat());
 
-    if(storage.Load(dbc_filename.c_str(),sql))
+    if(storage.Load(dbc_filename.c_str(),localeData.defaultLocale,sql))
     {
         bar.step();
         for(uint8 i = 0; fullLocaleNameList[i].name; ++i)
@@ -363,7 +365,7 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
             }
 
             std::string dbc_filename_loc = dbc_path + localStr->name + "/" + filename;
-            if(!storage.LoadStringsFrom(dbc_filename_loc.c_str()))
+            if(!storage.LoadStringsFrom(dbc_filename_loc.c_str(),localStr->locale))
                 localeData.availableDbcLocales &= ~(1<<i);  // mark as not available for speedup next checks
         }
     }
@@ -389,7 +391,8 @@ void LoadDBCStores(const std::string& dataPath)
 {
     std::string dbcPath = dataPath+"dbc/";
 
-    uint32 build = ReadDBCBuild(dbcPath);
+    LocaleNameStr const* defaultLocaleNameStr = NULL;
+    uint32 build = ReadDBCBuild(dbcPath,defaultLocaleNameStr);
 
     // Check the expected DBC version
     /*if (!IsAcceptableClientBuild(build))
@@ -407,7 +410,7 @@ void LoadDBCStores(const std::string& dataPath)
 
     StoreProblemList bad_dbc_files;
 
-    LocalData availableDbcLocales(build);
+    LocalData availableDbcLocales(build,defaultLocaleNameStr->locale);
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sAreaStore,                dbcPath,"AreaTable.dbc");
 
@@ -517,7 +520,7 @@ void LoadDBCStores(const std::string& dataPath)
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSkillLineStore,           dbcPath,"SkillLine.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSkillLineAbilityStore,    dbcPath,"SkillLineAbility.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSoundEntriesStore,        dbcPath,"SoundEntries.dbc");
-    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellStore,               dbcPath,"Spell.dbc", &CustomSpellEntryfmt, &CustomSpellEntryIndex);
+    LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellStore,               dbcPath,"Spell.dbc");
     for(uint32 i = 1; i < sSpellStore.GetNumRows(); ++i)
     {
         if(SpellEntry const * spell = sSpellStore.LookupEntry(i))
@@ -535,8 +538,8 @@ void LoadDBCStores(const std::string& dataPath)
     }
 
 	//Lifebloom final heal
-	SpellEntry *sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33778));
-	sfix->DmgClass = SPELL_DAMAGE_CLASS_MAGIC;
+	/*SpellEntry *sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(33778));
+	sfix->GetDmgClass() = SPELL_DAMAGE_CLASS_MAGIC;
 
 	// Rotface Explode range
 	sfix = const_cast<SpellEntry*>(sSpellStore.LookupEntry(69832));
@@ -562,7 +565,7 @@ void LoadDBCStores(const std::string& dataPath)
 	sfix4->manaCost = 0;
 
 	SpellEntry *sfix5 = const_cast<SpellEntry*>(sSpellStore.LookupEntry(46584));
-	sfix5->manaCost = 0;
+	sfix5->manaCost = 0;*/
 
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraOptionsStore,    dbcPath,"SpellAuraOptions.dbc");
     LoadDBC(availableDbcLocales,bar,bad_dbc_files,sSpellAuraRestrictionsStore, dbcPath,"SpellAuraRestrictions.dbc");
@@ -773,8 +776,8 @@ void LoadDBCStores(const std::string& dataPath)
         !sGemPropertiesStore.LookupEntry(1629)     ||       // last gem property added in 3.3.2
         !sItemExtendedCostStore.LookupEntry(2982)  ||       // last item extended cost added in 3.3.2
         !sCharTitlesStore.LookupEntry(177)         ||       // last char title added in 3.3.2
-        !sAreaStore.LookupEntry(3461)              ||       // last area (areaflag) added in 3.3.2
-        //!sItemStore.LookupEntry(52686)             )        // last client known item added in 3.3.2
+        !sAreaStore.LookupEntry(3461)              //||       // last area (areaflag) added in 3.3.2
+        /*!sItemStore.LookupEntry(52686)*/             )        // last client known item added in 3.3.2
     {
         sLog.outError("\nYou have mixed version DBC files. Please re-extract DBC files for one from client build: %s",AcceptableClientBuildsListStr().c_str());
         //exit(1);
@@ -1038,7 +1041,7 @@ MANGOS_DLL_SPEC DBCStorage <SoundEntriesEntry>  const* GetSoundEntriesStore()   
 MANGOS_DLL_SPEC DBCStorage <SpellEntry>         const* GetSpellStore()          { return &sSpellStore;          }
 MANGOS_DLL_SPEC DBCStorage <SpellRangeEntry>    const* GetSpellRangeStore()     { return &sSpellRangeStore;     }
 MANGOS_DLL_SPEC DBCStorage <FactionEntry>       const* GetFactionStore()        { return &sFactionStore;        }
-MANGOS_DLL_SPEC DBCStorage <ItemEntry>          const* GetItemDisplayStore()    { return &sItemStore;           }
+//MANGOS_DLL_SPEC DBCStorage <ItemEntry>          const* GetItemDisplayStore()    { return &sItemStore;           }
 MANGOS_DLL_SPEC DBCStorage <CreatureDisplayInfoEntry> const* GetCreatureDisplayStore() { return &sCreatureDisplayInfoStore; }
 MANGOS_DLL_SPEC DBCStorage <EmotesEntry>        const* GetEmotesStore()         { return &sEmotesStore;         }
 MANGOS_DLL_SPEC DBCStorage <EmotesTextEntry>    const* GetEmotesTextStore()     { return &sEmotesTextStore;     }
