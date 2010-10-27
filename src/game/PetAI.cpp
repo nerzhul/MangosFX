@@ -240,7 +240,8 @@ void PetAI::UpdateAI(const uint32 diff)
                 {
                     // allow only spell without spell cost or with spell cost but not duration limit
                     int32 duration = GetSpellDuration(spellInfo);
-                    if ((spellInfo->GetManaCost() || spellInfo->GetManaCost()Percentage || spellInfo->manaPerSecond) && duration > 0)
+					SpellPowerEntry const* spellPower = spellInfo->GetSpellPower();
+                    if (spellPower && (spellPower->manaCost || spellPower->ManaCostPercentage || spellPower->manaPerSecond) && duration > 0)
                         continue;
 
                     // allow only spell without cooldown > duration

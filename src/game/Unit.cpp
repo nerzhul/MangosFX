@@ -15961,10 +15961,13 @@ void Unit::DoPetAction(Player* owner, uint8 flag, uint32 spellid, uint64 guid1, 
 			if (pet->GetCharmInfo() && pet->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
 				return;
 
-            for(uint32 i = 0; i < 3;++i)
+            for(uint32 i = 0; i < MAX_EFFECT_INDEX;++i)
             {
-                if(spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_INSTANT || spellInfo->EffectImplicitTargetA[i] == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
-                    return;
+                SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+                if(!spellEffect)
+                    continue;
+                if(spellEffect->EffectImplicitTargetA == TARGET_ALL_ENEMY_IN_AREA || spellEffect->EffectImplicitTargetA == TARGET_ALL_ENEMY_IN_AREA_INSTANT || spellEffect->EffectImplicitTargetA == TARGET_ALL_ENEMY_IN_AREA_CHANNELED)
+                     return;
             }
 
             // do not cast not learned spells

@@ -1304,10 +1304,11 @@ void Pet::_LoadAuras(uint32 timediff)
             }
 
             // prevent wrong values of remaincharges
-            if(spellproto->procCharges)
+            uint32 procCharges = spellproto->GetProcCharges();
+            if(procCharges)
             {
-                if(remaincharges <= 0 || remaincharges > spellproto->procCharges)
-                    remaincharges = spellproto->procCharges;
+                if(remaincharges <= 0 || remaincharges > procCharges)
+                    remaincharges = procCharges;
             }
             else
                 remaincharges = -1;
@@ -1359,10 +1360,16 @@ void Pet::_SaveAuras()
                     // skip all auras from spell that apply at cast SPELL_AURA_MOD_SHAPESHIFT or pet area auras.
                     uint8 i;
                     for (i = 0; i < MAX_EFFECT_INDEX; ++i)
-                        if (spellInfo->EffectApplyAuraName[i] == SPELL_AURA_MOD_STEALTH ||
-                            spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
-                            spellInfo->Effect[i] == SPELL_EFFECT_APPLY_AREA_AURA_PET )
+					{
+						SpellEffectEntry const* effectEntry = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+						if(!effectEntry)
+			                continue;
+
+                        if (effectEntry->EffectApplyAuraName == SPELL_AURA_MOD_STEALTH ||
+                            effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_OWNER ||
+                            effectEntry->Effect == SPELL_EFFECT_APPLY_AREA_AURA_PET )
                             break;
+					}
 
                     if (i == MAX_EFFECT_INDEX)
                     {
@@ -1562,7 +1569,7 @@ void Pet::InitLevelupSpellsForLevel()
                 continue;
 
             // will called first if level down
-            if(spellEntry->spellLevel > level)
+			if(spellEntry->GetSpellLevel() > level)
                 unlearnSpell(spellEntry->Id,true);
             // will called if level up
             else

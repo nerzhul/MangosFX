@@ -728,7 +728,7 @@ void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
     if(GetPlayer()->hasUnitState(UNIT_STAT_DIED))
         GetPlayer()->RemoveSpellsCausingAura(SPELL_AURA_FEIGN_DEATH);
 
-    if(GetPlayer()->m_stableSlots < MAX_PET_STABLES)
+	/*if(GetPlayer()->m_stableSlots < MAX_PET_STABLES)
     {
         StableSlotPricesEntry const *SlotPrice = sStableSlotPricesStore.LookupEntry(GetPlayer()->m_stableSlots+1);
         if(_player->GetMoney() >= SlotPrice->Price)
@@ -741,7 +741,7 @@ void WorldSession::HandleBuyStableSlot( WorldPacket & recv_data )
             SendStableResult(STABLE_ERR_MONEY);
     }
     else
-        SendStableResult(STABLE_ERR_STABLE);
+        SendStableResult(STABLE_ERR_STABLE);*/
 }
 
 void WorldSession::HandleStableRevivePet( WorldPacket &/* recv_data */)

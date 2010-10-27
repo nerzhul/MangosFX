@@ -298,12 +298,13 @@ SpellModifier::SpellModifier( SpellModOp _op, SpellModType _type, int32 _value, 
 bool SpellModifier::isAffectedOnSpell( SpellEntry const *spell ) const
 {
     SpellEntry const *affect_spell = sSpellStore.LookupEntry(spellId);
+	SpellClassOptionsEntry const* classOpt = spell->GetSpellClassOptions();
     // False if affect_spell == NULL or spellFamily not equal
-    if (!affect_spell || affect_spell->SpellFamilyName != spell->SpellFamilyName)
+    if (!affect_spell || (classOpt && affect_spell->GetSpellFamilyName() != classOpt->SpellFamilyName))
         return false;
-    if (mask & spell->SpellFamilyFlags)
+    if (classOpt && (mask & classOpt->SpellFamilyFlags))
         return true;
-    if (mask2 & spell->SpellFamilyFlags2)
+    if (classOpt && (mask & classOpt->SpellFamilyFlags2))
         return true;
     return false;
 }
@@ -370,6 +371,7 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
     memset(m_items, 0, sizeof(Item*)*PLAYER_SLOTS_COUNT);
 
     m_social = NULL;
+	m_guildId = 0;
 
     // group is initialized in the reference constructor
     SetGroupInvite(NULL);
@@ -499,6 +501,8 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
     // Honor System
     m_lastHonorUpdateTime = time(NULL);
+	m_honorPoints = 0;
+    m_arenaPoints = 0;
 
     // Player summoning
     m_summon_expire = 0;
@@ -644,7 +648,7 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetByteValue(PLAYER_BYTES_3, 0, gender);
 	SetByteValue(PLAYER_BYTES_3, 3, 0);                     // BattlefieldArenaFaction (0 or 1)
 
-    SetUInt32Value( PLAYER_GUILDID, 0 );
+    SetInGuild(0);
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
     SetUInt32Value( PLAYER_GUILD_TIMESTAMP, 0 );
 
@@ -654,8 +658,8 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetUInt32Value( PLAYER_CHOSEN_TITLE, 0 );
     SetUInt32Value( PLAYER_FIELD_KILLS, 0 );
     SetUInt32Value( PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, 0 );
-    SetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION, 0 );
-    SetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0 );
+    //SetUInt32Value( PLAYER_FIELD_TODAY_CONTRIBUTION, 0 );
+    //SetUInt32Value( PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0 );
 
     // set starting level
     uint32 start_level = getClass() != CLASS_DEATH_KNIGHT
@@ -674,8 +678,8 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     InitRunes();
 
     SetUInt32Value (PLAYER_FIELD_COINAGE, sWorld.getConfig(CONFIG_START_PLAYER_MONEY));
-    SetUInt32Value (PLAYER_FIELD_HONOR_CURRENCY, sWorld.getConfig(CONFIG_START_HONOR_POINTS));
-    SetUInt32Value (PLAYER_FIELD_ARENA_CURRENCY, sWorld.getConfig(CONFIG_START_ARENA_POINTS));
+    SetHonorPoints(sWorld.getConfig(CONFIG_START_HONOR_POINTS));
+    SetArenaPoints(sWorld.getConfig(CONFIG_START_ARENA_POINTS));
 
     // Played time
     m_Last_tick = time(NULL);
@@ -698,13 +702,19 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
         SetPower(POWER_MANA,GetMaxPower(POWER_MANA));
     }
 
-    if(getPowerType() == POWER_RUNIC_POWER)
+    /*if(getPowerType() == POWER_RUNIC_POWER)
     {
         SetPower(POWER_RUNE, 8);
         SetMaxPower(POWER_RUNE, 8);
         SetPower(POWER_RUNIC_POWER, 0);
         SetMaxPower(POWER_RUNIC_POWER, 1000);
-    }
+    }*/
+
+	if(getPowerType() != POWER_MANA)
+	{
+		SetPower(POWER_MANA, 0);
+        SetMaxPower(POWER_MANA, 0);
+	}
 
     // original spells
     learnDefaultSpells();
@@ -2083,6 +2093,9 @@ void Player::RegenerateAll(uint32 diff)
     if (getClass() == CLASS_DEATH_KNIGHT)
         Regenerate(POWER_RUNE, diff);
 
+	if (getClass() == CLASS_HUNTER)
+        Regenerate(POWER_FOCUS, diff);
+
     m_regenTimer = REGEN_TIME_FULL;
 }
 
@@ -2115,6 +2128,9 @@ void Player::Regenerate(Powers power, uint32 diff)
             float RageDecreaseRate = sWorld.getRate(RATE_POWER_RAGE_LOSS);
             addvalue = 20 * RageDecreaseRate;               // 2 rage by tick (= 2 seconds => 1 rage/sec)
         }   break;
+		case POWER_FOCUS:
+            addvalue = 12;
+            break;
         case POWER_ENERGY:                                  // Regenerate energy (rogue)
             addvalue = 20;
 			if(HasAura(58427))
@@ -2160,7 +2176,6 @@ void Player::Regenerate(Powers power, uint32 diff)
                 }
             }
         }   break;
-        case POWER_FOCUS:
         case POWER_HAPPINESS:
         case POWER_HEALTH:
             break;
@@ -2908,7 +2923,7 @@ void Player::SendInitialSpells()
         data << uint32(itr->first);
 
         data << uint16(itr->second.itemid);                 // cast item id
-        data << uint16(sEntry->Category);                   // spell category
+		data << uint16(sEntry->GetCategory());                   // spell category
 
         // send infinity cooldown in special format
         if(itr->second.end >= infTime)
@@ -2920,7 +2935,7 @@ void Player::SendInitialSpells()
 
         time_t cooldown = itr->second.end > curTime ? (itr->second.end-curTime)*IN_MILLISECONDS : 0;
 
-        if(sEntry->Category)                                // may be wrong, but anyway better than nothing...
+		if(sEntry->GetCategory())                                // may be wrong, but anyway better than nothing...
         {
             data << uint32(0);                              // cooldown
             data << uint32(cooldown);                       // category cooldown
@@ -3430,11 +3445,13 @@ bool Player::IsNeedCastPassiveSpellAtLearn(SpellEntry const* spellInfo) const
 {
     // note: form passives activated with shapeshift spells be implemented by HandleShapeshiftBoosts instead of spell_learn_spell
     // talent dependent passives activated at form apply have proper stance data
-    bool need_cast = (!spellInfo->Stances || (m_form != 0 && (spellInfo->Stances & (1<<(m_form-1)))) ||
+	SpellShapeshiftEntry const* shapeShift = spellInfo->GetSpellShapeshift();
+    bool need_cast = (shapeShift && (!shapeShift->Stances || (m_form != 0 && (shapeShift->Stances & (1<<(m_form-1))))) ||
 		(m_form == 0 && (spellInfo->AttributesEx2 & SPELL_ATTR_EX2_NOT_NEED_SHAPESHIFT)));
 
-    //Check CasterAuraStates
-    return need_cast && (!spellInfo->CasterAuraState || HasAuraState(AuraState(spellInfo->CasterAuraState)));
+    // Check CasterAuraStates
+    SpellAuraRestrictionsEntry const* auraRestrictions = spellInfo->GetSpellAuraRestrictions();
+    return need_cast && (auraRestrictions && (!auraRestrictions->CasterAuraState || HasAuraState(AuraState(auraRestrictions->CasterAuraState))));
 }
 
 void Player::learnSpell(uint32 spell_id, uint32 triggeredBySpell, bool dependent)
@@ -3702,8 +3719,8 @@ void Player::RemoveArenaSpellCooldowns()
         SpellEntry const * entry = sSpellStore.LookupEntry(itr->first);
         // check if spellentry is present and if the cooldown is less than 15 mins
         if( entry &&
-            entry->RecoveryTime <= 15 * MINUTE * IN_MILLISECONDS &&
-            entry->CategoryRecoveryTime <= 15 * MINUTE * IN_MILLISECONDS )
+			entry->GetRecoveryTime() <= 15 * MINUTE * IN_MILLISECONDS &&
+			entry->GetCategoryRecoveryTime() <= 15 * MINUTE * IN_MILLISECONDS )
         {
             // remove & notify
             RemoveSpellCooldown(itr->first, true);
@@ -4012,6 +4029,8 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(UNIT_FIELD_POWER5);
     updateVisualBits.SetBit(UNIT_FIELD_POWER6);
     updateVisualBits.SetBit(UNIT_FIELD_POWER7);
+	updateVisualBits.SetBit(UNIT_FIELD_POWER8);
+    updateVisualBits.SetBit(UNIT_FIELD_POWER9);
     updateVisualBits.SetBit(UNIT_FIELD_MAXHEALTH);
     updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER1);
     updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER2);
@@ -4020,6 +4039,8 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER5);
     updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER6);
     updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER7);
+	updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER8);
+    updateVisualBits.SetBit(UNIT_FIELD_MAXPOWER9);
     updateVisualBits.SetBit(UNIT_FIELD_LEVEL);
     updateVisualBits.SetBit(UNIT_FIELD_FACTIONTEMPLATE);
     updateVisualBits.SetBit(UNIT_VIRTUAL_ITEM_SLOT_ID + 0);
@@ -4048,7 +4069,7 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(PLAYER_DUEL_ARBITER + 0);
     updateVisualBits.SetBit(PLAYER_DUEL_ARBITER + 1);
     updateVisualBits.SetBit(PLAYER_FLAGS);
-    updateVisualBits.SetBit(PLAYER_GUILDID);
+    //updateVisualBits.SetBit(PLAYER_GUILDID);
     updateVisualBits.SetBit(PLAYER_GUILDRANK);
     updateVisualBits.SetBit(PLAYER_BYTES);
     updateVisualBits.SetBit(PLAYER_BYTES_2);
