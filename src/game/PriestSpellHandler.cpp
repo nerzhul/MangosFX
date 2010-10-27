@@ -22,7 +22,7 @@ void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 	Unit* unitTarget = spell->getUnitTarget();
 	
 	// Shadow Word: Death - deals damage equal to damage done to caster
-	if (m_spellInfo->SpellFamilyFlags & FLAG_SW_DEATH)
+	if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SW_DEATH)
 	{
 		int32 back_damage = m_caster->SpellDamageBonus(unitTarget, m_spellInfo, (uint32)damage, SPELL_DIRECT_DAMAGE);
 		
@@ -30,7 +30,7 @@ void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 			m_caster->CastCustomSpell(m_caster, 32409, &back_damage, 0, 0, true);
 	}
 	// Improved Mind Blast (Mind Blast in shadow form bonus)
-	else if (m_caster->m_form == FORM_SHADOW && (m_spellInfo->SpellFamilyFlags & FLAG_MIND_BLAST))
+	else if (m_caster->m_form == FORM_SHADOW && (m_spellInfo->GetSpellFamilyFlags() & FLAG_MIND_BLAST))
 	{
 		Unit::AuraList const& ImprMindBlast = m_caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
 		for(Unit::AuraList::const_iterator i = ImprMindBlast.begin(); i != ImprMindBlast.end(); ++i)
@@ -38,7 +38,7 @@ void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 			if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
 				((*i)->GetSpellProto()->SpellIconID == 95))
 			{
-				int chance = (*i)->GetSpellProto()->CalculateSimpleValue(1);
+				int chance = (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
 				if (roll_chance_i(chance))
 					// Mind Trauma
 					m_caster->CastSpell(unitTarget, 48301, true);

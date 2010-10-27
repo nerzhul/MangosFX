@@ -20,7 +20,7 @@ INSTANTIATE_SINGLETON_1(DeathknightSpellHandler);
 bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i)
 {
 	 // Death Coil
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_COIL)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_DEATH_COIL)
     {
         if (spell->GetCaster()->IsFriendlyTo(spell->getUnitTarget()))
         {
@@ -38,13 +38,13 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
         return false;
     }
     // Hungering Cold
-	else if (spell->m_spellInfo->Id != 45524 && spell->m_spellInfo->SpellFamilyFlags & FLAG_HUNGERING_COLD)
+	else if (spell->m_spellInfo->Id != 45524 && spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_HUNGERING_COLD)
     {
         spell->GetCaster()->CastSpell(spell->GetCaster(), 51209, true);
         return false;
     }
     // Death Strike
-    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_STRIKE)
+    else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_DEATH_STRIKE)
     {
         uint32 count = 0;
         Unit::AuraMap const& auras = spell->getUnitTarget()->GetAuras();
@@ -69,7 +69,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
         {
             if ((*iter)->GetSpellProto()->SpellIconID == 2751 && (*iter)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT)
             {
-                bp += (*iter)->GetSpellProto()->CalculateSimpleValue(2) * bp / 100;
+                bp += (*iter)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_2) * bp / 100;
                 break;
             }
         }
@@ -94,7 +94,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
         spell->getUnitTarget()->CastSpell(spell->GetCaster()->GetPositionX(), spell->GetCaster()->GetPositionY(), spell->GetCaster()->GetPositionZ()+1, spellId, true);
         return false;
     }
-	else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_OBLITERATE)
+	else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_OBLITERATE)
 	{
 		// search for Annihilation
 		Unit::AuraList const& dummyList = spell->GetCaster()->GetAurasByType(SPELL_AURA_DUMMY);
@@ -114,7 +114,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
 {
 	// Blood Strike, Heart Strike, Obliterate
     // Blood-Caked Strike
-    if (spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0002000001400000) ||
+    if (spell->m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0002000001400000) ||
         spell->m_spellInfo->SpellIconID == 1736)
     {
         uint32 count = 0;
@@ -132,7 +132,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
             // Effect 1(for Blood-Caked Strike)/3(other) damage is bonus
             float bonus = count * spell->CalculateDamage(spell->m_spellInfo->SpellIconID == 1736 ? 0 : 2, spell->getUnitTarget()) / 100.0f;
             // Blood Strike, Blood-Caked Strike and Obliterate store bonus*2
-            if (spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0002000000400000) ||
+            if (spell->m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0002000000400000) ||
                 spell->m_spellInfo->SpellIconID == 1736)
                 bonus /= 2.0f;
 
@@ -140,7 +140,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         }
     }
     // Glyph of Blood Strike
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_BLOOD_STRIKE)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_BLOOD_STRIKE)
 	{
         if(spell->GetCaster()->HasAura(59332) && spell->getUnitTarget()->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED))
 			totalDmgPctMod *= 1.2f;              // 120% if snared
@@ -161,7 +161,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
 		spell_bonus += int32(count * spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
 	}
     // Glyph of Death Strike
-    else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_DEATH_STRIKE &&
+    else if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_DEATH_STRIKE &&
         spell->GetCaster()->HasAura(59336))
     {
         int32 rp = spell->GetCaster()->GetPower(POWER_RUNIC_POWER) / 10;
@@ -170,12 +170,12 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         totalDmgPctMod *= 1.0f + rp / 100.0f;
     }
     // Glyph of Plague Strike
-    else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_PLAGUE_STRIKE &&
+    else if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_PLAGUE_STRIKE &&
         spell->GetCaster()->HasAura(58657))
     {
         totalDmgPctMod *= 1.2f;
     }
-	else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_OBLITERATE)
+	else if(spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_OBLITERATE)
 	{
 		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
 		{
@@ -186,7 +186,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
 				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
 		}
 	}
-	else if(spell->m_spellInfo->SpellFamilyFlags & FLAG_HEART_STRIKE)
+	else if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_HEART_STRIKE)
 	{
 		if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
 		{

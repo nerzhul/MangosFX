@@ -22,7 +22,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 	Unit* unitTarget = spell->getUnitTarget();
 	
 	// Incinerate Rank 1 & 2
-	if ((m_spellInfo->SpellFamilyFlags & FLAG_INCINERATE) && m_spellInfo->SpellIconID==2128)
+	if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_INCINERATE) && m_spellInfo->SpellIconID==2128)
 	{
 		// Incinerate does more dmg (dmg*0.25) if the target have Immolate debuff.
 		// Check aura state for speed but aura state set not only for Immolate spell
@@ -42,7 +42,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		}
 	}
 	// Shadowflame
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_SHADOWFLAME)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SHADOWFLAME)
 	{
 		// Apply DOT part
 		switch(m_spellInfo->Id)

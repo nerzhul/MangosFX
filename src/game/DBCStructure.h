@@ -1750,6 +1750,8 @@ struct MANGOS_DLL_SPEC SpellEntry
     uint32 GetSpellLevel() const;
     int32 GetEquippedItemClass() const;
     uint32 GetSpellFamilyName() const;
+	uint64 GetSpellFamilyFlags() const;
+	uint32 GetSpellFamilyFlags2() const;
     uint32 GetDmgClass() const;
     uint32 GetDispel() const;
     uint32 GetMaxAffectedTargets() const;

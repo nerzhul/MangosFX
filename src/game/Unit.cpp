@@ -1182,7 +1182,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
             if( se->AuraInterruptFlags & AURA_INTERRUPT_FLAG_DAMAGE )
             {
                 bool remove = true;
-                if (se->procFlags & (1<<3))
+				if (se->GetProcFlags() & (1<<3))
                 {
                     if (!roll_chance_i(se->procChance))
                         remove = false;
@@ -2183,7 +2183,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
                 if (itr_spellProto->GetSpellFamilyName() == SPELLFAMILY_MAGE && itr_spellProto->SpellIconID == 501)
                 {
                     // chance stored in next dummy effect
-                    chance = itr_spellProto->CalculateSimpleValue(1);
+                    chance = itr_spellProto->CalculateSimpleValue(EFFECT_INDEX_1);
                     break;
                 }
             }
@@ -4685,7 +4685,7 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
         if (Aura* dotAura = GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_WARLOCK,UI64LIT(0x010000000000),0x00000000,casterGUID))
         {
             // use clean value for initial damage
-			int32 damage = dotAura->GetSpellProto()->CalculateSimpleValue(0);
+			int32 damage = dotAura->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0);
 			damage *= 9;
 			damage += (SpellBaseDamageBonus(SPELL_SCHOOL_MASK_SHADOW) * 1.8);
 
@@ -6603,7 +6603,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     {
                         if (SpellEntry const* manaCastEntry = sSpellStore.LookupEntry(60889))
                         {
-                            int32 mana_percent = manaCastEntry->CalculateSimpleValue(0) * heal_percent;
+                            int32 mana_percent = manaCastEntry->CalculateSimpleValue(EFFECT_INDEX_0) * heal_percent;
                             CastCustomSpell(this, manaCastEntry, &mana_percent, NULL, NULL, true, castItem, triggeredByAura);
                         }
                     }
@@ -8517,7 +8517,7 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 }
                 // percent stored in effect 1 (class scripts) base points
                 int32 cost = originalSpell->manaCost + originalSpell->ManaCostPercentage * GetCreateMana() / 100;
-                basepoints[0] = cost*auraSpellInfo->CalculateSimpleValue(1)/100;
+                basepoints[0] = cost*auraSpellInfo->CalculateSimpleValue(EFFECT_INDEX_1)/100;
                 trigger_spell_id = 20272;
                 target = this;
             }
@@ -14830,7 +14830,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, Aura* aura, SpellEntry con
     if (spellProcEvent && spellProcEvent->procFlags) // if exist get custom spellProcEvent->procFlags
         EventProcFlag = spellProcEvent->procFlags;
     else
-        EventProcFlag = spellProto->procFlags;       // else get from spell proto
+		EventProcFlag = spellProto->GetProcFlags();       // else get from spell proto
     // Continue if no trigger exist
     if (!EventProcFlag)
         return false;
@@ -14851,7 +14851,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, Aura* aura, SpellEntry con
     }
     // Aura added by spell can`t trogger from self (prevent drop charges/do triggers)
     // But except periodic triggers (can triggered from self)
-    if(procSpell && procSpell->Id == spellProto->Id && !(spellProto->procFlags & PROC_FLAG_ON_TAKE_PERIODIC))
+	if(procSpell && procSpell->Id == spellProto->Id && !(spellProto->GetProcFlags() & PROC_FLAG_ON_TAKE_PERIODIC))
         return false;
 
     // Check if current equipment allows aura to proc

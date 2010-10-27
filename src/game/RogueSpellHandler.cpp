@@ -25,7 +25,7 @@ INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Mutilate (for each hand)
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_MUTILATE)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_MUTILATE)
     {
         bool found = false;
         // fast check
@@ -52,14 +52,14 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7); 
     }
     // Fan of Knives
-    else if (spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_FAN_OF_KNIVES))
+    else if (spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_FAN_OF_KNIVES))
     {
         Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
         if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
             totalDmgPctMod *= 1.5f;          // 150% to daggers
     }
 	// Hemorrhage
-	else if (spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_HEMORRHAGE))
+	else if (spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_HEMORRHAGE))
 	{
 		((Player*)spell->GetCaster())->AddComboPoints(spell->getUnitTarget(), 1);
 		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
@@ -73,7 +73,7 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
 			totalDmgPctMod *= 1.44f;         // 144% with dagger 
 	}
-	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_SINISTERSTK))
+	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_SINISTERSTK))
 	{
 		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
 		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
@@ -81,13 +81,13 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		else
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
 	}
-	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_AMBUSH))
+	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_AMBUSH))
 	{
 		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
 		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 1.7);
 	}
-	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags == FLAG_BACKSTAB))
+	else if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_BACKSTAB))
 	{
 		Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
 		if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
@@ -101,7 +101,7 @@ void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 	const SpellEntry* m_spellInfo = spell->m_spellInfo;
 	Unit* unitTarget = spell->getUnitTarget();
 	
-	if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->SpellFamilyFlags & FLAG_ENVENOM))
+	if (m_caster->GetTypeId()==TYPEID_PLAYER && (m_spellInfo->GetSpellFamilyFlags() & FLAG_ENVENOM))
 	{
 		// consume from stack dozes not more that have combo-points
 		if(uint32 combo = ((Player*)m_caster)->GetComboPoints())
@@ -146,7 +146,7 @@ void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 				damage += ((Player*)m_caster)->GetComboPoints()*40;
 		}
 	}
-	else if ((m_spellInfo->SpellFamilyFlags & FLAG_EVISCERATE) && m_caster->GetTypeId()==TYPEID_PLAYER)
+	else if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_EVISCERATE) && m_caster->GetTypeId()==TYPEID_PLAYER)
 	{
 		if(uint32 combo = ((Player*)m_caster)->GetComboPoints())
 		{
@@ -158,11 +158,11 @@ void RogueSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 				damage += combo*40;
 		}
 	}
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_GOUGE)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_GOUGE)
 		damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.21f);
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_INSTANT_POISON)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_INSTANT_POISON)
 		damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.10f);
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_WOUND_POISON)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_WOUND_POISON)
 		damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.04f);
 }
 

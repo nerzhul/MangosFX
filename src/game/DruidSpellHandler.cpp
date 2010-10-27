@@ -19,7 +19,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 {
 	Unit* unitTarget = spell->getUnitTarget();
 	// Rend and Tear ( on Maul / Shred )
-    if (spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008800))
+    if (spell->m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000008800))
     {
         if(spell->getUnitTarget() && spell->getUnitTarget()->HasAuraState(AURA_STATE_BLEEDING))
         {
@@ -35,20 +35,20 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
         }
     }
     // Shred
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_SHRED)
     {
 		weaponDmgMod = true;
 		spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
     }
 	
 	// Mangle (Cat): CP
-    if (spell->m_spellInfo->SpellFamilyFlags & FLAG_MANGLE_CAT)
+    if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_MANGLE_CAT)
     {
         if(spell->GetCaster()->GetTypeId()==TYPEID_PLAYER)
             ((Player*)spell->GetCaster())->AddComboPoints(unitTarget, 1);
     }
 	
-	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_SHRED) && spell->GetCaster()->HasAura(54815))
+	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_SHRED) && spell->GetCaster()->HasAura(54815))
 	{
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
@@ -73,7 +73,7 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 	Unit* m_caster = spell->GetCaster();
 	Unit* unitTarget = spell->getUnitTarget();
 
-	if (m_caster->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & UI64LIT(0x000800000)) && spell->m_spellInfo->SpellVisual[0]==6587)
+	if (m_caster->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x000800000)) && spell->m_spellInfo->SpellVisual[0]==6587)
     {
         // converts up to 30 points of energy into ($f1+$AP/410) additional damage
         float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
@@ -84,7 +84,7 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
         damage += int32(used_energy * multiple);
         m_caster->SetPower(POWER_ENERGY,energy-used_energy);
     }
-    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_RAKE && spell->m_spellInfo->Effect[2]==SPELL_EFFECT_ADD_COMBO_POINTS)
+    else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_RAKE && spell->m_spellInfo->Effect[2]==SPELL_EFFECT_ADD_COMBO_POINTS)
     {
         // $AP*0.01 bonus
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
@@ -92,12 +92,12 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 		if(m_caster->HasAura(54821))
 			m_caster->CastSpell(unitTarget,54820,true);
     }
-    else if (spell->m_spellInfo->SpellFamilyFlags & FLAG_SWIPE)
+    else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_SWIPE)
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.08f);
     }
 	// Glyph of starfire
-	else if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->SpellFamilyFlags & FLAG_STARFIRE) && m_caster->HasAura(54845))
+	else if(m_caster->GetTypeId() == TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_STARFIRE) && m_caster->HasAura(54845))
 	{
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)

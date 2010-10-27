@@ -10,7 +10,7 @@ void ShamanSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bon
 {
 	// Skyshatter Harness item set bonus
     // Stormstrike
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_STORMSTRIKE)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_STORMSTRIKE)
     {
         Unit::AuraList const& m_OverrideClassScript = spell->GetCaster()->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
         for(Unit::AuraList::const_iterator citr = m_OverrideClassScript.begin(); citr != m_OverrideClassScript.end(); ++citr)

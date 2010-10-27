@@ -19,7 +19,7 @@ INSTANTIATE_SINGLETON_1(PaladinSpellHandler);
 void PaladinSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Judgement of Command
-    if(spell->m_spellInfo->SpellFamilyFlags & FLAG_JUDGEMENT_COMMAND)
+    if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_JUDGEMENT_COMMAND)
     {
         float ap = spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK);
         int32 holy = spell->GetCaster()->SpellBaseDamageBonus(GetSpellSchoolMask(spell->m_spellInfo)) +
@@ -51,7 +51,7 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		damage += int32(ap * 0.2f) + int32(holy * 32 / 100);
 	}
 	// Judgement of Vengeance/Corruption ${1+0.22*$SPH+0.14*$AP} + 10% for each application of Holy Vengeance/Blood Corruption on the target
-	else if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x800000000)) && m_spellInfo->SpellIconID==2292)
+	else if ((m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x800000000)) && m_spellInfo->SpellIconID==2292)
 	{
 		uint32 debuf_id;
 		switch(m_spellInfo->Id)
@@ -81,7 +81,7 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 			damage += damage * stacks * 10 /100;
 	}
 	// Avenger's Shield ($m1+0.07*$SPH+0.07*$AP) - ranged sdb for future
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_AVENGER_SHIELD)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_AVENGER_SHIELD)
 	{
 		float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
 		int32 holy = m_caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)) +
@@ -89,7 +89,7 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		damage += int32(ap * 0.07f) + int32(holy * 7 / 100);
 	}
 	// Hammer of Wrath ($m1+0.15*$SPH+0.15*$AP) - ranged type sdb future fix
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_HAMMER_OF_WRATH)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_HAMMER_OF_WRATH)
 	{
 		float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
 		int32 holy = m_caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellInfo)) +
@@ -97,7 +97,7 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		damage += int32(ap * 0.15f) + int32(holy * 15 / 100);
 	}
 	// Hammer of the Righteous
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_HAMMER_OF_THE_RIGHTEOUS)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_HAMMER_OF_THE_RIGHTEOUS)
 	{
 		// Add main hand dps * effect[2] amount
 		float average = (m_caster->GetFloatValue(UNIT_FIELD_MINDAMAGE) + m_caster->GetFloatValue(UNIT_FIELD_MAXDAMAGE)) / 2;
@@ -105,7 +105,7 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		damage += count * int32(average * IN_MILLISECONDS) / m_caster->GetAttackTime(BASE_ATTACK);
 	}
 	// Shield of Righteousness
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_SHIELD_OF_RIGHTEOUSNESS)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SHIELD_OF_RIGHTEOUSNESS)
 	{
 		damage+=int32(m_caster->GetShieldBlockValue());
 	}

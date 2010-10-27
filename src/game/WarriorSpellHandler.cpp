@@ -54,7 +54,7 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 
 	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)
 	{
-		if(spell->m_spellInfo->SpellFamilyFlags == FLAG_DEVASTATE)
+		if(spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_DEVASTATE)
 		{
 			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
 			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
@@ -62,7 +62,7 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
 			else
 				spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.2);
 		}
-		else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_MORTALSTRIKE)
+		else if(spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_MORTALSTRIKE)
 		{
 			Item* weapon = ((Player*)spell->GetCaster())->GetWeaponForAttack(spell->getAttackType(),true,true);
 			if (weapon && weapon->GetProto()->SubClass == ITEM_SUBCLASS_WEAPON_DAGGER)
@@ -88,10 +88,10 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 	Unit* m_caster = spell->GetCaster();
 	Unit* unitTarget = spell->getUnitTarget();
 	// Bloodthirst
-	if (m_spellInfo->SpellFamilyFlags & FLAG_BLOODTHIRST)
+	if (m_spellInfo->GetSpellFamilyFlags() & FLAG_BLOODTHIRST)
 		damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
 	// Shield Slam
-	else if ((m_spellInfo->SpellFamilyFlags & FLAG_SHIELD_SLAM) && m_spellInfo->Category==1209)
+	else if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_SHIELD_SLAM) && m_spellInfo->Category==1209)
 	{
 		damage += int32(m_caster->GetShieldBlockValue());
 		// glyph of shield slam
@@ -99,29 +99,29 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 			m_caster->CastSpell(m_caster, 58374, true);
 	}
 	// Victory Rush
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_VICTORY_RUSH)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_VICTORY_RUSH)
 	{
 		damage = uint32(damage * m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);
 		m_caster->ModifyAuraState(AURA_STATE_WARRIOR_VICTORY_RUSH, false);
 	}
 	// Revenge ${$m1+$AP*0.310} to ${$M1+$AP*0.310}
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_REVENGE)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_REVENGE)
 		damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.310f);
 	// Heroic Throw ${$m1+$AP*.50}
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_HEROIC_THROW)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_HEROIC_THROW)
 		damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.5f);
 	// Shattering Throw ${$m1+$AP*.50}
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_SHATTERING_THROW)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SHATTERING_THROW)
 		damage+= uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.5f);
 	// Shockwave ${$m3/100*$AP}
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_SHOCKWAVE)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SHOCKWAVE)
 	{
 		int32 pct = m_caster->CalculateSpellDamage(m_spellInfo, 2, m_spellInfo->EffectBasePoints[2], unitTarget);
 		if (pct > 0)
 			damage+= int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * pct / 100);
 	}
 	// Thunder Clap
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_THUNDER_CLAP)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_THUNDER_CLAP)
 	{
 		damage+=int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 12 / 100);
 	}

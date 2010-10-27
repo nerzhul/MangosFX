@@ -743,39 +743,39 @@ void Spell::prepareDataForTriggerSystem()
         {
             case SPELLFAMILY_MAGE:
                 // Arcane Missles / Blizzard triggers need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000200080))
+                if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000200080))
                     m_canTrigger = true;
                 // Clearcasting trigger need do it
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000200000000) && m_spellInfo->SpellFamilyFlags2 & 0x8)
+                else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000200000000) && m_spellInfo->GetSpellFamilyFlags2() & 0x8)
                     m_canTrigger = true;
                 // Replenish Mana, item spell with triggered cases (Mana Agate, etc mana gems)
-                else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000010000000000))
+                else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000010000000000))
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_WARLOCK:
                 // For Hellfire Effect / Rain of Fire / Seed of Corruption triggers need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000800000000060))
+                if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000800000000060))
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_PRIEST:
                 // For Penance,Mind Sear,Mind Flay heal/damage triggers need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0001800000800000) || (m_spellInfo->SpellFamilyFlags2 & 0x00000040))
+                if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0001800000800000) || (m_spellInfo->GetSpellFamilyFlags2() & 0x00000040))
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_ROGUE:
                 // For poisons need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x000000101001E000))
+                if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x000000101001E000))
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_HUNTER:
                 // Hunter Rapid Killing/Explosive Trap Effect/Immolation Trap Effect/Frost Trap Aura/Snake Trap Effect/Explosive Shot
-                if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x0100200000000214)) ||
-                    m_spellInfo->SpellFamilyFlags2 & 0x200)
+                if ((m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0100200000000214)) ||
+                    m_spellInfo->GetSpellFamilyFlags2() & 0x200)
                     m_canTrigger = true;
                 break;
             case SPELLFAMILY_PALADIN:
                 // For Judgements (all) / Holy Shock triggers need do it
-                if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0001000900B80400))
+                if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0001000900B80400))
                     m_canTrigger = true;
                 break;
             default:
@@ -825,7 +825,7 @@ void Spell::prepareDataForTriggerSystem()
     }
     // Hunter traps spells (for Entrapment trigger)
     // Gives your Immolation Trap, Frost Trap, Explosive Trap, and Snake Trap ....
-    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x000020000000001C)))
+    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x000020000000001C)))
         m_procAttacker |= PROC_FLAG_ON_TRAP_ACTIVATION;
 }
 
@@ -869,7 +869,7 @@ void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
     // Calculate hit result
     target.missCondition = m_caster->SpellHitResult(pVictim, m_spellInfo, m_canReflect);
 
-	if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0080000000000000) && m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
+	if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0080000000000000) && m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
 		target.missCondition = SPELL_MISS_NONE;
 
 
@@ -1072,7 +1072,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         // Haunt (NOTE: for avoid use additional field damage stored in dummy value (replace unused 100%)
         // apply before deal damage because aura can be removed at target kill
         if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->SpellIconID == 3172 &&
-            (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0004000000000000)))
+            (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0004000000000000)))
             if(Aura* dummy = unitTarget->GetDummyAura(m_spellInfo->Id))
                 dummy->GetModifier()->m_amount = damageInfo.damage;
 
@@ -1083,7 +1083,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         caster->DealSpellDamage(&damageInfo, true);
 
 		// Scourge Strike, here because needs to use final damage in second part of the spell
-		if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0800000000000000))
+		if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0800000000000000))
 		{
 			uint32 count = 0;
 			Unit::AuraMap const& auras = unitTarget->GetAuras();
@@ -1115,7 +1115,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
 	// remove Arcane Blast buffs at any non-Arcane Blast arcane damage spell.
     // NOTE: it removed at hit instead cast because currently spell done-damage calculated at hit instead cast
     // For arcane missiles its removed in Aura::HandleAuraDummy();
-    if ((m_spellInfo->SchoolMask & SPELL_SCHOOL_MASK_ARCANE) && !(m_spellInfo->SpellFamilyFlags & UI64LIT(0x20000000))
+    if ((m_spellInfo->SchoolMask & SPELL_SCHOOL_MASK_ARCANE) && !(m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x20000000))
         && !m_IsTriggeredSpell && !IsChanneledSpell(m_spellInfo))
     {
         m_caster->RemoveAurasDueToSpell(36032); // Arcane Blast buff
@@ -1188,12 +1188,12 @@ void Spell::DoSpellHitOnUnit(Unit *unit, const uint32 effectMask)
             }
 
             // not break stealth by cast targeting earthbind + stealth fix
-            if (!(m_spellInfo->AttributesEx & SPELL_ATTR_EX_NOT_BREAK_STEALTH) || m_spellInfo->SpellFamilyFlags & SPELLFAMILYFLAG_ROGUE_SAP || isCausingAura(SPELL_AURA_DETECT_STEALTH))
+            if (!(m_spellInfo->AttributesEx & SPELL_ATTR_EX_NOT_BREAK_STEALTH) || m_spellInfo->GetSpellFamilyFlags() & SPELLFAMILYFLAG_ROGUE_SAP || isCausingAura(SPELL_AURA_DETECT_STEALTH))
 			{
 				if (!(m_spellInfo->Id == 39897 || m_spellInfo->Id == 32592 || m_spellInfo->Id == 32375 || m_spellInfo->Id == 1725 ||
 					m_spellInfo->Id == 3600 || m_spellInfo->Id == 1038 || 
 					m_spellInfo->Effect[EFFECT_INDEX_0] == SPELL_EFFECT_THREAT || // only threat mustn't remove stealth
-					(m_spellInfo->SpellFamilyFlags2 & UI64LIT(0x00000100))))
+					(m_spellInfo->GetSpellFamilyFlags2() & UI64LIT(0x00000100))))
 					unit->RemoveSpellsCausingAura(SPELL_AURA_MOD_STEALTH);
 			}
 
@@ -1555,7 +1555,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             break;
         case SPELLFAMILY_DRUID:
         {
-            if (m_spellInfo->SpellFamilyFlags2 & 0x00000100)// Starfall
+            if (m_spellInfo->GetSpellFamilyFlags2() & 0x00000100)// Starfall
                 unMaxTargets = 2;
 			// fss temp fix go test
 			else if(m_caster->HasAura(50334) && m_spellInfo->Id == (48480))
@@ -2540,7 +2540,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             // add here custom effects that need default target.
             // FOR EVERY TARGET TYPE THERE IS A DIFFERENT FILL!!
 			// FSS tp demo
-			 if (m_spellInfo->SpellFamilyFlags2 & UI64LIT (0x00000020) && m_spellInfo->SpellIconID == 3217)
+			 if (m_spellInfo->GetSpellFamilyFlags2() & UI64LIT (0x00000020) && m_spellInfo->SpellIconID == 3217)
             {
                 targetUnitMap.push_back(m_caster);
                 break;
@@ -2947,7 +2947,7 @@ void Spell::cast(bool skipCheck)
         case SPELLFAMILY_MAGE:
         {
             // Ice Block
-            if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000008000000000))
+            if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000008000000000))
                 AddPrecastSpell(41425);                     // Hypothermia
 
 			if(m_spellInfo->Id == 12536 || m_spellInfo->Id == 12043)
@@ -2963,10 +2963,10 @@ void Spell::cast(bool skipCheck)
         {
             // Power Word: Shield
             if (m_spellInfo->GetMechanic() == MECHANIC_SHIELD &&
-                (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000001)))
+                (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000000001)))
                 AddPrecastSpell(6788);                      // Weakened Soul
             // Prayer of Mending (jump animation), we need formal caster instead original for correct animation
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000002000000000))
+            else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000002000000000))
                 AddTriggeredSpell(41637);
 
             switch(m_spellInfo->Id)
@@ -3021,20 +3021,20 @@ void Spell::cast(bool skipCheck)
                     AddPrecastSpell(67485);                 // Hand of Rekoning (no typos in name ;) )
             }
             // Divine Shield, Divine Protection or Hand of Protection
-            else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000408080))
+            else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000408080))
             {
                 AddTriggeredSpell(25771);                     // Forbearance
 				AddPrecastSpell(61987);                     // Avenging Wrath Marker
             }
             // Lay on Hands
-			else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
+			else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000008000))
 			{
 				// only for self cast
 				if (m_caster == m_targets.getUnitTarget())
 					AddPrecastSpell(25771);                     // Forbearance
 			}
 			// Avenging Wrath
-			else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000200000000000))
+			else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000200000000000))
                 AddPrecastSpell(61987);                     // Avenging Wrath Marker
 			else if(m_spellInfo->Id == 48788 || m_spellInfo->Id == 27154 || m_spellInfo->Id == 10310 ||
 				m_spellInfo->Id == 2800 || m_spellInfo->Id == 633)
@@ -3052,7 +3052,7 @@ void Spell::cast(bool skipCheck)
             // Spirit Walk
             else if (m_spellInfo->Id == 58875)
 				AddPrecastSpell(58876);
-			else if (m_spellInfo->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA_RAID && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000004000000))
+			else if (m_spellInfo->Effect[0]==SPELL_EFFECT_APPLY_AREA_AURA_RAID && m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000004000000))
 			{
                 // only for main totem spell cast
                 AddTriggeredSpell(30708);                   // Totem of Wrath
@@ -3540,7 +3540,7 @@ void Spell::finish(bool ok)
     if (m_healthLeech)
 		if (m_spellInfo->Id == 53385)
         {
-            int32 bp = int32(m_spellInfo->CalculateSimpleValue(1) * m_healthLeech / 100);
+            int32 bp = int32(m_spellInfo->CalculateSimpleValue(EFFECT_INDEX_1) * m_healthLeech / 100);
             m_caster->CastCustomSpell(m_caster, 54171, &bp, NULL, NULL, true);
         }
         else
@@ -4790,7 +4790,7 @@ SpellCastResult Spell::CheckCast(bool strict)
 
 			// Lay on Hands (self cast)
 			if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PALADIN &&
-				m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
+				m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000008000))
 			{
 				if (target->HasAura(25771))                 // Forbearance
 					return SPELL_FAILED_CASTER_AURASTATE;
@@ -4869,8 +4869,8 @@ SpellCastResult Spell::CheckCast(bool strict)
         {
             //Exclusion for Pounce:  Facing Limitation was removed in 2.0.1, but it still uses the same, old Ex-Flags
             //Exclusion for Mutilate:Facing Limitation was removed in 2.0.1 and 3.0.3, but they still use the same, old Ex-Flags
-            if ((m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_DRUID || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0000000000020000))) &&
-                (m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_ROGUE || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0020000000000000))) &&
+            if ((m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_DRUID || (m_spellInfo->GetSpellFamilyFlags() != UI64LIT(0x0000000000020000))) &&
+                (m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_ROGUE || (m_spellInfo->GetSpellFamilyFlags() != UI64LIT(0x0020000000000000))) &&
                 m_spellInfo->Id != 2764)
             {
                 SendInterrupted(2);

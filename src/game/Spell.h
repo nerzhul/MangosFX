@@ -307,6 +307,9 @@ class Spell
         void EffectRedirectThreat(SpellEffectEntry const* effect);
         void EffectMilling(SpellEffectEntry const* effect);
         void EffectRenamePet(SpellEffectEntry const* effect);
+		void EffectWMODamage(SpellEffectEntry const* effect);
+		void EffectQuestClear(SpellEffectEntry const* effect);
+		void EffectWMORepair(SpellEffectEntry const* effect);
         void EffectSendTaxi(SpellEffectEntry const* effect);
         void EffectKnockBack(SpellEffectEntry const* effect);
         void EffectPlayerPull(SpellEffectEntry const* effect);

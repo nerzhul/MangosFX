@@ -6917,7 +6917,7 @@ void Aura::HandleShapeshiftBoosts(bool apply)
                     if ((*i)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_DRUID &&
                         (*i)->GetSpellProto()->SpellIconID == 961)
                     {
-                        int32 bp = (*i)->GetSpellProto()->CalculateSimpleValue(2);
+                        int32 bp = (*i)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_2);
                         if (bp)
                             m_target->CastCustomSpell(m_target, 62069, &bp, NULL, NULL, true, NULL, this);
                         break;
@@ -7243,7 +7243,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
 							if (dummyEntry->GetSpellFamilyName() == SPELLFAMILY_PRIEST && dummyEntry->SpellIconID == 2218 &&
                                 dummyEntry->SpellVisual[0]==0)
                             {
-                                chance = (*itr)->GetSpellProto()->CalculateSimpleValue(1);
+                                chance = (*itr)->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1);
                                 break;
                             }
                         }

@@ -15,7 +15,7 @@ INSTANTIATE_SINGLETON_1(HunterSpellHandler);
 void HunterSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
 	// Kill Shot
-	if(spell->m_spellInfo->SpellFamilyFlags & FLAGS_KILL_SHOT)
+	if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAGS_KILL_SHOT)
     {
         // 0.4*RAP added to damage (that is 0.2 if we apply PercentMod (200%) to spell_bonus, too)
         weaponDmgMod = true;
@@ -28,11 +28,11 @@ void HunterSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bon
 		{
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.8);
 		}
-		else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_AIMED_SHOT)
+		else if(spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_AIMED_SHOT)
 		{
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.8);
 		}
-		else if(spell->m_spellInfo->SpellFamilyFlags == FLAG_MULTI_SHOT)
+		else if(spell->m_spellInfo->GetSpellFamilyFlags() == FLAG_MULTI_SHOT)
 		{
 			spell_bonus += int32(spell->GetCaster()->GetTotalAttackPowerValue(BASE_ATTACK) / 14 * 2.8);
 		}
@@ -50,27 +50,27 @@ void HunterSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
           damage *= 2;
     }
     // Mongoose Bite
-    else if ((m_spellInfo->SpellFamilyFlags & UI64LIT(0x000000002)) && m_spellInfo->SpellVisual[0]==342)
+    else if ((m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x000000002)) && m_spellInfo->SpellVisual[0]==342)
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.2f);
     }
     // Counterattack
-    else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0008000000000000))
+    else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0008000000000000))
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK)*0.2f);
     }
     // Arcane Shot
-    else if ((m_spellInfo->SpellFamilyFlags & FLAG_ARCANE_SHOT) && m_spellInfo->maxLevel > 0)
+    else if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_ARCANE_SHOT) && m_spellInfo->maxLevel > 0)
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(RANGED_ATTACK)*0.15f);
     }
 	// Volley
-	else if (m_spellInfo->SpellFamilyFlags & FLAG_VOLLEY)
+	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_VOLLEY)
 	{
 		damage += int32(m_caster->GetTotalAttackPowerValue(RANGED_ATTACK)*0.084f);
 	}
     // Steady Shot
-    else if (m_spellInfo->SpellFamilyFlags & FLAG_STEADY_SHOT)
+    else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_STEADY_SHOT)
     {
         int32 base = irand((int32)m_caster->GetWeaponDamageRange(RANGED_ATTACK, MINDAMAGE),(int32)m_caster->GetWeaponDamageRange(RANGED_ATTACK, MAXDAMAGE));
         damage += int32(float(base)/m_caster->GetAttackTime(RANGED_ATTACK)*2800 + m_caster->GetTotalAttackPowerValue(RANGED_ATTACK)*0.1f);
@@ -79,7 +79,7 @@ void HunterSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 			damage *= 1.1f;
     }
     // Explosive Trap Effect
-    else if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x00000004))
+    else if (m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x00000004))
     {
         damage += int32(m_caster->GetTotalAttackPowerValue(RANGED_ATTACK)*0.1f);
     }

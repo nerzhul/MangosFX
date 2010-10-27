@@ -986,9 +986,9 @@ void SpellMgr::LoadSpellProcEvents()
         DoSpellProcEvent worker(spe);
         doForHighRanks(entry,worker);
 
-        if (spe.procFlags == 0)
+		if (spe.procFlags == 0)
         {
-            if (spell->procFlags==0)
+			if (spell->GetProcFlags()==0)
             {
                 sLog.outErrorDb("Spell %u listed in `spell_proc_event` probally not triggered spell", entry);
                 continue;
@@ -997,7 +997,7 @@ void SpellMgr::LoadSpellProcEvents()
         }
 		else
 		{
-			if (spell->procFlags==spe.procFlags)
+			if (spell->GetProcFlags()==spe.procFlags)
 			{
 				sLog.outErrorDb("Spell %u listed in `spell_proc_event` have exactly same proc flags as in spell.dbc, field value redundent", entry);
 				continue;

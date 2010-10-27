@@ -28,6 +28,20 @@ int32 SpellEntry::CalculateSimpleValue(SpellEffectIndex eff) const
     return 0;
 }
 
+uint64 SpellEntry::GetSpellFamilyFlags(SpellEffectIndex eff) const
+{
+	if(SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions())
+		return classOptions->SpellFamilyFlags;
+	return 0;
+}
+
+uint32 SpellEntry::GetSpellFamilyFlags2(SpellEffectIndex eff) const
+{
+	if(SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions())
+		return classOptions->SpellFamilyFlags2;
+	return 0;
+}
+
 uint32 const* SpellEntry::GetEffectSpellClassMask(SpellEffectIndex eff) const
 {
     if(SpellEffectEntry const* effectEntry = GetSpellEffectEntry(Id, eff))
