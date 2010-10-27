@@ -739,7 +739,7 @@ void Spell::prepareDataForTriggerSystem()
 
     if (!m_canTrigger)                                      // Exceptions (some periodic triggers)
     {
-        switch (m_spellInfo->SpellFamilyName)
+        switch (m_spellInfo->GetSpellFamilyName())
         {
             case SPELLFAMILY_MAGE:
                 // Arcane Missles / Blizzard triggers need do it
@@ -825,7 +825,7 @@ void Spell::prepareDataForTriggerSystem()
     }
     // Hunter traps spells (for Entrapment trigger)
     // Gives your Immolation Trap, Frost Trap, Explosive Trap, and Snake Trap ....
-    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_HUNTER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x000020000000001C)))
+    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && (m_spellInfo->SpellFamilyFlags & UI64LIT(0x000020000000001C)))
         m_procAttacker |= PROC_FLAG_ON_TRAP_ACTIVATION;
 }
 
@@ -869,7 +869,7 @@ void Spell::AddUnitTarget(Unit* pVictim, uint32 effIndex)
     // Calculate hit result
     target.missCondition = m_caster->SpellHitResult(pVictim, m_spellInfo, m_canReflect);
 
-	if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0080000000000000) && m_spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST)
+	if (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0080000000000000) && m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PRIEST)
 		target.missCondition = SPELL_MISS_NONE;
 
 
@@ -1071,7 +1071,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
 
         // Haunt (NOTE: for avoid use additional field damage stored in dummy value (replace unused 100%)
         // apply before deal damage because aura can be removed at target kill
-        if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->SpellIconID == 3172 &&
+        if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->SpellIconID == 3172 &&
             (m_spellInfo->SpellFamilyFlags & UI64LIT(0x0004000000000000)))
             if(Aura* dummy = unitTarget->GetDummyAura(m_spellInfo->Id))
                 dummy->GetModifier()->m_amount = damageInfo.damage;
@@ -1083,7 +1083,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         caster->DealSpellDamage(&damageInfo, true);
 
 		// Scourge Strike, here because needs to use final damage in second part of the spell
-		if (m_spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0800000000000000))
+		if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0800000000000000))
 		{
 			uint32 count = 0;
 			Unit::AuraMap const& auras = unitTarget->GetAuras();
@@ -1419,7 +1419,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
     uint32 unMaxTargets = m_spellInfo->MaxAffectedTargets;
 
     // custom target amount cases
-    switch(m_spellInfo->SpellFamilyName)
+    switch(m_spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -2059,7 +2059,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                         targetUnitMap.push_back(target);
             }
             // Circle of Healing
-            else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_PRIEST && m_spellInfo->SpellVisual[0] == 8253)
+            else if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PRIEST && m_spellInfo->SpellVisual[0] == 8253)
             {
                 Unit* target = m_targets.getUnitTarget();
                 if(!target)
@@ -2073,7 +2073,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 FillRaidOrPartyHealthPriorityTargets(targetUnitMap, m_caster, target, radius, count, true, false, true);
             }
             // Wild Growth
-            else if (m_spellInfo->SpellFamilyName == SPELLFAMILY_DRUID && m_spellInfo->SpellIconID == 2864)
+            else if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_DRUID && m_spellInfo->SpellIconID == 2864)
             {
                 Unit* target = m_targets.getUnitTarget();
                 if(!target)
@@ -2162,7 +2162,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             break;
         case TARGET_IN_FRONT_OF_CASTER_30:
         {
-            if (m_spellInfo->SpellFamilyName == SPELLFAMILY_GENERIC)
+            if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_GENERIC)
                 FillAreaTargets(targetUnitMap, m_caster->GetPositionX(), m_caster->GetPositionY(), radius, PUSH_IN_FRONT_30, SPELL_TARGETS_AOE_DAMAGE);
             else
                 FillAreaTargets(targetUnitMap, m_caster->GetPositionX(), m_caster->GetPositionY(), radius, PUSH_IN_FRONT, SPELL_TARGETS_AOE_DAMAGE);
@@ -2914,7 +2914,7 @@ void Spell::cast(bool skipCheck)
             const_cast<SpellEntry*>(spellInfo)->Attributes |= SPELL_ATTR_UNAFFECTED_BY_INVULNERABILITY;
 
     // different triggred (for caster) and precast (casted before apply effect to target) cases
-    switch(m_spellInfo->SpellFamilyName)
+    switch(m_spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -3633,7 +3633,7 @@ void Spell::finish(bool ok)
 			break;
 	 }
 
-	 switch(m_spellInfo->SpellFamilyName)
+	 switch(m_spellInfo->GetSpellFamilyName())
 	 {
 		case SPELLFAMILY_SHAMAN:
 			// Wrath Totem
@@ -4780,7 +4780,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             // Some special spells with non-caster only mode
 
             // Fire Shield
-            if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK &&
+            if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK &&
                 m_spellInfo->SpellIconID == 16)
                 return SPELL_FAILED_BAD_TARGETS;
 
@@ -4789,7 +4789,7 @@ SpellCastResult Spell::CheckCast(bool strict)
                 return SPELL_FAILED_BAD_TARGETS;
 
 			// Lay on Hands (self cast)
-			if (m_spellInfo->SpellFamilyName == SPELLFAMILY_PALADIN &&
+			if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_PALADIN &&
 				m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000008000))
 			{
 				if (target->HasAura(25771))                 // Forbearance
@@ -4869,8 +4869,8 @@ SpellCastResult Spell::CheckCast(bool strict)
         {
             //Exclusion for Pounce:  Facing Limitation was removed in 2.0.1, but it still uses the same, old Ex-Flags
             //Exclusion for Mutilate:Facing Limitation was removed in 2.0.1 and 3.0.3, but they still use the same, old Ex-Flags
-            if ((m_spellInfo->SpellFamilyName != SPELLFAMILY_DRUID || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0000000000020000))) &&
-                (m_spellInfo->SpellFamilyName != SPELLFAMILY_ROGUE || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0020000000000000))) &&
+            if ((m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_DRUID || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0000000000020000))) &&
+                (m_spellInfo->GetSpellFamilyName() != SPELLFAMILY_ROGUE || (m_spellInfo->SpellFamilyFlags != UI64LIT(0x0020000000000000))) &&
                 m_spellInfo->Id != 2764)
             {
                 SendInterrupted(2);
@@ -6608,7 +6608,7 @@ bool Spell::CheckTargetCreatureType(Unit* target) const
     uint32 spellCreatureTargetMask = m_spellInfo->TargetCreatureType;
 
     // Curse of Doom & Exorcism: not find another way to fix spell target check :/
-    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->Category == 1179)
+    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->Category == 1179)
     {
         // not allow cast at player
         if(target->GetTypeId() == TYPEID_PLAYER)

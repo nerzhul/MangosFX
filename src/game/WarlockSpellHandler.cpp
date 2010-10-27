@@ -32,7 +32,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 			for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
 			{
 				// Immolate
-				if((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK &&
+				if((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK &&
 				   ((*i)->GetSpellProto()->SpellFamilyFlags & FLAG_IMMOLATE))
 				{
 					damage += damage/4;
@@ -63,7 +63,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		for(Unit::AuraList::const_iterator i = mPeriodic.begin(); i != mPeriodic.end(); ++i)
 		{
 			// for caster applied auras only
-			if ((*i)->GetSpellProto()->SpellFamilyName != SPELLFAMILY_WARLOCK ||
+			if ((*i)->GetSpellProto()->GetSpellFamilyName() != SPELLFAMILY_WARLOCK ||
 				(*i)->GetCasterGUID()!=m_caster->GetGUID())
 				continue;
 			

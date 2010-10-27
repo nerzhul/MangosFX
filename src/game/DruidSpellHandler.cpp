@@ -53,7 +53,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
+			if ((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
 				&& (*itr)->GetCaster() == spell->GetCaster())
 			{
 				if((*itr)->GetAuraMaxDuration() < 18000)
@@ -102,7 +102,7 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-			if ((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID && (*itr)->GetSpellProto()->SpellIconID == 225
+			if ((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && (*itr)->GetSpellProto()->SpellIconID == 225
 				&& (*itr)->GetCaster() == m_caster)
 			{
 				if((*itr)->GetAuraMaxDuration() < 24000)

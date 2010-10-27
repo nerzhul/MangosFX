@@ -298,7 +298,7 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
 {
     if( unitTarget && unitTarget->isAlive())
     {
-        switch(m_spellInfo->SpellFamilyName)
+        switch(m_spellInfo->GetSpellFamilyName())
         {
             case SPELLFAMILY_GENERIC:
             {
@@ -394,7 +394,7 @@ void Spell::EffectDummy(uint32 i)
         return;
 
     // selection by spell family
-    switch(m_spellInfo->SpellFamilyName)
+    switch(m_spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -1658,7 +1658,7 @@ void Spell::EffectDummy(uint32 i)
                     Unit::AuraList const& auraDummy = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
                     for(Unit::AuraList::const_iterator itr = auraDummy.begin(); itr != auraDummy.end(); ++itr)
                     {
-                        if((*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 208)
+                        if((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 208)
                             mana = ((*itr)->GetModifier()->m_amount + 100)* mana / 100;
                     }
                     m_caster->CastCustomSpell(unitTarget, 31818, &mana, NULL, NULL, true);
@@ -1668,7 +1668,7 @@ void Spell::EffectDummy(uint32 i)
                     Unit::AuraList const& mod = m_caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
                     for(Unit::AuraList::const_iterator itr = mod.begin(); itr != mod.end(); ++itr)
                     {
-                        if((*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 1982)
+                        if((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (*itr)->GetSpellProto()->SpellIconID == 1982)
                             manaFeedVal+= (*itr)->GetModifier()->m_amount;
                     }
                     if (manaFeedVal > 0)
@@ -2002,7 +2002,7 @@ void Spell::EffectDummy(uint32 i)
                         Unit::AuraList const& mDummyAuras = owner->GetAurasByType(SPELL_AURA_DUMMY);
                         for(Unit::AuraList::const_iterator i = mDummyAuras.begin(); i != mDummyAuras.end(); ++i)
                             // only its have dummy with specific icon
-                            if ((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_SHAMAN && (*i)->GetSpellProto()->SpellIconID == 338)
+                            if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && (*i)->GetSpellProto()->SpellIconID == 338)
                                 damage += (*i)->GetModifier()->m_amount * damage / 100;
 
                         // Glyph of Healing Stream Totem
@@ -2063,7 +2063,7 @@ void Spell::EffectDummy(uint32 i)
                     Unit::AuraList const& auraDummy = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
                     for(Unit::AuraList::const_iterator itr = auraDummy.begin(); itr != auraDummy.end(); ++itr)
                     {
-                        if ((*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_SHAMAN &&
+                        if ((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_SHAMAN &&
                             ((*itr)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000200000)) &&
                             (*itr)->GetCastItemGUID() == item->GetGUID())
                         {
@@ -2837,7 +2837,7 @@ void Spell::EffectHeal( uint32 /*i*/ )
             Aura *targetAura = NULL;
             for(Unit::AuraList::const_iterator i = RejorRegr.begin(); i != RejorRegr.end(); ++i)
             {
-                if ((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DRUID &&
+                if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID &&
                     // Regrowth or Rejuvenation 0x40 | 0x10
                     ((*i)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000050)))
                 {
@@ -2883,7 +2883,7 @@ void Spell::EffectHeal( uint32 /*i*/ )
 
 
         // Chain Healing
-        if (m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000100))
+        if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000100))
         {
             // check for Riptide
             if (unitTarget != m_targets.getUnitTarget())
@@ -3898,7 +3898,7 @@ void Spell::EffectDispel(uint32 i)
 
             // On success dispel
             // Devour Magic
-            if (m_spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK && m_spellInfo->Category == SPELLCATEGORY_DEVOUR_MAGIC)
+			if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->GetCategory() == SPELLCATEGORY_DEVOUR_MAGIC)
             {
                 int32 heal_amount = m_spellInfo->CalculateSimpleValue(1);
                 m_caster->CastCustomSpell(m_caster, 19658, &heal_amount, NULL, NULL, true);
@@ -4444,7 +4444,7 @@ void Spell::EffectEnchantItemTmp(uint32 i)
     Player* p_caster = (Player*)m_caster;
 
     // Rockbiter Weapon apply to both weapon
-    if (m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000400000))
+    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000400000))
     {
         uint32 spell_id = 0;
 
@@ -4519,10 +4519,10 @@ void Spell::EffectEnchantItemTmp(uint32 i)
     if(m_spellInfo->Id == 38615)
         duration = 1800;                                    // 30 mins
     // other rogue family enchantments always 1 hour (some have spell damage=0, but some have wrong data in EffBasePoints)
-    else if(m_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE)
+    else if(m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_ROGUE)
         duration = 3600;                                    // 1 hour
     // shaman family enchantments
-    else if(m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN)
+    else if(m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_SHAMAN)
         duration = 1800;                                    // 30 mins
     // other cases with this SpellVisual already selected
     else if(m_spellInfo->SpellVisual[0] == 215)
@@ -4854,7 +4854,7 @@ void Spell::EffectWeaponDmg(uint32 i)
     bool normalized = false;
 
     int32 spell_bonus = 0;                                  // bonus specific for spell
-    switch(m_spellInfo->SpellFamilyName)
+    switch(m_spellInfo->GetSpellFamilyName())
     {
 		case SPELLFAMILY_GENERIC:
 		{
@@ -4952,7 +4952,7 @@ void Spell::EffectWeaponDmg(uint32 i)
     // prevent negative damage
     m_damage+= uint32(bonus > 0 ? bonus : 0);
 
-    if(m_spellInfo->SpellFamilyName==SPELLFAMILY_PALADIN)
+    if(m_spellInfo->GetSpellFamilyName()==SPELLFAMILY_PALADIN)
     {
         // Judgement of Blood/of the Martyr backlash damage (33%)
         if(m_spellInfo->SpellFamilyFlags & 0x0000000800000000LL && m_spellInfo->SpellIconID==153)
@@ -5148,7 +5148,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 {
     // TODO: we must implement hunter pet summon at login there (spell 6962)
 
-    switch(m_spellInfo->SpellFamilyName)
+    switch(m_spellInfo->GetSpellFamilyName())
     {
         case SPELLFAMILY_GENERIC:
         {
@@ -6494,7 +6494,7 @@ void Spell::EffectSanctuary(uint32 /*i*/)
     unitTarget->CombatStop();
     unitTarget->getHostileRefManager().deleteReferences();  // stop all fighting
     // Vanish allows to remove all threat and cast regular stealth so other spells can be used
-    if(m_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && (m_spellInfo->SpellFamilyFlags & SPELLFAMILYFLAG_ROGUE_VANISH))
+    if(m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_ROGUE && (m_spellInfo->SpellFamilyFlags & SPELLFAMILYFLAG_ROGUE_VANISH))
     {
         ((Player *)m_caster)->RemoveSpellsCausingAura(SPELL_AURA_MOD_ROOT);
     }
@@ -6888,7 +6888,7 @@ void Spell::EffectSummonTotem(uint32 i, uint8 slot)
 	}
 
 	// stone claw shield
-	if(m_spellInfo->SpellFamilyName == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & 0x00008)
+	if(m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && m_spellInfo->SpellFamilyFlags & 0x00008)
 	{
 		int32 bp0 = 0;
 		switch(m_spellInfo->Id)
@@ -7459,7 +7459,7 @@ void Spell::EffectKnockBack(uint32 i)
 		return;
 
 	// Thunderstorm Glyph
-	if(m_spellInfo->SpellFamilyName & SPELLFAMILY_SHAMAN && unitTarget->HasAura(62132) && m_spellInfo->SpellFamilyFlags & UI64LIT(0x200000000000))
+	if(m_spellInfo->GetSpellFamilyName() & SPELLFAMILY_SHAMAN && unitTarget->HasAura(62132) && m_spellInfo->SpellFamilyFlags & UI64LIT(0x200000000000))
 		return;
 
     unitTarget->KnockBackFrom(m_caster,float(m_spellInfo->EffectMiscValue[i])/10,float(damage)/10);

@@ -35,7 +35,7 @@ void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 		Unit::AuraList const& ImprMindBlast = m_caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
 		for(Unit::AuraList::const_iterator i = ImprMindBlast.begin(); i != ImprMindBlast.end(); ++i)
 		{
-			if ((*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_PRIEST &&
+			if ((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_PRIEST &&
 				((*i)->GetSpellProto()->SpellIconID == 95))
 			{
 				int chance = (*i)->GetSpellProto()->CalculateSimpleValue(1);
@@ -60,7 +60,7 @@ void PriestSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* cast
     }
 
 	// Twin Disciplines
-	if(spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && (spellProto->SpellFamilyFlags & UI64LIT(200204008000)))
+	if(spellProto->SpellFamilyFlags & UI64LIT(200204008000))
 	{
 		if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,PRIEST_TWIN_DISCIPLINES))
 			DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;

@@ -24,7 +24,7 @@ void ClassSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 	if(!spell || !spell->m_spellInfo)
 		return;
 
-	switch(spell->m_spellInfo->SpellFamilyName)
+	switch(spell->m_spellInfo->GetSpellFamilyName())
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
 			sDeathknightSpellHandler.HandleEffectWeaponDamage(spell,spell_bonus,weaponDmgMod,totalDmgPctMod);
@@ -64,7 +64,7 @@ void ClassSpellHandler::HandleDummyAuraProc(Unit *u, Spell *dummy, uint32 &trig_
 	if(!dummy || !u)
 		return;
 
-	switch(dummy->m_spellInfo->SpellFamilyName)
+	switch(dummy->m_spellInfo->GetSpellFamilyName())
 	{
 		/*case SPELLFAMILY_DEATHKNIGHT:
 			sDeathknightSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
@@ -104,7 +104,7 @@ bool ClassSpellHandler::HandleEffectDummy(Spell* spell,int32 &damage, SpellEffec
 	if(!spell)
 		return false;
 
-	switch(spell->m_spellInfo->SpellFamilyName)
+	switch(spell->m_spellInfo->GetSpellFamilyName())
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
 			return sDeathknightSpellHandler.HandleEffectDummy(spell,damage,i);
@@ -147,7 +147,7 @@ void ClassSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffect
 		return;
 
 	// Other classes dont use HandleSchoolDamage
-	switch(spell->m_spellInfo->SpellFamilyName)
+	switch(spell->m_spellInfo->GetSpellFamilyName())
 	{
 		/*case SPELLFAMILY_DEATHKNIGHT:
 			return sDeathknightSpellHandler.HandleSchoolDmg(spell);
@@ -187,7 +187,7 @@ void ClassSpellHandler::PeriodicDummyTick(Aura* aura)
 	if(!aura)
 		return;
 
-	switch(aura->GetSpellProto()->SpellFamilyName)
+	switch(aura->GetSpellProto()->GetSpellFamilyName())
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
 			return sDeathknightSpellHandler.PeriodicDummyTick(aura);
@@ -227,7 +227,7 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 	if(!spell)
 		return;
 
-	switch(spell->SpellFamilyName)
+	switch(spell->GetSpellFamilyName())
 	{
 		case SPELLFAMILY_DEATHKNIGHT:
 			sDeathknightSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
@@ -285,7 +285,7 @@ Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
 	AuraList const& aList = u->GetAurasByType(caracTab[aName].aType);
 	for(AuraList::const_iterator i = aList.begin(); i != aList.end(); ++i)
 	{
-		if(!(caracTab[aName].sfName == (*i)->GetSpellProto()->SpellFamilyName))
+		if(!(caracTab[aName].sfName == (*i)->GetSpellProto()->GetSpellFamilyName()))
 			continue;
 
 		switch(aName)

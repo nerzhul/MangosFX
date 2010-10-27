@@ -67,7 +67,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
         Unit::AuraList const& auraMod = spell->GetCaster()->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
         for(Unit::AuraList::const_iterator iter = auraMod.begin(); iter != auraMod.end(); ++iter)
         {
-            if ((*iter)->GetSpellProto()->SpellIconID == 2751 && (*iter)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT)
+            if ((*iter)->GetSpellProto()->SpellIconID == 2751 && (*iter)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT)
             {
                 bp += (*iter)->GetSpellProto()->CalculateSimpleValue(2) * bp / 100;
                 break;
@@ -100,7 +100,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
 		Unit::AuraList const& dummyList = spell->GetCaster()->GetAurasByType(SPELL_AURA_DUMMY);
 		for (Unit::AuraList::const_iterator itr = dummyList.begin(); itr != dummyList.end(); ++itr)
 		{
-			if((*itr)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 2710)
+			if((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && (*itr)->GetSpellProto()->SpellIconID == 2710)
 				if(roll_chance_i((*itr)->GetModifier()->m_amount)) // don't consume if found
 					return false;
 		}

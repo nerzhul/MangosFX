@@ -7632,7 +7632,7 @@ void Player::CastItemCombatSpell(Unit* Target, WeaponAttackType attType)
 												continue;
 
 											if (SpellEntry const *_spellInfo = sSpellStore.LookupEntry(_pEnchant->spellid[t]))
-												if(_spellInfo->SpellFamilyName == SPELLFAMILY_ROGUE && _spellInfo->SpellIconID != 513)
+												if(_spellInfo->GetSpellFamilyName() == SPELLFAMILY_ROGUE && _spellInfo->SpellIconID != 513)
 													spellId_ = _spellInfo->Id;
 
 										}

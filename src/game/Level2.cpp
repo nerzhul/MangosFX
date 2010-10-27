@@ -4650,7 +4650,7 @@ bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
 
 	PSendSysMessage("Spell %u / Nom : %s / Icone : %u / SpellVisual[0] %u / SpellVisual[1] %u / activeIconId %u / FamilyFlags1 : " UI64FMTD " (0x%x) / FamilyFlags2 : %u / FamilyName : %u",
 						spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->SpellFamilyFlags,spell->SpellFamilyFlags,spell->SpellFamilyFlags2,
-						spell->SpellFamilyName);
+						spell->GetSpellFamilyName());
 	PSendSysMessage("AuraType1 : %u / AuraType2 : %u / AuraType3 %u / Effect1 %u / Effect2 %u / Effect3 %u",		
 		spell->EffectApplyAuraName[0],spell->EffectApplyAuraName[1],spell->EffectApplyAuraName[2],spell->Effect[0],spell->Effect[1],spell->Effect[2]);
 	PSendSysMessage("ImplicitTargetA[0] %u / ImplicitTargetA[1] %u / ImplicitTargetA[2] %u / ImplicitTargetB[0] %u / ImplicitTargetB[1] %u / ImplicitTargetB[2] %u",
