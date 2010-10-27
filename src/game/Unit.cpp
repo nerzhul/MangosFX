@@ -741,7 +741,7 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
     if (!spellProto || !IsSpellHaveAura(spellProto,SPELL_AURA_MOD_FEAR))
         pVictim->RemoveSpellbyDamageTaken(SPELL_AURA_MOD_FEAR, damage);
     // root type spells do not dispel the root effect
-    if (!spellProto || !(spellProto->Mechanic == MECHANIC_ROOT || IsSpellHaveAura(spellProto,SPELL_AURA_MOD_ROOT)))
+    if (!spellProto || !(spellproto->GetMechanic() == MECHANIC_ROOT || IsSpellHaveAura(spellProto,SPELL_AURA_MOD_ROOT)))
         pVictim->RemoveSpellbyDamageTaken(SPELL_AURA_MOD_ROOT, damage);
 
 	WeaponAttackType attType = GetWeaponAttackType(spellProto);
@@ -2312,7 +2312,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
                     continue;
                 }
                 // Power Word: Shield
-                if (spellProto->SpellFamilyFlags & UI64LIT(00000001) && spellProto->Mechanic == MECHANIC_SHIELD)
+                if (spellProto->SpellFamilyFlags & UI64LIT(00000001) && spellproto->GetMechanic() == MECHANIC_SHIELD)
                 {
                     // Glyph of Power Word: Shield
                     if (Aura *glyph = pVictim->GetAura(55672,0))
@@ -5769,7 +5769,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     for(AuraMap::const_iterator iter = Auras.begin(); iter != Auras.end();)
                     {
                         SpellEntry const *spell = iter->second->GetSpellProto();
-                        if( spell->Mechanic == MECHANIC_STUN ||
+                        if( spell->GetMechanic() == MECHANIC_STUN ||
                             spell->EffectMechanic[iter->second->GetEffIndex()] == MECHANIC_STUN)
                         {
                             pVictim->RemoveAurasDueToSpell(spell->Id);
@@ -14089,7 +14089,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 break;
             case SPELL_AURA_MECHANIC_IMMUNITY:
                 // Compare mechanic
-                if (procSpell==NULL || procSpell->Mechanic != auraModifier->m_miscvalue)
+                if (procSpell==NULL || procspell->GetMechanic() != auraModifier->m_miscvalue)
                 {
                     triggeredByAura->SetInUse(false);
                     continue;
@@ -14097,7 +14097,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 break;
             case SPELL_AURA_MOD_MECHANIC_RESISTANCE:
                 // Compare mechanic
-                if (procSpell==NULL || procSpell->Mechanic != auraModifier->m_miscvalue)
+                if (procSpell==NULL || procspell->GetMechanic() != auraModifier->m_miscvalue)
                 {
                     triggeredByAura->SetInUse(false);
                     continue;

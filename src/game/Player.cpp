@@ -4217,9 +4217,10 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
     SpellEntry const* spell = sSpellStore.LookupEntry(trainer_spell->learnedSpell);
 
     // secondary prof. or not prof. spell
-    uint32 skill = spell->EffectMiscValue[1];
+    SpellEffectEntry const* spellEffect = spell->GetSpellEffect(EFFECT_INDEX_1);
+    uint32 skill = spellEffect ? spellEffect->EffectMiscValue : 0;
 
-    if(spell->Effect[1] != SPELL_EFFECT_SKILL || !IsPrimaryProfessionSkill(skill))
+    if(spellEffect && (spellEffect->Effect != SPELL_EFFECT_SKILL || !IsPrimaryProfessionSkill(skill)))
         return TRAINER_SPELL_GREEN;
 
     // check primary prof. limit
@@ -4619,7 +4620,7 @@ void Player::CreateCorpse()
 
     corpse->SetUInt32Value( CORPSE_FIELD_DISPLAY_ID, GetNativeDisplayId() );
 
-    corpse->SetUInt32Value( CORPSE_FIELD_GUILD, GetGuildId() );
+    //corpse->SetUInt32Value( CORPSE_FIELD_GUILD, GetGuildId() );
 
     uint32 iDisplayID;
     uint32 iIventoryType;
@@ -5220,23 +5221,23 @@ float Player::GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const
 
 float Player::OCTRegenHPPerSpirit()
 {
-    uint32 level = getLevel();
+    /*uint32 level = getLevel();
     uint32 pclass = getClass();
 
     if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
 
     GtOCTRegenHPEntry     const *baseRatio = sGtOCTRegenHPStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
     GtRegenHPPerSptEntry  const *moreRatio = sGtRegenHPPerSptStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-    if (baseRatio==NULL || moreRatio==NULL)
+    if (baseRatio==NULL || moreRatio==NULL)*/
         return 0.0f;
 
     // Formula from PaperDollFrame script
-    float spirit = GetStat(STAT_SPIRIT);
+    /*float spirit = GetStat(STAT_SPIRIT);
     float baseSpirit = spirit;
     if (baseSpirit>50) baseSpirit = 50;
     float moreSpirit = spirit - baseSpirit;
     float regen = baseSpirit * baseRatio->ratio + moreSpirit * moreRatio->ratio;
-    return regen;
+    return regen;*/
 }
 
 float Player::OCTRegenMPPerSpirit()
@@ -5455,7 +5456,7 @@ bool Player::UpdateCraftSkill(uint32 spellid)
 
             // Alchemy Discoveries here
             SpellEntry const* spellEntry = sSpellStore.LookupEntry(spellid);
-            if (spellEntry && spellEntry->Mechanic==MECHANIC_DISCOVERY)
+			if (spellEntry && spellEntry->GetMechanic() == MECHANIC_DISCOVERY)
             {
                 if (uint32 discoveredSpell = GetSkillDiscoverySpell(_spell_idx->second->skillId, spellid, this))
                     learnSpell(discoveredSpell, 0,false);

@@ -5315,7 +5315,7 @@ void Aura::HandleAuraModSchoolImmunity(bool apply, bool Real)
             }
         }
     }
-    if( Real && GetSpellProto()->Mechanic == MECHANIC_BANISH )
+    if( Real && GetSpellProto()->GetMechanic() == MECHANIC_BANISH )
     {
         if( apply )
             m_target->addUnitState(UNIT_STAT_ISOLATED);
@@ -7132,7 +7132,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
             if(!apply)
             {
                 // Remove Blood Frenzy only if target no longer has any Deep Wound or Rend (applying is handled by procs)
-                if (GetSpellProto()->Mechanic != MECHANIC_BLEED)
+                if (GetSpellProto()->GetMechanic() != MECHANIC_BLEED)
                     return;
 
                 // If target still has one of Warrior's bleeds, do nothing
@@ -7140,7 +7140,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                 for(Unit::AuraList::const_iterator i = PeriodicDamage.begin(); i != PeriodicDamage.end(); ++i)
                     if( (*i)->GetCasterGUID() == GetCasterGUID() &&
                         (*i)->GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARRIOR &&
-                        (*i)->GetSpellProto()->Mechanic == MECHANIC_BLEED)
+                        (*i)->GetSpellProto()->GetMechanic() == MECHANIC_BLEED)
                         return;
 
                 spellId1 = 30069;                           // Blood Frenzy (Rank 1)
@@ -7924,7 +7924,7 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
 
         if (caster &&
             // Power Word: Shield
-            m_spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && m_spellProto->Mechanic == MECHANIC_SHIELD &&
+            m_spellProto->SpellFamilyName == SPELLFAMILY_PRIEST && m_spellproto->GetMechanic() == MECHANIC_SHIELD &&
             (m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000001)) &&
             // completely absorbed or dispelled
             ((m_removeMode == AURA_REMOVE_BY_DEFAULT && !m_modifier.m_amount) || m_removeMode == AURA_REMOVE_BY_DISPEL))

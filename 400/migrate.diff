@@ -564,74 +564,10 @@ index df01f78..265cde9 100644
 
 
 
-@@ -4130,9 +4163,10 @@ TrainerSpellState Player::GetTrainerSpellState(TrainerSpell const* trainer_spell
-     SpellEntry const* spell = sSpellStore.LookupEntry(trainer_spell->learnedSpell);
- 
-     // secondary prof. or not prof. spell
--    uint32 skill = spell->EffectMiscValue[1];
-+    SpellEffectEntry const* spellEffect = spell->GetSpellEffect(EFFECT_INDEX_1);
-+    uint32 skill = spellEffect ? spellEffect->EffectMiscValue : 0;
- 
--    if(spell->Effect[1] != SPELL_EFFECT_SKILL || !IsPrimaryProfessionSkill(skill))
-+    if(spellEffect && (spellEffect->Effect != SPELL_EFFECT_SKILL || !IsPrimaryProfessionSkill(skill)))
-         return TRAINER_SPELL_GREEN;
- 
-     // check primary prof. limit
 
-@@ -4596,7 +4630,7 @@ Corpse* Player::CreateCorpse()
- 
-     corpse->SetUInt32Value( CORPSE_FIELD_DISPLAY_ID, GetNativeDisplayId() );
- 
--    corpse->SetUInt32Value( CORPSE_FIELD_GUILD, GetGuildId() );
-+    //corpse->SetUInt32Value( CORPSE_FIELD_GUILD, GetGuildId() );
- 
-     uint32 iDisplayID;
-     uint32 iIventoryType;
 @@ -5172,23 +5206,23 @@ float Player::GetExpertiseDodgeOrParryReduction(WeaponAttackType attType) const
- 
- float Player::OCTRegenHPPerSpirit()
- {
--    uint32 level = getLevel();
--    uint32 pclass = getClass();
-+    //uint32 level = getLevel();
-+    //uint32 pclass = getClass();
- 
--    if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
-+    //if (level>GT_MAX_LEVEL) level = GT_MAX_LEVEL;
- 
--    GtOCTRegenHPEntry     const *baseRatio = sGtOCTRegenHPStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
--    GtRegenHPPerSptEntry  const *moreRatio = sGtRegenHPPerSptStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
--    if (baseRatio==NULL || moreRatio==NULL)
-+    //GtOCTRegenHPEntry     const *baseRatio = sGtOCTRegenHPStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-+    //GtRegenHPPerSptEntry  const *moreRatio = sGtRegenHPPerSptStore.LookupEntry((pclass-1)*GT_MAX_LEVEL + level-1);
-+    //if (baseRatio==NULL || moreRatio==NULL)
-         return 0.0f;
- 
-     // Formula from PaperDollFrame script
--    float spirit = GetStat(STAT_SPIRIT);
--    float baseSpirit = spirit;
--    if (baseSpirit>50) baseSpirit = 50;
--    float moreSpirit = spirit - baseSpirit;
--    float regen = baseSpirit * baseRatio->ratio + moreSpirit * moreRatio->ratio;
--    return regen;
-+    //float spirit = GetStat(STAT_SPIRIT);
-+    //float baseSpirit = spirit;
-+    //if (baseSpirit>50) baseSpirit = 50;
-+    //float moreSpirit = spirit - baseSpirit;
-+    //float regen = baseSpirit * baseRatio->ratio + moreSpirit * moreRatio->ratio;
-+    //return regen;
- }
- 
- float Player::OCTRegenMPPerSpirit()
-@@ -5407,7 +5441,7 @@ bool Player::UpdateCraftSkill(uint32 spellid)
- 
-             // Alchemy Discoveries here
-             SpellEntry const* spellEntry = sSpellStore.LookupEntry(spellid);
--            if (spellEntry && spellEntry->Mechanic == MECHANIC_DISCOVERY)
-+            if (spellEntry && spellEntry->GetMechanic() == MECHANIC_DISCOVERY)
-             {
-                 if (uint32 discoveredSpell = GetSkillDiscoverySpell(_spell_idx->second->skillId, spellid, this))
-                     learnSpell(discoveredSpell, false);
+
+
 @@ -5567,7 +5601,7 @@ void Player::UpdateCombatSkills(Unit *pVictim, WeaponAttackType attType, bool de
  {
      uint32 plevel = getLevel();                             // if defense than pVictim == attacker
@@ -1685,20 +1621,6 @@ index f00b7f7..6e62e37 100644
          uint32 RequiredSkillValue;
          uint32 RepObjectiveFaction;
          int32  RepObjectiveValue;
-
-diff --git a/mangos335/src/game/SkillDiscovery.cpp b/mangos400/src/game/SkillDiscovery.cpp
-index b73bedb..684aa0b 100644
---- a/mangos335/src/game/SkillDiscovery.cpp
-+++ b/mangos400/src/game/SkillDiscovery.cpp
-@@ -98,7 +98,7 @@ void LoadSkillDiscoveryTable()
-             }
- 
-             // mechanic discovery
--            if (reqSpellEntry->Mechanic != MECHANIC_DISCOVERY &&
-+            if (reqSpellEntry->GetMechanic() != MECHANIC_DISCOVERY &&
-                 // explicit discovery ability
-                 !IsExplicitDiscoverySpell(reqSpellEntry))
-             {
 
 diff --git a/mangos335/src/game/Spell.cpp b/mangos400/src/game/Spell.cpp
 index c59658e..ab9916a 100644
@@ -4486,15 +4408,7 @@ index cac3f9e..7473870 100644
      {
          if( BattleGround *bg = ((Player*)target)->GetBattleGround() )
              bg->EventPlayerDroppedFlag(((Player*)target));
-@@ -4514,7 +4542,7 @@ void Aura::HandleAuraModSchoolImmunity(bool apply, bool Real)
-             }
-         }
-     }
--    if( Real && GetSpellProto()->Mechanic == MECHANIC_BANISH )
-+    if( Real && GetSpellProto()->GetMechanic() == MECHANIC_BANISH )
-     {
-         if( apply )
-             target->addUnitState(UNIT_STAT_ISOLATED);
+;
 @@ -4591,7 +4619,7 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
                  if (m_removeMode == AURA_REMOVE_BY_EXPIRE)
                  {
@@ -5463,13 +5377,7 @@ index cac3f9e..7473870 100644
          case SPELLFAMILY_GENERIC:
          {
 @@ -8381,15 +8437,15 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
-             if(!apply)
-             {
-                 // Remove Blood Frenzy only if target no longer has any Deep Wound or Rend (applying is handled by procs)
--                if (GetSpellProto()->Mechanic != MECHANIC_BLEED)
-+                if (GetSpellProto()->GetMechanic() != MECHANIC_BLEED)
-                     return;
- 
+
                  // If target still has one of Warrior's bleeds, do nothing
                  Unit::AuraList const& PeriodicDamage = m_target->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
                  for(Unit::AuraList::const_iterator i = PeriodicDamage.begin(); i != PeriodicDamage.end(); ++i)
@@ -5517,15 +5425,7 @@ index cac3f9e..7473870 100644
                              && (*itr)->GetSpellProto()->SpellIconID == 178)
                          {
                              // custom cast code
-@@ -8475,7 +8531,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
-                     return;
-             }
-             // Power Word: Shield
--            else if (apply && m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000001) && m_spellProto->Mechanic == MECHANIC_SHIELD)
-+            else if (apply && classOptions && classOptions->SpellFamilyFlags & UI64LIT(0x0000000000000001) && m_spellProto->GetMechanic() == MECHANIC_SHIELD)
-             {
-                 Unit* caster = GetCaster();
-                if(!caster)
+
 @@ -8504,7 +8560,7 @@ void SpellAuraHolder::HandleSpellSpecificBoosts(bool apply)
                          {
                              SpellEntry const* dummyEntry = (*itr)->GetSpellProto();
@@ -5617,12 +5517,7 @@ index cac3f9e..7473870 100644
              // Get spell range
              float max_range = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellProto->rangeIndex));
 @@ -8913,23 +8969,33 @@ void SpellAuraHolder::RefreshHolder()
- 
- bool SpellAuraHolder::HasMechanic(uint32 mechanic) const
- {
--    if (mechanic == m_spellProto->Mechanic)
-+    if (mechanic == m_spellProto->GetMechanic())
-         return true;
+
  
      for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
 -        if (m_auras[i] && m_spellProto->EffectMechanic[i] == mechanic)
@@ -5635,12 +5530,8 @@ index cac3f9e..7473870 100644
 +    }
      return false;
  }
+
  
- bool SpellAuraHolder::HasMechanicMask(uint32 mechanicMask) const
- {
--    if (mechanicMask & (1 << (m_spellProto->Mechanic - 1)))
-+    if (mechanicMask & (1 << (m_spellProto->GetMechanic() - 1)))
-         return true;
  
      for (int32 i = 0; i < MAX_EFFECT_INDEX; ++i)
 -        if (m_auras[i] && m_spellProto->EffectMechanic[i] && ((1 << (m_spellProto->EffectMechanic[i] -1)) & mechanicMask))
@@ -10461,13 +10352,7 @@ index 79a2438..23ee5c5 100644
 +
 +    switch(spellproto->GetSpellFamilyName())
      {
-         case SPELLFAMILY_GENERIC:
-             // some generic arena related spells have by some strange reason MECHANIC_TURN
--            if  (spellproto->Mechanic == MECHANIC_TURN)
-+            if  (spellproto->GetMechanic() == MECHANIC_TURN)
-                 return DIMINISHING_NONE;
-             break;
-         case SPELLFAMILY_MAGE:
+
 @@ -4014,10 +4123,10 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
          case SPELLFAMILY_ROGUE:
          {
@@ -10975,13 +10860,7 @@ index 2614123..9fd5aa3 100644
  
  void Unit::resetAttackTimer(WeaponAttackType type)
 @@ -558,34 +568,22 @@ uint32 Unit::DealDamage(Unit *pVictim, uint32 damage, CleanDamage const* cleanDa
-     if (!spellProto || !IsSpellHaveAura(spellProto,SPELL_AURA_MOD_FEAR))
-         pVictim->RemoveSpellbyDamageTaken(SPELL_AURA_MOD_FEAR, damage);
-     // root type spells do not dispel the root effect
--    if (!spellProto || !(spellProto->Mechanic == MECHANIC_ROOT || IsSpellHaveAura(spellProto,SPELL_AURA_MOD_ROOT)))
-+    if (!spellProto || !(spellProto->GetMechanic() == MECHANIC_ROOT || IsSpellHaveAura(spellProto,SPELL_AURA_MOD_ROOT)))
-         pVictim->RemoveSpellbyDamageTaken(SPELL_AURA_MOD_ROOT, damage);
- 
+
      // no xp,health if type 8 /critters/
 -    if (pVictim->GetTypeId() == TYPEID_UNIT && pVictim->GetCreatureType() == CREATURE_TYPE_CRITTER)
 +    if(pVictim->GetTypeId() != TYPEID_PLAYER && pVictim->GetCreatureType() == CREATURE_TYPE_CRITTER)
@@ -12589,15 +12468,7 @@ index 8f488ed..28430ae 100644
                              {
                                  found=true;
                                  break;
-@@ -716,7 +722,7 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
-                     {
-                         SpellEntry const *spell = iter->second->GetSpellProto();
- 
--                        if( spell->Mechanic == MECHANIC_STUN ||
-+                        if( spell->GetMechanic() == MECHANIC_STUN ||
-                             iter->second->HasMechanic(MECHANIC_STUN))
-                         {
-                             pVictim->RemoveAurasDueToSpell(spell->Id);
+
 @@ -831,7 +837,8 @@ SpellAuraProcResult Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura
                              target = getVictim();
                              if(!target)
@@ -13112,14 +12983,6 @@ index 8f488ed..28430ae 100644
              (triggeredByAura->GetModifier()->m_miscvalue & procSpell->SchoolMask) == 0) ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;  // School check
  }
  
- SpellAuraProcResult Unit::HandleMechanicImmuneResistanceAuraProc(Unit* /*pVictim*/, uint32 /*damage*/, Aura* triggeredByAura, SpellEntry const* procSpell, uint32 /*procFlag*/, uint32 /*procEx*/, uint32 /*cooldown*/)
- {
-     // Compare mechanic
--   return !(procSpell==NULL || procSpell->Mechanic != triggeredByAura->GetModifier()->m_miscvalue)  ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;
-+   return !(procSpell==NULL || procSpell->GetMechanic() != triggeredByAura->GetModifier()->m_miscvalue)  ? SPELL_AURA_PROC_OK : SPELL_AURA_PROC_FAILED;
- }
- 
- SpellAuraProcResult Unit::HandleModDamageFromCasterAuraProc(Unit* pVictim, uint32 /*damage*/, Aura* triggeredByAura, SpellEntry const* /*procSpell*/, uint32 /*procFlag*/, uint32 /*procEx*/, uint32 /*cooldown*/)
 @@ -3700,7 +3722,7 @@ SpellAuraProcResult Unit::HandleAddPctModifierAuraProc(Unit* /*pVictim*/, uint32
      Item* castItem = triggeredByAura->GetCastItemGUID() && GetTypeId()==TYPEID_PLAYER
      ? ((Player*)this)->GetItemByGuid(triggeredByAura->GetCastItemGUID()) : NULL;

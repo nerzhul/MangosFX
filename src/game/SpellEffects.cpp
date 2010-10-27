@@ -7542,7 +7542,7 @@ void Spell::EffectDispelMechanic(uint32 i)
         next = iter;
         ++next;
         SpellEntry const *spell = sSpellStore.LookupEntry(iter->second->GetSpellProto()->Id);
-        if(spell->Mechanic == mechanic || spell->EffectMechanic[iter->second->GetEffIndex()] == mechanic)
+        if(spell->GetMechanic() == mechanic || spell->EffectMechanic[iter->second->GetEffIndex()] == mechanic)
         {
             unitTarget->RemoveAurasDueToSpell(spell->Id);
             if(Auras.empty())
