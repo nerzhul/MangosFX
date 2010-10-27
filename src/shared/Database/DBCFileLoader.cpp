@@ -323,9 +323,11 @@ char* DBCFileLoader::AutoProduceStrings(const char* format, char* dataTable, Loc
                 break;
             case FT_STRING:
 			{
+				char** holder = *((char***)(&dataTable[offset]));
+                char** slot = &holder[loc];
+
                 // fill only not filled entries
-                char** slot = (char**)(&dataTable[offset]);
-                if(!*slot || !**slot)
+                if (*slot == nullStr)
                 {
                     const char * st = getRecord(y).getString(x);
                     *slot=stringPool+(st-(const char*)stringTable);

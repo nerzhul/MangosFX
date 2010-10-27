@@ -14043,27 +14043,3 @@ index 1919a86..9e0ff7a 100644
                  }
              }
              sLog.outDebugInLine("\n");
-diff --git a/mangos335/src/shared/Database/DBCFileLoader.cpp b/mangos400/src/shared/Database/DBCFileLoader.cpp
-index c5ac9dc..e299191 100644
---- a/mangos335/src/shared/Database/DBCFileLoader.cpp
-+++ b/mangos400/src/shared/Database/DBCFileLoader.cpp
-
-@@ -243,13 +319,16 @@ char* DBCFileLoader::AutoProduceStrings(const char* format, char* dataTable)
-                 break;
-             case FT_STRING:
-             {
-+                char** holder = *((char***)(&dataTable[offset]));
-+                char** slot = &holder[loc];
-+
-                 // fill only not filled entries
--                char** slot = (char**)(&dataTable[offset]);
--                if(!*slot || !**slot)
-+                if (*slot == nullStr)
-                 {
-                     const char * st = getRecord(y).getString(x);
-                     *slot=stringPool+(st-(const char*)stringTable);
-                 }
-+
-                 offset+=sizeof(char*);
-                 break;
-             }
