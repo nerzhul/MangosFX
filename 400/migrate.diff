@@ -31,15 +31,6 @@ index d8d30e2..87797f6 100644
 --- a/mangos335/src/game/Level3.cpp
 +++ b/mangos400/src/game/Level3.cpp
 
-@@ -2130,7 +2130,7 @@ bool ChatHandler::HandleLearnAllMySpellsCommand(char* /*args*/)
-             continue;
- 
-         // skip other spell families
--        if( spellInfo->SpellFamilyName != family)
-+        if( spellInfo->GetSpellFamilyName() != family)
-             continue;
- 
-         // skip spells with first rank learned as talent (and all talents then also)
 @@ -3089,7 +3089,8 @@ void ChatHandler::ShowSpellListHelper(Player* target, SpellEntry const* spellInf
      uint32 id = spellInfo->Id;
  
@@ -90,41 +81,7 @@ index d8d30e2..87797f6 100644
          }
      }
 
-diff --git a/mangos335/src/game/Map.cpp b/mangos400/src/game/Map.cpp
-index 91c19e6..a0504c6 100644
---- a/mangos335/src/game/Map.cpp
-+++ b/mangos400/src/game/Map.cpp
 
-@@ -755,6 +751,10 @@ Map::PlayerRelocation(Player *player, float x, float y, float z, float orientati
-     {
-         DEBUG_FILTER_LOG(LOG_FILTER_PLAYER_MOVES, "Player %s relocation grid[%u,%u]cell[%u,%u]->grid[%u,%u]cell[%u,%u]", player->GetName(), old_cell.GridX(), old_cell.GridY(), old_cell.CellX(), old_cell.CellY(), new_cell.GridX(), new_cell.GridY(), new_cell.CellX(), new_cell.CellY());
- 
-+        // update player position for group at taxi flight
-+        if(player->GetGroup() && player->IsTaxiFlying())
-+            player->SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
-+
-         NGridType* oldGrid = getNGrid(old_cell.GridX(), old_cell.GridY());
-         RemoveFromGrid(player, oldGrid,old_cell);
-         if( !old_cell.DiffGrid(new_cell) )
-
-diff --git a/mangos335/src/game/MiscHandler.cpp b/mangos400/src/game/MiscHandler.cpp
-index e5a7b9a..64a8e22 100644
---- a/mangos335/src/game/MiscHandler.cpp
-+++ b/mangos400/src/game/MiscHandler.cpp
-@@ -1119,10 +1119,10 @@ void WorldSession::HandleInspectHonorStatsOpcode(WorldPacket& recv_data)
- 
-     WorldPacket data(MSG_INSPECT_HONOR_STATS, 8+1+4*4);
-     data << player->GetObjectGuid();
--    data << uint8(player->GetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY));
-+    data << uint8(player->GetHonorPoints());
-     data << uint32(player->GetUInt32Value(PLAYER_FIELD_KILLS));
--    data << uint32(player->GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION));
--    data << uint32(player->GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION));
-+    //data << uint32(player->GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION));
-+    //data << uint32(player->GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION));
-     data << uint32(player->GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS));
-     SendPacket(&data);
- }
 diff --git a/mangos335/src/game/NPCHandler.cpp b/mangos400/src/game/NPCHandler.cpp
 index 933d9fe..c2f7d72 100644
 --- a/mangos335/src/game/NPCHandler.cpp
