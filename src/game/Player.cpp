@@ -19661,9 +19661,13 @@ void Player::UpdateVisibilityOf(WorldObject const* viewPoint, WorldObject* targe
         if(!target->isVisibleForInState(this, viewPoint, true))
         {
             if (target->GetTypeId()==TYPEID_UNIT)
+			{
                 BeforeVisibilityDestroy<Creature>((Creature*)target,this);
+				target->DestroyForPlayer(this, !target->IsInWorld() && ((Creature*)target)->isDead());
+			}
+			else
+				target->DestroyForPlayer(this);
 
-            target->DestroyForPlayer(this);
             m_clientGUIDs.erase(target->GetGUID());
 
             #ifdef MANGOS_DEBUG
