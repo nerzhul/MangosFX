@@ -204,14 +204,14 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
 	SpellEntry const* spell = aura->GetSpellProto();
 	Unit* m_target = aura->GetTarget();
 	// Death and Decay
-    if (spell->SpellFamilyFlags & FLAG_DEATH_AND_DECAY)
+    if (spell->GetSpellFamilyFlags() & FLAG_DEATH_AND_DECAY)
     {
         if (Unit *caster = aura->GetCaster())
 			caster->CastCustomSpell(aura->GetTarget(), 52212, &(aura->GetModifier()->m_amount), NULL, NULL, true, NULL, aura);
         return;
     }
     // Chains of Ice
-    else if (spell->SpellFamilyFlags & FLAG_CHAIN_OF_ICE)
+    else if (spell->GetSpellFamilyFlags() & FLAG_CHAIN_OF_ICE)
     {
         // Get 0 effect aura
         Aura *slow = m_target->GetAura(aura->GetId(), 0);

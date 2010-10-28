@@ -221,18 +221,18 @@ void Unit::BuildVehicleInfo(Unit *target)
 
 bool GlobalCooldownMgr::HasGlobalCooldown(SpellEntry const* spellInfo) const
 {
-	GlobalCooldownList::const_iterator itr = m_GlobalCooldowns.find(spellInfo->StartRecoveryCategory);
+	GlobalCooldownList::const_iterator itr = m_GlobalCooldowns.find(spellInfo->GetStartRecoveryCategory());
 	return itr != m_GlobalCooldowns.end() && itr->second.duration && getMSTimeDiff(itr->second.cast_time, getMSTime()) < itr->second.duration;
 }
 
 void GlobalCooldownMgr::AddGlobalCooldown(SpellEntry const* spellInfo, uint32 gcd)
 {
-	m_GlobalCooldowns[spellInfo->StartRecoveryCategory] = GlobalCooldown(gcd, getMSTime());
+	m_GlobalCooldowns[spellInfo->GetStartRecoveryCategory()] = GlobalCooldown(gcd, getMSTime());
 }
 
 void GlobalCooldownMgr::CancelGlobalCooldown(SpellEntry const* spellInfo)
 {
-	m_GlobalCooldowns[spellInfo->StartRecoveryCategory].duration = 0;
+	m_GlobalCooldowns[spellInfo->GetStartRecoveryCategory()].duration = 0;
 }
 
 Unit::Unit()
@@ -610,7 +610,7 @@ void Unit::RemoveSpellsCausingAuraWithInterruptFlags(AuraType auraType, uint32 f
 	
 	for (AuraList::iterator itr = m_modAuras[auraType].begin(); itr != m_modAuras[auraType].end();)
 	{
-		if (*itr && ((*itr)->GetSpellProto()->AuraInterruptFlags & flags))
+		if (*itr && ((*itr)->GetSpellProto()->GetAuraInterruptFlags() & flags))
 		{
 			RemoveAurasDueToSpell((*itr)->GetId());
 			itr = m_modAuras[auraType].begin();
@@ -3177,7 +3177,7 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit *pVictim, SpellEntry const *spell)
 	if(spell->Category == SPELLCATEGORY_JUDGEMENT || 
 		(GetTypeId() == TYPEID_PLAYER && 
 		(((Player*)this)->getClass() == CLASS_PALADIN && 
-		(spell->SpellFamilyFlags & UI64LIT(0x0000000000004000) || spell->Id == 53595 || 
+		(spell->GetSpellFamilyFlags() & UI64LIT(0x0000000000004000) || spell->Id == 53595 || 
 		spell->SpellIconID == 42 || spell->SpellIconID == 2172))) ||
 		(((Player*)this)->getClass() == CLASS_ROGUE && spell->SpellIconID == 2237)
 		)
@@ -3475,7 +3475,7 @@ SpellMissInfo Unit::SpellHitResult(Unit *pVictim, SpellEntry const *spell, bool 
 			SpellMissInfo Smi = MeleeSpellHitResult(pVictim, spell);
 			if(GetTypeId() == TYPEID_PLAYER && spell->GetSpellFamilyName() & SPELLFAMILY_DRUID)
 			{
-				if(spell->SpellFamilyFlags & (0x8000000000|0x800000|0x1000000000000000))
+				if(spell->GetSpellFamilyFlags() & (0x8000000000|0x800000|0x1000000000000000))
 				{
 					if(Smi != SPELL_MISS_NONE && Smi != SPELL_MISS_BLOCK)
 					{
@@ -4876,7 +4876,7 @@ void Unit::RemoveAurasWithInterruptFlags(uint32 flags)
     {
 		if(iter->second->GetSpellProto())
         {
-			if (iter->second->GetSpellProto()->AuraInterruptFlags & flags)
+			if (iter->second->GetSpellProto()->GetAuraInterruptFlags() & flags)
 				RemoveAura(iter);
 			else
 				++iter;
@@ -5102,7 +5102,7 @@ Aura* Unit::GetAura(AuraType type, uint32 family, uint64 familyFlag, uint32 fami
     for(AuraList::const_iterator i = auras.begin();i != auras.end(); ++i)
     {
         SpellEntry const *spell = (*i)->GetSpellProto();
-        if (spell->GetSpellFamilyName() == family && (spell->SpellFamilyFlags & familyFlag || spell->SpellFamilyFlags2 & familyFlag2))
+        if (spell->GetSpellFamilyName() == family && (spell->GetSpellFamilyFlags() & familyFlag || spell->GetSpellFamilyFlags2() & familyFlag2))
         {
             if (casterGUID && (*i)->GetCasterGUID()!=casterGUID)
                 continue;
@@ -6035,7 +6035,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 					if(!mote)
 						return false;
 					
-					uint32 maxStack = mote->StackAmount - (dummySpell->Id == 71545 ? 1 : 0);
+					uint32 maxStack = mote->GetStackAmount() - (dummySpell->Id == 71545 ? 1 : 0);
 					Aura *aur = GetAura(71432, EFFECT_INDEX_0);
 					if(aur && uint32(aur->GetStackAmount() +1) >= maxStack)
 					{
@@ -6072,7 +6072,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     return false;
 
                 // mana cost save
-                int32 cost = procSpell->manaCost + procSpell->ManaCostPercentage * GetCreateMana() / 100;
+				int32 cost = procSpell->GetManaCost() + procSpell->GetManaCostPercentage() * GetCreateMana() / 100;
                 basepoints0 = cost * triggerAmount/100;
                 if( basepoints0 <=0 )
                     return false;
@@ -14549,7 +14549,7 @@ bool Unit::hasNegativeAuraWithInterruptFlag(uint32 flag)
 {
     for (AuraMap::const_iterator iter = m_Auras.begin(); iter != m_Auras.end(); ++iter)
     {
-        if (!iter->second->IsPositive() && iter->second->GetSpellProto()->AuraInterruptFlags & flag)
+        if (!iter->second->IsPositive() && iter->second->GetSpellProto()->GetAuraInterruptFlags() & flag)
             return true;
     }
     return false;

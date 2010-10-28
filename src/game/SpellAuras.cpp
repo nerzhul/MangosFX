@@ -1364,9 +1364,9 @@ bool Aura::isAffectedOnSpell(SpellEntry const *spell) const
         return false;
     // Check EffectClassMask
     uint32 const *ptr = getAuraSpellClassMask();
-    if (((uint64*)ptr)[0] & spell->SpellFamilyFlags)
+    if (((uint64*)ptr)[0] & spell->GetSpellFamilyFlags())
         return true;
-    if (ptr[2] & spell->SpellFamilyFlags2)
+    if (ptr[2] & spell->GetSpellFamilyFlags2())
         return true;
     return false;
 }
@@ -2209,7 +2209,7 @@ void Aura::TriggerSpell()
                         {
                             SpellEntry const* spell = itr->second->GetSpellProto();
                             if( spell->GetSpellFamilyName() == SPELLFAMILY_SHAMAN &&
-                                (spell->SpellFamilyFlags & UI64LIT(0x0000000000000400)))
+                                (spell->GetSpellFamilyFlags() & UI64LIT(0x0000000000000400)))
                                 return;
                         }
                         target->RemoveAurasDueToSpell(28820);
@@ -5247,7 +5247,7 @@ void Aura::HandleAuraModEffectImmunity(bool apply, bool /*Real*/)
 {
     // when removing flag aura, handle flag drop
     if( !apply && m_target->GetTypeId() == TYPEID_PLAYER
-        && (GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION) )
+        && (GetSpellProto()->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_IMMUNE_OR_LOST_SELECTION) )
     {
 		if(((Player*)m_target)->InBattleGround())
         {
@@ -8526,7 +8526,7 @@ void Aura::PeriodicTick()
             if(int32(pt) != m_modifier.m_miscvalue)
                 return;
 
-            if ( GetSpellProto()->AuraInterruptFlags & AURA_INTERRUPT_FLAG_NOT_SEATED )
+            if ( GetSpellProto()->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_NOT_SEATED )
             {
                 // eating anim
                 m_target->HandleEmoteCommand(EMOTE_ONESHOT_EAT);
@@ -9000,7 +9000,7 @@ void Aura::PeriodicDummyTick()
         case SPELLFAMILY_HUNTER:
         {
             // Explosive Shot
-            if (spell->SpellFamilyFlags & UI64LIT(0x8000000000000000))
+            if (spell->GetSpellFamilyFlags() & UI64LIT(0x8000000000000000))
             {
                 m_target->CastCustomSpell(m_target, 53352, &m_modifier.m_amount, 0, 0, true, 0, this, GetCasterGUID());
                 return;

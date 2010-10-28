@@ -4648,14 +4648,18 @@ bool ChatHandler::HandleGetSpellInfoCommand(const char* args)
 	if(!spell)
 		return false;
 
+	SpellEffectEntry const* spellEffect0 = spell->GetSpellEffect(EFFECT_INDEX_0);
+	SpellEffectEntry const* spellEffect1 = spell->GetSpellEffect(EFFECT_INDEX_1);
+	SpellEffectEntry const* spellEffect2 = spell->GetSpellEffect(EFFECT_INDEX_2);
+
 	PSendSysMessage("Spell %u / Nom : %s / Icone : %u / SpellVisual[0] %u / SpellVisual[1] %u / activeIconId %u / FamilyFlags1 : " UI64FMTD " (0x%x) / FamilyFlags2 : %u / FamilyName : %u",
-						spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->SpellFamilyFlags,spell->SpellFamilyFlags,spell->SpellFamilyFlags2,
+		spellId,spell->SpellName,spell->SpellIconID,spell->SpellVisual[0],spell->SpellVisual[1],spell->activeIconID, spell->GetSpellFamilyFlags(),spell->GetSpellFamilyFlags(),spell->GetSpellFamilyFlags2(),
 						spell->GetSpellFamilyName());
 	PSendSysMessage("AuraType1 : %u / AuraType2 : %u / AuraType3 %u / Effect1 %u / Effect2 %u / Effect3 %u",		
-		spell->EffectApplyAuraName[0],spell->EffectApplyAuraName[1],spell->EffectApplyAuraName[2],spell->Effect[0],spell->Effect[1],spell->Effect[2]);
+		spellEffect0->EffectApplyAuraName,spellEffect1->EffectApplyAuraName,spellEffect2->EffectApplyAuraName,spellEffect0->Effect,spellEffect1->Effect,spellEffect2->Effect);
 	PSendSysMessage("ImplicitTargetA[0] %u / ImplicitTargetA[1] %u / ImplicitTargetA[2] %u / ImplicitTargetB[0] %u / ImplicitTargetB[1] %u / ImplicitTargetB[2] %u",
-		spell->EffectImplicitTargetA[0],spell->EffectImplicitTargetA[1],spell->EffectImplicitTargetA[2],spell->EffectImplicitTargetB[0],spell->EffectImplicitTargetB[1],
-		spell->EffectImplicitTargetB[2]);
+		spellEffect0->EffectImplicitTargetA,spellEffect1->EffectImplicitTargetA,spellEffect2->EffectImplicitTargetA,spellEffect0->EffectImplicitTargetB,spellEffect1->EffectImplicitTargetB,
+		spellEffect2->EffectImplicitTargetB);
 	return true;
 }
 

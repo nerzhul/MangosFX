@@ -2893,7 +2893,8 @@ bool ChatHandler::HandleLookupSpellCommand(const char* args)
             if(loc < MAX_LOCALE)
             {
                 bool known = target && target->HasSpell(id);
-                bool learn = (spellInfo->Effect[0] == SPELL_EFFECT_LEARN_SPELL);
+				SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+                bool learn = (spellEffect && spellEffect->Effect == SPELL_EFFECT_LEARN_SPELL);
 
                 uint32 talentCost = GetTalentSpellCost(id);
 
@@ -2903,7 +2904,7 @@ bool ChatHandler::HandleLookupSpellCommand(const char* args)
 
                 // unit32 used to prevent interpreting uint8 as char at output
                 // find rank of learned spell for learning spell, or talent rank
-                uint32 rank = talentCost ? talentCost : sSpellMgr.GetSpellRank(learn ? spellInfo->EffectTriggerSpell[0] : id);
+                uint32 rank = talentCost ? talentCost : sSpellMgr.GetSpellRank(learn ? spellEffect && spellEffect->EffectTriggerSpell : id);
 
                 // send spell in "id - [name, rank N] [talent] [passive] [learn] [known]" format
                 std::ostringstream ss;
@@ -3607,7 +3608,8 @@ bool ChatHandler::HandleAuraCommand(const char* args)
     {
         for(uint32 i = 0;i<3;++i)
         {
-            uint8 eff = spellInfo->Effect[i];
+			SpellEffectEntry const* spellEffect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+            uint8 eff = spellEffect->Effect;
             if (eff>=TOTAL_SPELL_EFFECTS)
                 continue;
             if( IsAreaAuraEffect(eff)           ||

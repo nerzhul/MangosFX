@@ -28,16 +28,16 @@ int32 SpellEntry::CalculateSimpleValue(SpellEffectIndex eff) const
     return 0;
 }
 
-uint64 SpellEntry::GetSpellFamilyFlags(SpellEffectIndex eff) const
+uint64 SpellEntry::GetSpellFamilyFlags() const
 {
-	if(SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions())
+	if(SpellClassOptionsEntry const* classOptions = GetSpellClassOptions())
 		return classOptions->SpellFamilyFlags;
 	return 0;
 }
 
-uint32 SpellEntry::GetSpellFamilyFlags2(SpellEffectIndex eff) const
+uint32 SpellEntry::GetSpellFamilyFlags2() const
 {
-	if(SpellClassOptionsEntry const* classOptions = spellInfo->GetSpellClassOptions())
+	if(SpellClassOptionsEntry const* classOptions = GetSpellClassOptions())
 		return classOptions->SpellFamilyFlags2;
 	return 0;
 }
