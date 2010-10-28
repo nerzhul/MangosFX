@@ -4680,7 +4680,7 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
 
     // Custom dispel cases
     // Unstable Affliction
-    if(spellEntry->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && (spellEntry->SpellFamilyFlags & UI64LIT(0x010000000000)))
+    if(spellEntry->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && (spellEntry->GetSpellFamilyFlags() & UI64LIT(0x010000000000)))
     {
         if (Aura* dotAura = GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_WARLOCK,UI64LIT(0x010000000000),0x00000000,casterGUID))
         {
@@ -4698,7 +4698,7 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
         }
     }
     // Flame Shock
-    else if (spellEntry->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && (spellEntry->SpellFamilyFlags & UI64LIT(0x10000000)))
+    else if (spellEntry->GetSpellFamilyName() == SPELLFAMILY_SHAMAN && (spellEntry->GetSpellFamilyFlags() & UI64LIT(0x10000000)))
     {
         Unit* caster = NULL;
         uint32 triggeredSpell = 0;
