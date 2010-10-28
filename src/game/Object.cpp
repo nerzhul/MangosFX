@@ -239,7 +239,7 @@ void Object::DestroyForPlayer( Player *target, bool anim ) const
 {
     ASSERT(target);
 
-    WorldPacket data(SMSG_DESTROY_OBJECT, 8);
+    WorldPacket data(SMSG_DESTROY_OBJECT, 9);
     data << uint64(GetGUID());
     data << uint8(anim ? 1 : 0);                            // WotLK (bool), may be despawn animation
     target->GetSession()->SendPacket(&data);
