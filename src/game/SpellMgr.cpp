@@ -109,13 +109,17 @@ uint16 GetSpellAuraMaxTicks(SpellEntry const* spellInfo)
 
     for (int j = 0; j < 3; ++j)
     {
-        if (spellInfo->Effect[j] == SPELL_EFFECT_APPLY_AURA && (
-            spellInfo->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_DAMAGE ||
-            spellInfo->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_HEAL ||
-            spellInfo->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_LEECH) )
+		SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+		if(!effect)
+			continue;
+
+        if (effect->Effect == SPELL_EFFECT_APPLY_AURA && (
+            effect->EffectApplyAuraName == SPELL_AURA_PERIODIC_DAMAGE ||
+            effect->EffectApplyAuraName == SPELL_AURA_PERIODIC_HEAL ||
+            effect->EffectApplyAuraName == SPELL_AURA_PERIODIC_LEECH) )
         {
-            if (spellInfo->EffectAmplitude[j] != 0)
-                return DotDuration / spellInfo->EffectAmplitude[j];
+            if (effect->EffectAmplitude != 0)
+                return DotDuration / effect->EffectAmplitude;
             break;
         }
     }
@@ -128,7 +132,7 @@ WeaponAttackType GetWeaponAttackType(SpellEntry const *spellInfo)
     if(!spellInfo)
         return BASE_ATTACK;
 
-    switch (spellInfo->DmgClass)
+    switch (spellInfo->GetDmgClass())
     {
         case SPELL_DAMAGE_CLASS_MELEE:
             if (spellInfo->AttributesEx3 & SPELL_ATTR_EX3_REQ_OFFHAND)
@@ -167,12 +171,17 @@ bool IsNoStackAuraDueToAura(uint32 spellId_1, uint32 effIndex_1, uint32 spellId_
     SpellEntry const *spellInfo_1 = sSpellStore.LookupEntry(spellId_1);
     SpellEntry const *spellInfo_2 = sSpellStore.LookupEntry(spellId_2);
     if(!spellInfo_1 || !spellInfo_2) return false;
+
+	SpellEffectEntry const* effect_1 = spellInfo_1->GetSpellEffect(SpellEffectIndex(effIndex_1));
+	SpellEffectEntry const* effect_2 = spellInfo_2->GetSpellEffect(SpellEffectIndex(effIndex_2));
+
+	if(!effect_1 || !effect_2) return false;
     if(spellInfo_1->Id == spellId_2) return false;
 
-    if (spellInfo_1->Effect[effIndex_1] != spellInfo_2->Effect[effIndex_2] ||
-        spellInfo_1->EffectItemType[effIndex_1] != spellInfo_2->EffectItemType[effIndex_2] ||
-        spellInfo_1->EffectMiscValue[effIndex_1] != spellInfo_2->EffectMiscValue[effIndex_2] ||
-        spellInfo_1->EffectApplyAuraName[effIndex_1] != spellInfo_2->EffectApplyAuraName[effIndex_2])
+    if (effect_1->Effect != effect_2->Effect ||
+        effect_1->EffectItemType != effect_2->EffectItemType ||
+        effect_1->EffectMiscValue != effect_2->EffectMiscValue ||
+        effect_1->EffectApplyAuraName != effect_2->EffectApplyAuraName)
         return false;
 
     return true;
@@ -183,10 +192,14 @@ int32 CompareAuraRanks(uint32 spellId_1, uint32 effIndex_1, uint32 spellId_2, ui
     SpellEntry const*spellInfo_1 = sSpellStore.LookupEntry(spellId_1);
     SpellEntry const*spellInfo_2 = sSpellStore.LookupEntry(spellId_2);
     if(!spellInfo_1 || !spellInfo_2) return 0;
+	SpellEffectEntry const* effect_1 = spellInfo_1->GetSpellEffect(SpellEffectIndex(effIndex_1));
+	SpellEffectEntry const* effect_2 = spellInfo_2->GetSpellEffect(SpellEffectIndex(effIndex_2));
+
+	if(!effect_1 || !effect_2) return 0;
     if (spellId_1 == spellId_2) return 0;
 
-    int32 diff = spellInfo_1->EffectBasePoints[effIndex_1] - spellInfo_2->EffectBasePoints[effIndex_2];
-    if (spellInfo_1->CalculateSimpleValue(effIndex_1) < 0 && spellInfo_2->CalculateSimpleValue(effIndex_2) < 0)
+    int32 diff = effect_1->EffectBasePoints - effect_2->EffectBasePoints;
+    if (spellInfo_1->CalculateSimpleValue(SpellEffectIndex(effIndex_1)) < 0 && spellInfo_2->CalculateSimpleValue(SpellEffectIndex(effIndex_2)) < 0)
         return -diff;
     else return diff;
 }
@@ -202,13 +215,16 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         case SPELLFAMILY_GENERIC:
         {
             // Food / Drinks (mostly)
-            if(spellInfo->AuraInterruptFlags & AURA_INTERRUPT_FLAG_NOT_SEATED)
+            if(spellInfo->GetAuraInterruptFlags() & AURA_INTERRUPT_FLAG_NOT_SEATED)
             {
                 bool food = false;
                 bool drink = false;
                 for(int i = 0; i < 3; ++i)
                 {
-                    switch(spellInfo->EffectApplyAuraName[i])
+					SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+					if(!effect) continue;
+
+                    switch(effect->EffectApplyAuraName)
                     {
                         // Food
                         case SPELL_AURA_MOD_REGEN:
@@ -244,20 +260,20 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         case SPELLFAMILY_MAGE:
         {
             // family flags 18(Molten), 25(Frost/Ice), 28(Mage)
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x12040000))
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x12040000))
                 return SPELL_MAGE_ARMOR;
 
-            if ((spellInfo->SpellFamilyFlags & UI64LIT(0x1000000)) && spellInfo->EffectApplyAuraName[0]==SPELL_AURA_MOD_CONFUSE)
+            if ((spellInfo->GetSpellFamilyFlags() & UI64LIT(0x1000000)) && spellInfo->EffectApplyAuraName[0]==SPELL_AURA_MOD_CONFUSE)
                 return SPELL_MAGE_POLYMORPH;
 
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x2000000000000))
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x2000000000000))
                 return SPELL_MAGE_BOMB;
 
             break;
         }
         case SPELLFAMILY_WARRIOR:
         {
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x00008000010000))
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x00008000010000))
                 return SPELL_POSITIVE_SHOUT;
 
             break;
@@ -265,15 +281,15 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         case SPELLFAMILY_WARLOCK:
         {
             // only warlock curses have this
-            if (spellInfo->Dispel == DISPEL_CURSE)
+            if (spellInfo->GetDispel() == DISPEL_CURSE)
                 return SPELL_CURSE;
 
             // Warlock (Demon Armor | Demon Skin | Fel Armor)
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x2000002000000000) || spellInfo->SpellFamilyFlags2 & 0x00000010)
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x2000002000000000) || spellInfo->GetSpellFamilyFlags2() & 0x00000010)
                 return SPELL_WARLOCK_ARMOR;
 
 			// Unstable Affliction & Immolate
-			if (spellInfo->SpellFamilyFlags & UI64LIT(0x10000000004))
+			if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x10000000004))
 				return SPELL_UA_IMMOLATE;
 
             break;
@@ -282,7 +298,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         {
             // "Well Fed" buff from Blessed Sunfruit, Blessed Sunfruit Juice, Alterac Spring Water
             if ((spellInfo->Attributes & SPELL_ATTR_CASTABLE_WHILE_SITTING) &&
-                (spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_AUTOATTACK) &&
+                (spellInfo->GetInterruptFlags() & SPELL_INTERRUPT_FLAG_AUTOATTACK) &&
                 (spellInfo->SpellIconID == 52 || spellInfo->SpellIconID == 79))
                 return SPELL_WELL_FED;
             break;
@@ -290,14 +306,14 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
         case SPELLFAMILY_HUNTER:
         {
             // only hunter stings have this
-            if (spellInfo->Dispel == DISPEL_POISON)
+            if (spellInfo->GetDispel() == DISPEL_POISON)
                 return SPELL_STING;
 
             // only hunter aspects have this (but not all aspects in hunter family)
-            if( spellInfo->SpellFamilyFlags & UI64LIT(0x0044000000380000) || spellInfo->SpellFamilyFlags2 & 0x00001010)
+            if( spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0044000000380000) || spellInfo->GetSpellFamilyFlags2() & 0x00001010)
                 return SPELL_ASPECT;
 
-            if( spellInfo->SpellFamilyFlags2 & 0x00000002 )
+            if( spellInfo->GetSpellFamilyFlags2() & 0x00000002 )
                 return SPELL_TRACKER;
 
             break;
@@ -307,18 +323,18 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
             if (IsSealSpell(spellInfo))
                 return SPELL_SEAL;
 
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000011010002))
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000011010002))
                 return SPELL_BLESSING;
 
-            if (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000002190))
+            if (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000002190))
                 return SPELL_HAND;
 
             // skip Heart of the Crusader that have also same spell family mask
-            if ((spellInfo->SpellFamilyFlags & UI64LIT(0x00000820180400)) && (spellInfo->AttributesEx3 & 0x200) && (spellInfo->SpellIconID != 237))
+            if ((spellInfo->GetSpellFamilyFlags() & UI64LIT(0x00000820180400)) && (spellInfo->AttributesEx3 & 0x200) && (spellInfo->SpellIconID != 237))
                 return SPELL_JUDGEMENT;
 
             // only paladin auras have this (for palaldin class family)
-            if( spellInfo->SpellFamilyFlags2 & 0x00000020 )
+            if( spellInfo->GetSpellFamilyFlags2() & 0x00000020 )
                 return SPELL_AURA;
 
             break;
@@ -335,7 +351,7 @@ SpellSpecific GetSpellSpecific(uint32 spellId)
             return sSpellMgr.GetSpellElixirSpecific(spellInfo->Id);
 
         case SPELLFAMILY_DEATHKNIGHT:
-            if (spellInfo->Category == 47)
+            if (spellInfo->GetCategory() == 47)
                 return SPELL_PRESENCE;
             break;
     }
@@ -509,7 +525,7 @@ bool IsPositiveEffect(uint32 spellId, uint32 effIndex)
 			return true;
 
 	}
-
+	
     switch(spellproto->Effect[effIndex])
     {
         case SPELL_EFFECT_DUMMY:
@@ -827,7 +843,7 @@ SpellCastResult GetErrorAtShapeshiftedCast (SpellEntry const *spellInfo, uint32 
             return SPELL_FAILED_ONLY_SHAPESHIFT;
     }
 
-	if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DRUID && (spellInfo->SpellFamilyFlags2 & 0x8) && form != FORM_CAT)
+	if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DRUID && (spellInfo->GetSpellFamilyFlags2() & 0x8) && form != FORM_CAT)
 		return SPELL_FAILED_ONLY_SHAPESHIFT;
 
     return SPELL_CAST_OK;
@@ -1353,7 +1369,7 @@ bool SpellMgr::canStackSpellRanks(SpellEntry const *spellInfo)
                 if (spellInfo->Effect[i]==SPELL_EFFECT_APPLY_AREA_AURA_RAID)
                     return false;
 				// Seal of Righteousness, 2 version of same rank
-				if((spellInfo->SpellFamilyFlags & UI64LIT(0x0000000008000000)) && spellInfo->SpellIconID == 25)
+				if((spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000008000000)) && spellInfo->SpellIconID == 25)
 					return false;
                 break;
             case SPELLFAMILY_DRUID:

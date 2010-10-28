@@ -33,7 +33,7 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
         {
             spellInfo = (*itr).second->GetSpellProto();
             if( spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARRIOR &&
-                (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000004000)) &&
+                (spellInfo->GetSpellFamilyFlags() & UI64LIT(0x0000000000004000)) &&
                 (*itr).second->GetCasterGUID() == spell->GetCaster()->GetGUID())
             {
                 (*itr).second->RefreshAura();

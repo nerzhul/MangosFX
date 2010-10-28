@@ -503,6 +503,7 @@ void Spell::FillTargetMap()
 
     for(uint32 i = 0; i < 3; ++i)
     {
+
         // not call for empty effect.
         // Also some spells use not used effect targets for store targets for dummy effect in triggered spells
         if(m_spellInfo->Effect[i] == 0)
@@ -5761,9 +5762,9 @@ SpellCastResult Spell::CheckCasterAuras() const
         prevented_reason = SPELL_FAILED_CONFUSED;
     else if (unitflag & UNIT_FLAG_FLEEING && !(m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_USABLE_WHILE_FEARED))
         prevented_reason = SPELL_FAILED_FLEEING;
-    else if (unitflag & UNIT_FLAG_SILENCED && m_spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE)
+    else if (unitflag & UNIT_FLAG_SILENCED && m_spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE)
         prevented_reason = SPELL_FAILED_SILENCED;
-    else if (unitflag & UNIT_FLAG_PACIFIED && m_spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY)
+    else if (unitflag & UNIT_FLAG_PACIFIED && m_spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY)
         prevented_reason = SPELL_FAILED_PACIFIED;
     else if(m_caster->HasAuraType(SPELL_AURA_ALLOW_ONLY_ABILITY))
     {
@@ -5815,9 +5816,9 @@ SpellCastResult Spell::CheckCasterAuras() const
                         case SPELL_AURA_MOD_SILENCE:
                         case SPELL_AURA_MOD_PACIFY:
                         case SPELL_AURA_MOD_PACIFY_SILENCE:
-                            if( m_spellInfo->PreventionType == SPELL_PREVENTION_TYPE_PACIFY)
+                            if( m_spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_PACIFY)
                                 return SPELL_FAILED_PACIFIED;
-                            else if ( m_spellInfo->PreventionType == SPELL_PREVENTION_TYPE_SILENCE)
+                            else if ( m_spellInfo->GetPreventionType() == SPELL_PREVENTION_TYPE_SILENCE)
                                 return SPELL_FAILED_SILENCED;
                             break;
                         default: break;

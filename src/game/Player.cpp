@@ -7366,7 +7366,7 @@ void Player::_ApplyWeaponDependentAuraMods(Item *item,WeaponAttackType attackTyp
 void Player::_ApplyWeaponDependentAuraCritMod(Item *item, WeaponAttackType attackType, Aura* aura, bool apply)
 {
     // generic not weapon specific case processes in aura code
-    if(aura->GetSpellProto()->EquippedItemClass == -1)
+    if(aura->GetSpellProto()->GetEquippedItemClass() == -1)
         return;
 
     BaseModGroup mod = BASEMOD_END;
@@ -7392,7 +7392,7 @@ void Player::_ApplyWeaponDependentAuraDamageMod(Item *item, WeaponAttackType att
         return;
 
     // generic not weapon specific case processes in aura code
-    if(aura->GetSpellProto()->EquippedItemClass == -1)
+    if(aura->GetSpellProto()->GetEquippedItemClass() == -1)
         return;
 
     UnitMods unitMod = UNIT_MOD_END;
@@ -19185,7 +19185,7 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
     // if no cooldown found above then base at DBC data
     if(rec < 0 && catrec < 0)
     {
-        cat = spellInfo->Category;
+        cat = spellInfo->GetCategory();
         rec = spellInfo->RecoveryTime;
         catrec = spellInfo->CategoryRecoveryTime;
     }
@@ -20593,8 +20593,8 @@ bool Player::CanNoReagentCast(SpellEntry const* spellInfo) const
     // Check no reagent use mask
     uint64 noReagentMask_0_1 = GetUInt64Value(PLAYER_NO_REAGENT_COST_1);
     uint32 noReagentMask_2   = GetUInt64Value(PLAYER_NO_REAGENT_COST_1+2);
-    if (spellInfo->SpellFamilyFlags  & noReagentMask_0_1 ||
-        spellInfo->SpellFamilyFlags2 & noReagentMask_2)
+    if (spellInfo->GetSpellFamilyFlags()  & noReagentMask_0_1 ||
+        spellInfo->GetSpellFamilyFlags2() & noReagentMask_2)
         return true;
 
     return false;

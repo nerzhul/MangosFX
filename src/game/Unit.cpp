@@ -1431,7 +1431,7 @@ void Unit::CalculateSpellDamage(SpellNonMeleeDamage *damageInfo, int32 damage, S
 		sLog.outDebugSpell("Initial Spell Damage %i",damage);
 	
     // damage bonus (per damage class)
-    switch (spellInfo->DmgClass)
+    switch (spellInfo->GetDmgClass())
     {
         // Melee and Ranged Spells
         case SPELL_DAMAGE_CLASS_RANGED:
@@ -7929,7 +7929,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     if (!spellInfo)
                         continue;
 
-                    if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & UI64LIT(0x2000))
+                    if (spellInfo->GetSpellFamilyName() == SPELLFAMILY_DEATHKNIGHT && spellInfo->GetSpellFamilyFlags() & UI64LIT(0x2000))
                     {
                         triggered_spell_id = spellInfo->Id;
                         break;
@@ -9794,7 +9794,7 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
         return NULL;
 
     // Magic case
-    if(spellInfo && (spellInfo->DmgClass == SPELL_DAMAGE_CLASS_NONE || spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC))
+    if(spellInfo && (spellInfo->GetDmgClass() == SPELL_DAMAGE_CLASS_NONE || spellInfo->GetDmgClass() == SPELL_DAMAGE_CLASS_MAGIC))
     {
         Unit::AuraList const& magnetAuras = victim->GetAurasByType(SPELL_AURA_SPELL_MAGNET);
         for(Unit::AuraList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
@@ -9885,7 +9885,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         for(AuraList::const_iterator i = mModDamagePercentDone.begin(); i != mModDamagePercentDone.end(); ++i)
         {
             if( ((*i)->GetModifier()->m_miscvalue & GetSpellSchoolMask(spellProto)) &&
-                (*i)->GetSpellProto()->EquippedItemClass == -1 &&
+                (*i)->GetSpellProto()->GetEquippedItemClass() == -1 &&
                                                                 // -1 == any item class (not wand then)
                 (*i)->GetSpellProto()->EquippedItemInventoryTypeMask == 0 )
                                                                 // 0 == any inventory type (not wand then)
@@ -10295,7 +10295,7 @@ int32 Unit::SpellBaseDamageBonus(SpellSchoolMask schoolMask)
     for(AuraList::const_iterator i = mDamageDone.begin();i != mDamageDone.end(); ++i)
     {
         if (((*i)->GetModifier()->m_miscvalue & schoolMask) != 0 &&
-            (*i)->GetSpellProto()->EquippedItemClass == -1 &&                   // -1 == any item class (not wand then)
+            (*i)->GetSpellProto()->GetEquippedItemClass() == -1 &&                   // -1 == any item class (not wand then)
             (*i)->GetSpellProto()->EquippedItemInventoryTypeMask == 0)          //  0 == any inventory type (not wand then)
                 DoneAdvertisedBenefit += (*i)->GetModifier()->m_amount;
     }
@@ -11040,7 +11040,7 @@ bool Unit::IsImmunedToSpell(SpellEntry const* spellInfo)
 
     SpellImmuneList const& dispelList = m_spellImmune[IMMUNITY_DISPEL];
     for(SpellImmuneList::const_iterator itr = dispelList.begin(); itr != dispelList.end(); ++itr)
-        if (itr->type == spellInfo->Dispel)
+        if (itr->type == spellInfo->GetDispel())
             return true;
 
     if (!(spellInfo->AttributesEx & SPELL_ATTR_EX_UNAFFECTED_BY_SCHOOL_IMMUNE) &&         // unaffected by school immunity
@@ -11110,7 +11110,7 @@ bool Unit::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) con
         // Check for immune to application of harmful magical effects
         AuraList const& immuneAuraApply = GetAurasByType(SPELL_AURA_MOD_IMMUNE_AURA_APPLY_SCHOOL);
         for(AuraList::const_iterator iter = immuneAuraApply.begin(); iter != immuneAuraApply.end(); ++iter)
-            if (spellInfo->Dispel == DISPEL_MAGIC &&                                      // Magic debuff
+            if (spellInfo->GetDispel() == DISPEL_MAGIC &&                                      // Magic debuff
                 ((*iter)->GetModifier()->m_miscvalue & GetSpellSchoolMask(spellInfo)) &&  // Check school
                 !IsPositiveEffect(spellInfo->Id, index))                                  // Harmful
                 return true;
@@ -11139,7 +11139,7 @@ bool Unit::IsDamageToThreatSpell(SpellEntry const * spellInfo) const
         return false;
 
     uint32 family = spellInfo->GetSpellFamilyName();
-    uint64 flags = spellInfo->SpellFamilyFlags;
+    uint64 flags = spellInfo->GetSpellFamilyFlags();
 
     if ((family == 5 && flags == 256) ||                    //Searing Pain
         (family == 6 && flags == 8192) ||                   //Mind Blast
@@ -11183,7 +11183,7 @@ uint32 Unit::MeleeDamageBonus(Unit *pVictim, uint32 pdamage,WeaponAttackType att
         {
             if ((*i)->GetModifier()->m_miscvalue & schoolMask &&                                    // schoolmask has to fit with the intrinsic spell school
                 (*i)->GetModifier()->m_miscvalue & GetMeleeDamageSchoolMask() &&                    // AND schoolmask has to fit with weapon damage school (essential for non-physical spells)
-                ((*i)->GetSpellProto()->EquippedItemClass == -1 ||                                  // general, weapon independent
+                ((*i)->GetSpellProto()->GetEquippedItemClass() == -1 ||                                  // general, weapon independent
                 pWeapon && pWeapon->IsFitToSpellRequirements((*i)->GetSpellProto())))               // OR used weapon fits aura requirements
             {
                 DoneFlat += (*i)->GetModifier()->m_amount;
@@ -11228,7 +11228,7 @@ uint32 Unit::MeleeDamageBonus(Unit *pVictim, uint32 pdamage,WeaponAttackType att
         {
             if ((*i)->GetModifier()->m_miscvalue & schoolMask &&                                    // schoolmask has to fit with the intrinsic spell school
                 (*i)->GetModifier()->m_miscvalue & GetMeleeDamageSchoolMask() &&                    // AND schoolmask has to fit with weapon damage school (essential for non-physical spells)
-                ((*i)->GetSpellProto()->EquippedItemClass == -1 ||                                  // general, weapon independent
+                ((*i)->GetSpellProto()->GetEquippedItemClass() == -1 ||                                  // general, weapon independent
                 pWeapon && pWeapon->IsFitToSpellRequirements((*i)->GetSpellProto())))               // OR used weapon fits aura requirements
             {
                 DonePercent *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
