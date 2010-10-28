@@ -53,7 +53,7 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 		Unit::AuraList const& auras = unitTarget->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
         for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-			if ((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->SpellFamilyFlags & FLAG_RIP)
+			if ((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID && ((*itr)->GetSpellProto()->GetSpellFamilyFlags() & FLAG_RIP)
 				&& (*itr)->GetCaster() == spell->GetCaster())
 			{
 				if((*itr)->GetAuraMaxDuration() < 18000)

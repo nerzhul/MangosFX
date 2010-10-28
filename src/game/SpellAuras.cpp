@@ -2686,7 +2686,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                         m_target->CastSpell(m_target, buffEntry, true, NULL, this);
                 }
                 // Earth Shield
-                else if ((GetSpellProto()->SpellFamilyFlags & UI64LIT(0x40000000000)))
+                else if ((GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x40000000000)))
                 {
                     // prevent double apply bonuses
                     if(m_target->GetTypeId() != TYPEID_PLAYER || !((Player*)m_target)->GetSession()->PlayerLoading())
@@ -2870,7 +2870,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
         }
 
 		// Vampiric Touch
-        if ((GetSpellProto()->SpellFamilyFlags & UI64LIT(0x40000000000)) && m_removeMode==AURA_REMOVE_BY_DISPEL)
+        if ((GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x40000000000)) && m_removeMode==AURA_REMOVE_BY_DISPEL)
         {
             Unit* caster = GetCaster();
             if (!caster)
@@ -3050,7 +3050,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
         case SPELLFAMILY_WARLOCK:
         {
             // Haunt
-            if (GetSpellProto()->SpellIconID == 3172 && (GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0004000000000000)))
+            if (GetSpellProto()->SpellIconID == 3172 && (GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0004000000000000)))
             {
                 // NOTE: for avoid use additional field damage stored in dummy value (replace unused 100%
                 if (apply)
@@ -3160,7 +3160,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             }
 
             // Lifebloom
-            if (GetSpellProto()->SpellFamilyFlags & UI64LIT(0x1000000000))
+            if (GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x1000000000))
             {
                 if ( apply )
                 {
@@ -3179,7 +3179,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     Unit::AuraList const& auras = m_target->GetAurasByType(SPELL_AURA_DUMMY);
                     for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
                         if((*itr)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_DRUID &&
-                            ((*itr)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x1000000000)))
+                            ((*itr)->GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x1000000000)))
                             return;
 
                     // final heal
@@ -4708,7 +4708,7 @@ void Aura::HandleModStealth(bool apply, bool Real)
                         m_target->CastCustomSpell(m_target,31665,&bp,NULL,NULL,true);
                     }
                     // Overkill
-                    else if ((*i)->GetId() == 58426 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000400000))
+                    else if ((*i)->GetId() == 58426 && GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000400000))
                     {
                         m_target->CastSpell(m_target, 58427, true);
                     }
@@ -4747,7 +4747,7 @@ void Aura::HandleModStealth(bool apply, bool Real)
                 if ((*i)->GetSpellProto()->SpellIconID == 2114)
                     m_target->CastSpell(m_target, 31666, true);
                 // Overkill
-                else if ((*i)->GetId() == 58426 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000400000))
+                else if ((*i)->GetId() == 58426 && GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000400000))
                 {
 					if (Aura* aura = m_target->GetAura(58427, EFFECT_INDEX_0))
 					{
@@ -5647,14 +5647,14 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                             continue;
 
                         // Immolate
-                        if ((*i)->GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+                        if ((*i)->GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000000004))
                         {
                             aura = *i;                      // it selected always if exist
                             break;
                         }
 
                         // Shadowflame
-                        if ((*i)->GetSpellProto()->SpellFamilyFlags2 & 0x00000002)
+                        if ((*i)->GetSpellProto()->GetSpellFamilyFlags2() & 0x00000002)
                             aura = *i;                      // remember but wait possible Immolate as primary priority
                     }
                 }
@@ -7276,7 +7276,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
 		}
         case SPELLFAMILY_ROGUE:
             // Sprint (skip non player casted spells by category)
-            if (GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000040) && GetSpellProto()->Category == 44)
+            if (GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000000040) && GetSpellProto()->Category == 44)
             {
                 if(!apply || m_target->HasAura(58039))      // Glyph of Blurred Speed
                     spellId1 = 61922;                       // Sprint (waterwalk)
@@ -7306,7 +7306,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
 					return;
 			}
             // Aspect of the Dragonhawk dodge
-            else if (GetSpellProto()->SpellFamilyFlags2 & 0x00001000)
+            else if (GetSpellProto()->GetSpellFamilyFlags2() & 0x00001000)
             {
                 spellId1 = 61848;
 
@@ -7382,7 +7382,7 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                 return;
 
             // Sanctified Retribution and Swift Retribution (they share one aura), but not Retribution Aura (already gets modded)
-            if ((GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000008))==0)
+            if ((GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000000008))==0)
                 spellId1 = 63531;                           // placeholder for talent spell mods
             // Improved Concentration Aura (auras bonus)
             spellId2 = 63510;                               // placeholder for talent spell mods
@@ -8077,7 +8077,7 @@ void Aura::PeriodicTick()
                 }
 
                 // Curse of Agony damage-per-tick calculation
-                if (GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (GetSpellProto()->SpellFamilyFlags & UI64LIT(0x0000000000000400)) && GetSpellProto()->SpellIconID==544)
+                if (GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARLOCK && (GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x0000000000000400)) && GetSpellProto()->SpellIconID==544)
                 {
                     // 1..4 ticks, 1/2 from normal tick damage
                     if (GetAuraTicks() <= 4)

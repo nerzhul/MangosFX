@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "Common.h"
 #include "DBCFileLoader.h"
 
 DBCFileLoader::DBCFileLoader()

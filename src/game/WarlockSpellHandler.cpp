@@ -33,7 +33,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 			{
 				// Immolate
 				if((*i)->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK &&
-				   ((*i)->GetSpellProto()->SpellFamilyFlags & FLAG_IMMOLATE))
+				   ((*i)->GetSpellProto()->GetSpellFamilyFlags() & FLAG_IMMOLATE))
 				{
 					damage += damage/4;
 					break;
@@ -68,11 +68,11 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 				continue;
 			
 			// Shadowflame
-			if ((*i)->GetSpellProto()->SpellFamilyFlags2 & 0x00000002)
+			if ((*i)->GetSpellProto()->GetSpellFamilyFlags2() & 0x00000002)
 				aura = *i;                      // remember but wait possible Immolate as primary priority
 			
 			// Immolate
-			if ((*i)->GetSpellProto()->SpellFamilyFlags & FLAG_IMMOLATE)
+			if ((*i)->GetSpellProto()->GetSpellFamilyFlags() & FLAG_IMMOLATE)
 				aura = *i;                      // it selected always if exist
 		}
 		

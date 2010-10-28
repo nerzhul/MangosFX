@@ -277,7 +277,12 @@ class Spell
         void EffectRestoreItemCharges(SpellEffectEntry const* effect);
         void EffectHealMaxHealth(SpellEffectEntry const* effect);
         void EffectInterruptCast(SpellEffectEntry const* effect);
-        void EffectSummonObjectWild(SpellEffectEntry const* effect);
+        void EffectSummonWild(SpellEffectEntry const* effect,uint32 forcefaction);
+		void EffectSummonTotem(SpellEffectEntry const* effect, uint8 slot=0);
+		void EffectSummonVehicle(SpellEffectEntry const* effect);
+		void EffectSummonWild(SpellEffectEntry const* effect);
+		void EffectSummonGuardian(SpellEffectEntry const* effect, uint32 faction=0);
+		void EffectSummonCritter(SpellEffectEntry const* effect, uint32 faction=0);
         void EffectScriptEffect(SpellEffectEntry const* effect);
         void EffectSanctuary(SpellEffectEntry const* effect);
         void EffectAddComboPoints(SpellEffectEntry const* effect);
@@ -316,6 +321,7 @@ class Spell
         void EffectDispelMechanic(SpellEffectEntry const* effect);
         void EffectSummonDeadPet(SpellEffectEntry const* effect);
         void EffectSummonAllTotems(SpellEffectEntry const* effect);
+		void EffectSummon(SpellEffectEntry const* effect);
         void EffectBreakPlayerTargeting (SpellEffectEntry const* effect);
         void EffectDestroyAllTotems(SpellEffectEntry const* effect);
         void EffectDurabilityDamage(SpellEffectEntry const* effect);
@@ -382,7 +388,7 @@ class Spell
         uint32 getState() const { return m_spellState; }
         void setState(uint32 state) { m_spellState = state; }
 
-        void DoCreateItem(uint32 i, uint32 itemtype);
+        void DoCreateItem(SpellEffectEntry const* effect, uint32 itemtype);
         void WriteSpellGoTargets( WorldPacket * data );
         void WriteAmmoToPacket( WorldPacket * data );
 
