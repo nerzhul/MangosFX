@@ -27,7 +27,7 @@ void ShamanSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bon
 void ShamanSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	// Frozen power
-	if((spellProto->SpellFamilyFlags & UI64LIT(0x80100003)) || spellProto->Id == 60103)
+	if((spellProto->GetSpellFamilyFlags() & UI64LIT(0x80100003)) || spellProto->Id == 60103)
 	{
 		Aura* aur = caster->GetAura(63373);
 		if(!aur)

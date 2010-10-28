@@ -1220,8 +1220,8 @@ struct MapEntry
     float   ghost_entrance_y;                               // 14 entrance y coordinate in ghost mode  (in most cases = normal entrance)
     //uint32  timeOfDayOverride;                            // 15 time of day override
     uint32  addon;                                          // 16 expansion
-    //uint32 unkTime;                                       // 17 some kind of time?
-    //uint32 maxPlayers;                                    // 18 max players
+    uint32 reset_time;                                      // 17 some kind of time?
+    uint32 maxPlayers;                                      // 18 max players
     //uint32 unk400;                                        // 19 new 4.0.0, mapid, related to phasing
 
     // Helpers

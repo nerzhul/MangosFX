@@ -289,9 +289,9 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
 void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	// Icy Touch, Howling Blast and Frost Strike
-    if(spellProto->SpellFamilyFlags & UI64LIT(0x0000000200000002))
+    if(spellProto->GetSpellFamilyFlags() & UI64LIT(0x0000000200000002))
     {
-		if(spellProto->SpellFamilyFlags & UI64LIT(0x000002))
+		if(spellProto->GetSpellFamilyFlags() & UI64LIT(0x000002))
 		{
 			if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,DK_IMPROVED_ICY_TOUCH))
 				DoneTotalMod *= (100.0f + aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0)) / 100.0f;
@@ -323,14 +323,14 @@ void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit*
         }
     }
 	// Death Coil (bonus from Item - Death Knight T8 DPS Relic)
-	else if (spellProto->SpellFamilyFlags & UI64LIT(0x00002000))
+	else if (spellProto->GetSpellFamilyFlags() & UI64LIT(0x00002000))
 	{
 		if(Aura* sigil = caster->GetDummyAura(64962))
 			DoneTotal += sigil->GetModifier()->m_amount;
 	}
 
 	// impurity
-	if (spellProto->SpellFamilyFlags & 0x600100200042022)
+	if (spellProto->GetSpellFamilyFlags() & 0x600100200042022)
 	{
 		if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,DK_IMPURITY))
 			DoneTotal += int32(aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0) * caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);

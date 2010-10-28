@@ -51,7 +51,7 @@ void PriestSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
 void PriestSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	// Glyph of Smite
-    if (spellProto->SpellFamilyFlags & UI64LIT(0x00000080))
+    if (spellProto->GetSpellFamilyFlags() & UI64LIT(0x00000080))
     {
         // Holy Fire
 		if (sClassSpellHandler.GetAuraByName(pVictim,PRIEST_HOLY_FIRE))
@@ -60,7 +60,7 @@ void PriestSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* cast
     }
 
 	// Twin Disciplines
-	if(spellProto->SpellFamilyFlags & UI64LIT(200204008000))
+	if(spellProto->GetSpellFamilyFlags() & UI64LIT(200204008000))
 	{
 		if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,PRIEST_TWIN_DISCIPLINES))
 			DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;

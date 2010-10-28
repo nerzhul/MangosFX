@@ -102,7 +102,7 @@ void MageSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster
         }
     }
     // Torment the weak affected (Arcane Barrage, Arcane Blast, Frostfire Bolt, Arcane Missiles, Fireball)
-    if ((spellProto->SpellFamilyFlags & UI64LIT(0x0000900020200021)) &&
+    if ((spellProto->GetSpellFamilyFlags() & UI64LIT(0x0000900020200021)) &&
         (pVictim->HasAuraType(SPELL_AURA_MOD_DECREASE_SPEED) || pVictim->HasAuraType(SPELL_AURA_HASTE_ALL)))
     {
         //Search for Torment the weak dummy aura
@@ -118,7 +118,7 @@ void MageSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster
     }
 
 	// Arcane empowerment						
-	if(spellProto->SpellFamilyFlags & UI64LIT(0x020000000))
+	if(spellProto->GetSpellFamilyFlags() & UI64LIT(0x020000000))
 	{
 		if(Aura* aur = caster->GetAura(31583))
 		{
@@ -136,7 +136,7 @@ void MageSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster
 				DoneTotalMod *= (aur->GetModifier()->m_amount+100.0f) / 100.0f;
 		}
 	}
-	else if(spellProto->SpellFamilyFlags & UI64LIT(0x0800))
+	else if(spellProto->GetSpellFamilyFlags() & UI64LIT(0x0800))
 	{
 		if(Aura* aur = caster->GetAura(31583))
 		{

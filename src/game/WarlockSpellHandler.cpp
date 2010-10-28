@@ -95,7 +95,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 void WarlockSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	// Drain Soul
-    if (spellProto->SpellFamilyFlags & FLAG_DRAIN_SOUL)
+    if (spellProto->GetSpellFamilyFlags() & FLAG_DRAIN_SOUL)
     {
         if (pVictim->GetHealth() * 100 / pVictim->GetMaxHealth() <= 25)
           DoneTotalMod *= 4;

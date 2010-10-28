@@ -118,7 +118,7 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 void DruidSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	// Improved Insect Swarm (Wrath part)
-	if (spellProto->SpellFamilyFlags & FLAG_WRATH)
+	if (spellProto->GetSpellFamilyFlags() & FLAG_WRATH)
 	{
 		// if Insect Swarm on target
 		if(sClassSpellHandler.GetAuraByName(pVictim,DRUID_INSECT_SWARM,caster->GetGUID()))
