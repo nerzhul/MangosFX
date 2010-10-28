@@ -2167,8 +2167,7 @@ void World::SendServerMessage(ServerMessageType type, const char *text, Player* 
 {
     WorldPacket data(SMSG_SERVER_MESSAGE, 50);              // guess size
     data << uint32(type);
-    if(type <= SERVER_MSG_STRING)
-        data << text;
+    data << text;
 
     if(player)
         player->GetSession()->SendPacket(&data);
