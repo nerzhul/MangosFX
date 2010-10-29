@@ -407,7 +407,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
     }
 
     for(int i = 0; i < 3; ++i)
-        m_currentBasePoints[i] = m_spellInfo->CalculateSimpleValue(i);
+        m_currentBasePoints[i] = m_spellInfo->CalculateSimpleValue(SpellEffectIndex(i));
 
     m_spellState = SPELL_STATE_NULL;
 
@@ -439,7 +439,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
     // determine reflection
     m_canReflect = false;
 
-    if(m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MAGIC && !(m_spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED))
+    if(m_spellInfo->GetDmgClass() == SPELL_DAMAGE_CLASS_MAGIC && !(m_spellInfo->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED))
     {
         for(int j = 0; j < 3; ++j)
         {
@@ -785,7 +785,7 @@ void Spell::prepareDataForTriggerSystem()
     }
 
     // Get data for type of attack and fill base info for trigger
-    switch (m_spellInfo->DmgClass)
+    switch (m_spellInfo->GetDmgClass())
     {
         case SPELL_DAMAGE_CLASS_MELEE:
             m_procAttacker = PROC_FLAG_SUCCESSFUL_MELEE_SPELL_HIT;
@@ -1090,7 +1090,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
 			Unit::AuraMap const& auras = unitTarget->GetAuras();
 			for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
 			{
-				if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
+				if(itr->second->GetSpellProto()->GetDispel() == DISPEL_DISEASE &&
 					itr->second->GetCasterGUID() == caster->GetGUID() &&
 					IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
 					++count;
@@ -1872,7 +1872,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 unMaxTargets = EffectChainTarget;
 
                 float max_range;
-                if(m_spellInfo->DmgClass == SPELL_DAMAGE_CLASS_MELEE)
+                if(m_spellInfo->GetDmgClass() == SPELL_DAMAGE_CLASS_MELEE)
                     max_range = radius;
                 else
                     //FIXME: This very like horrible hack and wrong for most spells
@@ -3431,7 +3431,7 @@ void Spell::update(uint32 difftime)
                         cancel();
 
                     // check if player has turned if flag is set
-                    if( m_spellInfo->ChannelInterruptFlags & CHANNEL_FLAG_TURNING && m_castOrientation != m_caster->GetOrientation() )
+                    if( m_spellInfo->GetChannelInterruptFlags() & CHANNEL_FLAG_TURNING && m_castOrientation != m_caster->GetOrientation() )
                         cancel();
                 }
 
@@ -3780,19 +3780,22 @@ void Spell::SendCastResult(Player* caster, SpellEntry const* spellInfo, uint8 ca
                 data << uint32(37201);                      // Corpse Dust
             break;
         case SPELL_FAILED_TOTEMS:
+            SpellTotemsEntry const* totems = spellInfo->GetSpellTotems();
             for(int i = 0; i < MAX_SPELL_TOTEMS; ++i)
-				if(spellInfo->Totem[i])
-					data << uint32(spellInfo->Totem[i]);
+                if(totems && totems->Totem[i])
+                    data << uint32(totems->Totem[i]);
             break;
         case SPELL_FAILED_TOTEM_CATEGORY:
+			SpellTotemsEntry const* totems = spellInfo->GetSpellTotems();
             for(int i = 0; i < MAX_SPELL_TOTEM_CATEGORIES; ++i)
-				if(spellInfo->TotemCategory[i])
-					data << uint32(spellInfo->TotemCategory[i]);
+                if(totems && totems->TotemCategory[i])
+                    data << uint32(totems->TotemCategory[i]);
             break;
         case SPELL_FAILED_EQUIPPED_ITEM_CLASS:
-            data << uint32(spellInfo->EquippedItemClass);
-            data << uint32(spellInfo->EquippedItemSubClassMask);
-            //data << uint32(spellInfo->EquippedItemInventoryTypeMask);
+			data << uint32(spellInfo->GetEquippedItemClass());
+			SpellEquippedItemsEntry const* eqItems = spellInfo->GetSpellEquippedItems();
+            data << uint32(eqItems ? eqItems->EquippedItemSubClassMask : 0);
+            //data << uint32(eqItems ? eqItems->EquippedItemInventoryTypeMask : 0);
             break;
         default:
             break;
@@ -5794,7 +5797,7 @@ SpellCastResult Spell::CheckCasterAuras() const
                         continue;
                     if (GetSpellSchoolMask(itr->second->GetSpellProto()) & school_immune)
                         continue;
-                    if ((1<<(itr->second->GetSpellProto()->Dispel)) & dispel_immune)
+                    if ((1<<(itr->second->GetSpellProto()->GetDispel())) & dispel_immune)
                         continue;
 
                     // Make a second check for spell failed so the right SPELL_FAILED message is returned.
@@ -6609,7 +6612,7 @@ bool Spell::CheckTargetCreatureType(Unit* target) const
     uint32 spellCreatureTargetMask = m_spellInfo->TargetCreatureType;
 
     // Curse of Doom & Exorcism: not find another way to fix spell target check :/
-    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->Category == 1179)
+    if (m_spellInfo->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && m_spellInfo->GetCategory() == 1179)
     {
         // not allow cast at player
         if(target->GetTypeId() == TYPEID_PLAYER)

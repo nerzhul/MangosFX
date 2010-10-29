@@ -157,15 +157,16 @@ void Totem::SetTypeBySummonSpell(SpellEntry const * spellProto)
 
 bool Totem::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) const
 {
+	SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(index));
     // TODO: possibly all negative auras immune?
-    switch(spellInfo->Effect[index])
+    switch(effect->Effect)
     {
         case SPELL_EFFECT_ATTACK_ME:
             return true;
         default:
             break;
     }
-    switch(spellInfo->EffectApplyAuraName[index])
+    switch(effect->EffectApplyAuraName)
     {
         case SPELL_AURA_PERIODIC_DAMAGE:
         case SPELL_AURA_PERIODIC_LEECH:

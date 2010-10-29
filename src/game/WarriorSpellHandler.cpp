@@ -43,7 +43,7 @@ void WarriorSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bo
         }
         if (stack)
             spell_bonus += stack * spell->CalculateDamage(2, spell->getUnitTarget());
-        if (!stack || stack < spellInfo->StackAmount)
+        if (!stack || stack < spellInfo->GetStackAmount())
             // Devastate causing Sunder Armor Effect
             // and no need to cast over max stack amount
             spell->GetCaster()->CastSpell(spell->getUnitTarget(), 58567, true);
@@ -91,7 +91,7 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 	if (m_spellInfo->GetSpellFamilyFlags() & FLAG_BLOODTHIRST)
 		damage = uint32(damage * (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) / 100);
 	// Shield Slam
-	else if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_SHIELD_SLAM) && m_spellInfo->Category==1209)
+	else if ((m_spellInfo->GetSpellFamilyFlags() & FLAG_SHIELD_SLAM) && m_spellInfo->GetCategory()==1209)
 	{
 		damage += int32(m_caster->GetShieldBlockValue());
 		// glyph of shield slam
@@ -116,7 +116,8 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 	// Shockwave ${$m3/100*$AP}
 	else if (m_spellInfo->GetSpellFamilyFlags() & FLAG_SHOCKWAVE)
 	{
-		int32 pct = m_caster->CalculateSpellDamage(m_spellInfo, 2, m_spellInfo->EffectBasePoints[2], unitTarget);
+		SpellEffectEntry const* effectP = m_spellInfo->GetSpellEffect(EFFECT_INDEX_2);
+		int32 pct = m_caster->CalculateSpellDamage(m_spellInfo, 2, effectP->EffectBasePoints, unitTarget);
 		if (pct > 0)
 			damage+= int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * pct / 100);
 	}

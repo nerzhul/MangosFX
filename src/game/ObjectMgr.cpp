@@ -829,7 +829,8 @@ void ObjectMgr::ConvertCreatureAddonAuras(CreatureDataAddon* addon, char const* 
             continue;
         }
 
-        if (!AdditionalSpellInfo->Effect[cAura.effect_idx] || !AdditionalSpellInfo->EffectApplyAuraName[cAura.effect_idx])
+		SpellEffectEntry const* effect = AdditionalSpellInfo->GetSpellEffect(SpellEffectIndex(cAura.effect_idx));
+        if (effect && (!effect->Effect || !effect->EffectApplyAuraName))
         {
             sLog.outErrorDb("Creature (%s: %u) has not aura effect %u of spell %u defined in `auras` field in `%s`.",guidEntryStr,addon->guidOrEntry,cAura.effect_idx,cAura.spell_id,table);
             continue;
@@ -926,7 +927,7 @@ void ObjectMgr::LoadEquipmentTemplates()
             if(!eqInfo->equipentry[j])
                continue;
 
-            ItemEntry const *dbcitem = sItemStore.LookupEntry(eqInfo->equipentry[j]);
+            /*ItemEntry const *dbcitem = sItemStore.LookupEntry(eqInfo->equipentry[j]);
 
             if(!dbcitem)
             {
@@ -948,7 +949,7 @@ void ObjectMgr::LoadEquipmentTemplates()
             {
                 sLog.outErrorDb("Item (entry=%u) in creature_equip_template.equipentry%u for entry = %u is not equipable in a hand, forced to 0.", eqInfo->equipentry[j], j+1, i);
                 const_cast<EquipmentInfo*>(eqInfo)->equipentry[j] = 0;
-            }
+            }*/
         }
     }
     sLog.outString( ">> Loaded %u equipment template", sEquipmentStorage.RecordCount );
@@ -1744,13 +1745,13 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
     for(uint32 i = 1; i < sItemStorage.MaxEntry; ++i)
     {
         ItemPrototype const* proto = sItemStorage.LookupEntry<ItemPrototype >(i);
-        ItemEntry const *dbcitem = sItemStore.LookupEntry(i);
+        /*ItemEntry const *dbcitem = sItemStore.LookupEntry(i);
         if(!proto)
         {
             /* to many errors, and possible not all items really used in game
             if (dbcitem)
                 sLog.outErrorDb("Item (Entry: %u) doesn't exists in DB, but must exist.",i);
-            */
+            
             continue;
         }
 
@@ -1768,7 +1769,7 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
                 sLog.outErrorDb("Item (Entry: %u) not correct (Class: %u, Sub: %u) pair, must be (Class: %u, Sub: %u) (still using DB value).",i,proto->Class,proto->SubClass,dbcitem->Class,dbcitem->SubClass);
                 // It safe let use Subclass from DB
             }
-            */
+            
 
             if(proto->Unk0 != dbcitem->Unk0)
             {
@@ -2128,7 +2129,7 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
                     continue;
                 }
 
-                if(BAG_FAMILY_MASK_CURRENCY_TOKENS & mask)
+                /*if(BAG_FAMILY_MASK_CURRENCY_TOKENS & mask)
                 {
                     CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(proto->ItemId);
                     if(!ctEntry)
@@ -2171,7 +2172,7 @@ void ObjectMgr::LoadItemPrototypes(bool ClusterIgnore)
         {
             sLog.outErrorDb("Item (Entry: %u) has wrong HolidayId value (%u)", i, proto->HolidayId);
             const_cast<ItemPrototype*>(proto)->HolidayId = 0;
-        }
+        }*/
     }
 
     // check some dbc referenced items (avoid duplicate reports)
@@ -2251,10 +2252,11 @@ void ObjectMgr::LoadItemRequiredTarget()
 
                     for (int j = 0; j < 3; ++j)
                     {
-                        if (pSpellInfo->EffectImplicitTargetA[j] == TARGET_CHAIN_DAMAGE ||
-                            pSpellInfo->EffectImplicitTargetB[j] == TARGET_CHAIN_DAMAGE ||
-                            pSpellInfo->EffectImplicitTargetA[j] == TARGET_DUELVSPLAYER ||
-                            pSpellInfo->EffectImplicitTargetB[j] == TARGET_DUELVSPLAYER)
+						SpellEffectEntry const* pEffect = pSpellInfo->GetSpellEffect(SpellEffectIndex(j));
+                        if (pEffect->EffectImplicitTargetA == TARGET_CHAIN_DAMAGE ||
+                            pEffect->EffectImplicitTargetB == TARGET_CHAIN_DAMAGE ||
+                            pEffect->EffectImplicitTargetA == TARGET_DUELVSPLAYER ||
+                            pEffect->EffectImplicitTargetB == TARGET_DUELVSPLAYER)
                         {
                             bIsItemSpellValid = true;
                             break;
@@ -3786,8 +3788,11 @@ void ObjectMgr::LoadQuests(bool ClusterIgnore)
                     bool found = false;
                     for(int k = 0; k < 3; ++k)
                     {
-                        if ((spellInfo->Effect[k] == SPELL_EFFECT_QUEST_COMPLETE && uint32(spellInfo->EffectMiscValue[k]) == qinfo->QuestId) ||
-                            spellInfo->Effect[k] == SPELL_EFFECT_SEND_EVENT)
+						SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(k));
+						if(!effect) continue;
+
+                        if ((effect->Effect == SPELL_EFFECT_QUEST_COMPLETE && uint32(effect->EffectMiscValue) == qinfo->QuestId) ||
+                            effect->Effect == SPELL_EFFECT_SEND_EVENT)
                         {
                             found = true;
                             break;
@@ -4050,12 +4055,14 @@ void ObjectMgr::LoadQuests(bool ClusterIgnore)
         if(!spellInfo)
             continue;
 
-        for(int j = 0; j < 3; ++j)
+		for(int j = 0; j < 3; ++j)
         {
-            if(spellInfo->Effect[j] != SPELL_EFFECT_QUEST_COMPLETE)
+			SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
+
+            if(effect->Effect != SPELL_EFFECT_QUEST_COMPLETE)
                 continue;
 
-            uint32 quest_id = spellInfo->EffectMiscValue[j];
+            uint32 quest_id = effect->EffectMiscValue;
 
             Quest const* quest = GetQuestTemplate(quest_id);
 
@@ -4575,11 +4582,12 @@ void ObjectMgr::LoadSpellScripts()
         bool found = false;
         for(int i=0; i<3; ++i)
         {
+			SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
             // skip empty effects
-            if( !spellInfo->Effect[i] )
+            if( !effect->Effect )
                 continue;
 
-            if( spellInfo->Effect[i] == SPELL_EFFECT_SCRIPT_EFFECT )
+            if(effect->Effect == SPELL_EFFECT_SCRIPT_EFFECT)
             {
                 found =  true;
                 break;
@@ -4628,10 +4636,11 @@ void ObjectMgr::LoadEventScripts()
         {
             for(int j=0; j<3; ++j)
             {
-                if( spell->Effect[j] == SPELL_EFFECT_SEND_EVENT )
+				SpellEffectEntry const* effect = spell->GetSpellEffect(SpellEffectIndex(j));
+                if(effect->Effect == SPELL_EFFECT_SEND_EVENT)
                 {
-                    if (spell->EffectMiscValue[j])
-                        evt_scripts.insert(spell->EffectMiscValue[j]);
+                    if (effect->EffectMiscValue)
+                        evt_scripts.insert(effect->EffectMiscValue);
                 }
             }
         }
@@ -5481,9 +5490,9 @@ WorldSafeLocsEntry const *ObjectMgr::GetClosestGraveYard(float x, float y, float
         {
             // if find graveyard at different map from where entrance placed (or no entrance data), use any first
             if (!mapEntry ||
-                 mapEntry->entrance_map < 0 ||
-                 mapEntry->entrance_map != entry->map_id ||
-                (mapEntry->entrance_x == 0 && mapEntry->entrance_y == 0))
+                 mapEntry->ghost_entrance_map < 0 ||
+                 mapEntry->ghost_entrance_map != entry->map_id ||
+                (mapEntry->ghost_entrance_x == 0 && mapEntry->ghost_entrance_y == 0))
             {
                 // not have any corrdinates for check distance anyway
                 entryFar = entry;
@@ -5491,8 +5500,8 @@ WorldSafeLocsEntry const *ObjectMgr::GetClosestGraveYard(float x, float y, float
             }
 
             // at entrance map calculate distance (2D);
-            float dist2 = (entry->x - mapEntry->entrance_x)*(entry->x - mapEntry->entrance_x)
-                +(entry->y - mapEntry->entrance_y)*(entry->y - mapEntry->entrance_y);
+            float dist2 = (entry->x - mapEntry->ghost_entrance_x)*(entry->x - mapEntry->ghost_entrance_x)
+                +(entry->y - mapEntry->ghost_entrance_y)*(entry->y - mapEntry->ghost_entrance_y);
             if(foundEntr)
             {
                 if(dist2 < distEntr)
@@ -5767,7 +5776,7 @@ AreaTrigger const* ObjectMgr::GetGoBackTrigger(uint32 Map) const
     if(!mapEntry) return NULL;
     for (AreaTriggerMap::const_iterator itr = mAreaTriggers.begin(); itr != mAreaTriggers.end(); ++itr)
     {
-        if(itr->second.target_mapId == mapEntry->entrance_map)
+        if(itr->second.target_mapId == mapEntry->ghost_entrance_map)
         {
             AreaTriggerEntry const* atEntry = sAreaTriggerStore.LookupEntry(itr->first);
             if(atEntry && atEntry->mapid == Map)
@@ -8205,11 +8214,15 @@ void ObjectMgr::LoadTrainerSpell()
         trainerSpell.learnedSpell = spell;
         for(int i = 0; i <3; ++i)
         {
-            if(spellinfo->Effect[i] != SPELL_EFFECT_LEARN_SPELL)
+			SpellEffectEntry const* effect = spellinfo->GetSpellEffect(SpellEffectIndex(i));
+			if(!effect)
+				continue;
+
+            if(effect->Effect != SPELL_EFFECT_LEARN_SPELL)
                 continue;
-            if(SpellMgr::IsProfessionOrRidingSpell(spellinfo->EffectTriggerSpell[i]))
+            if(SpellMgr::IsProfessionOrRidingSpell(effect->EffectTriggerSpell))
             {
-                trainerSpell.learnedSpell = spellinfo->EffectTriggerSpell[i];
+                trainerSpell.learnedSpell = effect->EffectTriggerSpell;
                 break;
             }
         }

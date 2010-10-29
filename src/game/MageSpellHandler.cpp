@@ -72,8 +72,10 @@ bool MageSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffec
 			return false;
 		}
 	}
+
+	SpellEffectEntry const* effect = m_spellInfo->GetSpellEffect(EFFECT_INDEX_0);
 	// Conjure Mana Gem
-	if (i == 1 && m_spellInfo->Effect[0] == SPELL_EFFECT_CREATE_ITEM)
+	if (i == 1 && effect->Effect == SPELL_EFFECT_CREATE_ITEM)
 	{
 		unitTarget->CastSpell(unitTarget, m_spellInfo->CalculateSimpleValue(i), true, spell->GetCastItem());
 		return false;

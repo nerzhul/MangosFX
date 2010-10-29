@@ -6451,16 +6451,16 @@ void Player::UpdateHonorFields()
         // update yesterday's contribution
         if(m_lastHonorUpdateTime >= yesterday )
         {
-            SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION));
+            //SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION));
 
             // this is the first update today, reset today's contribution
-            SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
+            //SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, 0);
             SetUInt32Value(PLAYER_FIELD_KILLS, MAKE_PAIR32(0,kills_today));
         }
         else
         {
             // no honor/kills yesterday or today, reset
-            SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
+            //SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, 0);
             SetUInt32Value(PLAYER_FIELD_KILLS, 0);
         }
     }
@@ -6618,7 +6618,7 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor)
     // add honor points
     ModifyHonorPoints(int32(honor));
 
-    ApplyModUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, uint32(honor), true);
+    //ApplyModUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, uint32(honor), true);
     return true;
 }
 
@@ -6627,12 +6627,12 @@ void Player::ModifyHonorPoints( int32 value )
     if(value < 0)
     {
         if (GetHonorPoints() > sWorld.getConfig(CONFIG_MAX_HONOR_POINTS))
-            SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) + value);
+            SetHonorPoints(sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) + value);
         else
-            SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, GetHonorPoints() > uint32(-value) ? GetHonorPoints() + value : 0);
+            SetHonorPoints(GetHonorPoints() > uint32(-value) ? GetHonorPoints() + value : 0);
     }
     else
-        SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, GetHonorPoints() < sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) - value ? GetHonorPoints() + value : sWorld.getConfig(CONFIG_MAX_HONOR_POINTS));
+        SetHonorPoints(GetHonorPoints() < sWorld.getConfig(CONFIG_MAX_HONOR_POINTS) - value ? GetHonorPoints() + value : sWorld.getConfig(CONFIG_MAX_HONOR_POINTS));
 }
 
 void Player::ModifyArenaPoints( int32 value )
@@ -6640,12 +6640,12 @@ void Player::ModifyArenaPoints( int32 value )
     if(value < 0)
     {
         if (GetArenaPoints() > sWorld.getConfig(CONFIG_MAX_ARENA_POINTS))
-            SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, sWorld.getConfig(CONFIG_MAX_ARENA_POINTS) + value);
+            SetArenaPoints(sWorld.getConfig(CONFIG_MAX_ARENA_POINTS) + value);
         else
-            SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, GetArenaPoints() > uint32(-value) ? GetArenaPoints() + value : 0);
+            SetArenaPoints(GetArenaPoints() > uint32(-value) ? GetArenaPoints() + value : 0);
     }
     else
-        SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, GetArenaPoints() < sWorld.getConfig(CONFIG_MAX_ARENA_POINTS) - value ? GetArenaPoints() + value : sWorld.getConfig(CONFIG_MAX_ARENA_POINTS));
+        SetArenaPoints(GetArenaPoints() < sWorld.getConfig(CONFIG_MAX_ARENA_POINTS) - value ? GetArenaPoints() + value : sWorld.getConfig(CONFIG_MAX_ARENA_POINTS));
 }
 
 uint32 Player::GetGuildIdFromDB(uint64 guid)
@@ -16097,10 +16097,10 @@ void Player::_LoadAuras(QueryResult *result, uint32 timediff)
             }
 
             // prevent wrong values of remaincharges
-            if(spellproto->procCharges)
+            if(spellproto->GetProcCharges())
             {
-                if(remaincharges <= 0 || remaincharges > spellproto->procCharges)
-                    remaincharges = spellproto->procCharges;
+                if(remaincharges <= 0 || remaincharges > spellproto->GetProcCharges())
+					remaincharges = spellproto->GetProcCharges();
             }
             else
                 remaincharges = 0;
@@ -17145,9 +17145,9 @@ void Player::SaveToDB()
 
     ss << GetHonorPoints() << ", ";
 
-    ss << GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION)  << ", ";
+    ss << uint32(0)/*GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION)*/  << ", ";
 
-    ss << GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION) << ", ";
+    ss << /*uint32(0)GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION)*/ << ", ";
 
     ss << GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS) << ", ";
 
@@ -17157,7 +17157,7 @@ void Player::SaveToDB()
 
     ss << GetUInt32Value(PLAYER_CHOSEN_TITLE) << ", ";
 
-    ss << GetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES) << ", ";
+    ss << uint64(0)/*GetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES)*/ << ", ";
 
     // FIXME: at this moment send to DB as unsigned, including unit32(-1)
     ss << GetUInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX) << ", ";
@@ -17187,7 +17187,7 @@ void Player::SaveToDB()
 	}
 
 	ss << "',";
-	ss << GetUInt32Value(PLAYER_AMMO_ID);
+	ss << uint32(0)/*GetUInt32Value(PLAYER_AMMO_ID)*/;
 
 	ss << ",'";
 	for(uint32 i = 0; i < 6; ++i )
@@ -19186,8 +19186,8 @@ void Player::AddSpellAndCategoryCooldowns(SpellEntry const* spellInfo, uint32 it
     if(rec < 0 && catrec < 0)
     {
         cat = spellInfo->GetCategory();
-        rec = spellInfo->RecoveryTime;
-        catrec = spellInfo->CategoryRecoveryTime;
+        rec = spellInfo->GetRecoveryTime();
+        catrec = spellInfo->GetCategoryRecoveryTime();
     }
 
     time_t curTime = time(NULL);
@@ -20540,12 +20540,12 @@ void Player::AutoUnequipOffhandIfNeed()
 
 bool Player::HasItemFitToSpellReqirements(SpellEntry const* spellInfo, Item const* ignoreItem)
 {
-    if(spellInfo->EquippedItemClass < 0)
+    if(spellInfo->GetEquippedItemClass() < 0)
         return true;
 
     // scan other equipped items for same requirements (mostly 2 daggers/etc)
     // for optimize check 2 used cases only
-    switch(spellInfo->EquippedItemClass)
+    switch(spellInfo->GetEquippedItemClass())
     {
         case ITEM_CLASS_WEAPON:
         {
@@ -20576,7 +20576,7 @@ bool Player::HasItemFitToSpellReqirements(SpellEntry const* spellInfo, Item cons
             break;
         }
         default:
-            sLog.outError("HasItemFitToSpellReqirements: Not handled spell requirement for item class %u",spellInfo->EquippedItemClass);
+            sLog.outError("HasItemFitToSpellReqirements: Not handled spell requirement for item class %u",spellInfo->GetEquippedItemClass());
             break;
     }
 
@@ -21947,13 +21947,13 @@ void Player::LearnPetTalent(uint64 petGuid, uint32 talentId, uint32 talentRank)
 
 void Player::UpdateKnownCurrencies(uint32 itemId, bool apply)
 {
-    if(CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemId))
+    /*if(CurrencyTypesEntry const* ctEntry = sCurrencyTypesStore.LookupEntry(itemId))
     {
         if(apply)
             SetFlag64(PLAYER_FIELD_KNOWN_CURRENCIES, (UI64LIT(1) << (ctEntry->BitIndex - 1)));
         else
             RemoveFlag64(PLAYER_FIELD_KNOWN_CURRENCIES, (UI64LIT(1) << (ctEntry->BitIndex - 1)));
-    }
+    }*/
 }
 
 void Player::UpdateFallInformationIfNeed( MovementInfo const& minfo,uint16 opcode )

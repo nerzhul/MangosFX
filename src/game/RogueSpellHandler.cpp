@@ -37,7 +37,7 @@ void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
             Unit::AuraMap const& auras = spell->getUnitTarget()->GetAuras();
             for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
             {
-                if(itr->second->GetSpellProto()->Dispel == DISPEL_POISON)
+                if(itr->second->GetSpellProto()->GetDispel() == DISPEL_POISON)
                 {
                     found = true;
                     break;
@@ -200,7 +200,7 @@ bool RogueSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffe
 					continue;
 				
 				SpellEntry const* combatEntry = sSpellStore.LookupEntry(pEnchant->spellid[s]);
-				if (!combatEntry || combatEntry->Dispel != DISPEL_POISON)
+				if (!combatEntry || combatEntry->GetDispel() != DISPEL_POISON)
 					continue;
 				
 				m_caster->CastSpell(unitTarget, combatEntry, true, item);

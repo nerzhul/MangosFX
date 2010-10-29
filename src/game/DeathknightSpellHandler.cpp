@@ -50,7 +50,7 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
         Unit::AuraMap const& auras = spell->getUnitTarget()->GetAuras();
         for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-            if (itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
+            if (itr->second->GetSpellProto()->GetDispel() == DISPEL_DISEASE &&
                 itr->second->GetCasterGUID() == spell->GetCaster()->GetGUID() &&
                 IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
             {
@@ -121,7 +121,7 @@ void DeathknightSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spel
         Unit::AuraMap const& auras = spell->getUnitTarget()->GetAuras();
         for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-            if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE &&
+            if(itr->second->GetSpellProto()->GetDispel() == DISPEL_DISEASE &&
 				itr->second->GetCasterGUID() == spell->GetCaster()->GetGUID() &&
                 IsSpellLastAuraEffect(itr->second->GetSpellProto(), itr->second->GetEffIndex()))
                 ++count;
@@ -302,7 +302,7 @@ void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit*
         Unit::AuraMap const& auras = pVictim->GetAuras();
         for(Unit::AuraMap::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
         {
-            if(itr->second->GetSpellProto()->Dispel == DISPEL_DISEASE)
+            if(itr->second->GetSpellProto()->GetDispel() == DISPEL_DISEASE)
             {
                 found = true;
                 break;
