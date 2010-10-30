@@ -1559,6 +1559,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\SuperCreatureAI.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\SuperCreatureAI.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\TotemAI.cpp"
 					>
 				</File>
