@@ -471,9 +471,10 @@ struct MANGOS_DLL_DECL boss_veknilashAI : public boss_twinemperorsAI
         target->setFaction(14);
         ((CreatureAI*)target->AI())->AttackStart(me->getThreatManager().getHostileTarget());
         SpellEntry *spell = (SpellEntry *)GetSpellStore()->LookupEntry(SPELL_MUTATE_BUG);
-        for (int i=0; i<3; ++i)
+        for (int i=0; i<MAX_EFFECT_INDEX; ++i)
         {
-            if (!spell->Effect[i])
+			SpellEffectEntry const* effectI = spell->GetSpellEffect(SpellEffectIndex(i));
+            if (!effectI || !effectI->Effect)
                 continue;
             target->AddAura(new BugAura(spell, i, NULL, target, target));
         }
@@ -557,9 +558,10 @@ struct MANGOS_DLL_DECL boss_veklorAI : public boss_twinemperorsAI
     {
         target->setFaction(14);
         SpellEntry *spell = (SpellEntry *)GetSpellStore()->LookupEntry(SPELL_EXPLODEBUG);
-        for (int i=0; i<3; ++i)
+        for (int i=0; i<MAX_EFFECT_INDEX; ++i)
         {
-            if (!spell->Effect[i])
+			SpellEffectEntry const* effectI = spell->GetSpellEffect(SpellEffectIndex(i));
+            if (!effectI || !effectI->Effect)
                 continue;
             target->AddAura(new BugAura(spell, i, NULL, target, target));
         }

@@ -733,33 +733,28 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 {
     // NOTE: ATM the socket is singlethread, have this in mind ...
     uint8 digest[20];
-    uint32 clientSeed;
-    uint32 unk2, unk3, unk5, unk6, unk7;
-    uint64 unk4;
-    uint32 ClientBuild;
-    uint32 id, security;
+    uint32 clientSeed, id, security;
+    uint16 ClientBuild;
     uint8 expansion = 0;
     LocaleConstant locale;
     std::string account;
     Sha1Hash sha1;
     BigNumber v, s, g, N, K;
-    WorldPacket packet, SendAddonPacked;
+    WorldPacket packet;
 
     // Read the content of the packet
-    recvPacket >> ClientBuild;
-    recvPacket >> unk2;
-    recvPacket >> account;
-    recvPacket >> unk3;
-    recvPacket >> clientSeed;
-	recvPacket >> unk5 >> unk6 >> unk7;
-    recvPacket >> unk4;
     recvPacket.read(digest, 20);
+    recvPacket.read_skip<uint64>();
+    recvPacket.read_skip<uint32>();
+    recvPacket >> clientSeed;
+    recvPacket >> ClientBuild;
+    recvPacket.read_skip<uint8>();
+    recvPacket >> account;
+    recvPacket.read_skip<uint32>();                         // addon data size
 
-    DEBUG_LOG ("WorldSocket::HandleAuthSession: client %u, unk2 %u, account %s, unk3 %u, clientseed %u",
+    DEBUG_LOG ("WorldSocket::HandleAuthSession: client %u, account %s, clientseed %X",
                 ClientBuild,
-                unk2,
-                account.c_str (),
-                unk3,
+                account.c_str(),
                 clientSeed);
 
     // Check the version of client trying to connect

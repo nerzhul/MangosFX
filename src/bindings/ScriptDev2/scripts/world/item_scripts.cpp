@@ -242,9 +242,10 @@ bool ItemUse_item_zuldrakrat(Player* pPlayer, Item* pItem, const SpellCastTarget
 		//pPlayer->CastSpell(pTargets.getUnitTarget(),50894,false);
 		Aura* aur;
 		SpellEntry *spell = (SpellEntry *)GetSpellStore()->LookupEntry(50894);
-		for (int i=0; i<3; ++i)
+		for (int i=0; i<MAX_EFFECT_INDEX; ++i)
         {
-            if (!spell->Effect[i])
+			SpellEffectEntry const* effectI = spell->GetSpellEffect(SpellEffectIndex(i));
+            if (!effectI || !effectI->Effect)
                 continue;
 			aur = new BugAura(spell, i, NULL, pTargets.getUnitTarget(), pTargets.getUnitTarget());
             pTargets.getUnitTarget()->AddAura(aur);

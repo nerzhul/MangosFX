@@ -1619,7 +1619,7 @@ struct SpellReagentsEntry
 // SpellScaling.dbc
 struct SpellScalingEntry
 {
-    uint32    Id;                                           // 0        m_ID
+    //uint32    Id;                                           // 0        m_ID
 	uint32    castTimeMin;                                  // 1
 	uint32    castTimeMax;                                  // 2
 	uint32    castScalingMaxLevel;                          // 3

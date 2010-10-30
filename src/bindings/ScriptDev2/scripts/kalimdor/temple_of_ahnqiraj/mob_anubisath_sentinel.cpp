@@ -224,9 +224,10 @@ struct MANGOS_DLL_DECL aqsentinelAI : public ScriptedAI
     void GainSentinelAbility(uint32 id)
     {
         const SpellEntry *spell = GetSpellStore()->LookupEntry(id);
-        for (int i=0; i<3; ++i)
+        for (int i=0; i<MAX_EFFECT_INDEX; ++i)
         {
-            if (!spell->Effect[i])
+			SpellEffectEntry const* effectI = spell->GetSpellEffect(SpellEffectIndex(i));
+            if (!effectI || !effectI->Effect)
                 continue;
             SentinelAbilityAura *a = new SentinelAbilityAura(this, (SpellEntry *)spell, id, i);
             me->AddAura(a);

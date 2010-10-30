@@ -132,14 +132,14 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
         m_uiRitualChanneler_Timer = 1000;
         m_uiSacrifice_Timer = 50000;
 		
-		SpellEntry* TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_PARALYSE);
+		/*SpellEntry* TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_PARALYSE);
 		if (TempSpell && TempSpell->EffectImplicitTargetB[0] != 0)
 		{
 			   TempSpell->EffectImplicitTargetA[0] = 77;
 			   TempSpell->EffectImplicitTargetA[1] = 0;
 			   TempSpell->EffectImplicitTargetB[0] = 0;
 			   TempSpell->EffectImplicitTargetB[1] = 0;
-		}
+		}*/
     }
 
     void JustReachedHome()

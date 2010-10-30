@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL npc_draenei_survivorAI : public ScriptedAI
 
     void SpellHit(Unit* pCaster, const SpellEntry* pSpell)
     {
-        if (pSpell->SpellFamilyFlags2 & 0x080000000)
+        if (pSpell->GetSpellFamilyFlags2() & 0x080000000)
         {
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
             me->SetStandState(UNIT_STAND_STATE_STAND);

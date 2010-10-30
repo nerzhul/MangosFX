@@ -1369,13 +1369,19 @@ struct MANGOS_DLL_DECL mob_scarlet_minerAI : public ScriptedAI
     mob_scarlet_minerAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
         // hack spell 52481
-        SpellEntry *TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_GIFT_OF_THE_HARVESTER_MISSILE);
+        /*SpellEntry *TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_GIFT_OF_THE_HARVESTER_MISSILE);
         if (TempSpell && TempSpell->EffectImplicitTargetB[0] != 16)
         {
-            TempSpell->EffectImplicitTargetB[0] = 16;
-            TempSpell->EffectImplicitTargetB[1] = 87;
-            TempSpell->EffectImplicitTargetB[2] = 16;
-        }
+			SpellEffectEntry const* effect0 = TempSpell->GetSpellEffect(EFFECT_INDEX_0);
+			SpellEffectEntry const* effect1 = TempSpell->GetSpellEffect(EFFECT_INDEX_1);
+			SpellEffectEntry const* effect2 = TempSpell->GetSpellEffect(EFFECT_INDEX_2);
+			if(effect0)
+				effect0->EffectImplicitTargetB = 16;
+			if(effect1)
+				effect1->EffectImplicitTargetB = 87;
+			if(effect2)
+				effect2->EffectImplicitTargetB = 16;
+        }*/
     }
 
     void Reset() {}

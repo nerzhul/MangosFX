@@ -91,9 +91,13 @@ struct MANGOS_DLL_DECL npc_kalecgosAI : public ScriptedAI
         for(Map::PlayerList::const_iterator i = lList.begin(); i != lList.end(); ++i)
         {
             if (Player* pPlayer = i->getSource())
-            {
-                if (pSpell && pSpell->EffectMiscValue[0])
-                    pPlayer->KilledMonsterCredit(pSpell->EffectMiscValue[0], 0);
+			{
+				if(pSpell)
+				{
+					SpellEffectEntry const* effect0 = pSpell->GetSpellEffect(EFFECT_INDEX_0);
+					if (effect0 && effect0->EffectMiscValue)
+						pPlayer->KilledMonsterCredit(effect0->EffectMiscValue, 0);
+				}
             }
         }
     }

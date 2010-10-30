@@ -133,16 +133,24 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
             m_uiActiveOrder[i] = m_uiActiveOrder[r];
             m_uiActiveOrder[r] = temp;
         }
-
-        SpellEntry* TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_CHANNEL_SPIRIT_TO_YMIRON);
-        if (TempSpell && TempSpell->EffectImplicitTargetB[0] != 16)
-        {
-               TempSpell->EffectImplicitTargetA[0] = 53;
-               TempSpell->EffectImplicitTargetA[1] = 0;
-               TempSpell->EffectImplicitTargetB[0] = 16;
-               TempSpell->EffectImplicitTargetB[1] = 0;
-        }
-
+		
+		/*SpellEntry* TempSpell = (SpellEntry*)GetSpellStore()->LookupEntry(SPELL_CHANNEL_SPIRIT_TO_YMIRON);
+		if(TempSpell)
+		{
+			SpellEffectEntry const* effect0 = TempSpell->GetSpellEffect(EFFECT_INDEX_0);
+			if (effect0 && effect0->EffectImplicitTargetB != 16)
+			{
+				
+				SpellEffectEntry const* effect1 = TempSpell->GetSpellEffect(EFFECT_INDEX_1);
+			   effect0->EffectImplicitTargetA = 53;
+			   effect0->EffectImplicitTargetB = 16;
+				if(effect1)
+				{
+				   effect1->EffectImplicitTargetA = 0;
+				   effect1->EffectImplicitTargetB = 0;
+				}          
+			}
+		}*/
 		m_bIsActiveWithBJORN = false;
         m_bIsActiveWithHALDOR = false;
         m_bIsActiveWithRANULF = false;

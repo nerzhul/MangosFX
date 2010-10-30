@@ -224,9 +224,13 @@ bool EquippedOk(Player* pPlayer, uint32 spellId)
     if (!spell)
         return false;
 
-    for(int i=0; i<3; ++i)
+    for(int i=0; i<MAX_EFFECT_INDEX; ++i)
     {
-        uint32 reqSpell = spell->EffectTriggerSpell[i];
+		SpellEffectEntry const* effectI = spell->GetSpellEffect(SpellEffectIndex(i));
+		if(!effectI)
+			continue;
+
+        uint32 reqSpell = effectI->EffectTriggerSpell;
         if (!reqSpell)
             continue;
 
