@@ -283,7 +283,7 @@ std::ostringstream& operator<< (std::ostringstream& ss, PlayerTaxi const& taxi)
 
 SpellModifier::SpellModifier( SpellModOp _op, SpellModType _type, int32 _value, SpellEntry const* spellEntry, uint8 eff, int16 _charges /*= 0*/ ) : op(_op), type(_type), charges(_charges), value(_value), spellId(spellEntry->Id), lastAffected(NULL)
 {
-    uint32 const* ptr = spellEntry->GetEffectSpellClassMask(eff);
+    uint32 const* ptr = spellEntry->GetEffectSpellClassMask(SpellEffectIndex(eff));
     mask = uint64(ptr[0]) | (uint64(ptr[1]) << 32);
     mask2= ptr[2];
 }
@@ -7564,7 +7564,7 @@ void Player::CastItemCombatSpell(Unit* Target, WeaponAttackType attType)
         if( m_extraAttacks && IsSpellHaveEffect(spellInfo,SPELL_EFFECT_ADD_EXTRA_ATTACKS) )
             return;
 
-        float chance = spellInfo->procChance;
+        float chance = spellInfo->GetProcChance();
 
         if(spellData.SpellPPMRate)
         {
@@ -7849,7 +7849,7 @@ void Player::_ApplyAllLevelScaleItemMods(bool apply)
 void Player::_ApplyAmmoBonuses()
 {
     // check ammo
-    uint32 ammo_id = GetUInt32Value(PLAYER_AMMO_ID);
+    /*uint32 ammo_id = GetUInt32Value(PLAYER_AMMO_ID);
     if(!ammo_id)
         return;
 
@@ -7867,7 +7867,7 @@ void Player::_ApplyAmmoBonuses()
     m_ammoDPS = currentAmmoDPS;
 
     if(CanModifyStats())
-        UpdateDamagePhysical(RANGED_ATTACK);
+        UpdateDamagePhysical(RANGED_ATTACK);*/
 }
 
 bool Player::CheckAmmoCompatibility(const ItemPrototype *ammo_proto) const
@@ -11067,7 +11067,7 @@ uint8 Player::CanUseAmmo( uint32 item ) const
 
 void Player::SetAmmo( uint32 item )
 {
-    if(!item)
+    /*if(!item)
         return;
 
     // already set
@@ -11087,17 +11087,17 @@ void Player::SetAmmo( uint32 item )
 
     SetUInt32Value(PLAYER_AMMO_ID, item);
 
-    _ApplyAmmoBonuses();
+    _ApplyAmmoBonuses();*/
 }
 
 void Player::RemoveAmmo()
 {
-    SetUInt32Value(PLAYER_AMMO_ID, 0);
+    /*SetUInt32Value(PLAYER_AMMO_ID, 0);
 
     m_ammoDPS = 0.0f;
 
     if(CanModifyStats())
-        UpdateDamagePhysical(RANGED_ATTACK);
+        UpdateDamagePhysical(RANGED_ATTACK);*/
 }
 
 // Return stored item (if stored to stack, it can diff. from pItem). And pItem ca be deleted in this case.
@@ -11295,7 +11295,7 @@ Item* Player::EquipItem( uint16 pos, Item *pItem, bool update )
                     sLog.outError("Weapon switch cooldown spell %u couldn't be found in Spell.dbc", cooldownSpell);
                 else
                 {
-                    m_weaponChangeTimer = spellProto->StartRecoveryTime;
+                    m_weaponChangeTimer = spellProto->GetStartRecoveryTime();
 
                     WorldPacket data(SMSG_SPELL_COOLDOWN, 8+1+4);
                     data << uint64(GetGUID());
@@ -15433,9 +15433,9 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     SetUInt32Value(PLAYER_FLAGS, fields[11].GetUInt32());
     SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, fields[48].GetInt32());
 
-    SetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES, fields[47].GetUInt64());
+    //SetUInt64Value(PLAYER_FIELD_KNOWN_CURRENCIES, fields[47].GetUInt64());
 
-	SetUInt32Value(PLAYER_AMMO_ID, fields[62].GetUInt32());
+	//SetUInt32Value(PLAYER_AMMO_ID, fields[62].GetUInt32());
 	SetByteValue(PLAYER_FIELD_BYTES, 2, fields[64].GetUInt8());
 
     InitDisplayIds();
@@ -15488,7 +15488,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     if (arena_currency > sWorld.getConfig(CONFIG_MAX_ARENA_POINTS))
         arena_currency = sWorld.getConfig(CONFIG_MAX_ARENA_POINTS);
 
-    SetUInt32Value(PLAYER_FIELD_ARENA_CURRENCY, arena_currency);
+    SetArenaPoints(arena_currency);
 
     // check arena teams integrity
     for(uint32 arena_slot = 0; arena_slot < MAX_ARENA_SLOT; ++arena_slot)
@@ -15509,9 +15509,9 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     uint32 honor_currency = fields[40].GetUInt32();
 	if (honor_currency > sWorld.getConfig(CONFIG_MAX_HONOR_POINTS))
 		honor_currency = sWorld.getConfig(CONFIG_MAX_HONOR_POINTS);
-	SetUInt32Value(PLAYER_FIELD_HONOR_CURRENCY, honor_currency);
-    SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, fields[41].GetUInt32());
-    SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, fields[42].GetUInt32());
+	SetHonorPoints(honor_currency);
+    //SetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION, fields[41].GetUInt32());
+    //SetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION, fields[42].GetUInt32());
     SetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, fields[43].GetUInt32());
     SetUInt16Value(PLAYER_FIELD_KILLS, 0, fields[44].GetUInt16());
     SetUInt16Value(PLAYER_FIELD_KILLS, 1, fields[45].GetUInt16());
@@ -17147,7 +17147,7 @@ void Player::SaveToDB()
 
     ss << uint32(0)/*GetUInt32Value(PLAYER_FIELD_TODAY_CONTRIBUTION)*/  << ", ";
 
-    ss << /*uint32(0)GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION)*/ << ", ";
+    ss << uint32(0)/*GetUInt32Value(PLAYER_FIELD_YESTERDAY_CONTRIBUTION)*/ << ", ";
 
     ss << GetUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS) << ", ";
 
@@ -17913,20 +17913,21 @@ void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
         //returning of reagents only for players, so best done here
         uint32 spellId = pet ? pet->GetUInt32Value(UNIT_CREATED_BY_SPELL) : m_oldpetspell;
         SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+		SpellReagentsEntry const* spellReagents = spellInfo ? spellInfo->GetSpellReagents() : NULL;
 
-        if(spellInfo)
+        if(spellReagents)
         {
             for(uint32 i = 0; i < MAX_SPELL_REAGENTS; ++i)
             {
-                if(spellInfo->Reagent[i] > 0)
+                if(spellReagents->Reagent[i] > 0)
                 {
                     ItemPosCountVec dest;                   //for succubus, voidwalker, felhunter and felguard credit soulshard when despawn reason other than death (out of range, logout)
-                    uint8 msg = CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, spellInfo->Reagent[i], spellInfo->ReagentCount[i] );
+                    uint8 msg = CanStoreNewItem( NULL_BAG, NULL_SLOT, dest, spellReagents->Reagent[i], spellReagents->ReagentCount[i] );
                     if( msg == EQUIP_ERR_OK )
                     {
-                        Item* item = StoreNewItem( dest, spellInfo->Reagent[i], true);
+                        Item* item = StoreNewItem( dest, spellReagents->Reagent[i], true);
                         if(IsInWorld())
-                            SendNewItem(item,spellInfo->ReagentCount[i],true,false);
+                            SendNewItem(item,spellReagents->ReagentCount[i],true,false);
                     }
                 }
             }
@@ -18769,7 +18770,7 @@ void Player::ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs )
 
 void Player::InitDataForForm(bool reapplyMods)
 {
-    SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(m_form);
+    SpellShapeshiftFormEntry const* ssEntry = sSpellShapeshiftFormStore.LookupEntry(m_form);
     if(ssEntry && ssEntry->attackSpeed)
     {
         SetAttackTime(BASE_ATTACK,ssEntry->attackSpeed);
@@ -20117,7 +20118,8 @@ void Player::learnQuestRewardedSpells(Quest const* quest)
     bool found = false;
     for(int i=0; i < 3; ++i)
     {
-        if(spellInfo->Effect[i] == SPELL_EFFECT_LEARN_SPELL && !HasSpell(spellInfo->EffectTriggerSpell[i]))
+		SpellEffectEntry const* effectI = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+        if(effectI->Effect == SPELL_EFFECT_LEARN_SPELL && !HasSpell(effectI->EffectTriggerSpell))
         {
             found = true;
             break;
@@ -20129,7 +20131,8 @@ void Player::learnQuestRewardedSpells(Quest const* quest)
         return;
 
     // prevent learn non first rank unknown profession and second specialization for same profession)
-    uint32 learned_0 = spellInfo->EffectTriggerSpell[0];
+	SpellEffectEntry const* effect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+	uint32 learned_0 = effect0 ? effect0->EffectTriggerSpell : 0;
     if( sSpellMgr.GetSpellRank(learned_0) > 1 && !HasSpell(learned_0) )
     {
         // not have first rank learned (unlearned prof?)
@@ -20141,8 +20144,13 @@ void Player::learnQuestRewardedSpells(Quest const* quest)
         if(!learnedInfo)
             return;
 
+		SpellEffectEntry const* effectL0 = learnedInfo->GetSpellEffect(EFFECT_INDEX_0);
+		SpellEffectEntry const* effectL1 = learnedInfo->GetSpellEffect(EFFECT_INDEX_1);
+		if(!effectL0 || ! effectL1)
+			return;
+
         // specialization
-        if(learnedInfo->Effect[0]==SPELL_EFFECT_TRADE_SKILL && learnedInfo->Effect[1]==0)
+        if(effectL0->Effect==SPELL_EFFECT_TRADE_SKILL && effectL1->Effect==0)
         {
             // search other specialization for same prof
             for(PlayerSpellMap::const_iterator itr = m_spells.begin(); itr != m_spells.end(); ++itr)
@@ -20154,8 +20162,10 @@ void Player::learnQuestRewardedSpells(Quest const* quest)
                 if(!itrInfo)
                     return;
 
+				SpellEffectEntry const* effectItr0 = itrInfo->GetSpellEffect(EFFECT_INDEX_0);
+				SpellEffectEntry const* effectItr1 = itrInfo->GetSpellEffect(EFFECT_INDEX_1);
                 // compare only specializations
-                if(itrInfo->Effect[0]!=SPELL_EFFECT_TRADE_SKILL || itrInfo->Effect[1]!=0)
+                if(effectItr0->Effect!=SPELL_EFFECT_TRADE_SKILL || effectItr1->Effect!=0)
                     continue;
 
                 // compare same chain spells
@@ -22433,14 +22443,18 @@ void Player::SendDuelCountdown(uint32 counter)
 
 bool Player::IsImmunedToSpellEffect(SpellEntry const* spellInfo, uint32 index) const
 {
-    switch(spellInfo->Effect[index])
+	SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(index));
+	if(!effect)
+		return false;
+
+    switch(effect->Effect)
     {
         case SPELL_EFFECT_ATTACK_ME:
             return true;
         default:
             break;
     }
-    switch(spellInfo->EffectApplyAuraName[index])
+    switch(effect->EffectApplyAuraName)
     {
         case SPELL_AURA_MOD_TAUNT:
             return true;

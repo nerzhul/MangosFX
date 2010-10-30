@@ -20,7 +20,7 @@ void HunterSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bon
         // 0.4*RAP added to damage (that is 0.2 if we apply PercentMod (200%) to spell_bonus, too)
         weaponDmgMod = true;
 		SpellEffectEntry const* effect0 = spell->m_spellInfo->GetSpellEffect(EFFECT_INDEX_0);
-		spell_bonus += int32(0.2f * spell->GetCaster()->GetTotalAttackPowerValue(RANGED_ATTACK) + effect0 ? effect0->EffectBasePoints : 0);
+		spell_bonus += int32(0.2f * spell->GetCaster()->GetTotalAttackPowerValue(RANGED_ATTACK) + (effect0 ? effect0->EffectBasePoints : 0));
     }
 
 	if(spell->GetCaster()->GetTypeId() == TYPEID_PLAYER)

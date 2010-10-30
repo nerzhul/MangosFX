@@ -101,7 +101,8 @@ void PaladinSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 	{
 		// Add main hand dps * effect[2] amount
 		float average = (m_caster->GetFloatValue(UNIT_FIELD_MINDAMAGE) + m_caster->GetFloatValue(UNIT_FIELD_MAXDAMAGE)) / 2;
-		int32 count = m_caster->CalculateSpellDamage(m_spellInfo, 2, m_spellInfo->EffectBasePoints[2], unitTarget);
+		SpellEffectEntry const* effect2 = m_spellInfo->GetSpellEffect(SpellEffectIndex(2));
+		int32 count = m_caster->CalculateSpellDamage(m_spellInfo, 2, effect2 ? effect2->EffectBasePoints : 0, unitTarget);
 		damage += count * int32(average * IN_MILLISECONDS) / m_caster->GetAttackTime(BASE_ATTACK);
 	}
 	// Shield of Righteousness

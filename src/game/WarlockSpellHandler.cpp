@@ -55,7 +55,7 @@ void WarlockSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffect
 		}
 	}
 	// Conflagrate - consumes Immolate or Shadowflame
-	else if (m_spellInfo->TargetAuraState == AURA_STATE_CONFLAGRATE)
+	else if (m_spellInfo->GetTargetAuraState() == AURA_STATE_CONFLAGRATE)
 	{
 		Aura const* aura = NULL;                // found req. aura for damage calculation
 		

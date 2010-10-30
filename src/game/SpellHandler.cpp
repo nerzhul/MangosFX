@@ -139,9 +139,10 @@ void WorldSession::HandleUseItemOpcode(WorldPacket& recvPacket)
         // send spell error
         if (SpellEntry const* spellInfo = sSpellStore.LookupEntry(spellid))
         {
+			SpellEffectEntry const* effect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
             // for implicit area/coord target spells
-            if (IsPointEffectTarget(Targets(spellInfo->EffectImplicitTargetA[0])) ||
-                IsAreaEffectTarget(Targets(spellInfo->EffectImplicitTargetA[0])))
+            if (IsPointEffectTarget(Targets(effect0->EffectImplicitTargetA)) ||
+                IsAreaEffectTarget(Targets(effect0->EffectImplicitTargetA)))
                 Spell::SendCastResult(_player,spellInfo,cast_count,SPELL_FAILED_NO_VALID_TARGETS);
             // for explicit target spells
             else
@@ -429,8 +430,9 @@ void WorldSession::HandleCancelAuraOpcode( WorldPacket& recvPacket)
             bool allow = false;
             for(int k = 0; k < 3; ++k)
             {
-                if (spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS ||
-                    spellInfo->EffectApplyAuraName[k] == SPELL_AURA_MOD_POSSESS_PET)
+				SpellEffectEntry const* effectK = spellInfo->GetSpellEffect(SpellEffectIndex(k));
+                if (effectK->EffectApplyAuraName == SPELL_AURA_MOD_POSSESS ||
+                    effectK->EffectApplyAuraName == SPELL_AURA_MOD_POSSESS_PET)
                 {
                     allow = true;
                     break;

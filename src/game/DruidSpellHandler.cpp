@@ -38,7 +38,8 @@ void DruidSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
     if(spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_SHRED)
     {
 		weaponDmgMod = true;
-		spell_bonus += spell->m_spellInfo->EffectBasePoints[0];
+		SpellEffectEntry const* effect0= spell->m_spellInfo->GetSpellEffect(SpellEffectIndex(0));
+		spell_bonus += effect0 ? effect0->EffectBasePoints: 0;
     }
 	
 	// Mangle (Cat): CP
@@ -73,18 +74,21 @@ void DruidSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIn
 	Unit* m_caster = spell->GetCaster();
 	Unit* unitTarget = spell->getUnitTarget();
 
+	SpellEffectEntry const* effect2 = spell->m_spellInfo->GetSpellEffect(EFFECT_INDEX_2);
+
 	if (m_caster->GetTypeId()==TYPEID_PLAYER && (spell->m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x000800000)) && spell->m_spellInfo->SpellVisual[0]==6587)
     {
         // converts up to 30 points of energy into ($f1+$AP/410) additional damage
         float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
-        float multiple = ap / 410 + spell->m_spellInfo->DmgMultiplier[i];
+		SpellEffectEntry const* effectI = spell->m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
+		float multiple = ap / 410 + (effectI ? effectI->DmgMultiplier : 0);
         damage += int32(((Player*)m_caster)->GetComboPoints() * ap * 7 / 100);
         uint32 energy = m_caster->GetPower(POWER_ENERGY);
         uint32 used_energy = energy > 30 ? 30 : energy;
         damage += int32(used_energy * multiple);
         m_caster->SetPower(POWER_ENERGY,energy-used_energy);
     }
-    else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_RAKE && spell->m_spellInfo->Effect[2]==SPELL_EFFECT_ADD_COMBO_POINTS)
+    else if (spell->m_spellInfo->GetSpellFamilyFlags() & FLAG_RAKE && effect2 && effect2->Effect == SPELL_EFFECT_ADD_COMBO_POINTS)
     {
         // $AP*0.01 bonus
         damage += int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100);

@@ -60,8 +60,8 @@ bool DeathknightSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, Spe
                     break;
             }
         }
-
-        int32 bp = count * spell->GetCaster()->GetMaxHealth() * spell->m_spellInfo->DmgMultiplier[0] / 100;
+		SpellEffectEntry const* effect0 = spell->m_spellInfo->GetSpellEffect(EFFECT_INDEX_0);
+		int32 bp = count * spell->GetCaster()->GetMaxHealth() * (effect0 ? effect0->DmgMultiplier / 100 : 1);
 
 		 // Improved Death Strike
         Unit::AuraList const& auraMod = spell->GetCaster()->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
@@ -230,7 +230,8 @@ void DeathknightSpellHandler::PeriodicDummyTick(Aura* aura)
     {
         // Increases your attack power by $s1 for every $s2 armor value you have.
         // Calculate AP bonus (from 1 efect of this spell)
-        int32 apBonus = aura->GetModifier()->m_amount * m_target->GetArmor() / m_target->CalculateSpellDamage(spell, 1, spell->EffectBasePoints[1], m_target);
+		SpellEffectEntry const* effect1 = spell->GetSpellEffect(EFFECT_INDEX_1);
+		int32 apBonus = aura->GetModifier()->m_amount * m_target->GetArmor() / m_target->CalculateSpellDamage(spell, 1, effect1 ? effect1->EffectBasePoints : 0, m_target);
         m_target->CastCustomSpell(m_target, 61217, &apBonus, &apBonus, NULL, true, NULL, aura);
         return;
     }
@@ -315,7 +316,8 @@ void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit*
         Unit::AuraList const& dummyAuras = caster->GetAurasByType(SPELL_AURA_DUMMY);
         for(Unit::AuraList::const_iterator i = dummyAuras.begin(); i != dummyAuras.end(); ++i)
         {
-            if ((*i)->GetSpellProto()->EffectMiscValue[(*i)->GetEffIndex()] == 7244)
+			SpellEffectEntry const* effectItr = (*i)->GetSpellProto()->GetSpellEffect(SpellEffectIndex((*i)->GetEffIndex()));
+            if (effectItr->EffectMiscValue == 7244)
             {
                 DoneTotalMod *= ((*i)->GetModifier()->m_amount+100.0f) / 100.0f;
                 break;
