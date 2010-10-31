@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="ad"
 	ProjectGUID="{D7552D4F-408F-4F8E-859B-366659150CF4}"
 	RootNamespace="ad"
@@ -178,7 +178,7 @@
 				LinkIncremental="0"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="./release/"
-				IgnoreDefaultLibraryNames="LIBC.lib"
+				IgnoreDefaultLibraryNames="LIBC.lib;LIBCMT.lib"
 				ProgramDatabaseFile="./ad.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
