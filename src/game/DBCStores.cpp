@@ -223,7 +223,7 @@ typedef std::list<std::string> StoreProblemList;
 // others will not and opposite
 // will only support WoW, WoW:TBC and WoW:WotLK 3.3.0a client build 11159...
 
-#define EXPECTED_MANGOSD_CLIENT_BUILD        {13164, 13202, 13205,13221, 0}
+#define EXPECTED_MANGOSD_CLIENT_BUILD        {13205,13221, 0}
 
 bool IsAcceptableClientBuild(uint32 build)
 {
@@ -329,7 +329,7 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
 	SqlDbc * sql = NULL;
     if (custom_entries)
         sql = new SqlDbc(&filename,custom_entries, idname,storage.GetFormat());
-
+	error_log("Load DBC %s",dbc_filename.c_str());
     if(storage.Load(dbc_filename.c_str(),localeData.defaultLocale,sql))
     {
         bar.step();

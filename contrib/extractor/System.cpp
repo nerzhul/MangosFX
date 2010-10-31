@@ -168,6 +168,7 @@ void HandleArgs(int argc, char * arg[])
 
 uint32 ReadBuild(int locale)
 {
+	return 12911;
     // include build info file also
     std::string filename  = std::string("component.wow-")+langs[locale]+".txt";
     //printf("Read %s file... ", filename.c_str());
