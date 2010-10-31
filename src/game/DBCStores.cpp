@@ -329,7 +329,6 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
 	SqlDbc * sql = NULL;
     if (custom_entries)
         sql = new SqlDbc(&filename,custom_entries, idname,storage.GetFormat());
-	error_log("Load DBC %s",dbc_filename.c_str());
     if(storage.Load(dbc_filename.c_str(),localeData.defaultLocale,sql))
     {
         bar.step();
