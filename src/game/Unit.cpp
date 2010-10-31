@@ -10425,11 +10425,6 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
 
 					if(GetTypeId() == TYPEID_PLAYER)
 						sLog.outDebugSpell("Crit Chance add SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE: %f",crit_chance);
-                    // Modify by player victim resilience
-                    crit_chance -= pVictim->GetSpellCritChanceReduction();
-
-					if(GetTypeId() == TYPEID_PLAYER)
-						sLog.outDebugSpell("Crit Chance reduced by resilience: %f",crit_chance);
                 }
 
                 // scripted (increase crit chance ... against ... target by x%)
