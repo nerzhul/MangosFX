@@ -1617,7 +1617,7 @@ void World::DetectDBCLang()
 
     std::string availableLocalsStr;
 
-    int default_locale = MAX_LOCALE;
+    /*int default_locale = MAX_LOCALE;
     for (int i = MAX_LOCALE-1; i >= 0; --i)
     {
         if ( strlen(race->name[i]) > 0)                     // check by race names
@@ -1639,11 +1639,11 @@ void World::DetectDBCLang()
     {
         sLog.outError("Unable to determine your DBC Locale! (corrupt DBC?)");
         exit(1);
-    }
+    }*/
 
-    m_defaultDbcLocale = LocaleConstant(default_locale);
+    m_defaultDbcLocale = LOCALE_frFR/*LocaleConstant(default_locale)*/;
 
-    sLog.outString("Using %s DBC Locale as default. All available DBC locales: %s",localeNames[m_defaultDbcLocale],availableLocalsStr.empty() ? "<none>" : availableLocalsStr.c_str());
+    sLog.outString("Using %s DBC Locale as default. "/*All available DBC locales: %s"*/,localeNames[m_defaultDbcLocale]/*,availableLocalsStr.empty() ? "<none>" : availableLocalsStr.c_str()*/);
     sLog.outString();
 }
 

@@ -766,7 +766,7 @@ void LoadDBCStores(const std::string& dataPath)
             str += *i + "\n";
 
         sLog.outError("\nSome required *.dbc files (%u from %d) not found or not compatible:\n%s",(uint32)bad_dbc_files.size(),DBCFilesCount,str.c_str());
-        exit(1);
+        //exit(1);
     }
 
     // Check loaded DBC files proper version

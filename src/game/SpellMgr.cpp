@@ -2339,9 +2339,12 @@ void SpellMgr::LoadSpellLearnSkills()
         if(!entry)
             continue;
 
-        for(int i = 0; i < 3; ++i)
+        for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
         {
 			SpellEffectEntry const* effectEntry = entry->GetSpellEffect(SpellEffectIndex(i));
+			if(!effectEntry)
+				continue;
+
             if(effectEntry->Effect==SPELL_EFFECT_SKILL)
             {
                 SpellLearnSkillNode dbc_node;
@@ -2518,9 +2521,12 @@ void SpellMgr::LoadSpellScriptTarget()
         }
 
         bool targetfound = false;
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
         {
 			SpellEffectEntry const* effectProto = spellProto->GetSpellEffect(SpellEffectIndex(i));
+			if(!effectProto)
+				continue;
+
             if( effectProto->EffectImplicitTargetA == TARGET_SCRIPT ||
                 effectProto->EffectImplicitTargetB == TARGET_SCRIPT ||
                 effectProto->EffectImplicitTargetA == TARGET_SCRIPT_COORDINATES ||
@@ -2827,9 +2833,12 @@ void SpellMgr::LoadPetDefaultSpells()
         if(!spellEntry)
             continue;
 
-        for(int k = 0; k < 3; ++k)
+        for(int k = 0; k < MAX_EFFECT_INDEX; ++k)
         {
 			SpellEffectEntry const* effectK = spellEntry->GetSpellEffect(SpellEffectIndex(k));
+			if(!effectK)
+				continue;
+
             if(effectK->Effect == SPELL_EFFECT_SUMMON || effectK->Effect == SPELL_EFFECT_SUMMON_PET)
             {
                 uint32 creature_id = effectK->EffectMiscValue;
@@ -2873,9 +2882,12 @@ bool SpellMgr::IsSpellValid(SpellEntry const* spellInfo, Player* pl, bool msg)
     bool need_check_reagents = false;
 
     // check effects
-    for(int i=0; i<3; ++i)
+    for(int i=0; i<MAX_EFFECT_INDEX; ++i)
     {
 		SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(i));
+		if(!effect)
+			continue;
+
         switch(effect->Effect)
         {
             case 0:

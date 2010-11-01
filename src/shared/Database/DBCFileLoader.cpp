@@ -45,17 +45,13 @@ bool DBCFileLoader::Load(const char *filename, const char *fmt)
     if(fread(&header,4,1,f)!=1)                             // Signature
         return false;
 
-	uint8 recRead = 4;
     EndianConvert(header);
     if(header!=0x43424457)
-	{
         return false;                                       //'WDBC'
-	}
 
-    if(fread(&recordCount,recRead,1,f)!=1)                        // Number of records
+    if(fread(&recordCount,4,1,f)!=1)                        // Number of records
         return false;
 
-	printf("recCount : %i\n",recordCount);
     EndianConvert(recordCount);
 	
     if(fread(&fieldCount,4,1,f)!=1)                         // Number of fields

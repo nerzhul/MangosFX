@@ -20,8 +20,8 @@
 #define MANGOS_DBCSFRM_H
 
 const char Achievementfmt[]="niixsxiixixxii";
-const char AchievementCriteriafmt[]="niiiiiiiisixiiixxxxxxxx";
-const char AreaTableEntryfmt[]="iiinixxxxxisixxxxxxxxxxxx";
+const char AchievementCriteriafmt[]="niiiiiiiisixiiixx";
+const char AreaTableEntryfmt[]="iiinixxxxxisixxxxxxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
 const char AreaPOIEntryfmt[]="niiiiiiiiiiifffixixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxix";
 const char AreaTriggerEntryfmt[]="nifffxxxfffff";
@@ -128,7 +128,7 @@ const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffiiii";
 const char TotemCategoryEntryfmt[]="nxii";
 const char VehicleEntryfmt[]="niffffiiiiiiiifffffffffffffffssssfifiixx";
-const char VehicleSeatEntryfmt[]="niiffffffffffiiiiiifffffffiiifffiiiiiiiffiiiiixxxxxxxxxxxxxxxxxxxx";
+const char VehicleSeatEntryfmt[]="niiffffffffffiiiiiifffffffiiifffiiiiiiiffiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char WMOAreaTableEntryfmt[]="niiixxxxxiixxxx";
 const char WorldMapAreaEntryfmt[]="xinxffffixxx";
 const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxxxx";
