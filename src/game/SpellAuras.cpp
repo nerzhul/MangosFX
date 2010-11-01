@@ -3931,6 +3931,9 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
                             break;
                     }
                     break;
+					if(m_target->GetTypeId() == TYPEID_PLAYER)
+						if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(3456))
+							((Player*)m_target)->GetAchievementMgr().DoCompleteAchivement(pAE);
                 }
                 default: break;
             }
