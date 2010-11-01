@@ -1605,21 +1605,3 @@ void ScriptedAI::DoSpeakEmote(Unit* who)
 	// 25 : point
 	// 48 : attack stand
 }
-
-void LibDevFSAI::SendPortrait(Unit* u,bool activate,uint32 nb)
-{
-	if(!u)
-		u = me;
-	
-	Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
-	if (!lPlayers.isEmpty())
-		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
-			if (Player* pPlayer = itr->getSource())
-			{
-				WorldPacket data(SMSG_GAMEOBJECT_SPAWN_ANIM_OBSOLETE);
-				data << uint32(0x0);
-				data.appendPackGUID(u->GetGUID());
-				data << uint8(activate?0:1);
-				pPlayer->GetSession()->SendPacket(&data);
-			}
-}

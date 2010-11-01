@@ -19,6 +19,7 @@
 #include "CreatureAI.h"
 #include "Creature.h"
 #include "DBCStores.h"
+#include "WorldPacket.h"
 #include "Vehicle.h"
 
 CreatureAI::~CreatureAI()
@@ -116,4 +117,23 @@ CanCastResult CreatureAI::DoCastSpellIfCan(Unit* pTarget, uint32 uiSpell, uint32
     }
     else
         return CAST_FAIL_IS_CASTING;
+}
+
+
+void CreatureAI::SendPortrait(Unit* u,bool activate,uint32 nb)
+{
+	if(!u)
+		u = me;
+	
+	Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+	if (!lPlayers.isEmpty())
+		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+			{
+				WorldPacket data(SMSG_GAMEOBJECT_SPAWN_ANIM_OBSOLETE);
+				data << uint32(0x0);
+				data.appendPackGUID(u->GetGUID());
+				data << uint8(activate?0:1);
+				pPlayer->GetSession()->SendPacket(&data);
+			}
 }

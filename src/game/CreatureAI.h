@@ -243,6 +243,9 @@ class MANGOS_DLL_SPEC CreatureAI
         // Called when victim entered water and creature can not enter water
         virtual bool canReachByRangeAttack(Unit*) { return false; }
 
+		///== Black Diamond FX Functions
+		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
+
 		Creature* getMyself() { return me; }
         ///== Fields =======================================
 		///== Black Diamond FX IA's
