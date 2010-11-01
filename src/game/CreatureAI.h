@@ -154,8 +154,7 @@ typedef std::vector<TextSh> TextEvents;
 class MANGOS_DLL_SPEC CreatureAI
 {
     public:
-        explicit CreatureAI(Creature* creature) : me(creature) {}
-
+        explicit CreatureAI(Creature* creature) : me(creature),ManualMoveEnable(false),CanMove(true),TimedDownEnable(false),CheckDistanceTimer(1000) {}
         virtual ~CreatureAI();
 
         ///== Reactions At =================================
@@ -244,9 +243,18 @@ class MANGOS_DLL_SPEC CreatureAI
         virtual bool canReachByRangeAttack(Unit*) { return false; }
 
 		///== Black Diamond FX Functions
+
+
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 
+		// for timed Achievements
+		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
+		bool TimeDownSucceed() { return TimedDownEnable; }
+
+
+		// Getter for extern functions
 		Creature* getMyself() { return me; }
+
         ///== Fields =======================================
 		///== Black Diamond FX IA's
 	protected:

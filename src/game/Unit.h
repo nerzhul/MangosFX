@@ -884,6 +884,7 @@ struct CalcDamageInfo
     uint32 damage;
     uint32 absorb;
     uint32 resist;
+	uint32 overkill;
     uint32 blocked_amount;
     uint32 HitInfo;
     uint32 TargetState;

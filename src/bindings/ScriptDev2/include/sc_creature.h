@@ -291,13 +291,7 @@ class MANGOS_DLL_SPEC MobEventTasks
 class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 {
 	public:
-		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) 
-		{
-			ManualMoveEnable = false;
-			CanMove = true;
-			TimedDownEnable = false;
-			CheckDistanceTimer = 1000;
-		}
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 		~LibDevFSAI() {};
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
@@ -418,9 +412,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void SetMovePhase(bool yes = true) { CanMove = yes; }
 
 		void SetDespawnTimer(uint32 Timer) { me->ForcedDespawn(Timer); }
-
-		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
-		bool TimeDownSucceed() { return TimedDownEnable; }
 
 		void MakeInvisibleStalker();
 		void MakeHostileInvisibleStalker();
