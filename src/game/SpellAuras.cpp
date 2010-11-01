@@ -416,7 +416,7 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
             ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(castItem->GetItemRandomPropertyId()));
             if(item_rand_suffix)
             {
-                for (int k = 0; k < 3; ++k)
+                for (int k = 0; k < MAX_EFFECT_INDEX; ++k)
                 {
                     SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(item_rand_suffix->enchant_id[k]);
                     if(pEnchant)

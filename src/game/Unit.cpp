@@ -12877,16 +12877,20 @@ int32 Unit::CalculateSpellDuration(SpellEntry const* spellProto, uint8 effect_in
 			if(HasAura(15473) && spellProto->SpellIconID == 2213 && spellProto->SpellFamilyName == SPELLFAMILY_PRIEST)
 				applyHaste = true;
 
-            if (applyHaste)
+			if(HasAura(44401) && spellProto->SpellFamilyName == SPELLFAMILY_MAGE && spellProto->SpellFamilyFlags & 0x800)
+			{
+				periodicTime = 500;
+				duration = 2500;
+			}
+            else if (applyHaste)
             {
                 int32 ticks = duration / periodicTime;
                 periodicTime = int32(GetFloatValue(UNIT_MOD_CAST_SPEED) * periodicTime);
                 duration = periodicTime * ticks;
+				// Apply periodic time mod
+	            if (modOwner)
+		            modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_ACTIVATION_TIME, periodicTime);
             }
-			
-			// Apply periodic time mod
-            if (modOwner)
-                modOwner->ApplySpellMod(spellProto->Id, SPELLMOD_ACTIVATION_TIME, periodicTime);
         }
 
         int32 mechanic = GetEffectMechanic(spellProto, effect_index);

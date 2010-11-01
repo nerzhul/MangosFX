@@ -245,101 +245,6 @@ struct MANGOS_DLL_DECL Scripted_NoMovementAI : public ScriptedAI
     //Called at each attack of me by any victim
     void AttackStart(Unit*);
 };
-
-enum SpellCastTarget
-{
-	TARGET_MAIN = 0,
-	TARGET_RANDOM = 1,
-	TARGET_ME = 2,
-	TARGET_LOW_HP = 3,
-	TARGET_NEAR = 4,
-	TARGET_HAS_MANA = 5,
-	PLAYER_RANDOM = 6,
-	HEAL_MY_FRIEND = 7,
-	NO_TANK = 8,
-	TARGET_RANDOMXYZ = 9,
-	TARGET_OTHER = 10,
-};
-
-struct EventSh
-{
-	uint32	SpellId;
-	uint32	TextId;
-	uint32	Timer;
-	uint32	NormTimer;
-	uint32	Diff;
-	uint8	phase;
-	uint16	Repeat;
-	SpellCastTarget targ;
-	bool MaxPriority;
-	bool RequireFront;
-};
-
-struct TextSh
-{
-	uint32 SoundId;
-	std::string Text;
-	uint8 type;
-	uint32 Timer;
-	uint32 NormTimer;
-	uint8 phase;
-};
-
-enum ZoneInvoc
-{
-	ON_ME		=	0,
-	NEAR_7M		=	1,
-	NEAR_15M	=	2,
-	NEAR_30M	=	3,
-	NEAR_45M	=	4,
-	NEAR_60M	=	5,
-	PREC_COORDS	=	6,
-};
-
-enum Comportement
-{
-	AGGRESSIVE_MAIN			=	0,
-	AGGRESSIVE_RANDOM		=	1,
-	VERY_AGGRESSIVE_MAIN	=	2,
-	VERY_AGGRESSIVE_RANDOM	=	3,
-	GO_TO_CREATOR			=	4,
-	NOTHING					=	5,
-};
-
-struct EventSummon
-{
-	uint32 entry;
-	uint32 Timer;
-	uint32 NormTimer;
-	uint32 diff;
-	uint32 phase;
-	uint32 Repeat;
-	uint32 despawnTime;
-	uint32 TextId;
-	ZoneInvoc WhereS;
-	Comportement Compo;
-};
-
-enum Emblem_Types
-{
-	HEROISME	= 45624, // relace pve
-	VAILLANCE	= 45624,
-	CONQUETE	= 45624,
-	TRIOMPHE	= 47241,
-	GIVRE		= 49426,	
-};
-
-enum MobConstantes
-{
-	MAX_ADDS	=	1500,
-	THREE_MINS	=	180000,
-	TEN_MINS	=	600000,
-};
-
-typedef std::vector<EventSh> SpellEvents;
-typedef std::vector<EventSummon> SummonEvents;
-typedef std::vector<TextSh> TextEvents;
-
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -523,19 +428,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 	private:
 		
-		SpellEvents EventShVect;
-		SummonEvents EventSummonVect;
-		SpellEvents SavedEventSh;
-		SummonEvents SavedEventSummon;
-		TextEvents EventTextVect;
-		TextEvents SavedEventTexts;
 		std::vector<uint64> MyAdds;
-		// Manual Move
-		bool ManualMoveEnable;
-		uint32 CheckDistanceTimer;
-		bool CanMove;
-		// Down timer on HF
-		bool TimedDownEnable;
-		uint32 AchTimedDownTimer;
 };
 #endif

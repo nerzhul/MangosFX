@@ -3815,6 +3815,9 @@ int32 ApplyHasteToChannelSpell(int32 orginalDuration, SpellEntry const* spellInf
             if (spell->IsRangedSpell() && !spell->IsAutoRepeat())
                 orginalDuration = int32(orginalDuration * spell->GetCaster()->m_modAttackSpeedPct[RANGED_ATTACK]);
         }
+
+		if(spell->GetCaster()->HasAura(44401) && spellInfo->SpellFamilyName == SPELLFAMILY_MAGE && spellInfo->SpellFamilyFlags & 0x800) // Hack for Missile Barrage
+			orginalDuration = 2500;
     }
     return orginalDuration;
 }
