@@ -122,6 +122,10 @@ struct MANGOS_DLL_DECL boss_sindragosaAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         SetInstanceData(TYPE_SINDRAGOSA, IN_PROGRESS);
+		if(Creature* cr = me->GetClosestCreatureWithEntry(37533,300.0f))
+			cr->ForcedDespawn(500);
+		if(Creature* cr = me->GetClosestCreatureWithEntry(37534,300.0f))
+			cr->ForcedDespawn(500);
 		DoCastMe(SPELL_FROST_AURA,true);
 		ModifyAuraStack(SPELL_PERMEATING_CHILL);
 		Yell(17007,"Qu'il est stupide d'être venus ici. Les vents glacés du Norfendre vont dévorer vos âmes");
