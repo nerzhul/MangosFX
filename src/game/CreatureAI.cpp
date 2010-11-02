@@ -20,6 +20,7 @@
 #include "Creature.h"
 #include "DBCStores.h"
 #include "WorldPacket.h"
+#include "Player.h"
 #include "Vehicle.h"
 
 CreatureAI::~CreatureAI()
