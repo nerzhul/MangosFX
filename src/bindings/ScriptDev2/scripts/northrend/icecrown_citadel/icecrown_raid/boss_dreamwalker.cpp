@@ -50,16 +50,19 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 {
     boss_dreamwalkerAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
+		heroic = false;
         InitInstance();
 		SetCombatMovement(false);
 		switch(m_difficulty)
 		{
-			case RAID_DIFFICULTY_10MAN_NORMAL:
 			case RAID_DIFFICULTY_10MAN_HEROIC:
+				heroic = true;
+			case RAID_DIFFICULTY_10MAN_NORMAL:
 				raid25 = false;
 				break;
-			case RAID_DIFFICULTY_25MAN_NORMAL:
 			case RAID_DIFFICULTY_25MAN_HEROIC:
+				heroic = true;
+			case RAID_DIFFICULTY_25MAN_NORMAL:
 				raid25 = true;
 				break;
 		}
@@ -70,6 +73,8 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 	bool eventStarted;
 	bool lowHsaid;
 	bool highHsaid;
+	bool popRight;
+	bool heroic;
 	uint16 eventStep;
 	uint32 OpenPortal_Timer;
 
@@ -78,6 +83,7 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 		ResetTimers();
 		SendPortrait(me,false);
 		pop_Timer = 12000;
+		popRight = false;
 		eventStarted = false;
 		lowHsaid = false;
 		highHsaid = false;
@@ -173,36 +179,49 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 	void PopAdds()
 	{
 		uint8 addType = urand(0,4);
-		CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0],SpawnLoc[2][1],SpawnLoc[2][2]);
-		if(SpawnId[addType] == 37863)
+		if(popRight || heroic)
 		{
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0],SpawnLoc[2][1],SpawnLoc[2][2]);
+			if(SpawnId[addType] == 37863)
+			{
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+			}
 		}
-		addType = urand(0,4);
-		CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[3][0],SpawnLoc[3][1],SpawnLoc[3][2]);
-		if(SpawnId[addType] == 37863)
+		if(!popRight || heroic)
 		{
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+			addType = urand(0,4);
+			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[3][0],SpawnLoc[3][1],SpawnLoc[3][2]);
+			if(SpawnId[addType] == 37863)
+			{
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+			}
 		}
 		if(raid25)
 		{
-			addType = urand(0,4);
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[1][0],SpawnLoc[1][1],SpawnLoc[1][2]);
-			if(SpawnId[addType] == 37863)
+			if(popRight || heroic)
 			{
-				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
-				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+				addType = urand(0,4);
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[1][0],SpawnLoc[1][1],SpawnLoc[1][2]);
+				if(SpawnId[addType] == 37863)
+				{
+					CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
+					CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+				}
 			}
-			addType = urand(0,4);
-			CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[4][0],SpawnLoc[4][1],SpawnLoc[4][2]);
-			if(SpawnId[addType] == 37863)
+			if(!popRight || heroic)
 			{
-				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
-				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+				addType = urand(0,4);
+				CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[4][0],SpawnLoc[4][1],SpawnLoc[4][2]);
+				if(SpawnId[addType] == 37863)
+				{
+					CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]+1.0f,SpawnLoc[2][1]+1.0f,SpawnLoc[2][2]);
+					CallCreature(SpawnId[addType],TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,SpawnLoc[2][0]-1.0f,SpawnLoc[2][1]-1.0f,SpawnLoc[2][2]);
+				}
 			}
 		}
+		popRight = !popRight;
 	}
 
 	void OpenPortals()
