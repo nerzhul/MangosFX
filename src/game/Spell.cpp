@@ -3663,46 +3663,6 @@ void Spell::finish(bool ok)
 					m_caster->CastCustomSpell(m_caster,63283,&efBP,&efBP,NULL,false);
 			}
 			break;
-		case SPELLFAMILY_WARLOCK:
-			// Everlasting affliction
-			if(m_spellInfo->SpellFamilyFlags & UI64LIT(0x4000000004009))
-			{
-				if(Aura* aur = sClassSpellHandler.GetAuraByName(m_caster,WARLOCK_EVERLASTING_AFFLICTION))
-				{
-					uint32 chance = 0;
-					switch(aur->GetId())
-					{
-						case 47201:
-							chance = 20;
-							break;
-						case 47202:
-							chance = 40;
-							break;
-						case 47203:
-							chance = 60;
-							break;
-						case 47204:
-							chance = 80;
-							break;
-						case 47205:
-							chance = 100;
-							break;
-					}
-					if(urand(0,100) >= chance)
-					{
-						// Need refresh caster corruption auras on target
-						Unit::AuraMap& suAuras = getUnitTarget()->GetAuras();
-						for(Unit::AuraMap::iterator itr = suAuras.begin(); itr != suAuras.end(); ++itr)
-						{
-							SpellEntry const *spellInfo = (*itr).second->GetSpellProto();
-							if(spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK &&
-							   (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000002)) &&
-							   (*itr).second->GetCasterGUID() == m_caster->GetGUID())
-							   (*itr).second->RefreshAura();
-						}
-					}
-				}
-			}
 	 }
 	 
 	 switch(m_spellInfo->Id)
