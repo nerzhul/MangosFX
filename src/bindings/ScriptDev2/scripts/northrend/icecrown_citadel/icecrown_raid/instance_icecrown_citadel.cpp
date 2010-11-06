@@ -214,7 +214,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
-				AutoFreeze(pCreature);
 				break;
 			case 37006:
 				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());

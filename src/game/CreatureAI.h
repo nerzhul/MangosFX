@@ -252,6 +252,9 @@ class MANGOS_DLL_SPEC CreatureAI
 		bool TimeDownSucceed() { return TimedDownEnable; }
 
 
+		// Manual Move System
+		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
+
 		// Getter for extern functions
 		Creature* getMyself() { return me; }
 
@@ -278,7 +281,6 @@ class MANGOS_DLL_SPEC CreatureAI
 
 struct SelectableAI : public FactoryHolder<CreatureAI>, public Permissible<Creature>
 {
-
     SelectableAI(const char *id) : FactoryHolder<CreatureAI>(id) {}
 };
 

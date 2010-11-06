@@ -105,6 +105,9 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 
     void Reset()
     {
+		SetCombatMovement(false);
+		ActivateManualMoveSystem();
+		SetMovePhase();
 		ResetTimers();
 		necroticTarget = 0;
 		necrotic_Timer = 6000;
@@ -149,10 +152,9 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
     void JustReachedHome()
     {
         SetInstanceData(TYPE_LICHKING, FAIL);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
-		me->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
 		me->RemoveAurasDueToSpell(SPELL_INFEST);
+		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     }
 
 	void SwitchPhase()
@@ -193,6 +195,7 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 				i++;
 			}
 		}
+		return NULL;
 	}
 
     void UpdateAI(const uint32 diff)
@@ -208,17 +211,21 @@ struct MANGOS_DLL_DECL boss_iccraid_lichkingAI : public LibDevFSAI
 				{
 					if(!u->isAlive() || !u->HasAura(SPELL_NECROTIC_PLAGUE))
 					{
-						Player* plr = pInstance->GetClosestPlayer(u);
-						ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
-						necroticTarget = plr->GetGUID();
-						ModifyAuraStack(SPELL_PLAGUE_SIPHON);
+						if(Player* plr = pInstance->GetClosestPlayer(u))
+						{
+							ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
+							necroticTarget = plr->GetGUID();
+							ModifyAuraStack(SPELL_PLAGUE_SIPHON);
+						}
 					}
 				}
 				else
 				{
-					Player* plr = getPlayerTarget();
-					ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
-					necroticTarget = plr->GetGUID();
+					if(Player* plr = getPlayerTarget())
+					{
+						ModifyAuraStack(SPELL_NECROTIC_PLAGUE,1,plr);
+						necroticTarget = plr->GetGUID();
+					}
 				}
 				necrotic_Timer = 500;
 			}
@@ -341,8 +348,8 @@ struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
 
 	void StartIntroEvent()
 	{
-		if(!(pInstance->GetData(TYPE_SINDRAGOSA) == DONE))
-			return;
+		/*if(!(pInstance->GetData(TYPE_SINDRAGOSA) == DONE))
+			return;*/
 
 		IntroEvent = true;
 		EvPhase = 0;
@@ -366,14 +373,17 @@ struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
 						me->GetMotionMaster()->MovePoint(0,488.602f,-2124.82f,1040.87f);
 						// Emote stand attack for tirion
 						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
-							LichKing->GetMotionMaster()->MovePoint(0,430.38f,-2123.95f,1064.844f);
+						{
+							LichKing->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+							LichKing->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+						}
 						Ev_Timer = 3000;
 						break;
 					case 1:
 						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
 						{
 							Yell(17349,"Voici donc qu'arrive la fameuse justice de la Lumière. Dois-je déposer Deuillegivre et me jeter à tes pieds en implorant pitié, Fordring ?",LichKing);
-							LichKing->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
+							//LichKing->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
 						}
 						Ev_Timer = 3000;
 						break;
@@ -399,22 +409,24 @@ struct MANGOS_DLL_DECL icc_fordring_lkAI : public LibDevFSAI
 						{
 							Yell(17351,"Je vais te laisser en vie. Que tu sois le témoin de la fin, Fordring. Je ne voudrais pas priver le plus grand héros de la Lumière du spectacle de ce misérable monde "
 							"refaçonné à mon image",LichKing);
-							LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
 							LichKing->HandleEmoteCommand(25);
 						}
 						me->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
 						Ev_Timer = 1000;
 						break;
 					case 7:
-						DoCastMe(SPELL_FROZEN_JAIL);
+						DoCastMe(SPELL_FROZEN_JAIL,true);
+						FreezeMob();
 						Ev_Timer = 25000;
 						break;
 					default:
 						// Dont forget to break that after
 						if(Creature* LichKing = GetInstanceCreature(TYPE_LICHKING))
 						{
-							LichKing->CastSpell(LichKing,SPELL_FROSTMOURNE_WRATH,false);
-							me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_OOC_NOT_ATTACKABLE);
+							//LichKing->GetMotionMaster()->MovePoint(0,458.799f,-2124.087f,1040.88f);
+							LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+							LichKing->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
+							((boss_iccraid_lichkingAI*)LichKing->AI())->AggroAllPlayers(250.0f);
 						}
 						Ev_Timer = 10000;
 						break;

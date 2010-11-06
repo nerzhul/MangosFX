@@ -408,7 +408,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		Unit* GetRandomUnit(uint8 pos = 0) { return SelectUnit(SELECT_TARGET_RANDOM,pos); }
 
-		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
 		void SetMovePhase(bool yes = true) { CanMove = yes; }
 
 		void SetDespawnTimer(uint32 Timer) { me->ForcedDespawn(Timer); }
