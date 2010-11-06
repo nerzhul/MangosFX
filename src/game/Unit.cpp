@@ -227,6 +227,9 @@ bool GlobalCooldownMgr::HasGlobalCooldown(SpellEntry const* spellInfo) const
 
 void GlobalCooldownMgr::AddGlobalCooldown(SpellEntry const* spellInfo, uint32 gcd)
 {
+	if(gcd < 1000)
+		gcd = 1000;
+
 	m_GlobalCooldowns[spellInfo->StartRecoveryCategory] = GlobalCooldown(gcd, getMSTime());
 }
 
@@ -679,6 +682,16 @@ void Unit::DealDamageMods(Unit *pVictim, uint32 &damage, uint32* absorb)
     //Script Event damage taken
     if(pVictim->GetTypeId()== TYPEID_UNIT && ((Creature *)pVictim)->AI())
         ((Creature*)pVictim)->AI()->DamageTaken(this, damage);
+
+	if(pVictim->GetTypeId() == TYPEID_PLAYER && ((Player*)pVictim)->getClass() == CLASS_HUNTER)
+	{
+		Player* plr = (Player*)pVictim;
+		if(Pet* plrPet = plr->GetPet())
+		{
+			int32 dmg = int32(damage * 20 / 100);
+			CastCustomSpell(plrPet,67481,&dmg,0,0,true);
+		}
+	}
 
     if(absorb && originalDamage > damage)
         *absorb += (originalDamage - damage);
@@ -3339,6 +3352,22 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit *pVictim, SpellEntry const *spell)
     if (!pVictim->isAlive())
         return SPELL_MISS_NONE;
 
+	// For special magic spells (hunt explosive shot for example)
+	// explosive shot
+	if(spell->SpellFamilyFlags == SPELLFAMILY_HUNTER && spell->SpellIconID == 3407)
+	{
+		int32 attackerWeaponSkill = int32(GetWeaponSkillValue(RANGED_ATTACK,pVictim));
+		int32 skillDiff = attackerWeaponSkill - int32(pVictim->GetMaxSkillValueForLevel(this));
+		int32 fullSkillDiff = attackerWeaponSkill - int32(pVictim->GetDefenseSkillValue(this));
+
+		uint32 roll = urand (0, 10000);
+		uint32 missChance = uint32(MeleeSpellMissChance(pVictim, RANGED_ATTACK, fullSkillDiff, spell)*100.0f);
+
+		// Roll miss
+		if (roll < missChance)
+			return SPELL_MISS_MISS;
+	}
+
     SpellSchoolMask schoolMask = GetSpellSchoolMask(spell);
     // PvP - PvE spell misschances per leveldif > 2
     int32 lchance = pVictim->GetTypeId() == TYPEID_PLAYER ? 7 : 11;
@@ -4685,8 +4714,15 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
         if (Aura* dotAura = GetAura(SPELL_AURA_PERIODIC_DAMAGE,SPELLFAMILY_WARLOCK,UI64LIT(0x010000000000),0x00000000,casterGUID))
         {
             // use clean value for initial damage
-			int32 damage = dotAura->GetSpellProto()->CalculateSimpleValue(0);
-			damage *= 9;
+			int32 damage = 0;
+			switch(spellId)
+			{
+				case 30108: damage = 990;	break;
+				case 30404: damage = 1260;	break;
+				case 30405: damage = 1575;	break;
+				case 47841: damage = 1773;	break;
+				case 47843: damage = 2070;	break;
+			}
 			damage += (SpellBaseDamageBonus(SPELL_SCHOOL_MASK_SHADOW) * 1.8);
 
             // Remove spell auras from stack
@@ -6498,7 +6534,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 
 					// Little hack
                     int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (2*leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
-                    basepoints0 = damagefromticks * triggerAmount / 100;
+                    basepoints0 = 2* damagefromticks * triggerAmount / 100;
                     triggered_spell_id = 63675;
                     break;
                 }
@@ -8443,6 +8479,9 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
             // Piercing Shots
             if (auraSpellInfo->SpellIconID == 3247 && auraSpellInfo->SpellVisual[0] == 0)
             {
+				// Dispersing shot mustnt proc this
+				if(procSpell->Id == 19503)
+					return false;
                 basepoints[0] = damage * triggerAmount / 100 / 8;
                 trigger_spell_id = 63468;
                 target = pVictim;
@@ -8860,7 +8899,7 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
             // Proc only from trap activation (from periodic proc another aura of this spell). We need to recheck family flags,
             // because some spells have both flags (ON_TRAP_ACTIVATION and ON_PERIODIC), but should only proc ON_PERIODIC!!
             if (!(procFlags & PROC_FLAG_ON_TRAP_ACTIVATION) ||
-                !(procSpell->SpellFamilyFlags & 0x00000008 || procSpell->SpellFamilyFlags2 & 0x40000) || !roll_chance_i(triggerAmount))
+                !(procSpell->SpellFamilyFlags & 0x000000080 || procSpell->SpellFamilyFlags2 & 0x40000) || !roll_chance_i(triggerAmount))
                 return false;
             break;
         }
@@ -10245,7 +10284,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
         uint32 CastingTime = !IsChanneledSpell(spellProto) ? GetSpellCastTime(spellProto) : GetSpellDuration(spellProto);
         CastingTime = GetCastingTimeForBonus( spellProto, damagetype, CastingTime );
         // 50% for damage and healing spells for leech spells from damage bonus and 0% from healing
-        for(int j = 0; j < 3; ++j)
+        for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             if (spellProto->Effect[j] == SPELL_EFFECT_HEALTH_LEECH ||
                 (spellProto->Effect[j] == SPELL_EFFECT_APPLY_AURA &&
@@ -10862,7 +10901,7 @@ uint32 Unit::SpellHealingBonus(Unit *pVictim, SpellEntry const *spellProto, uint
         uint32 CastingTime = !IsChanneledSpell(spellProto) ? GetSpellCastTime(spellProto) : GetSpellDuration(spellProto);
         CastingTime = GetCastingTimeForBonus( spellProto, damagetype, CastingTime );
         // 50% for damage and healing spells for leech spells from damage bonus and 0% from healing
-        for(int j = 0; j < 3; ++j)
+        for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
             if( spellProto->Effect[j] == SPELL_EFFECT_HEALTH_LEECH ||
                 spellProto->Effect[j] == SPELL_EFFECT_APPLY_AURA && spellProto->EffectApplyAuraName[j] == SPELL_AURA_PERIODIC_LEECH )

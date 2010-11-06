@@ -6114,21 +6114,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                     unitTarget->CastSpell(unitTarget,spellID,true);
                     return;
                 }
-                // Everlasting Affliction
-                case 47422:
-                {
-                    // Need refresh caster corruption auras on target
-                    Unit::AuraMap& suAuras = unitTarget->GetAuras();
-                    for(Unit::AuraMap::iterator itr = suAuras.begin(); itr != suAuras.end(); ++itr)
-                    {
-                        SpellEntry const *spellInfo = (*itr).second->GetSpellProto();
-                        if(spellInfo->SpellFamilyName == SPELLFAMILY_WARLOCK &&
-                           (spellInfo->SpellFamilyFlags & UI64LIT(0x0000000000000002)) &&
-                           (*itr).second->GetCasterGUID()==m_caster->GetGUID())
-                           (*itr).second->RefreshAura();
-                    }
-                    return;
-                }
                 // Guarded by The Light (Paladin spell with SPELLFAMILY_WARLOCK)
                 case 63521:
                 {

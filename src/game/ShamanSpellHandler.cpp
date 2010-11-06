@@ -35,4 +35,7 @@ void ShamanSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* cast
 		if(aur)
 			DoneTotalMod *= (100.0f + aur->GetModifier()->m_amount) / 100.0f;
 	}
+
+	if(caster->HasAura(16246) && caster->HasAura(16164) && (caster->HasAura(51466) || caster->HasAura(51470)))
+		DoneTotalMod *= 1.1f;
 }

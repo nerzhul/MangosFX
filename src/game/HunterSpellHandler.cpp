@@ -74,6 +74,8 @@ void HunterSpellHandler::HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectI
     {
         int32 base = irand((int32)m_caster->GetWeaponDamageRange(RANGED_ATTACK, MINDAMAGE),(int32)m_caster->GetWeaponDamageRange(RANGED_ATTACK, MAXDAMAGE));
         damage += int32(float(base)/m_caster->GetAttackTime(RANGED_ATTACK)*2800 + m_caster->GetTotalAttackPowerValue(RANGED_ATTACK)*0.1f);
+		if(m_caster->GetTypeId() == TYPEID_PLAYER)
+			damage += ((Player*)m_caster)->GetAmmoDPS() * ((Player*)m_caster)->GetAPMultiplier(RANGED_ATTACK,true);
 		// Steady Shot glyph
 		if(m_caster->HasAura(56826) && (spell->getUnitTarget()->HasAura(49001) || spell->getUnitTarget()->HasAura(49000)  || spell->getUnitTarget()->HasAura(27016)))
 			damage *= 1.1f;

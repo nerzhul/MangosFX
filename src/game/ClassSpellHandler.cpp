@@ -278,6 +278,7 @@ AuraCarac caracTab[MAX_AURA_NAMES] =
 	{SPELL_AURA_PERIODIC_DAMAGE,	SPELLFAMILY_PRIEST,			UI64LIT(0x0000000008000),0},
 	{SPELL_AURA_PERIODIC_DAMAGE,	SPELLFAMILY_DRUID,			UI64LIT(0x0000000200000),0},
 	{SPELL_AURA_PERIODIC_DAMAGE,	SPELLFAMILY_ROGUE,			UI64LIT(0x8000000010000),0},
+	{SPELL_AURA_ADD_FLAT_MODIFIER,	SPELLFAMILY_WARLOCK,		UI64LIT(0x0000000000000),0},
 };
 
 Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
@@ -312,6 +313,10 @@ Aura* ClassSpellHandler::GetSpecialAura(Unit* u, AuraName aName)
 				break;
 			case DK_IMPURITY:
 				if((*i)->GetSpellProto()->SpellIconID == 1986)
+					return (*i);
+				break;
+			case WARLOCK_EVERLASTING_AFFLICTION:
+				if((*i)->GetSpellProto()->SpellIconID == 3169)
 					return (*i);
 				break;
 		}

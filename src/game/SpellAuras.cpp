@@ -2873,8 +2873,8 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 return;
 
             int32 basepoints = GetSpellProto()->EffectBasePoints[1] * 9;
-            basepoints = caster->SpellDamageBonus(m_target, GetSpellProto(), basepoints, DOT);
 			basepoints += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 1.2;
+			basepoints = caster->SpellDamageBonus(m_target, GetSpellProto(), basepoints, DOT);
             m_target->CastCustomSpell(m_target, 64085, &basepoints, NULL, NULL, false);
             return;
         }
@@ -8209,7 +8209,13 @@ void Aura::PeriodicTick()
             if(Player *modOwner = pCaster->GetSpellModOwner())
                 modOwner->ApplySpellMod(GetId(), SPELLMOD_MULTIPLE_VALUE, multiplier);
 
-            int32 heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());
+            int32 heal = 0;
+			
+			// Life drain must'nt use Heal bonus
+			if(GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x08))
+				heal = new_damage * multiplier;
+			else
+				heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());
 
             int32 gain = pCaster->DealHeal(pCaster, heal, GetSpellProto());
             pCaster->getHostileRefManager().threatAssist(pCaster, gain * 0.5f, GetSpellProto());
