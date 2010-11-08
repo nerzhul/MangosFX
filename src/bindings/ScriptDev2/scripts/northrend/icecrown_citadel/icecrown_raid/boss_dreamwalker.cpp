@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_dreamwalkerAI : public LibDevFSAI
 
 	void LaunchEvent()
 	{
-		if(pInstance && pInstance->GetData(TYPE_DREAMWALKER) == DONE)
+		if(pInstance && (pInstance->GetData(TYPE_DREAMWALKER) == DONE || pInstance->GetData(TYPE_DREAMWALKER) == IN_PROGRESS))
 			return;
 
 		eventStarted = true;

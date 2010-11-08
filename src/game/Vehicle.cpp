@@ -1,5 +1,4 @@
-/*
- * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
+/* Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -312,6 +311,7 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
         if(minion)
             accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
         accessory->EnterVehicle(this, seatId);
+		accessory->setFaction(me->getFaction());
 
 		if(accessory->isVehicle())
 			accessory->BuildVehicleInfo(accessory);
