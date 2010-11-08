@@ -335,13 +335,4 @@ void DeathknightSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit*
 		if(Aura* aur = sClassSpellHandler.GetAuraByName(caster,DK_IMPURITY))
 			DoneTotal += int32(aur->GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_0) * caster->GetTotalAttackPowerValue(BASE_ATTACK) / 100.0f);
 	}
-
-	switch(spellProto->Id)
-	{
-		// Glyph of Unholy Blight
-		case 50536:
-			if (Aura *glyphAura = caster->GetDummyAura(63332))
-				DoneTotalMod *= (glyphAura->GetModifier()->m_amount + 100.0f)/ 100.0f;
-			break;
-	}
 }

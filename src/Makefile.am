@@ -19,7 +19,8 @@
 ## Sub-directories to parse
 SUBDIRS = tools framework shared realmd game bindings mangosd 
 SUBDIRS += Cluster-Loots 
-SUBDIRS += Cluster-Basic
+#SUBDIRS += Cluster-BG 
+##SUBDIRS += Cluster-Basic
 #SUBDIRS += Cluster-Quests
 
 ## Additional files to include when running 'make dist'

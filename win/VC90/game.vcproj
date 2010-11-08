@@ -1837,20 +1837,16 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="CORBA"
+			Name="Cluster"
 			>
 			<File
-				RelativePath="..\..\src\game\CORBAThread.cpp"
+				RelativePath="..\..\src\game\cClusterMgr.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\CORBAThread.h"
+				RelativePath="..\..\src\game\cClusterMgr.h"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="ClusterSockets"
-			>
 			<File
 				RelativePath="..\..\src\game\cClusterSession.cpp"
 				>
@@ -1863,26 +1859,34 @@
 				RelativePath="..\..\src\game\cIncludes.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\src\game\cPacketOpcodes.h"
+			<Filter
+				Name="Sockets"
 				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.h"
-				>
-			</File>
+				<File
+					RelativePath="..\..\src\game\cOpcodeHandler.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cPacketOpcodes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketTCP.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketTCP.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketUDP.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\cSocketUDP.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<File
 			RelativePath="..\..\src\game\pchdef.cpp"

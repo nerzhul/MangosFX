@@ -7832,7 +7832,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 				// Glyph of Unholy Blight
 				if (Aura *aura = GetDummyAura(63332))
 					basepoints0 += basepoints0 * aura->GetModifier()->m_amount / 100;
-				
+
 				// Split between 10 ticks
 				basepoints0 /= 10;
 				triggered_spell_id = 50536;
