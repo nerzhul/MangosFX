@@ -265,6 +265,9 @@ BattleGround::BattleGround()
     m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
     m_TeamScores[BG_TEAM_HORDE]         = 0;
 
+	ArenaPlayerEnter[BG_TEAM_ALLIANCE]	= false;
+	ArenaPlayerEnter[BG_TEAM_HORDE]		= false;
+
     m_PrematureCountDown = false;
 	m_TimerArenaDone = false;
     m_PrematureCountDown = 0;
@@ -775,7 +778,7 @@ void BattleGround::UpdateWorldStateForPlayer(uint32 Field, uint32 Value, Player 
 
 void BattleGround::EndBattleGround(uint32 winner)
 {
-    this->RemoveFromBGFreeSlotQueue();
+    RemoveFromBGFreeSlotQueue();
 
     ArenaTeam * winner_arena_team = NULL;
     ArenaTeam * loser_arena_team = NULL;
@@ -810,11 +813,11 @@ void BattleGround::EndBattleGround(uint32 winner)
     m_EndTime = TIME_TO_AUTOREMOVE;
 
     // arena rating calculation
-    if (isArena() && isRated() && winner)
+	if (isArena() && isRated() && winner)
     {
         winner_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(winner));
         loser_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(winner)));
-        if (winner_arena_team && loser_arena_team)
+        if (winner_arena_team && loser_arena_team && ArenaPlayerEnter[BG_TEAM_ALLIANCE] == true && ArenaPlayerEnter[BG_TEAM_HORDE] == true)
         {
             loser_rating = loser_arena_team->GetStats().rating;
             winner_rating = winner_arena_team->GetStats().rating;
@@ -1354,6 +1357,7 @@ void BattleGround::AddPlayer(Player *plr)
         plr->RemoveAllEnchantments(TEMP_ENCHANTMENT_SLOT);
         if(team == ALLIANCE)                                // gold
         {
+			ArenaPlayerEnter[BG_TEAM_ALLIANCE] = true;
             if (plr->GetTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GOLD_FLAG,true);
             else
@@ -1361,6 +1365,7 @@ void BattleGround::AddPlayer(Player *plr)
         }
         else                                                // green
         {
+			ArenaPlayerEnter[BG_TEAM_HORDE] = true;
             if (plr->GetTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GREEN_FLAG,true);
             else

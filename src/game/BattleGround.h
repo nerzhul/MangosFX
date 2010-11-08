@@ -667,6 +667,7 @@ class BattleGround
         float m_TeamStartLocO[BG_TEAMS_COUNT];
 
 		bool m_RandomBG;
+		bool ArenaPlayerEnter[BG_TEAMS_COUNT];
 };
 
 // helper functions for world state list fill

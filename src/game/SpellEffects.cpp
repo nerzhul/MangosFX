@@ -1379,6 +1379,34 @@ void Spell::EffectDummy(uint32 i)
                     m_caster->CastSpell(m_caster, 54586, true);
                     return;
                 }
+				case 53475:                                 // Set Oracle Faction Friendly
+				case 53487:                                 // Set Wolvar Faction Honored
+				case 54015:                                 // Set Oracle Faction Honored
+				{
+					if (m_caster->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					switch(i)
+					{
+						case EFFECT_INDEX_0:
+						{
+							Player* pPlayer = (Player*)m_caster;
+							uint32 faction_id = m_currentBasePoints[i];
+							int32  rep_change = m_currentBasePoints[EFFECT_INDEX_1];
+							FactionEntry const* factionEntry = sFactionStore.LookupEntry(faction_id);
+							if (!factionEntry)
+								return;
+							
+							// set rep to baserep + basepoints (expecting spillover for oposite faction -> become hated)
+							pPlayer->GetReputationMgr().SetReputation(factionEntry, rep_change);
+							break;
+						}
+						case EFFECT_INDEX_2:
+							// unclear what this effect is for.
+							break;
+					}
+					return;
+				}
 				case 54171:                                 // Divine Storm
                 {
                     // split between targets
