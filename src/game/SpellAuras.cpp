@@ -2619,6 +2619,35 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 						if(Unit* altTarget = tot->m_targets.getUnitTarget())
 							m_modifier.m_miscvalue = altTarget->GetGUID();
 				}
+				// Honor Among Thieves
+                else if (GetId() == 52916)
+                {
+                    if (!m_target || m_target->HasAura(51699, EFFECT_INDEX_1) || m_target->GetTypeId() != TYPEID_PLAYER || m_target->getClass() != CLASS_ROGUE)
+                        return;
+
+                    Unit::AuraList const &aury = m_target->GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
+                    for (Unit::AuraList::const_iterator i = aury.begin(); i != aury.end(); i++)
+                    {
+                        SpellEntry const *spellInfo = (*i)->GetSpellProto();
+
+                        if (!spellInfo)
+                            continue;
+
+                        if (spellInfo->EffectTriggerSpell[0] == 52916)
+                        {
+                            if (roll_chance_i(spellInfo->CalculateSimpleValue(EFFECT_INDEX_0)) )
+                            {
+                                Unit *pVictim = ObjectAccessor::GetUnit(*m_target,((Player*)m_target)->GetComboTarget());
+                                if (!pVictim)
+                                    pVictim = m_target->getVictim();
+
+                                if (pVictim)
+                                    m_target->CastSpell(pVictim, 51699, true );
+                                return;
+                            }
+                        }
+                    }
+                }
 				break;
 			}
             case SPELLFAMILY_WARRIOR:
