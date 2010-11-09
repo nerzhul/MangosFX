@@ -93,10 +93,6 @@ bool Group::Create(const uint64 &guid, const char * name)
     m_leaderGuid = guid;
     m_leaderName = name;
 
-	uint32 lowguid = sObjectMgr.GenerateLowGuid(HIGHGUID_GROUP);
-	m_guid = MAKE_NEW_GUID(lowguid, 0, HIGHGUID_GROUP); //Merging
-
-
     m_groupType  = isBGGroup() ? GROUPTYPE_BGRAID : GROUPTYPE_NORMAL;
 
     if (m_groupType & GROUPTYPE_RAID)
@@ -1793,6 +1789,6 @@ void Group::ConvertToLFG()
     m_groupType = GroupType(m_groupType | GROUPTYPE_LFD | GROUPTYPE_RANDOM);
     m_lootMethod = NEED_BEFORE_GREED;
     if (!isBGGroup())
-        CharacterDatabase.PExecute("UPDATE groups SET groupType='%u' WHERE groupId='%u'", uint8(m_groupType), GUID_LOPART(m_guid));
+        CharacterDatabase.PExecute("UPDATE groups SET groupType='%u' WHERE groupId='%u'", uint8(m_groupType), m_Id);
     SendUpdate();
 }
