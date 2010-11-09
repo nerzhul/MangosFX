@@ -350,6 +350,7 @@ void LFGMgr::Update(uint32 diff)
     LfgGuidList firstNew;
     while (!m_newToQueue.empty())
     {
+		error_log("TEST1");
         sLog.outDebug("LFGMgr::Update: checking [" UI64FMTD "] m_newToQueue(%u), m_currentQueue(%u)", m_newToQueue.front(), uint32(m_newToQueue.size()), uint32(m_currentQueue.size()));
         firstNew.push_back(m_newToQueue.front());
         pProposal = FindNewGroups(firstNew, m_currentQueue);
@@ -709,6 +710,7 @@ void LFGMgr::Leave(Player* plr, Group* grp /* = NULL*/)
     LfgProposalMap::iterator it = m_Proposals.begin();
     while (it != m_Proposals.end() && !proposalFound)
     {
+		error_log("TEST2");
         // Mark the player/leader of group who left as didn't accept the proposal
         for (LfgProposalPlayerMap::iterator itPlayer = it->second->players.begin(); itPlayer != it->second->players.end(); ++itPlayer)
         {
@@ -780,6 +782,7 @@ LfgProposal* LFGMgr::FindNewGroups(LfgGuidList check, LfgGuidList all)
     // Try to match with queued groups
     while (!pProposal && all.size() > 0)
     {
+		error_log("TEST3");
         check.push_back(all.front());        
         all.pop_front();
         pProposal = FindNewGroups(check, all);
@@ -2250,6 +2253,7 @@ std::string LFGMgr::ConcatenateGuids(LfgGuidList check)
     LfgGuidSet guidSet;
     while (!check.empty())
     {
+		error_log("TEST4");
         guidSet.insert(check.front());
         check.pop_front();
     }
