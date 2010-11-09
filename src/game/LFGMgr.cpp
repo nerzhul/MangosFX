@@ -709,7 +709,6 @@ void LFGMgr::Leave(Player* plr, Group* grp /* = NULL*/)
     LfgProposalMap::iterator it = m_Proposals.begin();
     while (it != m_Proposals.end() && !proposalFound)
     {
-		error_log("TEST2");
         // Mark the player/leader of group who left as didn't accept the proposal
         for (LfgProposalPlayerMap::iterator itPlayer = it->second->players.begin(); itPlayer != it->second->players.end(); ++itPlayer)
         {
@@ -781,7 +780,6 @@ LfgProposal* LFGMgr::FindNewGroups(LfgGuidList check, LfgGuidList all)
     // Try to match with queued groups
     while (!pProposal && all.size() > 0)
     {
-		error_log("TEST3");
         check.push_back(all.front());        
         all.pop_front();
         pProposal = FindNewGroups(check, all);
@@ -2252,7 +2250,6 @@ std::string LFGMgr::ConcatenateGuids(LfgGuidList check)
     LfgGuidSet guidSet;
     while (!check.empty())
     {
-		error_log("TEST4");
         guidSet.insert(check.front());
         check.pop_front();
     }

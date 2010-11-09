@@ -1010,9 +1010,9 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-		/*	if(IsRandomInstanceGroup())
+			if(IsRandomInstanceGroup())
 				data << uint8(member->GetLfgRoles());	// 3.3, role? 
-			else */ //Merging
+			else
 				data << uint8(0);
         }
 
