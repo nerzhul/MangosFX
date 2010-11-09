@@ -48,6 +48,7 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
+	m_guid              = 0; //Merging
 	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
@@ -91,6 +92,10 @@ bool Group::Create(const uint64 &guid, const char * name)
 {
     m_leaderGuid = guid;
     m_leaderName = name;
+
+	uint32 lowguid = sObjectMgr.GenerateLowGuid(HIGHGUID_GROUP);
+	m_guid = MAKE_NEW_GUID(lowguid, 0, HIGHGUID_GROUP); //Merging
+
 
     m_groupType  = isBGGroup() ? GROUPTYPE_BGRAID : GROUPTYPE_NORMAL;
 
@@ -1009,9 +1014,9 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-			if(IsRandomInstanceGroup())
-				data << uint8(member->m_lookingForGroup.roles);	// 3.3, role? 
-			else
+		/*	if(IsRandomInstanceGroup())
+				data << uint8(member->GetLfgRoles());	// 3.3, role? 
+			else */ //Merging
 				data << uint8(0);
         }
 
@@ -1766,6 +1771,7 @@ void Group::UnbindInstance(uint32 mapid, uint8 difficulty, bool unload)
     }
 }
 
+//Merging
 void Group::_homebindIfInstance(Player *player)
 {
     if (player && !player->isGameMaster())
@@ -1780,4 +1786,13 @@ void Group::_homebindIfInstance(Player *player)
                 player->m_InstanceValid = false;
         }
     }
+}
+
+void Group::ConvertToLFG()
+{
+    m_groupType = GroupType(m_groupType | GROUPTYPE_LFD | GROUPTYPE_RANDOM);
+    m_lootMethod = NEED_BEFORE_GREED;
+    if (!isBGGroup())
+        CharacterDatabase.PExecute("UPDATE groups SET groupType='%u' WHERE groupId='%u'", uint8(m_groupType), GUID_LOPART(m_guid));
+    SendUpdate();
 }

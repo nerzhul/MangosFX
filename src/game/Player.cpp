@@ -23061,3 +23061,13 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 		}
 	}
 }
+
+// Merging
+
+void Player::CleanUpAfterTaxiFlight()
+{
+    m_taxi.ClearTaxiDestinations();        // not destinations, clear source node
+    Unmount();
+    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_TAXI_FLIGHT);
+    getHostileRefManager().setOnlineOfflineState(true);
+}

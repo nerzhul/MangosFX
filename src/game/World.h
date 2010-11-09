@@ -229,7 +229,9 @@ enum WorldConfigs
     CONFIG_TIMERBAR_BREATH_MAX,
     CONFIG_TIMERBAR_FIRE_GMLEVEL,
     CONFIG_TIMERBAR_FIRE_MAX,
-    CONFIG_VALUE_COUNT
+	CONFIG_DUNGEON_FINDER,
+    CONFIG_VALUE_COUNT,
+	
 };
 
 /// Server rates
@@ -524,7 +526,7 @@ class World
                 return 0;
         }
 
-        /// Are we on a "Player versus Player" server?
+		/// Are we on a "Player versus Player" server?
         bool IsPvPRealm() { return (getConfig(CONFIG_GAME_TYPE) == REALM_TYPE_PVP || getConfig(CONFIG_GAME_TYPE) == REALM_TYPE_RPPVP || getConfig(CONFIG_GAME_TYPE) == REALM_TYPE_FFA_PVP); }
         bool IsFFAPvPRealm() { return getConfig(CONFIG_GAME_TYPE) == REALM_TYPE_FFA_PVP; }
 

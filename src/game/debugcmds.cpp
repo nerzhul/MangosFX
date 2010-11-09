@@ -928,7 +928,7 @@ bool ChatHandler::HandleSetWorldVar(const char *args)
 
 bool ChatHandler::HandleTestPacketCommand(const char *args)
 {
-	char* arg1 = strtok((char*)args, " ");
+/*	char* arg1 = strtok((char*)args, " ");
     char* arg2 = strtok(NULL, " ");
     char* arg3 = strtok(NULL, " ");
     char* arg4 = strtok(NULL, " ");
@@ -990,7 +990,7 @@ bool ChatHandler::HandleTestPacketCommand(const char *args)
 			m_session->SendPacket(&data);
 		}
 
-	}
+	} */
 	return true;
 }
 

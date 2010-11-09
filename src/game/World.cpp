@@ -656,7 +656,7 @@ void World::LoadConfigSettings(bool reload)
     m_configs[CONFIG_STRICT_CHARTER_NAMES]               = sConfig.GetIntDefault ("StrictCharterNames", 0);
     m_configs[CONFIG_STRICT_PET_NAMES]                   = sConfig.GetIntDefault ("StrictPetNames",     0);
 
-    m_configs[CONFIG_MIN_PLAYER_NAME]                    = sConfig.GetIntDefault ("MinPlayerName",  2);
+	m_configs[CONFIG_MIN_PLAYER_NAME]                    = sConfig.GetIntDefault ("MinPlayerName",  2);
     if(m_configs[CONFIG_MIN_PLAYER_NAME] < 1 || m_configs[CONFIG_MIN_PLAYER_NAME] > MAX_PLAYER_NAME)
     {
         sLog.outError("MinPlayerName (%i) must be in range 1..%u. Set to 2.",m_configs[CONFIG_MIN_PLAYER_NAME],MAX_PLAYER_NAME);
@@ -1101,6 +1101,9 @@ void World::LoadConfigSettings(bool reload)
         sLog.outError("Visibility.Distance.InFlight can't be greater %f",MAX_VISIBILITY_DISTANCE-m_VisibleObjectGreyDistance);
         m_MaxVisibleDistanceInFlight = MAX_VISIBILITY_DISTANCE - m_VisibleObjectGreyDistance;
     }
+	
+	// Dungeon finder
+    m_configs[CONFIG_DUNGEON_FINDER] = sConfig.GetIntDefault ("Dungeon_Finder",     0); // Merging
 
     ///- Read the "Data" directory from the config file
     std::string dataPath = sConfig.GetStringDefault("DataDir","./");
@@ -1534,7 +1537,9 @@ void World::SetInitialWorldSettings()
 
 	///- Initialize Looking For Group
  	sLog.outString("Starting Looking For Group System");
-	sLFGMgr.InitLFG();
+//	sLFGMgr.InitLFG(); // Merging
+	sLFGMgr.LoadDungeonEncounters();
+	sLFGMgr.LoadRewards();
 
     ///- Initialize Battlegrounds
     sLog.outString( "Starting BattleGround System" );

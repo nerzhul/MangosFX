@@ -304,10 +304,12 @@ void WorldSession::LogoutPlayer(bool Save)
 
     if (_player)
     {
+		sLFGMgr.Leave(_player); // Merging
+	
 		sTicketMgr.Delete(_player->GetGUID());
 		/*if(_player->m_lookingForGroup.group)
 			_player->m_lookingForGroup.group->RemovePlayer(_player->GetGUID());*/
-			
+		
         if (uint64 lguid = GetPlayer()->GetLootGUID())
             DoLootRelease(lguid);
 
@@ -450,8 +452,8 @@ void WorldSession::LogoutPlayer(bool Save)
         ///- Broadcast a logout message to the player's friends
         sSocialMgr.SendFriendStatus(_player, FRIEND_OFFLINE, _player->GetGUIDLow(), true);
         sSocialMgr.RemovePlayerSocial (_player->GetGUIDLow ());
-
-        ///- Remove the player from the world
+		
+		///- Remove the player from the world
         // the player may not be in the world when logging out
         // e.g if he got disconnected during a transfer to another map
         // calls to GetMap in this case may cause crashes

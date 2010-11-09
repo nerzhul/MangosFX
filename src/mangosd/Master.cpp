@@ -41,10 +41,10 @@
 #include "ScriptCalls.h"
 #include "MaNGOSsoap.h"
 
-#include <CORBAThread.h>
-#include <cSocketTCP.h>
-#include <cClusterSession.h>
-#include <SFML/Network.hpp>
+/* #include <CORBAThread.h> */
+/* #include <cSocketTCP.h> */
+/* #include <cClusterSession.h> */
+/* #include <SFML/Network.hpp> */
 
 #include "revision_sql.h"
 
@@ -230,8 +230,8 @@ int Master::Run()
     _HookSignals();
 
 	///- Launch CORBA thread
-    ACE_Based::Thread corba_thread(new CORBAThread);
-    corba_thread.setPriority(ACE_Based::Highest);
+//    ACE_Based::Thread corba_thread(new CORBAThread);
+//    corba_thread.setPriority(ACE_Based::Highest);
 
     ///- Launch WorldRunnable thread
     ACE_Based::Thread world_thread(new WorldRunnable);
@@ -379,8 +379,8 @@ int Master::Run()
     }
 
 	// Stop CORBA Thread
-	CORBAThread::StopNOW();
-	corba_thread.wait();
+	//CORBAThread::StopNOW();
+	//corba_thread.wait();
 
     ///- Clean account database before leaving
     clearOnlineAccounts();

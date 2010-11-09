@@ -45,6 +45,7 @@
 #include "Util.h"
 #include "WaypointManager.h"
 #include "GossipDef.h"
+#include "ObjectAccessor.h"
 
 INSTANTIATE_SINGLETON_1(ObjectMgr);
 
@@ -8880,4 +8881,19 @@ uint32 ObjectMgr::AddCreData(uint32 entry, uint32 team, uint32 mapId, float x, f
     }
 
     return guid;
+}
+
+Group * ObjectMgr::GetGroupByGUID(uint32 guid) const // Merging
+{
+    for (GroupSet::const_iterator itr = mGroupSet.begin(); itr != mGroupSet.end(); ++itr)
+        if ((*itr)->GetLowGUID() == guid)
+            return *itr;
+
+    return NULL;
+}
+
+Player* ObjectMgr::GetPlayerByLowGUID(uint32 lowguid) const
+{
+    uint64 guid = MAKE_NEW_GUID(lowguid, 0, HIGHGUID_PLAYER);
+    return ObjectAccessor::FindPlayer(guid);
 }
