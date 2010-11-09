@@ -104,6 +104,7 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 	{
 		DoScriptText(SAY_DEATH, me);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
 	}
 
 	void UpdateAI(const uint32 diff)

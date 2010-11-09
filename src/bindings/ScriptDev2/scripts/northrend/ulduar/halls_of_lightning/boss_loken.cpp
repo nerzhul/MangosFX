@@ -130,6 +130,8 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
 
         if (m_pInstance)
             m_pInstance->SetData(TYPE_LOKEN, DONE);
+		GiveRandomReward();
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

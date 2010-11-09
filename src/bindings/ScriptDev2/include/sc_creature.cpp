@@ -794,6 +794,17 @@ void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
 					GiveEmblems(type,pPlayer,nb, group5);
 }
 
+void ScriptedAI::GiveRandomReward()
+{
+    Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+	if (!lPlayers.isEmpty())
+		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+				if(pPlayer->GetDistance2d(me) < 120.0f)
+					if(GetLFGDungeon())
+						pPlayer->RewardMeLFG(GetLFGDungeon());
+}
+
 void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
 {
 	ItemPosCountVec dest;
@@ -817,7 +828,6 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 						//pPlayer->GetAchievementMgr().SetLootedItem(43228,4);
 					}
 	}
-	//pPlayer->RewardMeLFG(0);
 }
 
 void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)

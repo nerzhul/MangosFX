@@ -194,6 +194,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
         if (pInstance)
             pInstance->SetData(DATA_THARON_JA_EVENT, DONE);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 };
 

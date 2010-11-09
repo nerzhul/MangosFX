@@ -85,6 +85,7 @@ struct MANGOS_DLL_DECL boss_anubarakAI : public LibDevFSAI
     {
         DoScriptText(SAY_DEATH, me);
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 
     void UpdateAI(const uint32 diff)

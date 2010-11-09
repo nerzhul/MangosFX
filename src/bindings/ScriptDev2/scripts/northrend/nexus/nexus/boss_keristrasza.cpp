@@ -65,6 +65,7 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 
     void KilledUnit(Unit* pVictim)

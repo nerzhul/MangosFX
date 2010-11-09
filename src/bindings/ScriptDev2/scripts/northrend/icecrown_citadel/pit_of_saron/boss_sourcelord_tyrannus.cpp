@@ -132,6 +132,7 @@ struct MANGOS_DLL_DECL boss_tyrannusAI : public LibDevFSAI
 		if(Creature* Rimefang = GetInstanceCreature(DATA_RIMEFANG))
 			Rimefang->ForcedDespawn();
 		GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
+		GiveRandomReward();
 		Speak(CHAT_TYPE_SAY,16763,"Impossible... Frigecroc... avertis...");
     }
 

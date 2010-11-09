@@ -225,7 +225,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
         {
             pInstance->SetData(DATA_DEVOURER_EVENT, DONE);
 
-
+			GiveRandomReward();
             /*if (bThreeFaceAchievement && m_difficulty)
                 pInstance->DoCompleteAchievement(ACHIEV_THREE_FACED);*/
 

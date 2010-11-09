@@ -106,7 +106,8 @@ struct MANGOS_DLL_DECL boss_eregosAI : public ScriptedAI
     {
         if (pInstance)
             pInstance->SetData(DATA_EREGOS_EVENT, DONE);
-//		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		//GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 };
 
