@@ -350,7 +350,6 @@ void LFGMgr::Update(uint32 diff)
     LfgGuidList firstNew;
     while (!m_newToQueue.empty())
     {
-		error_log("TEST1");
         sLog.outDebug("LFGMgr::Update: checking [" UI64FMTD "] m_newToQueue(%u), m_currentQueue(%u)", m_newToQueue.front(), uint32(m_newToQueue.size()), uint32(m_currentQueue.size()));
         firstNew.push_back(m_newToQueue.front());
         pProposal = FindNewGroups(firstNew, m_currentQueue);

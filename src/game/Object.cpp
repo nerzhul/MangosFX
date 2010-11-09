@@ -1181,6 +1181,8 @@ void WorldObject::GetZoneAndAreaId(uint32& zoneid, uint32& areaid) const
 InstanceData* WorldObject::GetInstanceData() const
 {
     Map *map = GetMap();
+	if(!map) return NULL;
+
     return map->IsDungeon() ? ((InstanceMap*)map)->GetInstanceData() : NULL;
 }
 
