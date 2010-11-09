@@ -15604,7 +15604,7 @@ void Unit::SetAuraStack(uint32 spellId, Unit *target, uint32 stack)
 {
 	target->RemoveAurasDueToSpell(spellId);
 	for(int k=0;k<stack;k++)
-		for(int i=0;i<3;i++)
+		for(int i=0;i<MAX_EFFECT_INDEX;i++)
 		{
 			Aura* aur = Aura::CreateBugAura(GetSpellStore()->LookupEntry(spellId),i,NULL,target,target);
 			target->AddAura(aur);

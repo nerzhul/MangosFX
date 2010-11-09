@@ -19,7 +19,6 @@
 #include "SharedDefines.h"
 #include "../shared/Database/QueryResult.h" //Merging
 
-//#include "DisableMgr.h"
 #include "ObjectMgr.h"
 #include "ProgressBar.h"
 #include "SocialMgr.h"
@@ -28,6 +27,8 @@
 #include "Group.h"
 #include "Player.h"
 #include "World.h"
+
+#include "InstanceData.h"
 
 // --- Temporal functions
 // Added to try to find bugs that leaves data inconsistent
@@ -1567,7 +1568,7 @@ void LFGMgr::UpdateProposal(uint32 proposalId, uint32 lowGuid, bool accept)
         // Set the dungeon difficulty
         LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(pProposal->dungeonId);
         ASSERT(dungeon);
-        grp->SetDungeonDifficulty(Difficulty(dungeon->heroic)); //Merging
+        grp->SetDungeonDifficulty(Difficulty(dungeon->heroic));
         grp->SetLfgDungeonEntry(dungeon->Entry());
         grp->SetLfgStatus(LFG_STATUS_NOT_SAVED);
 
@@ -1864,7 +1865,10 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
 
                 if (plr->TeleportTo(mapid, x, y, z, orientation))
 				{
-//                    plr->RemoveAurasByType(SPELL_AURA_MOUNTED); // Merging
+					plr->SetAuraStack(LFG_SPELL_LUCK_OF_THE_DRAW,plr,1);
+                    plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
+					if(InstanceData* iData = plr->GetInstanceData())
+						iData->SetRandomDungeon(true);
 				}
                 else
                 {

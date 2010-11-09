@@ -33,10 +33,14 @@ class MANGOS_DLL_SPEC InstanceData
 {
     public:
 
-        explicit InstanceData(Map *map) : instance(map) {}
+        explicit InstanceData(Map *map) : instance(map),randomDungeon(false) {}
         virtual ~InstanceData() {}
 
         Map *instance;
+		bool randomDungeon;
+
+		void SetRandomDungeon(bool random = true) { randomDungeon = random; }
+		bool IsRandomDungeon() { return randomDungeon; }
 
         //On creation, NOT load.
         virtual void Initialize() {}
