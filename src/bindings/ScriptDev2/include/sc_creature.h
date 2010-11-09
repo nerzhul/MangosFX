@@ -219,6 +219,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void Say(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_SAY, soundid, text, spkCr); }
 	void BossEmote(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_BOSS_EMOTE, soundid, text, spkCr); }
 	Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
+	bool IsInRandomDungeon() { return pInstance ? pInstance->IsRandomDungeon() : false; }
 	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 	void InitInstance() 
