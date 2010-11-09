@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SharedDefines.h"
-#include "../shared/Database/QueryResult.h" //Merging
 
 #include "ObjectMgr.h"
 #include "ProgressBar.h"
