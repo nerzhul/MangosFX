@@ -10,7 +10,6 @@
 #include "sc_gossip.h"
 #include "sc_grid_searchers.h"
 #include "sc_instance.h"
-#include <SFML/Network.hpp>
 
 #ifdef WIN32
 #include <windows.h>

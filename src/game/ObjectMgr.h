@@ -421,15 +421,19 @@ class ObjectMgr
 
         typedef UNORDERED_MAP<uint32, uint32> AreaTriggerScriptMap;
 
+		typedef UNORDERED_MAP<uint32, AccessRequirement> AccessRequirementMap;//Merging
+
         typedef UNORDERED_MAP<uint32, ReputationOnKillEntry> RepOnKillMap;
         typedef UNORDERED_MAP<uint32, PointOfInterest> PointOfInterestMap;
 
         typedef UNORDERED_MAP<uint32, WeatherZoneChances> WeatherZoneMap;
 
+		typedef std::set<Group *> GroupSet; // Merging
         typedef std::vector<std::string> ScriptNameMap;
 
         Player* GetPlayer(const char* name) const { return ObjectAccessor::FindPlayerByName(name);}
         Player* GetPlayer(uint64 guid) const { return ObjectAccessor::FindPlayer(guid); }
+		Player* GetPlayerByLowGUID(uint32 lowguid) const; //Merging
 
         static GameObjectInfo const *GetGameObjectInfo(uint32 id) { return sGOStorage.LookupEntry<GameObjectInfo>(id); }
 
@@ -441,6 +445,8 @@ class ObjectMgr
         void AddGroup(Group* group);
         void RemoveGroup(Group* group);
 
+		Group * GetGroupByGUID(uint32 guid) const; //Merging
+		
         Guild* GetGuildByLeader(uint64 const&guid) const;
         Guild* GetGuildById(uint32 GuildId) const;
         Guild* GetGuildByName(const std::string& guildname) const;
@@ -549,6 +555,14 @@ class ObjectMgr
                 return &itr->second;
             return NULL;
         }
+
+		AccessRequirement const* GetAccessRequirement(uint32 mapid, Difficulty difficulty) const // Merging
+        {
+            AccessRequirementMap::const_iterator itr = mAccessRequirements.find(MAKE_PAIR32(mapid,difficulty));
+            if (itr != mAccessRequirements.end())
+                return &itr->second;
+            return NULL;
+        } //End Merging
 
         AreaTrigger const* GetGoBackTrigger(uint32 Map) const;
         AreaTrigger const* GetMapEntranceTrigger(uint32 Map) const;
@@ -966,9 +980,11 @@ class ObjectMgr
         typedef std::set<uint32> TavernAreaTriggerSet;
         typedef std::set<uint32> GameObjectForQuestSet;
 
+		GroupSet			mGroupSet; // Merging
         GroupMap            mGroupMap;
         GuildMap            mGuildMap;
         ArenaTeamMap        mArenaTeamMap;
+		AccessRequirementMap  mAccessRequirements; // Merging
 
         ItemTextMap         mItemTexts;
 

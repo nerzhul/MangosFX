@@ -43,6 +43,13 @@ class LoginQueryHolder;
 class CharacterHandler;
 class GMTicket;
 
+class Quest;
+struct LfgLockStatus;
+struct LfgPlayerBoot;
+struct LfgProposal;
+struct LfgReward;
+struct LfgRoleCheck; 
+
 struct OpcodeHandler;
 
 enum AccountDataType
@@ -696,14 +703,28 @@ class MANGOS_DLL_SPEC WorldSession
 		void HandleSetLfgCommentOpcode(WorldPacket & recv_data);
 		void HandleLfgPlayerLockInfoRequestOpcode(WorldPacket& recv_data);
 		void HandleLfgPartyLockInfoRequestOpcode(WorldPacket& recv_data);
-		void SendLfgUpdatePlayer(uint8 updateType, uint32 dungeonEntry = 0);
-		void SendLfgUpdateParty(uint8 updateType, uint32 dungeonEntry = 0);
 		void HandleLfgJoin(WorldPacket &recv_data);
-		void HandleLfgLeave(WorldPacket &recv_data);
+		void HandleLfgLeave(WorldPacket & /*recv_data*/);
 		void HandleLfgSetRoles(WorldPacket &recv_data);
+		void HandleLfgProposalResult(WorldPacket &recv_data);
 		void HandleLfgSetBootVote(WorldPacket &recv_data);
 		void HandleLfgTeleport(WorldPacket &recv_data);
-		void HandleLfgProposalResult(WorldPacket &recv_data);
+		void HandleLfrSearchOpcode(WorldPacket &recv_data);
+		void HandleLfrLeaveOpcode(WorldPacket &recv_data);
+		
+		void SendLfgUpdatePlayer(uint8 updateType);
+		void SendLfgUpdateParty(uint8 updateType);
+		void SendLfgRoleChosen(uint64 guid, uint8 roles);
+		void SendLfgRoleCheckUpdate(LfgRoleCheck *pRoleCheck);
+		void SendLfgUpdateSearch(bool update);
+		void SendLfgJoinResult(uint8 checkResult, uint8 checkValue = 0, std::map<uint32, std::set<LfgLockStatus*>*> *playersLockMap = NULL /* LfgLockStatusMap *playersLockMap = NULL */);
+		void SendLfgQueueStatus(uint32 dungeon, int32 waitTime, int32 avgWaitTime, int32 waitTimeTanks, int32 waitTimeHealer, int32 waitTimeDps, uint32 queuedTime, uint8 tanks, uint8 healers, uint8 dps);
+		void SendLfgPlayerReward(uint32 rdungeonEntry, uint32 sdungeonEntry, uint8 done, LfgReward const *reward, Quest const *qRew);
+		void SendLfgBootPlayer(LfgPlayerBoot *pBoot);
+		void SendUpdateProposal(uint32 proposalId, LfgProposal *pProp);
+		void SendLfgDisabled();
+		void SendLfgOfferContinue(uint32 dungeonEntry);
+		void SendLfgTeleportError(uint8 err); 
 
         // Arena Team
         void HandleInspectArenaTeamsOpcode(WorldPacket& recv_data);

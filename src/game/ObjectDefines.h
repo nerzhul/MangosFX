@@ -43,6 +43,8 @@ enum HighGuid
     HIGHGUID_DYNAMICOBJECT  = 0xF100,                       // blizz F100
     HIGHGUID_CORPSE         = 0xF101,                       // blizz F100
     HIGHGUID_MO_TRANSPORT   = 0x1FC0,                       // blizz 1FC0 (for GAMEOBJECT_TYPE_MO_TRANSPORT)
+	HIGHGUID_GROUP          = 0x1F50,						// Merging
+
 };
 
 #define IS_EMPTY_GUID(Guid)          ( Guid == 0 )
@@ -60,6 +62,7 @@ enum HighGuid
 #define IS_CORPSE_GUID(Guid)         ( GUID_HIPART(Guid) == HIGHGUID_CORPSE )
 #define IS_TRANSPORT(Guid)           ( GUID_HIPART(Guid) == HIGHGUID_TRANSPORT )
 #define IS_MO_TRANSPORT(Guid)        ( GUID_HIPART(Guid) == HIGHGUID_MO_TRANSPORT )
+#define IS_GROUP(Guid)               (GUID_HIPART(Guid) == HIGHGUID_GROUP) // Merging
 
 // l - OBJECT_FIELD_GUID
 // e - OBJECT_FIELD_ENTRY for GO (except GAMEOBJECT_TYPE_MO_TRANSPORT) and creatures or UNIT_FIELD_PETNUMBER for pets
@@ -82,6 +85,7 @@ inline bool IsGuidHaveEnPart(uint64 const& guid)
         case HIGHGUID_PLAYER:
         case HIGHGUID_DYNAMICOBJECT:
         case HIGHGUID_CORPSE:
+		case HIGHGUID_GROUP: //Merging
             return false;
         case HIGHGUID_GAMEOBJECT:
         case HIGHGUID_TRANSPORT:
@@ -111,6 +115,7 @@ inline char const* GetLogNameForGuid(uint64 guid)
         case HIGHGUID_DYNAMICOBJECT:return "dynobject";
         case HIGHGUID_CORPSE:       return "corpse";
         case HIGHGUID_MO_TRANSPORT: return "mo_transport";
+		case HIGHGUID_GROUP:        return "group";
         default:
             return "<unknown>";
     }
