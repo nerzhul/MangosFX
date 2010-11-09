@@ -1868,7 +1868,9 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
 					plr->SetAuraStack(LFG_SPELL_LUCK_OF_THE_DRAW,plr,1);
                     plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
 					if(InstanceData* iData = plr->GetInstanceData())
-						iData->SetRandomDungeon(true);
+					{
+						iData->SetLFGDungeon(dungeon->ID);
+					}
 				}
                 else
                 {

@@ -23,6 +23,7 @@
 #include "ItemPrototype.h"
 #include "Unit.h"
 #include "Item.h"
+#include "LFGMgr.h"
 
 #include "Database/DatabaseEnv.h"
 #include "NPCHandler.h"
@@ -38,7 +39,6 @@
 #include "ReputationMgr.h"
 #include "BattleGround.h"
 #include "DBCEnums.h"
-#include "LFGMgr.h"
 
 #include<string>
 #include<vector>
@@ -58,6 +58,7 @@ class Spell;
 class Item;
 class OutdoorPvP;
 class CalendarMgr;
+class LFGMgr;
 
 typedef std::deque<Mail*> PlayerMails;
 
@@ -1827,6 +1828,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void CleanupChannels();
         void UpdateLocalChannels( uint32 newZone );
         void LeaveLFGChannel();
+		void RewardMeLFG(const uint32 dungeonId) { sLFGMgr.RewardDungeonDoneFor(dungeonId,this); }
 
         void UpdateDefense();
         void UpdateWeaponSkill (WeaponAttackType attType);

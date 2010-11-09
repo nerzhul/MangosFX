@@ -817,7 +817,7 @@ void ScriptedAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 						//pPlayer->GetAchievementMgr().SetLootedItem(43228,4);
 					}
 	}
-	
+	//pPlayer->RewardMeLFG(0);
 }
 
 void ScriptedAI::FreezeMob(bool freeze, Creature* tmpCr, bool OOC)

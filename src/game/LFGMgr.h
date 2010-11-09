@@ -18,7 +18,7 @@
 #ifndef _LFGMGR_H
 #define _LFGMGR_H
 
-#include "Common.h"
+#include <Common.h>
 #include <ace/Singleton.h>
 #include "LFG.h"
 
@@ -240,7 +240,7 @@ typedef std::set<uint64> LfgGuidSet;
 typedef std::map<std::string, LfgAnswer> LfgCompatibleMap;
 
 
-class LFGMgr
+class MANGOS_DLL_SPEC LFGMgr
 {
     friend class ACE_Singleton<LFGMgr, ACE_Null_Mutex>;
     public:
