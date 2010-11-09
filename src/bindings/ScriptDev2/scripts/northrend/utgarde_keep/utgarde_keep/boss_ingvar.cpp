@@ -112,7 +112,10 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
     {
         DoScriptText(m_bIsResurrected ? SAY_DEATH_SECOND : SAY_DEATH_FIRST, me);
 		if(m_bIsResurrected)
+		{
 			GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+			GiveRandomReward();
+		}
     }
 
     void KilledUnit(Unit* pVictim)

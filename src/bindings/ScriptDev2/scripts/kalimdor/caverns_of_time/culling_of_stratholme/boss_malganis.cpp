@@ -266,6 +266,7 @@ struct MANGOS_DLL_DECL boss_malganisAI : public LibDevFSAI
 							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 								Arthas->SetVisibility(VISIBILITY_OFF);
 							GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+							GiveRandomReward();
 							Outro = false;
 							++Step;
 							Steptim =11000;

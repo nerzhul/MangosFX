@@ -224,6 +224,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
             pInstance->SetData(TYPE_YMIRON, DONE);
 
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 
     void UpdateAI(const uint32 diff)

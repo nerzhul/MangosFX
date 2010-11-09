@@ -106,6 +106,7 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
+		GiveRandomReward();
     }
 
     void KilledUnit(Unit* pVictim)
