@@ -988,7 +988,7 @@ void Group::SendUpdate()
         data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
         if(m_groupType & GROUPTYPE_LFD)
         {
-            data << uint8(0);								// dungeon status
+            data << uint8(player->GetLfgRoles());			// dungeon status
             data << uint32(0);								// LFG entry
         }
         data << uint64(0x50000000FFFFFFFELL);               // related to voice chat?
@@ -1010,7 +1010,7 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-			if(IsRandomInstanceGroup())
+			if(m_groupType & GROUPTYPE_RNDLFD)
 				data << uint8(member->GetLfgRoles());	// 3.3, role? 
 			else
 				data << uint8(0);

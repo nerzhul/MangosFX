@@ -1699,7 +1699,7 @@ uint8 Player::chatTag() const
         return 0;
 }
 
-bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientation, uint32 options)
+bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientation, uint32 options, uint32 dungeonId)
 {
     if(!MapManager::IsValidMapCoord(mapid, x, y, z, orientation))
     {
@@ -1922,6 +1922,9 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
             // move packet sent by client always after far teleport
             // code for finish transfer to new map called in WorldSession::HandleMoveWorldportAckOpcode at client packet
+			if(map->IsDungeon() && dungeonId > 0)
+				if(InstanceData* iData = ((InstanceMap*)map)->GetInstanceData())
+					iData->SetLFGDungeon(dungeonId);
             SetSemaphoreTeleportFar(true);
         }
         else
