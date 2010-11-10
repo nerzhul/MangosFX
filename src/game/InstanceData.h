@@ -36,7 +36,7 @@ class MANGOS_DLL_SPEC InstanceData
         explicit InstanceData(Map *map) : instance(map),m_dungeonEntry(0) {}
         virtual ~InstanceData() {}
 
-        Map *instance;
+        Map* instance;
 		uint32 m_dungeonEntry;
 
 		void SetLFGDungeon(uint32 dungeonEntry) { m_dungeonEntry = dungeonEntry; }

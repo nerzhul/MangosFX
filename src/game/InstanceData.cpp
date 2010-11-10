@@ -20,6 +20,8 @@
 #include "Database/DatabaseEnv.h"
 #include "Map.h"
 #include "Player.h"
+#include "GameObject.h"
+#include "Unit.h"
 #include "DBCStores.h"
 #include "Log.h"
 
