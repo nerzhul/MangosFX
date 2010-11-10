@@ -428,7 +428,6 @@ class ObjectMgr
 
         typedef UNORDERED_MAP<uint32, WeatherZoneChances> WeatherZoneMap;
 
-		typedef std::set<Group *> GroupSet;
         typedef std::vector<std::string> ScriptNameMap;
 
         Player* GetPlayer(const char* name) const { return ObjectAccessor::FindPlayerByName(name);}
@@ -444,8 +443,6 @@ class ObjectMgr
 		Group* GetGroupById(uint32 id) const;
         void AddGroup(Group* group);
         void RemoveGroup(Group* group);
-
-		Group * GetGroupByGUID(uint32 guid) const; //Merging
 		
         Guild* GetGuildByLeader(uint64 const&guid) const;
         Guild* GetGuildById(uint32 GuildId) const;
@@ -980,7 +977,6 @@ class ObjectMgr
         typedef std::set<uint32> TavernAreaTriggerSet;
         typedef std::set<uint32> GameObjectForQuestSet;
 
-		GroupSet			mGroupSet; // Merging
         GroupMap            mGroupMap;
         GuildMap            mGuildMap;
         ArenaTeamMap        mArenaTeamMap;

@@ -82,7 +82,7 @@ void LFGMgr::Cleaner()
     {
         if (IS_GROUP(*it))
         {
-            if (Group* grp = sObjectMgr.GetGroupByGUID(GUID_LOPART(*it)))
+            if (Group* grp = sObjectMgr.GetGroupById(GUID_LOPART(*it)))
                 for (GroupReference* itr = grp->GetFirstMember(); itr != NULL; itr = itr->next())
                     if (Player* plr = itr->getSource())
                         plr->GetSession()->SendLfgUpdateParty(LFG_UPDATETYPE_REMOVED_FROM_QUEUE);
@@ -329,7 +329,7 @@ void LFGMgr::Update(uint32 diff)
         pBoot = itBoot->second;
         if (pBoot->cancelTime < currTime)
         {
-            Group* grp = sObjectMgr.GetGroupByGUID(itBoot->first);
+            Group* grp = sObjectMgr.GetGroupById(itBoot->first);
             pBoot->inProgress = false;
             for (LfgAnswerMap::const_iterator itVotes = pBoot->votes.begin(); itVotes != pBoot->votes.end(); ++itVotes)
                 if (Player* plrg = sObjectMgr.GetPlayerByLowGUID(itVotes->first))
@@ -440,10 +440,6 @@ void LFGMgr::Update(uint32 diff)
     m_update = true;
 }
 
-/// <summary>
-/// Add a guid to new queue, checks consistency
-/// </summary>
-/// <param name="uint64">Player or group guid</param>
 void LFGMgr::AddGuidToNewQueue(uint64 guid)
 {
     // Consistency check
@@ -755,10 +751,9 @@ void LFGMgr::Leave(Player* plr, Group* grp /* = NULL*/)
 /// <param name="Group*">Group than needs new players</param>
 void LFGMgr::OfferContinue(Group* grp)
 {
-    if (sWorld.getConfig(CONFIG_DUNGEON_FINDER) == 0)
+    if (sWorld.getConfig(CONFIG_DUNGEON_FINDER) == 0 || !grp)
         return;
 
-    ASSERT(grp);
     if (Player* leader = sObjectMgr.GetPlayer(grp->GetLeaderGUID()))
         leader->GetSession()->SendLfgOfferContinue(grp->GetLfgDungeonEntry(false));
 }
@@ -788,12 +783,6 @@ LfgProposal* LFGMgr::FindNewGroups(LfgGuidList check, LfgGuidList all)
     return pProposal;
 }
 
-/// <summary>
-/// Check compatibilities between groups.
-/// </summary>
-/// <param name="LfgGuidList">Guids we checking compatibility</param>
-/// <returns>bool</returns>
-/// <param name="LfgProposal*&">Proposals found.</param>
 bool LFGMgr::CheckCompatibility(LfgGuidList check, LfgProposal*& pProposal)
 {
     if (pProposal)                                           // Do not check anything if we already have a proposal
@@ -855,7 +844,7 @@ bool LFGMgr::CheckCompatibility(LfgGuidList check, LfgProposal*& pProposal)
         if (IS_GROUP(*it))
         {
             uint32 lowGuid = GUID_LOPART(*it);
-            if (Group* grp = sObjectMgr.GetGroupByGUID(lowGuid))
+            if (Group* grp = sObjectMgr.GetGroupById(lowGuid))
                 if (grp->isLFGGroup())
                 {
                     if (!numLfgGroups)
@@ -1497,16 +1486,13 @@ void LFGMgr::UpdateProposal(uint32 proposalId, uint32 lowGuid, bool accept)
             uint64 guid = pPlayer->groupLowGuid ? MAKE_NEW_GUID(pPlayer->groupLowGuid, 0, HIGHGUID_GROUP) : (*it)->GetGUID();
             LfgQueueInfoMap::iterator itQueue = m_QueueInfoMap.find(guid);
             if (itQueue == m_QueueInfoMap.end())
-            {
-                sLog.outError("LFGMgr::UpdateProposal: Queue info for guid [" UI64FMTD "] not found!", guid);
                 waitTimesMap[(*it)->GetGUID()] = -1;
-            }
             else
                 waitTimesMap[(*it)->GetGUID()] = int32(joinTime - itQueue->second->joinTime);
         }
 
         // Create a new group (if needed)
-        Group* grp = sObjectMgr.GetGroupByGUID(pProposal->groupLowGuid);
+        Group* grp = sObjectMgr.GetGroupById(pProposal->groupLowGuid);
         for (LfgPlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
         {
             plr = (*it);

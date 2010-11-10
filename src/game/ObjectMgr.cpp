@@ -234,13 +234,11 @@ void ObjectMgr::RemoveGuild(uint32 Id)
 void ObjectMgr::AddGroup( Group* group )
 {
     mGroupMap[group->GetId()] = group ;
-	mGroupSet.insert(group);
 }
 
 void ObjectMgr::RemoveGroup( Group* group )
 {
     mGroupMap.erase(group->GetId());
-	mGroupSet.erase(group);
 }
 
 ArenaTeam* ObjectMgr::GetArenaTeamById(uint32 arenateamid) const
@@ -5945,7 +5943,7 @@ uint32 ObjectMgr::GenerateGroupId()
 {
     if(m_groupId>=0xFFFFFFFE)
     {
-        sLog.outError("Guild ids overflow!! Can't continue, shutting down server. ");
+        sLog.outError("Group ids overflow!! Can't continue, shutting down server. ");
         World::StopNow(ERROR_EXIT_CODE);
     }
     return m_groupId++;
@@ -8883,15 +8881,6 @@ uint32 ObjectMgr::AddCreData(uint32 entry, uint32 team, uint32 mapId, float x, f
     }
 
     return guid;
-}
-
-Group * ObjectMgr::GetGroupByGUID(uint32 guid) const
-{
-    for (GroupSet::const_iterator itr = mGroupSet.begin(); itr != mGroupSet.end(); ++itr)
-        if ((*itr)->GetLowGUID() == guid)
-            return *itr;
-
-    return NULL;
 }
 
 Player* ObjectMgr::GetPlayerByLowGUID(uint32 lowguid) const
