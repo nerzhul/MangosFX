@@ -154,7 +154,16 @@ typedef std::vector<TextSh> TextEvents;
 class MANGOS_DLL_SPEC CreatureAI
 {
     public:
-        explicit CreatureAI(Creature* creature) : me(creature),ManualMoveEnable(false),CanMove(true),TimedDownEnable(false),CheckDistanceTimer(1000) {}
+        explicit CreatureAI(Creature* creature) : me(creature),ManualMoveEnable(false),CanMove(true),TimedDownEnable(false),CheckDistanceTimer(1000),
+			m_difficulty(REGULAR_DIFFICULTY) 
+		{
+			EventShVect.clear();
+			EventSummonVect.clear();
+			SavedEventSh.clear();
+			SavedEventSummon.clear();
+			EventTextVect.clear();
+			SavedEventTexts.clear();
+		}
         virtual ~CreatureAI();
 
         ///== Reactions At =================================
@@ -251,10 +260,9 @@ class MANGOS_DLL_SPEC CreatureAI
 		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
 		bool TimeDownSucceed() { return TimedDownEnable; }
 
-
 		// Manual Move System
 		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
-
+	
 		// Getter for extern functions
 		Creature* getMyself() { return me; }
 
@@ -275,6 +283,9 @@ class MANGOS_DLL_SPEC CreatureAI
 		bool TimedDownEnable;
 		uint32 AchTimedDownTimer;
 
+		// Instance Difficulty
+		Difficulty m_difficulty;
+	
 		// Pointer to controlled by AI creature
         Creature* const me;
 };

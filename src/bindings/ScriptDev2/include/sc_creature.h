@@ -223,7 +223,8 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	uint32 GetLFGDungeon() { return pInstance ? pInstance->GetLFGDungeon() : 0; }
 	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
-	void InitInstance() 
+
+	void InitInstance()
 	{
 		if(me->GetInstanceData())
 			pInstance = (ScriptedInstance*)me->GetInstanceData();
@@ -231,10 +232,9 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 			pInstance = NULL;
 		m_difficulty = me->GetMap()->GetDifficulty();
 	}
-
+	
 	protected:
 		ScriptedInstance* pInstance;
-		Difficulty m_difficulty;
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;
