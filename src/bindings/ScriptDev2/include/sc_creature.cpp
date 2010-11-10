@@ -797,6 +797,9 @@ void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
 
 void ScriptedAI::GiveRandomReward()
 {
+	if(!GetLFGDungeon())
+		return;
+
     Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
 	if (!lPlayers.isEmpty())
 		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)

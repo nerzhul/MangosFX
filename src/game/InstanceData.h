@@ -35,7 +35,7 @@ class MANGOS_DLL_SPEC InstanceData
 {
     public:
 
-        explicit InstanceData(Map *map) : instance(map),m_dungeonEntry(0) {}
+        explicit InstanceData(Map *map) : instance(map), m_dungeonEntry(0) {}
         virtual ~InstanceData() {}
 
         Map* instance;

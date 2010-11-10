@@ -1840,6 +1840,7 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
 
                 if (plr->TeleportTo(mapid, x, y, z, orientation,0))
 				{
+					plr->SetDungeonId(dungeon->ID);
 					plr->SetAuraStack(LFG_SPELL_LUCK_OF_THE_DRAW,plr,1);
                     plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
 				}

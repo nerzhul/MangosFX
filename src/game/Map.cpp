@@ -2592,7 +2592,14 @@ bool InstanceMap::Add(Player *player)
     Map::Add(player);
 
     if (i_data)
+	{
+		// Set Dungeon, for random rewards
+		uint32 dId = player->GetDungeonId();
+		if(dId > 0 && i_data->GetLFGDungeon() == 0)
+			i_data->SetLFGDungeon(dId);
+
         i_data->OnPlayerEnter(player);
+	}
 
     return true;
 }

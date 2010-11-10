@@ -526,6 +526,7 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 	
 	m_LookingForGroup.roles = ROLE_NONE;
 	m_LookingForGroup.comment = "";
+	m_dungeonId = 0;
 
 	SetRandomBGDone(false);
 }

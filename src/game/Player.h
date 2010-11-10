@@ -2183,6 +2183,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         LfgState GetLfgState() { return m_LookingForGroup.state; }
         void SetLfgState(LfgState state) { m_LookingForGroup.state = state; }
         bool isUsingLfg() { return GetLfgState() != LFG_STATE_NONE; }
+		void SetDungeonId(uint32 dId) { m_dungeonId = dId; }
+		uint32 GetDungeonId() { return m_dungeonId; }
 
         // Temporarily removed pet cache
         uint32 GetTemporaryUnsummonedPetNumber() const { return m_temporaryUnsummonedPetNumber; }
@@ -2627,7 +2629,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool bindTimer;
 		bool bindingState;
 
-		LookingForGroup m_LookingForGroup; // Merging
+		LookingForGroup m_LookingForGroup;
+		uint32 m_dungeonId;
 
 };
 
