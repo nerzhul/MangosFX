@@ -1862,7 +1862,7 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
                     plr->CleanUpAfterTaxiFlight();
                 }
 
-                if (plr->TeleportTo(mapid, x, y, z, orientation,0,dungeon->ID))
+                if (plr->TeleportTo(mapid, x, y, z, orientation,0))
 				{
 					plr->SetAuraStack(LFG_SPELL_LUCK_OF_THE_DRAW,plr,1);
                     plr->RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
