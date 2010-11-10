@@ -25,6 +25,8 @@
 #include "Dynamic/ObjectRegistry.h"
 #include "Dynamic/FactoryHolder.h"
 
+#include "DBCEnums.h"
+
 class WorldObject;
 class Unit;
 class Creature;
