@@ -21,6 +21,8 @@
 
 #include "Common.h"
 
+#include "Object.h"
+
 class Map;
 class Unit;
 class Player;
