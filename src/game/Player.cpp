@@ -524,6 +524,9 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
 	m_calendarEvents.clear();
 	
+	m_LookingForGroup.roles = ROLE_NONE;
+	m_LookingForGroup.comment = "";
+
 	SetRandomBGDone(false);
 }
 
@@ -591,8 +594,6 @@ void Player::CleanupsBeforeDelete()
 
 bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 class_, uint8 gender, uint8 skin, uint8 face, uint8 hairStyle, uint8 hairColor, uint8 facialHair, uint8 outfitId )
 {
-    //FIXME: outfitId not used in player creating
-
     Object::_Create(guidlow, 0, HIGHGUID_PLAYER);
 
     m_name = name;

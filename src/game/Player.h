@@ -2172,7 +2172,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetAtLoginFlag(AtLoginFlags f) { m_atLoginFlags |= f; }
         void RemoveAtLoginFlag(AtLoginFlags f, bool in_db_also = false);
 
-		// Dungeon Finder // Merging
+		// Dungeon Finder
         LfgDungeonSet *GetLfgDungeons() { return &m_LookingForGroup.applyDungeons; }
         std::string GetLfgComment() { return m_LookingForGroup.comment; }
         void SetLfgComment(std::string _comment) { m_LookingForGroup.comment = _comment; }
@@ -2183,8 +2183,6 @@ class MANGOS_DLL_SPEC Player : public Unit
         LfgState GetLfgState() { return m_LookingForGroup.state; }
         void SetLfgState(LfgState state) { m_LookingForGroup.state = state; }
         bool isUsingLfg() { return GetLfgState() != LFG_STATE_NONE; }
-
-		//End Merging
 
         // Temporarily removed pet cache
         uint32 GetTemporaryUnsummonedPetNumber() const { return m_temporaryUnsummonedPetNumber; }

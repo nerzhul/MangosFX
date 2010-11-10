@@ -48,7 +48,7 @@ Group::Group()
     m_looterGuid        = 0;
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
-	m_guid              = 0; //Merging
+	m_guid              = 0;
 	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
@@ -107,6 +107,8 @@ bool Group::Create(const uint64 &guid, const char * name)
     if(!isBGGroup())
     {
 		m_Id = sObjectMgr.GenerateGroupId();
+
+		m_guid = MAKE_NEW_GUID(m_Id, 0, HIGHGUID_GROUP);
 
         Player *leader = sObjectMgr.GetPlayer(guid);
         if(leader)
@@ -1010,10 +1012,8 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-			/*if(m_groupType & GROUPTYPE_RNDLFD)
-				data << uint8(member->GetLfgRoles());	// 3.3, role? 
-			else*/
-				data << uint8(0);
+
+			data << uint8(member->GetLfgRoles());	// 3.3, role? 
         }
 
         data << uint64(m_leaderGuid);                       // leader guid

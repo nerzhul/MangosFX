@@ -428,12 +428,12 @@ class ObjectMgr
 
         typedef UNORDERED_MAP<uint32, WeatherZoneChances> WeatherZoneMap;
 
-		typedef std::set<Group *> GroupSet; // Merging
+		typedef std::set<Group *> GroupSet;
         typedef std::vector<std::string> ScriptNameMap;
 
         Player* GetPlayer(const char* name) const { return ObjectAccessor::FindPlayerByName(name);}
         Player* GetPlayer(uint64 guid) const { return ObjectAccessor::FindPlayer(guid); }
-		Player* GetPlayerByLowGUID(uint32 lowguid) const; //Merging
+		Player* GetPlayerByLowGUID(uint32 lowguid) const;
 
         static GameObjectInfo const *GetGameObjectInfo(uint32 id) { return sGOStorage.LookupEntry<GameObjectInfo>(id); }
 
