@@ -22,9 +22,9 @@
 #include "Common.h"
 
 #include "Object.h"
+#include "Unit.h"
 
 class Map;
-class Unit;
 class Player;
 class GameObject;
 class Creature;
