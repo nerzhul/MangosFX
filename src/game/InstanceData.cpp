@@ -52,7 +52,7 @@ void InstanceData::CompleteAchievementForGroup(uint32 AchId)
 
     if (!pAE)
     {
-        sLog.outError("ScriptDev2: DoCompleteAchievement called for not existing achievement %u", AchId);
+        sLog.outError("LibDevFS: DoCompleteAchievement called for not existing achievement %u", AchId);
         return;
     }
 
@@ -70,7 +70,7 @@ void InstanceData::CompleteAchievementForPlayer(Player* plr, uint32 AchId)
 	AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(AchId);
 	if (!pAE)
     {
-        sLog.outError("ScriptDev2: DoCompleteAchievement called for not existing achievement %u", AchId);
+        sLog.outError("LibDevFS: DoCompleteAchievement called for not existing achievement %u", AchId);
         return;
     }
 	
