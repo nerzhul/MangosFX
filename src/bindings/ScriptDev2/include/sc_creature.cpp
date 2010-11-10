@@ -19,7 +19,8 @@ struct TSpellSummary
 
 ScriptedAI::ScriptedAI(Creature* pCreature) : CreatureAI(pCreature),
     m_bCombatMovement(true),
-    m_uiEvadeCheckCooldown(2500)
+    m_uiEvadeCheckCooldown(2500),
+	pInstance(NULL)
 {}
 
 bool ScriptedAI::IsVisible(Unit* pWho) const
