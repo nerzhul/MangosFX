@@ -342,14 +342,7 @@ libmangosgame_a_SOURCES = \
 	PriestSpellHandler.cpp \
 	PriestSpellHandler.h \
 	ShamanSpellHandler.cpp \
-	ShamanSpellHandler.h \
-	cSocketTCP.cpp \
-	cSocketTCP.h \
-	cSocketUDP.cpp \
-	cSocketUDP.h \
-	cClusterSession.cpp \
-	cClusterSession.h \
-	cIncludes.h
+	ShamanSpellHandler.h
 
 ## Additional files to include when running 'make dist'
 #  Precompiled Headers for WIN
