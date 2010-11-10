@@ -1012,8 +1012,8 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-
-			data << uint8(member->GetLfgRoles());	// 3.3, role? 
+			
+			data << uint8(member ? member->GetLfgRoles() : 0);	// 3.3, role? 
         }
 
         data << uint64(m_leaderGuid);                       // leader guid
