@@ -22860,6 +22860,9 @@ void Player::AddWintergraspBuffIfCan(uint32 _mapid)
 	}
 	else
 		RemoveAurasDueToSpell(57940);
+
+	if(_mapid == 0 || _mapid == 1 || _mapid == 530 || _mapid == 571)
+		RemoveAurasDueToSpell(72221);
 }
 
 bool Player::IsWintergraspPortalActive()
