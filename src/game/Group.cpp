@@ -975,6 +975,7 @@ void Group::SendUpdate()
 {
     Player *player;
 
+	bool isLFGGroup = (m_groupType & GROUPTYPE_LFD) ? true : false;
     for(member_citerator citr = m_memberSlots.begin(); citr != m_memberSlots.end(); ++citr)
     {
         player = sObjectMgr.GetPlayer(citr->guid);
@@ -986,7 +987,7 @@ void Group::SendUpdate()
         data << uint8(citr->group);                         // groupid
         data << uint8(GetFlags(*citr));						// group flags
         data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
-        if(m_groupType & GROUPTYPE_LFD)
+        if(isLFGGroup)
         {
             data << uint8(player->GetLfgRoles());			// dungeon status
             data << uint32(0);								// LFG entry
@@ -1010,7 +1011,7 @@ void Group::SendUpdate()
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-			if(m_groupType & GROUPTYPE_RNDLFD)
+			if(isLFGGroup)
 				data << uint8(member->GetLfgRoles());	// 3.3, role? 
 			else
 				data << uint8(0);
