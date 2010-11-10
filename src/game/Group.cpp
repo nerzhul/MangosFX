@@ -1787,7 +1787,6 @@ void Group::_homebindIfInstance(Player *player)
 void Group::ConvertToLFG()
 {
     m_groupType = GroupType(m_groupType | GROUPTYPE_LFD | GROUPTYPE_RANDOM);
-    m_lootMethod = NEED_BEFORE_GREED;
     if (!isBGGroup())
         CharacterDatabase.PExecute("UPDATE groups SET groupType='%u' WHERE groupId='%u'", uint8(m_groupType), m_Id);
     SendUpdate();

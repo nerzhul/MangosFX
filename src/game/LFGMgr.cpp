@@ -1666,13 +1666,6 @@ void LFGMgr::RemoveProposal(LfgProposalMap::iterator itProposal, LfgUpdateType t
     m_Proposals.erase(itProposal);
 }
 
-/// <summary>
-/// Initialize a boot kick vote
-/// </summary>
-/// <param name="Group*">Group</param>
-/// <param name="uint32">Player low guid who inits the vote kick</param>
-/// <param name="uint32">Player low guid to be kicked </param>
-/// <param name="std::string">kick reason</param>
 void LFGMgr::InitBoot(Group* grp, uint32 iLowGuid, uint32 vLowguid, std::string reason)
 {
     if (!grp)
@@ -1775,12 +1768,6 @@ void LFGMgr::UpdateBoot(Player* plr, bool accept)
     }
 }
 
-/// <summary>
-/// Teleports the player in or out the dungeon
-/// </summary>
-/// <param name="Player*">Player</param>
-/// <param name="bool">Teleport out</param>
-/// <param name="bool">Automatic or manual teleport</param>
 void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
 {
     sLog.outDebug("LFGMgr::TeleportPlayer: [" UI64FMTD "] is being teleported %s", plr->GetGUID(), out ? "out" : "in");
@@ -1880,11 +1867,6 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
         plr->GetSession()->SendLfgTeleportError(error);
 }
 
-/// <summary>
-/// Give completion reward to player
-/// </summary>
-/// <param name="const uint32">dungeonId</param>
-/// <param name="Player*">player</param>
 void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
 {
     Group* group = player->GetGroup();
@@ -1939,13 +1921,6 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
 // Auxiliar Functions
 // --------------------------------------------------------------------------//
 
-/// <summary>
-/// Given a group get the dungeons that can't be done and reason
-/// </summary>
-/// <param name="PlayerSet*">Players to check lock status</param>
-/// <param name="LfgDungeonSet*">Dungeons to check</param>
-/// <param name="bool">Use dungeon entry (true) or id (false)</param>
-/// <returns>LfgLockStatusMap*</returns>
 LfgLockStatusMap* LFGMgr::GetGroupLockStatusDungeons(PlayerSet* pPlayers, LfgDungeonSet* dungeons, bool useEntry /* = true */)
 {
     if (!pPlayers || !dungeons)
@@ -1968,13 +1943,6 @@ LfgLockStatusMap* LFGMgr::GetGroupLockStatusDungeons(PlayerSet* pPlayers, LfgDun
     return dungeonMap;
 }
 
-/// <summary>
-/// Get all Group members list of dungeons that can't be done and reason
-/// leader excluded as the list given is he list he can do
-/// </summary>
-/// <param name="Player*">Player to get Party Lock info</param>
-/// <param name="LfgDungeonSet*">Dungeons to check</param>
-/// <returns>LfgLockStatusMap*</returns>
 LfgLockStatusMap* LFGMgr::GetPartyLockStatusDungeons(Player* plr, LfgDungeonSet* dungeons /* = NULL */)
 {
     if (!plr)
@@ -2001,13 +1969,6 @@ LfgLockStatusMap* LFGMgr::GetPartyLockStatusDungeons(Player* plr, LfgDungeonSet*
     return dungeonMap;
 }
 
-/// <summary>
-/// Get list of dungeons player can't do and reasons
-/// </summary>
-/// <param name="Player*">Player to check lock status</param>
-/// <param name="LfgDungeonSet*">Dungeons to check</param>
-/// <param name="bool">Use dungeon entry (true) or id (false)</param>
-/// <returns>LfgLockStatusSet*</returns>
 LfgLockStatusSet* LFGMgr::GetPlayerLockStatusDungeons(Player* plr, LfgDungeonSet* dungeons /* = NULL */, bool useEntry /* = true */)
 {
     LfgLockStatusSet* list = new LfgLockStatusSet();
@@ -2082,10 +2043,6 @@ LfgLockStatusSet* LFGMgr::GetPlayerLockStatusDungeons(Player* plr, LfgDungeonSet
     return list;
 }
 
-/// <summary>
-/// Get the dungeon list that can be done.
-/// </summary>
-/// <returns>LfgDungeonSet*</returns>
 LfgDungeonSet* LFGMgr::GetAllDungeons()
 {
     LfgDungeonSet* alldungeons = m_CachedDungeonMap[0];
@@ -2117,12 +2074,6 @@ LfgDungeonSet* LFGMgr::GetAllDungeons()
     return alldungeons;
 }
 
-/// <summary>
-/// Get the dungeon list that can be done given a random dungeon entry.
-/// Special case: randomdungeon == 0 then will return all dungeons
-/// </summary>
-/// <param name="uint32">Random dungeon entry</param>
-/// <returns>LfgDungeonSet*</returns>
 LfgDungeonSet* LFGMgr::GetDungeonsByRandom(uint32 randomdungeon)
 {
     uint8 groupType = 0;
@@ -2139,12 +2090,6 @@ LfgDungeonSet* LFGMgr::GetDungeonsByRandom(uint32 randomdungeon)
     return dungeons;
 }
 
-/// <summary>
-/// Get the random dungeon list that can be done at a certain level and expansion.
-/// </summary>
-/// <param name="uint8">Player level</param>
-/// <param name="uint8">Player account expansion</param>
-/// <returns>LfgDungeonSet*</returns>
 LfgDungeonSet* LFGMgr::GetRandomDungeons(uint8 level, uint8 expansion)
 {
     LfgDungeonSet* list = new LfgDungeonSet();
@@ -2159,12 +2104,6 @@ LfgDungeonSet* LFGMgr::GetRandomDungeons(uint8 level, uint8 expansion)
     return list;
 }
 
-/// <summary>
-/// Get the reward of a given random dungeon at a certain level
-/// </summary>
-/// <param name="uint32">random dungeon id</param>
-/// <param name="uint8">Player level</param>
-/// <returns>LfgReward const*</returns>
 LfgReward const* LFGMgr::GetRandomDungeonReward(uint32 dungeon, uint8 level)
 {
     LfgReward const* rew = NULL;
@@ -2180,11 +2119,6 @@ LfgReward const* LFGMgr::GetRandomDungeonReward(uint32 dungeon, uint8 level)
     return rew;
 }
 
-/// <summary>
-/// Given a Dungeon id returns the dungeon Group Type
-/// </summary>
-/// <param name="uint32">Dungeon id</param>
-/// <returns>uint8: GroupType</returns>
 uint8 LFGMgr::GetDungeonGroupType(uint32 dungeonId)
 {
     LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(dungeonId);
@@ -2194,11 +2128,6 @@ uint8 LFGMgr::GetDungeonGroupType(uint32 dungeonId)
     return dungeon->grouptype;
 }
 
-/// <summary>
-/// Given a Dungeon id returns if it's random
-/// </summary>
-/// <param name="uint32">Dungeon id</param>
-/// <returns>bool</returns>
 bool LFGMgr::isRandomDungeon(uint32 dungeonId)
 {
     LFGDungeonEntry const* dungeon = sLFGDungeonStore.LookupEntry(dungeonId);
@@ -2208,22 +2137,12 @@ bool LFGMgr::isRandomDungeon(uint32 dungeonId)
     return dungeon->type == LFG_TYPE_RANDOM;
 }
 
-/// <summary>
-/// Given a guid returns if it recently joined queue
-/// </summary>
-/// <param name="uint64&">guid</param>
-/// <returns>bool</returns>
 bool LFGMgr::isJoining(uint64 guid)
 {
     LfgQueueInfoMap::iterator itQueue = m_QueueInfoMap.find(guid);
     return itQueue != m_QueueInfoMap.end() && itQueue->second->joinTime + LFG_TIME_JOIN_WARNING > time_t(time(NULL));
 }
 
-/// <summary>
-/// Given a Achievement id returns the related dungeon id
-/// </summary>
-/// <param name="uint32">Achievement id</param>
-/// <returns>uint32</returns>
 uint32 LFGMgr::GetDungeonIdForAchievement(uint32 achievementId)
 {
     std::map<uint32, uint32>::iterator itr = m_EncountersByAchievement.find(achievementId);
@@ -2233,11 +2152,6 @@ uint32 LFGMgr::GetDungeonIdForAchievement(uint32 achievementId)
     return 0;
 };
 
-/// <summary>
-/// Given a list of guids returns the concatenation using | as delimiter
-/// </summary>
-/// <param name="LfgGuidList ">list of guids</param>
-/// <returns>std::string</returns>
 std::string LFGMgr::ConcatenateGuids(LfgGuidList check)
 {
     if (check.empty())
@@ -2259,11 +2173,6 @@ std::string LFGMgr::ConcatenateGuids(LfgGuidList check)
     return o.str();
 }
 
-/// <summary>
-/// Given a list of dungeonIds returns the concatenation using , as delimiter
-/// </summary>
-/// <param name="LfgDungeonSet ">list of dungeons</param>
-/// <returns>std::string</returns>
 std::string LFGMgr::ConcatenateDungeons(LfgDungeonSet* dungeons)
 {
     std::string dungeonstr = "";

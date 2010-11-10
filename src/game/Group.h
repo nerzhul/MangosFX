@@ -245,7 +245,6 @@ class MANGOS_DLL_SPEC Group
             SendUpdate();
         }
 		bool isLFGGroup()  const { return m_groupType & GROUPTYPE_LFD; }
-		//End Merging
 
         // properties accessories
 		uint32 GetId() const { return m_Id; }
@@ -255,8 +254,8 @@ class MANGOS_DLL_SPEC Group
         bool IsCreated()   const { return GetMembersCount() > 0; }
         const uint64& GetLeaderGUID() const { return m_leaderGuid; }
         const char * GetLeaderName() const { return m_leaderName.c_str(); }
-        const uint64& GetGUID() const { return m_guid; } // Merging
-		uint32 GetLowGUID() const { return GUID_LOPART(m_guid); } //Merging
+        const uint64& GetGUID() const { return m_guid; }
+		uint32 GetLowGUID() const { return GUID_LOPART(m_guid); }
         LootMethod    GetLootMethod() const { return m_lootMethod; }
         const uint64& GetLooterGuid() const { return m_looterGuid; }
         ItemQualities GetLootThreshold() const { return m_lootThreshold; }

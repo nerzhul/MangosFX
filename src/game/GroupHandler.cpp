@@ -320,7 +320,15 @@ void WorldSession::HandleGroupUninviteOpcode(WorldPacket & recv_data)
 
     if(uint64 guid = grp->GetMemberGUID(membername))
     {
-        Player::RemoveFromGroup(grp,guid);
+		if(grp->isLFGGroup())
+		{
+			if(Player* plr = sObjectMgr.GetPlayer(guid))
+				sLFGMgr.InitBoot(grp,GetPlayer()->GetGUIDLow(),plr->GetGUIDLow(),"");
+			else
+				Player::RemoveFromGroup(grp,guid);
+		}
+        else
+			Player::RemoveFromGroup(grp,guid);
         return;
     }
 
