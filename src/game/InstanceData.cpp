@@ -21,7 +21,6 @@
 #include "Map.h"
 #include "Player.h"
 #include "GameObject.h"
-#include "Unit.h"
 #include "DBCStores.h"
 #include "Log.h"
 
@@ -81,7 +80,7 @@ void InstanceData::CompleteAchievementForPlayer(Player* plr, uint32 AchId)
 
 void InstanceData::OpenDoor(uint64 guid)
 {
-	if(GameObject* pGo = instance->GetGameObject(guid);)
+	if(GameObject* pGo = instance->GetGameObject(guid))
 	{
 		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
 		{
@@ -93,7 +92,7 @@ void InstanceData::OpenDoor(uint64 guid)
 
 void InstanceData::CloseDoor(uint64 guid)
 {
-	if(GameObject* pGo = instance->GetGameObject(guid);)
+	if(GameObject* pGo = instance->GetGameObject(guid))
 	{
 		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
 		{
