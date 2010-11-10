@@ -1577,7 +1577,10 @@ void LFGMgr::UpdateProposal(uint32 proposalId, uint32 lowGuid, bool accept)
 
         // Teleport Player
         for (LfgPlayerList::const_iterator it = players.begin(); it != players.end(); ++it)
+		{
+			(*it)->SetAuraStack(LFG_SPELL_DUNGEON_COOLDOWN,plr,1);
             TeleportPlayer(*it, false);
+		}
 
         // Update group info
 //        grp->SendUpdate();
