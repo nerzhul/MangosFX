@@ -23,11 +23,11 @@
 
 #include "Object.h"
 #include "Unit.h"
+#include "Creature.h"
+#include "Map.h"
 
-class Map;
 class Player;
 class GameObject;
-class Creature;
 
 #define DATA_NB_BOSS_DOWN 999
 
