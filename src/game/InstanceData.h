@@ -100,7 +100,12 @@ class MANGOS_DLL_SPEC InstanceData
         // This is used for such things are heroic loot
         virtual bool CheckConditionCriteriaMeet(Player const* source, uint32 map_id, uint32 instance_condition_id);
 
+		// Achievements
 		void CompleteAchievementForGroup(uint32 AchId);
 		void CompleteAchievementForPlayer(Player* plr, uint32 AchId);
+		
+		// GameObjects
+		void CloseDoor(uint64 guid);
+		void OpenDoor(uint64 guid);
 };
 #endif

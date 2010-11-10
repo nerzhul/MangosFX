@@ -76,3 +76,27 @@ void InstanceData::CompleteAchievementForPlayer(Player* plr, uint32 AchId)
 	
 	plr->GetAchievementMgr().DoCompleteAchivement(pAE);
 }
+
+void InstanceData::OpenDoor(uint64 guid)
+{
+	if(GameObject* pGo = instance->GetGameObject(guid);)
+	{
+		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
+		{
+			if (pGo->getLootState() == GO_READY)
+                pGo->UseDoorOrButton();
+		}
+	}
+}
+
+void InstanceData::CloseDoor(uint64 guid)
+{
+	if(GameObject* pGo = instance->GetGameObject(guid);)
+	{
+		if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
+		{
+			if (pGo->getLootState() == GO_ACTIVATED)
+                pGo->ResetDoorOrButton();
+		}
+	}
+}
