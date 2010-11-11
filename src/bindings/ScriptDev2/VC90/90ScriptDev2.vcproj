@@ -2112,66 +2112,6 @@
 						RelativePath="..\scripts\northrend\vault_of_archavon\vault_of_archavon.h"
 						>
 					</File>
-					<Filter
-						Name="utgarde_keep"
-						>
-						<Filter
-							Name="utgarde_keep"
-							>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_ingvar.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_keleseth.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_skarvald_and_dalronn.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\instance_utgarde_keep.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.h"
-								>
-							</File>
-						</Filter>
-						<Filter
-							Name="utgarde_pinnacle"
-							>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_gortok.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_skadi.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_svala.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_ymiron.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\instance_utgarde_pinnacle.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\utgarde_pinnacle.h"
-								>
-							</File>
-						</Filter>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="violet_hold"
@@ -2384,6 +2324,66 @@
 						RelativePath="..\scripts\northrend\rubis_sanctum\trashboss_zarithrian.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="utgarde_keep"
+					>
+					<Filter
+						Name="utgarde_keep"
+						>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_ingvar.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_keleseth.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_skarvald_and_dalronn.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\instance_utgarde_keep.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="utgarde_pinnacle"
+						>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_gortok.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_skadi.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_svala.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_ymiron.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\instance_utgarde_pinnacle.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\utgarde_pinnacle.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
