@@ -49,7 +49,6 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 frost_attack_Timer;
@@ -161,7 +160,6 @@ struct MANGOS_DLL_DECL mob_ragin_flamesAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 inferno_Timer;
