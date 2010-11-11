@@ -59,8 +59,6 @@ struct MANGOS_DLL_DECL boss_blackheart_the_inciterAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     bool InciteChaos;
     uint32 InciteChaos_Timer;
     uint32 InciteChaosWait_Timer;

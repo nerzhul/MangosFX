@@ -29,7 +29,6 @@ struct MANGOS_DLL_DECL boss_krystallusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	
 	void Reset()

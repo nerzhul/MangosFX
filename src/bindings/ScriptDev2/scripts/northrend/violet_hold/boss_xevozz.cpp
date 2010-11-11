@@ -47,7 +47,6 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	    
@@ -129,7 +128,6 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 	uint32 move_Timer;
 	uint32 explode_Timer;
 	Creature* pXevozz;
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	float x,y,z;
 

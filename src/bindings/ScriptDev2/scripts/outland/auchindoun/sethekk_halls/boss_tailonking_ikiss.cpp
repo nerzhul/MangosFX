@@ -57,7 +57,6 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 ArcaneVolley_Timer;

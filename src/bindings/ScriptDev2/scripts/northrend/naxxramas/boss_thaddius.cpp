@@ -91,7 +91,6 @@ struct MANGOS_DLL_DECL mob_stalaggAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool m_bIsDeath;
     bool m_bIsHold;
@@ -213,7 +212,6 @@ struct MANGOS_DLL_DECL mob_feugenAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool m_bIsDeath;
     bool m_bIsHold;
@@ -331,7 +329,6 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool m_bIsActiveCheck;
     bool m_bIsActived;

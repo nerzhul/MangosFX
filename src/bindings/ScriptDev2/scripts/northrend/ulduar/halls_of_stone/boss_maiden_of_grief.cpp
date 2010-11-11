@@ -61,7 +61,6 @@ struct MANGOS_DLL_DECL boss_maiden_of_griefAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     void Reset()

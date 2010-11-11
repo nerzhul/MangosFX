@@ -148,7 +148,6 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
     std::list<Creature*> m_lKaddrakGUIDList;
@@ -273,7 +272,6 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     bool m_bIsBattle;
     bool m_bIsLowHP;

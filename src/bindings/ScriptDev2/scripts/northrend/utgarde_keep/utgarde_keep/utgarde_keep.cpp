@@ -51,7 +51,6 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiForgeEncounterId;

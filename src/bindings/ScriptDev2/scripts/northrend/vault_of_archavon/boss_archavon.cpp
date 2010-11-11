@@ -50,7 +50,6 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     float m_fDefaultMoveSpeed;
     uint32 m_uiEvadeCheckCooldown;

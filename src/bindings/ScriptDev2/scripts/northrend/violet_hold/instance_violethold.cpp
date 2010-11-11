@@ -736,8 +736,6 @@ CreatureAI* GetAI_portal_add(Creature* pCreature)
 
 struct MANGOS_DLL_DECL seal_AddAI : public ScriptedAI
 {	
-    ScriptedInstance* pInstance;
-
 	seal_AddAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
 		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();

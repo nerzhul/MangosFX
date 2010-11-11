@@ -20,7 +20,6 @@ struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
         Reset();
     }
 	    
-	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

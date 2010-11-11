@@ -62,7 +62,6 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	   
 	void JustDied(Unit* pWho)

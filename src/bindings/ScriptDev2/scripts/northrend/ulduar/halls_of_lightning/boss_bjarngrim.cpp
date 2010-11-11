@@ -90,7 +90,6 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 
     bool m_bIsHeroic;
     bool m_bIsChangingStance;
@@ -360,7 +359,6 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiArcWeld_Timer;

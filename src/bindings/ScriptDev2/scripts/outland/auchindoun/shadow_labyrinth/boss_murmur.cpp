@@ -46,7 +46,6 @@ struct MANGOS_DLL_DECL boss_murmurAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 SonicBoom_Timer;

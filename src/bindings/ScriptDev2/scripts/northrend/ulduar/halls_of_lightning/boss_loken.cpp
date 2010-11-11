@@ -72,8 +72,6 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     bool m_bIsHeroic;
     bool m_bIsAura;
 

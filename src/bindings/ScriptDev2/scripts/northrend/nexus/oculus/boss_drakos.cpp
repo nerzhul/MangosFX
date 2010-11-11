@@ -44,7 +44,6 @@ struct MANGOS_DLL_DECL boss_drakosAI : public ScriptedAI
 		m_bIsHeroic = c->GetMap()->IsRegularDifficulty();
     }
     
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
     void Reset()
     {

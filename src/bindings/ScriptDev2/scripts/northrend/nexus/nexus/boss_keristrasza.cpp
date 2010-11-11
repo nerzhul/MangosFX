@@ -35,7 +35,6 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

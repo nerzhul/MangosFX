@@ -47,8 +47,6 @@ struct MANGOS_DLL_DECL boss_uromAI : public ScriptedAI
         pInstance = (ScriptedInstance*)c->GetInstanceData();
     }
     
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
         if (pInstance)

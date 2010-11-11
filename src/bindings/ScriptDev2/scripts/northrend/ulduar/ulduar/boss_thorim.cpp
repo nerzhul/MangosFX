@@ -64,7 +64,6 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	uint8 phase;
@@ -272,7 +271,6 @@ struct MANGOS_DLL_DECL boss_addThorimAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -326,7 +324,6 @@ struct MANGOS_DLL_DECL boss_runegiantAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -361,7 +358,6 @@ struct MANGOS_DLL_DECL boss_runecolossusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

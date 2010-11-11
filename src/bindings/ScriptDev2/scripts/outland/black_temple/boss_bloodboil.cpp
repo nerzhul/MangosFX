@@ -59,8 +59,6 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 TargetGUID;
 
     float TargetThreat;

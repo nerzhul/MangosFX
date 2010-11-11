@@ -72,7 +72,6 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	Creature* add[3];
@@ -203,7 +202,6 @@ struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
         Reset();
     }
 
-	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -240,7 +238,6 @@ struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
         Reset();
     }
 
-	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -277,7 +274,6 @@ struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
         Reset();
     }
 
-	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

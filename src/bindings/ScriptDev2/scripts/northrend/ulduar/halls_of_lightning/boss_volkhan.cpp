@@ -79,8 +79,6 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     std::list<uint64> m_lGolemGUIDList;
 
     bool m_bIsHeroic;
@@ -338,8 +336,6 @@ struct MANGOS_DLL_DECL mob_molten_golemAI : public ScriptedAI
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     bool m_bIsHeroic;
     bool m_bIsFrozen;

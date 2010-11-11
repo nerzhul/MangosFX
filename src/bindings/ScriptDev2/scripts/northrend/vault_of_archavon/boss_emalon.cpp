@@ -52,7 +52,6 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint32 m_uiEvadeCheckCooldown;
 	MobEventTasks Tasks;
 
@@ -198,7 +197,6 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     uint32 m_uiEvadeCheckCooldown;
 	MobEventTasks Tasks;
@@ -351,7 +349,6 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     bool m_bOvercharged;

@@ -44,7 +44,6 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -145,7 +144,6 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

@@ -25,7 +25,6 @@ struct MANGOS_DLL_DECL boss_moraggAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	    
     void UpdateAI(const uint32 diff)

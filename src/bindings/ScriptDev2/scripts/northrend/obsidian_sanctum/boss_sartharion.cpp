@@ -176,7 +176,6 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool m_bIsBerserk;
@@ -538,7 +537,6 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiWaypointId;
@@ -823,7 +821,6 @@ struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 
     uint32 m_uiAcolyteShadronTimer;
 	MobEventTasks Tasks;
-	ScriptedInstance* pInstance;
 
     void Reset()
     {
@@ -994,7 +991,6 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 
 	MobEventTasks Tasks;
 	bool m_bIsHeroic;
-    ScriptedInstance* pInstance;
 
     void Reset()
     {
@@ -1056,7 +1052,6 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()

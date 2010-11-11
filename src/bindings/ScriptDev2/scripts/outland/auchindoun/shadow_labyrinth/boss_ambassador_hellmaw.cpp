@@ -52,7 +52,6 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 EventCheck_Timer;

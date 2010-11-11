@@ -66,8 +66,6 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     std::list<uint64> m_lSparkGUIDList;
 
     bool m_bIsRegularMode;
@@ -329,8 +327,6 @@ struct MANGOS_DLL_DECL mob_spark_of_ionarAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     void Reset() { }
 

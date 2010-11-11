@@ -61,7 +61,6 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 

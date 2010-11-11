@@ -81,7 +81,6 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool isTeleported;
