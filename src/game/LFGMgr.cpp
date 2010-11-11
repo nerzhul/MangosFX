@@ -1686,7 +1686,7 @@ void LFGMgr::InitBoot(Group* grp, uint32 iLowGuid, uint32 vLowguid, std::string 
         }
     }
 
-    for (PlayerSet::const_iterator it = players.begin(); it != players.end(); ++it)
+	for (PlayerSet::const_iterator it = players.begin(); it != players.end(); ++it)
         (*it)->GetSession()->SendLfgBootPlayer(pBoot);
 
     grp->SetLfgKickActive(true);
