@@ -14,12 +14,20 @@ enum
     NPC_SKARVALD                = 24200,
     NPC_DALRONN                 = 24201,
 
+	TYPE_KELESETH				= 0,
+	TYPE_SKARVALD				= 1,
+	TYPE_INGVAR					= 2,
+
     GO_BELLOW_1                 = 186688,
     GO_BELLOW_2                 = 186689,
     GO_BELLOW_3                 = 186690,
     GO_FORGEFIRE_1              = 186692,
     GO_FORGEFIRE_2              = 186693,
-    GO_FORGEFIRE_3              = 186691
+    GO_FORGEFIRE_3              = 186691,
+
+	GO_DOOR_BOSS_2				= 186608,
+	GO_DOOR_BOSS_3				= 186612,
+	GO_DOOR_END					= 186694,
 };
 
 #endif

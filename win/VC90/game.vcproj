@@ -862,6 +862,14 @@
 					RelativePath="..\..\src\game\SpellHandler.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\game\SpellMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\SpellMgr.h"
+					>
+				</File>
 				<Filter
 					Name="ClassSpell"
 					>
@@ -1388,23 +1396,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\SpellMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\SpellMgr.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\StatSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TemporarySummon.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TemporarySummon.h"
 				>
 			</File>
 			<File
@@ -1456,6 +1448,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\Player.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\TemporarySummon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\TemporarySummon.h"
 					>
 				</File>
 				<File

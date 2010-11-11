@@ -114,6 +114,13 @@ struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public LibDevFSAI
             {
 				if(Creature* m_BossGhost = GetGuidCreature(m_uiGhostGUID))
 					m_BossGhost->ForcedDespawn();
+
+				if(Creature* cr = me->GetClosestCreatureWithEntry(NPC_SKARVALD,150.0f))
+					cr->GetClosestCreatureWithEntry(NPC_SKARVALD,150.0f);
+				if(Creature* cr = me->GetClosestCreatureWithEntry(NPC_DALRONN,150.0f))
+					cr->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
+
+				SetInstanceData(TYPE_SKARVALD,DONE);
             }
         }
     }
@@ -138,6 +145,8 @@ struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
 	void Reset()
     {
 		ResetTimers();
+		if(me->GetEntry() != NPC_SKA_GHOST)
+			SetInstanceData(TYPE_SKARVALD,NOT_STARTED);
         m_uiYellDelayTimer = 0;
     }
 
@@ -147,6 +156,7 @@ struct MANGOS_DLL_DECL boss_skarvaldAI : public boss_s_and_d_dummyAI
 		{
 			DoScriptText(m_aYell[0].m_iTextId, me);
 			m_uiYellDelayTimer = 5000;
+			SetInstanceData(TYPE_SKARVALD,IN_PROGRESS);
 		}
     }
 

@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
                 case 2: uiGOBellow = GO_BELLOW_3; break;
             }
 
-            if (GameObject* pGOTemp = pInstance->instance->GetGameObject(pInstance->GetData64(uiGOBellow)))
+            if (GameObject* pGOTemp = pInstance->GetGoInMap(uiGOBellow))
                 lGOList.push_back(pGOTemp);
         }
 

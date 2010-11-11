@@ -2618,10 +2618,7 @@ bool InstanceMap::Add(Player *player)
 		}
 
 		if(dId > 0 && i_data->GetLFGDungeon() == 0)
-		{
-			error_log("dId %u fianl",dId);
 			i_data->SetLFGDungeon(dId);
-		}
 
         i_data->OnPlayerEnter(player);
 	}

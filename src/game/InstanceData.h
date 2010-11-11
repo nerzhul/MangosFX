@@ -31,6 +31,15 @@ class GameObject;
 
 #define DATA_NB_BOSS_DOWN 999
 
+enum EncounterState
+{
+    NOT_STARTED   = 0,
+    IN_PROGRESS   = 1,
+    FAIL          = 2,
+    DONE          = 3,
+    SPECIAL       = 4
+};
+
 class MANGOS_DLL_SPEC InstanceData
 {
     public:
@@ -119,7 +128,6 @@ class MANGOS_DLL_SPEC InstanceData
 			if(!u) return NULL;
 			return (u->GetTypeId() == TYPEID_UNIT) ? (Creature*)GetUnitInMap(guid) : NULL; 
 		}
-	
-	
+
 };
 #endif
