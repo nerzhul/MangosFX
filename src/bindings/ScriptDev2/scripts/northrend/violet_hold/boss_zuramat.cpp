@@ -16,13 +16,13 @@ enum
 struct MANGOS_DLL_DECL add_zuramatAI: public ScriptedAI
 {
 	uint32 move_Timer;
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	float x,y,z;
 
 	add_zuramatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
 	}
@@ -78,12 +78,12 @@ struct MANGOS_DLL_DECL boss_zuramatAI : public ScriptedAI
 	 
 	boss_zuramatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	    
 	void Aggro(Unit* pWho)

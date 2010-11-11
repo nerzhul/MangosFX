@@ -44,12 +44,12 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
 {
     boss_nethermancer_sepethreaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 frost_attack_Timer;
@@ -90,8 +90,8 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SEPETHREA, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_SEPETHREA, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -156,12 +156,12 @@ struct MANGOS_DLL_DECL mob_ragin_flamesAI : public ScriptedAI
 {
     mob_ragin_flamesAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 inferno_Timer;
@@ -210,9 +210,9 @@ struct MANGOS_DLL_DECL mob_ragin_flamesAI : public ScriptedAI
         //Check_Timer
         if (Check_Timer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                if (m_pInstance->GetData(TYPE_SEPETHREA) == DONE)
+                if (pInstance->GetData(TYPE_SEPETHREA) == DONE)
                 {
                     //remove
                     me->setDeathState(JUST_DIED);

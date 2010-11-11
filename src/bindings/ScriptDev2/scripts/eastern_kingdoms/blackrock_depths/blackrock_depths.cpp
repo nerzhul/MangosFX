@@ -107,12 +107,12 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
 {
     npc_grimstoneAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         MobSpawnId = urand(0, 5);
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint8 EventPhase;
     uint32 Event_Timer;
@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
 
     void DoGate(uint32 id, uint32 state)
     {
-        if (GameObject* pGo = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(id)))
+        if (GameObject* pGo = pInstance->instance->GetGameObject(pInstance->GetData64(id)))
             pGo->SetGoState(GOState(state));
 
         debug_log("SD2: npc_grimstone, arena gate update state.");
@@ -199,9 +199,9 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
                 Event_Timer = 5000;
                 break;
             case 5:
-                if (m_pInstance)
+                if (pInstance)
                 {
-                    m_pInstance->SetData(TYPE_RING_OF_LAW,DONE);
+                    pInstance->SetData(TYPE_RING_OF_LAW,DONE);
                     debug_log("SD2: npc_grimstone: event reached end and set complete.");
                 }
                 break;
@@ -210,7 +210,7 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (MobDeath_Timer)
@@ -537,11 +537,11 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
 {
     npc_rocknotAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 BreakKeg_Timer;
     uint32 BreakDoor_Timer;
@@ -557,13 +557,13 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
 
     void DoGo(uint32 id, uint32 state)
     {
-        if (GameObject* pGo = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(id)))
+        if (GameObject* pGo = pInstance->instance->GetGameObject(pInstance->GetData64(id)))
             pGo->SetGoState(GOState(state));
     }
 
     void WaypointReached(uint32 i)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         switch(i)
@@ -589,7 +589,7 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
 
     void UpdateEscortAI(const uint32 diff)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (BreakKeg_Timer)
@@ -610,12 +610,12 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
                 DoGo(DATA_GO_BAR_KEG_TRAP,0);               //doesn't work very well, leaving code here for future
                                                             //spell by trap has effect61, this indicate the bar go hostile
 
-                if (Unit *tmp = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_PHALANX)))
+                if (Unit *tmp = Unit::GetUnit(*me, pInstance->GetData64(DATA_PHALANX)))
                     tmp->setFaction(14);
 
                 //for later, this event(s) has alot more to it.
                 //optionally, DONE can trigger bar to go hostile.
-                m_pInstance->SetData(TYPE_BAR,DONE);
+                pInstance->SetData(TYPE_BAR,DONE);
 
                 BreakDoor_Timer = 0;
             }else BreakDoor_Timer -= diff;

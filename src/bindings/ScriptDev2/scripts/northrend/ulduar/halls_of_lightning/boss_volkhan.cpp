@@ -74,12 +74,12 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
 {
     boss_volkhanAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     std::list<uint64> m_lGolemGUIDList;
 
@@ -109,16 +109,16 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         DespawnGolem();
         m_lGolemGUIDList.clear();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VOLKHAN, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_VOLKHAN, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VOLKHAN, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_VOLKHAN, IN_PROGRESS);
     }
 
     void AttackStart(Unit* pWho)
@@ -139,8 +139,8 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
         DespawnGolem();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VOLKHAN, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_VOLKHAN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -334,12 +334,12 @@ struct MANGOS_DLL_DECL mob_molten_golemAI : public ScriptedAI
 {
     mob_molten_golemAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     bool m_bIsHeroic;
     bool m_bIsFrozen;

@@ -44,11 +44,11 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
 {
     boss_void_reaverAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Pounding_Timer;
     uint32 ArcaneOrb_Timer;
@@ -62,8 +62,8 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
         KnockAway_Timer = 30000;
         Berserk_Timer = 600000;
 
-        if (m_pInstance && me->isAlive())
-            m_pInstance->SetData(TYPE_VOIDREAVER, NOT_STARTED);
+        if (pInstance && me->isAlive())
+            pInstance->SetData(TYPE_VOIDREAVER, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -80,8 +80,8 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VOIDREAVER, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_VOIDREAVER, DONE);
     }
 
     void Aggro(Unit* pWho)
@@ -89,8 +89,8 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VOIDREAVER, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_VOIDREAVER, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

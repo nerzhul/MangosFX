@@ -42,11 +42,11 @@ struct MANGOS_DLL_DECL boss_captain_skarlocAI : public ScriptedAI
 {
     boss_captain_skarlocAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Holy_Light_Timer;
     uint32 Cleanse_Timer;
@@ -81,8 +81,8 @@ struct MANGOS_DLL_DECL boss_captain_skarlocAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance && m_pInstance->GetData(TYPE_THRALL_EVENT) == IN_PROGRESS)
-            m_pInstance->SetData(TYPE_THRALL_PART1, DONE);
+        if (pInstance && pInstance->GetData(TYPE_THRALL_EVENT) == IN_PROGRESS)
+            pInstance->SetData(TYPE_THRALL_PART1, DONE);
     }
 
     void UpdateAI(const uint32 diff)

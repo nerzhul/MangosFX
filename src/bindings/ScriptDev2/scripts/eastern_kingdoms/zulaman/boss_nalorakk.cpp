@@ -61,11 +61,11 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
 {
     boss_nalorakkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 ChangeForm_Timer;
     uint32 BrutalSwipe_Timer;
@@ -112,10 +112,10 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_NALORAKK, DONE);
+        pInstance->SetData(TYPE_NALORAKK, DONE);
     }
 
     void UpdateAI(const uint32 diff)

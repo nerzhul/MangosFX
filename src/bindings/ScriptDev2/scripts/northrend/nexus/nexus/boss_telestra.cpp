@@ -67,12 +67,12 @@ struct MANGOS_DLL_DECL boss_telestraAI : public ScriptedAI
 	
     boss_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	Creature* add[3];
@@ -198,12 +198,12 @@ struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
 	 
 	fire_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -235,12 +235,12 @@ struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
 {
 	frost_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -272,12 +272,12 @@ struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
 {
 	arca_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

@@ -80,11 +80,11 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 {
     boss_shahrazAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 TargetGUID[3];
     uint32 BeamTimer;
@@ -121,8 +121,8 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS);
 
         me->SetInCombatWithZone();
 
@@ -131,8 +131,8 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_SHAHRAZ, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -142,8 +142,8 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHAHRAZ, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_SHAHRAZ, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

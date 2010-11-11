@@ -136,12 +136,12 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
     {
         m_uiLeftHeadGUID  = 0;
         m_uiRightHeadGUID = 0;
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint64 m_uiLeftHeadGUID;
@@ -191,8 +191,8 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
         m_uiThunderClap_Timer = 15000;
         m_uiResetThreat_Timer = 30000;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_OMROGG, NOT_STARTED); //End boss can use this later. O'mrogg must be defeated(DONE) or he will come to aid.
+        if (pInstance)
+            pInstance->SetData(TYPE_OMROGG, NOT_STARTED); //End boss can use this later. O'mrogg must be defeated(DONE) or he will come to aid.
     }
 
     void DoYellForThreat()
@@ -228,8 +228,8 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
             m_bAggroYell = true;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_OMROGG, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_OMROGG, IN_PROGRESS);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -284,8 +284,8 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
 
         ((mob_omrogg_headsAI*)((Creature*)pRightHead)->AI())->DoDeathYell();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_OMROGG, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_OMROGG, DONE);
     }
 
     void UpdateAI(const uint32 diff)

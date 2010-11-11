@@ -42,12 +42,12 @@ struct MANGOS_DLL_DECL boss_gatewatcher_iron_handAI : public ScriptedAI
 {
     boss_gatewatcher_iron_handAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 Shadow_Power_Timer;
@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_gatewatcher_iron_handAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH_1, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         //TODO: Add door check/open code

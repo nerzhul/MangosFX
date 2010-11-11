@@ -59,11 +59,11 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
 {
     boss_brutallusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiSlashTimer;
     uint32 m_uiBurnTimer;
@@ -80,16 +80,16 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
         m_uiLoveTimer = urand(10000, 17000);
 
         //TODO: correct me when pre-event implemented
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_BRUTALLUS, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(YELL_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_BRUTALLUS, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -106,8 +106,8 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
     {
         DoScriptText(YELL_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_BRUTALLUS, DONE);
     }
 
     void SpellHitTarget(Unit* pCaster, const SpellEntry* pSpell)

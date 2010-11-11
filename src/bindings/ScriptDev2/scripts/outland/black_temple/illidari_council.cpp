@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
 {
     mob_illidari_councilAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 
         for(uint8 i = 0; i < 4; ++i)
             Council[i] = 0;
@@ -199,7 +199,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 Council[4];
 
@@ -237,16 +237,16 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetDisplayId(11686);
 
-        if (m_pInstance)
+        if (pInstance)
         {
             //if already done, not do anything
-            if (m_pInstance->GetData(TYPE_COUNCIL) == DONE)
+            if (pInstance->GetData(TYPE_COUNCIL) == DONE)
                 return;
 
-            if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
+            if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
                 VoiceTrigger->AI()->EnterEvadeMode();
 
-            m_pInstance->SetData(TYPE_COUNCIL, NOT_STARTED);
+            pInstance->SetData(TYPE_COUNCIL, NOT_STARTED);
         }
     }
 
@@ -255,18 +255,18 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
 
     void StartEvent(Unit *target)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (target && target->isAlive() && !EventBegun)
         {
-            Council[0] = m_pInstance->GetData64(DATA_GATHIOSTHESHATTERER);
-            Council[1] = m_pInstance->GetData64(DATA_HIGHNETHERMANCERZEREVOR);
-            Council[2] = m_pInstance->GetData64(DATA_LADYMALANDE);
-            Council[3] = m_pInstance->GetData64(DATA_VERASDARKSHADOW);
+            Council[0] = pInstance->GetData64(DATA_GATHIOSTHESHATTERER);
+            Council[1] = pInstance->GetData64(DATA_HIGHNETHERMANCERZEREVOR);
+            Council[2] = pInstance->GetData64(DATA_LADYMALANDE);
+            Council[3] = pInstance->GetData64(DATA_VERASDARKSHADOW);
 
             // Start the event for the Voice Trigger
-            if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
+            if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
             {
                 ((mob_blood_elf_council_voice_triggerAI*)VoiceTrigger->AI())->LoadCouncilGUIDs();
                 ((mob_blood_elf_council_voice_triggerAI*)VoiceTrigger->AI())->EventStarted = true;
@@ -283,7 +283,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
                 }
             }
 
-            m_pInstance->SetData(TYPE_COUNCIL, IN_PROGRESS);
+            pInstance->SetData(TYPE_COUNCIL, IN_PROGRESS);
 
             EventBegun = true;
         }
@@ -300,12 +300,12 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
             {
                 if (DeathCount > 3)
                 {
-                    if (m_pInstance)
+                    if (pInstance)
                     {
-                        if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
+                        if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
                             VoiceTrigger->DealDamage(VoiceTrigger, VoiceTrigger->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 
-                        m_pInstance->SetData(TYPE_COUNCIL, DONE);
+                        pInstance->SetData(TYPE_COUNCIL, DONE);
                     }
                     me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                     return;
@@ -357,7 +357,7 @@ struct MANGOS_DLL_DECL boss_illidari_councilAI : public ScriptedAI
 {
     boss_illidari_councilAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 
         for(uint8 i = 0; i < 4; ++i)
             Council[i] = 0;
@@ -365,7 +365,7 @@ struct MANGOS_DLL_DECL boss_illidari_councilAI : public ScriptedAI
         LoadedGUIDs = false;
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 Council[4];
 
@@ -373,9 +373,9 @@ struct MANGOS_DLL_DECL boss_illidari_councilAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            Creature* Controller = ((Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_ILLIDARICOUNCIL)));
+            Creature* Controller = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_ILLIDARICOUNCIL)));
             if (Controller)
                 ((mob_illidari_councilAI*)Controller->AI())->StartEvent(pWho);
         }
@@ -411,16 +411,16 @@ struct MANGOS_DLL_DECL boss_illidari_councilAI : public ScriptedAI
 
     void LoadGUIDs()
     {
-        if (!m_pInstance)
+        if (!pInstance)
         {
             error_log(ERROR_INST_DATA);
             return;
         }
 
-        Council[0] = m_pInstance->GetData64(DATA_LADYMALANDE);
-        Council[1] = m_pInstance->GetData64(DATA_HIGHNETHERMANCERZEREVOR);
-        Council[2] = m_pInstance->GetData64(DATA_GATHIOSTHESHATTERER);
-        Council[3] = m_pInstance->GetData64(DATA_VERASDARKSHADOW);
+        Council[0] = pInstance->GetData64(DATA_LADYMALANDE);
+        Council[1] = pInstance->GetData64(DATA_HIGHNETHERMANCERZEREVOR);
+        Council[2] = pInstance->GetData64(DATA_GATHIOSTHESHATTERER);
+        Council[3] = pInstance->GetData64(DATA_VERASDARKSHADOW);
 
         LoadedGUIDs = true;
     }

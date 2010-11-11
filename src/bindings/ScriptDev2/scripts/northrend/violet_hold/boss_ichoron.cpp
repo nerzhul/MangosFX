@@ -57,17 +57,17 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 	 
 	boss_ichoronAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	   
 	void JustDied(Unit* pWho)
 	{
-		m_pInstance->SetData(3,1);
+		pInstance->SetData(3,1);
 		DoScriptText(SOUND_DEAD,me);
 		Tasks.CleanMyAdds();
 	}

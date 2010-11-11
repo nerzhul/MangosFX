@@ -47,12 +47,12 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
 {
     boss_ambassador_hellmawAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 EventCheck_Timer;
@@ -73,17 +73,17 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
         IsBanished = true;
         Enraged = false;
 
-        if (m_pInstance && me->isAlive())
+        if (pInstance && me->isAlive())
         {
-            if (m_pInstance->GetData(TYPE_OVERSEER) != DONE)
+            if (pInstance->GetData(TYPE_OVERSEER) != DONE)
                 me->CastSpell(me, SPELL_BANISH, true);
         }
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HELLMAW, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_HELLMAW, FAIL);
     }
 
     void WaypointReached(uint32 i)
@@ -98,15 +98,15 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
         IsBanished = false;
         Intro = true;
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(TYPE_HELLMAW) != FAIL)
+            if (pInstance->GetData(TYPE_HELLMAW) != FAIL)
             {
                 DoScriptText(SAY_INTRO, me);
                 Start(true, false, 0, NULL, false, true);
             }
 
-            m_pInstance->SetData(TYPE_HELLMAW, IN_PROGRESS);
+            pInstance->SetData(TYPE_HELLMAW, IN_PROGRESS);
         }
     }
 
@@ -137,8 +137,8 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HELLMAW, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_HELLMAW, DONE);
     }
 
     void UpdateEscortAI(const uint32 diff)
@@ -147,9 +147,9 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
         {
             if (EventCheck_Timer < diff)
             {
-                if (m_pInstance)
+                if (pInstance)
                 {
-                    if (m_pInstance->GetData(TYPE_OVERSEER) == DONE)
+                    if (pInstance->GetData(TYPE_OVERSEER) == DONE)
                     {
                         DoIntro();
                         return;

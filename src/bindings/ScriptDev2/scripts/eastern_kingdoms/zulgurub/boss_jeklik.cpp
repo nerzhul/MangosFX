@@ -44,11 +44,11 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
 {
     boss_jeklikAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Charge_Timer;
     uint32 SonicBurst_Timer;
@@ -87,8 +87,8 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_JEKLIK, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_JEKLIK, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -208,11 +208,11 @@ struct MANGOS_DLL_DECL mob_batriderAI : public ScriptedAI
 {
     mob_batriderAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Bomb_Timer;
     uint32 Check_Timer;
@@ -243,9 +243,9 @@ struct MANGOS_DLL_DECL mob_batriderAI : public ScriptedAI
         //Check_Timer
         if (Check_Timer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                if (m_pInstance->GetData(TYPE_JEKLIK) == DONE)
+                if (pInstance->GetData(TYPE_JEKLIK) == DONE)
                 {
                     me->setDeathState(JUST_DIED);
                     me->RemoveCorpse();

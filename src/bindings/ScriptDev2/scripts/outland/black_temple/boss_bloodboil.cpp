@@ -55,11 +55,11 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
 {
     boss_gurtogg_bloodboilAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 TargetGUID;
 
@@ -100,8 +100,8 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BLOODBOIL, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_BLOODBOIL, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -110,8 +110,8 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
 
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BLOODBOIL, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_BLOODBOIL, IN_PROGRESS);
     }
 
     void KilledUnit(Unit *victim)
@@ -121,8 +121,8 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BLOODBOIL, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_BLOODBOIL, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

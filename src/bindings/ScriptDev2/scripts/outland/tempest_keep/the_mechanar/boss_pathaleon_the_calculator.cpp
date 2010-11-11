@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL mob_nether_wraithAI : public ScriptedAI
 {
     mob_nether_wraithAI(Creature* pCreature) : ScriptedAI(pCreature) {Reset();}
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 ArcaneMissiles_Timer;
     uint32 Detonation_Timer;

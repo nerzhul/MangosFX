@@ -78,12 +78,12 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 {
     boss_felblood_kaelthasAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 FireballTimer;
@@ -128,11 +128,11 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 
         Phase = 0;
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(DATA_KAELTHAS_EVENT, NOT_STARTED);
+            pInstance->SetData(DATA_KAELTHAS_EVENT, NOT_STARTED);
 
-            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_KAEL_DOOR)))
+            if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);         // Open the big encounter door. Close it in Aggro and open it only in JustDied(and here)
                                                             // Small door opened after event are expected to be closed by default
         }
@@ -142,10 +142,10 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (GameObject* pEncounterDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_KAEL_DOOR)))
+        if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_DOOR)))
             pEncounterDoor->SetGoState(GO_STATE_ACTIVE);    // Open the encounter door
     }
 
@@ -157,10 +157,10 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (GameObject* pEncounterDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_KAEL_DOOR)))
+        if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_DOOR)))
             pEncounterDoor->SetGoState(GO_STATE_READY);     //Close the encounter door, open it in JustDied/Reset
     }
 
@@ -359,12 +359,12 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
                                 DoScriptText(SAY_GRAVITY_LAPSE, me);
                                 FirstGravityLapse = false;
 
-                                if (m_pInstance)
+                                if (pInstance)
                                 {
-                                    if (GameObject* pKaelLeft = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_KAEL_STATUE_LEFT)))
+                                    if (GameObject* pKaelLeft = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_STATUE_LEFT)))
                                         pKaelLeft->SetGoState(GO_STATE_ACTIVE);
 
-                                    if (GameObject* pKaelRight = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_KAEL_STATUE_RIGHT)))
+                                    if (GameObject* pKaelRight = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_STATUE_RIGHT)))
                                         pKaelRight->SetGoState(GO_STATE_ACTIVE);
                                 }
                             }
@@ -434,11 +434,11 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 {
     mob_felkael_phoenixAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     uint32 BurnTimer;
     uint32 Death_Timer;
     bool Rebirth;
@@ -468,7 +468,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 
         }
         //Don't really die in all phases of Kael'Thas
-        if (m_pInstance && m_pInstance->GetData(DATA_KAELTHAS_EVENT) == 0)
+        if (pInstance && pInstance->GetData(DATA_KAELTHAS_EVENT) == 0)
         {
             //prevent death
             damage = 0;

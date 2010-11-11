@@ -164,12 +164,12 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
 {
     boss_rivendare_naxxAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 UnholyShadow_Timer;
@@ -195,17 +195,17 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
         ShieldWall1 = true;
         ShieldWall2 = true;
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_FOUR_HORSEMEN, NOT_STARTED);
+            pInstance->SetData(TYPE_FOUR_HORSEMEN, NOT_STARTED);
 
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KORTHAZZ))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KORTHAZZ))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_BLAUMEUX))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_BLAUMEUX))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ZELIEK))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ZELIEK))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
         }
@@ -220,8 +220,8 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
             case 2: DoScriptText(SAY_RIVE_AGGRO3, me); break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_FOUR_HORSEMEN, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_FOUR_HORSEMEN, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* Victim)
@@ -237,21 +237,21 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
     {
         DoScriptText(SAY_RIVE_DEATH, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
             bool HorsemenDead = true;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KORTHAZZ))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KORTHAZZ))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_BLAUMEUX))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_BLAUMEUX))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ZELIEK))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ZELIEK))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
 
             if (HorsemenDead)
-                m_pInstance->SetData(TYPE_FOUR_HORSEMEN, DONE);
+                pInstance->SetData(TYPE_FOUR_HORSEMEN, DONE);
         }
     }
 

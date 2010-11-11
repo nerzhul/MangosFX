@@ -119,18 +119,18 @@ void hyjalAI::Reset()
     me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
     // Reset World States
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 0);
 
-    if (!m_pInstance)
+    if (!pInstance)
         return;
 
-    m_bIsFirstBossDead = m_uiBase ? m_pInstance->GetData(TYPE_KAZROGAL) : m_pInstance->GetData(TYPE_WINTERCHILL);
-    m_bIsSecondBossDead = m_uiBase ? m_pInstance->GetData(TYPE_AZGALOR) : m_pInstance->GetData(TYPE_ANETHERON);
+    m_bIsFirstBossDead = m_uiBase ? pInstance->GetData(TYPE_KAZROGAL) : pInstance->GetData(TYPE_WINTERCHILL);
+    m_bIsSecondBossDead = m_uiBase ? pInstance->GetData(TYPE_AZGALOR) : pInstance->GetData(TYPE_ANETHERON);
 
     // Reset Instance Data for trash count
-    m_pInstance->SetData(DATA_RESET_TRASH_COUNT, 0);
+    pInstance->SetData(DATA_RESET_TRASH_COUNT, 0);
 }
 
 void hyjalAI::EnterEvadeMode()
@@ -151,8 +151,8 @@ void hyjalAI::JustReachedHome()
     if (m_uiBase == BASE_ALLY)
         DoCastMe( SPELL_BRILLIANCE_AURA, true);
 
-    m_bIsFirstBossDead = m_uiBase ? m_pInstance->GetData(TYPE_KAZROGAL) : m_pInstance->GetData(TYPE_WINTERCHILL);
-    m_bIsSecondBossDead = m_uiBase ? m_pInstance->GetData(TYPE_AZGALOR) : m_pInstance->GetData(TYPE_ANETHERON);
+    m_bIsFirstBossDead = m_uiBase ? pInstance->GetData(TYPE_KAZROGAL) : pInstance->GetData(TYPE_WINTERCHILL);
+    m_bIsSecondBossDead = m_uiBase ? pInstance->GetData(TYPE_AZGALOR) : pInstance->GetData(TYPE_ANETHERON);
 }
 
 void hyjalAI::Aggro(Unit *who)
@@ -242,7 +242,7 @@ void hyjalAI::SummonNextWave()
     if (!urand(0, 3))
         DoTalk(RALLY);
 
-    if (!m_pInstance)
+    if (!pInstance)
     {
         error_log(ERROR_INST_DATA);
         return;
@@ -256,7 +256,7 @@ void hyjalAI::SummonNextWave()
         return;
     }
 
-    m_uiEnemyCount = m_pInstance->GetData(DATA_TRASH);
+    m_uiEnemyCount = pInstance->GetData(DATA_TRASH);
 
     for(uint8 i = 0; i < MAX_WAVE_MOB; ++i)
     {
@@ -272,11 +272,11 @@ void hyjalAI::SummonNextWave()
             stateValue -= MAX_WAVES;                        // Subtract 9 from it to give the proper wave number if we are greater than 8
 
         // Set world state to our current wave number
-        m_pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, stateValue);
+        pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, stateValue);
         // Enable world state
-        m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 1);
+        pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 1);
 
-        m_pInstance->SetData(DATA_TRASH, m_uiEnemyCount);   // Send data for instance script to update count
+        pInstance->SetData(DATA_TRASH, m_uiEnemyCount);   // Send data for instance script to update count
 
         if (!m_bDebugMode)
             m_uiNextWaveTimer = pWaveData->m_uiWaveTimer;
@@ -289,11 +289,11 @@ void hyjalAI::SummonNextWave()
     else
     {
         // Set world state for waves to 0 to disable it.
-        m_pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
-        m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 1);
+        pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
+        pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 1);
 
         // Set World State for enemies invading to 1.
-        m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 1);
+        pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 1);
 
         m_bIsSummoningWaves = false;
     }
@@ -305,7 +305,7 @@ void hyjalAI::SummonNextWave()
 
 void hyjalAI::StartEvent()
 {
-    if (!m_pInstance)
+    if (!pInstance)
         return;
 
     DoTalk(BEGIN);
@@ -318,9 +318,9 @@ void hyjalAI::StartEvent()
 
     me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
-    m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_WAVES, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
+    pInstance->DoUpdateWorldState(WORLD_STATE_ENEMYCOUNT, 0);
 }
 
 void hyjalAI::DoTalk(YellType pYellType)
@@ -365,8 +365,8 @@ void hyjalAI::SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)
 void hyjalAI::Retreat()
 {
     //this will trigger ancient gem respawn
-    if (m_pInstance)
-        m_pInstance->SetData(TYPE_RETREAT, SPECIAL);
+    if (pInstance)
+        pInstance->SetData(TYPE_RETREAT, SPECIAL);
 
     DoCastMe( SPELL_MASS_TELEPORT);
 
@@ -385,12 +385,12 @@ void hyjalAI::UpdateAI(const uint32 diff)
     if (!m_bIsEventInProgress)
         return;
 
-    if (m_bIsSummoningWaves && m_pInstance)
+    if (m_bIsSummoningWaves && pInstance)
     {
         if (m_uiWaveMoveTimer < diff)
         {
             // Skip the master timer, and start next wave in 5. Clear the list, it should not be any here now.
-            if (!m_pInstance->GetData(DATA_TRASH))
+            if (!pInstance->GetData(DATA_TRASH))
             {
                 lWaveMobGUIDList.clear();
                 m_uiNextWaveTimer = 5000;
@@ -400,7 +400,7 @@ void hyjalAI::UpdateAI(const uint32 diff)
             {
                 for(std::list<uint64>::iterator itr = lWaveMobGUIDList.begin(); itr != lWaveMobGUIDList.end(); ++itr)
                 {
-                    if (Creature* pTemp = m_pInstance->instance->GetCreature(*itr))
+                    if (Creature* pTemp = pInstance->instance->GetCreature(*itr))
                     {
                         if (!pTemp->isAlive() || pTemp->getVictim())
                             continue;
@@ -450,7 +450,7 @@ void hyjalAI::UpdateAI(const uint32 diff)
                     m_uiBossGUID[i] = 0;
 
                     // Reset world state for enemies to disable it
-                    m_pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
+                    pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 0);
                 }
             }
         }

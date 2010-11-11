@@ -60,11 +60,11 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 {
     boss_arlokkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiShadowWordPain_Timer;
     uint32 m_uiGouge_Timer;
@@ -109,8 +109,8 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ARLOKK, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_ARLOKK, NOT_STARTED);
 
         //we should be summoned, so despawn
         me->ForcedDespawn();
@@ -123,8 +123,8 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         me->SetDisplayId(MODEL_ID_NORMAL);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ARLOKK, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_ARLOKK, DONE);
     }
 
     void DoSummonPhanters()

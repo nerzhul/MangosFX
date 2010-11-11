@@ -48,12 +48,12 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
 {
     boss_venoxisAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_fDefaultSize = me->GetFloatValue(OBJECT_FIELD_SCALE_X);
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiHolyFire_Timer;
     uint32 m_uiHolyWrath_Timer;
@@ -113,11 +113,11 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_VENOXIS, DONE);
+            pInstance->SetData(TYPE_VENOXIS, DONE);
 
-            if (Unit* pHakkar = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_HAKKAR)))
+            if (Unit* pHakkar = Unit::GetUnit((*me), pInstance->GetData64(DATA_HAKKAR)))
                 pHakkar->SetMaxHealth(pHakkar->GetMaxHealth() - 60000);
         }
     }

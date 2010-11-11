@@ -45,13 +45,13 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
 {
     mob_dragonflayer_forge_masterAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         m_uiForgeEncounterId = 0;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiForgeEncounterId;
@@ -77,7 +77,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
                 case 2: uiGOBellow = GO_BELLOW_3; break;
             }
 
-            if (GameObject* pGOTemp = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(uiGOBellow)))
+            if (GameObject* pGOTemp = pInstance->instance->GetGameObject(pInstance->GetData64(uiGOBellow)))
                 lGOList.push_back(pGOTemp);
         }
 
@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
                 case GO_BELLOW_3: uiGOFire = GO_FORGEFIRE_3; break;
             }
 
-            if (GameObject* pGOTemp = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(uiGOFire)))
+            if (GameObject* pGOTemp = pInstance->instance->GetGameObject(pInstance->GetData64(uiGOFire)))
             {
                 if (pGOTemp->getLootState() == GO_READY)
                     pGOTemp->UseDoorOrButton(DAY);
@@ -124,8 +124,8 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(m_uiForgeEncounterId, DONE);
+        if (pInstance)
+            pInstance->SetData(m_uiForgeEncounterId, DONE);
     }
 
     void UpdateAI(const uint32 diff)

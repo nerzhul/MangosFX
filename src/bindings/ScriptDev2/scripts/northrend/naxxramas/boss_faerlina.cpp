@@ -126,12 +126,12 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 {
     mob_worshippersAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool m_bIsDead;
 
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
     void Reset()
     {
         m_bIsDead = false;
-		m_pInstance->SetData(TYPE_FAERLINA,NOT_STARTED);
+		pInstance->SetData(TYPE_FAERLINA,NOT_STARTED);
         m_uiFireball_Timer = 0;
         m_uiDeathDelay_Timer = 0;
     }
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
             me->RemoveAllAuras();
             me->AttackStop();
 
-			m_pInstance->SetData(TYPE_ENR_FAERLINA,0);
+			pInstance->SetData(TYPE_ENR_FAERLINA,0);
             DoCastMe( SPELL_WIDOWS_EMBRACE);
 
             m_bIsDead = true;
@@ -173,8 +173,8 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 
 	void JustDied(Unit* Killer)
 	{
-		m_pInstance->SetData(TYPE_ENR_FAERLINA,0);
-		m_pInstance->SetData(TYPE_FAERLINA,DONE);
+		pInstance->SetData(TYPE_ENR_FAERLINA,0);
+		pInstance->SetData(TYPE_FAERLINA,DONE);
 
 	}
 
@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
         if (m_uiDeathDelay_Timer != 0)
             if (m_uiDeathDelay_Timer <= diff)
             {
-				m_pInstance->SetData(TYPE_ENR_FAERLINA,0);
+				pInstance->SetData(TYPE_ENR_FAERLINA,0);
                 me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                 m_uiDeathDelay_Timer = 0;
             }
@@ -196,7 +196,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 
         if (m_uiFireball_Timer < diff)
         {
-			m_pInstance->SetData(TYPE_FAERLINA,IN_PROGRESS);
+			pInstance->SetData(TYPE_FAERLINA,IN_PROGRESS);
             DoCastVictim( m_bIsHeroic ? SPELL_FIREBALL_H : SPELL_FIREBALL);
             m_uiFireball_Timer = 7000 + rand()%4000;
         }

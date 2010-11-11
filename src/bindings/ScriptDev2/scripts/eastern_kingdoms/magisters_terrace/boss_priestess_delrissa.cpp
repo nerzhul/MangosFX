@@ -89,14 +89,14 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
 {
     boss_priestess_delrissaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         memset(&m_auiLackeyGUID, 0, sizeof(m_auiLackeyGUID));
         LackeyEntryList.clear();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     std::vector<uint32> LackeyEntryList;
@@ -126,8 +126,8 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
     //this mean she at some point evaded
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(DATA_DELRISSA_EVENT, FAIL);
+        if (pInstance)
+            pInstance->SetData(DATA_DELRISSA_EVENT, FAIL);
     }
 
     void Aggro(Unit* pWho)
@@ -146,8 +146,8 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
             }
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(DATA_DELRISSA_EVENT, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(DATA_DELRISSA_EVENT, IN_PROGRESS);
     }
 
     void InitializeLackeys()
@@ -213,11 +213,11 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (m_pInstance->GetData(DATA_DELRISSA_DEATH_COUNT) == MAX_ACTIVE_LACKEY)
-            m_pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
+        if (pInstance->GetData(DATA_DELRISSA_DEATH_COUNT) == MAX_ACTIVE_LACKEY)
+            pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
         else
         {
             if (me->HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE))
@@ -338,13 +338,13 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
 {
     boss_priestess_lackey_commonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         memset(&m_auiLackeyGUIDs, 0, sizeof(m_auiLackeyGUIDs));
         Reset();
         AcquireGUIDs();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 m_auiLackeyGUIDs[MAX_ACTIVE_LACKEY];
     uint32 m_uiResetThreatTimer;
@@ -361,7 +361,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         m_uiResetThreatTimer = urand(5000, 15000);
 
         // in case she is not alive and Reset was for some reason called, respawn her (most likely party wipe after killing her)
-        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_DELRISSA)))
+        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_DELRISSA)))
         {
             if (!pDelrissa->isAlive())
                 pDelrissa->Respawn();
@@ -373,7 +373,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         if (!pWho)
             return;
 
-        if (m_pInstance)
+        if (pInstance)
         {
             for(uint8 i = 0; i < MAX_ACTIVE_LACKEY; ++i)
             {
@@ -387,7 +387,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
                 }
             }
 
-            if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_DELRISSA)))
+            if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_DELRISSA)))
             {
                 if (pDelrissa->isAlive() && !pDelrissa->getVictim())
                 {
@@ -402,11 +402,11 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_DELRISSA));
-        uint32 uiLackeyDeathCount = m_pInstance->GetData(DATA_DELRISSA_DEATH_COUNT);
+        Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_DELRISSA));
+        uint32 uiLackeyDeathCount = pInstance->GetData(DATA_DELRISSA_DEATH_COUNT);
 
         if (!pDelrissa)
             return;
@@ -414,7 +414,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         //should delrissa really yell if dead?
         DoScriptText(LackeyDeath[uiLackeyDeathCount].id, pDelrissa);
 
-        m_pInstance->SetData(DATA_DELRISSA_DEATH_COUNT, SPECIAL);
+        pInstance->SetData(DATA_DELRISSA_DEATH_COUNT, SPECIAL);
 
         //increase local var, since we now may have four dead
         ++uiLackeyDeathCount;
@@ -427,26 +427,26 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
                 if (!pDelrissa->HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE))
                     pDelrissa->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-                m_pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
+                pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
             }
         }
     }
 
     void KilledUnit(Unit* pVictim)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_DELRISSA)))
+        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_DELRISSA)))
             pDelrissa->AI()->KilledUnit(pVictim);
     }
 
     void AcquireGUIDs()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_DELRISSA)))
+        if (Creature* pDelrissa = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_DELRISSA)))
         {
             for(uint8 i = 0; i < MAX_ACTIVE_LACKEY; ++i)
                 m_auiLackeyGUIDs[i] = ((boss_priestess_delrissaAI*)pDelrissa->AI())->m_auiLackeyGUID[i];

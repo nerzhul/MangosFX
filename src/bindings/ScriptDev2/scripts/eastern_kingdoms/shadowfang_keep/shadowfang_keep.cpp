@@ -53,12 +53,12 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
 {
     npc_shadowfang_prisonerAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_uiNpcEntry = pCreature->GetEntry();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     uint32 m_uiNpcEntry;
 
     void WaypointReached(uint32 uiPoint)
@@ -87,8 +87,8 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
                 else
                     DoScriptText(SAY_POST1_DOOR_AD, me);
 
-                if (m_pInstance)
-                    m_pInstance->SetData(TYPE_FREE_NPC, DONE);
+                if (pInstance)
+                    pInstance->SetData(TYPE_FREE_NPC, DONE);
                 break;
             case 13:
                 if (m_uiNpcEntry != NPC_ASH)

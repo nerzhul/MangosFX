@@ -67,11 +67,11 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
     mob_toc5_warriorAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 
 	void EnterEvadeMode()
 	{
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 				pTemp->SendMonsterMove(738.665771, 661.031433, 412.394623, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 738.665771, 661.031433, 412.394623, 4.698702);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -120,7 +120,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 				pTemp->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 746.864441, 660.918762, 411.695465, 4.698700);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -138,45 +138,45 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
+		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 			me->ForcedDespawn();
 		else
 		{
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
                 if (!pTemp0->isAlive())
-					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (!pTemp1->isAlive())
-							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 								if (!pTemp2->isAlive())
 								{
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData(DATA_TOC5_ANNOUNCER))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData(DATA_TOC5_ANNOUNCER))))
 										pTemp->SetVisibility(VISIBILITY_ON);
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -218,11 +218,11 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
     mob_toc5_mageAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -239,7 +239,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 
 	void EnterEvadeMode()
 	{
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -253,7 +253,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 				pTemp->SendMonsterMove(738.665771, 661.031433, 412.394623, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 738.665771, 661.031433, 412.394623, 4.698702);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -267,7 +267,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 				pTemp->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 746.864441, 660.918762, 411.695465, 4.698700);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -285,45 +285,45 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
+		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 			me->ForcedDespawn();
 		else
 		{
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
                 if (!pTemp0->isAlive())
-					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (!pTemp1->isAlive())
-							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 								if (!pTemp2->isAlive())
 								{
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData(DATA_TOC5_ANNOUNCER))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData(DATA_TOC5_ANNOUNCER))))
 										pTemp->SetVisibility(VISIBILITY_ON);
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -350,11 +350,11 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
     mob_toc5_shamanAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -379,7 +379,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 
 	void EnterEvadeMode()
 	{
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -393,7 +393,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 				pTemp->SendMonsterMove(738.665771, 661.031433, 412.394623, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 738.665771, 661.031433, 412.394623, 4.698702);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -407,7 +407,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 				pTemp->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 746.864441, 660.918762, 411.695465, 4.698700);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -425,45 +425,45 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
+		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 			me->ForcedDespawn();
 		else
 		{
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
                 if (!pTemp0->isAlive())
-					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (!pTemp1->isAlive())
-							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 								if (!pTemp2->isAlive())
 								{
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData(DATA_TOC5_ANNOUNCER))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData(DATA_TOC5_ANNOUNCER))))
 										pTemp->SetVisibility(VISIBILITY_ON);
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -487,29 +487,29 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 
 		if (Healing_Wave_Timer < diff)
         {
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					mob1_health = pTemp->GetHealth()*100 / pTemp->GetMaxHealth();
 				else
 					mob1_health = 100;
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					mob2_health = pTemp->GetHealth()*100 / pTemp->GetMaxHealth();
 				else
 					mob2_health = 100;
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					mob3_health = pTemp->GetHealth()*100 / pTemp->GetMaxHealth();
 				else
 					mob3_health = 100;
 			if (mob1_health < mob2_health && mob1_health < mob3_health && mob1_health < 70)
-				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 					DoCast(pTemp, m_bIsRegularMode ? SPELL_HEALING_WAVE : SPELL_HEALING_WAVE_H);
 			if (mob1_health > mob2_health && mob2_health < mob3_health && mob2_health < 70)
-				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 					DoCast(pTemp, m_bIsRegularMode ? SPELL_HEALING_WAVE : SPELL_HEALING_WAVE_H);
 			if (mob3_health < mob2_health && mob1_health > mob3_health && mob3_health < 70)
-				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+				if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 					DoCast(pTemp, m_bIsRegularMode ? SPELL_HEALING_WAVE : SPELL_HEALING_WAVE_H);
             Healing_Wave_Timer = 8000;
         }else Healing_Wave_Timer -= diff;
@@ -519,21 +519,21 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 			switch(urand(0, 2))
             {
                 case 0:
-					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 						if (pTemp->isAlive())
 							DoCast(pTemp, SPELL_EARTH_SHIELD);
 						else
 							DoCast(me, SPELL_EARTH_SHIELD);
                 break;
 				case 1:
-					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (pTemp->isAlive())
 							DoCast(pTemp, SPELL_EARTH_SHIELD);
 						else
 							DoCast(me, SPELL_EARTH_SHIELD);
                 break;
 				case 2:
-					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 						if (pTemp->isAlive())
 							DoCast(pTemp, SPELL_EARTH_SHIELD);
 						else
@@ -558,11 +558,11 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
     mob_toc5_hunterAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -587,7 +587,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 
 	void EnterEvadeMode()
 	{
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -601,7 +601,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 				pTemp->SendMonsterMove(738.665771, 661.031433, 412.394623, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 738.665771, 661.031433, 412.394623, 4.698702);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -615,7 +615,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 				pTemp->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 746.864441, 660.918762, 411.695465, 4.698700);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -633,45 +633,45 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
+		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 			me->ForcedDespawn();
 		else
 		{
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
                 if (!pTemp0->isAlive())
-					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (!pTemp1->isAlive())
-							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 								if (!pTemp2->isAlive())
 								{
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData(DATA_TOC5_ANNOUNCER))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData(DATA_TOC5_ANNOUNCER))))
 										pTemp->SetVisibility(VISIBILITY_ON);
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -742,11 +742,11 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
     mob_toc5_rogueAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -765,7 +765,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 
 	void EnterEvadeMode()
 	{
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -779,7 +779,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 				pTemp->SendMonsterMove(738.665771, 661.031433, 412.394623, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 738.665771, 661.031433, 412.394623, 4.698702);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -793,7 +793,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 				pTemp->SendMonsterMove(746.864441, 660.918762, 411.695465, SPLINETYPE_NORMAL, pTemp->GetSplineFlags(), 1);
 				pTemp->GetMap()->CreatureRelocation(pTemp, 746.864441, 660.918762, 411.695465, 4.698700);
 			}
-		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+		if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 			if (!pTemp->isAlive())
 			{
 				pTemp->Respawn();
@@ -811,45 +811,45 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
+		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 			me->ForcedDespawn();
 		else
 		{
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+		if (Creature* pTemp0 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
                 if (!pTemp0->isAlive())
-					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+					if (Creature* pTemp1 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 						if (!pTemp1->isAlive())
-							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+							if (Creature* pTemp2 = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 								if (!pTemp2->isAlive())
 								{
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData(DATA_TOC5_ANNOUNCER))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData(DATA_TOC5_ANNOUNCER))))
 										pTemp->SetVisibility(VISIBILITY_ON);
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_1))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_1))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_2))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_2))))
 										pTemp->ForcedDespawn();
-									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_CHAMPION_3))))
+									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									m_pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}

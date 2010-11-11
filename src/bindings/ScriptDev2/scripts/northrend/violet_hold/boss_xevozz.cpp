@@ -42,12 +42,12 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
 	 
 	boss_xevozzAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	    
@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
     }
 	void CleanAdds()
 	{
-        m_pInstance->SetData(2,1);
+        pInstance->SetData(2,1);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -129,13 +129,13 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 	uint32 move_Timer;
 	uint32 explode_Timer;
 	Creature* pXevozz;
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	float x,y,z;
 
 	add_xevozzAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
 		Reset();
 	}

@@ -44,13 +44,13 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
 {
     boss_archavonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         m_fDefaultMoveSpeed = pCreature->GetSpeedRate(MOVE_RUN);
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     float m_fDefaultMoveSpeed;
     uint32 m_uiEvadeCheckCooldown;
@@ -92,20 +92,20 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
         m_uiImpaleAfterStompTimer = 1000;
         m_bImpaleInProgress = false;
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_ARCHAVON, NOT_STARTED);
+        if(pInstance)
+            pInstance->SetData(TYPE_ARCHAVON, NOT_STARTED);
     }
 
     void Aggro(Unit *pWho)
     {
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_ARCHAVON, IN_PROGRESS);
+        if(pInstance)
+            pInstance->SetData(TYPE_ARCHAVON, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_ARCHAVON, DONE);
+        if(pInstance)
+            pInstance->SetData(TYPE_ARCHAVON, DONE);
 
 		GiveEmblemsToGroup((m_bIsRegularMode) ? VAILLANCE : HEROISME ,3);
     }

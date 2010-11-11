@@ -52,12 +52,12 @@ struct MANGOS_DLL_DECL boss_warchief_kargath_bladefistAI : public ScriptedAI
 {
     boss_warchief_kargath_bladefistAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     std::vector<uint64> adds;
@@ -152,12 +152,12 @@ struct MANGOS_DLL_DECL boss_warchief_kargath_bladefistAI : public ScriptedAI
 
     void removeAdds()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         for(std::vector<uint64>::iterator itr = adds.begin(); itr!= adds.end(); ++itr)
         {
-            if (Creature* pTemp = m_pInstance->instance->GetCreature(*itr))
+            if (Creature* pTemp = pInstance->instance->GetCreature(*itr))
                 pTemp->ForcedDespawn();
         }
 
@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL boss_warchief_kargath_bladefistAI : public ScriptedAI
 
         for(std::vector<uint64>::iterator itr = assassins.begin(); itr!= assassins.end(); ++itr)
         {
-            if (Creature* pTemp = m_pInstance->instance->GetCreature(*itr))
+            if (Creature* pTemp = pInstance->instance->GetCreature(*itr))
                 pTemp->ForcedDespawn();
         }
 

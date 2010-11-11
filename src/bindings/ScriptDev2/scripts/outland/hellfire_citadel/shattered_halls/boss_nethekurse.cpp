@@ -77,12 +77,12 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
 {
     boss_grand_warlock_nethekurseAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool IntroOnce;
@@ -191,8 +191,8 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
             IntroOnce = true;
             IsIntroEvent = true;
 
-            if (m_pInstance)
-                m_pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
+            if (pInstance)
+                pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
         }
 
         if (IsIntroEvent || !IsMainEvent)
@@ -231,14 +231,14 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
     {
         DoScriptText(SAY_DIE, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_NETHEKURSE,DONE);
+        pInstance->SetData(TYPE_NETHEKURSE,DONE);
 
-        if (m_pInstance->GetData64(DATA_NETHEKURSE_DOOR))
+        if (pInstance->GetData64(DATA_NETHEKURSE_DOOR))
         {
-            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_NETHEKURSE_DOOR)))
+            if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_NETHEKURSE_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
         }
     }
@@ -247,10 +247,10 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
     {
         if (IsIntroEvent)
         {
-            if (!m_pInstance)
+            if (!pInstance)
                 return;
 
-            if (m_pInstance->GetData(TYPE_NETHEKURSE) == IN_PROGRESS)
+            if (pInstance->GetData(TYPE_NETHEKURSE) == IN_PROGRESS)
             {
                 if (IntroEvent_Timer < diff)
                 {
@@ -307,11 +307,11 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
 {
     mob_fel_orc_convertAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     uint32 Hemorrhage_Timer;
 
     void Reset()
@@ -327,18 +327,18 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
 
     void Aggro(Unit* who)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData64(DATA_NETHEKURSE))
+            if (pInstance->GetData64(DATA_NETHEKURSE))
             {
-                Creature *pKurse = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_NETHEKURSE));
+                Creature *pKurse = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_NETHEKURSE));
                 if (pKurse && me->IsWithinDist(pKurse, 45.0f))
                 {
                     ((boss_grand_warlock_nethekurseAI*)pKurse->AI())->DoYellForPeonAggro();
 
-                    if (m_pInstance->GetData(TYPE_NETHEKURSE) == IN_PROGRESS)
+                    if (pInstance->GetData(TYPE_NETHEKURSE) == IN_PROGRESS)
                         return;
-                    else m_pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
+                    else pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
                 }
             }
         }
@@ -346,14 +346,14 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(TYPE_NETHEKURSE) != IN_PROGRESS)
+            if (pInstance->GetData(TYPE_NETHEKURSE) != IN_PROGRESS)
                 return;
 
-            if (m_pInstance->GetData64(DATA_NETHEKURSE))
+            if (pInstance->GetData64(DATA_NETHEKURSE))
             {
-                Creature *pKurse = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_NETHEKURSE));
+                Creature *pKurse = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_NETHEKURSE));
                 if (pKurse)
                     ((boss_grand_warlock_nethekurseAI*)pKurse->AI())->DoYellForPeonDeath();
             }

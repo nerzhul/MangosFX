@@ -34,11 +34,11 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
 {
     boss_magmusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiWarStomp_Timer;
     
@@ -53,20 +53,20 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IRON_HALL, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_IRON_HALL, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IRON_HALL, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_IRON_HALL, FAIL);
     }
 
     void JustDied(Unit* pVictim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IRON_HALL, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_IRON_HALL, DONE);
     }
 
     void UpdateAI(const uint32 diff)

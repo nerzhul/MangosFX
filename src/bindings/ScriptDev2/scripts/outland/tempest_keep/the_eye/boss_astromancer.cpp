@@ -70,14 +70,14 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
 {
     boss_high_astromancer_solarianAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 
         defaultarmor = me->GetArmor();
         defaultsize = me->GetFloatValue(OBJECT_FIELD_SCALE_X);
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 ArcaneMissiles_Timer;
     uint32 m_uiWrathOfTheAstromancer_Timer;
@@ -112,8 +112,8 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
         AppearDelay = false;
         Phase = 1;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ASTROMANCER, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_ASTROMANCER, NOT_STARTED);
 
         me->SetArmor(defaultarmor);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -139,8 +139,8 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
 
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ASTROMANCER, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_ASTROMANCER, DONE);
     }
 
     void Aggro(Unit *who)
@@ -148,8 +148,8 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ASTROMANCER, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_ASTROMANCER, IN_PROGRESS);
     }
 
     void SummonMinion(uint32 entry, float x, float y, float z)
@@ -386,11 +386,11 @@ struct MANGOS_DLL_DECL mob_solarium_priestAI : public ScriptedAI
 {
     mob_solarium_priestAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 healTimer;
     uint32 holysmiteTimer;
@@ -415,8 +415,8 @@ struct MANGOS_DLL_DECL mob_solarium_priestAI : public ScriptedAI
             switch(urand(0, 1))
             {
                 case 0:
-                    if (m_pInstance)
-                        target = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ASTROMANCER));
+                    if (pInstance)
+                        target = Unit::GetUnit((*me), pInstance->GetData64(DATA_ASTROMANCER));
                     break;
                 case 1:
                     target = me;

@@ -59,12 +59,12 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 {
     boss_thorimAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	uint8 phase;
@@ -93,15 +93,15 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_STORMHAMMER_25,35000,35000,0,TARGET_RANDOM,1);
 			Tasks.AddEvent(SPELL_CHAIN_LIGHTNING_25,25000,25000,0,TARGET_RANDOM,2);
 		}
-		m_pInstance->SetData(DATA_THORIM_ADDS,0);
+		pInstance->SetData(DATA_THORIM_ADDS,0);
 		CheckPlayer_Timer = 1000;
 		SpawnTimer = 1000;
 		SpawnCount = 0;
 		Thunder_Timer = 15000;
-		if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_THORIM_BIGADD))))
+		if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_THORIM_BIGADD))))
 			pSerpent->Respawn();
 
-		if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_THORIM_DOOR)))
+		if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_THORIM_DOOR)))
              pDoor->SetGoState(GO_STATE_ACTIVE);
 
 		CheckDistanceTimer = 2500;
@@ -117,8 +117,8 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_THORIM, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_THORIM, DONE);
 
 		Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
@@ -126,8 +126,8 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_THORIM, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_THORIM, IN_PROGRESS);
 
 		DoCastMe(SPELL_STEALTH_OF_LIGHT);
     }
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 		AggroAllPlayers(400.0f);
 
 		phase = 1;
-		if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_THORIM_DOOR)))
+		if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_THORIM_DOOR)))
             pDoor->SetGoState(GO_STATE_ACTIVE);
 		SetCombatMovement(false);
 		Relocate(2134.884f,-290.130f,438.247f);
@@ -169,7 +169,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 								me->RemoveAurasDueToSpell(SPELL_STEALTH_OF_LIGHT);
 								SetCombatMovement(true);
 
-								if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_THORIM_BIGADD))))
+								if (Creature* pSerpent = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_THORIM_BIGADD))))
 									Relocate(pSerpent);
 							}
 					}
@@ -181,7 +181,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 
 			if(Thunder_Timer <= diff)
 			{
-				m_pInstance->SetData(DATA_THORIM_ORB,0);
+				pInstance->SetData(DATA_THORIM_ORB,0);
 				Thunder_Timer = 15000;
 			}
 			else
@@ -267,12 +267,12 @@ struct MANGOS_DLL_DECL boss_addThorimAI : public ScriptedAI
 {
     boss_addThorimAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -293,7 +293,7 @@ struct MANGOS_DLL_DECL boss_addThorimAI : public ScriptedAI
 
     void JustDied(Unit* victim)
     {
-      if (Creature* Thorim = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(TYPE_THORIM))))
+      if (Creature* Thorim = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(TYPE_THORIM))))
 		{
 			((boss_thorimAI*)Thorim->AI())->StartEvent(victim);
 		}
@@ -321,12 +321,12 @@ struct MANGOS_DLL_DECL boss_runegiantAI : public ScriptedAI
 {
     boss_runegiantAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -356,12 +356,12 @@ struct MANGOS_DLL_DECL boss_runecolossusAI : public ScriptedAI
 {
     boss_runecolossusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

@@ -114,11 +114,11 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
     {
         m_bRaidWiped = false;
         m_uiEventId  = 0;
-        m_pInstance  = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance  = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint64 m_uiSpotlightGUID;
 
@@ -140,34 +140,34 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
 
         m_bPerformanceReady = false;
 
-        if (m_pInstance)
-            m_uiEventId = m_pInstance->GetData(DATA_OPERA_PERFORMANCE);
+        if (pInstance)
+            m_uiEventId = pInstance->GetData(DATA_OPERA_PERFORMANCE);
     }
 
     void StartEvent()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_OPERA, IN_PROGRESS);
+        pInstance->SetData(TYPE_OPERA, IN_PROGRESS);
 
         //resets count for this event, in case earlier failed
         if (m_uiEventId == EVENT_OZ)
-            m_pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, IN_PROGRESS);
+            pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, IN_PROGRESS);
 
         Start(false, false, 0, NULL, true);
     }
 
     void WaypointReached(uint32 uiPointId)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         switch(uiPointId)
         {
             case 0:
                 me->CastSpell(me, SPELL_TUXEDO, false);
-                m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT));
+                pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_STAGEDOORLEFT));
                 break;
             case 4:
                 m_uiTalkCount = 0;
@@ -183,12 +183,12 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
                 }
                 break;
             case 8:
-                m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT));
+                pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_STAGEDOORLEFT));
                 m_bPerformanceReady = true;
                 break;
             case 9:
                 PrepareEncounter();
-                m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_CURTAINS));
+                pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_CURTAINS));
                 break;
         }
     }

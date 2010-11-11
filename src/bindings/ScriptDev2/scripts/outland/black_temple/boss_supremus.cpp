@@ -154,11 +154,11 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
 {
     boss_supremusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 SummonFlameTimer;
     uint32 SwitchTargetTimer;
@@ -183,22 +183,22 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SUPREMUS, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_SUPREMUS, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SUPREMUS, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_SUPREMUS, IN_PROGRESS);
     }
 
     void JustDied(Unit *killer)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SUPREMUS, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_SUPREMUS, DONE);
     }
 
     float CalculateRandomCoord(float initial)

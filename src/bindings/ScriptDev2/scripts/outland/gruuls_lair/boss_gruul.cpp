@@ -56,11 +56,11 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
 {
     boss_gruulAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiGrowth_Timer;
     uint32 m_uiCaveIn_Timer;
@@ -86,16 +86,16 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_GRUUL_EVENT, IN_PROGRESS);
+        pInstance->SetData(TYPE_GRUUL_EVENT, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GRUUL_EVENT, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_GRUUL_EVENT, NOT_STARTED);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -112,10 +112,10 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_GRUUL_EVENT, DONE);
+        pInstance->SetData(TYPE_GRUUL_EVENT, DONE);
     }
 
     void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)

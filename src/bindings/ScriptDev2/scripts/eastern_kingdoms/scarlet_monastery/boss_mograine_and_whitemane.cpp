@@ -55,11 +55,11 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
 {
     boss_scarlet_commander_mograineAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiCrusaderStrike_Timer;
     uint32 m_uiHammerOfJustice_Timer;
@@ -82,10 +82,10 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         m_bHeal = false;
         m_bFakeDeath = false;
 
-		if (!m_pInstance)
+		if (!pInstance)
             return;
 
-        if (Creature* pWhitemane = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_WHITEMANE)))
+        if (Creature* pWhitemane = pInstance->instance->GetCreature(pInstance->GetData64(DATA_WHITEMANE)))
         {
             if (me->isAlive() && !pWhitemane->isAlive())
                 pWhitemane->Respawn();
@@ -111,13 +111,13 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         if (uiDamage < me->GetHealth() || m_bHasDied)
             return;
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         //On first death, fake death and open door, as well as initiate whitemane if exist
-        if (Creature* pWhitemane = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_WHITEMANE)))
+        if (Creature* pWhitemane = pInstance->instance->GetCreature(pInstance->GetData64(DATA_WHITEMANE)))
         {
-            m_pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, IN_PROGRESS);
+            pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, IN_PROGRESS);
 
             pWhitemane->GetMotionMaster()->MovePoint(1,1163.113370,1398.856812,32.527786);
 
@@ -151,8 +151,8 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
             DoScriptText(SAY_MO_RESSURECTED, me);
             m_bFakeDeath = false;
 
-            if (m_pInstance)
-                m_pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, SPECIAL);
+            if (pInstance)
+                pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, SPECIAL);
         }
     }
 
@@ -161,10 +161,10 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-        if (m_bHasDied && !m_bHeal && m_pInstance && m_pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == SPECIAL)
+        if (m_bHasDied && !m_bHeal && pInstance && pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == SPECIAL)
         {
             //On ressurection, stop fake death and heal whitemane and resume fight
-            if (Creature* pWhitemane = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_WHITEMANE)))
+            if (Creature* pWhitemane = pInstance->instance->GetCreature(pInstance->GetData64(DATA_WHITEMANE)))
             {
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetStandState(UNIT_STAND_STATE_STAND);
@@ -206,11 +206,11 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
 {
     boss_high_inquisitor_whitemaneAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiHeal_Timer;
     uint32 m_uiPowerWordShield_Timer;
@@ -230,10 +230,10 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         m_bCanResurrectCheck = false;
         m_bCanResurrect = false;
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pMograine = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_MOGRAINE)))
+        if (Creature* pMograine = pInstance->instance->GetCreature(pInstance->GetData64(DATA_MOGRAINE)))
         {
             if (me->isAlive() && !pMograine->isAlive())
                 pMograine->Respawn();
@@ -245,10 +245,10 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
     void JustReachedHome()
     {
         
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (!(m_pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == NOT_STARTED) || !(m_pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == FAIL))
-                m_pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, FAIL);
+            if (!(pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == NOT_STARTED) || !(pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == FAIL))
+                pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, FAIL);
         }
     }
 
@@ -271,7 +271,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
 
     void AttackStart(Unit* pWho)
     {
-        if (m_pInstance && (m_pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == NOT_STARTED || m_pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == FAIL))
+        if (pInstance && (pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == NOT_STARTED || pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == FAIL))
             return;
 
         ScriptedAI::AttackStart(pWho);
@@ -295,9 +295,9 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         if (m_bCanResurrect)
         {
             //When casting resuruction make sure to delay so on rez when reinstate battle deepsleep runs out
-            if (m_pInstance && m_uiWait_Timer < diff)
+            if (pInstance && m_uiWait_Timer < diff)
             {
-                if (Creature* pMograine = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_MOGRAINE)))
+                if (Creature* pMograine = pInstance->instance->GetCreature(pInstance->GetData64(DATA_MOGRAINE)))
                 {
                     DoCast(pMograine, SPELL_SCARLETRESURRECTION);
                     DoScriptText(SAY_WH_RESSURECT, me);
@@ -331,9 +331,9 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
             if (me->GetHealth() <= me->GetMaxHealth()*0.75f)
                 pTarget = me;
 
-            if (m_pInstance)
+            if (pInstance)
             {
-                if (Creature* pMograine = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_MOGRAINE)))
+                if (Creature* pMograine = pInstance->instance->GetCreature(pInstance->GetData64(DATA_MOGRAINE)))
                 {
                     if (pMograine->isAlive() && pMograine->GetHealth() <= pMograine->GetMaxHealth()*0.75f)
                         pTarget = pMograine;

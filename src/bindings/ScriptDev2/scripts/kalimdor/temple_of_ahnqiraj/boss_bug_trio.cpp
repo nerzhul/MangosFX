@@ -39,11 +39,11 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
 {
     boss_kriAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Cleave_Timer;
     uint32 ToxicVolley_Timer;
@@ -64,13 +64,13 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
+            if (pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
                                                             // Unlootable if death
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-            m_pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
         }
     }
     void UpdateAI(const uint32 diff)
@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
             //Checking if Vem is dead. If yes we will enrage.
             if (Check_Timer < diff)
             {
-                if (m_pInstance && m_pInstance->GetData(TYPE_VEM) == DONE)
+                if (pInstance && pInstance->GetData(TYPE_VEM) == DONE)
                 {
                     DoCastMe( SPELL_ENRAGE);
                     VemDead = true;
@@ -121,11 +121,11 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
 {
     boss_vemAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Charge_Timer;
     uint32 KnockBack_Timer;
@@ -144,15 +144,15 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_VEM, DONE);
+            pInstance->SetData(TYPE_VEM, DONE);
 
             // Unlootable if death
-            if (m_pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
+            if (pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-            m_pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
         }
     }
 
@@ -195,11 +195,11 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
 {
     boss_yaujAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Heal_Timer;
     uint32 Fear_Timer;
@@ -218,12 +218,12 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
+            if (pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
                                                             // Unlootable if death
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
-            m_pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
         }
 
         for(int i = 0; i < 10; ++i)
@@ -252,10 +252,10 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
         //Casting Heal to other twins or herself.
         if (Heal_Timer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                Unit *pKri = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KRI));
-                Unit *pVem = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_VEM));
+                Unit *pKri = Unit::GetUnit((*me), pInstance->GetData64(DATA_KRI));
+                Unit *pVem = Unit::GetUnit((*me), pInstance->GetData64(DATA_VEM));
 
                 switch(urand(0, 2))
                 {
@@ -281,9 +281,9 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
         {
             if (!VemDead)
             {
-                if (m_pInstance)
+                if (pInstance)
                 {
-                    if (m_pInstance->GetData(TYPE_VEM) == DONE)
+                    if (pInstance->GetData(TYPE_VEM) == DONE)
                     {
                         DoCastMe( SPELL_ENRAGE);
                         VemDead = true;

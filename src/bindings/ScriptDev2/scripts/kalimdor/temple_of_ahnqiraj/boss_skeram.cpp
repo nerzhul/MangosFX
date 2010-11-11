@@ -53,12 +53,12 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
 {
     boss_skeramAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         IsImage = false;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 ArcaneExplosion_Timer;
     uint32 EarthShock_Timer;

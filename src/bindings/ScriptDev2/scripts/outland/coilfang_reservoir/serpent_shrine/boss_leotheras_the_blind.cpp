@@ -67,12 +67,12 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
 {
     boss_leotheras_the_blindAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_uiShadowLeo = 0;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;                          // the instance
+    ScriptedInstance* pInstance;                          // the instance
 
     // timers
     uint32 m_uiWhirlwind_Timer;
@@ -98,16 +98,16 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         if (me->GetDisplayId() != MODEL_NIGHTELF)
             me->SetDisplayId(MODEL_NIGHTELF);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_LEOTHERAS_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -143,8 +143,8 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
                 pShadowLeo->ForcedDespawn();
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE);
     }
 
     void UpdateAI(const uint32 diff)

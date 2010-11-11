@@ -32,12 +32,12 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 {
     boss_anubarakEdCAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		difficulty = me->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 	Difficulty difficulty;
 	uint32 Submerge_Timer;
@@ -77,14 +77,14 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 			Speak(CHAT_TYPE_SAY,16237,"Encore un âme pour repaître l'armée des morts");
 
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(m_pInstance)
-				m_pInstance->SetData(TYPE_TRY,1);
+			if(pInstance)
+				pInstance->SetData(TYPE_TRY,1);
     }
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ANUBARAK, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_ANUBARAK, DONE);
 
 		switch(difficulty)
 		{
@@ -108,8 +108,8 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
     {
         me->SetInCombatWithZone();
 		Speak(CHAT_TYPE_SAY,16234,"Ce terreau sera votre tombeau !");
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ANUBARAK, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_ANUBARAK, IN_PROGRESS);
     }
     void UpdateAI(const uint32 diff)
     {

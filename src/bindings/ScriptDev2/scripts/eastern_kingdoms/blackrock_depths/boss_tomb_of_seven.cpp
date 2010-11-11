@@ -106,11 +106,11 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 {
     boss_doomrelAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiCallToFight_Timer;
     uint8 m_uiDwarfRound;
@@ -131,14 +131,14 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
     }
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_TOMB_OF_SEVEN, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -152,17 +152,17 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
         switch(uiPhase)
         {
             case 0:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_ANGERREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_ANGERREL));
             case 1:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SEETHREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_SEETHREL));
             case 2:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_DOPEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_DOPEREL));
             case 3:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_GLOOMREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_GLOOMREL));
             case 4:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_VILEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_VILEREL));
             case 5:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_HATEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_HATEREL));
             case 6:
                 return me;
         }
@@ -190,9 +190,9 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(TYPE_TOMB_OF_SEVEN) == IN_PROGRESS)
+            if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == IN_PROGRESS)
             {
                 if (m_uiDwarfRound < MAX_DWARF)
                 {
@@ -206,7 +206,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
                         m_uiCallToFight_Timer -= diff;
                 }
             }
-            else if (m_pInstance->GetData(TYPE_TOMB_OF_SEVEN) == FAIL)
+            else if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == FAIL)
             {
                 for (m_uiDwarfRound = 0; m_uiDwarfRound < MAX_DWARF; ++m_uiDwarfRound)
                     CallToFight(false);
@@ -214,8 +214,8 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
                 m_uiDwarfRound = 0;
                 m_uiCallToFight_Timer = 0;
 
-                if (m_pInstance)
-                    m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
+                if (pInstance)
+                    pInstance->SetData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
             }
         }
 

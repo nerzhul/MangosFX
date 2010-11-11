@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 {
     npc_tempest_minionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_fDefaultX = me->GetPositionX();
         m_fDefaultY = me->GetPositionY();
         m_fDefaultZ = me->GetPositionZ();
@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     uint32 m_uiEvadeCheckCooldown;
 	MobEventTasks Tasks;
 
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
         if (uiDamage < me->GetHealth())
             return;
 
-        if (m_pInstance && (m_pInstance->GetData(TYPE_EMALON) != DONE))
+        if (pInstance && (pInstance->GetData(TYPE_EMALON) != DONE))
         {
             uiDamage = 0;
             FakeDeath();
@@ -131,7 +131,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 
         if (m_uiEvadeCheckCooldown < diff)
         {
-            Creature* pEmalon = (Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_EMALON));
+            Creature* pEmalon = (Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_EMALON));
             if ((pEmalon && pEmalon->IsInEvadeMode()) || (me->GetDistance2d(-219.119f, -289.037f) > 80.0f))
             {
                 EnterEvadeMode();
@@ -193,12 +193,12 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 {
     boss_emalonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     uint32 m_uiEvadeCheckCooldown;
 	MobEventTasks Tasks;
@@ -226,12 +226,12 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
         m_uiChainLightningCount = 0;
         m_uiOverchargeTimer = 45000;
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_auiTempestMinionGUID[0] = m_pInstance->GetData64(DATA_TEMPEST_MINION_1);
-            m_auiTempestMinionGUID[1] = m_pInstance->GetData64(DATA_TEMPEST_MINION_2);
-            m_auiTempestMinionGUID[2] = m_pInstance->GetData64(DATA_TEMPEST_MINION_3);
-            m_auiTempestMinionGUID[3] = m_pInstance->GetData64(DATA_TEMPEST_MINION_4);
+            m_auiTempestMinionGUID[0] = pInstance->GetData64(DATA_TEMPEST_MINION_1);
+            m_auiTempestMinionGUID[1] = pInstance->GetData64(DATA_TEMPEST_MINION_2);
+            m_auiTempestMinionGUID[2] = pInstance->GetData64(DATA_TEMPEST_MINION_3);
+            m_auiTempestMinionGUID[3] = pInstance->GetData64(DATA_TEMPEST_MINION_4);
         }
 
         for (uint8 i=0; i<4; ++i)
@@ -241,18 +241,18 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
                 pMinion->Respawn();
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_EMALON, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_EMALON, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_auiTempestMinionGUID[0] = m_pInstance->GetData64(DATA_TEMPEST_MINION_1);
-            m_auiTempestMinionGUID[1] = m_pInstance->GetData64(DATA_TEMPEST_MINION_2);
-            m_auiTempestMinionGUID[2] = m_pInstance->GetData64(DATA_TEMPEST_MINION_3);
-            m_auiTempestMinionGUID[3] = m_pInstance->GetData64(DATA_TEMPEST_MINION_4);
+            m_auiTempestMinionGUID[0] = pInstance->GetData64(DATA_TEMPEST_MINION_1);
+            m_auiTempestMinionGUID[1] = pInstance->GetData64(DATA_TEMPEST_MINION_2);
+            m_auiTempestMinionGUID[2] = pInstance->GetData64(DATA_TEMPEST_MINION_3);
+            m_auiTempestMinionGUID[3] = pInstance->GetData64(DATA_TEMPEST_MINION_4);
 			for (uint8 i=0; i<4; ++i)
 			{
 				if (Creature *pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[i]))
@@ -263,14 +263,14 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 
         me->CallForHelp(80.0f);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_EMALON, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_EMALON, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_EMALON, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_EMALON, DONE);
         for (uint8 i=0; i<4; ++i)
         {
             Creature *pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[i]);
@@ -347,11 +347,11 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 {
     npc_tempest_warderAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     bool m_bOvercharged;

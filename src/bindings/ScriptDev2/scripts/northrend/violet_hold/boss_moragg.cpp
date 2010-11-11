@@ -20,12 +20,12 @@ struct MANGOS_DLL_DECL boss_moraggAI : public ScriptedAI
 	 
 	boss_moraggAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	bool m_bIsHeroic;
 	    
     void UpdateAI(const uint32 diff)

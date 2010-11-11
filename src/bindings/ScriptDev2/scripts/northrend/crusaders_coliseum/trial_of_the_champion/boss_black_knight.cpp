@@ -60,11 +60,11 @@ struct MANGOS_DLL_DECL mob_toc5_risen_ghoulAI : public ScriptedAI
     mob_toc5_risen_ghoulAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Attack;
@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL mob_toc5_risen_ghoulAI : public ScriptedAI
 
 		if (Attack < diff)
         {
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_BLACK_KNIGHT))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_BLACK_KNIGHT))))
 				if (pTemp->isAlive())
 					if ((pTemp->GetHealth()*100 / pTemp->GetMaxHealth()) < 25)
 						DoCastMe(!m_bIsRegularMode ? SPELL_EXPLODE : SPELL_EXPLODE_H);
@@ -117,12 +117,12 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
     boss_black_knightAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -176,12 +176,12 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_BLACK_KNIGHT) == DONE)
+		if (pInstance->GetData(TYPE_BLACK_KNIGHT) == DONE)
 			me->ForcedDespawn();
 		else
-			m_pInstance->SetData(TYPE_BLACK_KNIGHT, IN_PROGRESS);
+			pInstance->SetData(TYPE_BLACK_KNIGHT, IN_PROGRESS);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
@@ -197,11 +197,11 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
 		if (phase3)
 		{
-			m_pInstance->SetData(TYPE_BLACK_KNIGHT, DONE);
+			pInstance->SetData(TYPE_BLACK_KNIGHT, DONE);
 			GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 			GiveRandomReward();
 		}
@@ -248,7 +248,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 
 		if (Summon_Ghoul < diff && phase1 && !ghoul)
         {
-			if (m_pInstance->GetData(DATA_TOC5_ANNOUNCER) == m_pInstance->GetData(DATA_JAEREN))
+			if (pInstance->GetData(DATA_TOC5_ANNOUNCER) == pInstance->GetData(DATA_JAEREN))
 				 me->SummonCreature(NPC_RISEN_JAEREN, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);
 			else
 				me->SummonCreature(NPC_RISEN_ARELAS, 0.0f, 0.0f, 0.0f, 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 5000);

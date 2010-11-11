@@ -33,11 +33,11 @@ struct MANGOS_DLL_DECL boss_baroness_anastariAI : public ScriptedAI
 {
     boss_baroness_anastariAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 BansheeWail_Timer;
     uint32 BansheeCurse_Timer;
@@ -54,8 +54,8 @@ struct MANGOS_DLL_DECL boss_baroness_anastariAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BARONESS,IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_BARONESS,IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

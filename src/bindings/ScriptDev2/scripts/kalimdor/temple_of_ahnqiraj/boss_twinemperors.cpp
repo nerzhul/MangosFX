@@ -67,7 +67,7 @@ class MANGOS_DLL_DECL BugAura : public Aura
 
 struct MANGOS_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 {
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     uint32 Heal_Timer;
     uint32 Teleport_Timer;
     bool AfterTeleport;
@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 
     boss_twinemperorsAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
     }
 
     void TwinReset()
@@ -102,9 +102,9 @@ struct MANGOS_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 
     Creature *GetOtherBoss()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            return (Creature *)Unit::GetUnit((*me), m_pInstance->GetData64(IAmVeklor() ? DATA_VEKNILASH : DATA_VEKLOR));
+            return (Creature *)Unit::GetUnit((*me), pInstance->GetData64(IAmVeklor() ? DATA_VEKNILASH : DATA_VEKLOR));
         }
         else
         {
@@ -263,7 +263,7 @@ struct MANGOS_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 
     void TeleportToMyBrother()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         Teleport_Timer = TELEPORTTIME;

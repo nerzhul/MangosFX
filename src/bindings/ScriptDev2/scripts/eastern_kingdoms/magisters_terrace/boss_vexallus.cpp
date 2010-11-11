@@ -61,12 +61,12 @@ struct MANGOS_DLL_DECL boss_vexallusAI : public ScriptedAI
 {
     boss_vexallusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 ChainLightningTimer;
@@ -83,8 +83,8 @@ struct MANGOS_DLL_DECL boss_vexallusAI : public ScriptedAI
         IntervalHealthAmount = 1;
         Enraged = false;
 
-        if (m_pInstance)
-            m_pInstance->SetData(DATA_VEXALLUS_EVENT, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(DATA_VEXALLUS_EVENT, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -94,16 +94,16 @@ struct MANGOS_DLL_DECL boss_vexallusAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(DATA_VEXALLUS_EVENT, DONE);
+        if (pInstance)
+            pInstance->SetData(DATA_VEXALLUS_EVENT, DONE);
     }
 
     void Aggro(Unit *who)
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(DATA_VEXALLUS_EVENT, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(DATA_VEXALLUS_EVENT, IN_PROGRESS);
     }
 
     void JustSummoned(Creature *summoned)

@@ -633,13 +633,13 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 {
     boss_Icehowl_AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
 
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 	Difficulty m_bIsHeroic;
 	uint8 phase;
@@ -666,13 +666,13 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
+        if (pInstance)
 		{
-            m_pInstance->SetData(TYPE_Icehowl, DONE);
-			m_pInstance->SetData(TYPE_EVENT_BEAST, DONE);
-			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_FORDRING))))
+            pInstance->SetData(TYPE_Icehowl, DONE);
+			pInstance->SetData(TYPE_EVENT_BEAST, DONE);
+			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FORDRING))))
 				Speak(CHAT_TYPE_SAY,16041,"La menagerie monstrueuse est vaincue !",tmp);
-			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ANNOUNCER))))
+			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ANNOUNCER))))
 				tmp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		}
 		switch(m_bIsHeroic)
@@ -696,16 +696,16 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(m_pInstance)
-				m_pInstance->SetData(TYPE_TRY,1);
+			if(pInstance)
+				pInstance->SetData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Icehowl, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_Icehowl, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

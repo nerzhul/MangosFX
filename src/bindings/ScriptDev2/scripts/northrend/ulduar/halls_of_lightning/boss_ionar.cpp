@@ -61,12 +61,12 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
 {
     boss_ionarAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     std::list<uint64> m_lSparkGUIDList;
 
@@ -119,14 +119,14 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IONAR, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_IONAR, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IONAR, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_IONAR, NOT_STARTED);
     }
 
     void AttackStart(Unit* pWho)
@@ -148,8 +148,8 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
         DespawnSpark();
 		me->SetVisibility(VISIBILITY_ON);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_IONAR, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_IONAR, DONE);
     }
 
     void KilledUnit(Unit *victim)
@@ -326,11 +326,11 @@ struct MANGOS_DLL_DECL mob_spark_of_ionarAI : public ScriptedAI
 {
     mob_spark_of_ionarAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     void Reset() { }
 
@@ -341,12 +341,12 @@ struct MANGOS_DLL_DECL mob_spark_of_ionarAI : public ScriptedAI
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
     {
-        if (uiType != POINT_MOTION_TYPE || !m_pInstance)
+        if (uiType != POINT_MOTION_TYPE || !pInstance)
             return;
 
         if (uiPointId == POINT_CALLBACK)
         {
-            if (Creature* pIonar = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_IONAR)))
+            if (Creature* pIonar = pInstance->instance->GetCreature(pInstance->GetData64(DATA_IONAR)))
             {
                 if (!pIonar->isAlive())
                 {

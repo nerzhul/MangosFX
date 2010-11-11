@@ -83,14 +83,14 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
 {
     boss_bjarngrimAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         m_uiStance = STANCE_DEFENSIVE;
         memset(&m_auiStormforgedLieutenantGUID, 0, sizeof(m_auiStormforgedLieutenantGUID));
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     bool m_bIsHeroic;
     bool m_bIsChangingStance;
@@ -154,8 +154,8 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
 
         SetEquipmentSlots(false, EQUIP_SWORD, EQUIP_SHIELD, EQUIP_NO_CHANGE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BJARNGRIM, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_BJARNGRIM, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -165,8 +165,8 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         //must get both lieutenants here and make sure they are with him
         me->CallForHelp(30.0f);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BJARNGRIM, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_BJARNGRIM, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -183,8 +183,8 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BJARNGRIM, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_BJARNGRIM, DONE);
     }
 
     //TODO: remove when removal is done by mangos
@@ -355,12 +355,12 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
 {
     mob_stormforged_lieutenantAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiArcWeld_Timer;
@@ -374,9 +374,9 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (Creature* pBjarngrim = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_BJARNGRIM)))
+            if (Creature* pBjarngrim = pInstance->instance->GetCreature(pInstance->GetData64(DATA_BJARNGRIM)))
             {
                 if (pBjarngrim->isAlive() && !pBjarngrim->getVictim())
                     pBjarngrim->AI()->AttackStart(pWho);
@@ -400,9 +400,9 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
 
         if (m_uiRenewSteel_Timer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                if (Creature* pBjarngrim = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_BJARNGRIM)))
+                if (Creature* pBjarngrim = pInstance->instance->GetCreature(pInstance->GetData64(DATA_BJARNGRIM)))
                 {
                     if (pBjarngrim->isAlive())
                         DoCast(pBjarngrim, m_bIsHeroic ? SPELL_RENEW_STEEL_H : SPELL_RENEW_STEEL_N);

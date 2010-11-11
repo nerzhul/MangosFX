@@ -54,11 +54,11 @@ struct MANGOS_DLL_DECL boss_majordomoAI : public ScriptedAI
 {
     boss_majordomoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 MagicReflection_Timer;
     uint32 DamageReflection_Timer;

@@ -44,11 +44,11 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
 {
     mob_naga_distillerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     void Reset()
     {
@@ -56,9 +56,9 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         //hack, due to really weird spell behaviour :(
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(TYPE_DISTILLER) == IN_PROGRESS)
+            if (pInstance->GetData(TYPE_DISTILLER) == IN_PROGRESS)
             {
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -73,15 +73,15 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
 
         DoCastMe(SPELL_WARLORDS_RAGE_NAGA,true);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_DISTILLER,IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_DISTILLER,IN_PROGRESS);
     }
 
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
         if (me->GetHealth() <= damage)
-            if (m_pInstance)
-                m_pInstance->SetData(TYPE_DISTILLER,DONE);
+            if (pInstance)
+                pInstance->SetData(TYPE_DISTILLER,DONE);
     }
 };
 
@@ -89,11 +89,11 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
 {
     boss_warlord_kalithreshAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 Reflection_Timer;
     uint32 Impale_Timer;
@@ -107,8 +107,8 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
         Rage_Timer = 45000;
         CanRage = false;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_WARLORD_KALITHRESH, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_WARLORD_KALITHRESH, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -120,8 +120,8 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
             case 2: DoScriptText(SAY_AGGRO3, me); break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_WARLORD_KALITHRESH, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_WARLORD_KALITHRESH, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* victim)
@@ -133,8 +133,8 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
     {
         //hack :(
         if (spell->Id == SPELL_WARLORDS_RAGE_PROC)
-            if (m_pInstance)
-                if (m_pInstance->GetData(TYPE_DISTILLER) == DONE)
+            if (pInstance)
+                if (pInstance->GetData(TYPE_DISTILLER) == DONE)
                     me->RemoveAurasDueToSpell(SPELL_WARLORDS_RAGE_PROC);
     }
 
@@ -142,8 +142,8 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_WARLORD_KALITHRESH, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_WARLORD_KALITHRESH, DONE);
     }
 
     void UpdateAI(const uint32 diff)

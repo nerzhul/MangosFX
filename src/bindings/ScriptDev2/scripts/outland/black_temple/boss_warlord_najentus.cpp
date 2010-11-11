@@ -52,11 +52,11 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
 {
     boss_najentusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiNeedleSpineTimer;
     uint32 m_uiEnrageTimer;
@@ -79,8 +79,8 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_NAJENTUS, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -90,8 +90,8 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_NAJENTUS, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }
@@ -113,8 +113,8 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAJENTUS, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_NAJENTUS, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, me);
 

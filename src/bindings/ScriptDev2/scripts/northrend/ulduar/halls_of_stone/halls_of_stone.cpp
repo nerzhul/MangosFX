@@ -142,13 +142,13 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
 {
     mob_tribuna_controllerAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         SetCombatMovement(false);
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
     std::list<Creature*> m_lKaddrakGUIDList;
@@ -268,12 +268,12 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
 {
     npc_brann_hosAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
     bool m_bIsBattle;
     bool m_bIsLowHP;
@@ -298,8 +298,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
 
             DespawnDwarf();
 
-            if(m_pInstance)
-                m_pInstance->SetData(TYPE_BRANN, NOT_STARTED);
+            if(pInstance)
+                pInstance->SetData(TYPE_BRANN, NOT_STARTED);
         }
     }
 
@@ -341,8 +341,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                 break;
             case 17:
                 DoScriptText(SAY_EVENT_INTRO_2, me);
-                if (m_pInstance)
-                    m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_TRIBUNAL_CONSOLE));
+                if (pInstance)
+                    pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_TRIBUNAL_CONSOLE));
                 me->SetStandState(UNIT_STAND_STATE_KNEEL);
                 SetEscortPaused(true);
                 JumpToNextStep(8500);
@@ -429,12 +429,12 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                 case 0: // unused
                     break;
                 case 1:
-                    if (m_pInstance)
+                    if (pInstance)
                     {
-                        if (m_pInstance->GetData(TYPE_BRANN) != NOT_STARTED)
+                        if (pInstance->GetData(TYPE_BRANN) != NOT_STARTED)
                             return;
 
-                        m_pInstance->SetData(TYPE_BRANN, IN_PROGRESS);
+                        pInstance->SetData(TYPE_BRANN, IN_PROGRESS);
                     }
                     m_bIsBattle = false;
                     DoScriptText(SAY_ESCORT_START, me);
@@ -445,8 +445,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(0);
                     break;
                 case 5:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_INTRO_3_ABED, pTemp);
                     JumpToNextStep(8500);
                     break;
@@ -455,15 +455,15 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(6500);
                     break;
                 case 7:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KADDRAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KADDRAK))))
                             DoScriptText(SAY_EVENT_A_2_KADD, pTemp);
                     JumpToNextStep(12500);
                     break;
                 case 8:
                     DoScriptText(SAY_EVENT_A_3, me);
-                    if (m_pInstance)
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_KADDRAK));
+                    if (pInstance)
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_KADDRAK));
                     if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_uiControllerGUID)))
                         ((mob_tribuna_controllerAI*)pTemp->AI())->m_bIsActivateKaddrak = true;
                     JumpToNextStep(5000);
@@ -477,16 +477,16 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(6000);
                     break;
                 case 11:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MARNAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MARNAK))))
                             DoScriptText(SAY_EVENT_B_2_MARN, pTemp);
                     SpawnDwarf(1);
                     JumpToNextStep(20000);
                     break;
                 case 12:
                     DoScriptText(SAY_EVENT_B_3, me);
-                    if (m_pInstance)
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_MARNAK));
+                    if (pInstance)
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_MARNAK));
                     if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_uiControllerGUID)))
                         ((mob_tribuna_controllerAI*)pTemp->AI())->m_bIsActivateMarnak = true;
                     JumpToNextStep(10000);
@@ -509,16 +509,16 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(20000);
                     break;
                 case 17:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_C_2_ABED, pTemp);
                     SpawnDwarf(1);
                     JumpToNextStep(20000);
                     break;
                 case 18:
                     DoScriptText(SAY_EVENT_C_3, me);
-                    if (m_pInstance)
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_ABEDNEUM));
+                    if (pInstance)
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_ABEDNEUM));
                     if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_uiControllerGUID)))
                         ((mob_tribuna_controllerAI*)pTemp->AI())->m_bIsActivateAbedneum = true;
                     JumpToNextStep(5000);
@@ -537,8 +537,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(20000);
                     break;
                 case 22:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_D_2_ABED, pTemp);
                     SpawnDwarf(1);
                     JumpToNextStep(5000);
@@ -561,8 +561,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(10000);
                     break;
                 case 27:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_D_4_ABED, pTemp);
                     SpawnDwarf(1);
                     JumpToNextStep(10000);
@@ -570,8 +570,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                 case 28:
                     DoScriptText(SAY_EVENT_END_01, me);
                     me->SetStandState(UNIT_STAND_STATE_STAND);
-                    if (m_pInstance)
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_SKY_FLOOR));
+                    if (pInstance)
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_SKY_FLOOR));
                     if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_uiControllerGUID)))
                         pTemp->DealDamage(pTemp, pTemp->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                     m_bIsBattle = true;
@@ -583,8 +583,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(5500);
                     break;
                 case 30:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_END_03_ABED, pTemp);
                     JumpToNextStep(8500);
                     break;
@@ -593,8 +593,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(11500);
                     break;
                 case 32:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_END_05_ABED, pTemp);
                     JumpToNextStep(11500);
                     break;
@@ -603,8 +603,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(4500);
                     break;
                 case 34:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_END_07_ABED, pTemp);
                     JumpToNextStep(22500);
                     break;
@@ -613,8 +613,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(7500);
                     break;
                 case 36:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KADDRAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KADDRAK))))
                             DoScriptText(SAY_EVENT_END_09_KADD, pTemp);
                     JumpToNextStep(18500);
                     break;
@@ -623,8 +623,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(5500);
                     break;
                 case 38:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KADDRAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KADDRAK))))
                             DoScriptText(SAY_EVENT_END_11_KADD, pTemp);
                     JumpToNextStep(20500);
                     break;
@@ -633,8 +633,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(2500);
                     break;
                 case 40:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_KADDRAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KADDRAK))))
                             DoScriptText(SAY_EVENT_END_13_KADD, pTemp);
                     JumpToNextStep(19500);
                     break;
@@ -643,8 +643,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(10500);
                     break;
                 case 42:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MARNAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MARNAK))))
                             DoScriptText(SAY_EVENT_END_15_MARN, pTemp);
                     JumpToNextStep(6500);
                     break;
@@ -653,8 +653,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(6500);
                     break;
                 case 44:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MARNAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MARNAK))))
                             DoScriptText(SAY_EVENT_END_17_MARN, pTemp);
                     JumpToNextStep(25500);
                     break;
@@ -663,8 +663,8 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(23500);
                     break;
                 case 46:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MARNAK))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MARNAK))))
                             DoScriptText(SAY_EVENT_END_19_MARN, pTemp);
                     JumpToNextStep(3500);
                     break;
@@ -673,20 +673,20 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                     JumpToNextStep(8500);
                     break;
                 case 48:
-                    if (m_pInstance)
-                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ABEDNEUM))))
+                    if (pInstance)
+                        if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ABEDNEUM))))
                             DoScriptText(SAY_EVENT_END_21_ABED, pTemp);
                     JumpToNextStep(5500);
                     break;
                 case 49:
                 {
-                    if (m_pInstance)
+                    if (pInstance)
                     {
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_KADDRAK));
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_MARNAK));
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_ABEDNEUM));
-                        m_pInstance->DoUseDoorOrButton(m_pInstance->GetData64(DATA_GO_SKY_FLOOR));
-                        m_pInstance->SetData(TYPE_BRANN, DONE);
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_KADDRAK));
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_MARNAK));
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_ABEDNEUM));
+                        pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_SKY_FLOOR));
+                        pInstance->SetData(TYPE_BRANN, DONE);
                     }
 
                     Player* pPlayer = GetPlayerForEscort();

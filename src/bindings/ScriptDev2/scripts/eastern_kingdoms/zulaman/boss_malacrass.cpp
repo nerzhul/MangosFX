@@ -127,13 +127,13 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 {
     boss_malacrassAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         memset(&m_auiAddGUIDs, 0, sizeof(m_auiAddGUIDs));
         m_lAddsEntryList.clear();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     std::list<uint32> m_lAddsEntryList;
     uint64 m_auiAddGUIDs[MAX_ACTIVE_ADDS];
@@ -142,16 +142,16 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
     {
         InitializeAdds();
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_MALACRASS, NOT_STARTED);
+        pInstance->SetData(TYPE_MALACRASS, NOT_STARTED);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MALACRASS, FAIL);
+        if (pInstance)
+            pInstance->SetData(TYPE_MALACRASS, FAIL);
 
         for(uint8 i = 0; i < MAX_ACTIVE_ADDS; ++i)
         {
@@ -208,10 +208,10 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
         AddsAttack(pWho);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_MALACRASS, IN_PROGRESS);
+        pInstance->SetData(TYPE_MALACRASS, IN_PROGRESS);
     }
 
     void AddsAttack(Unit* pWho)
@@ -239,10 +239,10 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
         CleanAdds();
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_MALACRASS, DONE);
+        pInstance->SetData(TYPE_MALACRASS, DONE);
     }
 
     void CleanAdds()
@@ -279,11 +279,11 @@ struct MANGOS_DLL_DECL boss_malacrass_addAI : public ScriptedAI
 {
     boss_malacrass_addAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     void Reset() { }
 
@@ -298,19 +298,19 @@ struct MANGOS_DLL_DECL boss_malacrass_addAI : public ScriptedAI
 
     void KilledUnit(Unit* pVictim)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pMalacrass = (Creature*)Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MALACRASS)))
+        if (Creature* pMalacrass = (Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_MALACRASS)))
             ((boss_malacrassAI*)pMalacrass->AI())->KilledUnit(pVictim);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Unit* pMalacrass = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MALACRASS)))
+        if (Unit* pMalacrass = Unit::GetUnit(*me, pInstance->GetData64(DATA_MALACRASS)))
         {
             switch(urand(0, 2))
             {

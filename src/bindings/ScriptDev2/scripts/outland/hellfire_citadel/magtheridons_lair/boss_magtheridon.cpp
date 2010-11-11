@@ -193,13 +193,13 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 {
     boss_magtheridonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
     CubeMap Cube;
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiRandChat_Timer;
 
@@ -237,10 +237,10 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_MAGTHERIDON_EVENT, NOT_STARTED);
-            m_pInstance->SetData(TYPE_HALL_COLLAPSE, NOT_STARTED);
+            pInstance->SetData(TYPE_MAGTHERIDON_EVENT, NOT_STARTED);
+            pInstance->SetData(TYPE_HALL_COLLAPSE, NOT_STARTED);
         }
     }
 
@@ -309,13 +309,13 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 
     void IntroDone()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (m_pInstance->GetData(TYPE_MAGTHERIDON_EVENT) == NOT_STARTED)
+        if (pInstance->GetData(TYPE_MAGTHERIDON_EVENT) == NOT_STARTED)
             return;
 
-        if (m_pInstance->GetData(TYPE_MAGTHERIDON_EVENT) == DONE)
+        if (pInstance->GetData(TYPE_MAGTHERIDON_EVENT) == DONE)
             return;
 
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -350,8 +350,8 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MAGTHERIDON_EVENT, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_MAGTHERIDON_EVENT, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }
@@ -464,8 +464,8 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
                         m_uiPhase3_Timer = 2000;
                         break;
                     case 1:
-                        if (m_pInstance)
-                            m_pInstance->SetData(TYPE_HALL_COLLAPSE, IN_PROGRESS);
+                        if (pInstance)
+                            pInstance->SetData(TYPE_HALL_COLLAPSE, IN_PROGRESS);
                         ++m_uiPhase3_Count;
                         m_uiPhase3_Timer = 8000;
                         break;
@@ -499,11 +499,11 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
 {
     mob_hellfire_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
+    ScriptedInstance* pInstance;
 
     uint32 m_uiShadowBoltVolley_Timer;
     uint32 m_uiDarkMending_Timer;
@@ -524,21 +524,21 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         me->InterruptNonMeleeSpells(false);
 
-        if (Creature* pMagtheridon = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_MAGTHERIDON)))
+        if (Creature* pMagtheridon = pInstance->instance->GetCreature(pInstance->GetData64(DATA_MAGTHERIDON)))
         {
             if (!pMagtheridon->isAlive())
                 return;
 
-            if (m_pInstance->GetData(TYPE_CHANNELER_EVENT) == NOT_STARTED)
+            if (pInstance->GetData(TYPE_CHANNELER_EVENT) == NOT_STARTED)
                 DoScriptText(EMOTE_BEGIN, pMagtheridon);
         }
 
-        m_pInstance->SetData(TYPE_CHANNELER_EVENT, IN_PROGRESS);
+        pInstance->SetData(TYPE_CHANNELER_EVENT, IN_PROGRESS);
 
         me->SetInCombatWithZone();
     }
@@ -555,16 +555,16 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHANNELER_EVENT, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_CHANNELER_EVENT, DONE);
 
         pKiller->CastSpell(pKiller, SPELL_SOUL_TRANSFER, false);
     }
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_CHANNELER_EVENT, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_CHANNELER_EVENT, NOT_STARTED);
     }
 
     void UpdateAI(const uint32 diff)

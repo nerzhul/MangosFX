@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
 {
     boss_kelthuzadAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         GuardiansOfIcecrown[0] = 0;
         GuardiansOfIcecrown[1] = 0;
@@ -173,7 +173,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         GuardiansOfIcecrown_Count = 0;
         Reset();
     }
-    ScriptedInstance *m_pInstance;
+    ScriptedInstance *pInstance;
     bool m_bIsHeroic;
 
     std::list<uint64> m_lSummonsGUIDList;
@@ -238,8 +238,8 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
 
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELTHUZAD, NOT_STARTED);
+        if (pInstance)
+            pInstance->SetData(TYPE_KELTHUZAD, NOT_STARTED);
     }
 
     void KilledUnit()
@@ -307,8 +307,8 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
                 pGuardian->GetMotionMaster()->MovePoint(0, Walk_Pos_X, Walk_Pos_Y, Walk_Pos_Z);
             }
         }
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELTHUZAD, DONE);
+        if (pInstance)
+            pInstance->SetData(TYPE_KELTHUZAD, DONE);
 
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 3);
     }
@@ -353,8 +353,8 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             case 2: DoScriptText(SAY_AGGRO3, me); break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELTHUZAD, IN_PROGRESS);
+        if (pInstance)
+            pInstance->SetData(TYPE_KELTHUZAD, IN_PROGRESS);
     }
 
     void AttackStart(Unit* pWho)

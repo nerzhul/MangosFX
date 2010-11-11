@@ -59,11 +59,11 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
     boss_eadricAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Hammer_Timer;
@@ -96,20 +96,20 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
+		if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
 			me->ForcedDespawn();
 		else
-			m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
+			pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
 		me->ForcedDespawn();
-		m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+		pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
 		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 	}
 
@@ -153,11 +153,11 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
     boss_paletressAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Holy_Fire_Timer;
@@ -200,20 +200,20 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 
 	void Aggro(Unit* pWho)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
-		if (m_pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
+		if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
 			me->ForcedDespawn();
 		else
-			m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
+			pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
     }
 
 	void JustDied(Unit* pKiller)
     {
-		if (!m_pInstance)
+		if (!pInstance)
 			return;
 		me->ForcedDespawn();
-		m_pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+		pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
 		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 	}
 
@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 			switch(urand(0, 1))
             {
                 case 0:
-					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MEMORY))))
+					if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MEMORY))))
 						if (pTemp->isAlive())
 							DoCast(pTemp, !m_bIsRegularMode ? SPELL_RENEW : SPELL_RENEW_H);
 						else
@@ -453,7 +453,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 
 		if (Shield_Check < diff && shielded)
         {
-			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MEMORY))))
+			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MEMORY))))
 				if (!pTemp->isAlive())
 				{
 					me->RemoveAurasDueToSpell(SPELL_SHIELD);
@@ -480,11 +480,11 @@ struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
     mob_toc5_memoryAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* m_pInstance;
+	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
