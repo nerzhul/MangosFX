@@ -1894,6 +1894,8 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
     if (!qReward)
         return;
 
+	player->SetDungeonId(0);
+
 	error_log("test 5");
     // if we can take the quest, means that we haven't done this kind of "run", IE: First Heroic Random of Day.
     if (player->CanRewardQuest(qReward,false))
