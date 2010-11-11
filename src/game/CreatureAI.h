@@ -255,6 +255,25 @@ class MANGOS_DLL_SPEC CreatureAI
 
 		///== Black Diamond FX Functions
 
+		// (Re-)Initialization
+		void InitIA()
+		{
+			EventShVect.clear();
+			EventSummonVect.clear();
+			EventTextVect.clear();
+		}
+
+		void ClearTimers() 
+		{
+			EventShVect.clear();
+			EventSummonVect.clear();
+			SavedEventSh.clear();
+			SavedEventSummon.clear();
+			EventTextVect.clear();
+			SavedEventTexts.clear();
+		}
+
+		void ResetTimers();
 
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 

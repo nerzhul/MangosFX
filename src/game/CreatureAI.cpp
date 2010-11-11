@@ -138,3 +138,18 @@ void CreatureAI::SendPortrait(Unit* u,bool activate,uint32 nb)
 				pPlayer->GetSession()->SendPacket(&data);
 			}
 }
+
+void CreatureAI::ResetTimers()
+{
+	EventShVect.clear();
+	EventSummonVect.clear();
+	EventTextVect.clear();
+	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
+		EventShVect.push_back(*itr);
+
+	for(SummonEvents::iterator itr = SavedEventSummon.begin(); itr!= SavedEventSummon.end(); ++itr)
+		EventSummonVect.push_back(*itr);
+
+	for(TextEvents::iterator itr = SavedEventTexts.begin(); itr!= SavedEventTexts.end(); ++itr)
+		EventTextVect.push_back(*itr);
+}

@@ -1136,21 +1136,6 @@ void LibDevFSAI::UpdateEvent(uint32 diff, uint32 phase)
 	}
 }
 
-void LibDevFSAI::ResetTimers()
-{
-	EventShVect.clear();
-	EventSummonVect.clear();
-	EventTextVect.clear();
-	for(SpellEvents::iterator itr = SavedEventSh.begin(); itr!= SavedEventSh.end(); ++itr)
-		EventShVect.push_back(*itr);
-		
-	for(SummonEvents::iterator itr = SavedEventSummon.begin(); itr!= SavedEventSummon.end(); ++itr)
-		EventSummonVect.push_back(*itr);
-
-	for(TextEvents::iterator itr = SavedEventTexts.begin(); itr!= SavedEventTexts.end(); ++itr)
-		EventTextVect.push_back(*itr);
-}
-
 void MobEventTasks::UpdateEvent(uint32 diff, uint32 phase)
 {
 	for(SpellEvents::iterator itr = EventShVect.begin(); itr!= EventShVect.end(); ++itr)

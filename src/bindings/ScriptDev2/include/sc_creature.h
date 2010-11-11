@@ -375,9 +375,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void InitIA()
 		{
-			EventShVect.clear();
-			EventSummonVect.clear();
-			EventTextVect.clear();
+			CreatureAI::InitIA();
 			Reset();
 		}
 
@@ -385,18 +383,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 		{
 			ScriptedAI::InitInstance();
 			InitIA();
-		}
-		
-		void ResetTimers();
-		
-		void ClearTimers() 
-		{
-			EventShVect.clear();
-			EventSummonVect.clear();
-			SavedEventSh.clear();
-			SavedEventSummon.clear();
-			EventTextVect.clear();
-			SavedEventTexts.clear();
 		}
 
 		void SetInstanceData(uint32 type, uint32 data) { if(pInstance) pInstance->SetData(type,data); }
