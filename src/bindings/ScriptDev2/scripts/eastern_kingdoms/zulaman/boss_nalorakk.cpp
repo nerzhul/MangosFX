@@ -65,8 +65,6 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 ChangeForm_Timer;
     uint32 BrutalSwipe_Timer;
     uint32 Mangle_Timer;

@@ -204,8 +204,6 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 OrbTimer;
     bool BoolOrb;
 
@@ -573,8 +571,6 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 BoltTimer;
     uint32 PortalTimer;
     uint32 ImpTimer;
@@ -664,7 +660,6 @@ struct MANGOS_DLL_DECL mob_orbAI : public ScriptedAI
         Reset();
     }
  
-    ScriptedInstance* pInstance;
     uint32 SpellTimer;
  
     void Reset()
@@ -703,8 +698,6 @@ struct MANGOS_DLL_DECL mob_armagedonAI : public Scripted_NoMovementAI
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 ExplosionTimer;
     uint32 EffectTimer;
     bool Explosion;
@@ -756,8 +749,6 @@ struct MANGOS_DLL_DECL mob_shadow_spikeAI : public Scripted_NoMovementAI
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 ExplosionTimer;
     uint32 EffectTimer;
     bool Explosion;
@@ -808,8 +799,6 @@ struct MANGOS_DLL_DECL mob_killimpAI : public ScriptedAI
 	    pInstance = ((ScriptedInstance*)c->GetInstanceData());
 	    Reset(); 
     }
-
-    ScriptedInstance* pInstance; 
 
     bool Reached;
     uint32 VisibilityTimer ;

@@ -58,8 +58,6 @@ struct MANGOS_DLL_DECL boss_majordomoAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 MagicReflection_Timer;
     uint32 DamageReflection_Timer;
     uint32 Blastwave_Timer;

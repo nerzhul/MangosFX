@@ -49,8 +49,6 @@ struct MANGOS_DLL_DECL boss_silver_hand_bossesAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 HolyLight_Timer;
     uint32 DivineShield_Timer;
 

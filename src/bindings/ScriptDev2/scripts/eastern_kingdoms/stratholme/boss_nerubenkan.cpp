@@ -37,8 +37,6 @@ struct MANGOS_DLL_DECL boss_nerubenkanAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 EncasingWebs_Timer;
     uint32 PierceArmor_Timer;
     uint32 CryptScarabs_Timer;

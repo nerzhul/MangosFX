@@ -93,8 +93,6 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiWatch_Timer;
     uint32 m_uiCleave_Timer;
     uint32 m_uiWhirlwind_Timer;

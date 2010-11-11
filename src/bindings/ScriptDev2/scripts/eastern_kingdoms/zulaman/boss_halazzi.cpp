@@ -78,8 +78,6 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiPhase;
     uint32 m_uiPhaseCounter;
     uint32 m_uiFrenzyTimer;
@@ -328,8 +326,6 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiFrenzyTimer;
     uint32 m_uiShredArmorTimer;

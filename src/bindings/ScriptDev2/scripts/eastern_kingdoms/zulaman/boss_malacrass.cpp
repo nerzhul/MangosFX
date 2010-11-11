@@ -133,8 +133,6 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     std::list<uint32> m_lAddsEntryList;
     uint64 m_auiAddGUIDs[MAX_ACTIVE_ADDS];
 
@@ -282,8 +280,6 @@ struct MANGOS_DLL_DECL boss_malacrass_addAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     void Reset() { }
 

@@ -91,8 +91,6 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiArcaneBuffetTimer;
     uint32 m_uiFrostBreathTimer;
     uint32 m_uiWildMagicTimer;
@@ -342,8 +340,6 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 CorruptingStrikeTimer;
     uint32 CurseOfBoundlessAgonyTimer;
     uint32 ShadowBoltVolleyTimer;
@@ -456,8 +452,6 @@ struct MANGOS_DLL_DECL boss_kalecgos_humanoidAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 RevitalizeTimer;
     uint32 HeroicStrikeTimer;

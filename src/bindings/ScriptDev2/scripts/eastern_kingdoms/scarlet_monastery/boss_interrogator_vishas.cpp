@@ -43,8 +43,6 @@ struct MANGOS_DLL_DECL boss_interrogator_vishasAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     bool Yell30;
     bool Yell60;
     uint32 ShadowWordPain_Timer;

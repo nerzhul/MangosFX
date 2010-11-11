@@ -65,8 +65,6 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiStaticDisruptTimer;
     uint32 m_uiCallLightTimer;
     uint32 m_uiGustOfWindTimer;
@@ -201,8 +199,6 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiEagleSwoopTimer;
     uint32 m_uiReturnTimer;

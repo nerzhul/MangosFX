@@ -439,8 +439,6 @@ struct MANGOS_DLL_DECL boss_roarAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 AggroTimer;
     uint32 MangleTimer;
     uint32 ShredTimer;
@@ -536,8 +534,6 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 CycloneTimer;
     uint32 ChainLightningTimer;
@@ -719,8 +715,6 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 ChaseTimer;
     uint32 FearTimer;
@@ -921,8 +915,6 @@ struct MANGOS_DLL_DECL boss_julianneAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 EntryYellTimer;
     uint32 AggroYellTimer;
 
@@ -1032,8 +1024,6 @@ struct MANGOS_DLL_DECL boss_romuloAI : public ScriptedAI
         EntryYellTimer = 8000;
         AggroYellTimer = 15000;
     }
-
-    ScriptedInstance* pInstance;
 
     uint64 JulianneGUID;
     uint32 Phase;

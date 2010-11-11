@@ -93,8 +93,6 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiSecondarySpell_Timer;
     uint32 m_uiNormalCast_Timer;
     uint32 m_uiSuperCast_Timer;

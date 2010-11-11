@@ -64,8 +64,6 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiShadowWordPain_Timer;
     uint32 m_uiGouge_Timer;
     uint32 m_uiMark_Timer;

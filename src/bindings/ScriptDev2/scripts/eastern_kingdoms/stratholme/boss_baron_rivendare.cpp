@@ -83,8 +83,6 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 ShadowBolt_Timer;
     uint32 Cleave_Timer;
     uint32 MortalStrike_Timer;

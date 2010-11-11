@@ -45,8 +45,6 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     void Reset() { }
 
     void DoSpawnRandom()
@@ -123,8 +121,6 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     void WaypointReached(uint32 i)
     {

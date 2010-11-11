@@ -83,7 +83,6 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 FireballTimer;
@@ -438,7 +437,6 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint32 BurnTimer;
     uint32 Death_Timer;
     bool Rebirth;

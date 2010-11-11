@@ -37,8 +37,6 @@ struct MANGOS_DLL_DECL boss_baroness_anastariAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 BansheeWail_Timer;
     uint32 BansheeCurse_Timer;
     uint32 Silence_Timer;

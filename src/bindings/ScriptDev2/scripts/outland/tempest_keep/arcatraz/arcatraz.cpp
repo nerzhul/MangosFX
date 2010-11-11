@@ -67,8 +67,6 @@ struct MANGOS_DLL_DECL npc_millhouse_manastormAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 EventProgress_Timer;
     uint32 Phase;
     bool Init;
@@ -248,8 +246,6 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     bool IsRunning;
     bool CanSpawn;

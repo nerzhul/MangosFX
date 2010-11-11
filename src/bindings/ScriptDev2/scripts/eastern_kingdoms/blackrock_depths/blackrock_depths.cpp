@@ -112,8 +112,6 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint8 EventPhase;
     uint32 Event_Timer;
 
@@ -540,8 +538,6 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 BreakKeg_Timer;
     uint32 BreakDoor_Timer;

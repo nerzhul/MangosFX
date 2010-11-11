@@ -59,8 +59,6 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiCrusaderStrike_Timer;
     uint32 m_uiHammerOfJustice_Timer;
 
@@ -209,8 +207,6 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiHeal_Timer;
     uint32 m_uiPowerWordShield_Timer;

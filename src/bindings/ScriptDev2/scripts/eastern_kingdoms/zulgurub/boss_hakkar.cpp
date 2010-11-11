@@ -50,8 +50,6 @@ struct MANGOS_DLL_DECL boss_hakkarAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 BloodSiphon_Timer;
     uint32 CorruptedBlood_Timer;
     uint32 CauseInsanity_Timer;

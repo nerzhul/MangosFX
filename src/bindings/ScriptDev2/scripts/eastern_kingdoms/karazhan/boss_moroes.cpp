@@ -67,8 +67,6 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 AddGUID[4];
 
     uint32 Vanish_Timer;
@@ -357,8 +355,6 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
 
 struct MANGOS_DLL_DECL boss_moroes_guestAI : public ScriptedAI
 {
-    ScriptedInstance* pInstance;
-
     uint64 GuestGUID[4];
 
     boss_moroes_guestAI(Creature* pCreature) : ScriptedAI(pCreature)

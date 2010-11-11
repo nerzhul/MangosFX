@@ -37,8 +37,6 @@ struct MANGOS_DLL_DECL boss_maleki_the_pallidAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 FrostNova_Timer;
     uint32 Frostbolt_Timer;
     uint32 IceTomb_Timer;

@@ -58,7 +58,6 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint32 m_uiNpcEntry;
 
     void WaypointReached(uint32 uiPoint)

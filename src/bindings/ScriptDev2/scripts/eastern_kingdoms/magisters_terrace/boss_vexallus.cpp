@@ -66,7 +66,6 @@ struct MANGOS_DLL_DECL boss_vexallusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 ChainLightningTimer;

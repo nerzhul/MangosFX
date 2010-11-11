@@ -110,8 +110,6 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiCallToFight_Timer;
     uint8 m_uiDwarfRound;
     bool m_bHasSummoned;

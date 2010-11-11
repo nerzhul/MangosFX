@@ -47,8 +47,6 @@ struct MANGOS_DLL_DECL boss_jindoAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 BrainWashTotem_Timer;
     uint32 HealingWard_Timer;
     uint32 Hex_Timer;
@@ -173,8 +171,6 @@ struct MANGOS_DLL_DECL mob_healing_wardAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Heal_Timer;
 
     void Reset()
@@ -207,8 +203,6 @@ struct MANGOS_DLL_DECL mob_shade_of_jindoAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 ShadowShock_Timer;
 

@@ -48,7 +48,6 @@ struct MANGOS_DLL_DECL boss_sulfuronAI : public ScriptedAI
     uint32 Inspire_Timer;
     uint32 Knockdown_Timer;
     uint32 Flamespear_Timer;
-    ScriptedInstance* pInstance;
 
     void Reset()
     {
@@ -130,8 +129,6 @@ struct MANGOS_DLL_DECL mob_flamewaker_priestAI : public ScriptedAI
     uint32 Heal_Timer;
     uint32 ShadowWordPain_Timer;
     uint32 Immolate_Timer;
-
-    ScriptedInstance* pInstance;
 
     void Reset()
     {

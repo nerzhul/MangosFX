@@ -103,8 +103,6 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
     }

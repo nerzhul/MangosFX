@@ -45,8 +45,6 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiPyroblastTimer;
     uint32 m_uiEarthquakeTimer;
     uint32 m_uiBuffTimer;
@@ -126,7 +124,6 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint32 m_uiMangleTimer;
 
     void Reset()

@@ -42,8 +42,6 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiHandOfThaurissan_Timer;
     uint32 m_uiAvatarOfFlame_Timer;
     //uint32 m_uiCounter;
@@ -147,8 +145,6 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiHeal_Timer;
     uint32 m_uiMindBlast_Timer;

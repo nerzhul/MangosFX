@@ -96,7 +96,6 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     std::vector<uint32> LackeyEntryList;
@@ -343,8 +342,6 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         Reset();
         AcquireGUIDs();
     }
-
-    ScriptedInstance* pInstance;
 
     uint64 m_auiLackeyGUIDs[MAX_ACTIVE_LACKEY];
     uint32 m_uiResetThreatTimer;

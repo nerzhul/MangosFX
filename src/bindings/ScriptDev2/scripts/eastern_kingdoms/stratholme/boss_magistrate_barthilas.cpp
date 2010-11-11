@@ -40,8 +40,6 @@ struct MANGOS_DLL_DECL boss_magistrate_barthilasAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 DrainingBlow_Timer;
     uint32 CrowdPummel_Timer;
     uint32 MightyBlow_Timer;

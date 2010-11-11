@@ -38,8 +38,6 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiWarStomp_Timer;
     
     MobEventTasks Tasks;

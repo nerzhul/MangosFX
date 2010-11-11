@@ -63,8 +63,6 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiSlashTimer;
     uint32 m_uiBurnTimer;
     uint32 m_uiStompTimer;

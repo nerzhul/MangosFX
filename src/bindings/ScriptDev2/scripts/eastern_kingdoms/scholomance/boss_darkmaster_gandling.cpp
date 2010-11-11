@@ -56,8 +56,6 @@ struct MANGOS_DLL_DECL boss_darkmaster_gandlingAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 ArcaneMissiles_Timer;
     uint32 ShadowShield_Timer;
     uint32 Curse_Timer;

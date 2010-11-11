@@ -118,8 +118,6 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 m_uiSpotlightGUID;
 
     uint32 m_uiTalkCount;

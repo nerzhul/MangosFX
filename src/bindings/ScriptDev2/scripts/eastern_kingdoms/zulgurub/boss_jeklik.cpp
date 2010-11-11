@@ -48,8 +48,6 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Charge_Timer;
     uint32 SonicBurst_Timer;
     uint32 Screech_Timer;
@@ -211,8 +209,6 @@ struct MANGOS_DLL_DECL mob_batriderAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 Bomb_Timer;
     uint32 Check_Timer;

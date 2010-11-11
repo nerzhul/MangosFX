@@ -134,8 +134,6 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     Phases Active_Phase;
     Events Active_Event;
     uint32 uiTimers[9], uiHp_bonus;

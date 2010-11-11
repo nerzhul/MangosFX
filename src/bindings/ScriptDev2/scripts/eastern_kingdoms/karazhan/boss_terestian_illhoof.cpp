@@ -73,8 +73,6 @@ struct MANGOS_DLL_DECL mob_kilrekAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 m_uiTerestianGUID;
     uint32 m_uiAmplify_Timer;
 
@@ -166,8 +164,6 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint64 m_uiKilrekGUID;
     uint64 m_uiPortalGUID[2];

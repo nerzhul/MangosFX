@@ -71,7 +71,6 @@ struct MANGOS_DLL_DECL boss_selin_fireheartAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     std::list<uint64> Crystals;

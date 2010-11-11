@@ -145,8 +145,6 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 fire_breath_timer;
 
     std::list<uint64> m_lBombsGUIDList;
@@ -602,8 +600,6 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiWaypoint;
     uint32 m_uiHatchlingTimer;
     uint32 m_uiHatchlingCount;
@@ -726,8 +722,6 @@ struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 buffer_timer;
     bool start;

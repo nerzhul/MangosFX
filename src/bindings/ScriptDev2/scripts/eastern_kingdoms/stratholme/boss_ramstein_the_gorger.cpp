@@ -37,8 +37,6 @@ struct MANGOS_DLL_DECL boss_ramstein_the_gorgerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Trample_Timer;
     uint32 Knockout_Timer;
 
