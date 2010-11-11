@@ -50,7 +50,6 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 LightningCloud_Timer;

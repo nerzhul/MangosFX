@@ -43,8 +43,6 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 AcidSpray_Timer;
     uint32 PoisonSpawn_Timer;
     uint32 PoisonBolt_Timer;

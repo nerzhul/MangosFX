@@ -199,8 +199,6 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 Council[4];
 
     uint32 CheckTimer;
@@ -364,8 +362,6 @@ struct MANGOS_DLL_DECL boss_illidari_councilAI : public ScriptedAI
 
         LoadedGUIDs = false;
     }
-
-    ScriptedInstance* pInstance;
 
     uint64 Council[4];
 

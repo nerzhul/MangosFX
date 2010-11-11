@@ -125,8 +125,6 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     std::list<uint64> m_lChannelersGUIDList;
     std::list<uint64> m_lSorcerersGUIDList;
 
@@ -409,8 +407,6 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiDestructivePoisonTimer;
     uint32 m_uiLightningBoltTimer;
@@ -733,8 +729,6 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
         if (pInstance)
@@ -788,8 +782,6 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiCheckTimer;
     bool m_bStartBanishing;

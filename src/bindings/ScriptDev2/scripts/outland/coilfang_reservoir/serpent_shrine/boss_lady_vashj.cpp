@@ -536,8 +536,6 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;                          // the instance
-
     // timers
     uint32 m_uiPoisonBolt_Timer;
 
@@ -573,8 +571,6 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiToxicSpore_Timer;
     uint32 m_uiCheck_Timer;
@@ -671,8 +667,6 @@ struct MANGOS_DLL_DECL mob_shield_generator_channelAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;                          // the instance
 
     void Reset() { }
 

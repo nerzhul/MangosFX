@@ -81,8 +81,6 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;                          // the instance
-
     uint32 m_uiPosCheck_Timer;
     uint32 m_uiMarkOfHydross_Timer;
     uint32 m_uiMarkOfCorruption_Timer;

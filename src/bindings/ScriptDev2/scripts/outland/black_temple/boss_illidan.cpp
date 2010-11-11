@@ -307,8 +307,6 @@ struct MANGOS_DLL_DECL demonfireAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 IllidanGUID;
 
     bool IsTrigger;
@@ -376,9 +374,6 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
         WayPointList.clear();
         Reset();
     }
-
-    /* Instance Data */
-    ScriptedInstance* pInstance;
 
     /* Timers */
     uint32 ChannelTimer;
@@ -851,9 +846,6 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
 
         Reset();
     }
-
-    /** Instance Data **/
-    ScriptedInstance* pInstance;
 
     /** Generic **/
     bool IsTalking;
@@ -1980,8 +1972,6 @@ struct MANGOS_DLL_DECL boss_maievAI : public ScriptedAI
 
     uint32 TauntTimer;
     uint64 IllidanGUID;
-
-    ScriptedInstance* pInstance;
 
     void Reset()
     {

@@ -55,7 +55,6 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 Shrink_Timer;
@@ -206,7 +205,6 @@ struct MANGOS_DLL_DECL mob_steamrigger_mechanicAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 Repair_Timer;

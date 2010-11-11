@@ -48,8 +48,6 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -92,8 +90,6 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 Reflection_Timer;
     uint32 Impale_Timer;

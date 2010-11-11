@@ -77,8 +77,6 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 ArcaneMissiles_Timer;
     uint32 m_uiWrathOfTheAstromancer_Timer;
     uint32 BlindingLight_Timer;
@@ -389,8 +387,6 @@ struct MANGOS_DLL_DECL mob_solarium_priestAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 healTimer;
     uint32 holysmiteTimer;

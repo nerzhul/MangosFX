@@ -70,7 +70,6 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool m_bHealthBelow;
@@ -151,7 +150,6 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiMovementTimer;

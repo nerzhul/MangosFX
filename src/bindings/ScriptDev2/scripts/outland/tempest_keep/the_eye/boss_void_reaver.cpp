@@ -48,8 +48,6 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Pounding_Timer;
     uint32 ArcaneOrb_Timer;
     uint32 KnockAway_Timer;

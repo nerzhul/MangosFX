@@ -77,8 +77,6 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;                          // the instance
-
     // timers
     uint32 m_uiTidalWave_Timer;
     uint32 m_uiWateryGrave_Timer;

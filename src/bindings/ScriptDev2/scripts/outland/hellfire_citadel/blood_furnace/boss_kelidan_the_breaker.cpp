@@ -61,8 +61,6 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     bool m_bIsHeroic;
 
     uint32 ShadowVolley_Timer;
@@ -178,7 +176,6 @@ struct MANGOS_DLL_DECL mob_shadowmoon_channelerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 ShadowBolt_Timer;

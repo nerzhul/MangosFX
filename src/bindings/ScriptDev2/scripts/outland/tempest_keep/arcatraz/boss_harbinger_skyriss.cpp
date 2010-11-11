@@ -63,7 +63,6 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool Intro;
@@ -264,7 +263,6 @@ struct MANGOS_DLL_DECL boss_harbinger_skyriss_illusionAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     void Reset() { }

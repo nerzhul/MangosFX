@@ -141,7 +141,6 @@ struct MANGOS_DLL_DECL boss_warbringer_omroggAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint64 m_uiLeftHeadGUID;

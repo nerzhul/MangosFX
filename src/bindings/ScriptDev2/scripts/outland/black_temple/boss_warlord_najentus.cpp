@@ -56,8 +56,6 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiNeedleSpineTimer;
     uint32 m_uiEnrageTimer;
     uint32 m_uiSpecialYellTimer;

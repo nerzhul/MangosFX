@@ -47,8 +47,6 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 AcidSpray_Timer;
     uint32 ExplodingBreaker_Timer;
     uint32 Domination_Timer;

@@ -82,7 +82,6 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     bool IntroOnce;
@@ -311,7 +310,6 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint32 Hemorrhage_Timer;
 
     void Reset()

@@ -84,8 +84,6 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     // timers
     uint32 m_uiCataclysmicBolt_Timer;
     uint32 m_uiEnrage_Timer;
@@ -273,9 +271,6 @@ struct MANGOS_DLL_DECL Advisor_Base_AI : public ScriptedAI
     }
     protected:
     uint8 m_uiAdvisor;
-
-    public:
-    ScriptedInstance* pInstance;
 
     void JustReachedHome()
     {

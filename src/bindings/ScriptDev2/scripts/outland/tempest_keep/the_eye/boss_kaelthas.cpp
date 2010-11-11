@@ -164,7 +164,6 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
     uint32 m_uiAdvisor_Speech;
 
     public:
-    ScriptedInstance* pInstance;
     bool m_bFakeDeath;
     bool m_bDoubled_Health;
     uint32 m_uiDelayRes_Timer;
@@ -300,8 +299,6 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
         memset(&m_auiAdvisorGuid, 0, sizeof(m_auiAdvisorGuid));
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiFireball_Timer;
     uint32 m_uiArcaneDisruption_Timer;

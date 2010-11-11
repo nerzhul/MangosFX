@@ -199,8 +199,6 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 
     CubeMap Cube;
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiRandChat_Timer;
 
     uint32 m_uiBerserk_Timer;
@@ -502,8 +500,6 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 m_uiShadowBoltVolley_Timer;
     uint32 m_uiDarkMending_Timer;

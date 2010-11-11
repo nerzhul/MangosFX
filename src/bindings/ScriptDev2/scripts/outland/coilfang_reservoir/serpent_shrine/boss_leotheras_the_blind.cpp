@@ -72,8 +72,6 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;                          // the instance
-
     // timers
     uint32 m_uiWhirlwind_Timer;
     uint32 m_uiInnerDemon_Timer;

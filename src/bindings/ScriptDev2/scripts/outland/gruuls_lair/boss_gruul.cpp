@@ -60,8 +60,6 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiGrowth_Timer;
     uint32 m_uiCaveIn_Timer;
     uint32 m_uiCaveIn_StaticTimer;

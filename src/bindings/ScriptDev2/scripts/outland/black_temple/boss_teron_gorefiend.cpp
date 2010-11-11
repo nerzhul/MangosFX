@@ -190,8 +190,6 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 IncinerateTimer;
     uint32 SummonDoomBlossomTimer;
     uint32 EnrageTimer;

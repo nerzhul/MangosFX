@@ -84,8 +84,6 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 TargetGUID[3];
     uint32 BeamTimer;
     uint32 BeamCount;

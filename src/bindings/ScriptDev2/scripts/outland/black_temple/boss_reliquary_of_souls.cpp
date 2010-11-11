@@ -139,8 +139,6 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint64 SufferingGUID;
     uint64 DesireGUID;
     uint64 AngerGUID;

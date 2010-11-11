@@ -82,8 +82,6 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiArcingSmash_Timer;
     uint32 m_uiMightyBlow_Timer;
     uint32 m_uiWhirlwind_Timer;
@@ -264,8 +262,6 @@ struct MANGOS_DLL_DECL Council_Base_AI : public ScriptedAI
     {
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
     }
-
-    ScriptedInstance* pInstance;
 
     void JustReachedHome()
     {

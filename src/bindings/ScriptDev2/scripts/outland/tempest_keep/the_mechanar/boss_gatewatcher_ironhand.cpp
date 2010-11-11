@@ -47,7 +47,6 @@ struct MANGOS_DLL_DECL boss_gatewatcher_iron_handAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 Shadow_Power_Timer;

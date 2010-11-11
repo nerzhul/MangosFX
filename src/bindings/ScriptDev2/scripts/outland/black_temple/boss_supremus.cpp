@@ -158,8 +158,6 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 SummonFlameTimer;
     uint32 SwitchTargetTimer;
     uint32 PhaseSwitchTimer;
