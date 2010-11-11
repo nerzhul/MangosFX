@@ -18948,12 +18948,12 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
             if (iece->reqhonorpoints)
 			{
 				honorPoints = iece->reqhonorpoints;
-				ModifyHonorPoints( - int32(honorPoints) );
+				ModifyHonorPoints( - int32(honorPoints*count) );
 			}
             if (iece->reqarenapoints)
 			{
                 arenaPoints = iece->reqarenapoints;
-				ModifyArenaPoints( - int32(arenaPoints));
+				ModifyArenaPoints( - int32(arenaPoints*count));
 			}
 
             for (uint8 i = 0; i < 5; ++i)

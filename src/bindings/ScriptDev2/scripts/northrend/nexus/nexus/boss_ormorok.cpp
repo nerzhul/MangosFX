@@ -1,6 +1,7 @@
 /* LibDevFS by Frost Sapphire Studios */
 
 #include "precompiled.h"
+#include "nexus.h"
 
 enum
 {
@@ -29,44 +30,41 @@ enum
 ## boss_ormorok
 ######*/
 
-struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_ormorokAI : public LibDevFSAI
 {
-	float percent;
-	uint32 crystalspikes_Timer;
-
-    boss_ormorokAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_ormorokAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+        AddEventOnMe(SPELL_REFLECTION,7000,12000,6000);
+		if(m_difficulty)
+		{
+			AddEventOnMe(SPELL_TRAMPLE_H,10000,9000,2000);
+			AddEventOnMe(SPELL_SUMMON_TANGLER_H,15000,12000,3000);
+		}
+		else
+			AddEventOnMe(SPELL_TRAMPLE,10000,9000,2000);
     }
 
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
+	uint32 crystalspikes_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_REFLECTION,7000,12000,6000,TARGET_ME);
-		if(m_bIsHeroic)
-		{
-			Tasks.AddEvent(SPELL_TRAMPLE_H,10000,9000,2000,TARGET_ME);
-			Tasks.AddEvent(SPELL_SUMMON_TANGLER_H,15000,12000,3000,TARGET_ME);
-		}
-		else
-			Tasks.AddEvent(SPELL_TRAMPLE,10000,9000,2000,TARGET_ME);
+		ResetTimers();
+		SetInstanceData(TYPE_ORMOROK,NOT_STARTED);
 		crystalspikes_Timer = 10000;
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
+		SetInstanceData(TYPE_ORMOROK,IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		SetInstanceData(TYPE_ORMOROK,DONE);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -82,15 +80,15 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 
 		if(CheckPercentLife(20))
 		{
-			if(!m_bIsHeroic && !me->HasAura(SPELL_FRENZY))
+			if(!m_difficulty && !me->HasAura(SPELL_FRENZY))
 				DoCastMe(SPELL_FRENZY);
-			else if(m_bIsHeroic && !me->HasAura(SPELL_FRENZY_H))
+			else if(m_difficulty && !me->HasAura(SPELL_FRENZY_H))
 				DoCastMe(SPELL_FRENZY_H);
 		}
 
 		if(crystalspikes_Timer <= diff)
 		{
-			if(m_bIsHeroic == true)
+			if(m_difficulty)
 				DoCastMe(SPELL_CRYSTAL_SPIKES);
 			else
 			{
@@ -102,7 +100,7 @@ struct MANGOS_DLL_DECL boss_ormorokAI : public ScriptedAI
 
 		}
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

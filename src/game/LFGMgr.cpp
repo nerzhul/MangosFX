@@ -2091,7 +2091,9 @@ LfgDungeonSet* LFGMgr::GetRandomDungeons(uint8 level, uint8 expansion)
         dungeon = sLFGDungeonStore.LookupEntry(i);
         if (dungeon && dungeon->expansion <= expansion && dungeon->type == LFG_TYPE_RANDOM &&
             dungeon->minlevel <= level && level <= dungeon->maxlevel)
-            list->insert(dungeon->Entry());
+			// delete some dungeons
+			if(dungeon->ID != 256 && dungeon->ID != 221 && dungeon->ID != 211 && dungeon->ID != 210)			
+				list->insert(dungeon->Entry());
     }
     return list;
 }

@@ -2,6 +2,7 @@
  */
 
 #include "precompiled.h"
+#include "nexus.h"
 
 enum
 {
@@ -91,6 +92,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public LibDevFSAI
 		subphase = 0;
 		ach_Timer = 5000;
 		addDown = 0;
+		SetInstanceData(TYPE_TELESTRA,NOT_STARTED);
 		me->SetVisibility(VISIBILITY_ON);
 		for(uint8 i=0;i<3;i++)
 			add[i] = 0;
@@ -99,6 +101,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
+		SetInstanceData(TYPE_TELESTRA,IN_PROGRESS);
     }
 
 	void DeclareAddDown()
@@ -113,6 +116,7 @@ struct MANGOS_DLL_DECL boss_telestraAI : public LibDevFSAI
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 		if(ach_Timer > 0 && addDown == 3)
 			pInstance->CompleteAchievementForGroup(2150);
+		SetInstanceData(TYPE_TELESTRA,DONE);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -208,31 +212,34 @@ struct MANGOS_DLL_DECL boss_telestraAI : public LibDevFSAI
     }
 };
 
-struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
+struct MANGOS_DLL_DECL fire_telestraAI : public LibDevFSAI
 {
 	 
-	fire_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
+	fire_telestraAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_FIRE_BLAST_H,200,7000,3000);
-			Tasks.AddEvent(SPELL_FIRE_SCORCH_H,1000,1500,1000);
+			AddEvent(SPELL_FIRE_BLAST_H,200,7000,3000);
+			AddEvent(SPELL_FIRE_SCORCH_H,1000,1500,1000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_FIRE_BLAST,200,7000,3000);
-			Tasks.AddEvent(SPELL_FIRE_SCORCH,1000,1500,1000);
+			AddEvent(SPELL_FIRE_BLAST,200,7000,3000);
+			AddEvent(SPELL_FIRE_SCORCH,1000,1500,1000);
+		}
+    }
+
+    void Reset()
+    {
+		ResetTimers();	
+	}
+
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* cr = GetInstanceCreature(TYPE_TELESTRA))
+		{
+			((boss_telestraAI*)cr->AI())->DeclareAddDown();
 		}
 	}
 
@@ -241,34 +248,37 @@ struct MANGOS_DLL_DECL fire_telestraAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	}
 };
 
-struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
+struct MANGOS_DLL_DECL frost_telestraAI : public LibDevFSAI
 {
-	frost_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
+	frost_telestraAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		if(m_bIsHeroic)
+        InitInstance();
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_FROST_BLIZZ_H,200,12000);
-			Tasks.AddEvent(SPELL_FROST_ICE_H,6200,5000);
+			AddEvent(SPELL_FROST_BLIZZ_H,200,12000);
+			AddEvent(SPELL_FROST_ICE_H,6200,5000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_FROST_BLIZZ,200,12000);
-			Tasks.AddEvent(SPELL_FROST_ICE,6200,5000);
+			AddEvent(SPELL_FROST_BLIZZ,200,12000);
+			AddEvent(SPELL_FROST_ICE,6200,5000);
+		}
+    }
+
+    void Reset()
+    {
+		ResetTimers();		
+	}
+
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* cr = GetInstanceCreature(TYPE_TELESTRA))
+		{
+			((boss_telestraAI*)cr->AI())->DeclareAddDown();
 		}
 	}
 
@@ -277,27 +287,30 @@ struct MANGOS_DLL_DECL frost_telestraAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 	
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	}
 };
 
-struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
+struct MANGOS_DLL_DECL arca_telestraAI : public LibDevFSAI
 {
-	arca_telestraAI(Creature* pCreature) : ScriptedAI(pCreature)
+	arca_telestraAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
+        InitInstance();
+		AddEvent(SPELL_ARCA_SHEEP,200,1500,1000);
+		AddEvent(SPELL_ARCA_TIME,2000,8000,2000);
     }
-
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_ARCA_SHEEP,200,1500,1000);
-		Tasks.AddEvent(SPELL_ARCA_TIME,2000,8000,2000);
+		ResetTimers();		
+	}
+
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* cr = GetInstanceCreature(TYPE_TELESTRA))
+		{
+			((boss_telestraAI*)cr->AI())->DeclareAddDown();
+		}
 	}
 
 	void UpdateAI(const uint32 diff)
@@ -305,7 +318,7 @@ struct MANGOS_DLL_DECL arca_telestraAI : public ScriptedAI
         if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	}
 };
 CreatureAI* GetAI_boss_telestra(Creature* pCreature)

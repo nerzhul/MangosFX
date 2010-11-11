@@ -52,6 +52,7 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
 
     uint64 m_uiAnomalusGUID;
 	uint64 m_uiKeristraszaGUID;
+	uint64 m_uiTelestraGUID;
 
     uint64 m_uiTelestrasContainmentSphereGUID;
     uint64 m_uiAnomalusContainmentSphereGUID;
@@ -63,6 +64,7 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
 
         m_uiAnomalusGUID = 0;
 		m_uiKeristraszaGUID = 0;
+		m_uiTelestraGUID = 0;
 
         m_uiTelestrasContainmentSphereGUID = 0;
         m_uiAnomalusContainmentSphereGUID = 0;
@@ -116,6 +118,9 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
 					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
 						cr->RemoveAurasDueToSpell(47543);
 				break;
+			case NPC_TELESTRA:
+				m_uiTelestraGUID = pCreature->GetGUID();
+				break;
         }
     }
 
@@ -124,9 +129,12 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
         switch(uiType)
         {
             case NPC_ANOMALUS:
+			case TYPE_ANOMALUS:
                 return m_uiAnomalusGUID;
 			case TYPE_KERISTRASZA:
 				return m_uiKeristraszaGUID;
+			case TYPE_TELESTRA:
+				return m_uiTelestraGUID;
         }
 
         return 0;
@@ -194,11 +202,6 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
             default:
                 error_log("SD2: Instance Nexus: ERROR SetData = %u for type %u does not exist/not implemented.", uiType, uiData);
                 break;
-        }
-
-        if (m_auiEncounter[0] == SPECIAL && m_auiEncounter[1] == SPECIAL && m_auiEncounter[2] == SPECIAL)
-        {
-            // release Keristrasza from her prison here
         }
 
         if (uiData == DONE)

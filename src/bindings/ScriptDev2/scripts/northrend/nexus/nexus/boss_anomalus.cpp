@@ -1,6 +1,7 @@
 /* LibDevFS by Frost Sapphire Studios */
 
 #include "precompiled.h"
+#include "nexus.h"
 
 enum
 {
@@ -43,6 +44,7 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public LibDevFSAI
 	uint32 invoc_Timer;
 	uint64 target;
 	uint8 phase;
+	bool Achievement;
 
     void Reset()
     {
@@ -50,11 +52,14 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public LibDevFSAI
 		ResetTimers();			
 		phase = 1;
 		invoc = false;
+		Achievement = true;
+		SetInstanceData(TYPE_ANOMALUS,NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
+		SetInstanceData(TYPE_ANOMALUS,IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
@@ -62,7 +67,15 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public LibDevFSAI
         DoScriptText(SAY_DEATH, me);
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 		CleanMyAdds();
+		SetInstanceData(TYPE_ANOMALUS,DONE);
+		if(Achievement && m_difficulty)
+			CompleteAchievementForGroup(2037);
     }
+
+	void FailAchievement()
+	{
+		Achievement = false;
+	}
 
     void KilledUnit(Unit* pVictim)
     {
@@ -141,6 +154,12 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public LibDevFSAI
 		ResetTimers();
 		storm_Timer = 1000;
     }
+
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* Anomalus = GetInstanceCreature(TYPE_ANOMALUS))
+			((boss_anomalusAI*)Anomalus->AI())->FailAchievement();
+	}
 
 	void UpdateAI(const uint32 diff)
     {
