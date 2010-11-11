@@ -145,7 +145,6 @@ OpcodeHandler opcodeTable[NUM_MSG_TYPES] =
     /*0x074*/ { "SMSG_GROUP_DECLINE",                           STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x075*/ { "CMSG_GROUP_UNINVITE",                          STATUS_LOGGEDIN, &WorldSession::HandleGroupUninviteOpcode       },
     /*0x076*/ { "CMSG_GROUP_UNINVITE_GUID",                     STATUS_LOGGEDIN, &WorldSession::HandleGroupUninviteGuidOpcode   },
-	/*0x076*/ //{ "CMSG_GROUP_UNINVITE_GUID",                     STATUS_LOGGEDIN, &WorldSession::HandleGroupUninviteOpcode   },
     /*0x077*/ { "SMSG_GROUP_UNINVITE",                          STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
     /*0x078*/ { "CMSG_GROUP_SET_LEADER",                        STATUS_LOGGEDIN, &WorldSession::HandleGroupSetLeaderOpcode      },
     /*0x079*/ { "SMSG_GROUP_SET_LEADER",                        STATUS_NEVER,    &WorldSession::Handle_ServerSide               },
