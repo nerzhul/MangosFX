@@ -120,6 +120,7 @@ struct MANGOS_DLL_DECL boss_s_and_d_dummyAI : public LibDevFSAI
 				if(Creature* cr = me->GetClosestCreatureWithEntry(NPC_DALRONN,150.0f))
 					cr->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
+				GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 				SetInstanceData(TYPE_SKARVALD,DONE);
             }
         }

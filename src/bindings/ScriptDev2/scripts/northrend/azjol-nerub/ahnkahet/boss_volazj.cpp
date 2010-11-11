@@ -104,6 +104,7 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
     {
         DoScriptText(urand(0, 1) ? SAY_DEATH_1 : SAY_DEATH_2, me);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 
     void UpdateAI(const uint32 diff)

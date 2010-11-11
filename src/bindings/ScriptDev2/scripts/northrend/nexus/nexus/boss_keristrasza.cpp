@@ -23,36 +23,33 @@ enum
 ## boss_keristrasza
 ######*/
 
-struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_keristraszaAI : public LibDevFSAI
 {
-	float percent;
-
-    boss_keristraszaAI(Creature* pCreature) : ScriptedAI(pCreature)
+	boss_keristraszaAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
-
-    void Reset()
-    {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_TAIL_SWEEP,7000,16000,2000,TARGET_ME);
-		if(m_bIsHeroic)
+        InitInstance();
+		AddEventOnMe(SPELL_TAIL_SWEEP,7000,16000,2000);
+		if(m_difficulty)
 		{
-			Tasks.AddEvent(SPELL_CRYSTAL_CHAINS_H,3000,10000,1000);
-			Tasks.AddEvent(SPELL_CRYSTALFIRE_BREATH_H,5000,10000,2000,TARGET_MAIN);
-			Tasks.AddEvent(SPELL_CRYSTALLIZE,15000,14000,2000);
+			AddEvent(SPELL_CRYSTAL_CHAINS_H,3000,10000,1000);
+			AddEventOnTank(SPELL_CRYSTALFIRE_BREATH_H,5000,10000,2000);
+			AddEvent(SPELL_CRYSTALLIZE,15000,14000,2000);
 		}
 		else
 		{
-			Tasks.AddEvent(SPELL_CRYSTAL_CHAINS,3000,10000,1000);
-			Tasks.AddEvent(SPELL_CRYSTALFIRE_BREATH,5000,10000,2000,TARGET_MAIN);
+			AddEvent(SPELL_CRYSTAL_CHAINS,3000,10000,1000);
+			AddEventOnTank(SPELL_CRYSTALFIRE_BREATH,5000,10000,2000);
 		}
+    }
+
+	bool achievement;
+	uint32 checkAchievement_Timer;
+
+    void Reset()
+    {
+		ResetTimers();
+		checkAchievement_Timer = 500;
+		achievement = true;
     }
 
     void Aggro(Unit* pWho)
@@ -64,8 +61,10 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 		GiveRandomReward();
+		if(achievement)
+			CompleteAchievementForGroup(2036);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -79,10 +78,28 @@ struct MANGOS_DLL_DECL boss_keristraszaAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
+		if(m_difficulty)
+		{
+			if(checkAchievement_Timer <= diff)
+			{
+				Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+				if (!lPlayers.isEmpty())
+					for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+						if(Player* pPlayer = itr->getSource())
+							if(Aura* aur = pPlayer->GetAura(48095))
+								if(aur->GetStackAmount() > 2)
+									achievement = false;
+
+				checkAchievement_Timer = 500;
+			}
+			else
+				checkAchievement_Timer -= diff;
+		}
+
 		if(CheckPercentLife(25) && !me->HasAura(8599,0))
 			DoCastMe(SPELL_ENRAGE);
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }

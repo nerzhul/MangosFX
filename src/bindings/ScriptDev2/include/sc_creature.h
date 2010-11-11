@@ -232,6 +232,8 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 			pInstance = NULL;
 		m_difficulty = me->GetMap()->GetDifficulty();
 	}
+
+	void CompleteAchievementForGroup(uint32 achId) { if(pInstance) pInstance->CompleteAchievementForGroup(achId); }
 	
 	protected:
 		ScriptedInstance* pInstance;

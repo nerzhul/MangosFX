@@ -67,8 +67,8 @@ struct MANGOS_DLL_DECL boss_kelesethAI : public LibDevFSAI
 		if(Creature* tomb = GetGuidCreature(tombGUID))
 			tomb->RemoveFromWorld();
 
-		if(Achievement)
-			pInstance->CompleteAchievementForGroup(1919);
+		if(Achievement && m_difficulty)
+			CompleteAchievementForGroup(1919);
 		SetInstanceData(TYPE_KELESETH,DONE);
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }

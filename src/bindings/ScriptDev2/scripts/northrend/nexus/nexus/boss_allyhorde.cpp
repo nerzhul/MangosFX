@@ -11,25 +11,20 @@ enum
 };
 
 
-struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_allyhordeAI : public LibDevFSAI
 {
-    boss_allyhordeAI(Creature* pCreature) : ScriptedAI(pCreature)
+    boss_allyhordeAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
+		InitInstance();
+		AddEvent(SPELL_CHARGE,5000,14000,1000);
+		AddEventOnTank(SPELL_TOURBILLON,15000,18000,2000);
+		AddEventOnTank(SPELL_FEAR,10000,23000,2000);
+		AddEventOnMe(SPELL_WARCRY,120000,120000);
     }
-	    
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddEvent(SPELL_CHARGE,5000,14000,1000);
-		Tasks.AddEvent(SPELL_TOURBILLON,15000,18000,2000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_FEAR,10000,23000,2000,TARGET_MAIN);
-		Tasks.AddEvent(SPELL_WARCRY,120000,120000,0,TARGET_ME);
+		ResetTimers();
     }
 
     void Aggro(Unit* pWho)
@@ -47,7 +42,7 @@ struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
     {
         /*if (urand(0, 1))
             DoScriptText(SAY_KILL, me);*/
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)
@@ -55,7 +50,7 @@ struct MANGOS_DLL_DECL boss_allyhordeAI : public ScriptedAI
 		if (!CanDoSomething())
             return;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
