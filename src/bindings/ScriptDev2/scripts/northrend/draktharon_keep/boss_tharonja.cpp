@@ -65,8 +65,6 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
 	bool m_bIsHeroic;
     
     CombatPhase Phase;
-
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()

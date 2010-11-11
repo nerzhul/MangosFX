@@ -1859,12 +1859,10 @@ void LFGMgr::TeleportPlayer(Player* plr, bool out, bool fromOpcode /*= false*/)
 
 void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
 {
-	error_log("test 1 %u",dungeonId);
     Group* group = player->GetGroup();
     if ((!group || !group->isLFGGroup()) || sWorld.getConfig(CONFIG_DUNGEON_FINDER) == 0)
         return;
 
-	error_log("test 2");
     // Mark dungeon as finished
     if (!group->isLfgDungeonComplete())
         group->SetLfgStatus(LFG_STATUS_COMPLETE);
@@ -1879,7 +1877,6 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
     if (!dungeon || dungeon->type != LFG_TYPE_RANDOM)
         return;
 
-	error_log("test 3");
     // Update achievements
     if (dungeon->heroic == DUNGEON_DIFFICULTY_HEROIC)
         player->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_LFD_TO_GROUP_WITH_PLAYERS, 1);
@@ -1888,7 +1885,6 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
     if (!reward)
         return;
 
-	error_log("test 4");
     uint8 index = 0;
     Quest const* qReward = sObjectMgr.GetQuestTemplate(reward->reward[index].questId);
     if (!qReward)
@@ -1896,7 +1892,6 @@ void LFGMgr::RewardDungeonDoneFor(const uint32 dungeonId, Player* player)
 
 	player->SetDungeonId(0);
 
-	error_log("test 5");
     // if we can take the quest, means that we haven't done this kind of "run", IE: First Heroic Random of Day.
     if (player->CanRewardQuest(qReward,false))
         player->RewardQuest(qReward,0,NULL,false);

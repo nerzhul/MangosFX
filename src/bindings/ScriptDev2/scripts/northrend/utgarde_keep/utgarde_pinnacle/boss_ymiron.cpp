@@ -104,7 +104,6 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 

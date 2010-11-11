@@ -118,6 +118,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 	{
 		Reset();
 		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
