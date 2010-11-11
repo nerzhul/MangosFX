@@ -152,6 +152,17 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                 return m_auiEncounter[2];
             case TYPE_KERISTRASZA:
                 return m_auiEncounter[3];
+			case DATA_NB_BOSS_DOWN:
+				uint32 resp = 0;
+				if(GetData(TYPE_ORMOROK) == DONE)
+					resp++;
+				if(GetData(TYPE_TELESTRA) == DONE)
+					resp += 2;
+				if(GetData(TYPE_ANOMALUS) == DONE)
+					resp += 4;
+				if(GetData(TYPE_KERISTRASZA) == DONE)
+					resp += 8;
+				return resp;
         }
 
         return 0;

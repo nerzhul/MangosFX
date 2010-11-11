@@ -131,6 +131,27 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
         }
     }
 
+	uint32 GetData(uint32 uiType)
+	{
+		switch(uiType)
+		{
+			case TYPE_KELESETH:
+			case TYPE_SKARVALD:
+			case TYPE_INGVAR:
+				return m_auiEncounter[uiData];
+			case DATA_NB_BOSS_DOWN:
+				uint32 resp = 0;
+				if(GetData(TYPE_KELESETH) == DONE)
+					resp++;
+				if(GetData(TYPE_SKARVALD) == DONE)
+					resp += 2;
+				if(GetData(TYPE_INGVAR) == DONE)
+					resp += 4;
+				return resp;
+		}
+		return 0;
+	}
+
     void SetData(uint32 uiType, uint32 uiData)
     {
         switch(uiType)
