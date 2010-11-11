@@ -71,7 +71,6 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -222,7 +221,6 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -354,7 +352,6 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -562,7 +559,6 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -746,7 +742,6 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 

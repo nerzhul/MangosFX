@@ -43,7 +43,6 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
 	MobEventTasks Tasks;
@@ -134,7 +133,6 @@ struct MANGOS_DLL_DECL mob_grobbulusnueeAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
 	void Reset()

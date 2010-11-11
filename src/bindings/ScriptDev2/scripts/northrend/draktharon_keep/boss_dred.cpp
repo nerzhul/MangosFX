@@ -39,7 +39,6 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
     uint32 RaptorCallTimer;
 	bool m_bIsHeroic;
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -122,7 +121,6 @@ struct MANGOS_DLL_DECL npc_drakkari_gutripperAI : public ScriptedAI
 		Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -167,7 +165,6 @@ struct MANGOS_DLL_DECL npc_drakkari_scytheclawAI : public ScriptedAI
 		Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()

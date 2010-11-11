@@ -45,7 +45,6 @@ struct MANGOS_DLL_DECL boss_moorabiAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

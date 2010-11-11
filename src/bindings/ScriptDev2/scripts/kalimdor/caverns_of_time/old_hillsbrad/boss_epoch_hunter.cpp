@@ -48,8 +48,6 @@ struct MANGOS_DLL_DECL boss_epoch_hunterAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 SandBreath_Timer;
     uint32 ImpendingDeath_Timer;
     uint32 WingBuffet_Timer;

@@ -59,7 +59,6 @@ struct MANGOS_DLL_DECL boss_gluthAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 Check_Timer;

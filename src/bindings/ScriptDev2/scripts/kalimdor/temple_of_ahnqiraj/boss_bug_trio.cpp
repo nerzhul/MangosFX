@@ -43,8 +43,6 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Cleave_Timer;
     uint32 ToxicVolley_Timer;
     uint32 Check_Timer;
@@ -125,8 +123,6 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Charge_Timer;
     uint32 KnockBack_Timer;
     uint32 Enrage_Timer;
@@ -198,8 +194,6 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 Heal_Timer;
     uint32 Fear_Timer;

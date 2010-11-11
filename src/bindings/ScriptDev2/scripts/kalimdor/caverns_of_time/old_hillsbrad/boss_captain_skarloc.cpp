@@ -46,8 +46,6 @@ struct MANGOS_DLL_DECL boss_captain_skarlocAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 Holy_Light_Timer;
     uint32 Cleanse_Timer;
     uint32 HammerOfJustice_Timer;

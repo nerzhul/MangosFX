@@ -145,8 +145,6 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     //Global variables
     uint32 PhaseTimer;
 
@@ -444,8 +442,6 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
 
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     //Out of combat whisper timer
     uint32 WisperTimer;

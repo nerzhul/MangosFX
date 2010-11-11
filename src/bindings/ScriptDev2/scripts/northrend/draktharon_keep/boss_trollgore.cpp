@@ -53,7 +53,6 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
 
     bool bAchiev,m_bIsHeroic;
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()

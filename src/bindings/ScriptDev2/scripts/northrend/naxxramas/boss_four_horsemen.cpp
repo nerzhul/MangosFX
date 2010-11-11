@@ -169,7 +169,6 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     uint32 UnholyShadow_Timer;

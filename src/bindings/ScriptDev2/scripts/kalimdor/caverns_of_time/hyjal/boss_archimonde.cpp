@@ -80,7 +80,6 @@ struct mob_ancient_wispAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint64 ArchimondeGUID;
     uint32 CheckTimer;
 
@@ -185,8 +184,6 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint64 DoomfireSpiritGUID;
     uint64 WorldTreeGUID;

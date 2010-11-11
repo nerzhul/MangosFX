@@ -97,7 +97,6 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
     void Reset()
@@ -221,8 +220,8 @@ struct MANGOS_DLL_DECL add_jedoga : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
+
 
     void Reset()
     {

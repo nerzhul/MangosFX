@@ -37,8 +37,6 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public LibDevFSAI
 		AddEvent(SPELL_CORRUPTING_BLIGHT,6000,5000,2000);
     }
     
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
 		ResetTimers();

@@ -799,8 +799,6 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
 	   Reset();
 	}
 
-	ScriptedInstance* pInstance;
-
 	uint32 Step;
 	uint32 Steptim;
 	bool Event;
@@ -920,8 +918,6 @@ struct MANGOS_DLL_DECL dark_conversionAI : public ScriptedAI
 	  pInstance = (ScriptedInstance*)c->GetInstanceData();
 	  Reset();
 	}
-
-	ScriptedInstance* pInstance;
 
 	Unit* Target;
 	Creature* Arthas;

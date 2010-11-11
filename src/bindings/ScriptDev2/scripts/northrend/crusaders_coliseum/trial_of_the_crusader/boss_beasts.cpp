@@ -639,7 +639,6 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 	Difficulty m_bIsHeroic;
 	uint8 phase;

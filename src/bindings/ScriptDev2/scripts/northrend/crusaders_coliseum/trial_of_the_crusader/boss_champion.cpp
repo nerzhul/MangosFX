@@ -207,7 +207,6 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -319,7 +318,6 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -428,7 +426,6 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -525,7 +522,6 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -631,7 +627,6 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -732,7 +727,6 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -838,7 +832,6 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -940,7 +933,6 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -1047,7 +1039,6 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -1153,7 +1144,6 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -1259,7 +1249,6 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;
@@ -1355,7 +1344,6 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     MobEventTasks Tasks;
     Difficulty m_bDifficulty;
     uint32 ResetAggro_Timer;

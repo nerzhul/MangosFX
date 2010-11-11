@@ -58,8 +58,6 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 ArcaneExplosion_Timer;
     uint32 EarthShock_Timer;
     uint32 FullFillment_Timer;

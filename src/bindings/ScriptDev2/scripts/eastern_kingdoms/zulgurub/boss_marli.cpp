@@ -60,8 +60,6 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiPoisonVolley_Timer;
     uint32 m_uiSpawnSpider_Timer;
     uint32 m_uiCharge_Timer;
@@ -320,7 +318,6 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
         pInstance = (ScriptedInstance*)me->GetInstanceData();
     }
 
-    ScriptedInstance* pInstance;
     uint32 m_uiLevelUp_Timer;
 
     void Reset()

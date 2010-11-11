@@ -61,7 +61,6 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	uint32 phasing_Timer;

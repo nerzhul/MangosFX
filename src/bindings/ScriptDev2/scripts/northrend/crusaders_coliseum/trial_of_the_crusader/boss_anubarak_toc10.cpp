@@ -37,7 +37,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 	Difficulty difficulty;
 	uint32 Submerge_Timer;

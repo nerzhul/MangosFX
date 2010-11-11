@@ -78,7 +78,6 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
 
     CombatPhase Phase;
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()

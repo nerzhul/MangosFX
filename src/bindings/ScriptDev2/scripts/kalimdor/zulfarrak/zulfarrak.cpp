@@ -48,8 +48,6 @@ struct MANGOS_DLL_DECL npc_sergeant_blyAI : public ScriptedAI
         Reset();
     }
 
-    //ScriptedInstance* pInstance;
-
     uint32 ShieldBash_Timer;
     uint32 Revenge_Timer;                                   //this is wrong, spell should never be used unless me->getVictim() dodge, parry or block attack. Mangos support required.
 
@@ -145,8 +143,6 @@ struct MANGOS_DLL_DECL npc_weegli_blastfuseAI : public ScriptedAI
         //pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    //ScriptedInstance* pInstance;
 
     void Reset()
     {

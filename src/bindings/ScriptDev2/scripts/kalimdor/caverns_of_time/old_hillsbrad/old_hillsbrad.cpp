@@ -216,7 +216,6 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     uint64 TarethaGUID;
 
     bool LowHp;
@@ -591,8 +590,6 @@ struct MANGOS_DLL_DECL npc_tarethaAI : public npc_escortAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     void WaypointReached(uint32 i)
     {

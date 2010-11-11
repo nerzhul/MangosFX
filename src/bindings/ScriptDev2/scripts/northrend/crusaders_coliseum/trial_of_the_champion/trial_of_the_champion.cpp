@@ -42,8 +42,6 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
     }

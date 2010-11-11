@@ -67,7 +67,6 @@ class MANGOS_DLL_DECL BugAura : public Aura
 
 struct MANGOS_DLL_DECL boss_twinemperorsAI : public ScriptedAI
 {
-    ScriptedInstance* pInstance;
     uint32 Heal_Timer;
     uint32 Teleport_Timer;
     bool AfterTeleport;

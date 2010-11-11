@@ -58,8 +58,6 @@ struct MANGOS_DLL_DECL boss_thekalAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 MortalCleave_Timer;
     uint32 Silence_Timer;
     uint32 Frenzy_Timer;
@@ -258,8 +256,6 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public ScriptedAI
 
     bool FakeDeath;
 
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
         Shield_Timer = 1000;
@@ -394,8 +390,6 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public ScriptedAI
     uint32 Check_Timer;
 
     bool FakeDeath;
-
-    ScriptedInstance* pInstance;
 
     void Reset()
     {

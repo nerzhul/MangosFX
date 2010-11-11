@@ -64,7 +64,6 @@ struct MANGOS_DLL_DECL mob_toc5_risen_ghoulAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Attack;
@@ -122,7 +121,6 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 

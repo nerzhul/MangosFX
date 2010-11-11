@@ -62,8 +62,6 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 SpellCorrupt_Timer;
     uint32 Check_Timer;
 
@@ -251,8 +249,6 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* pInstance;
 
     uint32 TimeRiftWave_Timer;
     uint8 mRiftWaveCount;

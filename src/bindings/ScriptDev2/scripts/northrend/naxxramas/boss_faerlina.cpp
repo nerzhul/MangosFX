@@ -131,7 +131,6 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool m_bIsDead;
 

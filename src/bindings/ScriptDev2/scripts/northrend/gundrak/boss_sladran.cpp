@@ -51,7 +51,6 @@ struct MANGOS_DLL_DECL boss_sladranAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	
@@ -147,7 +146,6 @@ struct MANGOS_DLL_DECL mob_sladranAI : public ScriptedAI //script Serpent
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
      
@@ -194,7 +192,6 @@ struct MANGOS_DLL_DECL mob_sladran2AI : public ScriptedAI //script Constrictor
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
 
      

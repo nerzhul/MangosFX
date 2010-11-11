@@ -134,7 +134,6 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsHeroic;
     bool SummonPhase;
     bool BlinkPhase;

@@ -53,8 +53,6 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiHolyFire_Timer;
     uint32 m_uiHolyWrath_Timer;
     uint32 m_uiVenomSpit_Timer;

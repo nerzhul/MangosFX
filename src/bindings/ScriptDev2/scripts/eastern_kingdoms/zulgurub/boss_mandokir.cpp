@@ -329,8 +329,6 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
-
     uint32 m_uiSunderArmor_Timer;
 
     void Reset()

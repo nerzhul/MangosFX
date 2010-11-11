@@ -63,7 +63,6 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Hammer_Timer;
@@ -157,7 +156,6 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 
 	uint32 Holy_Fire_Timer;
@@ -484,7 +482,6 @@ struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
-	ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 

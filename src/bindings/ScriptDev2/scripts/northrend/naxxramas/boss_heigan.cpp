@@ -66,7 +66,6 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -246,7 +245,6 @@ struct MANGOS_DLL_DECL npc_heigan_eruptionAI : public ScriptedAI
         pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
         Reset();
     }
-    ScriptedInstance* pInstance;
  
     uint32 phase;
     uint32 safeSpot;
