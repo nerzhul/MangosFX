@@ -2595,6 +2595,28 @@ bool InstanceMap::Add(Player *player)
 	{
 		// Set Dungeon, for random rewards
 		uint32 dId = player->GetDungeonId();
+		if(player->GetLfgRoles() && dId)
+		{
+			if(player->getLevel() == 80)
+			{
+				if(GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC)
+					dId = 262;
+				else
+					dId = 261;
+			}
+			else if(player->getLevel() < 80 && player->getLevel() > 70)
+				dId = 261;
+			else if(player->getLevel() >= 60 && player->getLevel() <= 70)
+			{
+				if(GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC)
+					dId = 260;
+				else
+					dId = 259;
+			}
+			else if(player->getLevel() < 60)
+				dId = 258;
+		}
+
 		if(dId > 0 && i_data->GetLFGDungeon() == 0)
 			i_data->SetLFGDungeon(dId);
 
