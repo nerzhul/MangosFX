@@ -8240,7 +8240,7 @@ void Aura::PeriodicTick()
 
             int32 heal = 0;
 		// Life drain must'nt use Heal bonus
-		if(GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellIconId == 546 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x08))
+		if(GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellIconID == 546 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x08))
 				heal = new_damage * multiplier;
 			else
 				heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());
@@ -8423,7 +8423,7 @@ void Aura::PeriodicTick()
             {
                 int32 gain = pCaster->ModifyPower(power, gain_amount);
 		if (GetId() == 5138)                        // Drain Mana
-                    if (Aura* petPart = GetHolder()->GetAuraByEffectIndex(EFFECT_INDEX_1))
+                    if (Aura* petPart = pCaster->GetAura(GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
                         if (int pet_gain = gain_amount * petPart->GetModifier()->m_amount / 100)
                             pCaster->CastCustomSpell(pCaster, 32554, &pet_gain, NULL, NULL, true);
                 	m_target->AddThreat(pCaster, float(gain) * 0.5f, pInfo.critical, GetSpellSchoolMask(GetSpellProto()), GetSpellProto());

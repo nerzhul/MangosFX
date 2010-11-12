@@ -114,14 +114,14 @@ void WarlockSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* cas
         	    if ((*i)->GetCasterGUID() == caster->GetGUID())
                 	++dots;
 	        }
-		auras = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
-	        for (AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+		Unit::AuraList const& auras2 = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
+	        for (AuraList::const_iterator i = auras2.begin(); i != auras2.end(); ++i)
         	{
 	            // Get auras by caster
         	    if ((*i)->GetCasterGUID() == caster->GetGUID())
                 	++dots;
 	        }
 
-	    DoneTotalMod *= float(100.f + (15.0f * dots / 100.0f);
+	    DoneTotalMod *= float(100.f + (15.0f * dots / 100.0f));
 	}
 }
