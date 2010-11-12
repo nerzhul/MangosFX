@@ -6614,7 +6614,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 56131;
                     break;
                 }
-				// Glyph of Prayer of Healing
+		// Glyph of Prayer of Healing
                 case 55680:
                 {
                     basepoints0 = int32(damage * triggerAmount / 200);   // divided in two ticks
@@ -6800,6 +6800,14 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return false;
                     basepoints0 = triggerAmount * damage / 100;
                     triggered_spell_id = 54755;
+                    break;
+                }
+		// Item - Druid T10 Balance 4P Bonus
+                case 70723:
+                {
+                    basepoints0 = int32(triggerAmount * damage / 100);
+                    basepoints0 = int32(basepoints0 / 2);
+                    triggered_spell_id = 71023;
                     break;
                 }
             }
