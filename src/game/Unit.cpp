@@ -6347,8 +6347,19 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     // Remove aura (before cast for prevent infinite loop handlers)
                     RemoveAurasDueToSpell(triggeredByAura->GetId());
 
+			uint32 dummy_spell;
+			switch (dummySpell->Id)
+			{
+				// rank 1
+				case 27243: dummy_spell = 27285; break;
+				// rank 2
+				case 47835: dummy_spell = 47833; break;
+				// rank 3
+				case 47836: dummy_spell = 47834; break;
+				default: return false;
+			}
                     // Cast finish spell (triggeredByAura already not exist!)
-                    CastSpell(this, 27285, true, castItem, NULL, casterGuid);
+                    CastSpell(this, dummy_spell, true, castItem, NULL, casterGuid);
                     return true;                            // no hidden cooldown
                 }
 
