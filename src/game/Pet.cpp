@@ -281,6 +281,7 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
         LearnPetPassives();
         CastPetAuras(current);
     }
+	SynchronizeLevelWithOwner();
 
     if (getPetType() == SUMMON_PET && !current)             //all (?) summon pets come with full health when called, but not when they are current
     {
@@ -342,7 +343,6 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
 
     m_loading = false;
 
-    SynchronizeLevelWithOwner();
     return true;
 }
 
