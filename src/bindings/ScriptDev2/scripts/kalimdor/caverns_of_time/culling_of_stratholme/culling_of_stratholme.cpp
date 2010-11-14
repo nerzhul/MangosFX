@@ -678,7 +678,6 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 					break;
 
            case 79:
-					DoScriptText(SAY_TEST, me);
 					if(Creature* StalkerM = me->SummonCreature(NPC_INVIS_SIGHT,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
 					{
 						StalkerMGUID = StalkerM->GetGUID();
@@ -772,8 +771,6 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 					break;
 
            case 93:
-					DoScriptText(SAY_TEST, me);
-
 					pInstance->SetData(TYPE_VAGUE_EVENT,IN_PROGRESS);
 					phaseAI = 95;
 					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
