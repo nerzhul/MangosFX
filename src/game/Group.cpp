@@ -49,6 +49,7 @@ Group::Group()
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
 	m_guid              = 0;
+	m_counter           = 0;
 	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
@@ -988,37 +989,44 @@ void Group::SendUpdate()
         if(!player || !player->GetSession() || player->GetGroup() != this )
             continue;
                                                             // guess size
-        WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+8+4+GetMembersCount()*20));
+        //WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+8+4+GetMembersCount()*20));
+		WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+1+4+8+4+4+(GetMembersCount()-1)*(13+8+1+1+1+1)+8+1+8+1+1+1+1)); // Update packet
         data << uint8(m_groupType);                         // group type (flags in 3.3)
         data << uint8(citr->group);                         // groupid
         data << uint8(GetFlags(*citr));						// group flags
-        data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
-        if(m_groupType & GROUPTYPE_LFD)
+        
+		data << uint8(isBGGroup() ? 1 : 0);                 // 2.0.x, isBattleGroundGroup?
+		if(isLFGGroup())
         {
-            data << uint8(player->GetLfgRoles());			// dungeon status
-            data << uint32(0);								// LFG entry
+			// LFG entry
+			data << uint8(m_LfgStatus);
+            data << uint32(m_LfgDungeonEntry);
+
         }
-        data << uint64(0x50000000FFFFFFFELL);               // related to voice chat?
+		data << uint64(m_guid);
 		data << uint32(0);
+
         data << uint32(GetMembersCount()-1);
         for(member_citerator citr2 = m_memberSlots.begin(); citr2 != m_memberSlots.end(); ++citr2)
         {
             if(citr->guid == citr2->guid)
                 continue;
             Player* member = sObjectMgr.GetPlayer(citr2->guid);
-            uint8 onlineState = (member) ? MEMBER_STATUS_ONLINE : MEMBER_STATUS_OFFLINE;
+            
+			uint8 onlineState = (member) ? MEMBER_STATUS_ONLINE : MEMBER_STATUS_OFFLINE;
             onlineState = onlineState | ((isBGGroup()) ? MEMBER_STATUS_PVP : 0);
 
 			data << std::string(citr2->name);
             data << uint64(citr2->guid);
             data << uint8(onlineState);						// online-state
             data << uint8(citr2->group);                    // groupid
-            if(!isBGGroup())								// seems its causing errors in BGGroup
+
+			if(!isBGGroup())								// seems its causing errors in BGGroup
                 data << uint8(GetFlags(*citr2));			// group flags
             else
                 data << uint8(0);
-			
-			data << uint8(member ? member->GetLfgRoles() : 0);	// 3.3, role? 
+
+            data << uint8(citr2->roles);                    // Lfg Roles
         }
 
         data << uint64(m_leaderGuid);                       // leader guid

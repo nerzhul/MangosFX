@@ -204,6 +204,7 @@ void WorldSession::HandleLfgPlayerLockInfoRequestOpcode(WorldPacket &/*recv_data
 
     sLog.outDebug("SMSG_LFG_PLAYER_INFO [" UI64FMTD "]", GetPlayer()->GetGUID());
     WorldPacket data(SMSG_LFG_PLAYER_INFO, 1 + rsize * (4 + 1 + 4 + 4 + 4 + 4 + 1 + 4 + 4 + 4) + 4 + lsize * (1 + 4 + 4 + 4 + 4 + 1 + 4 + 4 + 4));
+	
     if (!randomlist)
         data << uint8(0);
     else

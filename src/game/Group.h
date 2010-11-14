@@ -509,7 +509,7 @@ class MANGOS_DLL_SPEC Group
         uint8*              m_subGroupsCounts;
 		bool				WGGroup;
 
-		uint64              m_guid; //Merging
+		uint64              m_guid; // Add LFG Support
 		bool                m_LfgQueued;
         uint8               m_LfgStatus;
         uint32              m_LfgDungeonEntry;
