@@ -114,9 +114,12 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
 			case NPC_KERISTRASZA:
 				m_uiKeristraszaGUID = pCreature->GetGUID();
 				pCreature->SetAuraStack(47543,pCreature,1);
+				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
-					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
-						cr->RemoveAurasDueToSpell(47543);
+				{
+					pCreature->RemoveAurasDueToSpell(47543);
+					pCreature->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				}
 				break;
 			case NPC_TELESTRA:
 				m_uiTelestraGUID = pCreature->GetGUID();
@@ -183,7 +186,10 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                 }
 				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
 					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
 						cr->RemoveAurasDueToSpell(47543);
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
                 break;
             case TYPE_ANOMALUS:
                 m_auiEncounter[1] = uiData;
@@ -194,7 +200,10 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                 }
 				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
 					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
 						cr->RemoveAurasDueToSpell(47543);
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
                 break;
             case TYPE_ORMOROK:
                 m_auiEncounter[2] = uiData;
@@ -205,8 +214,11 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                 }
 				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
 					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
 						cr->RemoveAurasDueToSpell(47543);
-                break;
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
+                 break;
             case TYPE_KERISTRASZA:
                 m_auiEncounter[3] = uiData;
                 break;

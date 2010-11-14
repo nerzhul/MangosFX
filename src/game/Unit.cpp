@@ -6347,8 +6347,19 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     // Remove aura (before cast for prevent infinite loop handlers)
                     RemoveAurasDueToSpell(triggeredByAura->GetId());
 
+			uint32 dummy_spell;
+			switch (dummySpell->Id)
+			{
+				// rank 1
+				case 27243: dummy_spell = 27285; break;
+				// rank 2
+				case 47835: dummy_spell = 47833; break;
+				// rank 3
+				case 47836: dummy_spell = 47834; break;
+				default: return false;
+			}
                     // Cast finish spell (triggeredByAura already not exist!)
-                    CastSpell(this, 27285, true, castItem, NULL, casterGuid);
+                    CastSpell(this, dummy_spell, true, castItem, NULL, casterGuid);
                     return true;                            // no hidden cooldown
                 }
 
@@ -6603,7 +6614,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 56131;
                     break;
                 }
-				// Glyph of Prayer of Healing
+		// Glyph of Prayer of Healing
                 case 55680:
                 {
                     basepoints0 = int32(damage * triggerAmount / 200);   // divided in two ticks
@@ -6789,6 +6800,14 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return false;
                     basepoints0 = triggerAmount * damage / 100;
                     triggered_spell_id = 54755;
+                    break;
+                }
+		// Item - Druid T10 Balance 4P Bonus
+                case 70723:
+                {
+                    basepoints0 = int32(triggerAmount * damage / 100);
+                    basepoints0 = int32(basepoints0 / 2);
+                    triggered_spell_id = 71023;
                     break;
                 }
             }

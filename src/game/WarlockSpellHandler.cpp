@@ -2,6 +2,8 @@
 #include "Spell.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
+#include "Unit.h"
+#include "ClassSpellHandler.h"
 #include "WarlockSpellHandler.h"
 
 INSTANTIATE_SINGLETON_1(WarlockSpellHandler);
@@ -100,4 +102,26 @@ void WarlockSpellHandler::SpellDamageBonusDone(SpellEntry* spellProto, Unit* cas
         if (pVictim->GetHealth() * 100 / pVictim->GetMaxHealth() <= 25)
           DoneTotalMod *= 4;
     }
+	// Shadow bite
+    if (spellProto->SpellFamilyFlags2 & 0x400000)
+	{
+		uint16 dots = 0;
+	    // Get DoTs on target by owner (15% increase by dot)
+		Unit::AuraList const& auras = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE);
+	        for (AuraList::const_iterator i = auras.begin(); i != auras.end(); ++i)
+        	{
+	            // Get auras by caster
+        	    if ((*i)->GetCasterGUID() == caster->GetGUID())
+                	++dots;
+	        }
+		Unit::AuraList const& auras2 = pVictim->GetAurasByType(SPELL_AURA_PERIODIC_DAMAGE_PERCENT);
+	        for (AuraList::const_iterator i = auras2.begin(); i != auras2.end(); ++i)
+        	{
+	            // Get auras by caster
+        	    if ((*i)->GetCasterGUID() == caster->GetGUID())
+                	++dots;
+	        }
+
+	    DoneTotalMod *= float(100.f + (15.0f * dots / 100.0f));
+	}
 }

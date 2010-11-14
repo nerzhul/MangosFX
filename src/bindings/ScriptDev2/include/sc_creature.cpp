@@ -792,7 +792,10 @@ void ScriptedAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
 		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
 			if (Player* pPlayer = itr->getSource())
 				if(pPlayer->GetDistance2d(me) < 120.0f)
+				{
 					GiveEmblems(type,pPlayer,nb, group5);
+					pPlayer->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, type, nb);
+				}
 }
 
 void ScriptedAI::GiveRandomReward()

@@ -226,7 +226,7 @@ class Unit;
 class Player;
 class WorldPacket;
 
-class AchievementMgr
+class MANGOS_DLL_DECL AchievementMgr
 {
     public:
         AchievementMgr(Player* pl);

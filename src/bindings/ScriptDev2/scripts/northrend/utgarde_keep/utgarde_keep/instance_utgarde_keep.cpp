@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
 			case TYPE_KELESETH:
 			case TYPE_SKARVALD:
 			case TYPE_INGVAR:
-				return m_auiEncounter[uiData];
+				return m_auiEncounter[uiType];
 			case DATA_NB_BOSS_DOWN:
 				uint32 resp = 0;
 				if(GetData(TYPE_KELESETH) == DONE)
