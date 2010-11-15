@@ -8527,7 +8527,7 @@ void Aura::PeriodicTick()
 
             pCaster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb);
 
-		damageInfo.overkill = damageInfo.target->GetHealth() < damageInfo.damage ? damageInfo.damage - damageInfo.target->GetHealth(): 0;
+			damageInfo.overkill = damageInfo.target->GetHealth() < damageInfo.damage ? damageInfo.damage - damageInfo.target->GetHealth(): 0;
 
             pCaster->SendSpellNonMeleeDamageLog(&damageInfo);
 
