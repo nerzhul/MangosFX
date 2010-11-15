@@ -49,7 +49,6 @@ Group::Group()
     m_lootThreshold     = ITEM_QUALITY_UNCOMMON;
     m_subGroupsCounts   = NULL;
 	m_guid              = 0;
-	m_counter           = 0;
 	WGGroup				= false;
 
     for (int i = 0; i < TARGET_ICON_COUNT; ++i)
@@ -989,7 +988,6 @@ void Group::SendUpdate()
         if(!player || !player->GetSession() || player->GetGroup() != this )
             continue;
                                                             // guess size
-        //WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+8+4+GetMembersCount()*20));
 		WorldPacket data(SMSG_GROUP_LIST, (1+1+1+1+1+4+8+4+4+(GetMembersCount()-1)*(13+8+1+1+1+1)+8+1+8+1+1+1+1)); // Update packet
         data << uint8(m_groupType);                         // group type (flags in 3.3)
         data << uint8(citr->group);                         // groupid
@@ -999,11 +997,11 @@ void Group::SendUpdate()
 		if(isLFGGroup())
         {
 			// LFG entry
-			data << uint8(m_LfgStatus);
-            data << uint32(m_LfgDungeonEntry);
+			data << uint8(m_LfgStatus); // Send correct info
+            data << uint32(m_LfgDungeonEntry); // Send correct info
 
         }
-		data << uint64(m_guid);
+		data << uint64(m_guid); // Send correct info
 		data << uint32(0);
 
         data << uint32(GetMembersCount()-1);
