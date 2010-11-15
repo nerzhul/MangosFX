@@ -1061,7 +1061,7 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         caster->CalculateSpellDamage(&damageInfo, m_damage, m_spellInfo, m_attackType);
         caster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb);
 
-		damageInfo.overkill = damageInfo.target->GetHealth() > damageInfo.damage ? damageInfo.target->GetHealth() - damageInfo.damage : 0;
+	damageInfo.overkill = damageInfo.target->GetHealth() < damageInfo.damage ? damageInfo.damage - damageInfo.target->GetHealth(): 0;
 
         // Send log damage message to client
         caster->SendSpellNonMeleeDamageLog(&damageInfo);
