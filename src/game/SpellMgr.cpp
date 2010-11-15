@@ -31,6 +31,24 @@
 
 SpellMgr::SpellMgr()
 {
+	SpecialSpellMap.clear();
+
+	SpellEntry* spell = new SpellEntry();
+	spell->Id = 56817;
+	spell->Attributes = 384;
+	spell->CastingTimeIndex = 1;
+	spell->procFlags = 16;
+	spell->procChance = 101;
+	spell->procCharges = 1;
+	spell->baseLevel = 67;
+	spell->spellLevel = 67;
+	spell->DurationIndex = 1;
+	spell->rangeIndex = 1;
+	spell->EquippedItemClass = -1;
+	spell->Effect[0] = 6;
+	spell->EffectImplicitTargetA[0] = 1;
+	spell->SpellFamilyName = 6;
+	SpecialSpellMap[56817] = spell;
 }
 
 SpellMgr::~SpellMgr()

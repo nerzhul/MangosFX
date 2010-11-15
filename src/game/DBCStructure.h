@@ -1533,6 +1533,7 @@ struct SpellEntry
         return EffectSpellClassMaskA + effect * 3;
     }
 
+	SpellEntry() {}
     private:
         // prevent creating custom entries (copy data from original in fact)
         SpellEntry(SpellEntry const&);                      // DON'T must have implementation

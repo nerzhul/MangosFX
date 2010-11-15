@@ -993,7 +993,15 @@ class SpellMgr
         {
             return SpellAreaForAreaMapBounds(mSpellAreaForAreaMap.lower_bound(area_id),mSpellAreaForAreaMap.upper_bound(area_id));
         }
+		
+		SpellEntry* LookupSpecialEntry(uint32 spellId)
+		{
+			std::map<uint32,SpellEntry*>::iterator itr = SpecialSpellMap.find(spellId);
+			if(itr == SpecialSpellMap.end())
+				return NULL;
 
+			return itr->second;
+		}
     // Modifiers
     public:
         static SpellMgr& Instance();
@@ -1039,6 +1047,9 @@ class SpellMgr
         SpellAreaForQuestMap mSpellAreaForQuestEndMap;
         SpellAreaForAuraMap  mSpellAreaForAuraMap;
         SpellAreaForAreaMap  mSpellAreaForAreaMap;
+
+		// special
+		std::map<uint32,SpellEntry*> SpecialSpellMap;
 };
 
 #define sSpellMgr SpellMgr::Instance()

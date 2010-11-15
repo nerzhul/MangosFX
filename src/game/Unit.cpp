@@ -1330,7 +1330,10 @@ void Unit::CastSpell(Unit* Victim,SpellEntry const *spellInfo, bool triggered, I
 
 void Unit::CastCustomSpell(Unit* Victim,uint32 spellId, int32 const* bp0, int32 const* bp1, int32 const* bp2, bool triggered, Item *castItem, Aura* triggeredByAura, uint64 originalCaster)
 {
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId );
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+
+	if(!spellInfo)
+		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);
 
     if(!spellInfo)
     {
@@ -1375,7 +1378,10 @@ void Unit::CastCustomSpell(Unit* Victim,SpellEntry const *spellInfo, int32 const
 // used for scripting
 void Unit::CastSpell(float x, float y, float z, uint32 spellId, bool triggered, Item *castItem, Aura* triggeredByAura, uint64 originalCaster)
 {
-    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId );
+    SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+
+	if(!spellInfo)
+		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);
 
     if(!spellInfo)
     {
@@ -7933,9 +7939,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         triggered_spell_id = 66952; break;
                     case 49924:                             // Rank 5
                         triggered_spell_id = 66953; break;
-                    // Rune Strike
-                    case 56815:
-                        triggered_spell_id = 66217; break;
                     // Blood Strike
                     case 45902:                             // Rank 1
                         triggered_spell_id = 66215; break;
@@ -8069,8 +8072,8 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 			// Rune strike
 			if (dummySpell->Id == 56817)
 			{
-				if (procSpell && procSpell->Id != 56815)
-					return false;
+				RemoveAurasDueToSpell(56817);
+				return true;
 			}
 			// Hungering Cold - not break from diseases
 			if (dummySpell->SpellIconID == 2797)
@@ -8740,6 +8743,10 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 basepoints[0] = int32(triggerAmount * damage / 100 * (100.0f + modPctHeal) / 100.0f);
                 trigger_spell_id = 50475;
             }
+			else if(triggeredByAura->GetId() == 56816)
+			{
+				CastSpell(pVictim,56815,true);
+			}
             break;
         }
         default:
@@ -13997,6 +14004,9 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                     ((Player*)this)->AddComboPoints(pTarget, 1);
                     StartReactiveTimer( REACTIVE_OVERPOWER );
                 }
+				// Rune Strike
+				if (procExtra & (PROC_EX_DODGE | PROC_EX_PARRY) && getClass() == CLASS_DEATH_KNIGHT)
+					CastSpell(this, 56817, true);
             }
         }
     }

@@ -201,9 +201,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
 	// LibDevFS Implementation
 	void AggroAllPlayers(float maxdist = 150.0f);
-	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
-	void GiveRandomReward();
-	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
+	
 	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }
 	void Kill(Unit* toKill);
 	bool CheckPercentLife(uint32 percent) { return (GetPercentLife() <= percent) ? true : false; }
@@ -221,6 +219,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void BossEmote(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_BOSS_EMOTE, soundid, text, spkCr); }
 	Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
 	uint32 GetLFGDungeon() { return pInstance ? pInstance->GetLFGDungeon() : 0; }
+	void GiveRandomReward();
 	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 

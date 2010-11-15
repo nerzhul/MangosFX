@@ -283,6 +283,10 @@ class MANGOS_DLL_SPEC CreatureAI
 
 		// Manual Move System
 		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
+
+		// Rewards
+		void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
+		void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
 	
 		// Getter for extern functions
 		Creature* getMyself() { return me; }

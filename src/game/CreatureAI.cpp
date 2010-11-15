@@ -153,3 +153,42 @@ void CreatureAI::ResetTimers()
 	for(TextEvents::iterator itr = SavedEventTexts.begin(); itr!= SavedEventTexts.end(); ++itr)
 		EventTextVect.push_back(*itr);
 }
+
+void CreatureAI::GiveEmblemsToGroup(uint32 type, uint8 nb, bool group5)
+{
+	if(type == 0)
+		return;
+
+    Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
+	if (!lPlayers.isEmpty())
+		for(Map::PlayerList::const_iterator itr = lPlayers.begin(); itr != lPlayers.end(); ++itr)
+			if (Player* pPlayer = itr->getSource())
+				if(pPlayer->GetDistance2d(me) < 120.0f)
+				{
+					GiveEmblems(type,pPlayer,nb, group5);
+					pPlayer->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_LOOT_ITEM, type, nb);
+				}
+}
+
+void CreatureAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5)
+{
+	ItemPosCountVec dest;
+	uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, type, nb, false);
+	if (msg == EQUIP_ERR_OK)
+		if(Item* pItem = pPlayer->StoreNewItem(dest, type, nb, true))
+		{
+			pPlayer->SendNewItem(pItem, nb, true, false);
+		}
+
+	// Wintergrasp Aura
+	if(group5 && pPlayer->HasAura(57940))
+	{
+		ItemPosCountVec dest;
+	        uint8 msg = pPlayer->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, 43228, 4, false);
+	        if (msg == EQUIP_ERR_OK)
+                	if(Item* pItem = pPlayer->StoreNewItem(dest, 43228, 4, true))
+					{
+        				pPlayer->SendNewItem(pItem, 4, true, false);
+					}
+	}
+}
