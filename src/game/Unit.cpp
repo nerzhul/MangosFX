@@ -2028,7 +2028,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                data << uint64(GetGUID());
                data << uint32(i_spellProto->Id);
                data << uint32(damage);                  // Damage
-               data << uint32(overkill);                       // Overkill
+               data << uint32(overkill);                // Overkill
                data << uint32(i_spellProto->SchoolMask);
                pVictim->SendMessageToSet(&data, true );
 
@@ -5379,6 +5379,7 @@ void Unit::SendSpellNonMeleeDamageLog(Unit *target, uint32 SpellID, uint32 Damag
     log.damage = Damage - AbsorbedDamage - Resist - Blocked;
     log.absorb = AbsorbedDamage;
     log.resist = Resist;
+	log.overkill = log.damage > target->GetHealth() ? log.damage - target->GetHealth() : 0;
     log.physicalLog = PhysicalDamage;
     log.blocked = Blocked;
     log.HitInfo = SPELL_HIT_TYPE_UNK1 | SPELL_HIT_TYPE_UNK3 | SPELL_HIT_TYPE_UNK6;
