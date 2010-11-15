@@ -8750,10 +8750,6 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 basepoints[0] = int32(triggerAmount * damage / 100 * (100.0f + modPctHeal) / 100.0f);
                 trigger_spell_id = 50475;
             }
-			else if(triggeredByAura->GetId() == 56816)
-			{
-				CastSpell(pVictim,56815,true);
-			}
             break;
         }
         default:
