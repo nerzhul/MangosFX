@@ -1879,6 +1879,9 @@ void Unit::CalculateMeleeDamage(Unit *pVictim, uint32 damage, CalcDamageInfo *da
     }
     else // Umpossible get negative result but....
         damageInfo->damage = 0;
+
+	if (damageInfo->damage > damageInfo->target->GetHealth())
+		damageInfo->overkill = damageInfo->damage - damageInfo->target->GetHealth();
 }
 
 void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
@@ -2018,12 +2021,14 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
 
                pVictim->DealDamageMods(this,damage,NULL);
 
+			   uint32 overkill = damage > GetHealth() ? damage - GetHealth() : 0;
+
                WorldPacket data(SMSG_SPELLDAMAGESHIELD,(8+8+4+4+4+4));
                data << uint64(pVictim->GetGUID());
                data << uint64(GetGUID());
                data << uint32(i_spellProto->Id);
                data << uint32(damage);                  // Damage
-               data << uint32(0);                       // Overkill
+               data << uint32(overkill);                       // Overkill
                data << uint32(i_spellProto->SchoolMask);
                pVictim->SendMessageToSet(&data, true );
 
@@ -5464,7 +5469,7 @@ void Unit::SendAttackStateUpdate(CalcDamageInfo *damageInfo)
     data.append(damageInfo->attacker->GetPackGUID());
     data.append(damageInfo->target->GetPackGUID());
     data << uint32(damageInfo->damage);                     // Full damage
-    data << uint32(0);                                      // overkill value
+    data << uint32(damageInfo->overkill);                   // overkill value
     data << uint8(count);                                   // Sub damage count
 
     for(int i = 0; i < count; ++i)
@@ -5528,6 +5533,7 @@ void Unit::SendAttackStateUpdate(uint32 HitInfo, Unit *target, uint8 SwingType, 
     dmgInfo.damageSchoolMask = damageSchoolMask;
     dmgInfo.absorb = AbsorbDamage;
     dmgInfo.resist = Resist;
+	dmgInfo.overkill = dmgInfo.damage > target->GetHealth() ? dmgInfo.damage - target->GetHealth() : 0;
     dmgInfo.TargetState = TargetState;
     dmgInfo.blocked_amount = BlockedAmount;
     SendAttackStateUpdate(&dmgInfo);
@@ -14073,6 +14079,7 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 SpellNonMeleeDamage damageInfo(this, pTarget, spellInfo->Id, SpellSchoolMask(spellInfo->SchoolMask));
                 CalculateSpellDamage(&damageInfo, auraModifier->m_amount, spellInfo);
                 DealDamageMods(damageInfo.target,damageInfo.damage,&damageInfo.absorb);
+				damageInfo.overkill = damageInfo.target->GetHealth() > damageInfo.damage ? damageInfo.target->GetHealth() - damageInfo.damage : 0;
                 SendSpellNonMeleeDamageLog(&damageInfo);
                 DealSpellDamage(&damageInfo, true);
                 break;
