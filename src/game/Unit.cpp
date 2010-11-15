@@ -2027,7 +2027,7 @@ void Unit::DealMeleeDamage(CalcDamageInfo *damageInfo, bool durabilityLoss)
                data << uint64(pVictim->GetGUID());
                data << uint64(GetGUID());
                data << uint32(i_spellProto->Id);
-               data << uint32(damage);                  // Damage
+               data << uint32(damage-overkill);         // Damage
                data << uint32(overkill);                // Overkill
                data << uint32(i_spellProto->SchoolMask);
                pVictim->SendMessageToSet(&data, true );
@@ -5360,7 +5360,7 @@ void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage *log)
     data.append(log->target->GetPackGUID());
     data.append(log->attacker->GetPackGUID());
     data << uint32(log->SpellID);
-    data << uint32(log->damage);                            // damage amount
+    data << uint32(log->damage-log->overkill);              // damage amount
     data << uint32(log->overkill);                          // overkill
     data << uint8 (log->schoolMask);                        // damage school
     data << uint32(log->absorb);                            // AbsorbedDamage
@@ -5403,7 +5403,7 @@ void Unit::SendPeriodicAuraLog(SpellPeriodicAuraLogInfo *pInfo)
     {
         case SPELL_AURA_PERIODIC_DAMAGE:
         case SPELL_AURA_PERIODIC_DAMAGE_PERCENT:
-            data << uint32(pInfo->damage);                  // damage
+            data << uint32(pInfo->damage-pInfo->overDamage);// damage
             data << uint32(pInfo->overDamage);              // overkill?
             data << uint32(GetSpellSchoolMask(aura->GetSpellProto()));
             data << uint32(pInfo->absorb);                  // absorb
@@ -5469,7 +5469,7 @@ void Unit::SendAttackStateUpdate(CalcDamageInfo *damageInfo)
     data << uint32(damageInfo->HitInfo);
     data.append(damageInfo->attacker->GetPackGUID());
     data.append(damageInfo->target->GetPackGUID());
-    data << uint32(damageInfo->damage);                     // Full damage
+    data << uint32(damageInfo->damage-damageInfo->overkill);// Full damage
     data << uint32(damageInfo->overkill);                   // overkill value
     data << uint8(count);                                   // Sub damage count
 
