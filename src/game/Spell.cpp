@@ -1662,7 +1662,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							
 						if ((*iter)->GetEntry() == i_spellST->second.targetEntry)
 						{
-							if (i_spellST->second.type == SPELL_TARGET_TYPE_DEAD && ((Creature*)(*iter))->IsCorpse())
+							if (i_spellST->second.type == SPELL_TARGET_TYPE_DEAD && ((Creature*)(*iter))->isCorpse())
 							{
 								targetUnitMap.push_back((*iter));
 							}

@@ -2545,6 +2545,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     case 48025:                             // Headless Horseman's Mount
 						Spell::SelectMountByAreaAndSkill(m_target, 51621, 48024, 51617, 48023, NULL);
 						return;
+					case 51405:                             // Digging for Treasure
+						m_target->HandleEmoteCommand(EMOTE_STATE_WORK);
+						// Pet will be following owner, this makes him stop
+						m_target->addUnitState(UNIT_STAT_STUNNED);
+						return;
                     case 62061:                             // Festive Holiday Mount
                         if (m_target->HasAuraType(SPELL_AURA_MOUNTED))
                             // Reindeer Transformation
@@ -2861,6 +2866,23 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 m_target->CastSpell(m_target, 47287, true, NULL, this);
                 return;
             }
+			case 51405:                                     // Digging for Treasure
+			{
+				const uint32 spell_list[7] =
+				{
+					51441,                                  // hare
+					51397,                                  // crystal
+					51398,                                  // armor
+					51400,                                  // gem
+					51401,                                  // platter
+					51402,                                  // treasure
+					51443                                   // bug
+				};
+				m_target->CastSpell(m_target, spell_list[urand(0,6)], true);
+				m_target->HandleEmoteCommand(EMOTE_STATE_NONE);
+				m_target->clearUnitState(UNIT_STAT_STUNNED);
+				return;
+			}
 			case 51870:                                     // Collect Hair Sample
 			{
 				if (Unit* pCaster = GetCaster())
