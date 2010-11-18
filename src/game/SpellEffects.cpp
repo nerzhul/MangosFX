@@ -363,6 +363,15 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                         damage = unitTarget->GetMaxHealth() / 10;
                         break;
                     }
+					// percent max target health
+                    case 29142:                             // Eyesore Blaster
+                    case 35139:                             // Throw Boom's Doom
+                    case 49882:                             // Leviroth Self-Impale
+                    case 55269:                             // Deathly Stare
+                    {
+                        damage = damage * unitTarget->GetMaxHealth() / 100;
+                        break;
+                    }
                     // Hand of Rekoning (name not have typos ;) )
                     case 67485:
                         damage += uint32(0.5f * m_caster->GetTotalAttackPowerValue(BASE_ATTACK));

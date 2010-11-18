@@ -1121,8 +1121,8 @@ void World::LoadConfigSettings(bool reload)
         sLog.outString("Using DataDir %s",m_dataPath.c_str());
     }
 
-    bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", false);
-    bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", false);
+    bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", true);
+    bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", true);
     std::string ignoreMapIds = sConfig.GetStringDefault("vmap.ignoreMapIds", "");
     std::string ignoreSpellIds = sConfig.GetStringDefault("vmap.ignoreSpellIds", "");
     VMAP::VMapFactory::createOrGetVMapManager()->setEnableLineOfSightCalc(enableLOS);
