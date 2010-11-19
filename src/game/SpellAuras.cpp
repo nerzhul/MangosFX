@@ -3209,7 +3209,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             // Lifebloom
             if (GetSpellProto()->SpellFamilyFlags & UI64LIT(0x1000000000))
             {
-                if ( apply )
+                if (apply)
                 {
                     if (Unit* caster = GetCaster())
                         // prevent double apply bonuses
@@ -3232,7 +3232,12 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     // final heal
                     if(m_target->IsInWorld() && m_stackAmount > 0)
                     {
-                         m_target->CastCustomSpell(m_target, 33778, &m_modifier.m_amount, NULL, NULL, true, NULL, this, GetCasterGUID());
+						int32 heal 0;
+						if(GetAuraDuration() <= 0)
+							heal = m_modifier.m_amount * m_stackAmount;
+						else
+							heal = m_modifier.m_amount
+                         m_target->CastCustomSpell(m_target, 33778, &heal, NULL, NULL, true, NULL, this, GetCasterGUID());
 
                         if (Unit* caster = GetCaster())
                         {
