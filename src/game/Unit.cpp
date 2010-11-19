@@ -9786,9 +9786,9 @@ Pet* Unit::FindGuardianWithEntry(uint32 entry)
         if(Pet* pet = GetMap()->GetPet(*itr))
             if (pet->GetEntry() == entry)
 				if (pet->getPetType() == entry)
-					return pet;
-
-    return NULL;
+ 		             return pet;
+ 	
+	return NULL;
 }
 
 Pet* Unit::GetProtectorPet()
@@ -15654,7 +15654,7 @@ void Unit::SetAuraStack(uint32 spellId, Unit *target, uint32 stack)
 }
 
 void Unit::ExitVehicle()
-{	
+{
 	if(GetTypeId() == TYPEID_PLAYER)
 		((Player*)this)->SetIsCanDelayTeleport(false);
 
@@ -15674,12 +15674,10 @@ void Unit::ExitVehicle()
 					}
 				}
 			}
-			
+
 			if(m_vehicle)
-			{
 				m_vehicle->RemovePassenger(this);
-			}	
-			
+
 			x = vehUnit->GetPositionX();
 			y = vehUnit->GetPositionY();
 			z = vehUnit->GetPositionZ() + 2.0f;
@@ -15691,12 +15689,11 @@ void Unit::ExitVehicle()
 		m_movementInfo.ClearTransportData();
 		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
 		clearUnitState(UNIT_STAT_ON_VEHICLE);
-		
+
 		if(IsInWorld())
 		{
 			GetClosePoint(x, y, z, 2.0f);
 			SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
-			
 		}
 
 		if(GetTypeId() == TYPEID_PLAYER)
