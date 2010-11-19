@@ -15674,13 +15674,15 @@ void Unit::ExitVehicle()
 					}
 				}
 			}
-
-			if(m_vehicle)
-				m_vehicle->RemovePassenger(this);
-
 			x = vehUnit->GetPositionX();
 			y = vehUnit->GetPositionY();
 			z = vehUnit->GetPositionZ() + 2.0f;
+			if(m_vehicle)
+			{
+				m_vehicle->RemovePassenger(this);
+				/*sLog.outDebug("C'est le code SuperMoche mais ca marche !");
+				((Player*)this)->TeleportTo(((Player*)this)->GetMapId(),x,y,z,2.0f);*/
+			}
 		}
 
 		SetVehicleGUID(0);
