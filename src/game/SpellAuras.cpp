@@ -5435,8 +5435,15 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
             case 66:                                        // Invisibility
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT && m_duration<=0)
                     m_target->CastSpell(m_target, 32612, true, NULL, this);
-
                 return;
+			 case 44401: //Missile Barrage
+             case 48108: //Hot Streak
+             case 57761: //Fireball!
+	             if (m_removeMode != AURA_REMOVE_BY_EXPIRE || m_duration <= 0)
+					break;
+                 if (m_target->HasAura(70752)) //Item - Mage T10 2P Bonus
+	                 m_target->CastSpell(target, 70753, true);
+                 break;
             case 42783:                                     //Wrath of the Astrom...
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT && GetEffIndex() + 1 < 3)
                     m_target->CastSpell(m_target, m_spellProto->CalculateSimpleValue(GetEffIndex()+1), true);
