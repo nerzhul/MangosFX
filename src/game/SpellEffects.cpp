@@ -3631,7 +3631,10 @@ void Spell::EffectSummonType(uint32 i)
                     EffectSummonTotem(i, summon_prop->Slot);
                     break;
                 case SUMMON_PROP_TYPE_CRITTER:
-                    EffectSummonCritter(i, summon_prop->FactionId);
+					if (summon_prop->Slot == 6)
+ 	                    EffectSummonGuardian(i, summon_prop->FactionId);
+					else
+						EffectSummonCritter(i, summon_prop->FactionId);
                     break;
                 case SUMMON_PROP_TYPE_PHASING:
                 case SUMMON_PROP_TYPE_LIGHTWELL:
@@ -4203,6 +4206,10 @@ void Spell::EffectSummonGuardian(uint32 i, uint32 forceFaction)
     if (!pet_entry)
         return;
 
+	SummonPropertiesEntry const* propEntry = sSummonPropertiesStore.LookupEntry(m_spellInfo->EffectMiscValueB[i]);	
+	if (!propEntry)
+		return;
+
     // in another case summon new
     uint32 level = m_caster->getLevel();
 
@@ -4246,7 +4253,7 @@ void Spell::EffectSummonGuardian(uint32 i, uint32 forceFaction)
 
     for(int32 count = 0; count < amount; ++count)
     {
-        Pet* spawnCreature = new Pet(GUARDIAN_PET);
+        Pet* spawnCreature = new Pet(propEntry->Type == SUMMON_PROP_TYPE_CRITTER ? PROTECTOR_PET : GUARDIAN_PET);
 
         Map *map = m_caster->GetMap();
         uint32 pet_number = sObjectMgr.GeneratePetNumber();
