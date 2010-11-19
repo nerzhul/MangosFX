@@ -329,8 +329,7 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
 
                     continue;
                 }
-            }
-
+			}
             std::string dbc_filename_loc = dbc_path + localStr->name + "/" + filename;
             if(!storage.LoadStringsFrom(dbc_filename_loc.c_str()))
                 localeData.availableDbcLocales &= ~(1<<i);  // mark as not available for speedup next checks
