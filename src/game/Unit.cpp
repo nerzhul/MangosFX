@@ -6935,6 +6935,48 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 					break;
 				}    
             }
+			// Deadly Poison
+            if (dummySpell->SpellIconID == 513)
+            {
+                if (pVictim->GetTypeId() != TYPEID_PLAYER)
+                    return false;
+
+                if (triggeredByAura->GetStackAmount() < dummySpell->StackAmount)
+                    return false;
+
+                Player *pCaster = ((Player*)pVictim);
+
+                Item* castItem = triggeredByAura->GetCastItemGUID() ? pCaster->GetItemByGuid(triggeredByAura->GetCastItemGUID()) : NULL;
+                
+                if (!castItem)
+                    return false;
+
+                Item *item = pCaster->GetWeaponForAttack(castItem->GetSlot() == EQUIPMENT_SLOT_MAINHAND ? OFF_ATTACK : BASE_ATTACK);
+                if (!item)
+                    return false;
+
+                // all poison enchantments is temporary
+                uint32 enchant_id = item->GetEnchantmentId(TEMP_ENCHANTMENT_SLOT);
+                if (!enchant_id)
+                    return false;
+
+                SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(enchant_id);
+                if (!pEnchant)
+                    return false;
+
+                for (int s = 0; s < 3; ++s)
+                {
+                    if (pEnchant->type[s]!=ITEM_ENCHANTMENT_TYPE_COMBAT_SPELL)
+                        continue;
+
+                    SpellEntry const* combatEntry = sSpellStore.LookupEntry(pEnchant->spellid[s]);
+                    if (!combatEntry || combatEntry->Dispel != DISPEL_POISON)
+                        continue;
+
+                    pVictim->CastSpell(this, combatEntry, true, item);
+                }
+                return true;
+            }
             // Cut to the Chase
             if (dummySpell->SpellIconID == 2909)
             {
@@ -14091,6 +14133,8 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 break;
             }
             case SPELL_AURA_MOD_DAMAGE_PERCENT_TAKEN:
+			case SPELL_AURA_MOD_DAMAGE_PERCENT_DONE:
+			case SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE:
             case SPELL_AURA_MANA_SHIELD:
             case SPELL_AURA_OBS_MOD_MANA:
             case SPELL_AURA_MOD_STUN:
@@ -14936,7 +14980,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, Aura* aura, SpellEntry con
     }
     // Aura added by spell can`t trogger from self (prevent drop charges/do triggers)
     // But except periodic triggers (can triggered from self)
-    if(procSpell && procSpell->Id == spellProto->Id && !(spellProto->procFlags & PROC_FLAG_ON_TAKE_PERIODIC))
+    if(procSpell && procSpell->Id == spellProto->Id && !(spellProto->procFlags & PROC_FLAG_ON_TAKE_PERIODIC) && aura->GetModifier()->m_auraname != SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE)
         return false;
 
     // Check if current equipment allows aura to proc

@@ -3232,11 +3232,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     // final heal
                     if(m_target->IsInWorld() && m_stackAmount > 0)
                     {
-						int32 heal 0;
+						int32 heal = 0;
 						if(GetAuraDuration() <= 0)
 							heal = m_modifier.m_amount * m_stackAmount;
 						else
-							heal = m_modifier.m_amount
+							heal = m_modifier.m_amount;
                          m_target->CastCustomSpell(m_target, 33778, &heal, NULL, NULL, true, NULL, this, GetCasterGUID());
 
                         if (Unit* caster = GetCaster())
@@ -5442,7 +5442,7 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
 	             if (m_removeMode != AURA_REMOVE_BY_EXPIRE || m_duration <= 0)
 					break;
                  if (m_target->HasAura(70752)) //Item - Mage T10 2P Bonus
-	                 m_target->CastSpell(target, 70753, true);
+	                 m_target->CastSpell(m_target, 70753, true);
                  break;
             case 42783:                                     //Wrath of the Astrom...
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT && GetEffIndex() + 1 < 3)
