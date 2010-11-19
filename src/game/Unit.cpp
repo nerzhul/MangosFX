@@ -15680,8 +15680,8 @@ void Unit::ExitVehicle()
 			if(m_vehicle)
 			{
 				m_vehicle->RemovePassenger(this);
-				/*sLog.outDebug("C'est le code SuperMoche mais ca marche !");
-				((Player*)this)->TeleportTo(((Player*)this)->GetMapId(),x,y,z,2.0f);*/
+				if(GetTypeId() == TYPEID_PLAYER)
+					((Player*)this)->TeleportTo(GetMapId(),x,y,z,2.0f);
 			}
 		}
 
