@@ -9782,11 +9782,20 @@ void Unit::RemoveGuardians()
 
 Pet* Unit::FindGuardianWithEntry(uint32 entry)
 {
-    // pet guid middle part is entry (and creature also)
-    // and in guardian list must be guardians with same entry _always_
     for(GuardianPetList::const_iterator itr = m_guardianPets.begin(); itr != m_guardianPets.end(); ++itr)
         if(Pet* pet = GetMap()->GetPet(*itr))
             if (pet->GetEntry() == entry)
+				if (pet->getPetType() == entry)
+					return pet;
+
+    return NULL;
+}
+
+Pet* Unit::GetProtectorPet()
+{
+    for(GuardianPetList::const_iterator itr = m_guardianPets.begin(); itr != m_guardianPets.end(); ++itr)
+        if(Pet* pet = GetMap()->GetPet(*itr))
+            if (pet->getPetType() == PROTECTOR_PET)
                 return pet;
 
     return NULL;
@@ -15646,6 +15655,7 @@ void Unit::SetAuraStack(uint32 spellId, Unit *target, uint32 stack)
 
 void Unit::ExitVehicle()
 {
+	
 	if(GetTypeId() == TYPEID_PLAYER)
 		((Player*)this)->SetIsCanDelayTeleport(false);
 
@@ -15655,7 +15665,7 @@ void Unit::ExitVehicle()
 		if(Unit *vehUnit = Unit::GetUnit(*this, vehicleGUID))
 		{
 			if(Vehicle *vehicle = vehUnit->GetVehicleKit())
-			{
+			{ 
 				if(m_movementInfo.GetVehicleSeatFlags() & SF_MAIN_RIDER)
 				{
 					if(vehicle->GetVehicleFlags() & VF_DESPAWN_AT_LEAVE)
@@ -15665,33 +15675,39 @@ void Unit::ExitVehicle()
 					}
 				}
 			}
-
-			if(m_vehicle)
-				m_vehicle->RemovePassenger(this);
-
+			
 			x = vehUnit->GetPositionX();
 			y = vehUnit->GetPositionY();
 			z = vehUnit->GetPositionZ() + 2.0f;
+			
+			if(m_vehicle)
+			{
+				m_vehicle->RemovePassenger(this);
+			}	
 		}
 
 		SetVehicleGUID(0);
+
 		m_vehicle = NULL;
 
 		m_movementInfo.ClearTransportData();
 		m_movementInfo.RemoveMovementFlag(MOVEFLAG_ONTRANSPORT);
+		m_movementInfo.SetMovementFlags(MOVEFLAG_NONE);
+
 		clearUnitState(UNIT_STAT_ON_VEHICLE);
+		
+        if(GetTypeId() == TYPEID_PLAYER)
+		{
+			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
+			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
+			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+		}
 
 		if(IsInWorld())
 		{
 			GetClosePoint(x, y, z, 2.0f);
 			SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, SPLINEFLAG_WALKMODE, 0);
-		}
-
-		if(GetTypeId() == TYPEID_PLAYER)
-		{
-			((Player*)this)->RemovePet(NULL, PET_SAVE_NOT_IN_SLOT, true);
-			((Player*)this)->ResummonPetTemporaryUnSummonedIfAny();
-			((Player*)this)->m_movementInfo.RemoveMovementFlag(MOVEFLAG_ROOT);
+			
 		}
     }
 }
