@@ -1936,8 +1936,6 @@ bool Player::TeleportToBGEntryPoint()
 {
     ScheduleDelayedOperation(DELAYED_BG_MOUNT_RESTORE);
     ScheduleDelayedOperation(DELAYED_BG_TAXI_RESTORE);
-	if (m_bgData.joinPos.coord_x ==0)
-		sLog.outError("TeleportTo: invalid map %d or absent instance template.", mapid);
     return TeleportTo(m_bgData.joinPos);
 }
 
