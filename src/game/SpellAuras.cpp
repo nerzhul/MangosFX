@@ -8324,7 +8324,10 @@ void Aura::PeriodicTick()
 					pdamage = int32(pdamage) + addition;
                 }
             }
-            pdamage = pCaster->SpellHealingBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
+
+			// Warlock Health Funel fix
+			if(GetSpellProto()->SpellVisual[0] != 163)
+				pdamage = pCaster->SpellHealingBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
 
             // This method can modify pdamage
             bool isCrit = IsCritFromAbilityAura(pCaster, pdamage);
@@ -8369,7 +8372,7 @@ void Aura::PeriodicTick()
                 }
                 else
                 {
-                    uint32 damage = gain;
+					uint32 damage = gain;
                     uint32 absorb = 0;
                     pCaster->DealDamageMods(pCaster, damage, &absorb);
                     pCaster->SendSpellNonMeleeDamageLog(pCaster, GetId(), damage, GetSpellSchoolMask(GetSpellProto()), absorb, 0, false, 0, false);

@@ -1757,8 +1757,8 @@ void Spell::EffectDummy(uint32 i)
                 if (!unitTarget)
                     return;
 
-                int hurt = 0;
-                int heal = 0;
+                uint32 hurt = 0;
+                uint32 heal = 0;
                 switch(m_spellInfo->Id)
                 {
                     case 47540: hurt = 47758; heal = 47757; break;
