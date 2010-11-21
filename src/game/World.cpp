@@ -1121,6 +1121,9 @@ void World::LoadConfigSettings(bool reload)
         sLog.outString("Using DataDir %s",m_dataPath.c_str());
     }
 
+	// Unmount indoor
+	m_configs[CONFIG_BOOL_VMAP_INDOOR_CHECK] = sConfig.GetIntDefault("vmap.enableIndoorCheck", 1);
+
     bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", true);
     bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", true);
     std::string ignoreMapIds = sConfig.GetStringDefault("vmap.ignoreMapIds", "");

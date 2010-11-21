@@ -6096,7 +6096,7 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
     // code block for underwater state update
     UpdateUnderwaterState(m, x, y, z);
 
-    CheckExploreSystem();
+	CheckAreaExploreAndOutdoor(); 
 
     return true;
 }
@@ -6158,7 +6158,7 @@ void Player::SendMovieStart(uint32 MovieId)
     SendDirectMessage(&data);
 }
 
-void Player::CheckExploreSystem()
+void Player::CheckAreaExploreAndOutdoor() // Add Outdoor support
 {
     if (!isAlive())
         return;
@@ -6166,8 +6166,14 @@ void Player::CheckExploreSystem()
     if (isInFlight())
         return;
 
-    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ());
-    if(areaFlag==0xffff)
+	bool isOutdoor;
+    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ(), &isOutdoor);
+    if (!isOutdoor)
+	{
+		Unmount(); 
+	}
+
+    if (areaFlag==0xffff)
         return;
     int offset = areaFlag / 32;
 

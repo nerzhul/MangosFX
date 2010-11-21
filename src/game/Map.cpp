@@ -1753,7 +1753,7 @@ float Map::GetHeight(float x, float y, float z, bool pUseVmaps, float maxSearchD
 
     return mapHeight;
 }
-
+/*
 uint16 Map::GetAreaFlag(float x, float y, float z) const
 {
     uint16 areaflag;
@@ -1961,7 +1961,7 @@ uint16 Map::GetAreaFlag(float x, float y, float z) const
 
     return areaflag;
 }
-
+*/
 uint8 Map::GetTerrainType(float x, float y ) const
 {
     if(GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
@@ -3817,4 +3817,111 @@ bool Map::IsWintergraspBuffValidMap(uint32 mapid)
 			return false;
 	}
 
+}
+
+///Merging
+inline bool IsOutdoorWMO(uint32 mogpFlags, int32 adtId, int32 rootId, int32 groupId,
+                              WMOAreaTableEntry const* wmoEntry, AreaTableEntry const* atEntry)
+{
+    bool outdoor = true;
+
+    if(wmoEntry && atEntry)
+    {
+        if(atEntry->flags & AREA_FLAG_OUTSIDE)
+            return true;
+        if(atEntry->flags & AREA_FLAG_INSIDE)
+            return false;
+    }
+
+    outdoor = mogpFlags&0x8;
+
+    if(wmoEntry)
+    {
+        if(wmoEntry->Flags & 4)
+            return true;
+
+        if((wmoEntry->Flags & 2)!=0)
+            outdoor = false;
+    }
+    return outdoor;
+}
+
+bool Map::IsOutdoors(float x, float y, float z) const
+{
+    uint32 mogpFlags;
+    int32 adtId, rootId, groupId;
+
+    // no wmo found? -> outside by default
+    if(!GetAreaInfo(x, y, z, mogpFlags, adtId, rootId, groupId))
+	{
+		sLog.outError("WMO unknown");
+        return true;
+	}
+
+    AreaTableEntry const* atEntry = 0;
+    WMOAreaTableEntry const* wmoEntry= GetWMOAreaTableEntryByTripple(rootId, adtId, groupId);
+    if(wmoEntry)
+    {
+        sLog.outError("Got WMOAreaTableEntry! flag %u, areaid %u", wmoEntry->Flags, wmoEntry->areaId);
+
+        atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+    }
+
+    return IsOutdoorWMO(mogpFlags, adtId, rootId, groupId, wmoEntry, atEntry);
+}
+
+bool Map::GetAreaInfo(float x, float y, float z, uint32 &flags, int32 &adtId, int32 &rootId, int32 &groupId) const
+{
+    float vmap_z = z;
+    VMAP::IVMapManager* vmgr = VMAP::VMapFactory::createOrGetVMapManager();
+    if (vmgr->getAreaInfo(GetId(), x, y, vmap_z, flags, adtId, rootId, groupId))
+    {
+        // check if there's terrain between player height and object height
+        if(GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
+        {
+            float _mapheight = gmap->getHeight(x,y);
+            // z + 2.0f condition taken from GetHeight(), not sure if it's such a great choice...
+            if(z + 2.0f > _mapheight &&  _mapheight > vmap_z)
+                return false;
+        }
+        return true;
+    }
+    return false;
+}
+
+uint16 Map::GetAreaFlag(float x, float y, float z, bool *isOutdoors) const
+{
+    uint32 mogpFlags;
+    int32 adtId, rootId, groupId;
+    WMOAreaTableEntry const* wmoEntry = 0;
+    AreaTableEntry const* atEntry = 0;
+    bool haveAreaInfo = false;
+
+    if(GetAreaInfo(x, y, z, mogpFlags, adtId, rootId, groupId))
+    {
+        haveAreaInfo = true;
+        if(wmoEntry = GetWMOAreaTableEntryByTripple(rootId, adtId, groupId))
+            atEntry = GetAreaEntryByAreaID(wmoEntry->areaId);
+    }
+
+    uint16 areaflag;
+    if (atEntry)
+        areaflag = atEntry->exploreFlag;
+    else
+    {
+        if(GridMap *gmap = const_cast<Map*>(this)->GetGrid(x, y))
+            areaflag = gmap->getArea(x, y);
+        // this used while not all *.map files generated (instances)
+        else
+            areaflag = GetAreaFlagByMapId(i_id);
+    }
+
+    if (isOutdoors)
+    {
+        if (haveAreaInfo)
+            *isOutdoors = IsOutdoorWMO(mogpFlags, adtId, rootId, groupId, wmoEntry, atEntry);
+        else
+            *isOutdoors = true;
+    }
+    return areaflag;
 }
