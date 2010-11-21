@@ -1373,6 +1373,29 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
             case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_GOLD_VALUE_OWNED:
                 SetCriteriaProgress(achievementCriteria, GetPlayer()->GetMoney(), PROGRESS_HIGHEST);
                 break;
+			case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_TEAM_RATING:
+            {
+                if(!miscvalue1 || achievementCriteria->highest_team_rating.teamtype != miscvalue1)
+  					continue;
+				
+				change = miscvalue2;
+				progressType = PROGRESS_HIGHEST;
+                break;
+
+            }
+            case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_PERSONAL_RATING:
+            {
+                if(!miscvalue1 || achievementCriteria->highest_personal_rating.teamtype != miscvalue1)
+                    continue;
+
+                if(achievementCriteria->highest_personal_rating.teamrating != 0 && achievementCriteria->highest_personal_rating.teamrating > miscvalue2)
+                    continue;
+
+				change = miscvalue2;
+                progressType = PROGRESS_HIGHEST;
+                break;
+
+            }
             // std case: not exist in DBC, not triggered in code as result
             case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_HEALTH:
             case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_SPELLPOWER:
@@ -1389,8 +1412,6 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
             case ACHIEVEMENT_CRITERIA_TYPE_WIN_ARENA:
             case ACHIEVEMENT_CRITERIA_TYPE_PLAY_ARENA:
             case ACHIEVEMENT_CRITERIA_TYPE_HONORABLE_KILL:
-            case ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_TEAM_RATING:
-            case ACHIEVEMENT_CRITERIA_TYPE_REACH_TEAM_RATING:
             case ACHIEVEMENT_CRITERIA_TYPE_OWN_RANK:
             case ACHIEVEMENT_CRITERIA_TYPE_EQUIP_EPIC_ITEM:
             case ACHIEVEMENT_CRITERIA_TYPE_GET_KILLING_BLOWS:
