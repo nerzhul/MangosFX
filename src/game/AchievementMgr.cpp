@@ -1378,8 +1378,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                 if(!miscvalue1 || achievementCriteria->highest_team_rating.teamtype != miscvalue1)
   					continue;
 				
-				change = miscvalue2;
-				progressType = PROGRESS_HIGHEST;
+				SetCriteriaProgress(achievementCriteria, miscvalue1, PROGRESS_HIGHEST);
                 break;
 
             }
@@ -1391,8 +1390,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                 if(achievementCriteria->highest_personal_rating.teamrating != 0 && achievementCriteria->highest_personal_rating.teamrating > miscvalue2)
                     continue;
 
-				change = miscvalue2;
-                progressType = PROGRESS_HIGHEST;
+				SetCriteriaProgress(achievementCriteria, miscvalue2, PROGRESS_HIGHEST);
                 break;
 
             }
