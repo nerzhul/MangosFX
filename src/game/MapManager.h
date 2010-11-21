@@ -47,7 +47,7 @@ class MANGOS_DLL_DECL MapManager : public MaNGOS::Singleton<MapManager, MaNGOS::
         uint16 GetAreaFlag(uint32 mapid, float x, float y, float z) const
         {
             Map const* m = CreateBaseMap(mapid);
-            return m->GetAreaFlag(x, y, z);
+            return m->GetAreaFlag(x, y, z,0);
         }
         uint32 GetAreaId(uint32 mapid, float x, float y, float z) const
         {
