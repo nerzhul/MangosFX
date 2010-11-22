@@ -6557,7 +6557,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return false;
 
 					// Little hack
-                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (2*leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
+                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
                     basepoints0 = 2* damagefromticks * triggerAmount / 100;
                     triggered_spell_id = 63675;
                     break;
@@ -11770,6 +11770,9 @@ void Unit::Unmount()
 
     SetUInt32Value(UNIT_FIELD_MOUNTDISPLAYID, 0);
     RemoveFlag( UNIT_FIELD_FLAGS, UNIT_FLAG_MOUNT );
+
+	
+	RemoveSpellsCausingAura(SPELL_AURA_MOUNTED);
 
     // only resummon old pet if the player is already added to a map
     // this prevents adding a pet to a not created map which would otherwise cause a crash
