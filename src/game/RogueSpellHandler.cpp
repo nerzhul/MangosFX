@@ -2,6 +2,7 @@
 #include "Spell.h"
 #include "SpellAuras.h"
 #include "SpellMgr.h"
+#include "ObjectAccessor.h"
 #include "RogueSpellHandler.h"
 #include "ClassSpellHandler.h"
 
