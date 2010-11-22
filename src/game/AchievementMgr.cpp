@@ -802,7 +802,7 @@ void AchievementMgr::DoFailedTimedAchievementCriterias()
         // Send Fail for failed criterias
         if (!IsCompletedCriteria(criteria, achievement))
         {
-            DETAIL_FILTER_LOG(LOG_FILTER_ACHIEVEMENT_UPDATES, "AchievementMgr::DoFailedTimedAchievementCriterias for criteria %u", criteria->ID);
+            //DETAIL_FILTER_LOG(LOG_FILTER_ACHIEVEMENT_UPDATES, "AchievementMgr::DoFailedTimedAchievementCriterias for criteria %u", criteria->ID);
 
             CriteriaProgressMap::iterator pro_iter = m_criteriaProgress.find(criteria->ID);
             ASSERT(pro_iter != m_criteriaProgress.end());
