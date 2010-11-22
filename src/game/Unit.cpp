@@ -6557,7 +6557,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         return false;
 
 					// Little hack
-                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (2*leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
+                    int32 damagefromticks = SpellDamageBonus(pVictim, procSpell, (leachAura->GetModifier()->m_amount* GetSpellAuraMaxTicks(procSpell)), DOT);
                     basepoints0 = 2* damagefromticks * triggerAmount / 100;
                     triggered_spell_id = 63675;
                     break;
