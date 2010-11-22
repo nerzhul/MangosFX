@@ -802,11 +802,10 @@ void AchievementMgr::DoFailedTimedAchievementCriterias()
         // Send Fail for failed criterias
         if (!IsCompletedCriteria(criteria, achievement))
         {
-            sLog.outDetail("AchievementMgr::DoFailedTimedAchievementCriterias for criteria %u", criteria->ID);
+            //DETAIL_FILTER_LOG(LOG_FILTER_ACHIEVEMENT_UPDATES, "AchievementMgr::DoFailedTimedAchievementCriterias for criteria %u", criteria->ID);
 
             CriteriaProgressMap::iterator pro_iter = m_criteriaProgress.find(criteria->ID);
-            //MANGOS_ASSERT(pro_iter != m_criteriaProgress.end());
-			ASSERT(pro_iter != m_criteriaProgress.end());
+            ASSERT(pro_iter != m_criteriaProgress.end());
 
             CriteriaProgress* progress = &pro_iter->second;
 
@@ -818,7 +817,7 @@ void AchievementMgr::DoFailedTimedAchievementCriterias()
             m_criteriaProgress.erase(pro_iter);
         }
 
-        iter = m_criteriaFailTimes.erase(iter);
+        m_criteriaFailTimes.erase(iter++);
     }
 }
 
