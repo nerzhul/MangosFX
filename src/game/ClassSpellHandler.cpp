@@ -222,6 +222,47 @@ void ClassSpellHandler::PeriodicDummyTick(Aura* aura)
 	}
 }
 
+void ClassSpellHandler::HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* target)
+{
+	if(!aura)
+		return;
+
+	switch(aura->GetSpellProto()->SpellFamilyName)
+	{
+		/*case SPELLFAMILY_DEATHKNIGHT:
+			return sDeathknightSpellHandler.PeriodicDummyTick(aura);
+			break;
+		/*case SPELLFAMILY_DRUID:
+			sDruidSpellHandler.HandleSchoolDmg(spell,damage,i);
+			break;
+		case SPELLFAMILY_HUNTER:
+			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_MAGE:
+			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PALADIN:
+			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_PRIEST:
+			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;*/
+		case SPELLFAMILY_ROGUE:
+			sRogueSpellHandler.HandleAuraDummyWithApply(aura,caster,target);
+			break;
+		/*case SPELLFAMILY_SHAMAN:
+			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARRIOR:
+			sWarriorSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;
+		case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			break;*/
+	}
+}
+
+
 void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod)
 {
 	if(!spell)

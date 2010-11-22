@@ -19,8 +19,9 @@ INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 #define FLAG_ENVENOM		UI64LIT(0x0000800000000)
 #define FLAG_FAN_OF_KNIVES	UI64LIT(0x4000000000000)
 
-#define SPELL_SHIV			5938
-#define SPELL_PREPARATION	14185
+#define SPELL_SHIV					5938
+#define SPELL_PREPARATION			14185
+#define SPELL_TRICK_OF_THE_TRADE	57934
 
 void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
@@ -247,4 +248,46 @@ bool RogueSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffe
 		}
 	}
 	return true;
+}
+
+void RogueSpellHandler::HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* target)
+{
+	SpellEntry const* m_spellProto = aura->GetSpellProto();
+	Unit* m_target = target;
+	// Tricks of Trade
+	if (m_spellProto->Id == SPELL_TRICK_OF_THE_TRADE)
+	{
+		if (Spell* tot = target->FindCurrentSpellBySpellId(57934))
+			if(Unit* altTarget = tot->m_targets.getUnitTarget())
+				aura->GetModifier()->m_miscvalue = altTarget->GetGUID();
+	}
+	// Honor Among Thieves
+    else if (aura->GetId() == 52916)
+    {
+        if (!m_target || m_target->HasAura(51699, EFFECT_INDEX_1) || m_target->GetTypeId() != TYPEID_PLAYER || m_target->getClass() != CLASS_ROGUE)
+            return;
+
+        Unit::AuraList const &aury = m_target->GetAurasByType(SPELL_AURA_PROC_TRIGGER_SPELL);
+        for (Unit::AuraList::const_iterator i = aury.begin(); i != aury.end(); i++)
+        {
+            SpellEntry const *spellInfo = (*i)->GetSpellProto();
+
+            if (!spellInfo)
+                continue;
+
+            if (spellInfo->EffectTriggerSpell[0] == 52916)
+            {
+                if (roll_chance_i(spellInfo->CalculateSimpleValue(EFFECT_INDEX_0)) )
+                {
+                    Unit *pVictim = ObjectAccessor::GetUnit(*m_target,((Player*)m_target)->GetComboTarget());
+                    if (!pVictim)
+                        pVictim = m_target->getVictim();
+
+                    if (pVictim)
+                        m_target->CastSpell(pVictim, 51699, true);
+                    return;
+                }
+            }
+        }
+    }
 }
