@@ -1290,19 +1290,25 @@ void Creature::setDeathState(DeathState s)
     }
     if (s == JUST_ALIVED)
     {
-        SetHealth(GetMaxHealth());
-        SetLootRecipient(NULL);
-        CreatureInfo const *cinfo = GetCreatureInfo();
-        SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
-        RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
-        AddSplineFlag(SPLINEFLAG_WALKMODE);
-        SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);
+		SetHealth(GetMaxHealth());
+		SetLootRecipient(NULL);
+		CreatureInfo const *cinfo = GetCreatureInfo();
+
+		if(!m_vehicleKit) // Don't reset flags on Vehicle
+		{
+			SetUInt32Value(UNIT_DYNAMIC_FLAGS, 0);
+			RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_SKINNABLE);
+			AddSplineFlag(SPLINEFLAG_WALKMODE);
+			SetUInt32Value(UNIT_NPC_FLAGS, cinfo->npcflag);	
+			clearUnitState(UNIT_STAT_ALL_STATE);
+		}
+		
         Unit::setDeathState(ALIVE);
-        clearUnitState(UNIT_STAT_ALL_STATE);
         i_motionMaster.Clear();
         SetMeleeDamageSchool(SpellSchools(cinfo->dmgschool));
         LoadCreaturesAddon(true);
 		if(m_vehicleKit) m_vehicleKit->Reset();
+		
     }
 }
 
