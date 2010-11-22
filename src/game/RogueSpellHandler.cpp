@@ -22,6 +22,7 @@ INSTANTIATE_SINGLETON_1(RogueSpellHandler);
 #define SPELL_SHIV					5938
 #define SPELL_PREPARATION			14185
 #define SPELL_TRICK_OF_THE_TRADE	57934
+#define SPELL_HONOR_AMONG_THIEVES	52916
 
 void RogueSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod)
 {
@@ -262,7 +263,7 @@ void RogueSpellHandler::HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* t
 				aura->GetModifier()->m_miscvalue = altTarget->GetGUID();
 	}
 	// Honor Among Thieves
-    else if (aura->GetId() == 52916)
+    else if (aura->GetId() == SPELL_HONOR_AMONG_THIEVES)
     {
         if (!m_target || m_target->HasAura(51699, EFFECT_INDEX_1) || m_target->GetTypeId() != TYPEID_PLAYER || m_target->getClass() != CLASS_ROGUE)
             return;
