@@ -3763,8 +3763,8 @@ void Map::SendObjectUpdates()
 						((WorldObject*)obj)->BuildUpdateData(update_players);
 						break;
 					}
-            
 				default: 
+					error_log("SendObjectUpdates() : Object TypeId %u seems to be updated but not exist TYPEID",obj->GetTypeId());
 					break;
 			}
         }
