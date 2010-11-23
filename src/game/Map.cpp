@@ -3740,16 +3740,10 @@ void Map::SendObjectUpdates()
 		Object* obj = *i_objectsToClientUpdate.begin();
 		i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
 		
-		// Testing !!!!!
-		/*
-			Remove crashes !
-			Temporary fix about polymorphism call
-		*/
 		if (obj && obj->IsInWorld())
 		{
 			switch(obj->GetTypeId())
 			{
-            
 				case TYPEID_ITEM:
 				case TYPEID_CONTAINER:
 					{
@@ -3757,7 +3751,7 @@ void Map::SendObjectUpdates()
 						break;
 					}
 				case TYPEID_PLAYER:
-	                if(!(obj->GetGUIDLow() != 0 && sObjectMgr.GetPlayer(obj->GetGUIDLow())))
+	                if(!(obj->GetGUID() && sObjectMgr.GetPlayer(obj->GetGUID())))
 					{
 						break;
 					}
@@ -3774,9 +3768,6 @@ void Map::SendObjectUpdates()
 					break;
 			}
         }
-		//End Testing !!!!!
-
-
 		//if(obj)	obj->BuildUpdateData(update_players);
 
 		if(i>100000)
