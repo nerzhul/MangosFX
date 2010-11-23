@@ -3739,7 +3739,45 @@ void Map::SendObjectUpdates()
 		i++;
 		Object* obj = *i_objectsToClientUpdate.begin();
 		i_objectsToClientUpdate.erase(i_objectsToClientUpdate.begin());
-		if(obj)	obj->BuildUpdateData(update_players);
+		
+		// Testing !!!!!
+		/*
+			Remove crashes !
+			Temporary fix about polymorphism call
+		*/
+		if (obj && obj->IsInWorld())
+		{
+			switch(obj->GetTypeId())
+			{
+            
+				case TYPEID_ITEM:
+				case TYPEID_CONTAINER:
+					{
+						((Item*)obj)->BuildUpdateData(update_players);
+						break;
+					}
+				case TYPEID_PLAYER:
+	                if(!(obj->GetGUIDLow() != 0 && sObjectMgr.GetPlayer(obj->GetGUIDLow())))
+					{
+						break;
+					}
+				case TYPEID_UNIT:           
+				case TYPEID_GAMEOBJECT:
+				case TYPEID_DYNAMICOBJECT:
+				case TYPEID_CORPSE:
+					{
+						((WorldObject*)obj)->BuildUpdateData(update_players);
+						break;
+					}
+            
+				default: 
+					break;
+			}
+        }
+		//End Testing !!!!!
+
+
+		//if(obj)	obj->BuildUpdateData(update_players);
 
 		if(i>100000)
 			sLog.outError("SendObjectUpdates() infinite Loop");
