@@ -2718,6 +2718,20 @@ void Spell::EffectApplyAura(uint32 i)
         return;
     }
 
+	// Mixology support
+	if(caster->GetTypeId() == TYPEID_PLAYER && Aur->GetSpellProto()->SpellFamilyName == SPELLFAMILY_POTION && caster->HasAura(53042))
+    {
+        SpellSpecific spellSpec = GetSpellSpecific(Aur->GetSpellProto()->Id);
+        if(spellSpec == SPELL_BATTLE_ELIXIR || spellSpec == SPELL_GUARDIAN_ELIXIR || spellSpec == SPELL_FLASK_ELIXIR)
+        {
+            if(caster->HasSpell(Aur->GetSpellProto()->EffectTriggerSpell[0]))
+            {
+               duration *= 2.0f;
+               Aur->GetModifier()->m_amount *= 1.3f;
+            }
+        }
+    }
+
     if(duration != Aur->GetAuraMaxDuration())
     {
         Aur->SetAuraMaxDuration(duration);
@@ -6629,7 +6643,7 @@ void Spell::EffectDuel(uint32 i)
     }
 
     AreaTableEntry const* casterAreaEntry = GetAreaEntryByAreaID(caster->GetZoneId());
-	uint32 AreaIdForDalaran = caster->GetMap()->GetAreaFlag(caster->GetPositionX(),caster->GetPositionY(),caster->GetPositionZ());
+	uint32 AreaIdForDalaran = caster->GetMap()->GetAreaFlag(caster->GetPositionX(),caster->GetPositionY(),caster->GetPositionZ(),0);
     if(casterAreaEntry && (casterAreaEntry->flags & AREA_FLAG_CAPITAL) && AreaIdForDalaran != 2549)
     {
         SendCastResult(SPELL_FAILED_NO_DUELING);            // Dueling isn't allowed here
@@ -6637,7 +6651,7 @@ void Spell::EffectDuel(uint32 i)
     }
 
     AreaTableEntry const* targetAreaEntry = GetAreaEntryByAreaID(target->GetZoneId());
-	AreaIdForDalaran = target->GetMap()->GetAreaFlag(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+	AreaIdForDalaran = target->GetMap()->GetAreaFlag(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0);
 	if(targetAreaEntry && (targetAreaEntry->flags & AREA_FLAG_CAPITAL) && AreaIdForDalaran != 2549)
     {
         SendCastResult(SPELL_FAILED_NO_DUELING);            // Dueling isn't allowed here
