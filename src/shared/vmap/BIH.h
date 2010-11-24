@@ -179,7 +179,7 @@ class BIH
                     int offset = tn & ~(7 << 29);
 					
 					//Testing !!!
-					if (node + offsetFront[axis] < 0) || (node + offsetBack[axis] < 0)
+					if ((node + offsetFront[axis] < 0) || (node + offsetBack[axis] < 0))
 						return;
 					//Testing
                     
