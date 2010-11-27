@@ -7,9 +7,9 @@
 class PlayerBot: public Player
 {
 	public:
-		explicit PlayerBot (WorldSession *session) : Player(session) {}
-		~PlayerBot() {}
+		explicit PlayerBot (WorldSession *session);
+		~PlayerBot();
 
-		void Update(uint32 diff) {}
+		void Update(uint32 diff);
 };
 #endif
