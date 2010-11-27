@@ -119,6 +119,7 @@ class MANGOS_DLL_SPEC InstanceData
 		void CloseDoor(uint64 guid);
 		void OpenDoor(uint64 guid);
 		GameObject* GetGoInMap(uint64 guid)	{ return instance ? instance->GetGameObject(guid) : NULL; }
+        void DoUseDoorOrButton(uint64 uiGuid, uint32 uiWithRestoreTime = 0, bool bUseAlternativeState = false);
 	
 		// Units
 		Unit* GetUnitInMap(uint64 guid) { return instance ? instance->GetCreatureOrPetOrVehicle(guid) : NULL; }

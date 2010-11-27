@@ -101,3 +101,25 @@ void InstanceData::CloseDoor(uint64 guid)
 		}
 	}
 }
+
+//Optional uiWithRestoreTime. If not defined, autoCloseTime will be used (if not 0 by default in *_template)
+void InstanceData::DoUseDoorOrButton(uint64 uiGuid, uint32 uiWithRestoreTime, bool bUseAlternativeState)
+{
+    if (!uiGuid)
+        return;
+
+    GameObject* pGo = instance->GetGameObject(uiGuid);
+
+    if (pGo)
+    {
+        if (pGo->GetGoType() == GAMEOBJECT_TYPE_DOOR || pGo->GetGoType() == GAMEOBJECT_TYPE_BUTTON)
+        {
+            if (pGo->getLootState() == GO_READY)
+                pGo->UseDoorOrButton(uiWithRestoreTime,bUseAlternativeState);
+            else if (pGo->getLootState() == GO_ACTIVATED)
+                pGo->ResetDoorOrButton();
+        }
+        else
+            error_log("LibDevFS: Script call DoUseDoorOrButton, but gameobject entry %u is type %u.",pGo->GetEntry(),pGo->GetGoType());
+    }
+}

@@ -2,12 +2,14 @@
 #define __PLAYERBOT_H_
 
 #include "Player.h"
+#include "WorldSession.h"
 
-class PlayerBot
+class PlayerBot: public Player
 {
-	PlayerBot() {}
-	~PlayerBot() {}
+	public:
+		explicit PlayerBot (WorldSession *session) : Player(session) {}
+		~PlayerBot() {}
 
-	void Update(const uint32 diff) {}
+		void Update(uint32 diff) {}
 };
 #endif
