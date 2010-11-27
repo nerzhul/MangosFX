@@ -39,12 +39,12 @@ class MANGOS_DLL_SPEC ClassSpellHandler
 		ClassSpellHandler() {};
 		~ClassSpellHandler() {};
 		void HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonus, bool &weaponDmgMod, float &totalDmgPctMod);
-		void HandleDummyAuraProc(Unit* u, Spell* dummy, uint32 &trig_sp_id);
+		bool HandleProcTriggerSpell(Unit* u, const SpellEntry* auraSpellInfo, uint32 &trig_sp_id, int32* basepoints);
 		void HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i);
 		bool HandleEffectDummy(Spell* spell,int32 &damage,SpellEffectIndex i);
 		void PeriodicDummyTick(Aura* aura);
 		void SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Unit* pVictim, int32 &DoneTotal, float &DoneTotalMod);
-
+		bool HandleDummyAuraProc(Unit* u, const SpellEntry* dummySpell, uint32 &triggered_spell_id, int32 triggerAmount, const SpellEntry* procSpell, uint32 procEx, Unit* target, Unit* pVictim, int32 &basepoints0);
 		void HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* target);
 
 		Aura* GetAuraByName(Unit* u,AuraName aName, uint64 casterGUID = 0);

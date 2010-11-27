@@ -59,44 +59,45 @@ void ClassSpellHandler::HandleEffectWeaponDamage(Spell* spell, int32 &spell_bonu
 	}
 }
 
-void ClassSpellHandler::HandleDummyAuraProc(Unit *u, Spell *dummy, uint32 &trig_sp_id)
+bool ClassSpellHandler::HandleProcTriggerSpell(Unit *u, const SpellEntry* auraSpellInfo, uint32 &trig_sp_id ,int32* basepoints)
 {
-	if(!dummy || !u)
-		return;
+	if(!auraSpellInfo || !u)
+		return false;
 
-	switch(dummy->m_spellInfo->SpellFamilyName)
+	switch(auraSpellInfo->SpellFamilyName)
 	{
 		/*case SPELLFAMILY_DEATHKNIGHT:
-			sDeathknightSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sDeathknightSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_DRUID:
-			sDruidSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sDruidSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_HUNTER:
-			sHunterSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sHunterSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_MAGE:
-			sMageSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sMageSpellHandler.HandleProcTriggerSpell(u, dummy, trig_sp_id);
 			break;
 		case SPELLFAMILY_PALADIN:
-			sPaladinSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sPaladinSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_PRIEST:
-			sPriestSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sPriestSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_ROGUE:
-			sRogueSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sRogueSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
 			break;
 		case SPELLFAMILY_SHAMAN:
-			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
+			sShamanSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id);
+			break;*/
 		case SPELLFAMILY_WARRIOR:
-			sWarriorSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			return sWarriorSpellHandler.HandleProcTriggerSpell(u, auraSpellInfo, trig_sp_id, basepoints);
 			break;
-		case SPELLFAMILY_WARLOCK:
-			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+		/*case SPELLFAMILY_WARLOCK:
+			sWarlockSpellHandler.HandleProcTriggerSpell(u, dummy, trig_sp_id);
 			break;*/
 	}
+	return true;
 }
 
 bool ClassSpellHandler::HandleEffectDummy(Spell* spell,int32 &damage, SpellEffectIndex i)
@@ -252,11 +253,11 @@ void ClassSpellHandler::HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* t
 			break;
 		/*case SPELLFAMILY_SHAMAN:
 			sShamanSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
-			break;
+			break;*/
 		case SPELLFAMILY_WARRIOR:
-			sWarriorSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
+			sWarriorSpellHandler.HandleAuraDummyWithApply(aura,caster,target);
 			break;
-		case SPELLFAMILY_WARLOCK:
+		/*case SPELLFAMILY_WARLOCK:
 			sWarlockSpellHandler.HandleDummyAuraProc(u, dummy, trig_sp_id);
 			break;*/
 	}
@@ -301,6 +302,20 @@ void ClassSpellHandler::SpellDamageBonusDone(SpellEntry* spell, Unit* caster, Un
 			sWarlockSpellHandler.SpellDamageBonusDone(spell,caster,pVictim,DoneTotal,DoneTotalMod);
 			break;
 	}
+}
+
+bool ClassSpellHandler::HandleDummyAuraProc(Unit* u, const SpellEntry* dummySpell, uint32 &triggered_spell_id, int32 triggerAmount, const SpellEntry* procSpell, uint32 procEx, Unit* target, Unit* pVictim, int32 &basepoints0)
+{
+	if(!u)
+		return false;
+	switch(dummySpell->SpellFamilyName)
+	{
+		case SPELLFAMILY_WARRIOR:
+			return sWarriorSpellHandler.HandleDummyAuraProc(u, dummySpell, triggered_spell_id, triggerAmount, procSpell, procEx, target, pVictim, basepoints0);
+			break;
+	}
+
+	return true;
 }
 
 AuraCarac caracTab[MAX_AURA_NAMES] =

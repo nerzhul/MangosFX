@@ -10,6 +10,7 @@ INSTANTIATE_SINGLETON_1(WarriorSpellHandler);
 #define FLAG_REVENGE			UI64LIT(0x00000000000400)
 #define FLAG_MORTALSTRIKE		UI64LIT(0x00000002000000)
 #define FLAG_HEROIC_THROW		UI64LIT(0x00000100000000)
+#define FLAG_RETALIATION		UI64LIT(0x00000800000000)
 #define FLAG_DEVASTATE			UI64LIT(0x00004000000000)
 #define FLAG_VICTORY_RUSH		UI64LIT(0x00010000000000)
 #define FLAG_SHIELD_SLAM		UI64LIT(0x00020000000000)
@@ -125,4 +126,154 @@ void WarriorSpellHandler::HandleSchoolDmg(Spell* spell, int32 &damage, SpellEffe
 	{
 		damage+=int32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 12 / 100);
 	}
+}
+
+bool WarriorSpellHandler::HandleProcTriggerSpell(Unit *u, const SpellEntry* auraSpellInfo, uint32 &trig_sp_id, int32* basepoints)
+{
+	// Deep Wounds (replace triggered spells to directly apply DoT), dot spell have finilyflags
+    if (auraSpellInfo->SpellFamilyFlags == UI64LIT(0x0) && auraSpellInfo->SpellIconID == 243)
+    {
+        float weaponDamage;
+        // DW should benefit of attack power, damage percent mods etc.
+        // TODO: check if using offhand damage is correct and if it should be divided by 2
+        if (u->haveOffhandWeapon() && u->getAttackTimer(BASE_ATTACK) > u->getAttackTimer(OFF_ATTACK))
+            weaponDamage = (u->GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE) + u->GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE))/2;
+        else
+            weaponDamage = (u->GetFloatValue(UNIT_FIELD_MINDAMAGE) + u->GetFloatValue(UNIT_FIELD_MAXDAMAGE))/2;
+
+        switch (auraSpellInfo->Id)
+        {
+            case 12834: basepoints[0] = int32(weaponDamage * 16 / 100); break;
+            case 12849: basepoints[0] = int32(weaponDamage * 32 / 100); break;
+            case 12867: basepoints[0] = int32(weaponDamage * 48 / 100); break;
+            // Impossible case
+            default:
+                sLog.outError("Unit::HandleProcTriggerSpell: DW unknown spell rank %u",auraSpellInfo->Id);
+                return false;
+        }
+
+        // 1 tick/sec * 6 sec = 6 ticks
+        basepoints[0] /= 6;
+        trig_sp_id = 12721;
+    }
+	return true;
+}
+
+bool WarriorSpellHandler::HandleDummyAuraProc(Unit* u, const SpellEntry* dummySpell, uint32 &triggered_spell_id, int32 triggerAmount, const SpellEntry* procSpell, uint32 procEx, Unit* target, Unit* pVictim, int32 &basepoints0)
+{
+	// Retaliation
+    if (dummySpell->SpellFamilyFlags == FLAG_RETALIATION)
+    {
+        // check attack comes not from behind
+        if (!u->HasInArc(M_PI, pVictim))
+            return false;
+
+        triggered_spell_id = 22858;
+        return true;
+    }
+    // Second Wind
+    if (dummySpell->SpellIconID == 1697)
+    {
+        // only for spells and hit/crit (trigger start always) and not start from self casted spells (5530 Mace Stun Effect for example)
+        if (procSpell == 0 || !(procEx & (PROC_EX_NORMAL_HIT|PROC_EX_CRITICAL_HIT)) || u == pVictim)
+            return false;
+        // Need stun or root mechanic
+        if (!(GetAllSpellMechanicMask(procSpell) & IMMUNE_TO_ROOT_AND_STUN_MASK))
+            return false;
+
+        switch (dummySpell->Id)
+        {
+            case 29838: triggered_spell_id=29842; break;
+            case 29834: triggered_spell_id=29841; break;
+            case 42770: triggered_spell_id=42771; break;
+            default:
+                sLog.outError("Unit::HandleDummyAuraProc: non handled spell id: %u (SW)",dummySpell->Id);
+            return false;
+        }
+
+        target = u;
+		return true;
+    }
+    // Damage Shield
+    else if (dummySpell->SpellIconID == 3214)
+    {
+        triggered_spell_id = 59653;
+        basepoints0 = u->GetShieldBlockValue() * triggerAmount / 100;
+        return true;
+    }
+
+    // Sweeping Strikes
+    switch (dummySpell->Id)
+    {
+       case 12328: // Sweeping Strikes
+       {
+           // prevent chain of triggered spell from same triggered spell
+		   if(procSpell && procSpell->Id == 26654)
+                return false;
+
+			target = u->SelectNearbyTarget(pVictim);
+			if(!target)
+				return false;
+
+			triggered_spell_id = 26654;
+			break;
+	   }
+	   case 58375: // Glyph of Blocking
+        {
+            triggered_spell_id = 58374;
+            break;
+        }
+        case 58388: // Glyph of Devastate
+        {
+            triggered_spell_id = 58567;
+            break;
+        }
+		case 12311: // Gag Order rank 1 
+		case 12958: // Gag Order rank 2 
+		{ 
+			triggered_spell_id = 18498; 
+			break; 
+		}
+    }
+
+	return true;
+}
+
+void WarriorSpellHandler::HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* target)
+{
+	SpellEntry const* m_spellProto = aura->GetSpellProto();
+	Unit* m_target = target;
+	// Overpower
+    if(m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004))
+    {
+        // Must be casting target
+        if (!m_target->IsNonMeleeSpellCasted(false))
+            return;
+
+        Unit* caster = aura->GetCaster();
+        if (!caster)
+            return;
+
+        Unit::AuraList const& modifierAuras = caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
+        for(Unit::AuraList::const_iterator itr = modifierAuras.begin(); itr != modifierAuras.end(); ++itr)
+        {
+            // Unrelenting Assault
+            if((*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_WARRIOR && (*itr)->GetSpellProto()->SpellIconID == 2775)
+            {
+                switch ((*itr)->GetSpellProto()->Id)
+                {
+                    case 46859:                 // Unrelenting Assault, rank 1
+                        m_target->CastSpell(m_target,64849,true,NULL,(*itr));
+                        break;
+                    case 46860:                 // Unrelenting Assault, rank 2
+                        m_target->CastSpell(m_target,64850,true,NULL,(*itr));
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+        }
+        return;
+    }
 }

@@ -2616,45 +2616,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 break;
 			case SPELLFAMILY_ROGUE:
+			case SPELLFAMILY_WARRIOR:
 			{
 				sClassSpellHandler.HandleAuraDummyWithApply(this,GetCaster(),m_target);
 				break;
 			}
-            case SPELLFAMILY_WARRIOR:
-                // Overpower
-                if(m_spellProto->SpellFamilyFlags & UI64LIT(0x0000000000000004))
-                {
-                    // Must be casting target
-                    if (!m_target->IsNonMeleeSpellCasted(false))
-                        return;
-
-                    Unit* caster = GetCaster();
-                    if (!caster)
-                        return;
-
-                    Unit::AuraList const& modifierAuras = caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
-                    for(Unit::AuraList::const_iterator itr = modifierAuras.begin(); itr != modifierAuras.end(); ++itr)
-                    {
-                        // Unrelenting Assault
-                        if((*itr)->GetSpellProto()->SpellFamilyName==SPELLFAMILY_WARRIOR && (*itr)->GetSpellProto()->SpellIconID == 2775)
-                        {
-                            switch ((*itr)->GetSpellProto()->Id)
-                            {
-                                case 46859:                 // Unrelenting Assault, rank 1
-                                    m_target->CastSpell(m_target,64849,true,NULL,(*itr));
-                                    break;
-                                case 46860:                 // Unrelenting Assault, rank 2
-                                    m_target->CastSpell(m_target,64850,true,NULL,(*itr));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
-                    }
-                    return;
-                }
-                break;
 			case SPELLFAMILY_PRIEST:
 			{
 				// Penance

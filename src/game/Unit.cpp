@@ -6269,80 +6269,8 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
         }
         case SPELLFAMILY_WARRIOR:
         {
-            // Retaliation
-            if (dummySpell->SpellFamilyFlags == UI64LIT(0x0000000800000000))
-            {
-                // check attack comes not from behind
-                if (!HasInArc(M_PI, pVictim))
-                    return false;
-
-                triggered_spell_id = 22858;
-                break;
-            }
-            // Second Wind
-            if (dummySpell->SpellIconID == 1697)
-            {
-                // only for spells and hit/crit (trigger start always) and not start from self casted spells (5530 Mace Stun Effect for example)
-                if (procSpell == 0 || !(procEx & (PROC_EX_NORMAL_HIT|PROC_EX_CRITICAL_HIT)) || this == pVictim)
-                    return false;
-                // Need stun or root mechanic
-                if (!(GetAllSpellMechanicMask(procSpell) & IMMUNE_TO_ROOT_AND_STUN_MASK))
-                    return false;
-
-                switch (dummySpell->Id)
-                {
-                    case 29838: triggered_spell_id=29842; break;
-                    case 29834: triggered_spell_id=29841; break;
-                    case 42770: triggered_spell_id=42771; break;
-                    default:
-                        sLog.outError("Unit::HandleDummyAuraProc: non handled spell id: %u (SW)",dummySpell->Id);
-                    return false;
-                }
-
-                target = this;
-                break;
-            }
-            // Damage Shield
-            if (dummySpell->SpellIconID == 3214)
-            {
-                triggered_spell_id = 59653;
-                basepoints0 = GetShieldBlockValue() * triggerAmount / 100;
-                break;
-            }
-
-            // Sweeping Strikes
-            switch ( dummySpell->Id )
-            {
-               case 12328: // Sweeping Strikes
-               {
-                   // prevent chain of triggered spell from same triggered spell
-				   if(procSpell && procSpell->Id == 26654)
-                        return false;
-
-					target = SelectNearbyTarget(pVictim);
-					if(!target)
-						return false;
-
-					triggered_spell_id = 26654;
-					break;
-			   }
-			   case 58375: // Glyph of Blocking
-                {
-                    triggered_spell_id = 58374;
-                    break;
-                }
-                case 58388: // Glyph of Devastate
-                {
-                    triggered_spell_id = 58567;
-                    break;
-                }
-				case 12311: // Gag Order rank 1 
-				case 12958: // Gag Order rank 2 
-				{ 
-					triggered_spell_id = 18498; 
-					break; 
-				}
-            }
+			if(!sClassSpellHandler.HandleDummyAuraProc(this, dummySpell, triggered_spell_id, triggerAmount, procSpell, procEx, target, pVictim, basepoints0))
+				return false;
             break;
         }
         case SPELLFAMILY_WARLOCK:
@@ -8387,36 +8315,8 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
 			}
             break;
         case SPELLFAMILY_WARRIOR:
-            // Deep Wounds (replace triggered spells to directly apply DoT), dot spell have finilyflags
-            if (auraSpellInfo->SpellFamilyFlags == UI64LIT(0x0) && auraSpellInfo->SpellIconID == 243)
-            {
-                float weaponDamage;
-                // DW should benefit of attack power, damage percent mods etc.
-                // TODO: check if using offhand damage is correct and if it should be divided by 2
-                if (haveOffhandWeapon() && getAttackTimer(BASE_ATTACK) > getAttackTimer(OFF_ATTACK))
-                    weaponDamage = (GetFloatValue(UNIT_FIELD_MINOFFHANDDAMAGE) + GetFloatValue(UNIT_FIELD_MAXOFFHANDDAMAGE))/2;
-                else
-                    weaponDamage = (GetFloatValue(UNIT_FIELD_MINDAMAGE) + GetFloatValue(UNIT_FIELD_MAXDAMAGE))/2;
-
-                switch (auraSpellInfo->Id)
-                {
-                    case 12834: basepoints[0] = int32(weaponDamage * 16 / 100); break;
-                    case 12849: basepoints[0] = int32(weaponDamage * 32 / 100); break;
-                    case 12867: basepoints[0] = int32(weaponDamage * 48 / 100); break;
-                    // Impossible case
-                    default:
-                        sLog.outError("Unit::HandleProcTriggerSpell: DW unknown spell rank %u",auraSpellInfo->Id);
-                        return false;
-                }
-
-                // 1 tick/sec * 6 sec = 6 ticks
-                basepoints[0] /= 6;
-
-                trigger_spell_id = 12721;
-                break;
-            }
-            if (auraSpellInfo->Id == 50421)             // Scent of Blood
-                trigger_spell_id = 50422;
+			if(!sClassSpellHandler.HandleProcTriggerSpell(this,auraSpellInfo,trigger_spell_id,basepoints))
+				return false;
             break;
         case SPELLFAMILY_WARLOCK:
         {
@@ -8792,6 +8692,8 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 basepoints[0] = int32(triggerAmount * damage / 100 * (100.0f + modPctHeal) / 100.0f);
                 trigger_spell_id = 50475;
             }
+			else if (auraSpellInfo->Id == 50421)             // Scent of Blood
+				trigger_spell_id = 50422;
             break;
         }
         default:
