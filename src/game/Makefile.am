@@ -240,6 +240,8 @@ libmangosgame_a_SOURCES = \
 	PetitionsHandler.cpp \
 	Player.cpp \
 	Player.h \
+	PlayerBot.cpp \
+	PlayerBot.h \
 	PlayerDump.cpp \
 	PlayerDump.h \
 	PointMovementGenerator.cpp \

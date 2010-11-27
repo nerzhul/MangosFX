@@ -1451,6 +1451,14 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\src\game\PlayerBot.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PlayerBot.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\TemporarySummon.cpp"
 					>
 				</File>
