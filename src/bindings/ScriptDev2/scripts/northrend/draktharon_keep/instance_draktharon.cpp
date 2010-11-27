@@ -43,9 +43,9 @@ enum GameObjects
     GO_NOVOS_CRYSTAL_4                                     = 189302
 };
 
-struct MANGOS_DLL_DECL instance_drak_tharon : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_drak_tharon : public InstanceData
 {
-    instance_drak_tharon(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_drak_tharon(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint8 uiDredAchievCounter;
 

@@ -55,7 +55,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
 {
     boss_tharon_jaAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		m_bIsHeroic = c->GetMap()->GetDifficulty();
 		Reset();
     }

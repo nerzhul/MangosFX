@@ -24,7 +24,7 @@ EndScriptData */
 #include "precompiled.h"
 #include "utgarde_pinnacle.h"
 
-struct MANGOS_DLL_DECL instance_pinnacle : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_pinnacle : public InstanceData
 {
 	uint64 SvalaSorrowgrave;
     uint64 GortokPalehoof;
@@ -34,7 +34,7 @@ struct MANGOS_DLL_DECL instance_pinnacle : public ScriptedInstance
     uint64 RavenousFurbolg;
     uint64 MassiveJormungar;
     uint64 FerociousRhino;
-    instance_pinnacle(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_pinnacle(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

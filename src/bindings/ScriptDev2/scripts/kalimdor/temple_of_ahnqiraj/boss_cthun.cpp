@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
     {
         SetCombatMovement(false);
 
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         if (!pInstance)
             error_log("SD2: No Instance eye_of_cthunAI");
 
@@ -436,7 +436,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
     {
         SetCombatMovement(false);
 
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         if (!pInstance)
             error_log("SD2: No Instance eye_of_cthunAI");
 

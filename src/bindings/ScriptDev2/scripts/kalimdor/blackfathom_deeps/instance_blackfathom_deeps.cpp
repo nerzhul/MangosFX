@@ -29,9 +29,9 @@ EndScriptData */
    Must kill twilight lord for shrine event to be possible
  */
 
-struct MANGOS_DLL_DECL instance_blackfathom_deeps : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_blackfathom_deeps : public InstanceData
 {
-    instance_blackfathom_deeps(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_blackfathom_deeps(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint64 m_uiTwilightLordKelrisGUID;
     uint64 m_uiShrine1GUID;

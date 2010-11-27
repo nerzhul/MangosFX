@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "temple_of_ahnqiraj.h"
 
-struct MANGOS_DLL_DECL instance_temple_of_ahnqiraj : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_temple_of_ahnqiraj : public InstanceData
 {
-    instance_temple_of_ahnqiraj(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_temple_of_ahnqiraj(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

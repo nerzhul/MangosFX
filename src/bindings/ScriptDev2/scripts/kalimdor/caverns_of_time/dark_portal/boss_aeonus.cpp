@@ -45,7 +45,7 @@ struct MANGOS_DLL_DECL boss_aeonusAI : public ScriptedAI
 {
     boss_aeonusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

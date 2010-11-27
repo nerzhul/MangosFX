@@ -45,7 +45,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
 {
     mob_dragonflayer_forge_masterAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         m_uiForgeEncounterId = 0;
         Reset();

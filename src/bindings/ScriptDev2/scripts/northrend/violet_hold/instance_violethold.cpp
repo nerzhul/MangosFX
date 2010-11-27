@@ -61,9 +61,9 @@ enum boss_doors{
 
 
 
-struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_violethold : public InstanceData
 {
-	instance_violethold(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+	instance_violethold(Map* pMap) : InstanceData(pMap) {Initialize();};
 	uint8 m_uiRiftWaveId;
 	uint32 m_auiEncounter[MAX_ENCOUNTER];
 	uint16 m_BossCount;
@@ -647,8 +647,7 @@ bool GossipHello_npc_Sinclari(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-	ScriptedInstance* pInstance;
-	pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+	InstanceData* pInstance = pCreature->GetInstanceData();
 
     switch(uiAction)
     {
@@ -738,7 +737,7 @@ struct MANGOS_DLL_DECL seal_AddAI : public ScriptedAI
 {	
 	seal_AddAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		Reset();
 	}
 

@@ -1,9 +1,9 @@
 #include "precompiled.h"
 #include "rubis_sanctum.h"
 
-struct MANGOS_DLL_DECL instance_rubis_sanctum : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_rubis_sanctum : public InstanceData
 {
-    instance_rubis_sanctum(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_rubis_sanctum(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     std::string strInstData;
     uint32 m_auiEncounter[MAX_ENCOUNTER];

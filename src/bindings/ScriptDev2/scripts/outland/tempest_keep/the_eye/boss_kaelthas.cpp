@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
 {
     advisorbase_ai(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDoubled_Health = false;
         Reset();
     }
@@ -295,7 +295,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 {
     boss_kaelthasAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiAdvisorGuid, 0, sizeof(m_auiAdvisorGuid));
         Reset();
     }

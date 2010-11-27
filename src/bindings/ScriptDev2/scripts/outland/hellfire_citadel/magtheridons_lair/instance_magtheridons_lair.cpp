@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "magtheridons_lair.h"
 
-struct MANGOS_DLL_DECL instance_magtheridons_lair : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_magtheridons_lair : public InstanceData
 {
-    instance_magtheridons_lair(Map* pMap) : ScriptedInstance(pMap) { Initialize(); }
+    instance_magtheridons_lair(Map* pMap) : InstanceData(pMap) { Initialize(); }
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

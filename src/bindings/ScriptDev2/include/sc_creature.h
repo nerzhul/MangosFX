@@ -8,10 +8,10 @@
 #include "CreatureAI.h"
 #include "Creature.h"
 #include "TemporarySummon.h"
+#include "InstanceData.h"
 #include "Map.h"
 #include "Util.h"
 #include "Vehicle.h"
-#include "sc_instance.h"
 
 //Spell targets used by SelectSpell
 enum SelectTarget
@@ -226,7 +226,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void InitInstance()
 	{
 		if(me->GetInstanceData())
-			pInstance = (ScriptedInstance*)me->GetInstanceData();
+			pInstance = me->GetInstanceData();
 		else
 			pInstance = NULL;
 		m_difficulty = me->GetMap()->GetDifficulty();
@@ -234,8 +234,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
 	void CompleteAchievementForGroup(uint32 achId) { if(pInstance) pInstance->CompleteAchievementForGroup(achId); }
 	
-	protected:
-		ScriptedInstance* pInstance;
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;

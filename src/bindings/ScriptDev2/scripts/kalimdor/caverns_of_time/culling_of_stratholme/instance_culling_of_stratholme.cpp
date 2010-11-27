@@ -34,9 +34,9 @@ static Locations randspawn[]=
 	{2356.439f,		1184.324f,	131.11f}, // festival est
 };
 
-struct MANGOS_DLL_DECL instance_culling_of_stratholme : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_culling_of_stratholme : public InstanceData
 {
-    instance_culling_of_stratholme(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_culling_of_stratholme(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[2];
 	uint64 corrupteur_guid;

@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
 {
     boss_kelthuzadAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         GuardiansOfIcecrown[0] = 0;
         GuardiansOfIcecrown[1] = 0;
@@ -173,7 +173,6 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         GuardiansOfIcecrown_Count = 0;
         Reset();
     }
-    ScriptedInstance *pInstance;
     bool m_bIsHeroic;
 
     std::list<uint64> m_lSummonsGUIDList;

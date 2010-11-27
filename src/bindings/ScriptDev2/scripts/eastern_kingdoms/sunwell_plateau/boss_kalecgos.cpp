@@ -80,7 +80,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 {
     boss_kalecgosAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 
         /*if (pCreature->getFaction() != 14)
         {
@@ -336,7 +336,7 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
 {
     boss_sathrovarrAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -449,7 +449,7 @@ struct MANGOS_DLL_DECL boss_kalecgos_humanoidAI : public ScriptedAI
 {
     boss_kalecgos_humanoidAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -522,7 +522,7 @@ bool GOHello_go_spectral_rift(Player* pPlayer, GameObject* pGo)
     if (pGo->GetGoType() != GAMEOBJECT_TYPE_GOOBER)
         return true;
 
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pPlayer->HasAura(SPELL_SPECTRAL_EXHAUSTION, 0))
             return true;

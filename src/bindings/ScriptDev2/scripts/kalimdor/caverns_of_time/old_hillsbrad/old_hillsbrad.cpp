@@ -80,7 +80,7 @@ bool GossipHello_npc_erozion(Player* pPlayer, Creature* pCreature)
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (pInstance && pInstance->GetData(TYPE_BARREL_DIVERSION) != DONE && !pPlayer->HasItemCount(ITEM_ENTRY_BOMBS,1))
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I need a pack of Incendiary Bombs.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
@@ -211,7 +211,7 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
 {
     npc_thrall_old_hillsbradAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         HadMount = false;
         Reset();
     }
@@ -507,7 +507,7 @@ bool GossipHello_npc_thrall_old_hillsbrad(Player* pPlayer, Creature* pCreature)
         pPlayer->SendPreparedQuest(pCreature->GetGUID());
     }
 
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (pInstance)
     {
@@ -534,7 +534,7 @@ bool GossipHello_npc_thrall_old_hillsbrad(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_thrall_old_hillsbrad(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     switch(uiAction)
     {
@@ -587,7 +587,7 @@ struct MANGOS_DLL_DECL npc_tarethaAI : public npc_escortAI
 {
     npc_tarethaAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -614,7 +614,7 @@ CreatureAI* GetAI_npc_taretha(Creature* pCreature)
 
 bool GossipHello_npc_taretha(Player* pPlayer, Creature* pCreature)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (pInstance && pInstance->GetData(TYPE_THRALL_PART3) == DONE && pInstance->GetData(TYPE_THRALL_PART4) == NOT_STARTED)
     {
@@ -626,7 +626,7 @@ bool GossipHello_npc_taretha(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_taretha(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (uiAction == GOSSIP_ACTION_INFO_DEF+1)
     {

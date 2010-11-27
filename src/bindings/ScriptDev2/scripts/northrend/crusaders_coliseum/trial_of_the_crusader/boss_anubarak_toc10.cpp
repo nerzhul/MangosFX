@@ -32,7 +32,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 {
     boss_anubarakEdCAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		difficulty = me->GetMap()->GetDifficulty();
         Reset();
     }

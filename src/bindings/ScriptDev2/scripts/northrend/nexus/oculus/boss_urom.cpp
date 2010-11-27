@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_uromAI : public ScriptedAI
 {
     boss_uromAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
     }
     
     void Reset()

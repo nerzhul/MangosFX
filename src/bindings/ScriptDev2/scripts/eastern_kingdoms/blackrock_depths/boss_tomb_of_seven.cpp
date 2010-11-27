@@ -41,7 +41,7 @@ enum
 
 bool GossipHello_boss_gloomrel(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == NOT_STARTED)
         {
@@ -77,7 +77,7 @@ bool GossipSelect_boss_gloomrel(Player* pPlayer, Creature* pCreature, uint32 uiS
             break;
         case GOSSIP_ACTION_INFO_DEF+22:
             pPlayer->CLOSE_GOSSIP_MENU();
-            if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+            if (InstanceData* pInstance = pCreature->GetInstanceData())
             {
                 //are 5 minutes expected? go template may have data to despawn when used at quest
                 pInstance->DoRespawnGameObject(pInstance->GetData64(DATA_GO_CHALICE),MINUTE*5);
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 {
     boss_doomrelAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -239,7 +239,7 @@ CreatureAI* GetAI_boss_doomrel(Creature* pCreature)
 
 bool GossipHello_boss_doomrel(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == NOT_STARTED)
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_CHALLENGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -257,7 +257,7 @@ bool GossipSelect_boss_doomrel(Player* pPlayer, Creature* pCreature, uint32 uiSe
             pPlayer->CLOSE_GOSSIP_MENU();
             DoScriptText(SAY_DOOMREL_START_EVENT, pCreature, pPlayer);
             // start event
-            if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+            if (InstanceData* pInstance = pCreature->GetInstanceData())
                 pInstance->SetData(TYPE_TOMB_OF_SEVEN, IN_PROGRESS);
 
             break;

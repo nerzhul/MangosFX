@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
 {
     boss_archavonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         m_fDefaultMoveSpeed = pCreature->GetSpeedRate(MOVE_RUN);
         Reset();

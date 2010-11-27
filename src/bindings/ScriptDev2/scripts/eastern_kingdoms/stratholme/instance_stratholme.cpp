@@ -50,9 +50,9 @@ enum
     NPC_YSIDA                   = 16031
 };
 
-struct MANGOS_DLL_DECL instance_stratholme : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_stratholme : public InstanceData
 {
-    instance_stratholme(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_stratholme(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     bool IsSilverHandDead[5];

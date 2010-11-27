@@ -67,7 +67,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
     mob_toc5_warriorAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -217,7 +217,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
     mob_toc5_mageAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -348,7 +348,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
     mob_toc5_shamanAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -555,7 +555,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
     mob_toc5_hunterAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -738,7 +738,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
     mob_toc5_rogueAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 

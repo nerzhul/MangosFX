@@ -61,9 +61,9 @@ enum
     GO_CHEST_SEVEN          = 169243
 };
 
-struct MANGOS_DLL_DECL instance_blackrock_depths : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_blackrock_depths : public InstanceData
 {
-    instance_blackrock_depths(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_blackrock_depths(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

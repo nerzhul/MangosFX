@@ -1407,7 +1407,7 @@ CreatureAI* GetAI_YoggDeathRayAI(Creature *_Creature)
 
 bool GossipHello_yogg_portal(Player* pPlayer, Creature* pCreature)
 {
-	if(Unit* YoggSaron = Unit::GetUnit((*pCreature), ((ScriptedInstance*)pCreature->GetInstanceData())->GetData64(TYPE_YOGGSARON)))
+	if(Unit* YoggSaron = Unit::GetUnit((*pCreature), (pCreature->GetInstanceData())->GetData64(TYPE_YOGGSARON)))
 		if(YoggSaron->isAlive())
 		{
 			uint8 vis = ((boss_yoggsaronAI*)((Creature*)YoggSaron)->AI())->GetVision();

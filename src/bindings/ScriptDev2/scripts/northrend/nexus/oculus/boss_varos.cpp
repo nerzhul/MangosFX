@@ -42,7 +42,7 @@ struct MANGOS_DLL_DECL boss_varosAI : public ScriptedAI
 {
     boss_varosAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		m_bIsHeroic = c->GetMap()->IsRegularDifficulty();
     }
     

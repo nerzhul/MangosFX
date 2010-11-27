@@ -57,7 +57,7 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
 {
     boss_harbinger_skyrissAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Intro = false;
         Reset();
@@ -258,7 +258,7 @@ struct MANGOS_DLL_DECL boss_harbinger_skyriss_illusionAI : public ScriptedAI
 {
     boss_harbinger_skyriss_illusionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

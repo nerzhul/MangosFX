@@ -63,11 +63,10 @@ struct MANGOS_DLL_DECL boss_sacrolashAI : public ScriptedAI
 {
 	boss_sacrolashAI(Creature *c) : ScriptedAI(c)
 	{
-		pInstance = (c->GetInstanceData()) ? ((ScriptedInstance*)c->GetInstanceData()) : NULL;
+		pInstance = (c->GetInstanceData()) ? (c->GetInstanceData()) : NULL;
 		Reset();
 	}
 
-	ScriptedInstance *pInstance;
 	bool InCombat;
 	bool sisterdeath;
 	bool blades;
@@ -286,12 +285,11 @@ struct MANGOS_DLL_DECL boss_alythessAI : public ScriptedAI
 {
 	boss_alythessAI(Creature *c) : ScriptedAI(c)
 	{
-		pInstance = (c->GetInstanceData()) ? ((ScriptedInstance*)c->GetInstanceData()) : NULL;
+		pInstance = (c->GetInstanceData()) ? (c->GetInstanceData()) : NULL;
 		Reset();
 		once = false;
 	}
 
-	ScriptedInstance *pInstance;
 	bool InCombat;
 	bool sisterdeath;
 	bool once;

@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
 {
     boss_volazjAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

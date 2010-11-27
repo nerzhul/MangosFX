@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL mob_toc5_risen_ghoulAI : public ScriptedAI
     mob_toc5_risen_ghoulAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -116,8 +116,8 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
     boss_black_knightAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 

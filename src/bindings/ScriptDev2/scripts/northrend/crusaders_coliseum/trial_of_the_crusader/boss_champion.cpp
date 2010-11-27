@@ -202,7 +202,7 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
 {
     boss_championDruidRestoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -313,7 +313,7 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
 {
     boss_championHuntAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -421,7 +421,7 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
 {
     boss_championRogueAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -517,7 +517,7 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
 {
     boss_championWarlockAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -622,7 +622,7 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
 {
     boss_championShamanEnhancAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -722,7 +722,7 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
 {
     boss_championShamanRestoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -827,7 +827,7 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
 {
     boss_championPaladinHolyAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -928,7 +928,7 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
 {
     boss_championPaladinRetribAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -1034,7 +1034,7 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
 {
     boss_championPriestDisciAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -1139,7 +1139,7 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
 {
     boss_championPriestShadowAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -1244,7 +1244,7 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
 {
     boss_championDeathKnightAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -1339,7 +1339,7 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
 {
     boss_championMageAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDifficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

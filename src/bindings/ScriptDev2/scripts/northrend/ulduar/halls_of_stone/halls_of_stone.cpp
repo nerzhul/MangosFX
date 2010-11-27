@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL mob_tribuna_controllerAI : public ScriptedAI
 {
     mob_tribuna_controllerAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         SetCombatMovement(false);
         Reset();
@@ -267,7 +267,7 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
 {
     npc_brann_hosAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

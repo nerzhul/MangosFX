@@ -74,7 +74,7 @@ struct MANGOS_DLL_DECL boss_eregosAI : public ScriptedAI
 {
     boss_eregosAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
     }
 
     void Reset()

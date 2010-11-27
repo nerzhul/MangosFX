@@ -41,7 +41,7 @@ struct MANGOS_DLL_DECL boss_murmurAI : public ScriptedAI
     boss_murmurAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         SetCombatMovement(false);
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

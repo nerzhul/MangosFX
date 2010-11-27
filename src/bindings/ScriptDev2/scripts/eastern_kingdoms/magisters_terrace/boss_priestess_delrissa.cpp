@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
 {
     boss_priestess_delrissaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         memset(&m_auiLackeyGUID, 0, sizeof(m_auiLackeyGUID));
         LackeyEntryList.clear();
@@ -337,7 +337,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
 {
     boss_priestess_lackey_commonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiLackeyGUIDs, 0, sizeof(m_auiLackeyGUIDs));
         Reset();
         AcquireGUIDs();

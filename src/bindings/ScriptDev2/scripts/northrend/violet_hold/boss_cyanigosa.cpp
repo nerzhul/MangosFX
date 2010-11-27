@@ -54,8 +54,8 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
 	 
 	boss_cyanigosaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
 {
     boss_novosAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		m_bIsHeroic = c->GetMap()->GetDifficulty();
         Reset();
     }
@@ -245,7 +245,7 @@ struct MANGOS_DLL_DECL mob_crystal_handlerAI : public ScriptedAI
 {
     mob_crystal_handlerAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
 
@@ -255,7 +255,6 @@ struct MANGOS_DLL_DECL mob_crystal_handlerAI : public ScriptedAI
 		Tasks.SetObjects(this,me);
 		Tasks.AddEvent(49668,3000,5000,1500,TARGET_MAIN);
 	};
-    ScriptedInstance *pInstance;
 
     void JustDied(Unit* killer)
     {
@@ -279,11 +278,9 @@ struct MANGOS_DLL_DECL mob_novos_minionAI : public ScriptedAI
 {
     mob_novos_minionAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
-
-    ScriptedInstance *pInstance;
 
 	void Reset() {}
     void MovementInform(uint32 type, uint32 id)

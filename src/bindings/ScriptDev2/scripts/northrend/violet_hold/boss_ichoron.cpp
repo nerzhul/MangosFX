@@ -57,7 +57,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 	 
 	boss_ichoronAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

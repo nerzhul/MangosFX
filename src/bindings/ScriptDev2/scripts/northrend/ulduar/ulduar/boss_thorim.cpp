@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 {
     boss_thorimAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
@@ -266,7 +266,7 @@ struct MANGOS_DLL_DECL boss_addThorimAI : public ScriptedAI
 {
     boss_addThorimAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
@@ -319,7 +319,7 @@ struct MANGOS_DLL_DECL boss_runegiantAI : public ScriptedAI
 {
     boss_runegiantAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }
@@ -353,7 +353,7 @@ struct MANGOS_DLL_DECL boss_runecolossusAI : public ScriptedAI
 {
     boss_runecolossusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
         Reset();
     }

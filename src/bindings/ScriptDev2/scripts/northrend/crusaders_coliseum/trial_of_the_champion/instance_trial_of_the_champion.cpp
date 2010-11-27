@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "trial_of_the_champion.h"
 
-struct MANGOS_DLL_DECL instance_trial_of_the_champion : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_trial_of_the_champion : public InstanceData
 {
-    instance_trial_of_the_champion(Map* pMap) : ScriptedInstance(pMap) { Initialize(); }
+    instance_trial_of_the_champion(Map* pMap) : InstanceData(pMap) { Initialize(); }
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string m_strInstData;

@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 {
     boss_felblood_kaelthasAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
@@ -433,7 +433,7 @@ struct MANGOS_DLL_DECL mob_felkael_phoenixAI : public ScriptedAI
 {
     mob_felkael_phoenixAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

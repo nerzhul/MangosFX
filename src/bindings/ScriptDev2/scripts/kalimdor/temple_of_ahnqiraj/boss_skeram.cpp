@@ -53,7 +53,7 @@ struct MANGOS_DLL_DECL boss_skeramAI : public ScriptedAI
 {
     boss_skeramAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         IsImage = false;
         Reset();
     }

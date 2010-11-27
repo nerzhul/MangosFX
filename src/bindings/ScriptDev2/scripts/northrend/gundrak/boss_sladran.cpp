@@ -46,7 +46,7 @@ struct MANGOS_DLL_DECL boss_sladranAI : public ScriptedAI
    
     boss_sladranAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL mob_sladranAI : public ScriptedAI //script Serpent
 
 	mob_sladranAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
@@ -187,7 +187,7 @@ struct MANGOS_DLL_DECL mob_sladran2AI : public ScriptedAI //script Constrictor
 
 	mob_sladran2AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

@@ -648,7 +648,7 @@ enum TpDest
 };
 bool GoHello_icc_teleporter( Player *pPlayer, GameObject *pGO )
 {
-    ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
+    InstanceData* pInstance = pGO->GetInstanceData();
     if(!pInstance) return true;
 
     pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au Marteau de Lumiere", GOSSIP_SENDER_MAIN, BASE);

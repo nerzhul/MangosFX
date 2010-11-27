@@ -135,7 +135,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
         SufferingGUID = 0;
         DesireGUID = 0;
         AngerGUID = 0;
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

@@ -38,7 +38,7 @@ EndScriptData */
 
 bool GOHello_go_main_chambers_access_panel(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;
@@ -52,9 +52,9 @@ bool GOHello_go_main_chambers_access_panel(Player* pPlayer, GameObject* pGo)
     return true;
 }
 
-struct MANGOS_DLL_DECL instance_steam_vault : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_steam_vault : public InstanceData
 {
-    instance_steam_vault(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_steam_vault(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

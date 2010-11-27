@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 {
     boss_shade_of_akamaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_lChannelersGUIDList.clear();
         m_lSorcerersGUIDList.clear();
         Reset();
@@ -404,7 +404,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
     {
         m_bIsShadeDead = false;
         m_bCanStartCombat = false;
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -698,7 +698,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
 bool GossipHello_npc_akama(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_SHADE) != DONE)
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -725,7 +725,7 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
 {
     mob_ashtongue_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -779,7 +779,7 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
 {
     mob_ashtongue_sorcererAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

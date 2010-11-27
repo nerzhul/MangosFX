@@ -40,7 +40,7 @@ EndContentData */
 
 bool GOHello_go_shadowforge_brazier(Player* pPlayer, GameObject* pGo)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData())
+    if (InstanceData* pInstance = pGo->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_LYCEUM) == IN_PROGRESS)
             pInstance->SetData(TYPE_LYCEUM, DONE);
@@ -85,7 +85,7 @@ uint32 RingBoss[]=
 
 bool AreaTrigger_at_ring_of_law(Player* pPlayer, AreaTriggerEntry *at)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_RING_OF_LAW) == IN_PROGRESS || pInstance->GetData(TYPE_RING_OF_LAW) == DONE)
             return false;
@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL npc_grimstoneAI : public npc_escortAI
 {
     npc_grimstoneAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         MobSpawnId = urand(0, 5);
         Reset();
     }
@@ -535,7 +535,7 @@ struct MANGOS_DLL_DECL npc_rocknotAI : public npc_escortAI
 {
     npc_rocknotAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -626,7 +626,7 @@ CreatureAI* GetAI_npc_rocknot(Creature* pCreature)
 
 bool ChooseReward_npc_rocknot(Player* pPlayer, Creature* pCreature, const Quest* pQuest, uint32 item)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (!pInstance)
         return true;

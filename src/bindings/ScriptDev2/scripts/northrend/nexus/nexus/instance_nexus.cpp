@@ -26,7 +26,7 @@ EndScriptData */
 
 bool GOHello_go_containment_sphere(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;
@@ -43,9 +43,9 @@ bool GOHello_go_containment_sphere(Player* pPlayer, GameObject* pGo)
     return true;
 }
 
-struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_nexus : public InstanceData
 {
-    instance_nexus(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_nexus(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

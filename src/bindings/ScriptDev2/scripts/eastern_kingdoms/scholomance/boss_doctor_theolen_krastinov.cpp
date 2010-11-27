@@ -50,7 +50,7 @@ struct MANGOS_DLL_DECL boss_theolenkrastinovAI : public ScriptedAI
 
     void JustDied(Unit *killer)
     {
-        if (ScriptedInstance* pInstance = (ScriptedInstance*)me->GetInstanceData())
+        if (InstanceData* pInstance = me->GetInstanceData())
         {
             pInstance->SetData(TYPE_THEOLEN, DONE);
 

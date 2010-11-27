@@ -26,9 +26,9 @@ EndScriptData */
 
 #define IKISS_DOOR          177203
 
-struct MANGOS_DLL_DECL instance_sethekk_halls : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_sethekk_halls : public InstanceData
 {
-    instance_sethekk_halls(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_sethekk_halls(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint64 m_uiIkissDoorGUID;
 

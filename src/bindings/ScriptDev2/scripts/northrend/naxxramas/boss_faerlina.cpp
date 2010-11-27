@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 {
     mob_worshippersAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

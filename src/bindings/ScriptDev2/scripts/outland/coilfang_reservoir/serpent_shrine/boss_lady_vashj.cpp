@@ -119,12 +119,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 {
     boss_lady_vashjAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiShieldGeneratorChannel, 0, sizeof(m_auiShieldGeneratorChannel));
         Reset();
     }
-
-    ScriptedInstance *pInstance;                          // the instance
 
     uint64 m_auiShieldGeneratorChannel[MAX_SHIELD_GEN];
 
@@ -495,12 +493,10 @@ struct MANGOS_DLL_DECL mob_enchanted_elementalAI : public ScriptedAI
 {
     mob_enchanted_elementalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         SetCombatMovement(false);
         Reset();
     }
-
-    ScriptedInstance *pInstance;                          // the instance
 
     void Reset() { }
 
@@ -531,7 +527,7 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
 {
     mob_tainted_elementalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         SetCombatMovement(false);
         Reset();
     }
@@ -568,7 +564,7 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
 {
     mob_toxic_sporebatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -664,7 +660,7 @@ struct MANGOS_DLL_DECL mob_shield_generator_channelAI : public ScriptedAI
 {
     mob_shield_generator_channelAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -676,7 +672,7 @@ struct MANGOS_DLL_DECL mob_shield_generator_channelAI : public ScriptedAI
 //this is wrong, alternative script needed
 bool ItemUse_item_tainted_core(Player* pPlayer, Item* pItem, SpellCastTargets const& sctTargets)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pPlayer->GetInstanceData());
+    InstanceData* pInstance = (pPlayer->GetInstanceData());
 
     if (!pInstance)
     {

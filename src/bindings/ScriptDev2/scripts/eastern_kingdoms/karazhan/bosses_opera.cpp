@@ -86,7 +86,7 @@ EndScriptData */
 #define CREATURE_CYCLONE        18412
 #define CREATURE_CRONE          18168
 
-void SummonCroneIfReady(ScriptedInstance* pInstance, Creature* pCreature)
+void SummonCroneIfReady(InstanceData* pInstance, Creature* pCreature)
 {
     pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, SPECIAL);  // Increment DeathCount
 
@@ -435,7 +435,7 @@ struct MANGOS_DLL_DECL boss_roarAI : public ScriptedAI
 {
     boss_roarAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -531,7 +531,7 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
 {
     boss_croneAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -712,7 +712,7 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
 {
     boss_bigbadwolfAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -908,7 +908,7 @@ struct MANGOS_DLL_DECL boss_julianneAI : public ScriptedAI
 {
     boss_julianneAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         EntryYellTimer = 1000;
         AggroYellTimer = 10000;
         IsFakingDeath = false;
@@ -1019,7 +1019,7 @@ struct MANGOS_DLL_DECL boss_romuloAI : public ScriptedAI
 {
     boss_romuloAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
         EntryYellTimer = 8000;
         AggroYellTimer = 15000;

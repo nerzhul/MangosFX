@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL boss_jedogaAI : public ScriptedAI
 
     boss_jedogaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -215,7 +215,7 @@ struct MANGOS_DLL_DECL add_jedoga : public ScriptedAI
 {
    add_jedoga(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

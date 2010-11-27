@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
     boss_eadricAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
     boss_paletressAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 
@@ -478,7 +478,7 @@ struct MANGOS_DLL_DECL mob_toc5_memoryAI : public ScriptedAI
     mob_toc5_memoryAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
 		Reset();
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
 	}
 

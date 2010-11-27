@@ -41,7 +41,7 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
 {
     npc_forest_frogAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
 {
     npc_harrison_jones_zaAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -169,7 +169,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
 
 bool GossipHello_npc_harrison_jones_za(Player* pPlayer, Creature* pCreature)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+    InstanceData* pInstance = pCreature->GetInstanceData();
 
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
@@ -203,7 +203,7 @@ CreatureAI* GetAI_npc_harrison_jones_za(Creature* pCreature)
 //Unsure how this Gong must work. Here we always return false to allow Mangos always process further.
 bool GOHello_go_strange_gong(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;

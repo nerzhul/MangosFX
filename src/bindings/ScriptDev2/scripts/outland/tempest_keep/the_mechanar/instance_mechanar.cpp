@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "mechanar.h"
 
-struct MANGOS_DLL_DECL instance_mechanar : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_mechanar : public InstanceData
 {
-    instance_mechanar(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_mechanar(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

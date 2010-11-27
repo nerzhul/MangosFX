@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL npc_millhouse_manastormAI : public ScriptedAI
 {
     npc_millhouse_manastormAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -243,7 +243,7 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
 {
     npc_warden_mellicharAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

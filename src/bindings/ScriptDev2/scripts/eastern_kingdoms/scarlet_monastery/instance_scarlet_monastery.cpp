@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "scarlet_monastery.h"
 
-struct MANGOS_DLL_DECL instance_scarlet_monastery : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_scarlet_monastery : public InstanceData
 {
-    instance_scarlet_monastery(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_scarlet_monastery(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

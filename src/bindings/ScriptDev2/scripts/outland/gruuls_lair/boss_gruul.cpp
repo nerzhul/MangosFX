@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
 {
     boss_gruulAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

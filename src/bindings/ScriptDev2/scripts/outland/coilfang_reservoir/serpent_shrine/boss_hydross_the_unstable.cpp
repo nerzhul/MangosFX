@@ -77,7 +77,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
 {
     boss_hydross_the_unstableAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

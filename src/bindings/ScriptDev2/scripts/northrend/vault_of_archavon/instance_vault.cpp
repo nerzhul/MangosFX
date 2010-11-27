@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "vault_of_archavon.h"
 
-struct MANGOS_DLL_DECL instance_vault_of_archavon : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_vault_of_archavon : public InstanceData
 {
-    instance_vault_of_archavon(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_vault_of_archavon(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

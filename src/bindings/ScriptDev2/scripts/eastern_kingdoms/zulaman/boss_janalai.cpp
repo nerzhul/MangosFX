@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
     {
         m_uiHatcher1GUID = 0;
         m_uiHatcher2GUID = 0;
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -596,7 +596,7 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
 {
     mob_amanishi_hatcherAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -719,7 +719,7 @@ struct MANGOS_DLL_DECL mob_hatchlingAI : public ScriptedAI
 {
     mob_hatchlingAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

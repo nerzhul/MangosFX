@@ -40,7 +40,7 @@ enum Spells
 	SPELL_STORMSHIELD				 = 64187
 };
 
-bool IsEncounterComplete(ScriptedInstance* pInstance, Creature* me)
+bool IsEncounterComplete(InstanceData* pInstance, Creature* me)
 {
    if (!pInstance || !me)
         return false;

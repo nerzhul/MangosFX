@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_void_reaverAI : public ScriptedAI
 {
     boss_void_reaverAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

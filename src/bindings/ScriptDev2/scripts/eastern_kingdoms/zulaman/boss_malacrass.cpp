@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
 {
     boss_malacrassAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiAddGUIDs, 0, sizeof(m_auiAddGUIDs));
         m_lAddsEntryList.clear();
         Reset();
@@ -277,7 +277,7 @@ struct MANGOS_DLL_DECL boss_malacrass_addAI : public ScriptedAI
 {
     boss_malacrass_addAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

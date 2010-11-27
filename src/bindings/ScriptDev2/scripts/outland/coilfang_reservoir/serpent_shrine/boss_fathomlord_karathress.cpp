@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
 {
     boss_fathomlord_karathressAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiAdvisorsGUID, 0, sizeof(m_auiAdvisorsGUID));
         Reset();
     }
@@ -267,7 +267,7 @@ struct MANGOS_DLL_DECL Advisor_Base_AI : public ScriptedAI
 {
     Advisor_Base_AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
     }
     protected:
     uint8 m_uiAdvisor;

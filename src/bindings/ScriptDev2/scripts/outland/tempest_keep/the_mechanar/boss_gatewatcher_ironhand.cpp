@@ -42,7 +42,7 @@ struct MANGOS_DLL_DECL boss_gatewatcher_iron_handAI : public ScriptedAI
 {
     boss_gatewatcher_iron_handAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
 {
     boss_supremusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
 {
     boss_aranAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

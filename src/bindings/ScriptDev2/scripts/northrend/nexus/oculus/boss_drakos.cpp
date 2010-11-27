@@ -40,7 +40,7 @@ struct MANGOS_DLL_DECL boss_drakosAI : public ScriptedAI
 {
     boss_drakosAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		m_bIsHeroic = c->GetMap()->IsRegularDifficulty();
     }
     

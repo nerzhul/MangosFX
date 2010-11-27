@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
     boss_svalaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_difficulty = pCreature->GetMap()->GetDifficulty();
         m_bIsIntroDone = false;
         Reset();
@@ -395,7 +395,7 @@ CreatureAI* GetAI_boss_svala(Creature* pCreature)
 
 bool AreaTrigger_at_svala_intro(Player* pPlayer, AreaTriggerEntry* pAt)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_SVALA) == NOT_STARTED)
             pInstance->SetData(TYPE_SVALA, IN_PROGRESS);

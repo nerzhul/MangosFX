@@ -55,7 +55,7 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
 {
     boss_marliAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_uiDefaultModel = me->GetDisplayId();
         Reset();
     }
@@ -315,7 +315,7 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
     mob_spawn_of_marliAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         Reset();
-        pInstance = (ScriptedInstance*)me->GetInstanceData();
+        pInstance = me->GetInstanceData();
     }
 
     uint32 m_uiLevelUp_Timer;

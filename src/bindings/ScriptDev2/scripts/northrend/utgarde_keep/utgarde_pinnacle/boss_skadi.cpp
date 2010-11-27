@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
 
     boss_skadiAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

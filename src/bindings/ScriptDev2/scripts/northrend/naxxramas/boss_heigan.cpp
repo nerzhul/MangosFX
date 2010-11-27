@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 {
     boss_heiganAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
@@ -242,7 +242,7 @@ struct MANGOS_DLL_DECL npc_heigan_eruptionAI : public ScriptedAI
 {
     npc_heigan_eruptionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
         Reset();
     }
  

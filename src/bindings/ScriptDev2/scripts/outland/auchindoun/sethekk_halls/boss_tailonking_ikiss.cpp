@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
 {
     boss_talon_king_ikissAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

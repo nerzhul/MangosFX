@@ -32,9 +32,9 @@ EndScriptData */
 4 - Archimonde event
 */
 
-struct MANGOS_DLL_DECL instance_mount_hyjal : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_mount_hyjal : public InstanceData
 {
-    instance_mount_hyjal(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_mount_hyjal(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strSaveData;

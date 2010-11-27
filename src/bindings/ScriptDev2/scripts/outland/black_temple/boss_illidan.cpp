@@ -303,7 +303,7 @@ struct MANGOS_DLL_DECL demonfireAI : public ScriptedAI
 {
     demonfireAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -370,7 +370,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
 {
     npc_akama_illidanAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         WayPointList.clear();
         Reset();
     }
@@ -833,7 +833,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
 {
     boss_illidan_stormrageAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 
         for(uint8 i = 0; i < 2; ++i)
         {
@@ -1966,7 +1966,7 @@ struct MANGOS_DLL_DECL boss_maievAI : public ScriptedAI
 {
     boss_maievAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     };
 

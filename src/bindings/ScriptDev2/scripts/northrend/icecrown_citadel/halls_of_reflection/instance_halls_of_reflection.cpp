@@ -8,9 +8,9 @@
 1- The Devourer of Souls
 */
 
-struct instance_halls_of_reflection : public ScriptedInstance
+struct instance_halls_of_reflection : public InstanceData
 {
-    instance_halls_of_reflection(Map* pMap) : ScriptedInstance(pMap) {};
+    instance_halls_of_reflection(Map* pMap) : InstanceData(pMap) {};
 
     uint64 uiFalric;
     uint64 uiMarwyn;

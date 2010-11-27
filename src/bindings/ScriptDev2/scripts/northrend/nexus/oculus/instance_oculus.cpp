@@ -9,9 +9,9 @@
 2 - Mage-Lord Urom
 3 - Ley-Guardian Eregos */
 
-struct MANGOS_DLL_DECL instance_oculus : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_oculus : public InstanceData
 {
-    instance_oculus(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_oculus(Map* pMap) : InstanceData(pMap) {Initialize();};
     
     uint64 uiDrakos;
     uint64 uiVaros;

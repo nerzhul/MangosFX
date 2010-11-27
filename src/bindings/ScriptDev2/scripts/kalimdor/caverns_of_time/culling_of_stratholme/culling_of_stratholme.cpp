@@ -867,7 +867,7 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
 {
     npc_patriciaAI(Creature *c) : ScriptedAI(c) 
 	{
-	   pInstance = (ScriptedInstance*)c->GetInstanceData();
+	   pInstance = c->GetInstanceData();
 	   Reset();
 	}
 
@@ -987,7 +987,7 @@ struct MANGOS_DLL_DECL dark_conversionAI : public ScriptedAI
 {
     dark_conversionAI(Creature *c) : ScriptedAI(c) 
 	{
-	  pInstance = (ScriptedInstance*)c->GetInstanceData();
+	  pInstance = c->GetInstanceData();
 	  Reset();
 	}
 

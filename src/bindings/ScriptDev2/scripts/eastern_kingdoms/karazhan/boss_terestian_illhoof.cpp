@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL mob_kilrekAI : public ScriptedAI
 {
     mob_kilrekAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
     boss_terestianAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         memset(&m_uiPortalGUID, 0, sizeof(m_uiPortalGUID));
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

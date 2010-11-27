@@ -41,7 +41,7 @@ struct MANGOS_DLL_DECL boss_temporusAI : public ScriptedAI
 {
     boss_temporusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

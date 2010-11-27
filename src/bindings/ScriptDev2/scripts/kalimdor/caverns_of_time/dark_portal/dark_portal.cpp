@@ -58,7 +58,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
 {
     npc_medivh_bmAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -246,7 +246,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
 {
     npc_time_riftAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

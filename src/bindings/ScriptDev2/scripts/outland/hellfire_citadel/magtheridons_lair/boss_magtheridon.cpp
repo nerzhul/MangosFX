@@ -193,7 +193,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
 {
     boss_magtheridonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -497,7 +497,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
 {
     mob_hellfire_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -628,7 +628,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
 //Manticron Cube
 bool GOHello_go_manticron_cube(Player* pPlayer, GameObject* pGo)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData())
+    if (InstanceData* pInstance = pGo->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_MAGTHERIDON_EVENT) != IN_PROGRESS)
             return true;

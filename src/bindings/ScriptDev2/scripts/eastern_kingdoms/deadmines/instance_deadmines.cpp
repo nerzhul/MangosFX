@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "deadmines.h"
 
-struct MANGOS_DLL_DECL instance_deadmines : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_deadmines : public InstanceData
 {
-    instance_deadmines(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_deadmines(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

@@ -48,7 +48,7 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
 {
     boss_venoxisAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_fDefaultSize = me->GetFloatValue(OBJECT_FIELD_SCALE_X);
         Reset();
     }

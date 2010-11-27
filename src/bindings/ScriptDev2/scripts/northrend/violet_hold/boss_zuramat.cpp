@@ -21,7 +21,7 @@ struct MANGOS_DLL_DECL add_zuramatAI: public ScriptedAI
 
 	add_zuramatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
 	}
@@ -77,7 +77,7 @@ struct MANGOS_DLL_DECL boss_zuramatAI : public ScriptedAI
 	 
 	boss_zuramatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

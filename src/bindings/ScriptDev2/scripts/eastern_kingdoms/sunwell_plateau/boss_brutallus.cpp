@@ -59,7 +59,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
 {
     boss_brutallusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -190,7 +190,7 @@ CreatureAI* GetAI_boss_brutallus(Creature* pCreature)
 
 bool AreaTrigger_at_madrigosa(Player* pPlayer, AreaTriggerEntry* pAt)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         //this simply set encounter state, and trigger ice barrier become active
         //bosses can start pre-event based on this new state

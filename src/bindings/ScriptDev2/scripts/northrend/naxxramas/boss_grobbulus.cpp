@@ -38,7 +38,7 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 {
     boss_grobbulusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL mob_grobbulusnueeAI : public ScriptedAI
 {
     mob_grobbulusnueeAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

@@ -26,7 +26,7 @@ EndScriptData */
 
 bool GOHello_go_door_lever_dm(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;
@@ -41,7 +41,7 @@ bool GOHello_go_door_lever_dm(Player* pPlayer, GameObject* pGo)
 
 bool GOHello_go_defias_cannon(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;

@@ -60,7 +60,7 @@ CreatureAI* GetAI_npc_jaina_proudmoore(Creature* pCreature)
 
 bool GossipHello_npc_jaina_proudmoore(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (hyjalAI* pJainaAI = dynamic_cast<hyjalAI*>(pCreature->AI()))
         {
@@ -132,7 +132,7 @@ CreatureAI* GetAI_npc_thrall(Creature* pCreature)
 
 bool GossipHello_npc_thrall(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (hyjalAI* pThrallAI = dynamic_cast<hyjalAI*>(pCreature->AI()))
         {
@@ -189,7 +189,7 @@ bool GossipSelect_npc_thrall(Player* pPlayer, Creature* pCreature, uint32 uiSend
 
 bool GossipHello_npc_tyrande_whisperwind(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         // Only let them get item if Azgalor is dead.
         if (pInstance->GetData(TYPE_AZGALOR) == DONE && !pPlayer->HasItemCount(ITEM_TEAR_OF_GODDESS,1))

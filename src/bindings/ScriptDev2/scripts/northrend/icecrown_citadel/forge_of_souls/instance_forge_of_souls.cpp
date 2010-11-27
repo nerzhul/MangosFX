@@ -8,9 +8,9 @@
 1- The Devourer of Souls
 */
 
-struct instance_forge_of_souls : public ScriptedInstance
+struct instance_forge_of_souls : public InstanceData
 {
-    instance_forge_of_souls(Map* pMap) : ScriptedInstance(pMap) {};
+    instance_forge_of_souls(Map* pMap) : InstanceData(pMap) {};
 
     uint64 uiBronjahm;
     uint64 uiDevourer;

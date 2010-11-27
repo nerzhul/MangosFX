@@ -633,7 +633,7 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 {
     boss_Icehowl_AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
 
         Reset();

@@ -186,7 +186,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
 {
     boss_teron_gorefiendAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

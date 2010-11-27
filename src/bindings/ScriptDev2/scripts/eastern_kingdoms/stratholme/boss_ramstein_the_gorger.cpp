@@ -33,7 +33,7 @@ struct MANGOS_DLL_DECL boss_ramstein_the_gorgerAI : public ScriptedAI
 {
     boss_ramstein_the_gorgerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

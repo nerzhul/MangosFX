@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
 {
     boss_mandokirAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -325,7 +325,7 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
 {
     mob_ohganAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

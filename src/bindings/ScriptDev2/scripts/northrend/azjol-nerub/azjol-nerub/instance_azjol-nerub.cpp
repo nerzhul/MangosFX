@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "azjol-nerub.h"
 
-struct MANGOS_DLL_DECL instance_azjol_nerub : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_azjol_nerub : public InstanceData
 {
-    instance_azjol_nerub(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_azjol_nerub(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

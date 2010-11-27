@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
 
     boss_ymironAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }

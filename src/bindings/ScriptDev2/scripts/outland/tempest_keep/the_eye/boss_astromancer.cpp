@@ -70,7 +70,7 @@ struct MANGOS_DLL_DECL boss_high_astromancer_solarianAI : public ScriptedAI
 {
     boss_high_astromancer_solarianAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 
         defaultarmor = me->GetArmor();
         defaultsize = me->GetFloatValue(OBJECT_FIELD_SCALE_X);
@@ -384,7 +384,7 @@ struct MANGOS_DLL_DECL mob_solarium_priestAI : public ScriptedAI
 {
     mob_solarium_priestAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

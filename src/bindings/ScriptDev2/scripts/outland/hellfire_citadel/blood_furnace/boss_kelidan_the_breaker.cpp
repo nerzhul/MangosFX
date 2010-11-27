@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
 {
     boss_kelidan_the_breakerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
@@ -171,7 +171,7 @@ struct MANGOS_DLL_DECL mob_shadowmoon_channelerAI : public ScriptedAI
 {
     mob_shadowmoon_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

@@ -43,7 +43,7 @@ struct MANGOS_DLL_DECL boss_jindoAI : public ScriptedAI
 {
     boss_jindoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL mob_healing_wardAI : public ScriptedAI
 {
     mob_healing_wardAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -200,7 +200,7 @@ struct MANGOS_DLL_DECL mob_shade_of_jindoAI : public ScriptedAI
 {
     mob_shade_of_jindoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

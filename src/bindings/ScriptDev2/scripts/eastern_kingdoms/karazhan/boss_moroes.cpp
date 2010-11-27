@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
     boss_moroesAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         FirstTime = true;
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -362,7 +362,7 @@ struct MANGOS_DLL_DECL boss_moroes_guestAI : public ScriptedAI
         for(uint8 i = 0; i < 4; ++i)
             GuestGUID[i] = 0;
 
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

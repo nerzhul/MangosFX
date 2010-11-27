@@ -31,7 +31,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
 {
     boss_dredAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
     }
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL npc_drakkari_gutripperAI : public ScriptedAI
 {
     npc_drakkari_gutripperAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
 
@@ -161,7 +161,7 @@ struct MANGOS_DLL_DECL npc_drakkari_scytheclawAI : public ScriptedAI
 {
     npc_drakkari_scytheclawAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
 

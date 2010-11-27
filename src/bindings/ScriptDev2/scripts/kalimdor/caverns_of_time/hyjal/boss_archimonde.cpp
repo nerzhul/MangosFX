@@ -75,7 +75,7 @@ struct mob_ancient_wispAI : public ScriptedAI
 {
     mob_ancient_wispAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         ArchimondeGUID = 0;
         Reset();
     }
@@ -181,7 +181,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
 {
     boss_archimondeAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

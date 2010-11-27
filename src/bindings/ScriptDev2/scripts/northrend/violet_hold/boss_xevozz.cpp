@@ -42,7 +42,7 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
 	 
 	boss_xevozzAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -133,7 +133,7 @@ struct MANGOS_DLL_DECL add_xevozzAI: public ScriptedAI
 
 	add_xevozzAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
 		Reset();
 	}

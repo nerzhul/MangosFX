@@ -39,9 +39,9 @@ EndScriptData */
 11 - Nightbane
 */
 
-struct MANGOS_DLL_DECL instance_karazhan : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_karazhan : public InstanceData
 {
-    instance_karazhan(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_karazhan(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

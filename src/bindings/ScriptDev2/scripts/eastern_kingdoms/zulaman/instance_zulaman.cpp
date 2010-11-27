@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "zulaman.h"
 
-struct MANGOS_DLL_DECL instance_zulaman : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_zulaman : public InstanceData
 {
-    instance_zulaman(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_zulaman(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     uint32 m_auiRandVendor[MAX_VENDOR];

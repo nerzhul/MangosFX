@@ -53,7 +53,7 @@ struct MANGOS_DLL_DECL boss_selin_fireheartAI : public ScriptedAI
 {
     boss_selin_fireheartAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
 
         Crystals.clear();
@@ -336,7 +336,7 @@ struct MANGOS_DLL_DECL mob_fel_crystalAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-        if (ScriptedInstance* pInstance = ((ScriptedInstance*)me->GetInstanceData()))
+        if (InstanceData* pInstance = (me->GetInstanceData()))
         {
             Creature* Selin = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_SELIN)));
             if (Selin && Selin->isAlive())

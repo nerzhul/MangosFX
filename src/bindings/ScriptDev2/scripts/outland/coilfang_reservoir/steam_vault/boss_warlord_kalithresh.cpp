@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
 {
     mob_naga_distillerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
 {
     boss_warlord_kalithreshAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_epoch_hunterAI : public ScriptedAI
 {
     boss_epoch_hunterAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

@@ -171,7 +171,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 {
     boss_sartharionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
         m_bIsHeroic = !pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -532,7 +532,7 @@ struct MANGOS_DLL_DECL dummy_dragonAI : public ScriptedAI
 {
     dummy_dragonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
 		m_bIsHeroic = !pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -816,7 +816,7 @@ CreatureAI* GetAI_mob_tenebron(Creature* pCreature)
 struct MANGOS_DLL_DECL mob_shadronAI : public dummy_dragonAI
 {
     mob_shadronAI(Creature* pCreature) : dummy_dragonAI(pCreature) { 
-		pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+		pInstance = (pCreature->GetInstanceData());
 		Reset(); }
 
     uint32 m_uiAcolyteShadronTimer;
@@ -984,7 +984,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_shadronAI : public ScriptedAI
 {
     mob_acolyte_of_shadronAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -1048,7 +1048,7 @@ struct MANGOS_DLL_DECL mob_acolyte_of_vesperonAI : public ScriptedAI
 {
     mob_acolyte_of_vesperonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
         Reset();
     }
 

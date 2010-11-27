@@ -38,7 +38,7 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 {
     npc_toc5_announcerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

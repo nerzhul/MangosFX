@@ -80,7 +80,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
 {
     boss_shahrazAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

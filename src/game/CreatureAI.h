@@ -157,7 +157,7 @@ class MANGOS_DLL_SPEC CreatureAI
 {
     public:
         explicit CreatureAI(Creature* creature) : me(creature),ManualMoveEnable(false),CanMove(true),TimedDownEnable(false),CheckDistanceTimer(1000),
-			m_difficulty(REGULAR_DIFFICULTY) 
+			m_difficulty(REGULAR_DIFFICULTY),pInstance(NULL)
 		{
 			EventShVect.clear();
 			EventSummonVect.clear();
@@ -308,8 +308,9 @@ class MANGOS_DLL_SPEC CreatureAI
 		bool TimedDownEnable;
 		uint32 AchTimedDownTimer;
 
-		// Instance Difficulty
+		// Instance
 		Difficulty m_difficulty;
+		InstanceData* pInstance;
 	
 		// Pointer to controlled by AI creature
         Creature* const me;

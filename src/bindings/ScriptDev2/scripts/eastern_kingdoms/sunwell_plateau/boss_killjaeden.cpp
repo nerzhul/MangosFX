@@ -169,7 +169,7 @@ float OrbSpawn [4][2] =
 bool GO_go_orb_of_the_blue_flight(Player *plr, GameObject* go)
 {
     //if(go->GetUInt32Value(GAMEOBJECT_FACTION) == 35){
-        //ScriptedInstance* pInstance = ((ScriptedInstance*)go->GetInstanceData());
+        //InstanceData* pInstance = ((ScriptedInstance*)go->GetInstanceData());
         //float x,y,z, dx,dy,dz;
         go->SummonCreature(ID_DRAGON, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 121000);
         plr->CastSpell(plr, SPELL_VENGEANCE_OF_THE_BLUE_FLIGHT, true);
@@ -200,7 +200,7 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
 {
     boss_kiljadenAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
@@ -567,7 +567,7 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
 {
     mob_deceiverAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
@@ -656,7 +656,7 @@ struct MANGOS_DLL_DECL mob_orbAI : public ScriptedAI
 {
     mob_orbAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
@@ -694,7 +694,7 @@ struct MANGOS_DLL_DECL mob_armagedonAI : public Scripted_NoMovementAI
 {
     mob_armagedonAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
@@ -745,7 +745,7 @@ struct MANGOS_DLL_DECL mob_shadow_spikeAI : public Scripted_NoMovementAI
 {
     mob_shadow_spikeAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
@@ -796,7 +796,7 @@ struct MANGOS_DLL_DECL mob_killimpAI : public ScriptedAI
 {
     mob_killimpAI(Creature *c) : ScriptedAI(c) 
     {
-	    pInstance = ((ScriptedInstance*)c->GetInstanceData());
+	    pInstance = (c->GetInstanceData());
 	    Reset(); 
     }
 

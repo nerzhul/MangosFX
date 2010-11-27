@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
 {
     boss_ionarAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL mob_spark_of_ionarAI : public ScriptedAI
 {
     mob_spark_of_ionarAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

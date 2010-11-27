@@ -26,9 +26,9 @@ EndScriptData */
 
 #define MAX_ENCOUNTER 3
 
-struct MANGOS_DLL_DECL instance_blood_furnace : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_blood_furnace : public InstanceData
 {
-    instance_blood_furnace(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_blood_furnace(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

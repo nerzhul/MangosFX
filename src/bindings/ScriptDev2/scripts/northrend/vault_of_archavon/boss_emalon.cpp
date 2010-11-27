@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL npc_tempest_minionAI : public ScriptedAI
 {
     npc_tempest_minionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_fDefaultX = me->GetPositionX();
         m_fDefaultY = me->GetPositionY();
         m_fDefaultZ = me->GetPositionZ();
@@ -192,7 +192,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
 {
     boss_emalonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -345,7 +345,7 @@ struct MANGOS_DLL_DECL npc_tempest_warderAI : public ScriptedAI
 {
     npc_tempest_warderAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

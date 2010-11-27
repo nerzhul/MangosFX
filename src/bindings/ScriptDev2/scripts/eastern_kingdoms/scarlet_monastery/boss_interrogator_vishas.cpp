@@ -39,7 +39,7 @@ struct MANGOS_DLL_DECL boss_interrogator_vishasAI : public ScriptedAI
 {
     boss_interrogator_vishasAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

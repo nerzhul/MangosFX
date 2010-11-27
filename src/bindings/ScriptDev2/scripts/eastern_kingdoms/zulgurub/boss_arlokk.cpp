@@ -26,7 +26,7 @@ EndScriptData */
 
 bool GOHello_go_gong_of_bethekk(Player* pPlayer, GameObject* pGo)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData())
+    if (InstanceData* pInstance = pGo->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_ARLOKK) == DONE || pInstance->GetData(TYPE_ARLOKK) == IN_PROGRESS)
             return true;
@@ -60,7 +60,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 {
     boss_arlokkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

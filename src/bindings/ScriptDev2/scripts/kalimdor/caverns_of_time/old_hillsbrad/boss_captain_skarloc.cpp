@@ -42,7 +42,7 @@ struct MANGOS_DLL_DECL boss_captain_skarlocAI : public ScriptedAI
 {
     boss_captain_skarlocAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 

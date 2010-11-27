@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
 {
     boss_bjarngrimAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         m_uiStance = STANCE_DEFENSIVE;
         memset(&m_auiStormforgedLieutenantGUID, 0, sizeof(m_auiStormforgedLieutenantGUID));
@@ -354,7 +354,7 @@ struct MANGOS_DLL_DECL mob_stormforged_lieutenantAI : public ScriptedAI
 {
     mob_stormforged_lieutenantAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }

@@ -56,7 +56,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
 	uint32 m_uiAnimalCheck_Timer;
     boss_gortokAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_difficulty = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
@@ -244,12 +244,11 @@ struct MANGOS_DLL_DECL mob_massive_jormungarAI : public ScriptedAI
 {
     mob_massive_jormungarAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	pInstance = (pCreature->GetInstanceData());
     	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *pInstance;
     bool m_difficulty;
 
     uint32 AcidSplatter_timer;
@@ -317,12 +316,11 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
 {
     mob_ferocious_rhinoAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	pInstance = (pCreature->GetInstanceData());
     	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 
@@ -383,12 +381,11 @@ struct MANGOS_DLL_DECL mob_ferocious_rhinoAI : public ScriptedAI
 struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
 {
     mob_ravenous_furbolgAI(Creature* pCreature) : ScriptedAI(pCreature) {
-    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	pInstance = (pCreature->GetInstanceData());
     	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 	float percent;
-    ScriptedInstance *pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 
@@ -443,12 +440,11 @@ struct MANGOS_DLL_DECL mob_ravenous_furbolgAI : public ScriptedAI
 struct MANGOS_DLL_DECL mob_frenzied_worgenAI : public ScriptedAI
 {
     mob_frenzied_worgenAI(Creature* pCreature) : ScriptedAI(pCreature) {
-    	pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    	pInstance = (pCreature->GetInstanceData());
     	m_difficulty = pCreature->GetMap()->GetDifficulty();
     	Reset();
     }
 
-    ScriptedInstance *pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 

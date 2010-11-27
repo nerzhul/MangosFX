@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_darkmaster_gandlingAI : public ScriptedAI
 {
     boss_darkmaster_gandlingAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
