@@ -27,6 +27,8 @@
 
 #include "DBCEnums.h"
 
+#include "InstanceData.h"
+
 class WorldObject;
 class Unit;
 class Creature;
