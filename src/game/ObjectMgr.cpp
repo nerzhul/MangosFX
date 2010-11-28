@@ -6657,7 +6657,7 @@ void ObjectMgr::LoadQuestPOI()
         uint32 unk4       = fields[7].GetUInt32();
         QuestPOI POI(objIndex, mapId, unk1, unk2, unk3, unk4);
 
-       QueryResult *points = WorldDatabase.PQuery("SELECT x, y FROM quest_poi_points WHERE entry_quest='%u' AND entry_poi='%i'", questId, entry_poi);
+       QueryResult *points = WorldDatabase.PQuery("SELECT x, y FROM quest_poi_points WHERE questId='%u' AND poiId='%i'", questId, entry_poi);
 
         if(points)
         {
