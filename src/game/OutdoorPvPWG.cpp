@@ -235,6 +235,7 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
 
 				if(creData->posX < 5460.0f && creData->posX > 5450.0f && creData->posY < 2850.0f && creData->posY > 2830.0f)
 				{
+					error_log("TEST %f %f",creData->posX,creData->posY);
 					if(creData->id == 31842)
 						fortress_spirit[BG_TEAM_ALLIANCE] = *itr;
 					else if(creData->id == 31841)
@@ -2026,38 +2027,41 @@ void OutdoorPvPWG::EndBattle()
 
 void OutdoorPvPWG::UpdateFortressSpirits()
 {
-	if(Creature* SpiritA = (Creature*)GetMap()->GetCreature(fortress_spirit[BG_TEAM_ALLIANCE]))
-	{	
-		if(m_defender == BG_TEAM_HORDE)
-		{
-			SpiritA->SetRespawnTime(7*DAY);
-			SpiritA->ForcedDespawn();
-		}
-		else
-		{
-			SpiritA->SetRespawnTime(300);
-			SpiritA->Respawn();
-			if(m_wartime)
-				SpiritA->RemoveAurasDueToSpell(58729);
-			else
-				SpiritA->SetAuraStack(58729,SpiritA,1);
-		}
-	}
-	if(Creature* SpiritH = (Creature*)GetMap()->GetCreature(fortress_spirit[BG_TEAM_HORDE]))
+	if(GetMap())
 	{
-		if(m_defender == BG_TEAM_ALLIANCE)
-		{
-			SpiritH->SetRespawnTime(7*DAY);
-			SpiritH->ForcedDespawn();
-		}
-		else
-		{
-			SpiritH->SetRespawnTime(300);
-			SpiritH->Respawn();
-			if(m_wartime)
-				SpiritH->RemoveAurasDueToSpell(58729);
+		if(Creature* SpiritA = GetMap()->GetCreature(fortress_spirit[BG_TEAM_ALLIANCE]))
+		{	
+			if(m_defender == BG_TEAM_HORDE)
+			{
+				SpiritA->SetRespawnTime(7*DAY);
+				SpiritA->ForcedDespawn();
+			}
 			else
-				SpiritH->SetAuraStack(58729,SpiritH,1);
+			{
+				SpiritA->SetRespawnTime(300);
+				SpiritA->Respawn();
+				if(m_wartime)
+					SpiritA->RemoveAurasDueToSpell(58729);
+				else
+					SpiritA->SetAuraStack(58729,SpiritA,1);
+			}
+		}
+		if(Creature* SpiritH = GetMap()->GetCreature(fortress_spirit[BG_TEAM_HORDE]))
+		{
+			if(m_defender == BG_TEAM_ALLIANCE)
+			{
+				SpiritH->SetRespawnTime(7*DAY);
+				SpiritH->ForcedDespawn();
+			}
+			else
+			{
+				SpiritH->SetRespawnTime(300);
+				SpiritH->Respawn();
+				if(m_wartime)
+					SpiritH->RemoveAurasDueToSpell(58729);
+				else
+					SpiritH->SetAuraStack(58729,SpiritH,1);
+			}
 		}
 	}
 }
