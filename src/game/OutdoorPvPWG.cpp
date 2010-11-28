@@ -52,6 +52,8 @@ OutdoorPvPWG::OutdoorPvPWG()
 	ToDespawnInWarCr.clear();
 	FortressGuards.clear();
 	FortressEngineer.clear();
+	fortress_spirit[BG_TEAM_ALLIANCE] = 0;
+	fortress_spirit[BG_TEAM_HORDE] = 0;
 
     m_LastResurrectTime = 0; // Temporal copy of BG system till 3.2
 }
@@ -230,6 +232,14 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
                     minDist = dist;
                     spiritGuid = *itr;
                 }
+
+				if(creData->posX < 5460.0f && creData->posX > 5450.0f && creData->posY < 2850.0f && creData->posY > 2830.0f)
+				{
+					if(creData->id == 31842)
+						fortress_spirit[BG_TEAM_ALLIANCE] = *itr;
+					else if(creData->id == 31841)
+						fortress_spirit[BG_TEAM_HORDE] = *itr;
+				}
             }
 
             // Inside fortress won't be capturable
@@ -1881,6 +1891,7 @@ void OutdoorPvPWG::StartBattle()
 			m_WGGroup[getDefenderTeam()]->AddMember((*itr)->GetGUID(),(*itr)->GetName());
     }
     UpdateTenacityStack();
+	UpdateFortressSpirits();
 }
 
 void OutdoorPvPWG::EndBattle()
@@ -1905,7 +1916,7 @@ void OutdoorPvPWG::EndBattle()
 
 	m_vehicles[BG_TEAM_HORDE].clear();
 
-    for (uint32 team = 0; team < 2; ++team)
+	    for (uint32 team = 0; team < 2; ++team)
     {
         if (m_players[team].empty())
             continue;
@@ -2008,8 +2019,47 @@ void OutdoorPvPWG::EndBattle()
     m_timer = 150 * MINUTE * IN_MILLISECONDS;
     //3.2.0: TeamCastSpell(getAttackerTeam(), SPELL_TELEPORT_DALARAN);
     RemoveOfflinePlayerWGAuras();
+	UpdateFortressSpirits();
 	SendInitWorldStatesTo();
 	sWorld.UpdateBuffForAll(true);
+}
+
+void OutdoorPvPWG::UpdateFortressSpirits()
+{
+	if(Creature* SpiritA = (Creature*)GetMap()->GetCreature(fortress_spirit[BG_TEAM_ALLIANCE]))
+	{	
+		if(m_defender == BG_TEAM_HORDE)
+		{
+			SpiritA->SetRespawnTime(7*DAY);
+			SpiritA->ForcedDespawn();
+		}
+		else
+		{
+			SpiritA->SetRespawnTime(300);
+			SpiritA->Respawn();
+			if(m_wartime)
+				SpiritA->RemoveAurasDueToSpell(58729);
+			else
+				SpiritA->SetAuraStack(58729,SpiritA,1);
+		}
+	}
+	if(Creature* SpiritH = (Creature*)GetMap()->GetCreature(fortress_spirit[BG_TEAM_HORDE]))
+	{
+		if(m_defender == BG_TEAM_ALLIANCE)
+		{
+			SpiritH->SetRespawnTime(7*DAY);
+			SpiritH->ForcedDespawn();
+		}
+		else
+		{
+			SpiritH->SetRespawnTime(300);
+			SpiritH->Respawn();
+			if(m_wartime)
+				SpiritH->RemoveAurasDueToSpell(58729);
+			else
+				SpiritH->SetAuraStack(58729,SpiritH,1);
+		}
+	}
 }
 
 bool OutdoorPvPWG::CanBuildVehicle(OPvPCapturePointWG *workshop) const
