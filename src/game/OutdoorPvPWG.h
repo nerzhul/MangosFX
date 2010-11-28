@@ -330,6 +330,7 @@ class OutdoorPvPWG : public OutdoorPvP
         void UpdateClockDigit(uint32 &timer, uint32 digit, uint32 mod);
         void PromotePlayer(Player *player) const;
         void UpdateTenacityStack();
+		void UpdateFortressSpirits();
         void UpdateAllWorldObject();
         bool UpdateCreatureInfo(Creature *creature);
         bool UpdateGameObjectInfo(GameObject *go) const;
