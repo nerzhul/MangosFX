@@ -679,9 +679,9 @@ bool ChatHandler::HandleReloadEventScriptsCommand(const char* arg)
 bool ChatHandler::HandleReloadEventAITextsCommand(const char* arg)
 {
 
-    sLog.outString( "Re-Loading Texts from `creature_ai_texts`...");
+    sLog.outString( "Re-chargement des Textes de la table `creature_ai_texts`...");
     sEventAIMgr.LoadCreatureEventAI_Texts(true);
-    SendGlobalSysMessage("DB table `creature_ai_texts` reloaded.");
+    SendGlobalSysMessage("Table `creature_ai_texts` en ligne.");
     return true;
 }
 

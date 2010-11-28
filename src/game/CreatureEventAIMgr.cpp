@@ -39,7 +39,7 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Texts(bool check_entry_use)
     sObjectMgr.LoadMangosStrings(WorldDatabase,"creature_ai_texts",MIN_CREATURE_AI_TEXT_STRING_ID,MAX_CREATURE_AI_TEXT_STRING_ID);
 
     // Gather Additional data from EventAI Texts
-    QueryResult *result = WorldDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
+    QueryResult *result = LocalisationDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
 
     sLog.outString("Loading EventAI Texts additional data...");
     if (result)
