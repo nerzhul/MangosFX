@@ -1813,6 +1813,9 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
 
     CriteriaProgressMap::iterator iter = m_criteriaProgress.find(entry->ID);
 
+	uint32 newValue = 0;
+	uint32 old_value = 0;
+
     if(iter == m_criteriaProgress.end())
     {
         // not create record for 0 counter
@@ -1820,8 +1823,6 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
             return;
 
         progress = &m_criteriaProgress[entry->ID];
-       /* progress->counter = changeValue;
-        progress->date = time(NULL);*/ //Merging
 
 		// not start manually started timed achievements
         if (entry->IsExplicitlyStartedTimedCriteria())
@@ -1830,8 +1831,6 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
         progress = &m_criteriaProgress[entry->ID];
 
         progress->date = time(NULL);
-		uint32 old_value = 0;
-		uint32 newValue = 0;
         progress->timedCriteriaFailed = false;
 
         // timed criterias are added to fail-timer map, and send the starting with counter=0
@@ -1847,8 +1846,6 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
     else
     {
         progress = &iter->second;
-
-        uint32 newValue = 0;
         switch(ptype)
         {
             case PROGRESS_SET:
@@ -1869,10 +1866,9 @@ void AchievementMgr::SetCriteriaProgress(AchievementCriteriaEntry const* entry, 
         // not update (not mark as changed) if counter will have same value
         if(progress->counter == newValue)
             return;
-
-        progress->counter = newValue;
     }
 
+	progress->counter = newValue;
     progress->changed = true;
 
     if(entry->timeLimit)
