@@ -210,9 +210,9 @@ bool ChatHandler::HandleReloadAchievementCriteriaRequirementCommand(const char*)
 
 bool ChatHandler::HandleReloadAchievementRewardCommand(const char*)
 {
-    sLog.outString( "Re-Loading Achievement Reward Data..." );
+    sLog.outString( "Rechargement des Recompenses de Hauts-faits..." );
     sAchievementMgr.LoadRewards();
-    SendGlobalSysMessage("DB table `achievement_reward` reloaded.");
+    SendGlobalSysMessage("Table `achievement_reward` en ligne.");
     return true;
 }
 
