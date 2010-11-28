@@ -232,15 +232,6 @@ bool OutdoorPvPWG::SetupOutdoorPvP()
                     minDist = dist;
                     spiritGuid = *itr;
                 }
-
-				if(creData->posX < 5460.0f && creData->posX > 5450.0f && creData->posY < 2850.0f && creData->posY > 2830.0f)
-				{
-					error_log("TEST %f %f",creData->posX,creData->posY);
-					if(creData->id == 31842)
-						fortress_spirit[BG_TEAM_ALLIANCE] = *itr;
-					else if(creData->id == 31841)
-						fortress_spirit[BG_TEAM_HORDE] = *itr;
-				}
             }
 
             // Inside fortress won't be capturable
@@ -988,6 +979,18 @@ void OutdoorPvPWG::OnCreatureCreate(Creature *creature, bool add)
 				creature->setFaction(WintergraspFaction[getDefenderTeam()]);*/
 			}
 			break;
+		case 31842:
+		case 31841:
+			if(const CreatureData* creData = sObjectMgr.GetCreatureData(creature->GetDBTableGUIDLow()))
+			{
+				if(creData->posX < 5460.0f && creData->posX > 5450.0f && creData->posY < 2850.0f && creData->posY > 2830.0f)
+				{
+					if(creData->id == 31842)
+						fortress_spirit[BG_TEAM_ALLIANCE] = creature->GetGUID();
+					else if(creData->id == 31841)
+						fortress_spirit[BG_TEAM_HORDE] = creature->GetGUID();
+				}
+			}
         default:
             break;
   }
@@ -1288,7 +1291,7 @@ bool OutdoorPvPWG::UpdateQuestGiverPosition(uint32 guid, Creature *creature)
 //        true  = no need to rebuild (ie: Banners or teleporters)
 bool OutdoorPvPWG::UpdateGameObjectInfo(GameObject *go) const
 {
-	if(!go)
+	if(!go || !go->GetGOInfo())
 		return false;
     uint32 attFaction = 14;
     uint32 defFaction = 14;
@@ -2029,7 +2032,7 @@ void OutdoorPvPWG::UpdateFortressSpirits()
 {
 	if(GetMap())
 	{
-		if(Creature* SpiritA = GetMap()->GetCreature(fortress_spirit[BG_TEAM_ALLIANCE]))
+		if(Creature* SpiritA = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_ALLIANCE]))
 		{	
 			if(m_defender == BG_TEAM_HORDE)
 			{
@@ -2046,7 +2049,7 @@ void OutdoorPvPWG::UpdateFortressSpirits()
 					SpiritA->SetAuraStack(58729,SpiritA,1);
 			}
 		}
-		if(Creature* SpiritH = GetMap()->GetCreature(fortress_spirit[BG_TEAM_HORDE]))
+		if(Creature* SpiritH = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_HORDE]))
 		{
 			if(m_defender == BG_TEAM_ALLIANCE)
 			{
