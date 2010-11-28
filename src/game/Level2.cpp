@@ -5293,10 +5293,10 @@ bool ChatHandler::HandleDiamondCommand(const char* args)
 
 bool ChatHandler::HandleAddPOI(const char* args)
 {
-	WorldDatabase.PExecute("INSERT INTO quest_poi(questid,objIndex,mapId) VALUES ('%s','-1','%u');",args,m_session->GetPlayer()->GetMapId());
+	/*WorldDatabase.PExecute("INSERT INTO quest_poi(questid,objIndex,mapId) VALUES ('%s','-1','%u');",args,m_session->GetPlayer()->GetMapId());
 	WorldDatabase.PExecute("INSERT INTO quest_poi_points(questid,objIndex,x,y) VALUES ('%s','-1','%f','%f');",args,m_session->GetPlayer()->GetPositionX(),m_session->GetPlayer()->GetPositionY());
 
-	SendSysMessage("Effectue");
+	SendSysMessage("Effectue");*/
 	return true;
 }
 bool ChatHandler::HandleLookPlayerInventory(const char* args)
