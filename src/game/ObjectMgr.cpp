@@ -4803,17 +4803,44 @@ void ObjectMgr::LoadInstanceTemplate()
 
     for(uint32 i = 0; i < sInstanceTemplate.MaxEntry; i++)
     {
-        InstanceTemplate* temp = (InstanceTemplate*)GetInstanceTemplate(i);
-        if(!temp)
+        InstanceTemplate const* temp = GetInstanceTemplate(i);
+        if (!temp)
             continue;
 
-        if(!MapManager::IsValidMAP(temp->map))
-            sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: bad mapid %d for template!", temp->map);
-
-        if(!MapManager::IsValidMapCoord(temp->parent,temp->startLocX,temp->startLocY,temp->startLocZ,temp->startLocO))
+        MapEntry const* mapEntry = sMapStore.LookupEntry(temp->map);
+        if (!mapEntry)
         {
-            sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: bad parent entrance coordinates for map id %d template!", temp->map);
-            temp->parent = 0;                               // will have wrong continent 0 parent, at least existed
+            sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: bad mapid %d for template!", temp->map);
+            sInstanceTemplate.EraseEntry(i);
+            continue;
+        }
+
+        if (mapEntry->IsContinent())
+        {
+            sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: continent mapid %d for template!", temp->map);
+            sInstanceTemplate.EraseEntry(i);
+            continue;
+        }
+
+        if (temp->parent > 0)
+        {
+            // check existence
+            MapEntry const* parentEntry = sMapStore.LookupEntry(temp->parent);
+            if (!parentEntry)
+            {
+                sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: bad parent map id %u for instance template %d template!",
+                    parentEntry->MapID, temp->map);
+                const_cast<InstanceTemplate*>(temp)->parent = 0;
+                continue;
+            }
+
+            if (parentEntry->IsContinent())
+            {
+                sLog.outErrorDb("ObjectMgr::LoadInstanceTemplate: parent point to continent map id %u for instance template %d template, ignored, need be set only for non-continent parents!",
+                    parentEntry->MapID,temp->map);
+                const_cast<InstanceTemplate*>(temp)->parent = 0;
+                continue;
+            }
         }
     }
 
@@ -8659,7 +8686,7 @@ void ObjectMgr::LoadScriptNames()
       "UNION "
       "SELECT DISTINCT(ScriptName) FROM areatrigger_scripts WHERE ScriptName <> '' "
       "UNION "
-      "SELECT DISTINCT(script) FROM instance_template WHERE script <> ''");
+      "SELECT DISTINCT(script) FROM instance_template WHERE ScriptName <> ''");
 
     if( !result )
     {
