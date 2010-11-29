@@ -27,6 +27,15 @@ CreatureAI::~CreatureAI()
 {
 }
 
+void CreatureAI::InitInstance()
+{
+	if(me->GetInstanceData())
+		pInstance = me->GetInstanceData();
+	else
+		pInstance = NULL;
+	m_difficulty = me->GetMap()->GetDifficulty();
+}
+
 void CreatureAI::AttackedBy( Unit* attacker )
 {
 	if(!me->getVictim())

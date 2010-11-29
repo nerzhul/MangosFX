@@ -1296,7 +1296,7 @@ void Unit::CastSpell(Unit* Victim, uint32 spellId, bool triggered, Item *castIte
 		return;
 
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
-	/*if(!spellInfo)
+	/*f(!spellInfo)
 		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);*/
 
     if(!spellInfo)
