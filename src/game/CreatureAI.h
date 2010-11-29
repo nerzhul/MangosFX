@@ -167,6 +167,7 @@ class MANGOS_DLL_SPEC CreatureAI
 			SavedEventSummon.clear();
 			EventTextVect.clear();
 			SavedEventTexts.clear();
+			InitInstance();
 		}
         virtual ~CreatureAI();
 

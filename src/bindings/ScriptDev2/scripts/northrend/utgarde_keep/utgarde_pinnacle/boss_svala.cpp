@@ -239,7 +239,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     {
         if (!CanDoSomething())
         {
-			if(pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
+			if(pInstance && pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
 				m_bIsIntroDone = false;
 
             if (m_bIsIntroDone)
