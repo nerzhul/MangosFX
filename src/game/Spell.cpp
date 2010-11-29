@@ -3677,6 +3677,15 @@ void Spell::finish(bool ok)
 					m_caster->CastCustomSpell(m_caster,63283,&efBP,&efBP,NULL,false);
 			}
 			break;
+		case SPELLFAMILY_PRIEST:
+			// Player of Healing
+			if(m_spellInfo->SpellFamilyFlags & UI64LIT(0x200))
+			{
+				// remove lucky hazard
+				m_caster->RemoveAurasDueToSpell(63731);
+				m_caster->RemoveAurasDueToSpell(63734);
+				m_caster->RemoveAurasDueToSpell(63735);
+			}
 	 }
 	 
 	 switch(m_spellInfo->Id)

@@ -7047,6 +7047,9 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             m_target->RemoveAurasDueToSpell(66530);
             m_target->CastSpell(m_target,66530,true);
         }
+
+		// Remove conflagrate dot
+		m_target->RemoveAurasDueToSpell(18118);
     }
 }
 
