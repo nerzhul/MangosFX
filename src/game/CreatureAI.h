@@ -279,6 +279,11 @@ class MANGOS_DLL_SPEC CreatureAI
 
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 
+		// Units
+		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
+		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
+		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
+
 		// for timed Achievements
 		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
 		bool TimeDownSucceed() { return TimedDownEnable; }
@@ -289,6 +294,9 @@ class MANGOS_DLL_SPEC CreatureAI
 		// Rewards
 		void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
 		void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
+
+		// LFG
+		uint32 GetLFGDungeon() { return pInstance ? pInstance->GetLFGDungeon() : 0; }
 	
 		// Getter for extern functions
 		Creature* getMyself() { return me; }

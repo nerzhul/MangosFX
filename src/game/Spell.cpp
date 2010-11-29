@@ -356,7 +356,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
 {
 	if(!Caster || !info)
 		return;
-    ASSERT( info == sSpellStore.LookupEntry( info->Id ) && "`info` must be pointer to sSpellStore element");
+    ASSERT((info == sSpellStore.LookupEntry(info->Id) || info == sSpellMgr.LookupSpecialEntry(info->Id)) && "`info` must be pointer to sSpellStore element");
 
     if (Caster->GetTypeId() != TYPEID_PLAYER && Caster->IsInWorld() && Caster->GetMap()->IsRaidOrHeroicDungeon())
 	{
