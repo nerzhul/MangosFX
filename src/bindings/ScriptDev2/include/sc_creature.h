@@ -221,15 +221,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	
 	void GiveRandomReward();
 
-	void InitInstance()
-	{
-		if(me->GetInstanceData())
-			pInstance = me->GetInstanceData();
-		else
-			pInstance = NULL;
-		m_difficulty = me->GetMap()->GetDifficulty();
-	}
-
 	void CompleteAchievementForGroup(uint32 achId) { if(pInstance) pInstance->CompleteAchievementForGroup(achId); }
 	
     private:

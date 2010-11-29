@@ -279,6 +279,9 @@ class MANGOS_DLL_SPEC CreatureAI
 
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 
+		// Instance
+		void InitInstance();
+
 		// Units
 		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
