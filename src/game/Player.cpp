@@ -17389,7 +17389,9 @@ void Player::_SaveInventory()
             sLog.outError("Player(Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the item with guid %d is there instead!", GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow(), test->GetGUIDLow());
 			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
 			DestroyItem(test->GetBagSlot(),test->GetSlot(),true);
-			m_itemUpdateQueue.erase(itr);
+			std::vector<Item*>::iterator itr2 = itr;
+			--itr;
+			m_itemUpdateQueue.erase(itr2);
 			error = true;
         }
     }
