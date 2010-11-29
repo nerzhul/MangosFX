@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
         bAchiev = true;
         if (pInstance)
         {
-            pInstance->SetData(DATA_NOVOS_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_NOVOS_EVENT, NOT_STARTED);
 			/*if(pInstance->GetData64(DATA_NOVOS_CRYSTAL_1))
 				luiCrystals.push_back(pInstance->GetData64(DATA_NOVOS_CRYSTAL_1));
 			if(pInstance->GetData64(DATA_NOVOS_CRYSTAL_2))
@@ -127,7 +127,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
                 if (GameObject *pTemp = pInstance->instance->GetGameObject(*itr))
                     pTemp->SetGoState(GO_STATE_ACTIVE);
             }*/
-            pInstance->SetData(DATA_NOVOS_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_NOVOS_EVENT, IN_PROGRESS);
         }
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_novosAI : public Scripted_NoMovementAI
     {
         if (pInstance)
         {
-            pInstance->SetData(DATA_NOVOS_EVENT, DONE);
+            SetInstanceData(DATA_NOVOS_EVENT, DONE);
 
             /*if (m_bIsHeroic && bAchiev)
                 pInstance->DoCompleteAchievement(ACHIEV_OH_NOVOS);*/

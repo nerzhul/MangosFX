@@ -130,13 +130,13 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
+            SetInstanceData(TYPE_TOMB_OF_SEVEN, FAIL);
     }
 
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_TOMB_OF_SEVEN, DONE);
+            SetInstanceData(TYPE_TOMB_OF_SEVEN, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -213,7 +213,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
                 m_uiCallToFight_Timer = 0;
 
                 if (pInstance)
-                    pInstance->SetData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
+                    SetInstanceData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
             }
         }
 

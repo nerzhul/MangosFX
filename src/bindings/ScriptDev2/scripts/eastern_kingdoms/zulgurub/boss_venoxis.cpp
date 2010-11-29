@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_venoxisAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_VENOXIS, DONE);
+            SetInstanceData(TYPE_VENOXIS, DONE);
 
             if (Unit* pHakkar = Unit::GetUnit((*me), pInstance->GetData64(DATA_HAKKAR)))
                 pHakkar->SetMaxHealth(pHakkar->GetMaxHealth() - 60000);

@@ -210,7 +210,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
     void Reset()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ARCHIMONDE, NOT_STARTED);
+            SetInstanceData(TYPE_ARCHIMONDE, NOT_STARTED);
 
         DoomfireSpiritGUID = 0;
         WorldTreeGUID = 0;
@@ -242,7 +242,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_ARCHIMONDE, IN_PROGRESS);
+            SetInstanceData(TYPE_ARCHIMONDE, IN_PROGRESS);
     }
 
     void KilledUnit(Unit *victim)
@@ -288,7 +288,7 @@ struct MANGOS_DLL_DECL boss_archimondeAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_ARCHIMONDE, DONE);
+            SetInstanceData(TYPE_ARCHIMONDE, DONE);
     }
 
     bool CanUseFingerOfDeath()

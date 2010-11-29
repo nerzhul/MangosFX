@@ -46,7 +46,7 @@ struct MANGOS_DLL_DECL boss_lordalexeibarovAI : public ScriptedAI
     {
         if (InstanceData* pInstance = me->GetInstanceData())
         {
-            pInstance->SetData(TYPE_ALEXEIBAROV, DONE);
+            SetInstanceData(TYPE_ALEXEIBAROV, DONE);
 
             if (pInstance->GetData(TYPE_GANDLING) == SPECIAL)
                 me->SummonCreature(1853, 180.73, -9.43856, 75.507, 1.61399, TEMPSUMMON_DEAD_DESPAWN, 0);

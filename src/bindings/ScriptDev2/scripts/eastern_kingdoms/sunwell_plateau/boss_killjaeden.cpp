@@ -283,7 +283,7 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
             me->RemoveAurasDueToSpell(SPELL_SACRIFICE_OF_ANVEENA,0);
 
         /*if(pInstance)
-            pInstance->SetData(DATA_DECIVER, NOT_STARTED); */
+            SetInstanceData(DATA_DECIVER, NOT_STARTED); */
     }
     
     void Aggro(Unit *who) 
@@ -333,8 +333,8 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
             me->setFaction(14);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             
-            pInstance->SetData(DATA_KILJAEDEN_EVENT, IN_PROGRESS);
-            pInstance->SetData(DATA_DECIVER, NOT_STARTED); 
+            SetInstanceData(DATA_KILJAEDEN_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_DECIVER, NOT_STARTED); 
         }*/
 
         if(!CanDoSomething())
@@ -596,13 +596,13 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
     void JustDied(Unit* Killer) 
     {
         /*if(pInstance && pInstance->GetData(DATA_DECIVER) == NOT_STARTED)
-            pInstance->SetData(DATA_DECIVER, IN_PROGRESS);
+            SetInstanceData(DATA_DECIVER, IN_PROGRESS);
         else 
             if(pInstance && pInstance->GetData(DATA_DECIVER) == IN_PROGRESS)
-                pInstance->SetData(DATA_DECIVER, DONE);
+                SetInstanceData(DATA_DECIVER, DONE);
             else
                 if(pInstance && pInstance->GetData(DATA_DECIVER) == DONE)
-                    pInstance->SetData(DATA_DECIVER, SPECIAL);*/
+                    SetInstanceData(DATA_DECIVER, SPECIAL);*/
     }
 
     void KilledUnit(Unit *Victim) {}

@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_felblood_kaelthasAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(DATA_KAELTHAS_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_KAELTHAS_EVENT, NOT_STARTED);
 
             if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_KAEL_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);         // Open the big encounter door. Close it in Aggro and open it only in JustDied(and here)

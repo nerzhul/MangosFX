@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ARLOKK, NOT_STARTED);
+            SetInstanceData(TYPE_ARLOKK, NOT_STARTED);
 
         //we should be summoned, so despawn
         me->ForcedDespawn();
@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_ARLOKK, DONE);
+            SetInstanceData(TYPE_ARLOKK, DONE);
     }
 
     void DoSummonPhanters()

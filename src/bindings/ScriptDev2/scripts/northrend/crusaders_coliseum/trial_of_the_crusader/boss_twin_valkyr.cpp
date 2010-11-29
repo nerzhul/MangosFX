@@ -88,12 +88,12 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_Eydis_Darkbane, DONE);
+            SetInstanceData(TYPE_Eydis_Darkbane, DONE);
             
 		if (Creature* Fjola = GetInstanceCreature(TYPE_Fjola_Lightbane))
 			if(!Fjola->isAlive())
 			{
-				pInstance->SetData(TYPE_VALKYRS,DONE);
+				SetInstanceData(TYPE_VALKYRS,DONE);
 				if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 
@@ -140,7 +140,7 @@ struct MANGOS_DLL_DECL boss_Eydis_DarkbaneAI : public LibDevFSAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_Eydis_Darkbane, IN_PROGRESS);
+            SetInstanceData(TYPE_Eydis_Darkbane, IN_PROGRESS);
     }
 
 	void DoEvent()
@@ -262,12 +262,12 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_Fjola_Lightbane, DONE);
+            SetInstanceData(TYPE_Fjola_Lightbane, DONE);
             
 		if (Creature* Eydis = GetInstanceCreature(TYPE_Eydis_Darkbane))
 			if(!Eydis->isAlive())
 			{
-				pInstance->SetData(TYPE_VALKYRS,DONE);
+				SetInstanceData(TYPE_VALKYRS,DONE);
 				if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 					((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_VALKYR_OUTRO);
 					
@@ -290,7 +290,7 @@ struct MANGOS_DLL_DECL boss_Fjola_LightbaneAI : public LibDevFSAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_Fjola_Lightbane, IN_PROGRESS);
+            SetInstanceData(TYPE_Fjola_Lightbane, IN_PROGRESS);
     }
 
 	void DamageDeal(Unit *pDoneTo, uint32 &uiDamage)

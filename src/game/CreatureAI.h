@@ -266,6 +266,9 @@ class MANGOS_DLL_SPEC CreatureAI
 			EventTextVect.clear();
 		}
 
+		// Instance
+		void InitInstance();
+
 		void ClearTimers() 
 		{
 			EventShVect.clear();
@@ -281,7 +284,10 @@ class MANGOS_DLL_SPEC CreatureAI
 		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 
 		// Instance
-		void InitInstance();
+		void SetInstanceData(uint32 type, uint32 data) { if(pInstance) pInstance->SetData(type,data); }
+
+		// SpellCast
+		void DoCastSpell(Unit* pwho, SpellEntry const* pSpellInfo, bool bTriggered = false);
 
 		// Units
 		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }

@@ -147,11 +147,11 @@ struct MANGOS_DLL_DECL npc_barnesAI : public npc_escortAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_OPERA, IN_PROGRESS);
+        SetInstanceData(TYPE_OPERA, IN_PROGRESS);
 
         //resets count for this event, in case earlier failed
         if (m_uiEventId == EVENT_OZ)
-            pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, IN_PROGRESS);
+            SetInstanceData(DATA_OPERA_OZ_DEATHCOUNT, IN_PROGRESS);
 
         Start(false, false, 0, NULL, true);
     }

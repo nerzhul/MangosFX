@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_MARLI, DONE);
+            SetInstanceData(TYPE_MARLI, DONE);
 
             if (Creature* pHakkar = pInstance->instance->GetCreature(pInstance->GetData64(DATA_HAKKAR)))
             {

@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
                     pSath->AI()->EnterEvadeMode();
             }
 
-            pInstance->SetData(TYPE_KALECGOS, NOT_STARTED);
+            SetInstanceData(TYPE_KALECGOS, NOT_STARTED);
         }
     }
 
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
         DoScriptText(SAY_EVIL_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KALECGOS, IN_PROGRESS);
+            SetInstanceData(TYPE_KALECGOS, IN_PROGRESS);
     }
 
     void DamageTaken(Unit* done_by, uint32 &damage)
@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
         if (id)
         {
             if (pInstance)
-                pInstance->SetData(TYPE_KALECGOS, DONE);
+                SetInstanceData(TYPE_KALECGOS, DONE);
 
             me->SetVisibility(VISIBILITY_OFF);
             me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
@@ -386,7 +386,7 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
             if (!pInstance)
                 return;
 
-            pInstance->SetData(DATA_SET_SPECTRAL_CHECK, 5000);
+            SetInstanceData(DATA_SET_SPECTRAL_CHECK, 5000);
 
             if (Creature* pKalecgos = pInstance->instance->GetCreature(pInstance->GetData64(DATA_KALECGOS_DRAGON)))
             {

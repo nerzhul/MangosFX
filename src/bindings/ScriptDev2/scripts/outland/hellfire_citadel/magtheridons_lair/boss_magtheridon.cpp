@@ -237,8 +237,8 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
     {
         if (pInstance)
         {
-            pInstance->SetData(TYPE_MAGTHERIDON_EVENT, NOT_STARTED);
-            pInstance->SetData(TYPE_HALL_COLLAPSE, NOT_STARTED);
+            SetInstanceData(TYPE_MAGTHERIDON_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_HALL_COLLAPSE, NOT_STARTED);
         }
     }
 
@@ -349,7 +349,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MAGTHERIDON_EVENT, DONE);
+            SetInstanceData(TYPE_MAGTHERIDON_EVENT, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }
@@ -463,7 +463,7 @@ struct MANGOS_DLL_DECL boss_magtheridonAI : public ScriptedAI
                         break;
                     case 1:
                         if (pInstance)
-                            pInstance->SetData(TYPE_HALL_COLLAPSE, IN_PROGRESS);
+                            SetInstanceData(TYPE_HALL_COLLAPSE, IN_PROGRESS);
                         ++m_uiPhase3_Count;
                         m_uiPhase3_Timer = 8000;
                         break;
@@ -534,7 +534,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
                 DoScriptText(EMOTE_BEGIN, pMagtheridon);
         }
 
-        pInstance->SetData(TYPE_CHANNELER_EVENT, IN_PROGRESS);
+        SetInstanceData(TYPE_CHANNELER_EVENT, IN_PROGRESS);
 
         me->SetInCombatWithZone();
     }
@@ -552,7 +552,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHANNELER_EVENT, DONE);
+            SetInstanceData(TYPE_CHANNELER_EVENT, DONE);
 
         pKiller->CastSpell(pKiller, SPELL_SOUL_TRANSFER, false);
     }
@@ -560,7 +560,7 @@ struct MANGOS_DLL_DECL mob_hellfire_channelerAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHANNELER_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_CHANNELER_EVENT, NOT_STARTED);
     }
 
     void UpdateAI(const uint32 diff)

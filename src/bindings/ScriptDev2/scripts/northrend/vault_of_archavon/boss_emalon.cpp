@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_EMALON, NOT_STARTED);
+            SetInstanceData(TYPE_EMALON, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -262,13 +262,13 @@ struct MANGOS_DLL_DECL boss_emalonAI : public ScriptedAI
         me->CallForHelp(80.0f);
 
         if (pInstance)
-            pInstance->SetData(TYPE_EMALON, IN_PROGRESS);
+            SetInstanceData(TYPE_EMALON, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_EMALON, DONE);
+            SetInstanceData(TYPE_EMALON, DONE);
         for (uint8 i=0; i<4; ++i)
         {
             Creature *pMinion = (Creature*)Unit::GetUnit((*me), m_auiTempestMinionGUID[i]);

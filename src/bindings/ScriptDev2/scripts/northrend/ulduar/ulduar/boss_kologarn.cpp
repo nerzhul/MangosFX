@@ -482,7 +482,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 		CleanMyAdds();
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_KOLOGARN, DONE);
+            SetInstanceData(TYPE_KOLOGARN, DONE);
 			if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
 				if (pTemp->isAlive())
 					pTemp->RemoveFromWorld();
@@ -507,7 +507,7 @@ struct MANGOS_DLL_DECL boss_kologarnAI : public LibDevFSAI
 
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_KOLOGARN, IN_PROGRESS);
+            SetInstanceData(TYPE_KOLOGARN, IN_PROGRESS);
 			if (Creature* pTemp = GetInstanceCreature(DATA_LEFT_ARM))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();

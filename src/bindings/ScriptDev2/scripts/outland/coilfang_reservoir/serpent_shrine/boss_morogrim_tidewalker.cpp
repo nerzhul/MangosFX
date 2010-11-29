@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         m_bPhase2     = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROGRIM_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_MOROGRIM_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROGRIM_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_MOROGRIM_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -123,7 +123,7 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROGRIM_EVENT, DONE);
+            SetInstanceData(TYPE_MOROGRIM_EVENT, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)

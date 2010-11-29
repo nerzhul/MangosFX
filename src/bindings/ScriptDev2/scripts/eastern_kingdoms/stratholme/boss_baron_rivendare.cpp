@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
     void Aggro(Unit *who)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BARON,IN_PROGRESS);
+            SetInstanceData(TYPE_BARON,IN_PROGRESS);
     }
 
     void JustSummoned(Creature* summoned)
@@ -114,7 +114,7 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
     void JustDied(Unit* Killer)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BARON,DONE);
+            SetInstanceData(TYPE_BARON,DONE);
     }
 
     void UpdateAI(const uint32 diff)

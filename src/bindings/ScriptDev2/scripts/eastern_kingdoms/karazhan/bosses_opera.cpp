@@ -88,6 +88,9 @@ EndScriptData */
 
 void SummonCroneIfReady(InstanceData* pInstance, Creature* pCreature)
 {
+	if(!pInstance)
+		return;
+
     pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, SPECIAL);  // Increment DeathCount
 
     if (pInstance->GetData(DATA_OPERA_OZ_DEATHCOUNT) == 4)
@@ -562,7 +565,7 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
             if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
@@ -753,7 +756,7 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
             if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
@@ -996,7 +999,7 @@ struct MANGOS_DLL_DECL boss_julianneAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
             if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
@@ -1089,7 +1092,7 @@ struct MANGOS_DLL_DECL boss_romuloAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
             if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);

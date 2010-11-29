@@ -238,7 +238,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KELTHUZAD, NOT_STARTED);
+            SetInstanceData(TYPE_KELTHUZAD, NOT_STARTED);
     }
 
     void KilledUnit()
@@ -307,7 +307,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
             }
         }
         if (pInstance)
-            pInstance->SetData(TYPE_KELTHUZAD, DONE);
+            SetInstanceData(TYPE_KELTHUZAD, DONE);
 
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 3);
     }
@@ -353,7 +353,7 @@ struct MANGOS_DLL_DECL boss_kelthuzadAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_KELTHUZAD, IN_PROGRESS);
+            SetInstanceData(TYPE_KELTHUZAD, IN_PROGRESS);
     }
 
     void AttackStart(Unit* pWho)

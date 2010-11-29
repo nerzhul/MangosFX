@@ -111,7 +111,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
         me->SetDisplayId(MODEL_CLEAN);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HYDROSS_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_HYDROSS_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HYDROSS_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_HYDROSS_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
         DoScriptText(m_bCorruptedForm ? SAY_CORRUPT_DEATH : SAY_CLEAN_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HYDROSS_EVENT, DONE);
+            SetInstanceData(TYPE_HYDROSS_EVENT, DONE);
     }
 
     void SpawnAdds()

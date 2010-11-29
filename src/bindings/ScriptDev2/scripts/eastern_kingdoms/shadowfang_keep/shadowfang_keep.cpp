@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
                     DoScriptText(SAY_POST1_DOOR_AD, me);
 
                 if (pInstance)
-                    pInstance->SetData(TYPE_FREE_NPC, DONE);
+                    SetInstanceData(TYPE_FREE_NPC, DONE);
                 break;
             case 13:
                 if (m_uiNpcEntry != NPC_ASH)

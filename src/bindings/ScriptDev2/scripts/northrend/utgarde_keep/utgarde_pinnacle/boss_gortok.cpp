@@ -86,7 +86,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
         {
             if(me->isAlive())
             {
-        	    pInstance->SetData(TYPE_GORTOK, NOT_STARTED);
+        	    SetInstanceData(TYPE_GORTOK, NOT_STARTED);
         	    FreezeMob(true,me);
         	}
 
@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
         	!m_uiAnimalCounter && pWho->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(pWho, 25))
         {
             if(pInstance)
-                pInstance->SetData(TYPE_GORTOK, IN_PROGRESS);
+                SetInstanceData(TYPE_GORTOK, IN_PROGRESS);
 
         	++m_uiAnimalCounter;
         }
@@ -167,7 +167,7 @@ struct MANGOS_DLL_DECL boss_gortokAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 		if(pInstance)
-            pInstance->SetData(TYPE_GORTOK, DONE);
+            SetInstanceData(TYPE_GORTOK, DONE);
 
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }

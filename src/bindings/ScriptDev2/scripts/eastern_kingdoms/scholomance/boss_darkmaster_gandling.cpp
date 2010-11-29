@@ -74,7 +74,7 @@ struct MANGOS_DLL_DECL boss_darkmaster_gandlingAI : public ScriptedAI
     void JustDied(Unit *killer)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_GANDLING, DONE);
+            SetInstanceData(TYPE_GANDLING, DONE);
     }
 
     void UpdateAI(const uint32 diff)

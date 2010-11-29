@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
         m_bReSummon             = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_TERESTIAN, NOT_STARTED);
+            SetInstanceData(TYPE_TERESTIAN, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
             if (pKilrek && !pKilrek->getVictim())
                 pKilrek->AddThreat(pWho, 0.0f);
 
-            pInstance->SetData(TYPE_TERESTIAN, IN_PROGRESS);
+            SetInstanceData(TYPE_TERESTIAN, IN_PROGRESS);
         }
         else
             ERROR_INST_DATA(me);
@@ -249,7 +249,7 @@ struct MANGOS_DLL_DECL boss_terestianAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_TERESTIAN, DONE);
+            SetInstanceData(TYPE_TERESTIAN, DONE);
     }
 
     void UpdateAI(const uint32 diff)

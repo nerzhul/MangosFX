@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_talon_king_ikissAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(DATA_IKISSDOOREVENT, DONE);
+            SetInstanceData(DATA_IKISSDOOREVENT, DONE);
     }
 
     void KilledUnit(Unit* victim)

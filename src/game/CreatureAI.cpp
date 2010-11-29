@@ -201,3 +201,12 @@ void CreatureAI::GiveEmblems(uint32 type, Player* pPlayer, uint8 nb, bool group5
 					}
 	}
 }
+
+void CreatureAI::DoCastSpell(Unit* pTarget, SpellEntry const* pSpellInfo, bool bTriggered)
+{
+    if (!pTarget || me->IsNonMeleeSpellCasted(false))
+        return;
+
+    me->StopMoving();
+    me->CastSpell(pTarget, pSpellInfo, bTriggered);
+}

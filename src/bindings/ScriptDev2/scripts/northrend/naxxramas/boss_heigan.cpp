@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         phase = 0;
 
         if(pInstance)
-            pInstance->SetData(TYPE_HEIGAN, NOT_STARTED);
+            SetInstanceData(TYPE_HEIGAN, NOT_STARTED);
     }
 
     void AttackStart(Unit* pWho)
@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         }
 
         if(pInstance)
-            pInstance->SetData(TYPE_HEIGAN, IN_PROGRESS);
+            SetInstanceData(TYPE_HEIGAN, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* victim)
@@ -173,7 +173,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if(pInstance)
-            pInstance->SetData(TYPE_HEIGAN, DONE);
+            SetInstanceData(TYPE_HEIGAN, DONE);
 		GiveEmblemsToGroup((!m_bIsRegularMode) ? VAILLANCE : HEROISME);
     }
 
@@ -189,7 +189,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 
 		if (Erupt_Timer < diff)
         {
-            pInstance->SetData(DATA_HEIGAN_ERUPT, eruptSection);
+            SetInstanceData(DATA_HEIGAN_ERUPT, eruptSection);
 
             if (eruptSection == 0)
                 eruptDirection = true;

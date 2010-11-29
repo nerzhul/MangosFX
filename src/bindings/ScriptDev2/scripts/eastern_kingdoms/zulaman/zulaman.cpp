@@ -77,8 +77,8 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
 
             if (cEntry) me->UpdateEntry(cEntry);
 
-            if (cEntry == 24408) pInstance->SetData(TYPE_RAND_VENDOR_1,DONE);
-            if (cEntry == 24409) pInstance->SetData(TYPE_RAND_VENDOR_2,DONE);
+            if (cEntry == 24408) SetInstanceData(TYPE_RAND_VENDOR_1,DONE);
+            if (cEntry == 24409) SetInstanceData(TYPE_RAND_VENDOR_2,DONE);
         }
     }
 
@@ -143,7 +143,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
                 DoScriptText(SAY_OPEN_ENTRANCE, me);
                 break;
            case 4:
-                pInstance->SetData(TYPE_EVENT_RUN,IN_PROGRESS);
+                SetInstanceData(TYPE_EVENT_RUN,IN_PROGRESS);
                 //TODO: Spawn group of Amani'shi Savage and make them run to entrance
                 break;
         }

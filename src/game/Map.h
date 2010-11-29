@@ -208,10 +208,6 @@ struct InstanceTemplate
     uint32 parent;
     uint32 levelMin;
     uint32 levelMax;
-    float startLocX;
-    float startLocY;
-    float startLocZ;
-    float startLocO;
     uint32 script_id;
 };
 

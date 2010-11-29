@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_ignis_AI : public LibDevFSAI
 		}
 		if(pInstance)
 		{
-			pInstance->SetData(TYPE_IGNIS,DONE);
+			SetInstanceData(TYPE_IGNIS,DONE);
 			if(TimeDownSucceed())
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2929 : 2930);
 		}
@@ -241,7 +241,7 @@ struct MANGOS_DLL_DECL add_ignis_AI : public LibDevFSAI
 	void JustDied(Unit* pWho)
 	{
 		if(pInstance)
-			pInstance->SetData(DATA_IGNIS_ADD_MONO,DONE);
+			SetInstanceData(DATA_IGNIS_ADD_MONO,DONE);
 	}
 
 	void UpdateAI(const uint32 diff)

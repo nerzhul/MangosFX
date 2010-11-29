@@ -191,7 +191,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
             IsIntroEvent = true;
 
             if (pInstance)
-                pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
+                SetInstanceData(TYPE_NETHEKURSE,IN_PROGRESS);
         }
 
         if (IsIntroEvent || !IsMainEvent)
@@ -233,7 +233,7 @@ struct MANGOS_DLL_DECL boss_grand_warlock_nethekurseAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_NETHEKURSE,DONE);
+        SetInstanceData(TYPE_NETHEKURSE,DONE);
 
         if (pInstance->GetData64(DATA_NETHEKURSE_DOOR))
         {
@@ -336,7 +336,7 @@ struct MANGOS_DLL_DECL mob_fel_orc_convertAI : public ScriptedAI
 
                     if (pInstance->GetData(TYPE_NETHEKURSE) == IN_PROGRESS)
                         return;
-                    else pInstance->SetData(TYPE_NETHEKURSE,IN_PROGRESS);
+                    else SetInstanceData(TYPE_NETHEKURSE,IN_PROGRESS);
                 }
             }
         }

@@ -95,7 +95,7 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
         DoScriptText(SAY_DIE, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KELIDAN_EVENT,DONE);
+            SetInstanceData(TYPE_KELIDAN_EVENT,DONE);
     }
 
     void UpdateAI(const uint32 diff)

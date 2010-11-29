@@ -378,7 +378,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                 if (!pFeugen->isAlive())
                     pFeugen->Respawn();
 
-            pInstance->SetData(TYPE_THADDIUS, NOT_STARTED);
+            SetInstanceData(TYPE_THADDIUS, NOT_STARTED);
         }
     }
 
@@ -393,7 +393,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
             AttackStart(who);
 
         if(pInstance)
-            pInstance->SetData(TYPE_THADDIUS, IN_PROGRESS);
+            SetInstanceData(TYPE_THADDIUS, IN_PROGRESS);
     }
 
     void AttackStart(Unit* who)
@@ -498,12 +498,12 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                         else if (pStalagg->isInCombat() || pFeugen->isInCombat())
                         {
                             if (pInstance)
-                                pInstance->SetData(TYPE_THADDIUS, IN_PROGRESS);
+                                SetInstanceData(TYPE_THADDIUS, IN_PROGRESS);
                         }
                         else if (!pStalagg->isInCombat() && !pFeugen->isInCombat())
                         {
                             if (pInstance)
-                                pInstance->SetData(TYPE_THADDIUS, NOT_STARTED);
+                                SetInstanceData(TYPE_THADDIUS, NOT_STARTED);
                         }
 
                         Active_Timer = 1000;
@@ -720,7 +720,7 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_THADDIUS, DONE);
+            SetInstanceData(TYPE_THADDIUS, DONE);
 
 		Map *map = me->GetMap();
             Map::PlayerList const &PlayerList = map->GetPlayers();

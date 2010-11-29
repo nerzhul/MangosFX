@@ -236,8 +236,8 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		DreamAdds.clear();
 		if (pInstance)
 		{
-			pInstance->SetData(DATA_YOGG_NUAGE,1);
-            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+			SetInstanceData(DATA_YOGG_NUAGE,1);
+            SetInstanceData(TYPE_YOGGSARON, IN_PROGRESS);
 		}
 		
 		isBrainPhase = false;
@@ -269,7 +269,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE,3);
 		if (pInstance)
 		{
-            pInstance->SetData(TYPE_YOGGSARON, DONE);
+            SetInstanceData(TYPE_YOGGSARON, DONE);
 			uint8 guardians = 0;
 			if(pInstance->GetData(TYPE_HODIR) == DONE)
 				guardians++;
@@ -300,7 +300,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 		SetCombatMovement(false);
 
         if (pInstance)
-            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+            SetInstanceData(TYPE_YOGGSARON, IN_PROGRESS);
     }
 
 	void LaunchVisionEvent()
@@ -373,7 +373,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 			CallCreature(NPC_PORTAL_TO_MADNESS,10000,PREC_COORDS,NOTHING,PortalLoc[i][0],PortalLoc[i][1],PortalLoc[i][2]);
 
 		if(pInstance)
-			pInstance->SetData(DATA_YOGG_END_PORTALS,1);
+			SetInstanceData(DATA_YOGG_END_PORTALS,1);
 
 		BossEmote(0,"Un portail s'ouvre vers l'esprit de Yogg Saron");
 	}
@@ -457,7 +457,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 	{
 		BossEmote(0,"Les illusions se dissipent et un portail vers la surface apparait");
 		if(pInstance)
-			pInstance->SetData(DATA_YOGG_END_PORTALS,0);
+			SetInstanceData(DATA_YOGG_END_PORTALS,0);
 	}
 
 	void CheckPlayerSight()
@@ -548,7 +548,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 					LaunchVisionEvent();
 					isBrainPhase = true;
 					if(pInstance)
-						pInstance->SetData(DATA_YOGGBRAIN_DOOR,0);
+						SetInstanceData(DATA_YOGGBRAIN_DOOR,0);
 					Event_Timer = 120000;
 				}
 				else
@@ -557,7 +557,7 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 				if(EndPortal_Timer <= diff)
 				{
 					CreateEndPortals();
-					if(pInstance) pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
+					if(pInstance) SetInstanceData(DATA_YOGG_TENTACLES_FROZEN,1);
 					me->RemoveAurasDueToSpell(SPELL_SHATTERED_ILLUSION);
 					isBrainPhase = false;
 					EndPortal_Timer = 120000;
@@ -606,18 +606,18 @@ struct MANGOS_DLL_DECL boss_yoggsaronAI : public LibDevFSAI
 									Alive = true;
 						if(!Alive && pInstance)
 						{
-							pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,0);
+							SetInstanceData(DATA_YOGG_TENTACLES_FROZEN,0);
 							ModifyAuraStack(SPELL_SHATTERED_ILLUSION);
 							switch(randomVision)
 							{
 								case 0:
-									pInstance->SetData(DATA_YOGGBRAIN_DOOR,1);
+									SetInstanceData(DATA_YOGGBRAIN_DOOR,1);
 									break;
 								case 1:
-									pInstance->SetData(DATA_YOGGBRAIN_DOOR,2);
+									SetInstanceData(DATA_YOGGBRAIN_DOOR,2);
 									break;
 								case 2:
-									pInstance->SetData(DATA_YOGGBRAIN_DOOR,3);
+									SetInstanceData(DATA_YOGGBRAIN_DOOR,3);
 									break;
 							}
 						}
@@ -930,9 +930,9 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 		Enrage_Timer = 0;
 		if (pInstance)
 		{
-			pInstance->SetData(DATA_YOGG_NUAGE,0);
-            pInstance->SetData(TYPE_YOGGSARON, NOT_STARTED);
-			pInstance->SetData(DATA_YOGG_TENTACLES_FROZEN,1);
+			SetInstanceData(DATA_YOGG_NUAGE,0);
+            SetInstanceData(TYPE_YOGGSARON, NOT_STARTED);
+			SetInstanceData(DATA_YOGG_TENTACLES_FROZEN,1);
 		}
 		SpawnEvent_Timer = 15000;
 		Map::PlayerList const& lPlayers = me->GetMap()->GetPlayers();
@@ -987,7 +987,7 @@ struct MANGOS_DLL_DECL npc_saraAI : public LibDevFSAI
 
 		if(pInstance)
 		{
-            pInstance->SetData(TYPE_YOGGSARON, IN_PROGRESS);
+            SetInstanceData(TYPE_YOGGSARON, IN_PROGRESS);
 			if(pInstance->GetData(TYPE_HODIR) == DONE)
 				if(Creature* cr = CallCreature(GuardianLoc[0][3],TEN_MINS*1.5,PREC_COORDS,NOTHING,GuardianLoc[0][0],GuardianLoc[0][1],GuardianLoc[0][2]))
 					cr->SetInFront(me);

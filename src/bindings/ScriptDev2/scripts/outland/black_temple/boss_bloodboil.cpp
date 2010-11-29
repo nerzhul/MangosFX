@@ -99,7 +99,7 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BLOODBOIL, NOT_STARTED);
+            SetInstanceData(TYPE_BLOODBOIL, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BLOODBOIL, IN_PROGRESS);
+            SetInstanceData(TYPE_BLOODBOIL, IN_PROGRESS);
     }
 
     void KilledUnit(Unit *victim)
@@ -120,7 +120,7 @@ struct MANGOS_DLL_DECL boss_gurtogg_bloodboilAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BLOODBOIL, DONE);
+            SetInstanceData(TYPE_BLOODBOIL, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

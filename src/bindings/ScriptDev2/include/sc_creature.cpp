@@ -288,15 +288,6 @@ void ScriptedAI::DoCastNear(uint32 uiSpellId, bool bTriggered)
     me->CastSpell(pTarget, uiSpellId, bTriggered);
 }
 
-void ScriptedAI::DoCastSpell(Unit* pTarget, SpellEntry const* pSpellInfo, bool bTriggered)
-{
-    if (!pTarget || me->IsNonMeleeSpellCasted(false))
-        return;
-
-    me->StopMoving();
-    me->CastSpell(pTarget, pSpellInfo, bTriggered);
-}
-
 void ScriptedAI::DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId)
 {
     if (!pSource)

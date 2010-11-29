@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         RemoveAllShieldGenerators();
 
         if (pInstance)
-            pInstance->SetData(TYPE_LADYVASHJ_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, NOT_STARTED);
     }
 
     void RemoveAllShieldGenerators()
@@ -196,7 +196,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_LADYVASHJ_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, IN_PROGRESS);
     }
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
@@ -264,7 +264,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_LADYVASHJ_EVENT, DONE);
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, DONE);
     }
 
     void CastShootOrMultishot()

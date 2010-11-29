@@ -61,21 +61,21 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_SLIME_SPRAY,20000,20000,15000,TARGET_MAIN);
 	
         if (pInstance)
-            pInstance->SetData(TYPE_GROBBULUS, NOT_STARTED);
+            SetInstanceData(TYPE_GROBBULUS, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
 		Tasks.CleanMyAdds();
         if (pInstance)
-            pInstance->SetData(TYPE_GROBBULUS, DONE);
+            SetInstanceData(TYPE_GROBBULUS, DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void Aggro(Unit *who)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_GROBBULUS, IN_PROGRESS);
+            SetInstanceData(TYPE_GROBBULUS, IN_PROGRESS);
     }
 
     void SpellHitTarget(Unit *target, const SpellEntry *spell)

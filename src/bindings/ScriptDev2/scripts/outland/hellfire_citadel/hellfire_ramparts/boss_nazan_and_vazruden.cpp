@@ -94,7 +94,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_VAZRUDEN, DONE);
+            SetInstanceData(TYPE_VAZRUDEN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -196,7 +196,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             else if (uiPointId == POINT_ID_COMBAT)
             {
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                pInstance->SetData(TYPE_NAZAN, IN_PROGRESS);
+                SetInstanceData(TYPE_NAZAN, IN_PROGRESS);
             }
         }
     }
@@ -234,13 +234,13 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
     void JustSummoned(Creature* pSummoned)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_VAZRUDEN, IN_PROGRESS);
+            SetInstanceData(TYPE_VAZRUDEN, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_NAZAN, DONE);
+            SetInstanceData(TYPE_NAZAN, DONE);
     }
 
     void UpdateAI(const uint32 diff)

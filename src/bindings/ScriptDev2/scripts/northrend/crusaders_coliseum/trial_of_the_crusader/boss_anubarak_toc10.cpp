@@ -77,13 +77,13 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
 
 		if(victim->GetTypeId() == TYPEID_PLAYER)
 			if(pInstance)
-				pInstance->SetData(TYPE_TRY,1);
+				SetInstanceData(TYPE_TRY,1);
     }
 
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ANUBARAK, DONE);
+            SetInstanceData(TYPE_ANUBARAK, DONE);
 
 		switch(difficulty)
 		{
@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public ScriptedAI
         me->SetInCombatWithZone();
 		Speak(CHAT_TYPE_SAY,16234,"Ce terreau sera votre tombeau !");
         if (pInstance)
-            pInstance->SetData(TYPE_ANUBARAK, IN_PROGRESS);
+            SetInstanceData(TYPE_ANUBARAK, IN_PROGRESS);
     }
     void UpdateAI(const uint32 diff)
     {

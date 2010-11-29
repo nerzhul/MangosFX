@@ -52,7 +52,7 @@ struct MANGOS_DLL_DECL boss_ramstein_the_gorgerAI : public ScriptedAI
             me->SummonCreature(C_MINDLESS_UNDEAD,3969.35,-3391.87,119.11,5.91,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,1800000);
 
         if (pInstance)
-            pInstance->SetData(TYPE_RAMSTEIN,DONE);
+            SetInstanceData(TYPE_RAMSTEIN,DONE);
     }
 
     void UpdateAI(const uint32 diff)

@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_NAJENTUS, NOT_STARTED);
+            SetInstanceData(TYPE_NAJENTUS, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_NAJENTUS, DONE);
+            SetInstanceData(TYPE_NAJENTUS, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }
@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_najentusAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_NAJENTUS, IN_PROGRESS);
+            SetInstanceData(TYPE_NAJENTUS, IN_PROGRESS);
 
         DoScriptText(SAY_AGGRO, me);
 

@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
         Phase = SKELETAL;
         me->SetDisplayId(me->GetNativeDisplayId());
         if (pInstance)
-            pInstance->SetData(DATA_THARON_JA_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_THARON_JA_EVENT, NOT_STARTED);
     }
     
     void EnterCombat(Unit* who)
@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(DATA_THARON_JA_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_THARON_JA_EVENT, IN_PROGRESS);
     }
     
     void UpdateAI(const uint32 diff)
@@ -190,7 +190,7 @@ struct MANGOS_DLL_DECL boss_tharon_jaAI : public ScriptedAI
         DoScriptText(SAY_DEATH,me);
 
         if (pInstance)
-            pInstance->SetData(DATA_THARON_JA_EVENT, DONE);
+            SetInstanceData(DATA_THARON_JA_EVENT, DONE);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 		GiveRandomReward();
     }

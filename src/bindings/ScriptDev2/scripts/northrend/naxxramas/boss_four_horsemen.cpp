@@ -196,7 +196,7 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_FOUR_HORSEMEN, NOT_STARTED);
+            SetInstanceData(TYPE_FOUR_HORSEMEN, NOT_STARTED);
 
             if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KORTHAZZ))))
                 if (!pTemp->isAlive())
@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_FOUR_HORSEMEN, IN_PROGRESS);
+            SetInstanceData(TYPE_FOUR_HORSEMEN, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* Victim)
@@ -250,7 +250,7 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
                     HorsemenDead = false;
 
             if (HorsemenDead)
-                pInstance->SetData(TYPE_FOUR_HORSEMEN, DONE);
+                SetInstanceData(TYPE_FOUR_HORSEMEN, DONE);
         }
     }
 

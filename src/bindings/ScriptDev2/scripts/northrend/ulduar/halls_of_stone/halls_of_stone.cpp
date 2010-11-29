@@ -297,7 +297,7 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
             DespawnDwarf();
 
             if(pInstance)
-                pInstance->SetData(TYPE_BRANN, NOT_STARTED);
+                SetInstanceData(TYPE_BRANN, NOT_STARTED);
         }
     }
 
@@ -432,7 +432,7 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                         if (pInstance->GetData(TYPE_BRANN) != NOT_STARTED)
                             return;
 
-                        pInstance->SetData(TYPE_BRANN, IN_PROGRESS);
+                        SetInstanceData(TYPE_BRANN, IN_PROGRESS);
                     }
                     m_bIsBattle = false;
                     DoScriptText(SAY_ESCORT_START, me);
@@ -684,7 +684,7 @@ struct MANGOS_DLL_DECL npc_brann_hosAI : public npc_escortAI
                         pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_MARNAK));
                         pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_ABEDNEUM));
                         pInstance->DoUseDoorOrButton(pInstance->GetData64(DATA_GO_SKY_FLOOR));
-                        pInstance->SetData(TYPE_BRANN, DONE);
+                        SetInstanceData(TYPE_BRANN, DONE);
                     }
 
                     Player* pPlayer = GetPlayerForEscort();

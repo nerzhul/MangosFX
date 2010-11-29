@@ -101,7 +101,7 @@ void boss_steelbreakerAI::Reset()
     phase = 0;
     me->RemoveAllAuras();
     if(pInstance)
-        pInstance->SetData(TYPE_ASSEMBLY, NOT_STARTED);
+        SetInstanceData(TYPE_ASSEMBLY, NOT_STARTED);
 
 	if(Creature* Molgeim = GetInstanceCreature(DATA_MOLGEIM))
         Molgeim->Respawn();
@@ -115,7 +115,7 @@ void boss_steelbreakerAI::EnterCombat(Unit *who)
 	DoCastMe((m_difficulty)? SPELL_HIGH_VOLTAGE : SPELL_HIGH_VOLTAGE_H);
     UpdatePhase();
 	if(pInstance)
-		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
+		SetInstanceData(TYPE_ASSEMBLY,IN_PROGRESS);
 	if(Unit* Brundir = GetInstanceCreature(DATA_BRUNDIR))
         Brundir->AddThreat(me->getVictim());
 	if(Unit* Molgeim = GetInstanceCreature(DATA_MOLGEIM))
@@ -160,7 +160,7 @@ void boss_steelbreakerAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
 	{
-        pInstance->SetData(TYPE_ASSEMBLY, DONE);
+        SetInstanceData(TYPE_ASSEMBLY, DONE);
 		pInstance->CompleteAchievementForGroup(m_difficulty ? 2944 : 2941);
 	}
 }
@@ -207,7 +207,7 @@ void boss_runemaster_molgeimAI::Reset()
 	ResetTimers();
 	me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     if(pInstance)
-        pInstance->SetData(TYPE_ASSEMBLY, NOT_STARTED);
+        SetInstanceData(TYPE_ASSEMBLY, NOT_STARTED);
     me->RemoveAllAuras();
     phase = 0;
 	if(Creature* Steelbreaker = GetInstanceCreature(DATA_STEELBREAKER))
@@ -223,7 +223,7 @@ void boss_runemaster_molgeimAI::EnterCombat(Unit* who)
 	if(Unit* Brundir = GetInstanceCreature(DATA_BRUNDIR))
         Brundir->AddThreat(me->getVictim());
 	if(pInstance)
-		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
+		SetInstanceData(TYPE_ASSEMBLY,IN_PROGRESS);
     Yell(15657,"Seule votre extermination complète me conviendra !");
     UpdatePhase();
 }
@@ -267,7 +267,7 @@ void boss_runemaster_molgeimAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
 	{
-        pInstance->SetData(TYPE_ASSEMBLY, DONE);
+        SetInstanceData(TYPE_ASSEMBLY, DONE);
 		pInstance->CompleteAchievementForGroup(m_difficulty ? 2942 : 2939);
 	}
 	if(urand(0,1))
@@ -372,7 +372,7 @@ void boss_stormcaller_brundirAI::Reset()
 {
 	me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
     if(pInstance)
-        pInstance->SetData(TYPE_ASSEMBLY, NOT_STARTED);
+        SetInstanceData(TYPE_ASSEMBLY, NOT_STARTED);
     me->RemoveAllAuras();
     phase = 0;
 	if(Creature* Steelbreaker = GetInstanceCreature(DATA_STEELBREAKER))
@@ -390,7 +390,7 @@ void boss_stormcaller_brundirAI::EnterCombat(Unit* who)
 	if(Unit* Molgeim = GetInstanceCreature(DATA_MOLGEIM))
         Molgeim->AddThreat(me->getVictim());
 	if(pInstance)
-		pInstance->SetData(TYPE_ASSEMBLY,IN_PROGRESS);
+		SetInstanceData(TYPE_ASSEMBLY,IN_PROGRESS);
 }
 
 void boss_stormcaller_brundirAI::UpdatePhase()
@@ -433,7 +433,7 @@ void boss_stormcaller_brundirAI::JustDied(Unit* Killer)
 {
     if(IsEncounterComplete(pInstance, me) && pInstance)
 	{
-        pInstance->SetData(TYPE_ASSEMBLY, DONE);
+        SetInstanceData(TYPE_ASSEMBLY, DONE);
 		pInstance->CompleteAchievementForGroup(m_difficulty ? 2943 : 2940);
 	}
 	if(urand(0,1))

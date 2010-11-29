@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         Teleport = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_VORPIL, NOT_STARTED);
+            SetInstanceData(TYPE_VORPIL, NOT_STARTED);
     }
 
     void MoveInLineOfSight(Unit *who)
@@ -114,7 +114,7 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         me->SummonCreature(ENTRY_VOID_PORTAL,-301.64,-255.97,12.68,0,TEMPSUMMON_CORPSE_DESPAWN,0);
 
         if (pInstance)
-            pInstance->SetData(TYPE_VORPIL, IN_PROGRESS);
+            SetInstanceData(TYPE_VORPIL, IN_PROGRESS);
     }
 
     void KilledUnit(Unit *victim)
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_VORPIL, DONE);
+            SetInstanceData(TYPE_VORPIL, DONE);
     }
 
     void UpdateAI(const uint32 diff)

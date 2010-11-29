@@ -80,13 +80,13 @@ struct MANGOS_DLL_DECL boss_eregosAI : public ScriptedAI
     void Reset()
     {
         if (pInstance)
-            pInstance->SetData(DATA_EREGOS_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_EREGOS_EVENT, NOT_STARTED);
     }
     
     void EnterCombat(Unit* who)
     {
         if (pInstance)
-            pInstance->SetData(DATA_EREGOS_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_EREGOS_EVENT, IN_PROGRESS);
     }
     
     void AttackStart(Unit* who) {}
@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_eregosAI : public ScriptedAI
     void JustDied(Unit* killer)
     {
         if (pInstance)
-            pInstance->SetData(DATA_EREGOS_EVENT, DONE);
+            SetInstanceData(DATA_EREGOS_EVENT, DONE);
 		//GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
 		GiveRandomReward();
     }

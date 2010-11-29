@@ -59,19 +59,19 @@ struct MANGOS_DLL_DECL npc_sergeant_blyAI : public ScriptedAI
         me->setFaction(FACTION_FRIENDLY);
 
         /*if (pInstance)
-            pInstance->SetData(0, NOT_STARTED);*/
+            SetInstanceData(0, NOT_STARTED);*/
     }
 
     void Aggro(Unit *who)
     {
         /*if (pInstance)
-            pInstance->SetData(0, IN_PROGRESS);*/
+            SetInstanceData(0, IN_PROGRESS);*/
     }
 
     void JustDied(Unit *victim)
     {
         /*if (pInstance)
-            pInstance->SetData(0, DONE);*/
+            SetInstanceData(0, DONE);*/
     }
 
     void UpdateAI(const uint32 diff)
@@ -147,19 +147,19 @@ struct MANGOS_DLL_DECL npc_weegli_blastfuseAI : public ScriptedAI
     void Reset()
     {
         /*if (pInstance)
-            pInstance->SetData(0, NOT_STARTED);*/
+            SetInstanceData(0, NOT_STARTED);*/
     }
 
     void Aggro(Unit *who)
     {
         /*if (pInstance)
-            pInstance->SetData(0, IN_PROGRESS);*/
+            SetInstanceData(0, IN_PROGRESS);*/
     }
 
     void JustDied(Unit *victim)
     {
         /*if (pInstance)
-            pInstance->SetData(0, DONE);*/
+            SetInstanceData(0, DONE);*/
     }
 
     void UpdateAI(const uint32 diff)

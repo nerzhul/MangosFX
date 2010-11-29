@@ -97,7 +97,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
             me->SetDisplayId(MODEL_NIGHTELF);
 
         if (pInstance)
-            pInstance->SetData(TYPE_LEOTHERAS_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_LEOTHERAS_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_LEOTHERAS_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_leotheras_the_blindAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_LEOTHERAS_EVENT, DONE);
+            SetInstanceData(TYPE_LEOTHERAS_EVENT, DONE);
     }
 
     void UpdateAI(const uint32 diff)

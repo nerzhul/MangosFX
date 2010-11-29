@@ -118,13 +118,13 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_IONAR, IN_PROGRESS);
+            SetInstanceData(TYPE_IONAR, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_IONAR, NOT_STARTED);
+            SetInstanceData(TYPE_IONAR, NOT_STARTED);
     }
 
     void AttackStart(Unit* pWho)
@@ -147,7 +147,7 @@ struct MANGOS_DLL_DECL boss_ionarAI : public ScriptedAI
 		me->SetVisibility(VISIBILITY_ON);
 
         if (pInstance)
-            pInstance->SetData(TYPE_IONAR, DONE);
+            SetInstanceData(TYPE_IONAR, DONE);
     }
 
     void KilledUnit(Unit *victim)

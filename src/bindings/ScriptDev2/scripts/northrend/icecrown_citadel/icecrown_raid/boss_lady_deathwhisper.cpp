@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_DEATHWHISPER, IN_PROGRESS);
+            SetInstanceData(TYPE_DEATHWHISPER, IN_PROGRESS);
 
 		DoCastMe(SPELL_MANA_BARRIER);
 		Yell(16868,"Quelle est cette perturbation ? Vous osez profaner cette terre sacrée ? Elle deviendra votre sépulture !");
@@ -122,7 +122,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_DEATHWHISPER, DONE);
+            SetInstanceData(TYPE_DEATHWHISPER, DONE);
 
 		switch(m_difficulty)
 		{
@@ -147,7 +147,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_DEATHWHISPER, FAIL);
+            SetInstanceData(TYPE_DEATHWHISPER, FAIL);
     }
 
     void JustSummoned(Creature* pSummoned)

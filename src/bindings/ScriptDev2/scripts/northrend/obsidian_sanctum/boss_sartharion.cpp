@@ -235,7 +235,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SARTHARION_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_SARTHARION_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -246,7 +246,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_SARTHARION_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_SARTHARION_EVENT, IN_PROGRESS);
             FetchDragons();
         }
     }
@@ -256,7 +256,7 @@ struct MANGOS_DLL_DECL boss_sartharionAI : public ScriptedAI
         DoScriptText(SAY_SARTHARION_DEATH,me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_SARTHARION_EVENT, DONE);
+            SetInstanceData(TYPE_SARTHARION_EVENT, DONE);
 
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME, 2);
     }

@@ -70,13 +70,13 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_THE_MAKER_EVENT,IN_PROGRESS);
+            SetInstanceData(TYPE_THE_MAKER_EVENT,IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_THE_MAKER_EVENT,FAIL);
+            SetInstanceData(TYPE_THE_MAKER_EVENT,FAIL);
     }
 
     void KilledUnit(Unit* victim)
@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_the_makerAI : public ScriptedAI
         DoScriptText(SAY_DIE, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_THE_MAKER_EVENT,DONE);
+            SetInstanceData(TYPE_THE_MAKER_EVENT,DONE);
     }
 
     void UpdateAI(const uint32 diff)

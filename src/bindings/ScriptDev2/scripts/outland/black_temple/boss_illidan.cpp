@@ -405,7 +405,7 @@ struct MANGOS_DLL_DECL npc_akama_illidanAI : public ScriptedAI
     {
         if (pInstance)
         {
-            pInstance->SetData(TYPE_ILLIDAN, NOT_STARTED);
+            SetInstanceData(TYPE_ILLIDAN, NOT_STARTED);
             GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GAMEOBJECT_ILLIDAN_GATE));
 
             // close door if already open (when raid wipes or something)
@@ -978,7 +978,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
         TalkTimer = 0;
 
         if (pInstance)
-            pInstance->SetData(TYPE_ILLIDAN, NOT_STARTED);
+            SetInstanceData(TYPE_ILLIDAN, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -1035,7 +1035,7 @@ struct MANGOS_DLL_DECL boss_illidan_stormrageAI : public ScriptedAI
             return;
 
         // Completed
-        pInstance->SetData(TYPE_ILLIDAN, DONE);
+        SetInstanceData(TYPE_ILLIDAN, DONE);
 
         for(uint8 i = DATA_GAMEOBJECT_ILLIDAN_DOOR_R; i < DATA_GAMEOBJECT_ILLIDAN_DOOR_L + 1; ++i)
         {
@@ -1899,7 +1899,7 @@ void npc_akama_illidanAI::BeginEvent(uint64 PlayerGUID)
     if (pInstance)
     {
         IllidanGUID = pInstance->GetData64(DATA_ILLIDANSTORMRAGE);
-        pInstance->SetData(TYPE_ILLIDAN, IN_PROGRESS);
+        SetInstanceData(TYPE_ILLIDAN, IN_PROGRESS);
     }
 
     if (pInstance)

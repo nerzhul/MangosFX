@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
 
         //TODO: correct me when pre-event implemented
         if (pInstance)
-            pInstance->SetData(TYPE_BRUTALLUS, NOT_STARTED);
+            SetInstanceData(TYPE_BRUTALLUS, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
         DoScriptText(YELL_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BRUTALLUS, IN_PROGRESS);
+            SetInstanceData(TYPE_BRUTALLUS, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
         DoScriptText(YELL_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BRUTALLUS, DONE);
+            SetInstanceData(TYPE_BRUTALLUS, DONE);
     }
 
     void SpellHitTarget(Unit* pCaster, const SpellEntry* pSpell)

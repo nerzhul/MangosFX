@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
         //On first death, fake death and open door, as well as initiate whitemane if exist
         if (Creature* pWhitemane = pInstance->instance->GetCreature(pInstance->GetData64(DATA_WHITEMANE)))
         {
-            pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_MOGRAINE_AND_WHITE_EVENT, IN_PROGRESS);
 
             pWhitemane->GetMotionMaster()->MovePoint(1,1163.113370,1398.856812,32.527786);
 
@@ -150,7 +150,7 @@ struct MANGOS_DLL_DECL boss_scarlet_commander_mograineAI : public ScriptedAI
             m_bFakeDeath = false;
 
             if (pInstance)
-                pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, SPECIAL);
+                SetInstanceData(TYPE_MOGRAINE_AND_WHITE_EVENT, SPECIAL);
         }
     }
 
@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL boss_high_inquisitor_whitemaneAI : public ScriptedAI
         if (pInstance)
         {
             if (!(pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == NOT_STARTED) || !(pInstance->GetData(TYPE_MOGRAINE_AND_WHITE_EVENT) == FAIL))
-                pInstance->SetData(TYPE_MOGRAINE_AND_WHITE_EVENT, FAIL);
+                SetInstanceData(TYPE_MOGRAINE_AND_WHITE_EVENT, FAIL);
         }
     }
 

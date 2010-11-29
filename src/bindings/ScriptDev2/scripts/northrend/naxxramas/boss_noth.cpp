@@ -115,7 +115,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         if(pInstance)
-            pInstance->SetData(TYPE_NOTH, NOT_STARTED);
+            SetInstanceData(TYPE_NOTH, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -134,7 +134,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
             AttackStart(who);
 
         if(pInstance)
-            pInstance->SetData(TYPE_NOTH, IN_PROGRESS);
+            SetInstanceData(TYPE_NOTH, IN_PROGRESS);
     }
 
     void AttackStart(Unit* who)
@@ -175,7 +175,7 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if(pInstance)
-            pInstance->SetData(TYPE_NOTH, DONE);
+            SetInstanceData(TYPE_NOTH, DONE);
 
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }

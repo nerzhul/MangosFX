@@ -48,14 +48,14 @@ struct MANGOS_DLL_DECL boss_drakosAI : public ScriptedAI
     void Reset()
     {
         if (pInstance)
-            pInstance->SetData(DATA_DRAKOS_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_DRAKOS_EVENT, NOT_STARTED);
     }
     void EnterCombat(Unit* who)
     {
         DoScriptText(SAY_AGGRO, me);
         
         if (pInstance)
-            pInstance->SetData(DATA_DRAKOS_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_DRAKOS_EVENT, IN_PROGRESS);
     }
     void AttackStart(Unit* who) {}
     void MoveInLineOfSight(Unit* who) {}
@@ -72,7 +72,7 @@ struct MANGOS_DLL_DECL boss_drakosAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
         
         if (pInstance)
-            pInstance->SetData(DATA_DRAKOS_EVENT, DONE);
+            SetInstanceData(DATA_DRAKOS_EVENT, DONE);
 //		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
     void KilledUnit(Unit *victim)

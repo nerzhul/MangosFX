@@ -40,7 +40,7 @@ struct MANGOS_DLL_DECL boss_championWarAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONWAR, DONE);
+            SetInstanceData(TYPE_CHAMPIONWAR, DONE);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -61,7 +61,7 @@ struct MANGOS_DLL_DECL boss_championWarAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONWAR, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONWAR, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -231,13 +231,13 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONDRUID, DONE);
+            SetInstanceData(TYPE_CHAMPIONDRUID, DONE);
     }
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONDRUID, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONDRUID, IN_PROGRESS);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -252,7 +252,7 @@ struct MANGOS_DLL_DECL boss_championDruidRestoAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -346,7 +346,7 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONHUNT, DONE);
+            SetInstanceData(TYPE_CHAMPIONHUNT, DONE);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -361,13 +361,13 @@ struct MANGOS_DLL_DECL boss_championHuntAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONHUNT, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONHUNT, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -446,13 +446,13 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONROGUE, DONE);
+            SetInstanceData(TYPE_CHAMPIONROGUE, DONE);
     }
 
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -467,7 +467,7 @@ struct MANGOS_DLL_DECL boss_championRogueAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONROGUE, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONROGUE, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -548,7 +548,7 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -563,13 +563,13 @@ struct MANGOS_DLL_DECL boss_championWarlockAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONWARLOCK, DONE);
+            SetInstanceData(TYPE_CHAMPIONWARLOCK, DONE);
     }
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONWARLOCK, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONWARLOCK, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -648,13 +648,13 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONSHAMAN, DONE);
+            SetInstanceData(TYPE_CHAMPIONSHAMAN, DONE);
     }
 
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -669,7 +669,7 @@ struct MANGOS_DLL_DECL boss_championShamanEnhancAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONSHAMAN, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONSHAMAN, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -748,7 +748,7 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONSHAMAN, DONE);
+            SetInstanceData(TYPE_CHAMPIONSHAMAN, DONE);
     }
 
     void Aggro(Unit* pWho)
@@ -756,13 +756,13 @@ struct MANGOS_DLL_DECL boss_championShamanRestoAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONSHAMAN, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONSHAMAN, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -855,7 +855,7 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPALADIN, DONE);
+            SetInstanceData(TYPE_CHAMPIONPALADIN, DONE);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -870,13 +870,13 @@ struct MANGOS_DLL_DECL boss_championPaladinHolyAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPALADIN, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONPALADIN, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -965,13 +965,13 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPALADIN, DONE);
+            SetInstanceData(TYPE_CHAMPIONPALADIN, DONE);
     }
 
     void Aggro(Unit* pWho)
@@ -979,7 +979,7 @@ struct MANGOS_DLL_DECL boss_championPaladinRetribAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPALADIN, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONPALADIN, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -1071,13 +1071,13 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPRIEST, DONE);
+            SetInstanceData(TYPE_CHAMPIONPRIEST, DONE);
     }
 
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
@@ -1085,7 +1085,7 @@ struct MANGOS_DLL_DECL boss_championPriestDisciAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPRIEST, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONPRIEST, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -1169,7 +1169,7 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPRIEST, DONE);
+            SetInstanceData(TYPE_CHAMPIONPRIEST, DONE);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -1184,13 +1184,13 @@ struct MANGOS_DLL_DECL boss_championPriestShadowAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONPRIEST, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONPRIEST, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -1280,13 +1280,13 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONDEATHKNIGHT, DONE);
+            SetInstanceData(TYPE_CHAMPIONDEATHKNIGHT, DONE);
     }
 
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
@@ -1294,7 +1294,7 @@ struct MANGOS_DLL_DECL boss_championDeathKnightAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONDEATHKNIGHT, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONDEATHKNIGHT, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -1367,7 +1367,7 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONMAGE, DONE);
+            SetInstanceData(TYPE_CHAMPIONMAGE, DONE);
     }
 
     void Aggro(Unit* pWho)
@@ -1375,7 +1375,7 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_CHAMPIONMAGE, IN_PROGRESS);
+            SetInstanceData(TYPE_CHAMPIONMAGE, IN_PROGRESS);
     }
 
 	void DamageDeal(Unit* pDoneTo, uint32 &dmg)
@@ -1390,7 +1390,7 @@ struct MANGOS_DLL_DECL boss_championMageAI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(pInstance) pInstance->SetData(TYPE_TRY,1);
+			if(pInstance) SetInstanceData(TYPE_TRY,1);
 	}
 
     void UpdateAI(const uint32 diff)

@@ -124,7 +124,7 @@ struct MANGOS_DLL_DECL boss_zuljinAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_ZULJIN, DONE);
+        SetInstanceData(TYPE_ZULJIN, DONE);
     }
 
     void UpdateAI(const uint32 diff)

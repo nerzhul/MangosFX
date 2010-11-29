@@ -208,7 +208,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_JANALAI, NOT_STARTED);
+            SetInstanceData(TYPE_JANALAI, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_JANALAI, DONE);
+            SetInstanceData(TYPE_JANALAI, DONE);
     }
 
     void KilledUnit(Unit* victim)
@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_JANALAI, IN_PROGRESS);
+            SetInstanceData(TYPE_JANALAI, IN_PROGRESS);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -382,13 +382,13 @@ struct MANGOS_DLL_DECL boss_janalaiAI : public ScriptedAI
             if (uint32 uiEggsRemaining_Right = pInstance->GetData(DATA_J_EGGS_RIGHT))
             {
                 for(uint32 i = 0; i < uiEggsRemaining_Right; ++i)
-                    pInstance->SetData(DATA_J_EGGS_RIGHT, SPECIAL);
+                    SetInstanceData(DATA_J_EGGS_RIGHT, SPECIAL);
             }
 
             if (uint32 uiEggsRemaining_Left = pInstance->GetData(DATA_J_EGGS_LEFT))
             {
                 for(uint32 i = 0; i < uiEggsRemaining_Left; ++i)
-                    pInstance->SetData(DATA_J_EGGS_LEFT, SPECIAL);
+                    SetInstanceData(DATA_J_EGGS_LEFT, SPECIAL);
             }
         }
     }
@@ -658,7 +658,7 @@ struct MANGOS_DLL_DECL mob_amanishi_hatcherAI : public ScriptedAI
             if (Creature* pEgg = GetClosestCreatureWithEntry(me, NPC_EGG, 40.0f))
                 pEgg->CastSpell(pEgg, SPELL_SUMMON_DRAGONHAWK, true);
 
-            pInstance->SetData(uiSaveRightOrLeft, SPECIAL);
+            SetInstanceData(uiSaveRightOrLeft, SPECIAL);
         }
     }
 

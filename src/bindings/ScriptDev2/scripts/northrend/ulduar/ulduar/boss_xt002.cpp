@@ -111,7 +111,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 		addspawn_Timer = 1000;
 		FreezeMob(false,me);
 		if(pInstance)
-			pInstance->SetData(TYPE_XT002,NOT_STARTED);
+			SetInstanceData(TYPE_XT002,NOT_STARTED);
 		ActivateTimeDown(205000);
     }
 
@@ -119,7 +119,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
     {
         Speak(CHAT_TYPE_SAY,15724,"De nouveaux jouets ! Pour moi. Cette fois-ci je ne les casserai pas !");
 		if(pInstance)
-			pInstance->SetData(TYPE_XT002,IN_PROGRESS);
+			SetInstanceData(TYPE_XT002,IN_PROGRESS);
 		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_xt002_AI : public LibDevFSAI
 
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_XT002, DONE);
+            SetInstanceData(TYPE_XT002, DONE);
 			if(TimeDownSucceed())
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 2938 : 2937);
 			if(HARDMODE)

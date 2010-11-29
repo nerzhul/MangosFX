@@ -99,13 +99,13 @@ struct MANGOS_DLL_DECL boss_thekalAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_THEKAL, DONE);
+            SetInstanceData(TYPE_THEKAL, DONE);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_THEKAL, NOT_STARTED);
+            SetInstanceData(TYPE_THEKAL, NOT_STARTED);
     }
 
     void UpdateAI(const uint32 diff)
@@ -128,7 +128,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public ScriptedAI
                         pLorKhan->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         pLorKhan->SetHealth(int(pLorKhan->GetMaxHealth()*1.0));
 
-                        pInstance->SetData(TYPE_LORKHAN, DONE);
+                        SetInstanceData(TYPE_LORKHAN, DONE);
                     }
                 }
 
@@ -142,7 +142,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public ScriptedAI
                         pZath->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         pZath->SetHealth(int(pZath->GetMaxHealth()*1.0));
 
-                        pInstance->SetData(TYPE_ZATH, DONE);
+                        SetInstanceData(TYPE_ZATH, DONE);
                     }
                 }
             }
@@ -168,7 +168,7 @@ struct MANGOS_DLL_DECL boss_thekalAI : public ScriptedAI
             me->AttackStop();
 
             if (pInstance)
-                pInstance->SetData(TYPE_THEKAL, SPECIAL);
+                SetInstanceData(TYPE_THEKAL, SPECIAL);
 
             WasDead = true;
         }
@@ -267,7 +267,7 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public ScriptedAI
         FakeDeath = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_LORKHAN, NOT_STARTED);
+            SetInstanceData(TYPE_LORKHAN, NOT_STARTED);
 
         me->SetStandState(UNIT_STAND_STATE_STAND);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -364,7 +364,7 @@ struct MANGOS_DLL_DECL mob_zealot_lorkhanAI : public ScriptedAI
             me->AttackStop();
 
             if (pInstance)
-                pInstance->SetData(TYPE_LORKHAN, SPECIAL);
+                SetInstanceData(TYPE_LORKHAN, SPECIAL);
 
             FakeDeath = true;
         }
@@ -403,7 +403,7 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public ScriptedAI
         FakeDeath = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_ZATH, NOT_STARTED);
+            SetInstanceData(TYPE_ZATH, NOT_STARTED);
 
         me->SetStandState(UNIT_STAND_STATE_STAND);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -494,7 +494,7 @@ struct MANGOS_DLL_DECL mob_zealot_zathAI : public ScriptedAI
             me->AttackStop();
 
             if (pInstance)
-                pInstance->SetData(TYPE_ZATH, SPECIAL);
+                SetInstanceData(TYPE_ZATH, SPECIAL);
 
             FakeDeath = true;
         }

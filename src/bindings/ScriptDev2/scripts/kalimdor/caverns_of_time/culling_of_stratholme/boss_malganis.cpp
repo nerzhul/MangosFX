@@ -256,7 +256,7 @@ struct MANGOS_DLL_DECL boss_malganisAI : public LibDevFSAI
 							break;
 					 case 15:
 							if (pInstance)
-							   pInstance->SetData(TYPE_ARTHAS_EVENT, DONE);
+							   SetInstanceData(TYPE_ARTHAS_EVENT, DONE);
 							if(Creature* Arthas = GetGuidCreature(ArthasGUID))
 								Arthas->GetMotionMaster()->MovePoint(0, 2243.311f, 1476.025f, 132.352f);
 							++Step;

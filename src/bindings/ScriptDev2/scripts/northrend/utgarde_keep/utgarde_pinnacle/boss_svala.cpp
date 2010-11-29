@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
         {
             if (pInstance && pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
             {
-                pInstance->SetData(TYPE_SVALA, SPECIAL);
+                SetInstanceData(TYPE_SVALA, SPECIAL);
 
                 float fX, fY, fZ;
                 me->GetClosePoint(fX, fY, fZ, me->GetObjectBoundingRadius(), 16.0f, 0.0f);
@@ -274,7 +274,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                         case 5:
                             DoScriptText(SAY_INTRO_5, me);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-							pInstance->SetData(TYPE_SVALA, DONE);
+							SetInstanceData(TYPE_SVALA, DONE);
                             m_bIsIntroDone = true;
                             break;
                     }

@@ -170,7 +170,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_GOTHIK, NOT_STARTED);
+            SetInstanceData(TYPE_GOTHIK, NOT_STARTED);
     }
 
     void EnterCombat(Unit *who)
@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_GOTHIK, IN_PROGRESS);
+            SetInstanceData(TYPE_GOTHIK, IN_PROGRESS);
 
             if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GOTHIK_GATE)))
                 pGate->SetGoState(GO_STATE_READY);
@@ -201,7 +201,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_GOTHIK, DONE);
+            SetInstanceData(TYPE_GOTHIK, DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 

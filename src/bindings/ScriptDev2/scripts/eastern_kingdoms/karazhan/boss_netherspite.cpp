@@ -157,7 +157,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
         if (pInstance)
         {
             //door opens
-            pInstance->SetData(TYPE_NETHERSPITE, NOT_STARTED);
+            SetInstanceData(TYPE_NETHERSPITE, NOT_STARTED);
             if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
         }
@@ -414,7 +414,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
     void Aggro(Unit *who)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_NETHERSPITE, IN_PROGRESS);
+            SetInstanceData(TYPE_NETHERSPITE, IN_PROGRESS);
 
         if (pInstance)
         {
@@ -643,7 +643,7 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
             }
         }
 
-        pInstance->SetData(TYPE_NETHERSPITE, DONE);
+        SetInstanceData(TYPE_NETHERSPITE, DONE);
 
         if (pInstance)
         {

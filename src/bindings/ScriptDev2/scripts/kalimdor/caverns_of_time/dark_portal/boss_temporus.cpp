@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_temporusAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_RIFT,SPECIAL);
+            SetInstanceData(TYPE_RIFT,SPECIAL);
     }
 
     void MoveInLineOfSight(Unit *who)

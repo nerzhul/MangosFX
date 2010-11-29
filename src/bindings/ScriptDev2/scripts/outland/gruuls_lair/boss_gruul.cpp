@@ -87,13 +87,13 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_GRUUL_EVENT, IN_PROGRESS);
+        SetInstanceData(TYPE_GRUUL_EVENT, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_GRUUL_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_GRUUL_EVENT, NOT_STARTED);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_gruulAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_GRUUL_EVENT, DONE);
+        SetInstanceData(TYPE_GRUUL_EVENT, DONE);
     }
 
     void SpellHitTarget(Unit* pTarget, const SpellEntry* pSpell)

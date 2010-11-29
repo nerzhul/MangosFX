@@ -98,7 +98,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROES, NOT_STARTED);
+            SetInstanceData(TYPE_MOROES, NOT_STARTED);
     }
 
     void StartEvent()
@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
             return;
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROES, IN_PROGRESS);
+            SetInstanceData(TYPE_MOROES, IN_PROGRESS);
     }
 
     void Aggro(Unit* who)
@@ -132,7 +132,7 @@ struct MANGOS_DLL_DECL boss_moroesAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_MOROES, DONE);
+            SetInstanceData(TYPE_MOROES, DONE);
 
         DeSpawnAdds();
 
@@ -369,7 +369,7 @@ struct MANGOS_DLL_DECL boss_moroes_guestAI : public ScriptedAI
     void Reset()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MOROES, NOT_STARTED);
+            SetInstanceData(TYPE_MOROES, NOT_STARTED);
     }
 
     void AcquireGUID()

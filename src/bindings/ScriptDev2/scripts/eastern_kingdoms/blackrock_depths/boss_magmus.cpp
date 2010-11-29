@@ -52,19 +52,19 @@ struct MANGOS_DLL_DECL boss_magmusAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_IRON_HALL, IN_PROGRESS);
+            SetInstanceData(TYPE_IRON_HALL, IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_IRON_HALL, FAIL);
+            SetInstanceData(TYPE_IRON_HALL, FAIL);
     }
 
     void JustDied(Unit* pVictim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_IRON_HALL, DONE);
+            SetInstanceData(TYPE_IRON_HALL, DONE);
     }
 
     void UpdateAI(const uint32 diff)

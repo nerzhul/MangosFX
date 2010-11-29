@@ -92,19 +92,19 @@ struct MANGOS_DLL_DECL boss_archavonAI : public ScriptedAI
         m_bImpaleInProgress = false;
 
         if(pInstance)
-            pInstance->SetData(TYPE_ARCHAVON, NOT_STARTED);
+            SetInstanceData(TYPE_ARCHAVON, NOT_STARTED);
     }
 
     void Aggro(Unit *pWho)
     {
         if(pInstance)
-            pInstance->SetData(TYPE_ARCHAVON, IN_PROGRESS);
+            SetInstanceData(TYPE_ARCHAVON, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
         if(pInstance)
-            pInstance->SetData(TYPE_ARCHAVON, DONE);
+            SetInstanceData(TYPE_ARCHAVON, DONE);
 
 		GiveEmblemsToGroup((m_bIsRegularMode) ? VAILLANCE : HEROISME ,3);
     }

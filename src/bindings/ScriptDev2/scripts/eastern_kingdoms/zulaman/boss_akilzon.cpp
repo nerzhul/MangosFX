@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_AKILZON, DONE);
+        SetInstanceData(TYPE_AKILZON, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)

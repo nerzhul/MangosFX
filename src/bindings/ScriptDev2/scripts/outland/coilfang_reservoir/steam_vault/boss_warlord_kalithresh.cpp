@@ -72,14 +72,14 @@ struct MANGOS_DLL_DECL mob_naga_distillerAI : public ScriptedAI
         DoCastMe(SPELL_WARLORDS_RAGE_NAGA,true);
 
         if (pInstance)
-            pInstance->SetData(TYPE_DISTILLER,IN_PROGRESS);
+            SetInstanceData(TYPE_DISTILLER,IN_PROGRESS);
     }
 
     void DamageTaken(Unit *done_by, uint32 &damage)
     {
         if (me->GetHealth() <= damage)
             if (pInstance)
-                pInstance->SetData(TYPE_DISTILLER,DONE);
+                SetInstanceData(TYPE_DISTILLER,DONE);
     }
 };
 
@@ -104,7 +104,7 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
         CanRage = false;
 
         if (pInstance)
-            pInstance->SetData(TYPE_WARLORD_KALITHRESH, NOT_STARTED);
+            SetInstanceData(TYPE_WARLORD_KALITHRESH, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_WARLORD_KALITHRESH, IN_PROGRESS);
+            SetInstanceData(TYPE_WARLORD_KALITHRESH, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* victim)
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_warlord_kalithreshAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_WARLORD_KALITHRESH, DONE);
+            SetInstanceData(TYPE_WARLORD_KALITHRESH, DONE);
     }
 
     void UpdateAI(const uint32 diff)

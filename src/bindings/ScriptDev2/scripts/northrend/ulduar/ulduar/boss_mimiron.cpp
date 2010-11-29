@@ -324,7 +324,7 @@ struct MANGOS_DLL_DECL boss_mimironAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MIMIRON, DONE);
+            SetInstanceData(TYPE_MIMIRON, DONE);
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
@@ -332,7 +332,7 @@ struct MANGOS_DLL_DECL boss_mimironAI : public LibDevFSAI
     {
 
         if (pInstance)
-            pInstance->SetData(TYPE_MIMIRON, IN_PROGRESS);
+            SetInstanceData(TYPE_MIMIRON, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

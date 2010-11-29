@@ -153,9 +153,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void DoCastHasMana(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
 	void DoCastPlayer(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
 
-    //Cast spell by spell info
-    void DoCastSpell(Unit* pwho, SpellEntry const* pSpellInfo, bool bTriggered = false);
-
     //Plays a sound to all nearby players
     void DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId);
 
@@ -372,8 +369,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			ScriptedAI::InitInstance();
 			InitIA();
 		}
-
-		void SetInstanceData(uint32 type, uint32 data) { if(pInstance) pInstance->SetData(type,data); }
 
 		void CanBeTaunt(bool taunt=true) { me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, taunt); }
 

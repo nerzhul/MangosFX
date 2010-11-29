@@ -120,7 +120,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SHAHRAZ, IN_PROGRESS);
+            SetInstanceData(TYPE_SHAHRAZ, IN_PROGRESS);
 
         me->SetInCombatWithZone();
 
@@ -130,7 +130,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SHAHRAZ, NOT_STARTED);
+            SetInstanceData(TYPE_SHAHRAZ, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -141,7 +141,7 @@ struct MANGOS_DLL_DECL boss_shahrazAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SHAHRAZ, DONE);
+            SetInstanceData(TYPE_SHAHRAZ, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

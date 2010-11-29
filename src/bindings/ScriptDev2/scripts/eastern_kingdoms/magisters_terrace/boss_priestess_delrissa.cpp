@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(DATA_DELRISSA_EVENT, FAIL);
+            SetInstanceData(DATA_DELRISSA_EVENT, FAIL);
     }
 
     void Aggro(Unit* pWho)
@@ -146,7 +146,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(DATA_DELRISSA_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_DELRISSA_EVENT, IN_PROGRESS);
     }
 
     void InitializeLackeys()
@@ -216,7 +216,7 @@ struct MANGOS_DLL_DECL boss_priestess_delrissaAI : public ScriptedAI
             return;
 
         if (pInstance->GetData(DATA_DELRISSA_DEATH_COUNT) == MAX_ACTIVE_LACKEY)
-            pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
+            SetInstanceData(DATA_DELRISSA_EVENT, DONE);
         else
         {
             if (me->HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE))
@@ -411,7 +411,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
         //should delrissa really yell if dead?
         DoScriptText(LackeyDeath[uiLackeyDeathCount].id, pDelrissa);
 
-        pInstance->SetData(DATA_DELRISSA_DEATH_COUNT, SPECIAL);
+        SetInstanceData(DATA_DELRISSA_DEATH_COUNT, SPECIAL);
 
         //increase local var, since we now may have four dead
         ++uiLackeyDeathCount;
@@ -424,7 +424,7 @@ struct MANGOS_DLL_DECL boss_priestess_lackey_commonAI : public ScriptedAI
                 if (!pDelrissa->HasFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE))
                     pDelrissa->SetFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-                pInstance->SetData(DATA_DELRISSA_EVENT, DONE);
+                SetInstanceData(DATA_DELRISSA_EVENT, DONE);
             }
         }
     }

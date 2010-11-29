@@ -76,7 +76,7 @@ struct MANGOS_DLL_DECL boss_epoch_hunterAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance && pInstance->GetData(TYPE_THRALL_EVENT) == IN_PROGRESS)
-            pInstance->SetData(TYPE_THRALL_PART4, DONE);
+            SetInstanceData(TYPE_THRALL_PART4, DONE);
     }
 
     void UpdateAI(const uint32 diff)

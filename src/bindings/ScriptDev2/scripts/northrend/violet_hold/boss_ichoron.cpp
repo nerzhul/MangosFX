@@ -66,7 +66,7 @@ struct MANGOS_DLL_DECL boss_ichoronAI : public ScriptedAI
 	   
 	void JustDied(Unit* pWho)
 	{
-		pInstance->SetData(3,1);
+		SetInstanceData(3,1);
 		DoScriptText(SOUND_DEAD,me);
 		Tasks.CleanMyAdds();
 	}

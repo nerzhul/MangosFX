@@ -92,7 +92,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 			Tasks.AddEvent(SPELL_STORMHAMMER_25,35000,35000,0,TARGET_RANDOM,1);
 			Tasks.AddEvent(SPELL_CHAIN_LIGHTNING_25,25000,25000,0,TARGET_RANDOM,2);
 		}
-		pInstance->SetData(DATA_THORIM_ADDS,0);
+		SetInstanceData(DATA_THORIM_ADDS,0);
 		CheckPlayer_Timer = 1000;
 		SpawnTimer = 1000;
 		SpawnCount = 0;
@@ -117,7 +117,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_THORIM, DONE);
+            SetInstanceData(TYPE_THORIM, DONE);
 
 		Speak(CHAT_TYPE_SAY,15743,"Retenez vos coups ! Je me rend.");
 		GiveEmblemsToGroup((m_bIsHeroic) ? CONQUETE : VAILLANCE);
@@ -126,7 +126,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_THORIM, IN_PROGRESS);
+            SetInstanceData(TYPE_THORIM, IN_PROGRESS);
 
 		DoCastMe(SPELL_STEALTH_OF_LIGHT);
     }
@@ -180,7 +180,7 @@ struct MANGOS_DLL_DECL boss_thorimAI : public ScriptedAI
 
 			if(Thunder_Timer <= diff)
 			{
-				pInstance->SetData(DATA_THORIM_ORB,0);
+				SetInstanceData(DATA_THORIM_ORB,0);
 				Thunder_Timer = 15000;
 			}
 			else

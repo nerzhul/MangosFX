@@ -179,7 +179,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 		if (pInstance->GetData(TYPE_BLACK_KNIGHT) == DONE)
 			me->ForcedDespawn();
 		else
-			pInstance->SetData(TYPE_BLACK_KNIGHT, IN_PROGRESS);
+			SetInstanceData(TYPE_BLACK_KNIGHT, IN_PROGRESS);
     }
 
 	void DamageTaken(Unit* pDoneBy, uint32& uiDamage)
@@ -199,7 +199,7 @@ struct MANGOS_DLL_DECL boss_black_knightAI : public ScriptedAI
 			return;
 		if (phase3)
 		{
-			pInstance->SetData(TYPE_BLACK_KNIGHT, DONE);
+			SetInstanceData(TYPE_BLACK_KNIGHT, DONE);
 			GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 			GiveRandomReward();
 		}

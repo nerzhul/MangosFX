@@ -179,7 +179,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_RELIQUIARY, NOT_STARTED);
+            SetInstanceData(TYPE_RELIQUIARY, NOT_STARTED);
     }
 
     void DespawnEssences()
@@ -211,7 +211,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
                 if (!me->getVictim())
                 {
                     if (pInstance)
-                        pInstance->SetData(TYPE_RELIQUIARY, IN_PROGRESS);
+                        SetInstanceData(TYPE_RELIQUIARY, IN_PROGRESS);
 
                     Phase = 1;
 
@@ -265,7 +265,7 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
     void JustDied(Unit* killer)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_RELIQUIARY, DONE);
+            SetInstanceData(TYPE_RELIQUIARY, DONE);
     }
 
     void UpdateAI(const uint32 diff)

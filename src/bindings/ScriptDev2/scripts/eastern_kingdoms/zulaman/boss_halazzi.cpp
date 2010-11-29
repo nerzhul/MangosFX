@@ -112,7 +112,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        pInstance->SetData(TYPE_HALAZZI, NOT_STARTED);
+        SetInstanceData(TYPE_HALAZZI, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
+            SetInstanceData(TYPE_HALAZZI, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HALAZZI, DONE);
+            SetInstanceData(TYPE_HALAZZI, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)

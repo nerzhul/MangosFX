@@ -182,7 +182,7 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SUPREMUS, NOT_STARTED);
+            SetInstanceData(TYPE_SUPREMUS, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -190,13 +190,13 @@ struct MANGOS_DLL_DECL boss_supremusAI : public ScriptedAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_SUPREMUS, IN_PROGRESS);
+            SetInstanceData(TYPE_SUPREMUS, IN_PROGRESS);
     }
 
     void JustDied(Unit *killer)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SUPREMUS, DONE);
+            SetInstanceData(TYPE_SUPREMUS, DONE);
     }
 
     float CalculateRandomCoord(float initial)

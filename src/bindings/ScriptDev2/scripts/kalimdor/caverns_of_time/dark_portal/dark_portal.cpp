@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
                 return;
 
             DoScriptText(SAY_INTRO, me);
-            pInstance->SetData(TYPE_MEDIVH,IN_PROGRESS);
+            SetInstanceData(TYPE_MEDIVH,IN_PROGRESS);
             me->CastSpell(me,SPELL_CHANNEL,false);
             Check_Timer = 5000;
         }
@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
         {
             if (SpellCorrupt_Timer <= diff)
             {
-                pInstance->SetData(TYPE_MEDIVH,SPECIAL);
+                SetInstanceData(TYPE_MEDIVH,SPECIAL);
 
                 if (me->HasAura(SPELL_CORRUPT_AEONUS,0))
                     SpellCorrupt_Timer = 1000;
@@ -213,7 +213,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
                         me->RemoveAura(SPELL_CHANNEL,0);
 
                     //TODO: start the post-event here
-                    pInstance->SetData(TYPE_MEDIVH,DONE);
+                    SetInstanceData(TYPE_MEDIVH,DONE);
                 }
             }else Check_Timer -= diff;
         }
@@ -338,7 +338,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         me->setDeathState(JUST_DIED);
 
         if (pInstance->GetData(TYPE_RIFT) == IN_PROGRESS)
-            pInstance->SetData(TYPE_RIFT,SPECIAL);
+            SetInstanceData(TYPE_RIFT,SPECIAL);
     }
 };
 

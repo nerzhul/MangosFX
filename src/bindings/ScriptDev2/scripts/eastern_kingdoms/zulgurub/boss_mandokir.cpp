@@ -129,7 +129,7 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_OHGAN, NOT_STARTED);
+            SetInstanceData(TYPE_OHGAN, NOT_STARTED);
 
         std::list<Creature*> lSpirits;                      //despawn spirits
         GetCreatureListWithEntryInGrid(lSpirits, me, NPC_CHAINED_SPIRIT, DEFAULT_VISIBILITY_INSTANCE);
@@ -339,7 +339,7 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_OHGAN, DONE);
+            SetInstanceData(TYPE_OHGAN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)

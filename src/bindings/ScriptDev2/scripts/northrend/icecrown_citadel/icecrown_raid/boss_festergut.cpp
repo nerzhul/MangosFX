@@ -50,7 +50,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_FESTERGUT, IN_PROGRESS);
+            SetInstanceData(TYPE_FESTERGUT, IN_PROGRESS);
 
 		Yell(16901,"On joue ????");
 		ModifyAuraStack(SPELL_GASEOUS_BLIGHT_0);
@@ -68,7 +68,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_FESTERGUT, DONE);
+            SetInstanceData(TYPE_FESTERGUT, DONE);
 
 		Yell(16904,"Pa.... pa... aie...");
 
@@ -102,7 +102,7 @@ struct MANGOS_DLL_DECL boss_festergutAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_FESTERGUT, FAIL);
+            SetInstanceData(TYPE_FESTERGUT, FAIL);
     }
 
 	void CheckPlayerConditions()

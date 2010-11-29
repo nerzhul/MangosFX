@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ROTFACE, IN_PROGRESS);
+            SetInstanceData(TYPE_ROTFACE, IN_PROGRESS);
 
 		Yell(16986,"Ouiiiiiiiiiii ! Hahahaha !");
 		me->SetInCombatWithZone();
@@ -111,7 +111,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ROTFACE, DONE);
+            SetInstanceData(TYPE_ROTFACE, DONE);
 
 		switch(m_difficulty)
 		{
@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL boss_rotfaceAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_ROTFACE, FAIL);
+            SetInstanceData(TYPE_ROTFACE, FAIL);
     }
 
 	void CallBigOne(Unit* u)

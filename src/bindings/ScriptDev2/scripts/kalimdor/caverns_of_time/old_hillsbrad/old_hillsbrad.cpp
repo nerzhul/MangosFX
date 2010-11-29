@@ -291,7 +291,7 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 //make horsie run off
                 SetEscortPaused(true);
                 me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                pInstance->SetData(TYPE_THRALL_PART2, DONE);
+                SetInstanceData(TYPE_THRALL_PART2, DONE);
                 SetRun();
                 break;
             case 64:
@@ -337,7 +337,7 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
                 break;
             case 95:
                 DoScriptText(SAY_TH_MEET_TARETHA, me);
-                pInstance->SetData(TYPE_THRALL_PART3,DONE);
+                SetInstanceData(TYPE_THRALL_PART3,DONE);
                 SetEscortPaused(true);
                 break;
             case 96:
@@ -468,7 +468,7 @@ struct MANGOS_DLL_DECL npc_thrall_old_hillsbradAI : public npc_escortAI
     void JustDied(Unit *slayer)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_THRALL_EVENT,FAIL);
+            SetInstanceData(TYPE_THRALL_EVENT,FAIL);
 
         // Don't do a yell if he kills self (if player goes too far or at the end).
         if (slayer == me)
@@ -535,6 +535,9 @@ bool GossipHello_npc_thrall_old_hillsbrad(Player* pPlayer, Creature* pCreature)
 bool GossipSelect_npc_thrall_old_hillsbrad(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
     InstanceData* pInstance = (pCreature->GetInstanceData());
+
+	if(!pInstance)
+		return false;
 
     switch(uiAction)
     {

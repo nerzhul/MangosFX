@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_KARATHRESS_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_KARATHRESS_EVENT, NOT_STARTED);
     }
 
     // select the spell and the text based on the advisor which died
@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         pInstance->SetData64(DATA_KARATHRESS_STARTER, pWho->GetGUID());
-        pInstance->SetData(TYPE_KARATHRESS_EVENT, IN_PROGRESS);
+        SetInstanceData(TYPE_KARATHRESS_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL boss_fathomlord_karathressAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KARATHRESS_EVENT, DONE);
+            SetInstanceData(TYPE_KARATHRESS_EVENT, DONE);
 
         //support for quest 10944
         me->SummonCreature(NPC_SEER_OLUM, afCoords_Olum[0], afCoords_Olum[1], afCoords_Olum[2], afCoords_Olum[3], TEMPSUMMON_TIMED_DESPAWN, 3600000);
@@ -275,7 +275,7 @@ struct MANGOS_DLL_DECL Advisor_Base_AI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance && pInstance->GetData(TYPE_KARATHRESS_EVENT) == IN_PROGRESS)
-            pInstance->SetData(TYPE_KARATHRESS_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_KARATHRESS_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit *pWho)
@@ -284,7 +284,7 @@ struct MANGOS_DLL_DECL Advisor_Base_AI : public ScriptedAI
             return;
 
         if (pInstance->GetData(TYPE_KARATHRESS_EVENT) == NOT_STARTED)
-            pInstance->SetData(TYPE_KARATHRESS_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_KARATHRESS_EVENT, IN_PROGRESS);
 
         pInstance->SetData64(DATA_KARATHRESS_STARTER, pWho->GetGUID());
     }

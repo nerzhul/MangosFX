@@ -152,7 +152,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
@@ -175,7 +175,7 @@ struct MANGOS_DLL_DECL mob_toc5_warriorAI : public ScriptedAI
 										pTemp->ForcedDespawn();
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									SetInstanceData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -298,7 +298,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
@@ -321,7 +321,7 @@ struct MANGOS_DLL_DECL mob_toc5_mageAI : public ScriptedAI
 										pTemp->ForcedDespawn();
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									SetInstanceData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -437,7 +437,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
@@ -460,7 +460,7 @@ struct MANGOS_DLL_DECL mob_toc5_shamanAI : public ScriptedAI
 										pTemp->ForcedDespawn();
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									SetInstanceData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -644,7 +644,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
@@ -667,7 +667,7 @@ struct MANGOS_DLL_DECL mob_toc5_hunterAI : public ScriptedAI
 										pTemp->ForcedDespawn();
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									SetInstanceData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}
@@ -821,7 +821,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 			if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 				if (pTemp->isAlive())
 					pTemp->SetInCombatWithZone();
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
     }
 
@@ -844,7 +844,7 @@ struct MANGOS_DLL_DECL mob_toc5_rogueAI : public ScriptedAI
 										pTemp->ForcedDespawn();
 									if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_CHAMPION_3))))
 										pTemp->ForcedDespawn();
-									pInstance->SetData(TYPE_GRAND_CHAMPIONS, DONE);
+									SetInstanceData(TYPE_GRAND_CHAMPIONS, DONE);
 									GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 								}
 	}

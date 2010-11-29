@@ -110,7 +110,7 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HARBINGERSKYRISS,DONE);
+            SetInstanceData(TYPE_HARBINGERSKYRISS,DONE);
     }
 
     void KilledUnit(Unit* victim)

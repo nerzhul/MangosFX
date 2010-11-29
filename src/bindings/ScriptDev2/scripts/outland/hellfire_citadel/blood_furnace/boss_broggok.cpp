@@ -59,13 +59,13 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BROGGOK_EVENT,IN_PROGRESS);
+            SetInstanceData(TYPE_BROGGOK_EVENT,IN_PROGRESS);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BROGGOK_EVENT,FAIL);
+            SetInstanceData(TYPE_BROGGOK_EVENT,FAIL);
     }
 
     void JustSummoned(Creature *summoned)
@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_broggokAI : public ScriptedAI
     void JustDied(Unit *who)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_BROGGOK_EVENT,DONE);
+            SetInstanceData(TYPE_BROGGOK_EVENT,DONE);
     }
 
     void UpdateAI(const uint32 diff)

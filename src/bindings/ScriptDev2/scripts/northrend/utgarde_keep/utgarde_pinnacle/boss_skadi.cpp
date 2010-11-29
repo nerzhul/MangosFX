@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_skadiAI : public ScriptedAI
         	!m_uiphase && pWho->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(pWho, 20))
         {
             if(pInstance)
-                pInstance->SetData(TYPE_SKADI, IN_PROGRESS);
+                SetInstanceData(TYPE_SKADI, IN_PROGRESS);
 
             DoScriptText(SAY_AGGRO, me);
 

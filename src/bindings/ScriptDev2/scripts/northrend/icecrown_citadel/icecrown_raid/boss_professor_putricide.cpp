@@ -57,7 +57,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, IN_PROGRESS);
+            SetInstanceData(TYPE_PUTRICIDE, IN_PROGRESS);
     }
 
 	void KilledUnit(Unit* who)
@@ -67,7 +67,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, DONE);
+            SetInstanceData(TYPE_PUTRICIDE, DONE);
 
 		switch(m_difficulty)
 		{
@@ -91,7 +91,7 @@ struct MANGOS_DLL_DECL boss_putricideAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_PUTRICIDE, FAIL);
+            SetInstanceData(TYPE_PUTRICIDE, FAIL);
     }
 
 	void StunAndGo()

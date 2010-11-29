@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_auriaya_AI : public LibDevFSAI
 
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_AURIAYA, DONE);
+            SetInstanceData(TYPE_AURIAYA, DONE);
 			if(!SentryDown)
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 3007 : 3006);
 			if(DefenderDown)

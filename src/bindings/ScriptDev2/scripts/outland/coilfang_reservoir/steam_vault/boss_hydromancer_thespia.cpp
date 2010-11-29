@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         EnvelopingWinds_Timer = 9000;
 
         if (pInstance && me->isAlive())
-            pInstance->SetData(TYPE_HYDROMANCER_THESPIA,NOT_STARTED);
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA,NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
@@ -71,7 +71,7 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         DoScriptText(SAY_DEAD, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HYDROMANCER_THESPIA, DONE);
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA, DONE);
     }
 
     void KilledUnit(Unit* victim)
@@ -89,7 +89,7 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS);
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

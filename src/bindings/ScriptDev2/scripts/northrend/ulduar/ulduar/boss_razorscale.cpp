@@ -106,14 +106,14 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
         me->ApplySpellImmune(1, IMMUNITY_EFFECT,SPELL_EFFECT_ATTACK_ME, true);
 
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, NOT_STARTED);
+           SetInstanceData(TYPE_RAZORSCALE, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, DONE);
+           SetInstanceData(TYPE_RAZORSCALE, DONE);
     }
 	
 	void CallRazorscale()
@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
 		Phase = PHASE_FLY_I;
 		FlyPhase();
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, IN_PROGRESS);
+           SetInstanceData(TYPE_RAZORSCALE, IN_PROGRESS);
 		AggroAllPlayers(350.0f);
 	}
 

@@ -118,7 +118,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         }
 
         if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
-            pInstance->SetData(TYPE_MAULGAR_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_MAULGAR_EVENT, NOT_STARTED);
     }
 
     void KilledUnit()
@@ -139,7 +139,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
             return;
 
         //we risk being DONE before adds are in fact dead
-        pInstance->SetData(TYPE_MAULGAR_EVENT, DONE);
+        SetInstanceData(TYPE_MAULGAR_EVENT, DONE);
     }
 
     void Aggro(Unit *pWho)
@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
         me->CallForHelp(50.0f);
 
         if (pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
-            pInstance->SetData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
     }
 
     void GetCouncil()
@@ -266,13 +266,13 @@ struct MANGOS_DLL_DECL Council_Base_AI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
-            pInstance->SetData(TYPE_MAULGAR_EVENT, NOT_STARTED);
+            SetInstanceData(TYPE_MAULGAR_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit *pWho)
     {
         if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
-            pInstance->SetData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
+            SetInstanceData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
 
         me->CallForHelp(50.0f);
     }

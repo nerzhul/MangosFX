@@ -75,7 +75,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         Summon25 = false;
 
         if (pInstance && me->isAlive())
-            pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER,NOT_STARTED);
+            SetInstanceData(TYPE_MEKGINEER_STEAMRIGGER,NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
@@ -83,7 +83,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, DONE);
+            SetInstanceData(TYPE_MEKGINEER_STEAMRIGGER, DONE);
     }
 
     void KilledUnit(Unit* victim)
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_mekgineer_steamriggerAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_MEKGINEER_STEAMRIGGER, IN_PROGRESS);
+            SetInstanceData(TYPE_MEKGINEER_STEAMRIGGER, IN_PROGRESS);
     }
 
     //no known summon spells exist

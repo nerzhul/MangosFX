@@ -346,7 +346,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_0_NOT_BEGUN);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_0_NOT_BEGUN);
     }
 
     void PrepareAdvisors()
@@ -381,7 +381,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
             m_uiPhase = PHASE_4_SOLO;
 
-            pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
 
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -396,7 +396,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
             DoScriptText(SAY_INTRO, me);
 
-            pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_1_ADVISOR);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_1_ADVISOR);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             m_uiPhaseSubphase = 0;
@@ -475,7 +475,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_6_COMPLETE);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_6_COMPLETE);
 
         for(uint8 i = 0; i < MAX_ADVISORS; ++i)
         {
@@ -651,7 +651,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         if (pAdvisor && (pAdvisor->getStandState() == UNIT_STAND_STATE_DEAD))
                         {
                             m_uiPhase = PHASE_2_WEAPON;
-                            pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_2_WEAPON);
+                            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_2_WEAPON);
 
                             DoScriptText(SAY_PHASE2_WEAPON, me);
 
@@ -694,7 +694,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     if (m_uiPhase_Timer < diff)
                     {
                         DoScriptText(SAY_PHASE3_ADVANCE, me);
-                        pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_3_ADVISOR_ALL);
+                        SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_3_ADVISOR_ALL);
                         m_uiPhase = PHASE_3_ADVISOR_ALL;
                         m_uiPhaseSubphase = 0;
                     }
@@ -732,7 +732,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     DoScriptText(SAY_PHASE4_INTRO2, me);
                     m_uiPhase = PHASE_4_SOLO;
 
-                    pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
+                    SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
 
                     // Sometimes people can collect Aggro in Phase 1-3. Reset threat before releasing Kael.
                     DoResetThreat();
@@ -847,7 +847,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 {
                     if (me->GetHealth()*100 / me->GetMaxHealth() < 50)
                     {
-                        pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_5_GRAVITY);
+                        SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_5_GRAVITY);
                         m_uiPhase = PHASE_5_GRAVITY;
                         m_uiPhase_Timer = 10000;
 

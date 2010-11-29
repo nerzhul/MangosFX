@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_nethermancer_sepethreaAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_SEPETHREA, DONE);
+            SetInstanceData(TYPE_SEPETHREA, DONE);
     }
 
     void UpdateAI(const uint32 diff)

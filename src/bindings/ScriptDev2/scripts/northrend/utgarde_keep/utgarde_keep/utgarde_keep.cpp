@@ -45,10 +45,8 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
 {
     mob_dragonflayer_forge_masterAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         m_uiForgeEncounterId = 0;
-        Reset();
+		InitInstance();
     }
 
     bool m_bIsHeroic;
@@ -76,8 +74,9 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
                 case 2: uiGOBellow = GO_BELLOW_3; break;
             }
 
-            if (GameObject* pGOTemp = pInstance->GetGoInMap(uiGOBellow))
-                lGOList.push_back(pGOTemp);
+			if(pInstance)
+				if(GameObject* pGOTemp = pInstance->GetGoInMap(uiGOBellow))
+					lGOList.push_back(pGOTemp);
         }
 
         if (!lGOList.empty())
@@ -124,7 +123,7 @@ struct MANGOS_DLL_DECL mob_dragonflayer_forge_masterAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(m_uiForgeEncounterId, DONE);
+            SetInstanceData(m_uiForgeEncounterId, DONE);
     }
 
     void UpdateAI(const uint32 diff)

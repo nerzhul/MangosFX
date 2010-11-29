@@ -181,7 +181,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
 
         //Reset Phase
         if (pInstance)
-            pInstance->SetData(TYPE_CTHUN_PHASE, 0);
+            SetInstanceData(TYPE_CTHUN_PHASE, 0);
     }
 
     void Aggro(Unit* pWho)
@@ -279,7 +279,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
                 if (PhaseTimer < diff)
                 {
                     //Switch to Dark Beam
-                    pInstance->SetData(TYPE_CTHUN_PHASE, 1);
+                    SetInstanceData(TYPE_CTHUN_PHASE, 1);
 
                     me->InterruptNonMeleeSpells(false);
 
@@ -340,7 +340,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
                 if (PhaseTimer < diff)
                 {
                     //Switch to Eye Beam
-                    pInstance->SetData(TYPE_CTHUN_PHASE, 0);
+                    SetInstanceData(TYPE_CTHUN_PHASE, 0);
 
                     BeamTimer = 3000;
                     EyeTentacleTimer = 45000;               //Always spawns 5 seconds before Dark Beam
@@ -403,7 +403,7 @@ struct MANGOS_DLL_DECL eye_of_cthunAI : public ScriptedAI
                 me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
 
                 //Death animation/respawning;
-                pInstance->SetData(TYPE_CTHUN_PHASE, 2);
+                SetInstanceData(TYPE_CTHUN_PHASE, 2);
 
                 me->SetHealth(0);
                 damage = 0;
@@ -496,7 +496,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_CTHUN_PHASE, 0);
+            SetInstanceData(TYPE_CTHUN_PHASE, 0);
     }
 
     void Aggro(Unit* pWho)
@@ -602,7 +602,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
                 if (PhaseTimer < diff)
                 {
                     //Switch
-                    pInstance->SetData(TYPE_CTHUN_PHASE, 3);
+                    SetInstanceData(TYPE_CTHUN_PHASE, 3);
 
                     //Switch to c'thun model
                     me->InterruptNonMeleeSpells(false);
@@ -660,7 +660,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
                 //Weaken
                 if (FleshTentaclesKilled > 1)
                 {
-                    pInstance->SetData(TYPE_CTHUN_PHASE, 4);
+                    SetInstanceData(TYPE_CTHUN_PHASE, 4);
 
                     DoScriptText(EMOTE_WEAKENED, me);
                     PhaseTimer = 45000;
@@ -835,7 +835,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
                 if (PhaseTimer < diff)
                 {
                     //Switch
-                    pInstance->SetData(TYPE_CTHUN_PHASE, 3);
+                    SetInstanceData(TYPE_CTHUN_PHASE, 3);
 
                     //Remove red coloration
                     me->RemoveAurasDueToSpell(SPELL_RED_COLORATION);
@@ -871,7 +871,7 @@ struct MANGOS_DLL_DECL cthunAI : public ScriptedAI
     {
         //Switch
         if (pInstance)
-            pInstance->SetData(TYPE_CTHUN_PHASE, 5);
+            SetInstanceData(TYPE_CTHUN_PHASE, 5);
     }
 
     void DamageTaken(Unit *done_by, uint32 &damage)

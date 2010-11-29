@@ -88,7 +88,7 @@ struct MANGOS_DLL_DECL boss_aeonusAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_RIFT,DONE);
+            SetInstanceData(TYPE_RIFT,DONE);
     }
 
     void KilledUnit(Unit *victim)

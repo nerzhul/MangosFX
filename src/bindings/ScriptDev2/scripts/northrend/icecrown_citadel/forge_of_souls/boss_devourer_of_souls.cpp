@@ -84,7 +84,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
 		me->SetDisplayId(DISPLAY_ANGER);
         me->SetReactState(REACT_AGGRESSIVE);
 		if (pInstance)
-            pInstance->SetData(DATA_DEVOURER_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_DEVOURER_EVENT, NOT_STARTED);
 		Mirror_Timer = 8000;
 		Unleashed_Timer = 20000;
 		Face_Timer = DAY*100;
@@ -223,7 +223,7 @@ struct MANGOS_DLL_DECL boss_devourer_of_soulsAI : public LibDevFSAI
     {
 		if (pInstance)
         {
-            pInstance->SetData(DATA_DEVOURER_EVENT, DONE);
+            SetInstanceData(DATA_DEVOURER_EVENT, DONE);
 
 			GiveRandomReward();
             /*if (bThreeFaceAchievement && m_difficulty)

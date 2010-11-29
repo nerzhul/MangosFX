@@ -109,7 +109,7 @@ struct MANGOS_DLL_DECL boss_selin_fireheartAI : public ScriptedAI
                 pDoor->SetGoState(GO_STATE_ACTIVE);         // Open the big encounter door. Close it in Aggro and open it only in JustDied(and here)
                                                             // Small door opened after event are expected to be closed by default
             // Set Inst data for encounter
-            pInstance->SetData(DATA_SELIN_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_SELIN_EVENT, NOT_STARTED);
         }else error_log(ERROR_INST_DATA);
 
         DrainLifeTimer = urand(3000, 7000);
@@ -229,7 +229,7 @@ struct MANGOS_DLL_DECL boss_selin_fireheartAI : public ScriptedAI
             return;
         }
 
-        pInstance->SetData(DATA_SELIN_EVENT, DONE);         // Encounter complete!
+        SetInstanceData(DATA_SELIN_EVENT, DONE);         // Encounter complete!
 
         if (GameObject* pEncounterDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_SELIN_ENCOUNTER_DOOR)))
             pEncounterDoor->SetGoState(GO_STATE_ACTIVE);    // Open the encounter door

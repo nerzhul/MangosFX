@@ -74,7 +74,7 @@ struct MANGOS_DLL_DECL boss_blackheart_the_inciterAI : public ScriptedAI
         Knockback_Timer = 15000;
 
         if (pInstance)
-            pInstance->SetData(TYPE_INCITER, NOT_STARTED);
+            SetInstanceData(TYPE_INCITER, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim)
@@ -87,7 +87,7 @@ struct MANGOS_DLL_DECL boss_blackheart_the_inciterAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_INCITER, DONE);
+            SetInstanceData(TYPE_INCITER, DONE);
     }
 
     void Aggro(Unit *who)
@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_blackheart_the_inciterAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_INCITER, IN_PROGRESS);
+            SetInstanceData(TYPE_INCITER, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

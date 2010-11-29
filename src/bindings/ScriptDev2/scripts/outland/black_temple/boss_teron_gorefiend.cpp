@@ -225,7 +225,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_GOREFIEND, NOT_STARTED);
+            SetInstanceData(TYPE_GOREFIEND, NOT_STARTED);
     }
 
     void MoveInLineOfSight(Unit* pWho)
@@ -236,7 +236,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
             if (me->IsWithinDistInMap(pWho, VISIBLE_RANGE) && me->IsWithinLOSInMap(pWho))
             {
                 if (pInstance)
-                    pInstance->SetData(TYPE_GOREFIEND, IN_PROGRESS);
+                    SetInstanceData(TYPE_GOREFIEND, IN_PROGRESS);
 
                 me->GetMotionMaster()->Clear(false);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -260,7 +260,7 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_GOREFIEND, DONE);
+            SetInstanceData(TYPE_GOREFIEND, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

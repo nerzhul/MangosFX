@@ -244,7 +244,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
             if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
                 VoiceTrigger->AI()->EnterEvadeMode();
 
-            pInstance->SetData(TYPE_COUNCIL, NOT_STARTED);
+            SetInstanceData(TYPE_COUNCIL, NOT_STARTED);
         }
     }
 
@@ -281,7 +281,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
                 }
             }
 
-            pInstance->SetData(TYPE_COUNCIL, IN_PROGRESS);
+            SetInstanceData(TYPE_COUNCIL, IN_PROGRESS);
 
             EventBegun = true;
         }
@@ -303,7 +303,7 @@ struct MANGOS_DLL_DECL mob_illidari_councilAI : public ScriptedAI
                         if (Creature* VoiceTrigger = ((Creature*)Unit::GetUnit(*me, pInstance->GetData64(DATA_BLOOD_ELF_COUNCIL_VOICE))))
                             VoiceTrigger->DealDamage(VoiceTrigger, VoiceTrigger->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 
-                        pInstance->SetData(TYPE_COUNCIL, DONE);
+                        SetInstanceData(TYPE_COUNCIL, DONE);
                     }
                     me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                     return;

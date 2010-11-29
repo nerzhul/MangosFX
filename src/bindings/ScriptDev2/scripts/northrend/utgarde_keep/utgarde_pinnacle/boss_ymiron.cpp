@@ -165,14 +165,14 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
         DespawnBoatGhosts(m_uiOrbGUID);
 
         if(pInstance)
-            pInstance->SetData(TYPE_YMIRON, NOT_STARTED);
+            SetInstanceData(TYPE_YMIRON, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
 		if(pInstance)
-            pInstance->SetData(TYPE_YMIRON, IN_PROGRESS);
+            SetInstanceData(TYPE_YMIRON, IN_PROGRESS);
     }
 
 	void AttackStart(Unit* pWho)
@@ -220,7 +220,7 @@ struct MANGOS_DLL_DECL boss_ymironAI : public LibDevFSAI
         DespawnBoatGhosts(m_uiOrbGUID);
 
         if(pInstance)
-            pInstance->SetData(TYPE_YMIRON, DONE);
+            SetInstanceData(TYPE_YMIRON, DONE);
 
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
 		GiveRandomReward();

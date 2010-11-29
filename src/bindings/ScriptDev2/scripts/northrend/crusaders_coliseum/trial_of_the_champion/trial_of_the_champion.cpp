@@ -52,45 +52,45 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 			return;
 		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == NOT_STARTED)
 		{
-			pInstance->SetData(DATA_TOC5_ANNOUNCER, me->GetGUID());
+			SetInstanceData(DATA_TOC5_ANNOUNCER, me->GetGUID());
 			if (pInstance->GetData(DATA_TOC5_ANNOUNCER) == pInstance->GetData(DATA_ARELAS))
 			{
-				pInstance->SetData(DATA_BLACK_KNIGHT_MINION, 35564);
+				SetInstanceData(DATA_BLACK_KNIGHT_MINION, 35564);
 				switch(urand(0, 4))
 				{
 					case 0:
-						pInstance->SetData(DATA_CHAMPIONID_1, 35572);
+						SetInstanceData(DATA_CHAMPIONID_1, 35572);
 					break;
 					case 1:
-						pInstance->SetData(DATA_CHAMPIONID_1, 35569);
+						SetInstanceData(DATA_CHAMPIONID_1, 35569);
 					break;
 					case 2:
-						pInstance->SetData(DATA_CHAMPIONID_1, 35571);
+						SetInstanceData(DATA_CHAMPIONID_1, 35571);
 					break;
 					case 3:
-						pInstance->SetData(DATA_CHAMPIONID_1, 35570);
+						SetInstanceData(DATA_CHAMPIONID_1, 35570);
 					break;
 					case 4:
-						pInstance->SetData(DATA_CHAMPIONID_1, 35617);
+						SetInstanceData(DATA_CHAMPIONID_1, 35617);
 					break;
 				}
 				do{
 					switch(urand(0, 4))
 					{
 						case 0:
-							pInstance->SetData(DATA_CHAMPIONID_2, 35572);
+							SetInstanceData(DATA_CHAMPIONID_2, 35572);
 						break;
 						case 1:
-							pInstance->SetData(DATA_CHAMPIONID_2, 35569);
+							SetInstanceData(DATA_CHAMPIONID_2, 35569);
 						break;
 						case 2:
-							pInstance->SetData(DATA_CHAMPIONID_2, 35571);
+							SetInstanceData(DATA_CHAMPIONID_2, 35571);
 						break;
 						case 3:
-							pInstance->SetData(DATA_CHAMPIONID_2, 35570);
+							SetInstanceData(DATA_CHAMPIONID_2, 35570);
 						break;
 						case 4:
-							pInstance->SetData(DATA_CHAMPIONID_2, 35617);
+							SetInstanceData(DATA_CHAMPIONID_2, 35617);
 						break;
 					}
 				} while(pInstance->GetData(DATA_CHAMPIONID_1) == pInstance->GetData(DATA_CHAMPIONID_2));
@@ -98,61 +98,61 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 					switch(urand(0, 4))
 					{
 						case 0:
-							pInstance->SetData(DATA_CHAMPIONID_3, 35572);
+							SetInstanceData(DATA_CHAMPIONID_3, 35572);
 						break;
 						case 1:
-							pInstance->SetData(DATA_CHAMPIONID_3, 35569);
+							SetInstanceData(DATA_CHAMPIONID_3, 35569);
 						break;
 						case 2:
-							pInstance->SetData(DATA_CHAMPIONID_3, 35571);
+							SetInstanceData(DATA_CHAMPIONID_3, 35571);
 						break;
 						case 3:
-							pInstance->SetData(DATA_CHAMPIONID_3, 35570);
+							SetInstanceData(DATA_CHAMPIONID_3, 35570);
 						break;
 						case 4:
-							pInstance->SetData(DATA_CHAMPIONID_3, 35617);
+							SetInstanceData(DATA_CHAMPIONID_3, 35617);
 						break;
 					}
 				} while(pInstance->GetData(DATA_CHAMPIONID_1) == pInstance->GetData(DATA_CHAMPIONID_3) || pInstance->GetData(DATA_CHAMPIONID_2) == pInstance->GetData(DATA_CHAMPIONID_3));
 			}
 			if (pInstance->GetData(DATA_TOC5_ANNOUNCER) == pInstance->GetData(DATA_JAEREN))
 			{
-				pInstance->SetData(DATA_BLACK_KNIGHT_MINION, 123);
+				SetInstanceData(DATA_BLACK_KNIGHT_MINION, 123);
 				switch(urand(0, 4))
 				{
 					case 0:
-						pInstance->SetData(DATA_CHAMPIONID_1, 34705);
+						SetInstanceData(DATA_CHAMPIONID_1, 34705);
 					break;
 					case 1:
-						pInstance->SetData(DATA_CHAMPIONID_1, 34702);
+						SetInstanceData(DATA_CHAMPIONID_1, 34702);
 					break;
 					case 2:
-						pInstance->SetData(DATA_CHAMPIONID_1, 34701);
+						SetInstanceData(DATA_CHAMPIONID_1, 34701);
 					break;
 					case 3:
-						pInstance->SetData(DATA_CHAMPIONID_1, 34657);
+						SetInstanceData(DATA_CHAMPIONID_1, 34657);
 					break;
 					case 4:
-						pInstance->SetData(DATA_CHAMPIONID_1, 34703);
+						SetInstanceData(DATA_CHAMPIONID_1, 34703);
 					break;
 				}
 				do{
 					switch(urand(0, 4))
 					{
 						case 0:
-							pInstance->SetData(DATA_CHAMPIONID_2, 34705);
+							SetInstanceData(DATA_CHAMPIONID_2, 34705);
 						break;
 						case 1:
-							pInstance->SetData(DATA_CHAMPIONID_2, 34702);
+							SetInstanceData(DATA_CHAMPIONID_2, 34702);
 						break;
 						case 2:
-							pInstance->SetData(DATA_CHAMPIONID_2, 34701);
+							SetInstanceData(DATA_CHAMPIONID_2, 34701);
 						break;
 						case 3:
-							pInstance->SetData(DATA_CHAMPIONID_2, 34657);
+							SetInstanceData(DATA_CHAMPIONID_2, 34657);
 						break;
 						case 4:
-							pInstance->SetData(DATA_CHAMPIONID_2, 34703);
+							SetInstanceData(DATA_CHAMPIONID_2, 34703);
 						break;
 					}
 				} while(pInstance->GetData(DATA_CHAMPIONID_1) == pInstance->GetData(DATA_CHAMPIONID_2));
@@ -160,31 +160,31 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 					switch(urand(0, 4))
 					{
 						case 0:
-							pInstance->SetData(DATA_CHAMPIONID_3, 34705);
+							SetInstanceData(DATA_CHAMPIONID_3, 34705);
 						break;
 						case 1:
-							pInstance->SetData(DATA_CHAMPIONID_3, 34702);
+							SetInstanceData(DATA_CHAMPIONID_3, 34702);
 						break;
 						case 2:
-							pInstance->SetData(DATA_CHAMPIONID_3, 34701);
+							SetInstanceData(DATA_CHAMPIONID_3, 34701);
 						break;
 						case 3:
-							pInstance->SetData(DATA_CHAMPIONID_3, 34657);
+							SetInstanceData(DATA_CHAMPIONID_3, 34657);
 						break;
 						case 4:
-							pInstance->SetData(DATA_CHAMPIONID_3, 34703);
+							SetInstanceData(DATA_CHAMPIONID_3, 34703);
 						break;
 					}
 				} while(pInstance->GetData(DATA_CHAMPIONID_1) == pInstance->GetData(DATA_CHAMPIONID_3) || pInstance->GetData(DATA_CHAMPIONID_2) == pInstance->GetData(DATA_CHAMPIONID_3));
 			}
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, FAIL);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, FAIL);
 		}
 		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == FAIL)
 		{
 			me->SummonCreature(pInstance->GetData(DATA_CHAMPIONID_1), 738.665771, 661.031433, 412.394623, 4.698702, TEMPSUMMON_MANUAL_DESPAWN, 0);
 			me->SummonCreature(pInstance->GetData(DATA_CHAMPIONID_2), 746.864441, 660.918762, 411.695465, 4.698700, TEMPSUMMON_MANUAL_DESPAWN, 0);
 			me->SummonCreature(pInstance->GetData(DATA_CHAMPIONID_3), 754.360779, 660.816162, 412.395996, 4.698700, TEMPSUMMON_MANUAL_DESPAWN, 0);
-			pInstance->SetData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
+			SetInstanceData(TYPE_GRAND_CHAMPIONS, IN_PROGRESS);
 		}
 		if (pInstance->GetData(TYPE_GRAND_CHAMPIONS) == DONE)
 		{
@@ -193,18 +193,18 @@ struct MANGOS_DLL_DECL npc_toc5_announcerAI : public ScriptedAI
 				switch(urand(0, 1))
 				{
 					case 0:
-						pInstance->SetData(DATA_ARGENT_CHALLENGER, 35119);
+						SetInstanceData(DATA_ARGENT_CHALLENGER, 35119);
 					break;
 					case 1:
-						pInstance->SetData(DATA_ARGENT_CHALLENGER, 34928);
+						SetInstanceData(DATA_ARGENT_CHALLENGER, 34928);
 					break;
 				}
-				pInstance->SetData(TYPE_ARGENT_CHALLENGE, FAIL);
+				SetInstanceData(TYPE_ARGENT_CHALLENGE, FAIL);
 			}
 			if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == FAIL)
 			{
 				me->SummonCreature(pInstance->GetData(DATA_ARGENT_CHALLENGER), 746.864441, 660.918762, 411.695465, 4.698700, TEMPSUMMON_MANUAL_DESPAWN, 0);
-				pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
+				SetInstanceData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
 			}
 			if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
 			{

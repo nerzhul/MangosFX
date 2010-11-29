@@ -66,7 +66,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MARROWGAR, IN_PROGRESS);
+            SetInstanceData(TYPE_MARROWGAR, IN_PROGRESS);
 
 		Yell(16941,"Le fléau va déferler sur ce monde, dans un torrent de mort, et de destruction !");
     }
@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if(pInstance)
-            pInstance->SetData(TYPE_MARROWGAR, DONE);
+            SetInstanceData(TYPE_MARROWGAR, DONE);
 
 		switch(m_difficulty)
 		{
@@ -107,7 +107,7 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MARROWGAR, FAIL);
+            SetInstanceData(TYPE_MARROWGAR, FAIL);
     }
 
 	void SpawnBoneSpikes()

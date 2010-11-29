@@ -143,13 +143,13 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_MALACRASS, NOT_STARTED);
+        SetInstanceData(TYPE_MALACRASS, NOT_STARTED);
     }
 
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_MALACRASS, FAIL);
+            SetInstanceData(TYPE_MALACRASS, FAIL);
 
         for(uint8 i = 0; i < MAX_ACTIVE_ADDS; ++i)
         {
@@ -209,7 +209,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_MALACRASS, IN_PROGRESS);
+        SetInstanceData(TYPE_MALACRASS, IN_PROGRESS);
     }
 
     void AddsAttack(Unit* pWho)
@@ -240,7 +240,7 @@ struct MANGOS_DLL_DECL boss_malacrassAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_MALACRASS, DONE);
+        SetInstanceData(TYPE_MALACRASS, DONE);
     }
 
     void CleanAdds()

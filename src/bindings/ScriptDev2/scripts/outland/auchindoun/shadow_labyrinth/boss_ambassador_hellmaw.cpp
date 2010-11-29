@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_HELLMAW, FAIL);
+            SetInstanceData(TYPE_HELLMAW, FAIL);
     }
 
     void WaypointReached(uint32 i)
@@ -105,7 +105,7 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
                 Start(true, false, 0, NULL, false, true);
             }
 
-            pInstance->SetData(TYPE_HELLMAW, IN_PROGRESS);
+            SetInstanceData(TYPE_HELLMAW, IN_PROGRESS);
         }
     }
 
@@ -137,7 +137,7 @@ struct MANGOS_DLL_DECL boss_ambassador_hellmawAI : public npc_escortAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HELLMAW, DONE);
+            SetInstanceData(TYPE_HELLMAW, DONE);
     }
 
     void UpdateEscortAI(const uint32 diff)

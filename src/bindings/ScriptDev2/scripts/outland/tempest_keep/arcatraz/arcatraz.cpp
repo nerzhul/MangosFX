@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL npc_millhouse_manastormAI : public ScriptedAI
                             break;
                         case 7:
                             if (pInstance)
-                                pInstance->SetData(TYPE_WARDEN_2,DONE);
+                                SetInstanceData(TYPE_WARDEN_2,DONE);
                             Init = true;
                             break;
                     }
@@ -265,7 +265,7 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
         DoCastMe(SPELL_TARGET_OMEGA);
 
         if (pInstance)
-            pInstance->SetData(TYPE_HARBINGERSKYRISS,NOT_STARTED);
+            SetInstanceData(TYPE_HARBINGERSKYRISS,NOT_STARTED);
     }
 
     void AttackStart(Unit* who) { }
@@ -296,7 +296,7 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_HARBINGERSKYRISS,IN_PROGRESS);
+            SetInstanceData(TYPE_HARBINGERSKYRISS,IN_PROGRESS);
 
             if (GameObject* pSphere = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_SPHERE_SHIELD)))
                 pSphere->SetGoState(GO_STATE_READY);
@@ -340,22 +340,22 @@ struct MANGOS_DLL_DECL npc_warden_mellicharAI : public ScriptedAI
             {
                 case 2:
                     DoCastMe(SPELL_TARGET_ALPHA);
-                    pInstance->SetData(TYPE_WARDEN_1,IN_PROGRESS);
+                    SetInstanceData(TYPE_WARDEN_1,IN_PROGRESS);
                     break;
                 case 3:
                     DoCastMe(SPELL_TARGET_BETA);
-                    pInstance->SetData(TYPE_WARDEN_2,IN_PROGRESS);
+                    SetInstanceData(TYPE_WARDEN_2,IN_PROGRESS);
                     break;
                 case 5:
                     DoCastMe(SPELL_TARGET_DELTA);
-                    pInstance->SetData(TYPE_WARDEN_3,IN_PROGRESS);
+                    SetInstanceData(TYPE_WARDEN_3,IN_PROGRESS);
                     break;
                 case 6:
                     DoCastMe(SPELL_TARGET_GAMMA);
-                    pInstance->SetData(TYPE_WARDEN_4,IN_PROGRESS);
+                    SetInstanceData(TYPE_WARDEN_4,IN_PROGRESS);
                     break;
                 case 7:
-                    pInstance->SetData(TYPE_WARDEN_5,IN_PROGRESS);
+                    SetInstanceData(TYPE_WARDEN_5,IN_PROGRESS);
                     break;
             }
             CanSpawn = true;

@@ -81,7 +81,7 @@ struct MANGOS_DLL_DECL boss_xevozzAI : public ScriptedAI
     }
 	void CleanAdds()
 	{
-        pInstance->SetData(2,1);
+        SetInstanceData(2,1);
 	}
 
     void UpdateAI(const uint32 diff)

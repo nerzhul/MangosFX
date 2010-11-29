@@ -113,7 +113,7 @@ struct MANGOS_DLL_DECL boss_nalorakkAI : public ScriptedAI
         if (!pInstance)
             return;
 
-        pInstance->SetData(TYPE_NALORAKK, DONE);
+        SetInstanceData(TYPE_NALORAKK, DONE);
     }
 
     void UpdateAI(const uint32 diff)

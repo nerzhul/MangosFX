@@ -178,7 +178,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SHADE, NOT_STARTED);
+            SetInstanceData(TYPE_SHADE, NOT_STARTED);
 
         RespawnChannelersIfDeadOrEvade();
     }
@@ -300,7 +300,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SHADE, DONE);
+            SetInstanceData(TYPE_SHADE, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -458,7 +458,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 pShadeAI->PrepareChannelers();
 
             // Prevent players from trying to restart event
-            pInstance->SetData(TYPE_SHADE, IN_PROGRESS);
+            SetInstanceData(TYPE_SHADE, IN_PROGRESS);
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 

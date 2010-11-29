@@ -130,7 +130,7 @@ void hyjalAI::Reset()
     m_bIsSecondBossDead = m_uiBase ? pInstance->GetData(TYPE_AZGALOR) : pInstance->GetData(TYPE_ANETHERON);
 
     // Reset Instance Data for trash count
-    pInstance->SetData(DATA_RESET_TRASH_COUNT, 0);
+    SetInstanceData(DATA_RESET_TRASH_COUNT, 0);
 }
 
 void hyjalAI::EnterEvadeMode()
@@ -276,7 +276,7 @@ void hyjalAI::SummonNextWave()
         // Enable world state
         pInstance->DoUpdateWorldState(WORLD_STATE_ENEMY, 1);
 
-        pInstance->SetData(DATA_TRASH, m_uiEnemyCount);   // Send data for instance script to update count
+        SetInstanceData(DATA_TRASH, m_uiEnemyCount);   // Send data for instance script to update count
 
         if (!m_bDebugMode)
             m_uiNextWaveTimer = pWaveData->m_uiWaveTimer;
@@ -366,7 +366,7 @@ void hyjalAI::Retreat()
 {
     //this will trigger ancient gem respawn
     if (pInstance)
-        pInstance->SetData(TYPE_RETREAT, SPECIAL);
+        SetInstanceData(TYPE_RETREAT, SPECIAL);
 
     DoCastMe( SPELL_MASS_TELEPORT);
 

@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         m_lGolemGUIDList.clear();
 
         if (pInstance)
-            pInstance->SetData(TYPE_VOLKHAN, NOT_STARTED);
+            SetInstanceData(TYPE_VOLKHAN, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -116,7 +116,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_VOLKHAN, IN_PROGRESS);
+            SetInstanceData(TYPE_VOLKHAN, IN_PROGRESS);
     }
 
     void AttackStart(Unit* pWho)
@@ -138,7 +138,7 @@ struct MANGOS_DLL_DECL boss_volkhanAI : public ScriptedAI
         DespawnGolem();
 
         if (pInstance)
-            pInstance->SetData(TYPE_VOLKHAN, DONE);
+            SetInstanceData(TYPE_VOLKHAN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)

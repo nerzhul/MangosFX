@@ -154,7 +154,7 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         SetEquipmentSlots(false, EQUIP_SWORD, EQUIP_SHIELD, EQUIP_NO_CHANGE);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BJARNGRIM, NOT_STARTED);
+            SetInstanceData(TYPE_BJARNGRIM, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         me->CallForHelp(30.0f);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BJARNGRIM, IN_PROGRESS);
+            SetInstanceData(TYPE_BJARNGRIM, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -183,7 +183,7 @@ struct MANGOS_DLL_DECL boss_bjarngrimAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_BJARNGRIM, DONE);
+            SetInstanceData(TYPE_BJARNGRIM, DONE);
     }
 
     //TODO: remove when removal is done by mangos

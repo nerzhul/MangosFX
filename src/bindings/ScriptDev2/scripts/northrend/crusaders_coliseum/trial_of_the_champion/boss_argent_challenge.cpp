@@ -100,7 +100,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 		if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
 			me->ForcedDespawn();
 		else
-			pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
+			SetInstanceData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
     }
 
 	void JustDied(Unit* pKiller)
@@ -108,7 +108,7 @@ struct MANGOS_DLL_DECL boss_eadricAI : public ScriptedAI
 		if (!pInstance)
 			return;
 		me->ForcedDespawn();
-		pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+		SetInstanceData(TYPE_ARGENT_CHALLENGE, DONE);
 		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0);
 	}
 
@@ -203,7 +203,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 		if (pInstance->GetData(TYPE_ARGENT_CHALLENGE) == DONE)
 			me->ForcedDespawn();
 		else
-			pInstance->SetData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
+			SetInstanceData(TYPE_ARGENT_CHALLENGE, IN_PROGRESS);
     }
 
 	void JustDied(Unit* pKiller)
@@ -211,7 +211,7 @@ struct MANGOS_DLL_DECL boss_paletressAI : public ScriptedAI
 		if (!pInstance)
 			return;
 		me->ForcedDespawn();
-		pInstance->SetData(TYPE_ARGENT_CHALLENGE, DONE);
+		SetInstanceData(TYPE_ARGENT_CHALLENGE, DONE);
 		GiveEmblemsToGroup(m_bIsRegularMode ? CONQUETE : 0,1,true);
 	}
 

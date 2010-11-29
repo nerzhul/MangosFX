@@ -177,7 +177,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 	void JustDied(Unit *killer)
     {
          if (pInstance)
-            pInstance->SetData(TYPE_ARTHAS_EVENT, DONE);
+            SetInstanceData(TYPE_ARTHAS_EVENT, DONE);
     }
 
 	void AttackStart(Unit* pWho)
@@ -771,7 +771,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 					break;
 
            case 93:
-					pInstance->SetData(TYPE_VAGUE_EVENT,IN_PROGRESS);
+					SetInstanceData(TYPE_VAGUE_EVENT,IN_PROGRESS);
 					phaseAI = 95;
 					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
                     ++phase;

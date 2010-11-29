@@ -649,6 +649,9 @@ bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSe
 {
 	InstanceData* pInstance = pCreature->GetInstanceData();
 
+	if(!pInstance)
+		return false;
+
     switch(uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
@@ -747,7 +750,7 @@ struct MANGOS_DLL_DECL seal_AddAI : public ScriptedAI
 	{
 		dmg = 0;
 		if(pInstance)
-			pInstance->SetData(4,0);
+			SetInstanceData(4,0);
 	}
 };
 

@@ -86,7 +86,7 @@ struct MANGOS_DLL_DECL boss_jeklikAI : public ScriptedAI
         DoScriptText(SAY_DEATH, me);
 
         if (pInstance)
-            pInstance->SetData(TYPE_JEKLIK, DONE);
+            SetInstanceData(TYPE_JEKLIK, DONE);
     }
 
     void UpdateAI(const uint32 diff)

@@ -145,7 +145,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         if (pInstance)
         {
             // Not in progress
-            pInstance->SetData(TYPE_ARAN, NOT_STARTED);
+            SetInstanceData(TYPE_ARAN, NOT_STARTED);
 
             if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_LIBRARY_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
@@ -163,7 +163,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(TYPE_ARAN, DONE);
+            SetInstanceData(TYPE_ARAN, DONE);
 
             if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_LIBRARY_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
@@ -180,7 +180,7 @@ struct MANGOS_DLL_DECL boss_aranAI : public ScriptedAI
         }
 
         if (pInstance)
-            pInstance->SetData(TYPE_ARAN, IN_PROGRESS);
+            SetInstanceData(TYPE_ARAN, IN_PROGRESS);
     }
 
     void FlameWreathEffect()

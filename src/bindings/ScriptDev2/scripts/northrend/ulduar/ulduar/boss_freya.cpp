@@ -85,7 +85,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_FREYA, DONE);
+            SetInstanceData(TYPE_FREYA, DONE);
 		Say(15531,"Son emprise sur moi se dissipe. J'y vois de nouveau clair. Merci, héros");
 		uint8 TreeAlive = 0;
 		if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL boss_freyaAI : public LibDevFSAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_FREYA, IN_PROGRESS);
+            SetInstanceData(TYPE_FREYA, IN_PROGRESS);
 
 		if(Creature* IronBranch = GetInstanceCreature(DATA_FREYA_ANCIENT_1))
 		{

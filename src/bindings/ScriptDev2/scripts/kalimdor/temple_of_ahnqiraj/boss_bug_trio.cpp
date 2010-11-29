@@ -68,7 +68,7 @@ struct MANGOS_DLL_DECL boss_kriAI : public ScriptedAI
                                                             // Unlootable if death
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            SetInstanceData(DATA_BUG_TRIO_DEATH, 1);
         }
     }
     void UpdateAI(const uint32 diff)
@@ -142,13 +142,13 @@ struct MANGOS_DLL_DECL boss_vemAI : public ScriptedAI
     {
         if (pInstance)
         {
-            pInstance->SetData(TYPE_VEM, DONE);
+            SetInstanceData(TYPE_VEM, DONE);
 
             // Unlootable if death
             if (pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
 
-            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            SetInstanceData(DATA_BUG_TRIO_DEATH, 1);
         }
     }
 
@@ -217,7 +217,7 @@ struct MANGOS_DLL_DECL boss_yaujAI : public ScriptedAI
             if (pInstance->GetData(DATA_BUG_TRIO_DEATH) < 2)
                                                             // Unlootable if death
                 me->RemoveFlag(UNIT_DYNAMIC_FLAGS, UNIT_DYNFLAG_LOOTABLE);
-            pInstance->SetData(DATA_BUG_TRIO_DEATH, 1);
+            SetInstanceData(DATA_BUG_TRIO_DEATH, 1);
         }
 
         for(int i = 0; i < 10; ++i)
