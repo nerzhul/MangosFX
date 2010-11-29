@@ -211,6 +211,8 @@ class MANGOS_DLL_SPEC ThreatManager
 
         void setDirty(bool pDirty) { iThreatContainer.setDirty(pDirty); }
 
+		void RemoveFromList(Unit* pWho);
+
         // Don't must be used for explicit modify threat values in iterator return pointers
         ThreatList const& getThreatList() const { return iThreatContainer.getThreatList(); }
     private:

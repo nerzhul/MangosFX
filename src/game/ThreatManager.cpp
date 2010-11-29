@@ -100,8 +100,6 @@ void HostileReference::fireStatusChanged(ThreatRefStatusChangeEvent& pThreatRefS
 void HostileReference::addThreat(float pMod)
 {
     iThreat += pMod;
-	/*if(iThreat < 0.0f)
-		iThreat = 0;*/
     // the threat is changed. Source and target unit have to be availabe
     // if the link was cut before relink it again
     if(!isOnline())
@@ -490,7 +488,7 @@ void ThreatManager::tauntApply(Unit* pTaunter)
                 iUpdateNeed = true;
             }
         }
-    }
+	}
 }
 
 //============================================================
@@ -517,6 +515,15 @@ void ThreatManager::setCurrentVictim(HostileReference* pHostileReference)
 
     iCurrentVictim = pHostileReference;
     iUpdateNeed = true;
+}
+
+void ThreatManager::RemoveFromList(Unit* pWho)
+{
+	if(HostileReference* ref = iThreatContainer.getReferenceByTarget(pWho))
+	{
+		iOwner->SendThreatRemove(ref);
+		iThreatContainer.remove(ref);
+	}
 }
 
 //============================================================

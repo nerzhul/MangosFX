@@ -7818,7 +7818,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 SpellChainMapNext const& nextMap = sSpellMgr.GetSpellChainNext();
                 for(SpellChainMapNext::const_iterator itr = nextMap.lower_bound(49892); itr != nextMap.upper_bound(49892); ++itr)
                 {
-                    if(this->HasSpell(itr->second))deathCoilId = itr->second;
+                    if(HasSpell(itr->second))deathCoilId = itr->second;
                 }
                 triggered_spell_id = deathCoilId;
                 break;
@@ -14850,7 +14850,7 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, Aura* aura, SpellEntry con
     SpellEntry const* spellProto = aura->GetSpellProto ();
 
     // Get proc Event Entry
-    spellProcEvent = sSpellMgr.GetSpellProcEvent(spellProto->Id);
+    spellProcEvent = sSpellMgr.GetSpellProcEvent(sSpellMgr.GetFirstSpellInChain(spellProto->Id));
 
     // Aura info stored here
     Modifier *mod = aura->GetModifier();

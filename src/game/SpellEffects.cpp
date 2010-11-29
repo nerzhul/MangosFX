@@ -7767,6 +7767,13 @@ void Spell::EffectModifyThreatPercent(uint32 /*effIndex*/)
     if(!unitTarget)
         return;
 
+	// Useless to reduce threat we dont have
+	if(unitTarget->getThreatManager().getThreat(m_caster) <= 0)
+	{
+		unitTarget->getThreatManager().RemoveFromList(m_caster);
+		return;
+	}
+
     unitTarget->getThreatManager().modifyThreatPercent(m_caster, damage);
 }
 
