@@ -128,7 +128,7 @@ struct CreatureInfo
     uint32  MechanicImmuneMask;
     uint32  flags_extra;
     uint32  ScriptID;
-	uint32  VehicleId;
+    uint32  VehicleId;
 
     // helpers
     SkillType GetRequiredLootSkill() const

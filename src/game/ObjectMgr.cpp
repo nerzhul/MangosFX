@@ -8841,7 +8841,7 @@ void ObjectMgr::LoadScriptNames()
       "UNION "
       "SELECT DISTINCT(ScriptName) FROM areatrigger_scripts WHERE ScriptName <> '' "
       "UNION "
-      "SELECT DISTINCT(script) FROM instance_template WHERE ScriptName <> ''");
+      "SELECT DISTINCT(ScriptName) FROM instance_template WHERE ScriptName <> ''");
 
     if( !result )
     {
