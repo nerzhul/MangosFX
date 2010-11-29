@@ -2032,40 +2032,42 @@ void OutdoorPvPWG::UpdateFortressSpirits()
 {
 	if(GetMap())
 	{
-		if(Creature* SpiritA = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_ALLIANCE]))
-		{	
-			if(m_defender == BG_TEAM_HORDE)
-			{
-				SpiritA->SetRespawnTime(7*DAY);
-				SpiritA->ForcedDespawn();
-			}
-			else
-			{
-				SpiritA->SetRespawnTime(300);
-				SpiritA->Respawn();
-				if(m_wartime)
-					SpiritA->RemoveAurasDueToSpell(58729);
+		if(fortress_spirit[BG_TEAM_ALLIANCE])
+			if(Creature* SpiritA = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_ALLIANCE]))
+			{	
+				if(m_defender == BG_TEAM_HORDE)
+				{
+					SpiritA->SetRespawnTime(7*DAY);
+					SpiritA->ForcedDespawn();
+				}
 				else
-					SpiritA->SetAuraStack(58729,SpiritA,1);
+				{
+					SpiritA->SetRespawnTime(300);
+					SpiritA->Respawn();
+					if(m_wartime)
+						SpiritA->RemoveAurasDueToSpell(58729);
+					else
+						SpiritA->SetAuraStack(58729,SpiritA,1);
+				}
 			}
-		}
-		if(Creature* SpiritH = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_HORDE]))
-		{
-			if(m_defender == BG_TEAM_ALLIANCE)
+		if(fortress_spirit[BG_TEAM_HORDE])
+			if(Creature* SpiritH = GetMap()->GetCreatureOrPetOrVehicle(fortress_spirit[BG_TEAM_HORDE]))
 			{
-				SpiritH->SetRespawnTime(7*DAY);
-				SpiritH->ForcedDespawn();
-			}
-			else
-			{
-				SpiritH->SetRespawnTime(300);
-				SpiritH->Respawn();
-				if(m_wartime)
-					SpiritH->RemoveAurasDueToSpell(58729);
+				if(m_defender == BG_TEAM_ALLIANCE)
+				{
+					SpiritH->SetRespawnTime(7*DAY);
+					SpiritH->ForcedDespawn();
+				}
 				else
-					SpiritH->SetAuraStack(58729,SpiritH,1);
+				{
+					SpiritH->SetRespawnTime(300);
+					SpiritH->Respawn();
+					if(m_wartime)
+						SpiritH->RemoveAurasDueToSpell(58729);
+					else
+						SpiritH->SetAuraStack(58729,SpiritH,1);
+				}
 			}
-		}
 	}
 }
 
