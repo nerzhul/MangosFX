@@ -6086,7 +6086,7 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
         z = GetPositionZ();
 
         // group update
-        if(GetGroup() && (old_x != x || old_y != y))
+        if(GetGroup())
             SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
 
 		if (IsVehicle())
