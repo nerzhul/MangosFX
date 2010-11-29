@@ -60,6 +60,13 @@ enum CastFlags
     CAST_AURA_NOT_PRESENT       = 0x20,                     //Only casts the spell if the target does not have an aura from the spell
 };
 
+//Selection method used by SelectTarget
+enum SelectAggroTarget
+{
+    SELECT_TARGET_RANDOM = 0,                               //Just selects a random target
+    SELECT_TARGET_TOPAGGRO,                                 //Selects targes from top aggro to bottom
+    SELECT_TARGET_BOTTOMAGGRO,                              //Selects targets from bottom aggro to top
+};
 
 enum SpellCastTarget
 {
@@ -288,8 +295,20 @@ class MANGOS_DLL_SPEC CreatureAI
 
 		// SpellCast
 		void DoCastSpell(Unit* pwho, SpellEntry const* pSpellInfo, bool bTriggered = false);
+		void DoCast(Unit* pVictim, uint32 uiSpellId, bool bTriggered = false);
+		void DoCastXYZ(float x, float y, float z, uint32 uiSpellId, bool bTriggered = false);
+		void DoCastVictim(uint32 uiSpellId, bool bTriggered = false);
+		Unit* DoCastRandom(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
+		void DoCastMe(uint32 uiSpellId, bool bTriggered = false);
+		void DoCastLowHP(uint32 uiSpellId, bool bTriggered = false);
+		void DoCastNear(uint32 uiSpellId, bool bTriggered = false);
+		void DoCastHasMana(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
+		void DoCastPlayer(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
 
 		// Units
+		Unit* SelectUnit(SelectAggroTarget target, uint32 uiPosition);
+		Unit* DoSelectLowestHpFriendly(float fRange, uint32 uiMinHPDiff = 1);
+
 		Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
 		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }

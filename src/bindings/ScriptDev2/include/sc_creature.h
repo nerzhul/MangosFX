@@ -38,14 +38,6 @@ enum SelectEffect
     SELECT_EFFECT_AURA,                                     //Spell applies an aura
 };
 
-//Selection method used by SelectTarget
-enum SelectAggroTarget
-{
-    SELECT_TARGET_RANDOM = 0,                               //Just selects a random target
-    SELECT_TARGET_TOPAGGRO,                                 //Selects targes from top aggro to bottom
-    SELECT_TARGET_BOTTOMAGGRO,                              //Selects targets from bottom aggro to top
-};
-
 enum SCEquip
 {
     EQUIP_NO_CHANGE = -1,
@@ -142,17 +134,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     //Stop attack of current victim
     void DoStopAttack();
 
-    //Cast spell by Id
-    void DoCast(Unit* pVictim, uint32 uiSpellId, bool bTriggered = false);
-	void DoCastXYZ(float x, float y, float z, uint32 uiSpellId, bool bTriggered = false);
-	void DoCastVictim(uint32 uiSpellId, bool bTriggered = false);
-	Unit* DoCastRandom(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-	void DoCastMe(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastLowHP(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastNear(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastHasMana(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-	void DoCastPlayer(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-
     //Plays a sound to all nearby players
     void DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId);
 
@@ -161,9 +142,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
     //Teleports a player without dropping threat (only teleports to same map)
     void DoTeleportPlayer(Unit* pUnit, float fX, float fY, float fZ, float fO);
-
-    //Returns friendly unit with the most amount of hp missing from max hp
-    Unit* DoSelectLowestHpFriendly(float fRange, uint32 uiMinHPDiff = 1);
 
     //Returns a list of friendly CC'd units within range
     std::list<Creature*> DoFindFriendlyCC(float fRange);
@@ -176,9 +154,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
     //Spawns a creature relative to me
     Creature* DoSpawnCreature(uint32 uiId, float fX, float fY, float fZ, float fAngle, uint32 uiType, uint32 uiDespawntime);
-
-    //Selects a unit from the creature's current aggro list
-    Unit* SelectUnit(SelectAggroTarget target, uint32 uiPosition);
 
     //Returns spells that meet the specified criteria from the creatures spell list
     SpellEntry const* SelectSpell(Unit* pTarget, int32 uiSchool, int32 uiMechanic, SelectTarget selectTargets, uint32 uiPowerCostMin, uint32 uiPowerCostMax, float fRangeMin, float fRangeMax, SelectEffect selectEffect);
