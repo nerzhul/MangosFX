@@ -187,7 +187,6 @@ bool OutdoorPvPZM::SetupOutdoorPvP()
     AddCapturePoint(new OPvPCapturePointZM_Beacon(this,ZM_BEACON_EAST));
     m_GraveYard = new OPvPCapturePointZM_GraveYard(this);
     AddCapturePoint(m_GraveYard); // though the update function isn't used, the handleusego is!
-
     return true;
 }
 

@@ -1296,8 +1296,8 @@ void Unit::CastSpell(Unit* Victim, uint32 spellId, bool triggered, Item *castIte
 		return;
 
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
-	if(!spellInfo)
-		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);
+	/*if(!spellInfo)
+		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);*/
 
     if(!spellInfo)
     {
@@ -1334,8 +1334,8 @@ void Unit::CastCustomSpell(Unit* Victim,uint32 spellId, int32 const* bp0, int32 
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
 
-	if(!spellInfo)
-		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);
+	/*if(!spellInfo)
+		spellInfo = sSpellMgr.LookupSpecialEntry(spellId);*/
 
     if(!spellInfo)
     {
