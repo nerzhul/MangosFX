@@ -1182,7 +1182,6 @@ InstanceData* WorldObject::GetInstanceData() const
 {
     Map *map = GetMap();
 	if(!map) return NULL;
-	error_log("test");
     return map->IsDungeon() ? ((InstanceMap*)map)->GetInstanceData() : NULL;
 }
 
