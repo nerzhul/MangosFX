@@ -6809,7 +6809,7 @@ void ObjectMgr::LoadQuestPOI()
     uint32 count = 0;
 
     //                                                0        1         2      3     4     5     6
-    QueryResult *result = WorldDatabase.Query("SELECT questId, poiId, objIndex, mapId, mapAreaId, floorId, unk3, unk4 FROM quest_poi order by entry");
+    QueryResult *result = WorldDatabase.Query("SELECT questId, poiId, objIndex, mapId, mapAreaId, floorId, unk3, unk4 FROM quest_poi order by questId");
 
     if(!result)
     {
