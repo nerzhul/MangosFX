@@ -1,11 +1,13 @@
-#include "BattleGround.h"
-#include "BattleGroundMgr.h"
 #include "PlayerBot.h"
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
 	specIdx = 0;
 	m_decideToFight = false;
+	m_sheduledBGJoin = DAY*HOUR;
+	bgTypeId = BATTLEGROUND_TYPE_NONE;
+	m_ginfo = 0;
+	sheduledBG = NULL;
 }
 
 PlayerBot::~PlayerBot()
@@ -43,11 +45,60 @@ void PlayerBot::JoinBGQueueIfNotIn()
 	}
 }
 
+void PlayerBot::SendToBg()
+{
+	BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[BATTLEGROUND_QUEUE_RANDOM];
+	if (!bot->InBattleGround())
+		bot->SetBattleGroundEntryPoint();
+
+	// resurrect the player
+	if (!bot->isAlive())
+	{
+		bot->ResurrectPlayer(1.0f);
+		bot->SpawnCorpseBones();
+	}
+
+	// stop taxi flight at port
+	if (bot->isInFlight())
+	{
+		bot->GetMotionMaster()->MovementExpired();
+		bot->m_taxi.ClearTaxiDestinations();
+	}
+
+	bgQueue.RemovePlayer(bot->GetGUID(), false);
+	if (BattleGround *currentBg = bot->GetBattleGround())
+		currentBg->RemovePlayerAtLeave(bot->GetGUID(), false, true);
+
+	bot->SetBattleGroundId(sheduledBG->GetInstanceID(), bgTypeId);
+	bot->SetBGTeam(m_ginfo->Team);
+	sBattleGroundMgr.SendToBattleGround(bot, m_ginfo->IsInvitedToBGInstanceGUID, bgTypeId);
+	bot->GetSession()->HandleMoveWorldportAckOpcode();
+}
+
+void PlayerBot::SheduleSendToBG(BattleGround* bg, BattleGroundTypeId btId, GroupQueueInfo* ginfo)
+{
+	sheduledBG = bg;
+	bgTypeId = btId;
+	m_ginfo = ginfo;
+	m_sheduledBGJoin = 1000;
+}
+
 void PlayerBot::Update(uint32 diff)
 {
 	ASSERT(bot);
 	
 	JoinBGQueueIfNotIn();
+
+	if(m_sheduledBGJoin < DAY*HOUR)
+	{
+		if(m_sheduledBGJoin <= diff)
+		{
+			SendToBg();
+			m_sheduledBGJoin = DAY*HOUR;
+		}
+		else
+			m_sheduledBGJoin -= diff;
+	}
 
 	// CombatHandler for all classes
 	if(HasDecidedToFight())

@@ -2,6 +2,8 @@
 #define __PLAYERBOT_H_
 
 #include "Player.h"
+#include "BattleGround.h"
+#include "BattleGroundMgr.h"
 
 class PlayerBot// : public Player
 {
@@ -33,10 +35,17 @@ class PlayerBot// : public Player
 
 		// BG Handlers
 		void JoinBGQueueIfNotIn();
+		void SheduleSendToBG(BattleGround* bg, BattleGroundTypeId btId, GroupQueueInfo* ginfo);
+		void SendToBg();
 	private:
 		uint8 specIdx;
 		bool m_decideToFight;
 		Player* bot;
+
+		BattleGround* sheduledBG;
+		BattleGroundTypeId bgTypeId;
+		GroupQueueInfo* m_ginfo;
+		uint32 m_sheduledBGJoin;
 };
 
 #endif

@@ -19,6 +19,7 @@
 #include "Common.h"
 #include "SharedDefines.h"
 #include "Player.h"
+#include "PlayerBot.h"
 #include "BattleGroundMgr.h"
 #include "BattleGroundAV.h"
 #include "BattleGroundAB.h"
@@ -499,33 +500,7 @@ bool BattleGroundQueue::InviteGroupToBG(GroupQueueInfo * ginfo, BattleGround * b
 			// THERE, ACCEPT INVITE
 			if(plr->isBot())
 			{
-				BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[BATTLEGROUND_QUEUE_RANDOM];
-				if (!plr->InBattleGround())
-					plr->SetBattleGroundEntryPoint();
-
-				// resurrect the player
-				if (!plr->isAlive())
-				{
-					plr->ResurrectPlayer(1.0f);
-					plr->SpawnCorpseBones();
-				}
-				// stop taxi flight at port
-				if (plr->isInFlight())
-				{
-					plr->GetMotionMaster()->MovementExpired();
-					plr->m_taxi.ClearTaxiDestinations();
-				}
-				GroupQueueInfo ginfo;
-				bgQueue.GetPlayerGroupInfoData(plr->GetGUID(), &ginfo);
-
-				bgQueue.RemovePlayer(plr->GetGUID(), false);
-				if (BattleGround *currentBg = plr->GetBattleGround())
-					currentBg->RemovePlayerAtLeave(plr->GetGUID(), false, true);
-
-				plr->SetBattleGroundId(bg->GetInstanceID(), bgTypeId);
-				plr->SetBGTeam(ginfo.Team);
-				sBattleGroundMgr.SendToBattleGround(plr, ginfo.IsInvitedToBGInstanceGUID, bgTypeId);
-				plr->GetSession()->HandleMoveWorldportAckOpcode();
+				plr->GetPlayerBot()->SheduleSendToBG(bg, bgTypeId, ginfo);
 			}
 			else
 			{
@@ -866,21 +841,6 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
             //this switch can be much shorter
             MaxPlayersPerTeam = arenaType;
             MinPlayersPerTeam = arenaType;
-            /*switch(arenaType)
-            {
-            case ARENA_TYPE_2v2:
-                MaxPlayersPerTeam = 2;
-                MinPlayersPerTeam = 2;
-                break;
-            case ARENA_TYPE_3v3:
-                MaxPlayersPerTeam = 3;
-                MinPlayersPerTeam = 3;
-                break;
-            case ARENA_TYPE_5v5:
-                MaxPlayersPerTeam = 5;
-                MinPlayersPerTeam = 5;
-                break;
-            }*/
         }
     }
 
