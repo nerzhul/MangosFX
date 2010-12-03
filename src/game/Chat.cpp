@@ -689,6 +689,7 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "worldvar",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleSetWorldVar,					"", NULL },
 		{ "achievementadd",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleAchievementAdd,			    "", NULL },
 		{ "lastpacket",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleGetLastPacketCommand,	    "", NULL },
+		{ "bot",            SEC_ADMINISTRATOR,  false, &ChatHandler::HandlePlayerbotCommand,			"", NULL },
         { NULL,             0,                  false, NULL,											"", NULL }
 
     };
