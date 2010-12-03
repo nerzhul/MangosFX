@@ -2,9 +2,8 @@
 #define __PLAYERBOT_H_
 
 #include "Player.h"
-#include "WorldSession.h"
 
-class PlayerBot: public Player
+class PlayerBot// : public Player
 {
 	public:
 		explicit PlayerBot (WorldSession *session);
@@ -23,10 +22,15 @@ class PlayerBot: public Player
 
 		bool HasDecidedToFight() { return m_decideToFight; }
 
+		Player* GetPlayer() { return bot; }
+		void SetPlayer(Player* plr) { bot = plr; }
+
 		void Update(uint32 diff);
 		void Stay();
 	private:
 		uint8 specIdx;
 		bool m_decideToFight;
+		Player* bot;
 };
+
 #endif

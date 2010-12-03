@@ -14,7 +14,7 @@ PlayerBot::~PlayerBot()
 
 void PlayerBot::Stay()
 {
-	GetMotionMaster()->Clear();
+	bot->GetMotionMaster()->Clear();
 }
 
 void PlayerBot::Update(uint32 diff)
@@ -29,7 +29,7 @@ void PlayerBot::Update(uint32 diff)
 	// CombatHandler for all classes
 	if(HasDecidedToFight())
 	{
-		switch(getClass())
+		switch(bot->getClass())
 		{
 			case CLASS_WARRIOR:
 				HandleWarriorCombat();
@@ -170,52 +170,57 @@ void PlayerBot::HandlePriestCombat()
 	}
 }
 
-#define POSTURE_DEF 5301
-#define POSTURE_ARM 2457
-#define POSTURE_FURY 2458
-#define SPELL_FRAPPE_HERO 47450
+#define POSTURE_DEF			5301
+#define POSTURE_ARM			2457
+#define POSTURE_FURY		2458
+#define SPELL_FRAPPE_HERO	47450
+#define SPELL_SANGUINAIRE	2687
+#define SPELL_EXEC			47471
+#define SPELL_BERSERK		18499
+#define SPELL_ENRAGE		2687
+#define SPELL_TOURBILLON	1680
 
 void PlayerBot::HandleWarriorCombat()
 {
-	if(GetPower(POWER_RAGE) < 60)
+	if(bot->GetPower(POWER_RAGE) < 60)
 	{
-		CastSpell(this,SPELL_BERSERK);
-		CastSpell(this,SPELL_ENRAGE);
+		bot->CastSpell(bot,SPELL_BERSERK);
+		bot->CastSpell(bot,SPELL_ENRAGE);
 	}
 
-	if(Unit* target = Unit::GetUnit(*this,GetTargetGUID()))
+	if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
 	{
-		if(IsNonMeleeSpellCasted(false))
+		if(bot->IsNonMeleeSpellCasted(false))
 			return;
 	
-		if(!GetDistance2d(target) >= 4.5f)
+		if(bot->GetDistance2d(target) >= 4.5f)
 		{
-			GetMotionMaster()->MoveChase(target,3.0f);
+			bot->GetMotionMaster()->MoveChase(target,3.0f);
 			return;
 		}
 
 		switch(specIdx)
 		{
 			case 0: // arme
-				if(!HasAura(POSTURE_ARM))
-					CastSpell(this,POSTURE_ARM);
+				if(!bot->HasAura(POSTURE_ARM))
+					bot->CastSpell(bot,POSTURE_ARM);
 				break;
 			case 1: // furie
-				if(!HasAura(POSTURE_FURY))
-					CastSpell(this,POSTURE_FURY);
+				if(!bot->HasAura(POSTURE_FURY))
+					bot->CastSpell(bot,POSTURE_FURY);
 
-				if(target->GetHealth() * 100.0f / target->GetMaxHealth() < 15.0f && GetPower(POWER_RAGE) >= 35)
-					CastSpell(target,SPELL_EXEC);
+				if(target->GetHealth() * 100.0f / target->GetMaxHealth() < 15.0f && bot->GetPower(POWER_RAGE) >= 35)
+					bot->CastSpell(target,SPELL_EXEC);
 				
-				CastSpell(target,SPELL_TOURBILLON);
-				CastSpell(target,SPELL_SANGUINAIRE);
+				bot->CastSpell(target,SPELL_TOURBILLON);
+				bot->CastSpell(target,SPELL_SANGUINAIRE);
 
-				if(GetPower(POWER_RAGE) >= 40)
-					CastSpell(target,SPELL_FRAPPE_HERO);
+				if(bot->GetPower(POWER_RAGE) >= 40)
+					bot->CastSpell(target,SPELL_FRAPPE_HERO);
 				break;
 			case 2: // proto
-				if(!HasAura(POSTURE_DEF))
-					CastSpell(this,POSTURE_DEF);
+				if(!bot->HasAura(POSTURE_DEF))
+					bot->CastSpell(bot,POSTURE_DEF);
 				break;
 		}
 	}
