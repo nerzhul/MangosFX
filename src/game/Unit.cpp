@@ -9825,11 +9825,13 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
             if(Unit* magnet = (*itr)->GetCaster())
                 if(magnet->IsWithinLOSInMap(this) && magnet->isAlive())
 				{
-					if (victim->HasAura(8178)) 
-						victim->RemoveAura(8178,3);
-
 					if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
-                    return magnet;
+					{
+						if (victim->HasAura(8178)) 
+							victim->RemoveAura(8178,3);
+
+						return magnet;
+					}
 				}
     }
     // Melee && ranged case
