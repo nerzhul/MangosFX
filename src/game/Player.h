@@ -2189,11 +2189,11 @@ class MANGOS_DLL_SPEC Player : public Unit
 		uint32 GetDungeonId() { return m_dungeonId; }
 
 		//PlayerBot
-		bool isBot() { return plb_bot; }
-		void SetBot(bool b_bot) { plb_bot = b_bot; }
+		bool isBot() { return m_isBot; }
+		void SetBot(bool b_bot) { m_isBot = b_bot; }
 
-		PlayerBot* GetPlayerBot() { return plb_playerbot;}
-		void SetPlayerBot(PlayerBot* plb) { plb_playerbot = plb;}
+		PlayerBot* GetPlayerBot() { return m_playerbot;}
+		void SetPlayerBot(PlayerBot* plb) { m_playerbot = plb;}
 
 
         // Temporarily removed pet cache
@@ -2642,8 +2642,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		LookingForGroup m_LookingForGroup;
 		uint32 m_dungeonId;
 
-		bool plb_bot;
-		PlayerBot* plb_playerbot;
+		bool m_isBot;
+		PlayerBot* m_playerbot;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

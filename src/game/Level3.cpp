@@ -6575,9 +6575,7 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
 		Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
 		
 		if (bot)
-		{
 			PSendSysMessage("Personnage deja connecte !");	
-		}
 		else
 		{
 			CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
