@@ -27,10 +27,8 @@ void PlayerBot::Stay()
 	bot->GetMotionMaster()->Clear();
 }
 
-void PlayerBot::Update(uint32 diff)
+void PlayerBot::JoinBGQueueIfNotIn()
 {
-	ASSERT(bot);
-	
 	if(bot->IsInWorld() && !bot->InBattleGroundQueue() && !bot->GetBattleGround())
 	{
 		BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[BATTLEGROUND_QUEUE_RANDOM];
@@ -43,6 +41,13 @@ void PlayerBot::Update(uint32 diff)
 		bgQueue.AddGroup(bot, NULL, BATTLEGROUND_RB, bracketEntry, 0, false, false, 0);
 		bot->AddBattleGroundQueueId(BATTLEGROUND_QUEUE_RANDOM);
 	}
+}
+
+void PlayerBot::Update(uint32 diff)
+{
+	ASSERT(bot);
+	
+	JoinBGQueueIfNotIn();
 
 	// CombatHandler for all classes
 	if(HasDecidedToFight())
@@ -86,14 +91,19 @@ void PlayerBot::Update(uint32 diff)
 
 void PlayerBot::HandleRogueCombat()
 {
-	switch(specIdx)
+	if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
 	{
-		case 0: // Assass
-			break;
-		case 1: // Combat
-			break;
-		case 2: // Finesse
-			break;
+		GoToCacIfIsnt(target);
+
+		switch(specIdx)
+		{
+			case 0: // Assass
+				break;
+			case 1: // Combat
+				break;
+			case 2: // Finesse
+				break;
+		}
 	}
 }
 
@@ -208,9 +218,6 @@ void PlayerBot::HandleWarriorCombat()
 
 	if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
 	{
-		if(bot->IsNonMeleeSpellCasted(false))
-			return;
-	
 		GoToCacIfIsnt(target);
 
 		switch(specIdx)

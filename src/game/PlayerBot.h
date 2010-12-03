@@ -30,6 +30,9 @@ class PlayerBot// : public Player
 		// Movements
 		void Stay();
 		void GoToCacIfIsnt(Unit* target);
+
+		// BG Handlers
+		void JoinBGQueueIfNotIn();
 	private:
 		uint8 specIdx;
 		bool m_decideToFight;
