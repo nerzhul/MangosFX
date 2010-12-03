@@ -148,6 +148,8 @@ class MANGOS_DLL_SPEC WorldSession
         WorldSession(uint32 id, WorldSocket *sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale);
         ~WorldSession();
 
+		void AddPlayerBot(uint64 guid); //Add PlayerBot
+
         bool PlayerLoading() const { return m_playerLoading; }
         bool PlayerLogout() const { return m_playerLogout; }
         bool PlayerLogoutWithSave() const { return m_playerLogout && m_playerSave; }
@@ -811,6 +813,7 @@ class MANGOS_DLL_SPEC WorldSession
 		void HandleChangeSeatsOnControlledVehicle(WorldPacket &recv_data);
 		void HandleEjectPasenger(WorldPacket &data);
         void HandleEnterPlayerVehicle(WorldPacket &data);
+
     private:
         // private trade methods
         void moveItems(Item* myItems[], Item* hisItems[]);

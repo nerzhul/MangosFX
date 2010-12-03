@@ -67,6 +67,7 @@
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvPWG.h"
 #include "ClassSpellHandler.h"
+#include "PlayerBot.h"
 
 #include <cmath>
 
@@ -1449,6 +1450,12 @@ void Player::Update( uint32 p_time )
     //because we don't want player's ghost teleported from graveyard
     if(IsHasDelayedTeleport() && !GetVehicle())
         TeleportTo(m_teleport_dest, m_teleport_options);
+
+	
+	if (isBot() && GetPlayerBot())
+	{	
+		GetPlayerBot()->Update(p_time);
+	}
 }
 
 void Player::setDeathState(DeathState s)

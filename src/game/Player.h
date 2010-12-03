@@ -59,6 +59,7 @@ class Item;
 class OutdoorPvP;
 class CalendarMgr;
 class LFGMgr;
+class PlayerBot;
 
 typedef std::deque<Mail*> PlayerMails;
 
@@ -2187,6 +2188,14 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void SetDungeonId(uint32 dId) { m_dungeonId = dId; }
 		uint32 GetDungeonId() { return m_dungeonId; }
 
+		//PlayerBot
+		bool isBot() { return plb_bot; }
+		void SetBot(bool b_bot) { plb_bot = b_bot; }
+
+		PlayerBot* GetPlayerBot() { return plb_playerbot;}
+		void SetPlayerBot(PlayerBot* plb) { plb_playerbot = plb;}
+
+
         // Temporarily removed pet cache
         uint32 GetTemporaryUnsummonedPetNumber() const { return m_temporaryUnsummonedPetNumber; }
         void SetTemporaryUnsummonedPetNumber(uint32 petnumber) { m_temporaryUnsummonedPetNumber = petnumber; }
@@ -2633,6 +2642,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		LookingForGroup m_LookingForGroup;
 		uint32 m_dungeonId;
 
+		bool plb_bot;
+		PlayerBot* plb_playerbot;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

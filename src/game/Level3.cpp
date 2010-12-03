@@ -54,6 +54,8 @@
 #include "OutdoorPvPWG.h"
 #include "OutdoorPvPMgr.h"
 
+#include "PlayerBot.h"
+
 //reload commands
 bool ChatHandler::HandleReloadAllCommand(const char*)
 {
@@ -6537,5 +6539,70 @@ bool ChatHandler::HandleDebugEnterVehicle(const char * args)
     m_session->GetPlayer()->EnterVehicle(target);
 
     PSendSysMessage("Unit %u entered vehicle %d", entry, (int32)seatId);
+    return true;
+}
+
+bool ChatHandler::HandlePlayerbotCommand(const char* args)
+{
+    if (!*args) // Need args !
+        return false;
+
+    char *i = strtok ((char*)args, " ");
+    char *j = strtok (NULL, " ");
+    
+	if (!i || !j)  //Checking args
+    {
+        return false;
+    }
+
+    std::string cmd = i;
+    std::string name = j;
+
+    if(!normalizePlayerName(name)) // Is player name good?
+        return false;
+
+    uint64 guid = sObjectMgr.GetPlayerGUIDByName(name.c_str());
+	
+	if (guid == 0) // Player exist?
+    {
+        SendSysMessage(LANG_PLAYER_NOT_FOUND);
+        SetSentErrorMessage(true);
+        return false;
+    }
+
+    if (cmd == "add")
+    {
+		Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
+		
+		if (bot)
+		{
+			PSendSysMessage("Personnage deja connecte !");	
+		}
+		else
+		{
+			CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
+
+			m_session->AddPlayerBot(guid);
+
+			PSendSysMessage("Bot ajoute !");
+		}
+	}
+	else if (cmd == "remove")
+    {
+		Player* bot = sObjectMgr.GetPlayer(guid);
+		
+		if (bot && bot->isBot())
+		{
+			CharacterDatabase.DirectPExecute("UPDATE characters SET online = 0 WHERE guid = '%u'", guid);
+			bot->GetSession()->LogoutPlayer(true);
+
+			PSendSysMessage("Bot retire !");
+		}
+		else
+		{
+			PSendSysMessage("Ce n\'est pas un bot !");
+		}
+    }
+
     return true;
 }

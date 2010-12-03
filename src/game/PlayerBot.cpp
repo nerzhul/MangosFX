@@ -1,16 +1,31 @@
 #include "PlayerBot.h"
 
-PlayerBot::PlayerBot(WorldSession* session): Player(session)
+
+PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
 }
 
 PlayerBot::~PlayerBot()
 {
+	delete bot;
+}
+
+void PlayerBot::Stay()
+{
+	bot->GetMotionMaster()->Clear();
 }
 
 void PlayerBot::Update(uint32 diff)
 {
+	bot->GetMotionMaster()->Clear();
 	
+	if (!bot->InBattleGroundQueue())
+	{
+		bot->Say("C'est fou! J'adore les BGs !", LANG_UNIVERSAL);
+	}
+
+	/*
+
 
 	// CombatHandler for all classes
 	if(isInCombat())
@@ -40,4 +55,5 @@ void PlayerBot::Update(uint32 diff)
 		}
 	}
 	// 
+	*/
 }
