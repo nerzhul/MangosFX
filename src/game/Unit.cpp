@@ -4686,6 +4686,7 @@ void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except)
 	// Hack for glebe
 	if(spellId == 8178 && effindex == 3 && GetTypeId() == TYPEID_UNIT)
 		((Creature*)this)->ForcedDespawn(200);
+		
 }
 
 void Unit::RemoveAurasByCasterSpell(uint32 spellId, uint64 casterGUID)
@@ -9823,7 +9824,13 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
         for(Unit::AuraList::const_iterator itr = magnetAuras.begin(); itr != magnetAuras.end(); ++itr)
             if(Unit* magnet = (*itr)->GetCaster())
                 if(magnet->IsWithinLOSInMap(this) && magnet->isAlive())
+				{
+					if (victim->HasAura(8178)) 
+						victim->RemoveAura(8178,3);
+
+					if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
                     return magnet;
+				}
     }
     // Melee && ranged case
     else
@@ -9836,7 +9843,9 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
 					{
 						if(victim->HasAura(3411))
 							victim->RemoveAurasDueToSpell(3411);
-                        return magnet;
+
+						if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
+							return magnet;
 					}
     }
 
@@ -16084,4 +16093,16 @@ void Unit::DoPetAction(Player* owner, uint8 flag, uint32 spellid, uint64 guid1, 
         default:
             sLog.outError("WORLD: unknown PET flag Action %i and spellid %i.", uint32(flag), spellid);
     }
+}
+
+bool Unit::isGoodToChangeTargetAfterSpell(uint32 spell)
+{
+	switch(spell)
+	{
+		case 100:
+			return false;
+
+		default :
+			return true;
+	}
 }
