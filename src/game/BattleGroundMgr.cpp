@@ -496,9 +496,43 @@ bool BattleGroundQueue::InviteGroupToBG(GroupQueueInfo * ginfo, BattleGround * b
 
             sLog.outDebug("Battleground: invited plr %s (%u) to BG instance %u queueindex %u bgtype %u, I can't help it if they don't press the enter battle button.",plr->GetName(),plr->GetGUIDLow(),bg->GetInstanceID(),queueSlot,bg->GetTypeID());
 
-            // send status packet
-            sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0, ginfo->ArenaType);
-            plr->GetSession()->SendPacket(&data);
+			// THERE, ACCEPT INVITE
+			if(plr->isBot())
+			{
+				BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[BATTLEGROUND_QUEUE_RANDOM];
+				if (!plr->InBattleGround())
+					plr->SetBattleGroundEntryPoint();
+
+				// resurrect the player
+				if (!plr->isAlive())
+				{
+					plr->ResurrectPlayer(1.0f);
+					plr->SpawnCorpseBones();
+				}
+				// stop taxi flight at port
+				if (plr->isInFlight())
+				{
+					plr->GetMotionMaster()->MovementExpired();
+					plr->m_taxi.ClearTaxiDestinations();
+				}
+				GroupQueueInfo ginfo;
+				bgQueue.GetPlayerGroupInfoData(plr->GetGUID(), &ginfo);
+
+				bgQueue.RemovePlayer(plr->GetGUID(), false);
+				if (BattleGround *currentBg = plr->GetBattleGround())
+					currentBg->RemovePlayerAtLeave(plr->GetGUID(), false, true);
+
+				plr->SetBattleGroundId(bg->GetInstanceID(), bgTypeId);
+				plr->SetBGTeam(ginfo.Team);
+				sBattleGroundMgr.SendToBattleGround(plr, ginfo.IsInvitedToBGInstanceGUID, bgTypeId);
+				plr->GetSession()->HandleMoveWorldportAckOpcode();
+			}
+			else
+			{
+	            // send status packet
+		        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, bg, queueSlot, STATUS_WAIT_JOIN, INVITE_ACCEPT_WAIT_TIME, 0, ginfo->ArenaType);
+			    plr->GetSession()->SendPacket(&data);
+			}
         }
         return true;
     }

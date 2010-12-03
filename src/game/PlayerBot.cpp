@@ -1,5 +1,6 @@
+#include "BattleGround.h"
+#include "BattleGroundMgr.h"
 #include "PlayerBot.h"
-
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
@@ -12,6 +13,15 @@ PlayerBot::~PlayerBot()
 	delete bot;
 }
 
+void PlayerBot::GoToCacIfIsnt(Unit* target)
+{
+	if(!target)
+		return;
+
+	if(bot->GetDistance2d(target) >= 4.5f)
+		bot->GetMotionMaster()->MoveChase(target,3.0f);
+}
+
 void PlayerBot::Stay()
 {
 	bot->GetMotionMaster()->Clear();
@@ -19,11 +29,19 @@ void PlayerBot::Stay()
 
 void PlayerBot::Update(uint32 diff)
 {
-	Stay();
+	ASSERT(bot);
 	
-	if (!bot->InBattleGroundQueue())
+	if(bot->IsInWorld() && !bot->InBattleGroundQueue() && !bot->GetBattleGround())
 	{
-		bot->Say("C'est fou! J'adore les BGs !", LANG_UNIVERSAL);
+		BattleGroundQueue& bgQueue = sBattleGroundMgr.m_BattleGroundQueues[BATTLEGROUND_QUEUE_RANDOM];
+		BattleGround* bg = sBattleGroundMgr.GetBattleGroundTemplate(BATTLEGROUND_RB);
+		if(!bg)	return;
+
+		PvPDifficultyEntry const* bracketEntry = GetBattlegroundBracketByLevel(bg->GetMapId(),bot->getLevel());
+		if(!bracketEntry) return;
+
+		bgQueue.AddGroup(bot, NULL, BATTLEGROUND_RB, bracketEntry, 0, false, false, 0);
+		bot->AddBattleGroundQueueId(BATTLEGROUND_QUEUE_RANDOM);
 	}
 
 	// CombatHandler for all classes
@@ -193,11 +211,7 @@ void PlayerBot::HandleWarriorCombat()
 		if(bot->IsNonMeleeSpellCasted(false))
 			return;
 	
-		if(bot->GetDistance2d(target) >= 4.5f)
-		{
-			bot->GetMotionMaster()->MoveChase(target,3.0f);
-			return;
-		}
+		GoToCacIfIsnt(target);
 
 		switch(specIdx)
 		{

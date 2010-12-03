@@ -26,7 +26,10 @@ class PlayerBot// : public Player
 		void SetPlayer(Player* plr) { bot = plr; }
 
 		void Update(uint32 diff);
+
+		// Movements
 		void Stay();
+		void GoToCacIfIsnt(Unit* target);
 	private:
 		uint8 specIdx;
 		bool m_decideToFight;
