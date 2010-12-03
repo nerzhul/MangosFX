@@ -4684,7 +4684,7 @@ void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except)
     }
 
 	// Hack for glebe
-	if(spellId == 8178 && effindex == 3 && GetTypeId() == TYPEID_UNIT)
+	if(spellId == 8178 && GetTypeId() == TYPEID_UNIT)
 		((Creature*)this)->ForcedDespawn(200);
 }
 
