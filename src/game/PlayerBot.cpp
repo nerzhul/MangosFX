@@ -42,6 +42,7 @@ void PlayerBot::JoinBGQueueIfNotIn()
 
 		bgQueue.AddGroup(bot, NULL, BATTLEGROUND_RB, bracketEntry, 0, false, false, 0);
 		bot->AddBattleGroundQueueId(BATTLEGROUND_QUEUE_RANDOM);
+		sBattleGroundMgr.ScheduleQueueUpdate(0, 0, BATTLEGROUND_QUEUE_RANDOM, BATTLEGROUND_RB, bracketEntry->GetBracketId());
 	}
 }
 
