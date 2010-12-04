@@ -959,7 +959,11 @@ void Spell::EffectDummy(uint32 i)
 				{
 					//Quest 11626
 					if(unitTarget->GetEntry() == 26452 && unitTarget->GetHealth() > 87100)
+					{
 						m_caster->DealDamage(unitTarget,87100, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+						unitTarget->CastSpell(unitTarget, 47172, true);
+						((Creature*)unitTarget)->AI()->AttackStart(m_caster);
+					}
 					return;
 				}
 				case 46361: // FSS mob beta
