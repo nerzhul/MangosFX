@@ -138,6 +138,27 @@ void PlayerBot::Update(uint32 diff)
 				break;
 		}
 	}
+	else
+	{
+		if(BattleGround* bg = bot->GetBattleGround())
+		{
+			switch(bg->GetTypeID(true))
+			{
+				case BATTLEGROUND_WS:
+					HandleWarsong();
+					break;
+				case BATTLEGROUND_AB:
+					HandleArathi();
+					break;
+				case BATTLEGROUND_AV:
+					HandleAlterac();
+					break;
+				case BATTLEGROUND_EY:
+					HandleEyeOfTheStorm();
+					break;
+			}
+		}
+	}
 }
 
 
@@ -310,4 +331,20 @@ void PlayerBot::HandleWarlockCombat()
 		case 2: // destru
 			break;
 	}
+}
+
+void PlayerBot::HandleWarsong()
+{
+}
+
+void PlayerBot::HandleArathi()
+{
+}
+
+void PlayerBot::HandleEyeOfTheStorm()
+{
+}
+
+void PlayerBot::HandleAlterac()
+{
 }

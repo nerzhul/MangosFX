@@ -22,6 +22,11 @@ class PlayerBot// : public Player
 		void HandleWarlockCombat();
 		void HandleDruidCombat();
 
+		void HandleWarsong();
+		void HandleArathi();
+		void HandleEyeOfTheStorm();
+		void HandleAlterac();
+
 		bool HasDecidedToFight() { return m_decideToFight; }
 
 		Player* GetPlayer() { return bot; }
