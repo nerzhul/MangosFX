@@ -10235,7 +10235,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
                 APbonus += GetTotalAttackPowerValue(attType);
                 DoneTotal += int32(bonus->dot_damage * stack * coeff * APbonus);
-				sLog.outDebugSpell("SpellDamageBonus DOT - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APBonus);
+				sLog.outDebugSpell("SpellDamageBonus DOT - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
             }
         }
         else
@@ -10247,7 +10247,7 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
                 APbonus += GetTotalAttackPowerValue(attType);
                 DoneTotal += int32(bonus->direct_damage * stack * coeff * APbonus);
-				sLog.outDebugSpell("SpellDamageBonus Direct Damage - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APBonus);
+				sLog.outDebugSpell("SpellDamageBonus Direct Damage - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
             }
         }
 		// End Merging
