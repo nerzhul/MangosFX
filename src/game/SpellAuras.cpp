@@ -3149,10 +3149,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 else
                 {
-                    // Final heal only on dispelled or duration end
-                    if ( !(GetAuraDuration() <= 0 || m_removeMode == AURA_REMOVE_BY_DISPEL) )
+                    // Final heal only duration end
+                    
+					if ( !(GetAuraDuration() <= 0))// || m_removeMode != AURA_REMOVE_BY_DISPEL) ) // Remove Dispel support here
                         return;
-
+				
                     // have a look if there is still some other Lifebloom dummy aura
                     Unit::AuraList const& auras = m_target->GetAurasByType(SPELL_AURA_DUMMY);
                     for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
@@ -3164,11 +3165,9 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     if(m_target->IsInWorld() && m_stackAmount > 0)
                     {
 						int32 heal = 0;
-						if(GetAuraDuration() <= 0)
-							heal = m_modifier.m_amount * m_stackAmount;
-						else
-							heal = m_modifier.m_amount;
-                         m_target->CastCustomSpell(m_target, 33778, &heal, NULL, NULL, true, NULL, this, GetCasterGUID());
+						int32 stack = GetStackAmount();
+						
+						 m_target->CastCustomSpell(m_target, 33778, &m_modifier.m_amount, NULL, NULL, true, NULL, this, GetCasterGUID());
 
                         if (Unit* caster = GetCaster())
                         {
