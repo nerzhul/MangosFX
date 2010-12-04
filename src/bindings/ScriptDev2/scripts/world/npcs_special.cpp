@@ -1535,9 +1535,60 @@ CreatureAI* GetAI_viper_hunt(Creature* pCreature)
     return new viper_hunt_AI(pCreature);
 }
 
+/*######
+## npc_training_dummy
+######*/
+#define OUT_OF_COMBAT_TIME 5000
+
+struct MANGOS_DLL_DECL npc_training_dummyAI : public Scripted_NoMovementAI
+{
+    npc_training_dummyAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
+    {
+        Reset();
+    }
+
+    uint32 combat_timer;
+
+    void Reset()
+    {
+        //m_creature->addUnitState(UNIT_STAT_STUNNED);
+        combat_timer = 0;
+    }
+
+    void DamageTaken(Unit* pDoneBy, uint32 &uiDamage)
+    {
+        combat_timer = 0;
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!me->SelectHostileTarget() || !me->getVictim())
+        return;
+      
+        if (CheckPercentLife(10.0f)) // allow players using finishers
+			me->ModifyHealth(me->GetMaxHealth());
+
+        me->SetTargetGUID(0); // prevent from rotating
+        combat_timer += diff;
+
+        if (combat_timer > OUT_OF_COMBAT_TIME)
+			EnterEvadeMode();
+    }
+};
+
+CreatureAI* GetAI_npc_training_dummy(Creature* pCreature)
+{
+	return new npc_training_dummyAI(pCreature);
+}
+
 void AddSC_npcs_special()
 {
     Script *newscript;
+
+	newscript = new Script;
+    newscript->Name = "npc_training_dummy";
+    newscript->GetAI = &GetAI_npc_training_dummy;
+    newscript->RegisterSelf();
 
     newscript = new Script;
     newscript->Name = "npc_air_force_bots";
