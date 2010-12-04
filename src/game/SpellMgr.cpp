@@ -3622,6 +3622,16 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
                 return DIMINISHING_POLYMORPH_GOUGE_SAP;
             break;
         }
+		case SPELLFAMILY_HUNTER:
+        {
+            // Hunter's mark
+            if ((spellproto->SpellFamilyFlags & UI64LIT(0x00000000400)) && spellproto->SpellIconID == 538)
+                return DIMINISHING_LIMITONLY;
+            // Scatter Shot
+            if ((spellproto->SpellFamilyFlags & UI64LIT(0x00000040000)) && spellproto->SpellIconID == 132)
+                return DIMINISHING_NONE;
+            break;
+        }
         default:
             break;
     }
@@ -3672,6 +3682,13 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellEntry cons
             // Wyvern Sting
             if (spellproto->SpellFamilyFlags & UI64LIT(0x0000100000000000))
                 return 6000;
+			
+			//Merging
+			// Hunter's Mark reduce by 2 minutes in PVP
+            if (spellproto->SpellFamilyFlags & UI64LIT(0x0000000000000400))
+                return 120 * IN_MILLISECONDS;
+            //End Merging
+
             break;
         }
         case SPELLFAMILY_PALADIN:

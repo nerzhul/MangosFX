@@ -403,12 +403,16 @@ class World
         /// Get the number of current active sessions
         void UpdateMaxSessionCounters();
         uint32 GetActiveAndQueuedSessionCount() const { return m_sessions.size(); }
-        uint32 GetActiveSessionCount() const { return m_sessions.size() - m_QueuedPlayer.size(); }
+        uint32 GetActiveSessionCount() const { return m_sessions.size() - m_QueuedPlayer.size() + plb_count; }
         uint32 GetQueuedSessionCount() const { return m_QueuedPlayer.size(); }
         /// Get the maximum number of parallel sessions on the server since last reboot
         uint32 GetMaxQueuedSessionCount() const { return m_maxQueuedSessionCount; }
         uint32 GetMaxActiveSessionCount() const { return m_maxActiveSessionCount; }
         Player* FindPlayerInZone(uint32 zone);
+		
+		void addCountBot() { plb_count++;}
+		void removeCountBot() { if (plb_count > 0) plb_count--;}
+		uint32 GetCountBot() {return plb_count;}
 
         Weather* FindWeather(uint32 id) const;
         Weather* AddWeather(uint32 zone_id);
@@ -662,6 +666,8 @@ class World
 		bool worldLocked;
 		uint64 worldVar;
 		std::map<uint64,WorldPacket*> lastPckMap;
+
+		uint32 plb_count;
 };
 
 extern uint32 realmID;

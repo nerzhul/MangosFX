@@ -6583,6 +6583,7 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
 			m_session->AddPlayerBot(guid);
 
 			PSendSysMessage("Bot ajoute !");
+			sWorld.addCountBot();
 		}
 	}
 	else if (cmd == "remove")
@@ -6595,6 +6596,7 @@ bool ChatHandler::HandlePlayerbotCommand(const char* args)
 			bot->GetSession()->LogoutPlayer(true);
 
 			PSendSysMessage("Bot retire !");
+			sWorld.removeCountBot();
 		}
 		else
 		{

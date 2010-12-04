@@ -4747,6 +4747,21 @@ void Unit::RemoveSingleAuraDueToSpellByDispel(uint32 spellId, uint64 casterGUID,
             return;
         }
     }
+	// Lifebloom final heal after dispel
+    else if (spellEntry->SpellFamilyName == SPELLFAMILY_DRUID && (spellEntry->SpellFamilyFlags & UI64LIT(0x0000001000000000)))
+    {                    
+        if (Aura* dotAura = GetAura(SPELL_AURA_DUMMY, SPELLFAMILY_DRUID, UI64LIT(0x0000001000000000), 0x00000000, casterGUID))
+        {
+            int32 amount = ( dotAura->GetModifier()->m_amount / dotAura->GetStackAmount() ); //* stackAmount;
+            CastCustomSpell(this, 33778, &amount, NULL, NULL, true, NULL, dotAura, casterGUID);
+
+            if (Unit* caster = dotAura->GetCaster())
+            {
+                int32 returnmana = (spellEntry->ManaCostPercentage * caster->GetCreateMana() / 100)/ 2 ;// * stackAmount / 2;
+                caster->CastCustomSpell(caster, 64372, &returnmana, NULL, NULL, true, NULL, dotAura, casterGUID);
+            }
+        }
+    }
     // Flame Shock
     else if (spellEntry->SpellFamilyName == SPELLFAMILY_SHAMAN && (spellEntry->SpellFamilyFlags & UI64LIT(0x10000000)))
     {
@@ -10223,21 +10238,34 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     if (SpellBonusEntry const* bonus = sSpellMgr.GetSpellBonusData(spellProto->Id))
     {
         float coeff = 0.0f;
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
-        if (damagetype == DOT)
-            coeff = bonus->dot_damage * LvlPenalty * stack;
+		
+		// New Engine for Applying Bonus dommage for testing purpose
+		//Merging
+		if (damagetype == DOT)
+        {
+            coeff = bonus->dot_damage;
+            if (bonus->dot_damage > 0)
+            {
+                WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
+                float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
+                APbonus += GetTotalAttackPowerValue(attType);
+                DoneTotal += int32(bonus->dot_damage * stack * coeff * APbonus);
+				//sLog.outDebugSpell("SpellDamageBonus DOT - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
+            }
+        }
         else
-            coeff = bonus->direct_damage * LvlPenalty * stack;
-
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
-
-        if (bonus->ap_bonus)
-            DoneTotal += int32(bonus->ap_bonus * GetTotalAttackPowerValue(BASE_ATTACK) * stack);
-
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
+        {
+            coeff = bonus->direct_damage;
+            if (bonus->direct_damage > 0)
+            {
+                WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
+                float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
+                APbonus += GetTotalAttackPowerValue(attType);
+                DoneTotal += int32(bonus->direct_damage * stack * coeff * APbonus);
+				//sLog.outDebugSpell("SpellDamageBonus Direct Damage - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
+            }
+        }
+		// End Merging
 
         // Spellmod SpellBonusDamage
 		if (modOwner)
@@ -10404,8 +10432,9 @@ bool Unit::isSpellCrit(Unit *pVictim, SpellEntry const *spellProto, SpellSchoolM
 
     switch(DmgClass)
     {
-        case SPELL_DAMAGE_CLASS_NONE:
-            return false;
+	case SPELL_DAMAGE_CLASS_NONE:
+			if (spellProto->Id != 379 && spellProto->Id != 33778) // Exception for Earth Shield and Lifebloom Final Bloom
+				return false;
         case SPELL_DAMAGE_CLASS_MAGIC:
         {
             if (schoolMask & SPELL_SCHOOL_MASK_NORMAL)
