@@ -8218,8 +8218,8 @@ void Aura::PeriodicTick()
                 modOwner->ApplySpellMod(GetId(), SPELLMOD_MULTIPLE_VALUE, multiplier);
 
             int32 heal = 0;
-		// Life drain must'nt use Heal bonus
-		if(GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellIconID == 546 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x08))
+			// Life drain must'nt use Heal bonus
+			if(GetSpellProto()->SpellFamilyName == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellIconID == 546 && GetSpellProto()->SpellFamilyFlags & UI64LIT(0x08))
 				heal = new_damage * multiplier;
 			else
 				heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());

@@ -9842,8 +9842,8 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
 				{
 					if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
 					{
-						if (victim->HasAura(8178)) 
-							victim->RemoveAura(8178,3);
+						if (magnet->HasAura(8178)) 
+							magnet->RemoveAura(8178,3);
 
 						return magnet;
 					}
@@ -9858,8 +9858,8 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
                 if(magnet->isAlive() && magnet->IsWithinLOSInMap(this))
                     if(roll_chance_i((*i)->GetModifier()->m_amount))
 					{
-						if(victim->HasAura(3411))
-							victim->RemoveAurasDueToSpell(3411);
+						if(magnet->HasAura(3411))
+							magnet->RemoveAurasDueToSpell(3411);
 
 						if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
 							return magnet;

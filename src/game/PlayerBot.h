@@ -5,6 +5,12 @@
 #include "BattleGround.h"
 #include "BattleGroundMgr.h"
 
+enum BotMode
+{
+	MODE_ATTACKER	=	0,
+	MODE_DEFENDER	=	1,
+	MODE_OBJECTIVE	=	2,
+};
 class PlayerBot// : public Player
 {
 	public:
@@ -22,10 +28,10 @@ class PlayerBot// : public Player
 		void HandleWarlockCombat();
 		void HandleDruidCombat();
 
-		void HandleWarsong();
-		void HandleArathi();
-		void HandleEyeOfTheStorm();
-		void HandleAlterac();
+		void HandleWarsong(uint32 diff);
+		void HandleArathi(uint32 diff);
+		void HandleEyeOfTheStorm(uint32 diff);
+		void HandleAlterac(uint32 diff);
 
 		bool HasDecidedToFight() { return m_decideToFight; }
 
@@ -34,9 +40,12 @@ class PlayerBot// : public Player
 
 		void Update(uint32 diff);
 
+		// Units
+		Unit* SearchTargetAroundMe();
 		// Movements
 		void Stay();
 		void GoToCacIfIsnt(Unit* target);
+		void GoToRandomBGPoint(BattleGroundTypeId bgTypeId);
 
 		// BG Handlers
 		void JoinBGQueueIfNotIn();
@@ -46,6 +55,8 @@ class PlayerBot// : public Player
 		uint8 specIdx;
 		bool m_decideToFight;
 		Player* bot;
+		BotMode m_mode;
+		uint32 mode_Timer;
 
 		BattleGround* sheduledBG;
 		BattleGroundTypeId bgTypeId;

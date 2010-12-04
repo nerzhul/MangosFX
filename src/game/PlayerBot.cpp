@@ -1,4 +1,6 @@
+
 #include "PlayerBot.h"
+#include "BattleGroundWS.h"
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
@@ -8,6 +10,7 @@ PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 	bgTypeId = BATTLEGROUND_TYPE_NONE;
 	m_ginfo = 0;
 	sheduledBG = NULL;
+	mode_Timer = 5000;
 }
 
 PlayerBot::~PlayerBot()
@@ -145,16 +148,16 @@ void PlayerBot::Update(uint32 diff)
 			switch(bg->GetTypeID(true))
 			{
 				case BATTLEGROUND_WS:
-					HandleWarsong();
+					HandleWarsong(diff);
 					break;
 				case BATTLEGROUND_AB:
-					HandleArathi();
+					HandleArathi(diff);
 					break;
 				case BATTLEGROUND_AV:
-					HandleAlterac();
+					HandleAlterac(diff);
 					break;
 				case BATTLEGROUND_EY:
-					HandleEyeOfTheStorm();
+					HandleEyeOfTheStorm(diff);
 					break;
 			}
 		}
@@ -289,7 +292,7 @@ void PlayerBot::HandleWarriorCombat()
 		bot->CastSpell(bot,SPELL_ENRAGE);
 	}
 
-	if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
+	if(Unit* target = Unit::GetUnit(*bot,bot->GetSelection()))
 	{
 		GoToCacIfIsnt(target);
 
@@ -333,18 +336,91 @@ void PlayerBot::HandleWarlockCombat()
 	}
 }
 
-void PlayerBot::HandleWarsong()
+void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
 {
 }
 
-void PlayerBot::HandleArathi()
+Unit* PlayerBot::SearchTargetAroundMe()
+{
+	return NULL;
+}
+
+void PlayerBot::HandleWarsong(uint32 diff)
+{
+	BattleGroundWS* bg = (BattleGroundWS*)bot->GetBattleGround();
+	BattleGroundTeamId bgTeamId = BattleGroundTeamId(bot->GetBGTeam());
+
+	if(mode_Timer <= diff)
+	{
+		m_mode = BotMode(urand(0,2));
+		mode_Timer = 300000;
+	}
+	else
+		mode_Timer -= diff;
+
+	switch(m_mode)
+	{
+		case MODE_ATTACKER:
+		{
+			Player* flagOwner = NULL;
+			if(bgTeamId == BG_TEAM_ALLIANCE)
+				flagOwner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID());
+			else
+				flagOwner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID());
+			if(flagOwner)
+			{
+				if(!bot->GetSelection() != flagOwner->GetGUID())
+					bot->SetSelection(flagOwner->GetGUID());
+
+				if(bot->GetDistance2d(flagOwner) > 40.0f)
+				{
+					bot->GetMotionMaster()->MoveChase(flagOwner);
+					return;
+				}
+			}
+			else
+			{
+				Unit* seekTarget = SearchTargetAroundMe();
+				if(!seekTarget)
+				{
+					GoToRandomBGPoint(BATTLEGROUND_WS);
+					return;
+				}
+				bot->SetSelection(seekTarget->GetGUID());
+			}
+			break;
+		}
+		case MODE_DEFENDER:
+			break;
+		case MODE_OBJECTIVE:
+			break;
+	}
+}
+
+void PlayerBot::HandleArathi(uint32 diff)
+{
+	switch(m_mode)
+	{
+		case MODE_ATTACKER:
+			break;
+		case MODE_DEFENDER:
+			break;
+		case MODE_OBJECTIVE:
+			break;
+	}
+}
+
+void PlayerBot::HandleEyeOfTheStorm(uint32 diff)
 {
 }
 
-void PlayerBot::HandleEyeOfTheStorm()
+void PlayerBot::HandleAlterac(uint32 diff)
 {
-}
-
-void PlayerBot::HandleAlterac()
-{
+	if(mode_Timer <= diff)
+	{
+		m_mode = BotMode(urand(0,2));
+		mode_Timer = 300000;
+	}
+	else
+		mode_Timer -= diff;
 }
