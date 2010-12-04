@@ -1,5 +1,5 @@
-
 #include "PlayerBot.h"
+#include "ObjectMgr.h"
 #include "BattleGroundWS.h"
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
