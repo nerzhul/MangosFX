@@ -11,6 +11,7 @@ PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 	m_ginfo = 0;
 	sheduledBG = NULL;
 	mode_Timer = 5000;
+	act_Timer = 1000;
 }
 
 PlayerBot::~PlayerBot()
@@ -338,11 +339,30 @@ void PlayerBot::HandleWarlockCombat()
 
 void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
 {
+	switch(bgTypeId)
+	{
+		case BATTLEGROUND_WS:
+			break;
+	}
 }
 
 Unit* PlayerBot::SearchTargetAroundMe()
 {
-	return NULL;
+	Map::PlayerList const &PlayerList = bot->GetMap()->GetPlayers();
+	Unit* tmpTarget = NULL;
+    for(Map::PlayerList::const_iterator itr = PlayerList.begin(); itr != PlayerList.end(); ++itr)
+    {
+		Player* pPlayer = itr->getSource();
+		if(!pPlayer)
+			continue;
+
+		if(pPlayer->GetDistance2d(bot) > 50.0f)
+			continue;
+
+		if(!tmpTarget || tmpTarget->GetDistance2d(bot) > pPlayer->GetDistance2d(bot))
+			tmpTarget = pPlayer;
+	}
+	return tmpTarget;
 }
 
 void PlayerBot::HandleWarsong(uint32 diff)
@@ -353,7 +373,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 	if(mode_Timer <= diff)
 	{
 		m_mode = BotMode(urand(0,2));
-		mode_Timer = 300000;
+		mode_Timer = urand(60000,300000);
 	}
 	else
 		mode_Timer -= diff;
@@ -391,7 +411,20 @@ void PlayerBot::HandleWarsong(uint32 diff)
 			break;
 		}
 		case MODE_DEFENDER:
+		{
+			if(act_Timer <= diff)
+			{
+				if(bot->GetDistance(925.0f,1435.0f,324.618f) > 50.0f)
+					bot->GetMotionMaster()->MovePoint(0,urand(923,942),urand(1424,1447),330.618f);
+				if(!bot->isMovingOrTurning())
+					if(Unit* seekTarget = SearchTargetAroundMe())
+						bot->SetSelection(seekTarget->GetGUID());
+				act_Timer = urand(750,1500);
+			}
+			else
+				act_Timer -= diff;
 			break;
+		}
 		case MODE_OBJECTIVE:
 			break;
 	}

@@ -56,7 +56,10 @@ class PlayerBot// : public Player
 		bool m_decideToFight;
 		Player* bot;
 		BotMode m_mode;
+		
+		// Timers
 		uint32 mode_Timer;
+		uint32 act_Timer;
 
 		BattleGround* sheduledBG;
 		BattleGroundTypeId bgTypeId;
