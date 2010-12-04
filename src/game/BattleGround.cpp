@@ -948,12 +948,20 @@ void BattleGround::EndBattleGround(uint32 winner)
 
         BlockMovement(plr);
 
-        sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
-        plr->GetSession()->SendPacket(&data);
+		if(!plr->isBot())
+		{
+			sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
+			plr->GetSession()->SendPacket(&data);
 
-        BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
-        plr->GetSession()->SendPacket(&data);
+			BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
+			sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
+			plr->GetSession()->SendPacket(&data);
+		}
+		else if(PlayerBot* bot = plr->GetPlayerBot())
+		{
+			plr->LeaveBattleground();
+			plr->GetSession()->HandleMoveWorldportAckOpcode();
+		}
         plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);
     }
 
