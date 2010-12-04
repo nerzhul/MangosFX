@@ -10223,21 +10223,34 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     if (SpellBonusEntry const* bonus = sSpellMgr.GetSpellBonusData(spellProto->Id))
     {
         float coeff = 0.0f;
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f",coeff);
-        if (damagetype == DOT)
-            coeff = bonus->dot_damage * LvlPenalty * stack;
+		
+		// New Engine for Applying Bonus dommage for testing purpose
+		//Merging
+		if (damagetype == DOT)
+        {
+            coeff = bonus->dot_damage;
+            if (bonus->dot_damage > 0)
+            {
+                WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
+                float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
+                APbonus += GetTotalAttackPowerValue(attType);
+                DoneTotal += int32(bonus->dot_damage * stack * coeff * APbonus);
+				sLog.outDebugSpell("SpellDamageBonus DOT - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APBonus);
+            }
+        }
         else
-            coeff = bonus->direct_damage * LvlPenalty * stack;
-
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
-
-        if (bonus->ap_bonus)
-            DoneTotal += int32(bonus->ap_bonus * GetTotalAttackPowerValue(BASE_ATTACK) * stack);
-
-		if(GetTypeId() == TYPEID_PLAYER)
-			sLog.outDebugSpell("SpellDamageBonus coef %f Done Total %i",coeff,DoneTotal);
+        {
+            coeff = bonus->direct_damage;
+            if (bonus->direct_damage > 0)
+            {
+                WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
+                float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
+                APbonus += GetTotalAttackPowerValue(attType);
+                DoneTotal += int32(bonus->direct_damage * stack * coeff * APbonus);
+				sLog.outDebugSpell("SpellDamageBonus Direct Damage - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APBonus);
+            }
+        }
+		// End Merging
 
         // Spellmod SpellBonusDamage
 		if (modOwner)
