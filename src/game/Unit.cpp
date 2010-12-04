@@ -9861,7 +9861,7 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
 						if(magnet->HasAura(3411))
 							magnet->RemoveAurasDueToSpell(3411);
 
-						if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
+						if(!spellInfo || isGoodToChangeTargetAfterSpell(spellInfo->Id))
 							return magnet;
 					}
     }

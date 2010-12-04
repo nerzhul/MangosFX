@@ -8404,7 +8404,7 @@ void Aura::PeriodicTick()
             if(int32 gain_amount = int32(drain_amount * gain_multiplier))
             {
                 int32 gain = pCaster->ModifyPower(power, gain_amount);
-		if (GetId() == 5138)                        // Drain Mana
+				if (GetId() == 5138)                        // Drain Mana
                     if (Aura* petPart = pCaster->GetAura(GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
                         if (int pet_gain = gain_amount * petPart->GetModifier()->m_amount / 100)
                             pCaster->CastCustomSpell(pCaster, 32554, &pet_gain, NULL, NULL, true);

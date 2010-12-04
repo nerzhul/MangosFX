@@ -378,6 +378,9 @@ void PlayerBot::HandleWarsong(uint32 diff)
 	else
 		mode_Timer -= diff;
 
+	if(bg->GetStatus() != STATUS_IN_PROGRESS)
+		return;
+
 	switch(m_mode)
 	{
 		case MODE_ATTACKER:
