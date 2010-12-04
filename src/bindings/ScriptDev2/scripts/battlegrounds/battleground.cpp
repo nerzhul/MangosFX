@@ -88,7 +88,12 @@ struct MANGOS_DLL_DECL npc_spirit_guideAI : public ScriptedAI
     {
         if (pSpellEntry->Id == SPELL_SPIRIT_HEAL && pUnit->GetTypeId() == TYPEID_PLAYER
             && pUnit->HasAura(SPELL_WAITING_TO_RESURRECT))
+		{
             pUnit->CastSpell(pUnit, SPELL_SPIRIT_HEAL_MANA, true);
+			// LittleHack for rez bug in BG
+			if(pUnit->GetTypeId() == TYPEID_PLAYER)
+				((Player*)pUnit)->ResurrectPlayer(1.0f);
+		}
     }
 };
 
