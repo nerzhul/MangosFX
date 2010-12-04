@@ -3092,15 +3092,23 @@ void Map::ScriptsProcess()
                 switch(step.script->talk.chatType)
                 {
                     case CHAT_TYPE_SAY:
+						if(!unitTarget)
+							break;
 						pSource->MonsterSay(textId, step.script->talk.language, unitTarget->GetGUID());
                         break;
                     case CHAT_TYPE_YELL:
+						if(!unitTarget)
+							break;
                         pSource->MonsterYell(textId, step.script->talk.language, unitTarget->GetGUID());
                         break;
                     case CHAT_TYPE_TEXT_EMOTE:
+						if(!unitTarget)
+							break;
                         pSource->MonsterTextEmote(textId, unitTarget->GetGUID());
                         break;
                     case CHAT_TYPE_BOSS_EMOTE:
+						if(!unitTarget)
+							break;
                         pSource->MonsterTextEmote(textId, unitTarget->GetGUID(), true);
                         break;
                     case CHAT_TYPE_WHISPER:
@@ -3120,6 +3128,8 @@ void Map::ScriptsProcess()
 						pSource->MonsterWhisper(textId, unitTarget->GetGUID(), true);
                         break;
                     case CHAT_TYPE_ZONE_YELL:
+						if(!unitTarget)
+							break;
 						pSource->MonsterYellToZone(textId, step.script->talk.language, unitTarget->GetGUID());
                         break;
                     default:
