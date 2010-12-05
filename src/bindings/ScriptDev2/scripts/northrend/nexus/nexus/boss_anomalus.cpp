@@ -1,6 +1,7 @@
 /* LibDevFS by Frost Sapphire Studios */
 
 #include "precompiled.h"
+#include "nexus.h"
 
 enum
 {
@@ -29,47 +30,52 @@ enum
 ## boss_anomalus
 ######*/
 
-struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
+struct MANGOS_DLL_DECL boss_anomalusAI : public LibDevFSAI
 {
+    boss_anomalusAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+        InitInstance();
+		AddEvent(SPELL_ATTRAC,7000,9000);
+		AddEvent(m_difficulty ? SPELL_SPARK_H : SPELL_SPARK,10000,12000);
+    }
+
 	bool invoc;
 	uint32 phase_invoc_Timer;
 	uint32 invoc_Timer;
-	Unit* target;
+	uint64 target;
 	uint8 phase;
-
-    boss_anomalusAI(Creature* pCreature) : ScriptedAI(pCreature)
-    {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
-        Reset();
-    }
-
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
+	bool Achievement;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.CleanMyAdds();
-		Tasks.AddEvent(SPELL_ATTRAC,7000,9000);
-		Tasks.AddEvent(m_bIsHeroic ? SPELL_SPARK_H : SPELL_SPARK,10000,12000);
-			
+		CleanMyAdds();
+		ResetTimers();			
 		phase = 1;
 		invoc = false;
+		Achievement = true;
+		SetInstanceData(TYPE_ANOMALUS,NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
+		SetInstanceData(TYPE_ANOMALUS,IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
-		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
-		Tasks.CleanMyAdds();
+		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+		CleanMyAdds();
+		SetInstanceData(TYPE_ANOMALUS,DONE);
+		if(Achievement && m_difficulty)
+			CompleteAchievementForGroup(2037);
     }
+
+	void FailAchievement()
+	{
+		Achievement = false;
+	}
 
     void KilledUnit(Unit* pVictim)
     {
@@ -79,7 +85,7 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
 
 	void call_portal()
 	{
-		Tasks.CallCreature(NPC_FAILLE,TEN_MINS,NEAR_7M);
+		CallCreature(NPC_FAILLE,TEN_MINS,NEAR_7M);
 		DoScriptText(SAY_RIFT, me);
 		DoCastMe(SPELL_CREATE_RIFT);
 		invoc_Timer = 15000;
@@ -127,34 +133,33 @@ struct MANGOS_DLL_DECL boss_anomalusAI : public ScriptedAI
 			phase++;
 		}
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
     }
 };
 
-struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
+struct MANGOS_DLL_DECL faille_anomalusAI : public LibDevFSAI
 {
-	uint32 storm_Timer;
-	Unit* target;
-
-	faille_anomalusAI(Creature* pCreature) : ScriptedAI(pCreature)
+	faille_anomalusAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
-        m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
-        Reset();
+        InitInstance();
+		AddSummonEvent(NPC_PORTAL_ADD,2000,2000);
     }
 
-    ScriptedInstance* m_pInstance;
-    bool m_bIsHeroic;
-	MobEventTasks Tasks;
+	uint32 storm_Timer;
 
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		Tasks.AddSummonEvent(NPC_PORTAL_ADD,2000,2000);
+		ResetTimers();
 		storm_Timer = 1000;
     }
+
+	void JustDied(Unit* pWho)
+	{
+		if(Creature* Anomalus = GetInstanceCreature(TYPE_ANOMALUS))
+			((boss_anomalusAI*)Anomalus->AI())->FailAchievement();
+	}
 
 	void UpdateAI(const uint32 diff)
     {
@@ -164,17 +169,16 @@ struct MANGOS_DLL_DECL faille_anomalusAI : public ScriptedAI
 		if(storm_Timer <= diff)
 		{
 			me->SetSpeedRate(MOVE_WALK,0.01f,true);
-			target = SelectUnit(SELECT_TARGET_RANDOM,0);
 			if(me->HasAura(SPELL_CHARGE_RIFT))
-				DoCast(target,SPELL_STORM_C);
+				DoCastRandom(SPELL_STORM_C);
 			else
-				DoCast(target,SPELL_STORM_UC);
+				DoCastRandom(SPELL_STORM_UC);
 			storm_Timer = 1200;
 		}
 		else
 			storm_Timer -= diff;
 
-		Tasks.UpdateEvent(diff);
+		UpdateEvent(diff);
 	}
 };
 

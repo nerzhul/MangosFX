@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "hellfire_ramparts.h"
 
-struct MANGOS_DLL_DECL instance_ramparts : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_ramparts : public InstanceData
 {
-    instance_ramparts(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_ramparts(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     uint32 m_uiSentryCounter;

@@ -61,11 +61,9 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
 {
     boss_akilzonAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiStaticDisruptTimer;
     uint32 m_uiCallLightTimer;
@@ -101,10 +99,10 @@ struct MANGOS_DLL_DECL boss_akilzonAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_pInstance->SetData(TYPE_AKILZON, DONE);
+        SetInstanceData(TYPE_AKILZON, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -198,11 +196,9 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
 {
     mob_soaring_eagleAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiEagleSwoopTimer;
     uint32 m_uiReturnTimer;
@@ -241,10 +237,10 @@ struct MANGOS_DLL_DECL mob_soaring_eagleAI : public ScriptedAI
 
     void DoMoveToRandom()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pAzkil = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_AKILZON)))
+        if (Creature* pAzkil = pInstance->instance->GetCreature(pInstance->GetData64(DATA_AKILZON)))
         {
             float fX, fY, fZ;
             pAzkil->GetRandomPoint(pAzkil->GetPositionX(), pAzkil->GetPositionY(), pAzkil->GetPositionZ()+15.0f, 30.0f, fX, fY, fZ);

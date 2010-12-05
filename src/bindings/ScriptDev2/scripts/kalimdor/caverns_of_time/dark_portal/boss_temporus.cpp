@@ -41,12 +41,11 @@ struct MANGOS_DLL_DECL boss_temporusAI : public ScriptedAI
 {
     boss_temporusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 Haste_Timer;
@@ -76,8 +75,8 @@ struct MANGOS_DLL_DECL boss_temporusAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RIFT,SPECIAL);
+        if (pInstance)
+            SetInstanceData(TYPE_RIFT,SPECIAL);
     }
 
     void MoveInLineOfSight(Unit *who)

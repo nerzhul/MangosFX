@@ -265,6 +265,9 @@ BattleGround::BattleGround()
     m_TeamScores[BG_TEAM_ALLIANCE]      = 0;
     m_TeamScores[BG_TEAM_HORDE]         = 0;
 
+	ArenaPlayerEnter[BG_TEAM_ALLIANCE]	= false;
+	ArenaPlayerEnter[BG_TEAM_HORDE]		= false;
+
     m_PrematureCountDown = false;
 	m_TimerArenaDone = false;
     m_PrematureCountDown = 0;
@@ -775,7 +778,7 @@ void BattleGround::UpdateWorldStateForPlayer(uint32 Field, uint32 Value, Player 
 
 void BattleGround::EndBattleGround(uint32 winner)
 {
-    this->RemoveFromBGFreeSlotQueue();
+    RemoveFromBGFreeSlotQueue();
 
     ArenaTeam * winner_arena_team = NULL;
     ArenaTeam * loser_arena_team = NULL;
@@ -810,11 +813,11 @@ void BattleGround::EndBattleGround(uint32 winner)
     m_EndTime = TIME_TO_AUTOREMOVE;
 
     // arena rating calculation
-    if (isArena() && isRated() && winner)
+	if (isArena() && isRated() && winner)
     {
         winner_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(winner));
         loser_arena_team = sObjectMgr.GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(winner)));
-        if (winner_arena_team && loser_arena_team)
+        if (winner_arena_team && loser_arena_team && ArenaPlayerEnter[BG_TEAM_ALLIANCE] == true && ArenaPlayerEnter[BG_TEAM_HORDE] == true)
         {
             loser_rating = loser_arena_team->GetStats().rating;
             winner_rating = winner_arena_team->GetStats().rating;
@@ -865,6 +868,8 @@ void BattleGround::EndBattleGround(uint32 winner)
         }
     }
 
+	std::vector<Player*> botToRemove;
+	botToRemove.clear();
     for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
         uint32 team = itr->second.Team;
@@ -918,6 +923,11 @@ void BattleGround::EndBattleGround(uint32 winner)
                     plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_WIN_RATED_ARENA, member->personal_rating);
 
                 winner_arena_team->MemberWon(plr,loser_rating);
+				if (member)
+                {
+                    plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_PERSONAL_RATING, GetArenaType(), member->personal_rating);
+                    plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_TEAM_RATING, GetArenaType(), winner_arena_team->GetStats().rating);
+                }
             }
             else
             {
@@ -940,15 +950,27 @@ void BattleGround::EndBattleGround(uint32 winner)
 
         BlockMovement(plr);
 
-        sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
-        plr->GetSession()->SendPacket(&data);
+		if(!plr->isBot())
+		{
+			sBattleGroundMgr.BuildPvpLogDataPacket(&data, this);
+			plr->GetSession()->SendPacket(&data);
 
-        BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
-        sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
-        plr->GetSession()->SendPacket(&data);
+			BattleGroundQueueTypeId bgQueueTypeId = BattleGroundMgr::BGQueueTypeId(GetTypeID(), GetArenaType());
+			sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
+			plr->GetSession()->SendPacket(&data);
+		}
+		else if(PlayerBot* bot = plr->GetPlayerBot())
+		{
+			botToRemove.push_back(plr);
+		}
         plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);
     }
 
+	for(std::vector<Player*>::iterator itr = botToRemove.begin(); itr != botToRemove.end(); ++itr)
+	{
+		(*itr)->LeaveBattleground();
+		(*itr)->GetSession()->HandleMoveWorldportAckOpcode();
+	}
     if (isArena() && isRated() && winner_arena_team && loser_arena_team)
     {
         // update arena points only after increasing the player's match count!
@@ -1354,6 +1376,7 @@ void BattleGround::AddPlayer(Player *plr)
         plr->RemoveAllEnchantments(TEMP_ENCHANTMENT_SLOT);
         if(team == ALLIANCE)                                // gold
         {
+			ArenaPlayerEnter[BG_TEAM_ALLIANCE] = true;
             if (plr->GetTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GOLD_FLAG,true);
             else
@@ -1361,6 +1384,7 @@ void BattleGround::AddPlayer(Player *plr)
         }
         else                                                // green
         {
+			ArenaPlayerEnter[BG_TEAM_HORDE] = true;
             if (plr->GetTeam() == HORDE)
                 plr->CastSpell(plr, SPELL_HORDE_GREEN_FLAG,true);
             else

@@ -57,13 +57,12 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
 {
     boss_grandmaster_vorpilAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Intro = false;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 ShadowBoltVolley_Timer;
@@ -83,8 +82,8 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         Banish_Timer = 25000;
         Teleport = false;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VORPIL, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_VORPIL, NOT_STARTED);
     }
 
     void MoveInLineOfSight(Unit *who)
@@ -114,8 +113,8 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
         me->SummonCreature(ENTRY_VOID_PORTAL,-292.05,-270.37,12.68,0,TEMPSUMMON_CORPSE_DESPAWN,0);
         me->SummonCreature(ENTRY_VOID_PORTAL,-301.64,-255.97,12.68,0,TEMPSUMMON_CORPSE_DESPAWN,0);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VORPIL, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_VORPIL, IN_PROGRESS);
     }
 
     void KilledUnit(Unit *victim)
@@ -139,8 +138,8 @@ struct MANGOS_DLL_DECL boss_grandmaster_vorpilAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VORPIL, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_VORPIL, DONE);
     }
 
     void UpdateAI(const uint32 diff)

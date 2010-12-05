@@ -55,12 +55,10 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
 {
     boss_marliAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_uiDefaultModel = me->GetDisplayId();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiPoisonVolley_Timer;
     uint32 m_uiSpawnSpider_Timer;
@@ -162,11 +160,11 @@ struct MANGOS_DLL_DECL boss_marliAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_MARLI, DONE);
+            SetInstanceData(TYPE_MARLI, DONE);
 
-            if (Creature* pHakkar = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_HAKKAR)))
+            if (Creature* pHakkar = pInstance->instance->GetCreature(pInstance->GetData64(DATA_HAKKAR)))
             {
                 if (pHakkar->isAlive())
                     pHakkar->SetMaxHealth(pHakkar->GetMaxHealth() - 60000);
@@ -317,10 +315,9 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
     mob_spawn_of_marliAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         Reset();
-        m_pInstance = (ScriptedInstance*)me->GetInstanceData();
+        pInstance = me->GetInstanceData();
     }
 
-    ScriptedInstance* m_pInstance;
     uint32 m_uiLevelUp_Timer;
 
     void Reset()
@@ -335,7 +332,7 @@ struct MANGOS_DLL_DECL mob_spawn_of_marliAI : public ScriptedAI
 
         if (m_uiLevelUp_Timer < diff)
         {
-            if (m_pInstance && m_pInstance->GetData(TYPE_MARLI) != DONE)
+            if (pInstance && pInstance->GetData(TYPE_MARLI) != DONE)
             {
                 DoCastMe(SPELL_LEVELUP);
                 me->SetLevel(me->getLevel() + 1);

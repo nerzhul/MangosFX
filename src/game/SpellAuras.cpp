@@ -420,7 +420,7 @@ m_isRemovedOnShapeLost(true), m_in_use(0), m_deleted(false)
             ItemRandomSuffixEntry const *item_rand_suffix = sItemRandomSuffixStore.LookupEntry(abs(castItem->GetItemRandomPropertyId()));
             if(item_rand_suffix)
             {
-                for (int k = 0; k < 3; ++k)
+                for (int k = 0; k < MAX_EFFECT_INDEX; ++k)
                 {
                     SpellItemEnchantmentEntry const *pEnchant = sSpellItemEnchantmentStore.LookupEntry(item_rand_suffix->enchant_id[k]);
                     if(pEnchant)
@@ -2556,6 +2556,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     case 48025:                             // Headless Horseman's Mount
 						Spell::SelectMountByAreaAndSkill(m_target, 51621, 48024, 51617, 48023, NULL);
 						return;
+					case 51405:                             // Digging for Treasure
+						m_target->HandleEmoteCommand(EMOTE_STATE_WORK);
+						// Pet will be following owner, this makes him stop
+						m_target->addUnitState(UNIT_STAT_STUNNED);
+						return;
                     case 62061:                             // Festive Holiday Mount
                         if (m_target->HasAuraType(SPELL_AURA_MOUNTED))
                             // Reindeer Transformation
@@ -2622,51 +2627,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 break;
 			case SPELLFAMILY_ROGUE:
+			case SPELLFAMILY_WARRIOR:
 			{
-				// Tricks of Trade
-				if (m_spellProto->Id == 57934)
-				{
-					if (Spell* tot = m_target->FindCurrentSpellBySpellId(57934))
-						if(Unit* altTarget = tot->m_targets.getUnitTarget())
-							m_modifier.m_miscvalue = altTarget->GetGUID();
-				}
+				sClassSpellHandler.HandleAuraDummyWithApply(this,GetCaster(),m_target);
 				break;
 			}
-            case SPELLFAMILY_WARRIOR:
-                // Overpower
-                if(m_spellProto->GetSpellFamilyFlags() & UI64LIT(0x0000000000000004))
-                {
-                    // Must be casting target
-                    if (!m_target->IsNonMeleeSpellCasted(false))
-                        return;
-
-                    Unit* caster = GetCaster();
-                    if (!caster)
-                        return;
-
-                    Unit::AuraList const& modifierAuras = caster->GetAurasByType(SPELL_AURA_ADD_FLAT_MODIFIER);
-                    for(Unit::AuraList::const_iterator itr = modifierAuras.begin(); itr != modifierAuras.end(); ++itr)
-                    {
-                        // Unrelenting Assault
-                        if((*itr)->GetSpellProto()->GetSpellFamilyName()==SPELLFAMILY_WARRIOR && (*itr)->GetSpellProto()->SpellIconID == 2775)
-                        {
-                            switch ((*itr)->GetSpellProto()->Id)
-                            {
-                                case 46859:                 // Unrelenting Assault, rank 1
-                                    m_target->CastSpell(m_target,64849,true,NULL,(*itr));
-                                    break;
-                                case 46860:                 // Unrelenting Assault, rank 2
-                                    m_target->CastSpell(m_target,64850,true,NULL,(*itr));
-                                    break;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
-                    }
-                    return;
-                }
-                break;
 			case SPELLFAMILY_PRIEST:
 			{
 				// Penance
@@ -2844,6 +2809,23 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 m_target->CastSpell(m_target, 47287, true, NULL, this);
                 return;
             }
+			case 51405:                                     // Digging for Treasure
+			{
+				const uint32 spell_list[7] =
+				{
+					51441,                                  // hare
+					51397,                                  // crystal
+					51398,                                  // armor
+					51400,                                  // gem
+					51401,                                  // platter
+					51402,                                  // treasure
+					51443                                   // bug
+				};
+				m_target->CastSpell(m_target, spell_list[urand(0,6)], true);
+				m_target->HandleEmoteCommand(EMOTE_STATE_NONE);
+				m_target->clearUnitState(UNIT_STAT_STUNNED);
+				return;
+			}
 			case 51870:                                     // Collect Hair Sample
 			{
 				if (Unit* pCaster = GetCaster())
@@ -2891,6 +2873,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             int32 basepoints = effect1->EffectBasePoints * 9;
             basepoints = caster->SpellDamageBonus(m_target, GetSpellProto(), basepoints, DOT);
 			basepoints += caster->SpellBaseDamageBonus(GetSpellSchoolMask(m_spellProto)) * 1.2;
+			basepoints = caster->SpellDamageBonus(m_target, GetSpellProto(), basepoints, DOT);
             m_target->CastCustomSpell(m_target, 64085, &basepoints, NULL, NULL, false);
             return;
         }
@@ -3174,7 +3157,7 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
             // Lifebloom
             if (GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x1000000000))
             {
-                if ( apply )
+                if (apply)
                 {
                     if (Unit* caster = GetCaster())
                         // prevent double apply bonuses
@@ -3183,10 +3166,11 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                 }
                 else
                 {
-                    // Final heal only on dispelled or duration end
-                    if ( !(GetAuraDuration() <= 0 || m_removeMode == AURA_REMOVE_BY_DISPEL) )
+                    // Final heal only duration end
+                    
+					if ( !(GetAuraDuration() <= 0))// || m_removeMode != AURA_REMOVE_BY_DISPEL) ) // Remove Dispel support here
                         return;
-
+				
                     // have a look if there is still some other Lifebloom dummy aura
                     Unit::AuraList const& auras = m_target->GetAurasByType(SPELL_AURA_DUMMY);
                     for(Unit::AuraList::const_iterator itr = auras.begin(); itr!=auras.end(); ++itr)
@@ -3197,7 +3181,10 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
                     // final heal
                     if(m_target->IsInWorld() && m_stackAmount > 0)
                     {
-                         m_target->CastCustomSpell(m_target, 33778, &m_modifier.m_amount, NULL, NULL, true, NULL, this, GetCasterGUID());
+						int32 heal = 0;
+						int32 stack = GetStackAmount();
+						
+						 m_target->CastCustomSpell(m_target, 33778, &m_modifier.m_amount, NULL, NULL, true, NULL, this, GetCasterGUID());
 
                         if (Unit* caster = GetCaster())
                         {
@@ -3260,7 +3247,12 @@ void Aura::HandleAuraDummy(bool apply, bool Real)
 		case SPELLFAMILY_HUNTER:
 			// Misdirection
 			if(GetId()==34477 && !apply)
-				m_target->SetReducedThreatPercent(0, 0);
+			{
+				if(!apply)
+					m_target->SetReducedThreatPercent(0, 0);
+				else if(apply && GetAuraDuration() > 4000)
+						SetAuraDuration(4000);
+			}
 			break;
 		case SPELLFAMILY_ROGUE:
 			// Tricks of the Trade
@@ -3949,6 +3941,9 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
                             break;
                     }
                     break;
+					if(m_target->GetTypeId() == TYPEID_PLAYER)
+						if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(3456))
+							((Player*)m_target)->GetAchievementMgr().DoCompleteAchivement(pAE);
                 }
                 default: break;
             }
@@ -5395,8 +5390,15 @@ void Aura::HandlePeriodicTriggerSpell(bool apply, bool /*Real*/)
             case 66:                                        // Invisibility
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT && m_duration<=0)
                     m_target->CastSpell(m_target, 32612, true, NULL, this);
-
                 return;
+			 case 44401: //Missile Barrage
+             case 48108: //Hot Streak
+             case 57761: //Fireball!
+	             if (m_removeMode != AURA_REMOVE_BY_EXPIRE || m_duration <= 0)
+					break;
+                 if (m_target->HasAura(70752)) //Item - Mage T10 2P Bonus
+	                 m_target->CastSpell(m_target, 70753, true);
+                 break;
             case 42783:                                     //Wrath of the Astrom...
                 if (m_removeMode == AURA_REMOVE_BY_DEFAULT && GetEffIndex() + 1 < 3)
                     m_target->CastSpell(m_target, m_spellProto->CalculateSimpleValue(SpellEffectIndex(GetEffIndex()+1)), true);
@@ -5637,6 +5639,12 @@ void Aura::HandlePeriodicDamage(bool apply, bool Real)
                     float mwb_max = caster->GetWeaponDamageRange(BASE_ATTACK,MAXDAMAGE);
                     m_modifier.m_amount+=int32(((mwb_min+mwb_max)/2+ap*mws/14000)*0.2f);
     				SpellChainNode const* RendSpell = sSpellMgr.GetSpellChainNode(m_spellProto->Id);
+					if(!RendSpell)
+					{
+						error_log("RendSpell %u Unknown, DB Error ?",m_spellProto->Id);
+						return;
+					}
+
                     if (RendSpell->rank >= 9)
                     {
                         if (m_target->GetHealth() > m_target->GetMaxHealth()*0.75f)
@@ -7063,6 +7071,9 @@ void Aura::HandleShapeshiftBoosts(bool apply)
             m_target->RemoveAurasDueToSpell(66530);
             m_target->CastSpell(m_target,66530,true);
         }
+
+		// Remove conflagrate dot
+		m_target->RemoveAurasDueToSpell(18118);
     }
 }
 
@@ -8135,7 +8146,8 @@ void Aura::PeriodicTick()
 
             pCaster->DealDamageMods(m_target, pdamage, &absorb);
 
-            SpellPeriodicAuraLogInfo pInfo(this, pdamage, 0, absorb, resist, 0.0f, isCrit);
+		uint32 overkill = pdamage > m_target->GetHealth() ? pdamage - m_target->GetHealth() : 0;
+            SpellPeriodicAuraLogInfo pInfo(this, pdamage, overkill, absorb, resist, 0.0f, isCrit);
             m_target->SendPeriodicAuraLog(&pInfo);
 
             // Set trigger flag
@@ -8231,7 +8243,12 @@ void Aura::PeriodicTick()
             if(Player *modOwner = pCaster->GetSpellModOwner())
                 modOwner->ApplySpellMod(GetId(), SPELLMOD_MULTIPLE_VALUE, multiplier);
 
-            int32 heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());
+            int32 heal = 0;
+			// Life drain must'nt use Heal bonus
+			if(GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_WARLOCK && GetSpellProto()->SpellIconID == 546 && GetSpellProto()->GetSpellFamilyFlags() & UI64LIT(0x08))
+				heal = new_damage * multiplier;
+			else
+				heal = pCaster->SpellHealingBonus(pCaster, GetSpellProto(), int32(new_damage * multiplier), DOT, GetStackAmount());
 
             int32 gain = pCaster->DealHeal(pCaster, heal, GetSpellProto());
             pCaster->getHostileRefManager().threatAssist(pCaster, gain * 0.5f, GetSpellProto());
@@ -8277,7 +8294,10 @@ void Aura::PeriodicTick()
 					pdamage = int32(pdamage) + addition;
                 }
             }
-            pdamage = pCaster->SpellHealingBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
+
+			// Warlock Health Funel fix
+			if(GetSpellProto()->SpellVisual[0] != 163)
+				pdamage = pCaster->SpellHealingBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
 
             // This method can modify pdamage
             bool isCrit = IsCritFromAbilityAura(pCaster, pdamage);
@@ -8322,7 +8342,7 @@ void Aura::PeriodicTick()
                 }
                 else
                 {
-                    uint32 damage = gain;
+					uint32 damage = gain;
                     uint32 absorb = 0;
                     pCaster->DealDamageMods(pCaster, damage, &absorb);
                     pCaster->SendSpellNonMeleeDamageLog(pCaster, GetId(), damage, GetSpellSchoolMask(GetSpellProto()), absorb, 0, false, 0, false);
@@ -8407,12 +8427,14 @@ void Aura::PeriodicTick()
             SpellPeriodicAuraLogInfo pInfo(this, drain_amount, 0, 0, 0, gain_multiplier);
             m_target->SendPeriodicAuraLog(&pInfo);
 
-            int32 gain_amount = int32(drain_amount * gain_multiplier);
-
-            if(gain_amount)
+            if(int32 gain_amount = int32(drain_amount * gain_multiplier))
             {
                 int32 gain = pCaster->ModifyPower(power, gain_amount);
-                m_target->AddThreat(pCaster, float(gain) * 0.5f, pInfo.critical, GetSpellSchoolMask(GetSpellProto()), GetSpellProto());
+				if (GetId() == 5138)                        // Drain Mana
+                    if (Aura* petPart = pCaster->GetAura(GetSpellProto()->CalculateSimpleValue(EFFECT_INDEX_1)))
+                        if (int pet_gain = gain_amount * petPart->GetModifier()->m_amount / 100)
+                            pCaster->CastCustomSpell(pCaster, 32554, &pet_gain, NULL, NULL, true);
+                	m_target->AddThreat(pCaster, float(gain) * 0.5f, pInfo.critical, GetSpellSchoolMask(GetSpellProto()), GetSpellProto());
             }
             break;
         }
@@ -8511,6 +8533,8 @@ void Aura::PeriodicTick()
             pCaster->CalculateSpellDamage(&damageInfo, gain, spellProto);
 
             pCaster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb);
+
+			damageInfo.overkill = damageInfo.target->GetHealth() < damageInfo.damage ? damageInfo.damage - damageInfo.target->GetHealth(): 0;
 
             pCaster->SendSpellNonMeleeDamageLog(&damageInfo);
 

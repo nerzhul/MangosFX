@@ -169,7 +169,7 @@ float OrbSpawn [4][2] =
 bool GO_go_orb_of_the_blue_flight(Player *plr, GameObject* go)
 {
     //if(go->GetUInt32Value(GAMEOBJECT_FACTION) == 35){
-        //ScriptedInstance* pInstance = ((ScriptedInstance*)go->GetInstanceData());
+        //InstanceData* pInstance = ((ScriptedInstance*)go->GetInstanceData());
         //float x,y,z, dx,dy,dz;
         go->SummonCreature(ID_DRAGON, plr->GetPositionX(), plr->GetPositionY(), plr->GetPositionZ(), 0.0f, TEMPSUMMON_TIMED_DESPAWN, 121000);
         plr->CastSpell(plr, SPELL_VENGEANCE_OF_THE_BLUE_FLIGHT, true);
@@ -200,12 +200,10 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
 {
     boss_kiljadenAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 OrbTimer;
     bool BoolOrb;
 
@@ -285,7 +283,7 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
             me->RemoveAurasDueToSpell(SPELL_SACRIFICE_OF_ANVEENA,0);
 
         /*if(pInstance)
-            pInstance->SetData(DATA_DECIVER, NOT_STARTED); */
+            SetInstanceData(DATA_DECIVER, NOT_STARTED); */
     }
     
     void Aggro(Unit *who) 
@@ -335,8 +333,8 @@ struct MANGOS_DLL_DECL boss_kiljadenAI : public Scripted_NoMovementAI
             me->setFaction(14);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             
-            pInstance->SetData(DATA_KILJAEDEN_EVENT, IN_PROGRESS);
-            pInstance->SetData(DATA_DECIVER, NOT_STARTED); 
+            SetInstanceData(DATA_KILJAEDEN_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_DECIVER, NOT_STARTED); 
         }*/
 
         if(!CanDoSomething())
@@ -569,12 +567,10 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
 {
     mob_deceiverAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 BoltTimer;
     uint32 PortalTimer;
     uint32 ImpTimer;
@@ -600,13 +596,13 @@ struct MANGOS_DLL_DECL mob_deceiverAI : public ScriptedAI
     void JustDied(Unit* Killer) 
     {
         /*if(pInstance && pInstance->GetData(DATA_DECIVER) == NOT_STARTED)
-            pInstance->SetData(DATA_DECIVER, IN_PROGRESS);
+            SetInstanceData(DATA_DECIVER, IN_PROGRESS);
         else 
             if(pInstance && pInstance->GetData(DATA_DECIVER) == IN_PROGRESS)
-                pInstance->SetData(DATA_DECIVER, DONE);
+                SetInstanceData(DATA_DECIVER, DONE);
             else
                 if(pInstance && pInstance->GetData(DATA_DECIVER) == DONE)
-                    pInstance->SetData(DATA_DECIVER, SPECIAL);*/
+                    SetInstanceData(DATA_DECIVER, SPECIAL);*/
     }
 
     void KilledUnit(Unit *Victim) {}
@@ -660,11 +656,10 @@ struct MANGOS_DLL_DECL mob_orbAI : public ScriptedAI
 {
     mob_orbAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
-    ScriptedInstance* pInstance;
     uint32 SpellTimer;
  
     void Reset()
@@ -699,12 +694,10 @@ struct MANGOS_DLL_DECL mob_armagedonAI : public Scripted_NoMovementAI
 {
     mob_armagedonAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 ExplosionTimer;
     uint32 EffectTimer;
     bool Explosion;
@@ -752,12 +745,10 @@ struct MANGOS_DLL_DECL mob_shadow_spikeAI : public Scripted_NoMovementAI
 {
     mob_shadow_spikeAI(Creature *c) : Scripted_NoMovementAI(c)
     {
-        pInstance = ((ScriptedInstance*)c->GetInstanceData());
+        pInstance = (c->GetInstanceData());
         Reset();
     }
  
-    ScriptedInstance* pInstance;
-
     uint32 ExplosionTimer;
     uint32 EffectTimer;
     bool Explosion;
@@ -805,11 +796,9 @@ struct MANGOS_DLL_DECL mob_killimpAI : public ScriptedAI
 {
     mob_killimpAI(Creature *c) : ScriptedAI(c) 
     {
-	    pInstance = ((ScriptedInstance*)c->GetInstanceData());
+	    pInstance = (c->GetInstanceData());
 	    Reset(); 
     }
-
-    ScriptedInstance* pInstance; 
 
     bool Reached;
     uint32 VisibilityTimer ;

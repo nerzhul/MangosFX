@@ -76,12 +76,11 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
 {
     boss_nothAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     bool isTeleported;
@@ -115,8 +114,8 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_NOTH, NOT_STARTED);
+        if(pInstance)
+            SetInstanceData(TYPE_NOTH, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -134,8 +133,8 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
         if (who->isTargetableForAttack() && who->isInAccessablePlaceFor(me) && me->IsHostileTo(who))
             AttackStart(who);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_NOTH, IN_PROGRESS);
+        if(pInstance)
+            SetInstanceData(TYPE_NOTH, IN_PROGRESS);
     }
 
     void AttackStart(Unit* who)
@@ -175,8 +174,8 @@ struct MANGOS_DLL_DECL boss_nothAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_NOTH, DONE);
+        if(pInstance)
+            SetInstanceData(TYPE_NOTH, DONE);
 
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }

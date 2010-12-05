@@ -77,11 +77,9 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
 {
     boss_hydross_the_unstableAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;                          // the instance
 
     uint32 m_uiPosCheck_Timer;
     uint32 m_uiMarkOfHydross_Timer;
@@ -112,16 +110,16 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
 
         me->SetDisplayId(MODEL_CLEAN);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROSS_EVENT, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_HYDROSS_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROSS_EVENT, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_HYDROSS_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -146,8 +144,8 @@ struct MANGOS_DLL_DECL boss_hydross_the_unstableAI : public ScriptedAI
     {
         DoScriptText(m_bCorruptedForm ? SAY_CORRUPT_DEATH : SAY_CLEAN_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROSS_EVENT, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_HYDROSS_EVENT, DONE);
     }
 
     void SpawnAdds()

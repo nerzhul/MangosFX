@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "molten_core.h"
 
-struct MANGOS_DLL_DECL instance_molten_core : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_molten_core : public InstanceData
 {
-    instance_molten_core(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_molten_core(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

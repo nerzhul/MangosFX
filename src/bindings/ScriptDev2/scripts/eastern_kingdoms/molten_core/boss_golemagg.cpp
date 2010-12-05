@@ -41,11 +41,9 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
 {
     boss_golemaggAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiPyroblastTimer;
     uint32 m_uiEarthquakeTimer;
@@ -64,8 +62,8 @@ struct MANGOS_DLL_DECL boss_golemaggAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GOLEMAGG, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_GOLEMAGG, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -122,11 +120,10 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
 {
     mob_core_ragerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     uint32 m_uiMangleTimer;
 
     void Reset()
@@ -138,9 +135,9 @@ struct MANGOS_DLL_DECL mob_core_ragerAI : public ScriptedAI
     {
         if (me->GetHealth()*100 < me->GetMaxHealth()*50)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                if (Creature* pGolemagg = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_GOLEMAGG)))
+                if (Creature* pGolemagg = pInstance->instance->GetCreature(pInstance->GetData64(DATA_GOLEMAGG)))
                 {
                     if (pGolemagg->isAlive())
                     {

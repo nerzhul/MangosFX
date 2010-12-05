@@ -58,11 +58,9 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
 {
     npc_medivh_bmAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 SpellCorrupt_Timer;
     uint32 Check_Timer;
@@ -80,10 +78,10 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
         Life50 = true;
         Life25 = true;
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (m_pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS)
+        if (pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS)
             me->CastSpell(me,SPELL_CHANNEL,true);
         else if (me->HasAura(SPELL_CHANNEL,0))
             me->RemoveAura(SPELL_CHANNEL,0);
@@ -93,22 +91,22 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
 
     void MoveInLineOfSight(Unit *who)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (who->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(who, 10.0f))
         {
-            if (m_pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS || m_pInstance->GetData(TYPE_MEDIVH) == DONE)
+            if (pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS || pInstance->GetData(TYPE_MEDIVH) == DONE)
                 return;
 
             DoScriptText(SAY_INTRO, me);
-            m_pInstance->SetData(TYPE_MEDIVH,IN_PROGRESS);
+            SetInstanceData(TYPE_MEDIVH,IN_PROGRESS);
             me->CastSpell(me,SPELL_CHANNEL,false);
             Check_Timer = 5000;
         }
         else if (who->GetTypeId() == TYPEID_UNIT && me->IsWithinDistInMap(who, 15.0f))
         {
-            if (m_pInstance->GetData(TYPE_MEDIVH) != IN_PROGRESS)
+            if (pInstance->GetData(TYPE_MEDIVH) != IN_PROGRESS)
                 return;
 
             uint32 entry = who->GetEntry();
@@ -127,7 +125,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
 
     void AttackStart(Unit *who)
     {
-        //if (m_pInstance && m_pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS)
+        //if (pInstance && pInstance->GetData(TYPE_MEDIVH) == IN_PROGRESS)
             //return;
 
         //ScriptedAI::AttackStart(who);
@@ -155,14 +153,14 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (SpellCorrupt_Timer)
         {
             if (SpellCorrupt_Timer <= diff)
             {
-                m_pInstance->SetData(TYPE_MEDIVH,SPECIAL);
+                SetInstanceData(TYPE_MEDIVH,SPECIAL);
 
                 if (me->HasAura(SPELL_CORRUPT_AEONUS,0))
                     SpellCorrupt_Timer = 1000;
@@ -177,7 +175,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
         {
             if (Check_Timer <= diff)
             {
-                uint32 pct = m_pInstance->GetData(DATA_SHIELD);
+                uint32 pct = pInstance->GetData(DATA_SHIELD);
 
                 Check_Timer = 5000;
 
@@ -198,7 +196,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
                 }
 
                 //if we reach this it means event was running but at some point reset.
-                if (m_pInstance->GetData(TYPE_MEDIVH) == NOT_STARTED)
+                if (pInstance->GetData(TYPE_MEDIVH) == NOT_STARTED)
                 {
                     me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                     me->RemoveCorpse();
@@ -206,7 +204,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
                     return;
                 }
 
-                if (m_pInstance->GetData(TYPE_RIFT) == DONE)
+                if (pInstance->GetData(TYPE_RIFT) == DONE)
                 {
                     DoScriptText(SAY_WIN, me);
                     Check_Timer = 0;
@@ -215,7 +213,7 @@ struct MANGOS_DLL_DECL npc_medivh_bmAI : public ScriptedAI
                         me->RemoveAura(SPELL_CHANNEL,0);
 
                     //TODO: start the post-event here
-                    m_pInstance->SetData(TYPE_MEDIVH,DONE);
+                    SetInstanceData(TYPE_MEDIVH,DONE);
                 }
             }else Check_Timer -= diff;
         }
@@ -248,11 +246,9 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
 {
     npc_time_riftAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 TimeRiftWave_Timer;
     uint8 mRiftWaveCount;
@@ -264,10 +260,10 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         TimeRiftWave_Timer = 15000;
         mRiftWaveCount = 0;
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        mPortalCount = m_pInstance->GetData(DATA_PORTAL_COUNT);
+        mPortalCount = pInstance->GetData(DATA_PORTAL_COUNT);
 
         if (mPortalCount < 6)
             mWaveId = 0;
@@ -282,7 +278,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         if (!creature_entry)
             return;
 
-        if (m_pInstance->GetData(TYPE_MEDIVH) != IN_PROGRESS)
+        if (pInstance->GetData(TYPE_MEDIVH) != IN_PROGRESS)
         {
             me->InterruptNonMeleeSpells(true);
             me->RemoveAllAuras();
@@ -300,7 +296,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
 
         if (Summon)
         {
-            if (Unit *temp = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MEDIVH)))
+            if (Unit *temp = Unit::GetUnit(*me, pInstance->GetData64(DATA_MEDIVH)))
                 Summon->AddThreat(temp,0.0f);
         }
     }
@@ -326,7 +322,7 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (TimeRiftWave_Timer < diff)
@@ -341,8 +337,8 @@ struct MANGOS_DLL_DECL npc_time_riftAI : public ScriptedAI
         debug_log("SD2: npc_time_rift: not casting anylonger, i need to die.");
         me->setDeathState(JUST_DIED);
 
-        if (m_pInstance->GetData(TYPE_RIFT) == IN_PROGRESS)
-            m_pInstance->SetData(TYPE_RIFT,SPECIAL);
+        if (pInstance->GetData(TYPE_RIFT) == IN_PROGRESS)
+            SetInstanceData(TYPE_RIFT,SPECIAL);
     }
 };
 

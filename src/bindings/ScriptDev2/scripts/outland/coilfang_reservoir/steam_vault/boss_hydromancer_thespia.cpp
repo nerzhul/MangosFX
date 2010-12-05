@@ -45,12 +45,11 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
 {
     boss_thespiaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 LightningCloud_Timer;
@@ -63,16 +62,16 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
         LungBurst_Timer = 7000;
         EnvelopingWinds_Timer = 9000;
 
-        if (m_pInstance && me->isAlive())
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA,NOT_STARTED);
+        if (pInstance && me->isAlive())
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA,NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
         DoScriptText(SAY_DEAD, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA, DONE);
     }
 
     void KilledUnit(Unit* victim)
@@ -89,8 +88,8 @@ struct MANGOS_DLL_DECL boss_thespiaAI : public ScriptedAI
             case 2: DoScriptText(SAY_AGGRO_3, me); break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_HYDROMANCER_THESPIA, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

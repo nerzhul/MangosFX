@@ -8,10 +8,10 @@
 #include "CreatureAI.h"
 #include "Creature.h"
 #include "TemporarySummon.h"
+#include "InstanceData.h"
 #include "Map.h"
 #include "Util.h"
 #include "Vehicle.h"
-#include "sc_instance.h"
 
 //Spell targets used by SelectSpell
 enum SelectTarget
@@ -36,14 +36,6 @@ enum SelectEffect
     SELECT_EFFECT_DAMAGE,                                   //Spell does damage
     SELECT_EFFECT_HEALING,                                  //Spell does healing
     SELECT_EFFECT_AURA,                                     //Spell applies an aura
-};
-
-//Selection method used by SelectTarget
-enum SelectAggroTarget
-{
-    SELECT_TARGET_RANDOM = 0,                               //Just selects a random target
-    SELECT_TARGET_TOPAGGRO,                                 //Selects targes from top aggro to bottom
-    SELECT_TARGET_BOTTOMAGGRO,                              //Selects targets from bottom aggro to top
 };
 
 enum SCEquip
@@ -142,20 +134,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
     //Stop attack of current victim
     void DoStopAttack();
 
-    //Cast spell by Id
-    void DoCast(Unit* pVictim, uint32 uiSpellId, bool bTriggered = false);
-	void DoCastXYZ(float x, float y, float z, uint32 uiSpellId, bool bTriggered = false);
-	void DoCastVictim(uint32 uiSpellId, bool bTriggered = false);
-	Unit* DoCastRandom(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-	void DoCastMe(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastLowHP(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastNear(uint32 uiSpellId, bool bTriggered = false);
-	void DoCastHasMana(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-	void DoCastPlayer(uint32 uiSpellId, bool bTriggered = false, bool InFront = true);
-
-    //Cast spell by spell info
-    void DoCastSpell(Unit* pwho, SpellEntry const* pSpellInfo, bool bTriggered = false);
-
     //Plays a sound to all nearby players
     void DoPlaySoundToSet(WorldObject* pSource, uint32 uiSoundId);
 
@@ -164,9 +142,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
     //Teleports a player without dropping threat (only teleports to same map)
     void DoTeleportPlayer(Unit* pUnit, float fX, float fY, float fZ, float fO);
-
-    //Returns friendly unit with the most amount of hp missing from max hp
-    Unit* DoSelectLowestHpFriendly(float fRange, uint32 uiMinHPDiff = 1);
 
     //Returns a list of friendly CC'd units within range
     std::list<Creature*> DoFindFriendlyCC(float fRange);
@@ -179,9 +154,6 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
     //Spawns a creature relative to me
     Creature* DoSpawnCreature(uint32 uiId, float fX, float fY, float fZ, float fAngle, uint32 uiType, uint32 uiDespawntime);
-
-    //Selects a unit from the creature's current aggro list
-    Unit* SelectUnit(SelectAggroTarget target, uint32 uiPosition);
 
     //Returns spells that meet the specified criteria from the creatures spell list
     SpellEntry const* SelectSpell(Unit* pTarget, int32 uiSchool, int32 uiMechanic, SelectTarget selectTargets, uint32 uiPowerCostMin, uint32 uiPowerCostMax, float fRangeMin, float fRangeMax, SelectEffect selectEffect);
@@ -201,8 +173,7 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 
 	// LibDevFS Implementation
 	void AggroAllPlayers(float maxdist = 150.0f);
-	void GiveEmblemsToGroup(uint32 type, uint8 nb = 1, bool group5 = false);
-	void GiveEmblems(uint32 type, Player* pPlayer, uint8 nb = 1, bool group5 = false);
+	
 	bool CanDoSomething() { return (!me || !me->SelectHostileTarget() || !me->getVictim()) ? false : true; }
 	void Kill(Unit* toKill);
 	bool CheckPercentLife(uint32 percent) { return (GetPercentLife() <= percent) ? true : false; }
@@ -218,21 +189,12 @@ struct MANGOS_DLL_DECL ScriptedAI : public CreatureAI
 	void Yell(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_YELL, soundid, text, spkCr); }
 	void Say(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_SAY, soundid, text, spkCr); }
 	void BossEmote(uint32 soundid, std::string text, Creature* spkCr = NULL) { Speak(CHAT_TYPE_BOSS_EMOTE, soundid, text, spkCr); }
-	Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
-	Unit* GetGuidUnit(uint64 guid) { return Unit::GetUnit(*me, guid); }
-	Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
-	void InitInstance() 
-	{
-		if(me->GetInstanceData())
-			pInstance = (ScriptedInstance*)me->GetInstanceData();
-		else
-			pInstance = NULL;
-		m_difficulty = me->GetMap()->GetDifficulty();
-	}
+	
+	
+	void GiveRandomReward();
 
-	protected:
-		ScriptedInstance* pInstance;
-		Difficulty m_difficulty;
+	void CompleteAchievementForGroup(uint32 achId) { if(pInstance) pInstance->CompleteAchievementForGroup(achId); }
+	
     private:
         bool   m_bCombatMovement;
         uint32 m_uiEvadeCheckCooldown;
@@ -245,101 +207,6 @@ struct MANGOS_DLL_DECL Scripted_NoMovementAI : public ScriptedAI
     //Called at each attack of me by any victim
     void AttackStart(Unit*);
 };
-
-enum SpellCastTarget
-{
-	TARGET_MAIN = 0,
-	TARGET_RANDOM = 1,
-	TARGET_ME = 2,
-	TARGET_LOW_HP = 3,
-	TARGET_NEAR = 4,
-	TARGET_HAS_MANA = 5,
-	PLAYER_RANDOM = 6,
-	HEAL_MY_FRIEND = 7,
-	NO_TANK = 8,
-	TARGET_RANDOMXYZ = 9,
-	TARGET_OTHER = 10,
-};
-
-struct EventSh
-{
-	uint32	SpellId;
-	uint32	TextId;
-	uint32	Timer;
-	uint32	NormTimer;
-	uint32	Diff;
-	uint8	phase;
-	uint16	Repeat;
-	SpellCastTarget targ;
-	bool MaxPriority;
-	bool RequireFront;
-};
-
-struct TextSh
-{
-	uint32 SoundId;
-	std::string Text;
-	uint8 type;
-	uint32 Timer;
-	uint32 NormTimer;
-	uint8 phase;
-};
-
-enum ZoneInvoc
-{
-	ON_ME		=	0,
-	NEAR_7M		=	1,
-	NEAR_15M	=	2,
-	NEAR_30M	=	3,
-	NEAR_45M	=	4,
-	NEAR_60M	=	5,
-	PREC_COORDS	=	6,
-};
-
-enum Comportement
-{
-	AGGRESSIVE_MAIN			=	0,
-	AGGRESSIVE_RANDOM		=	1,
-	VERY_AGGRESSIVE_MAIN	=	2,
-	VERY_AGGRESSIVE_RANDOM	=	3,
-	GO_TO_CREATOR			=	4,
-	NOTHING					=	5,
-};
-
-struct EventSummon
-{
-	uint32 entry;
-	uint32 Timer;
-	uint32 NormTimer;
-	uint32 diff;
-	uint32 phase;
-	uint32 Repeat;
-	uint32 despawnTime;
-	uint32 TextId;
-	ZoneInvoc WhereS;
-	Comportement Compo;
-};
-
-enum Emblem_Types
-{
-	HEROISME	= 45624, // relace pve
-	VAILLANCE	= 45624,
-	CONQUETE	= 45624,
-	TRIOMPHE	= 47241,
-	GIVRE		= 49426,	
-};
-
-enum MobConstantes
-{
-	MAX_ADDS	=	1500,
-	THREE_MINS	=	180000,
-	TEN_MINS	=	600000,
-};
-
-typedef std::vector<EventSh> SpellEvents;
-typedef std::vector<EventSummon> SummonEvents;
-typedef std::vector<TextSh> TextEvents;
-
 class MANGOS_DLL_SPEC MobEventTasks
 {
 	public:
@@ -386,13 +253,7 @@ class MANGOS_DLL_SPEC MobEventTasks
 class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 {
 	public:
-		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) 
-		{
-			ManualMoveEnable = false;
-			CanMove = true;
-			TimedDownEnable = false;
-			CheckDistanceTimer = 1000;
-		}
+		explicit LibDevFSAI(Creature* pCreature) : ScriptedAI(pCreature) {}
 		~LibDevFSAI() {};
 
 		Creature* CallCreature(uint32 entry, uint32 Despawn = TEN_MINS,
@@ -474,9 +335,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void InitIA()
 		{
-			EventShVect.clear();
-			EventSummonVect.clear();
-			EventTextVect.clear();
+			CreatureAI::InitIA();
 			Reset();
 		}
 
@@ -485,20 +344,6 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			ScriptedAI::InitInstance();
 			InitIA();
 		}
-		
-		void ResetTimers();
-		
-		void ClearTimers() 
-		{
-			EventShVect.clear();
-			EventSummonVect.clear();
-			SavedEventSh.clear();
-			SavedEventSummon.clear();
-			EventTextVect.clear();
-			SavedEventTexts.clear();
-		}
-
-		void SetInstanceData(uint32 type, uint32 data) { if(pInstance) pInstance->SetData(type,data); }
 
 		void CanBeTaunt(bool taunt=true) { me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, taunt); }
 
@@ -509,33 +354,14 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		Unit* GetRandomUnit(uint8 pos = 0) { return SelectUnit(SELECT_TARGET_RANDOM,pos); }
 
-		void ActivateManualMoveSystem() { ManualMoveEnable = true; }
 		void SetMovePhase(bool yes = true) { CanMove = yes; }
 
 		void SetDespawnTimer(uint32 Timer) { me->ForcedDespawn(Timer); }
 
-		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
-		bool TimeDownSucceed() { return TimedDownEnable; }
-
 		void MakeInvisibleStalker();
 		void MakeHostileInvisibleStalker();
-		
-		void SendPortrait(Unit* u=NULL,bool activate=true,uint32 nb=0);
 	private:
 		
-		SpellEvents EventShVect;
-		SummonEvents EventSummonVect;
-		SpellEvents SavedEventSh;
-		SummonEvents SavedEventSummon;
-		TextEvents EventTextVect;
-		TextEvents SavedEventTexts;
 		std::vector<uint64> MyAdds;
-		// Manual Move
-		bool ManualMoveEnable;
-		uint32 CheckDistanceTimer;
-		bool CanMove;
-		// Down timer on HF
-		bool TimedDownEnable;
-		uint32 AchTimedDownTimer;
 };
 #endif

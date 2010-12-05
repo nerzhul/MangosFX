@@ -129,12 +129,11 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 {
     boss_gothikAI(Creature* pCreature) : Scripted_NoMovementAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
     bool SummonPhase;
     bool BlinkPhase;
@@ -170,8 +169,8 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GOTHIK, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_GOTHIK, NOT_STARTED);
     }
 
     void EnterCombat(Unit *who)
@@ -182,11 +181,11 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
         me->GetMap()->CreatureRelocation(me, PosPlatform[0], PosPlatform[1], PosPlatform[2], PosPlatform[3]);
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_GOTHIK, IN_PROGRESS);
+            SetInstanceData(TYPE_GOTHIK, IN_PROGRESS);
 
-            if (GameObject* pGate = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GOTHIK_GATE)))
+            if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GOTHIK_GATE)))
                 pGate->SetGoState(GO_STATE_READY);
         }
     }
@@ -201,8 +200,8 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GOTHIK, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_GOTHIK, DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
@@ -222,8 +221,8 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 
 			if(blink == 8)
 			{
-                if (m_pInstance)
-					if (GameObject* pGate = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GOTHIK_GATE)))
+                if (pInstance)
+					if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GOTHIK_GATE)))
 						pGate->SetGoState(GO_STATE_ACTIVE);
 			}
 

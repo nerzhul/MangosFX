@@ -48,7 +48,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\dep\SFML\include;..\..\dep\include\gsoap;..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\game;..\..\src\LootClusterFX;..\..\dep\ACE_wrappers"
+				AdditionalIncludeDirectories="..\..\dep\SFML\include;..\..\dep\include\gsoap;..\..\dep\include;..\..\src\framework;..\..\src\shared;..\..\src\game;..\..\dep\ACE_wrappers"
 				PreprocessorDefinitions="VERSION=&quot;0.16.0-DEV&quot;;WIN32;NDEBUG;_CONSOLE;ENABLE_CLI;_SECURE_SCL=0;__WIN32__;__x86__;_WIN32_WINNT=0x0400;__NT__;__OSVERSION__=4"
 				StringPooling="true"
 				RuntimeLibrary="2"

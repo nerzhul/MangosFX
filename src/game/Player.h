@@ -23,6 +23,7 @@
 #include "ItemPrototype.h"
 #include "Unit.h"
 #include "Item.h"
+#include "LFGMgr.h"
 
 #include "Database/DatabaseEnv.h"
 #include "NPCHandler.h"
@@ -38,7 +39,6 @@
 #include "ReputationMgr.h"
 #include "BattleGround.h"
 #include "DBCEnums.h"
-#include "LFGMgr.h"
 
 #include<string>
 #include<vector>
@@ -58,6 +58,8 @@ class Spell;
 class Item;
 class OutdoorPvP;
 class CalendarMgr;
+class LFGMgr;
+class PlayerBot;
 
 typedef std::deque<Mail*> PlayerMails;
 
@@ -838,6 +840,18 @@ enum PlayerDelayedOperations
     DELAYED_END
 };
 
+struct AccessRequirement //Merging
+{
+    uint8  levelMin;
+    uint8  levelMax;
+    uint32 item;
+    uint32 item2;
+    uint32 quest_A;
+    uint32 quest_H;
+    uint32 achievement;
+    std::string questFailedText;
+};
+
 // Player summoning auto-decline time (in secs)
 #define MAX_PLAYER_SUMMON_DELAY                   (2*MINUTE)
 #define MAX_MONEY_AMOUNT                       (0x7FFFFFFF-1)
@@ -1000,6 +1014,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 
         bool IsInWater() const { return m_isInWater; }
         bool IsUnderWater() const;
+		bool IsFalling() { return GetPositionZ() < m_lastFallZ; } //Merging
 
         void SendInitialPacketsBeforeAddToMap();
         void SendInitialPacketsAfterAddToMap();
@@ -1028,7 +1043,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         bool ActivateTaxiPathTo(std::vector<uint32> const& nodes, Creature* npc = NULL, uint32 spellid = 0);
         bool ActivateTaxiPathTo(uint32 taxi_path_id, uint32 spellid = 0);
                                                             // mount_id can be used in scripting calls
-        void ContinueTaxiFlight();
+        void CleanUpAfterTaxiFlight(); // Merging
+		void ContinueTaxiFlight();
         bool isAcceptTickets() const { return GetSession()->GetSecurity() >= SEC_GAMEMASTER && (m_ExtraFlags & PLAYER_EXTRA_GM_ACCEPT_TICKETS); }
         void SetAcceptTicket(bool on) { if(on) m_ExtraFlags |= PLAYER_EXTRA_GM_ACCEPT_TICKETS; else m_ExtraFlags &= ~PLAYER_EXTRA_GM_ACCEPT_TICKETS; }
         bool isAcceptWhispers() const { return m_ExtraFlags & PLAYER_EXTRA_ACCEPT_WHISPERS; }
@@ -1816,6 +1832,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void CleanupChannels();
         void UpdateLocalChannels( uint32 newZone );
         void LeaveLFGChannel();
+		void RewardMeLFG(const uint32 dungeonId) { sLFGMgr.RewardDungeonDoneFor(dungeonId,this); }
 
         void UpdateDefense();
         void UpdateWeaponSkill (WeaponAttackType attType);
@@ -1841,7 +1858,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetSemaphoreTeleportFar(bool semphsetting) { mSemaphoreTeleport_Far = semphsetting; }
         void ProcessDelayedOperations();
 
-        void CheckExploreSystem(void);
+        //void CheckExploreSystem(void);
+		void CheckAreaExploreAndOutdoor(void);
 
         static uint32 TeamForRace(uint8 race);
         uint32 GetTeam() const { return m_team; }
@@ -2161,7 +2179,27 @@ class MANGOS_DLL_SPEC Player : public Unit
         void SetAtLoginFlag(AtLoginFlags f) { m_atLoginFlags |= f; }
         void RemoveAtLoginFlag(AtLoginFlags f, bool in_db_also = false);
 
-        LookingForGroup m_lookingForGroup;
+		// Dungeon Finder
+        LfgDungeonSet *GetLfgDungeons() { return &m_LookingForGroup.applyDungeons; }
+        std::string GetLfgComment() { return m_LookingForGroup.comment; }
+        void SetLfgComment(std::string _comment) { m_LookingForGroup.comment = _comment; }
+        uint8 GetLfgRoles() { return m_LookingForGroup.roles; }
+        void SetLfgRoles(uint8 _roles) { m_LookingForGroup.roles = _roles; }
+        bool GetLfgUpdate() { return m_LookingForGroup.update; }
+        void SetLfgUpdate(bool update) { m_LookingForGroup.update = update; }
+        LfgState GetLfgState() { return m_LookingForGroup.state; }
+        void SetLfgState(LfgState state) { m_LookingForGroup.state = state; }
+        bool isUsingLfg() { return GetLfgState() != LFG_STATE_NONE; }
+		void SetDungeonId(uint32 dId) { m_dungeonId = dId; }
+		uint32 GetDungeonId() { return m_dungeonId; }
+
+		//PlayerBot
+		bool isBot() { return m_isBot; }
+		void SetBot(bool b_bot) { m_isBot = b_bot; }
+
+		PlayerBot* GetPlayerBot() { return m_playerbot;}
+		void SetPlayerBot(PlayerBot* plb) { m_playerbot = plb;}
+
 
         // Temporarily removed pet cache
         uint32 GetTemporaryUnsummonedPetNumber() const { return m_temporaryUnsummonedPetNumber; }
@@ -2305,7 +2343,6 @@ class MANGOS_DLL_SPEC Player : public Unit
             BattleGroundQueueTypeId bgQueueTypeId;
             uint32 invitedToInstance;
         };
-
         BgBattleGroundQueueID_Rec m_bgBattleGroundQueueID[PLAYER_MAX_BATTLEGROUND_QUEUES];
         BGData                    m_bgData;
 
@@ -2609,6 +2646,12 @@ class MANGOS_DLL_SPEC Player : public Unit
 		uint32 m_timed_bind;
 		bool bindTimer;
 		bool bindingState;
+
+		LookingForGroup m_LookingForGroup;
+		uint32 m_dungeonId;
+
+		bool m_isBot;
+		PlayerBot* m_playerbot;
 };
 
 void AddItemsSetItem(Player*player,Item *item);

@@ -63,12 +63,11 @@ struct MANGOS_DLL_DECL boss_razuviousAI : public ScriptedAI
 {
     boss_razuviousAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     std::list<uint64> DeathKnightList;
@@ -87,8 +86,8 @@ struct MANGOS_DLL_DECL boss_razuviousAI : public ScriptedAI
 
         CommandSound_Timer = 40000;                         //40 seconds
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RAZUVIOUS, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_RAZUVIOUS, NOT_STARTED);
     }
 
     void KilledUnit(Unit* Victim)
@@ -111,8 +110,8 @@ struct MANGOS_DLL_DECL boss_razuviousAI : public ScriptedAI
     {
         DoPlaySoundToSet(me, SOUND_DEATH);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RAZUVIOUS, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_RAZUVIOUS, DONE);
 
         if (!DeathKnightList.empty())
         {
@@ -144,8 +143,8 @@ struct MANGOS_DLL_DECL boss_razuviousAI : public ScriptedAI
                 break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RAZUVIOUS, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_RAZUVIOUS, IN_PROGRESS);
 
         FindDeathKnight();
 

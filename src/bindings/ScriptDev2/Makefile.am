@@ -18,7 +18,7 @@
 BUILT_SOURCES = revision.h
 CLEANFILES = revision.h
 ## CPP flags for includes, defines, etc.
-AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(srcdir) -I$(srcdir)/../../../dep/include -I$(srcdir)/../../shared/ -I$(srcdir)/../../framework/ -I$(srcdir)/../../game/ -I$(srcdir)/include/ -I$(srcdir)/base/ -DSYSCONFDIR=\"$(sysconfdir)/\"
+AM_CPPFLAGS = $(MANGOS_INCLUDES) -I$(srcdir) -I$(srcdir)/../../../dep/include -I$(srcdir)/../../../dep/SFML/include -I$(srcdir)/../../shared/ -I$(srcdir)/../../framework/ -I$(srcdir)/../../game/ -I$(srcdir)/include/ -I$(srcdir)/base/ -DSYSCONFDIR=\"$(sysconfdir)/\"
 
 ## Build MaNGOS script library as shared library.
 # libmangosscript shared library will later be reused by world server daemon.
@@ -42,8 +42,6 @@ include/sc_creature.h \
 include/sc_gossip.h \
 include/sc_grid_searchers.cpp \
 include/sc_grid_searchers.h \
-include/sc_instance.cpp \
-include/sc_instance.h \
 scripts/battlegrounds/battleground.cpp \
 scripts/eastern_kingdoms/alterac_mountains.cpp \
 scripts/eastern_kingdoms/arathi_highlands.cpp \
@@ -361,6 +359,7 @@ scripts/northrend/icecrown_citadel/icecrown_raid/instance_icecrown_citadel.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/icecrown_citadel.h \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lord_marrowgar.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lady_deathwhisper.cpp \
+scripts/northrend/icecrown_citadel/icecrown_raid/boss_cannoneer_battle.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_deathbringer_saurfang.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_lich_king.cpp \
 scripts/northrend/icecrown_citadel/icecrown_raid/boss_prince_council.cpp \

@@ -56,12 +56,10 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
 {
     boss_kelidan_the_breakerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     bool m_bIsHeroic;
 
@@ -96,8 +94,8 @@ struct MANGOS_DLL_DECL boss_kelidan_the_breakerAI : public ScriptedAI
     {
         DoScriptText(SAY_DIE, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KELIDAN_EVENT,DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_KELIDAN_EVENT,DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -173,12 +171,11 @@ struct MANGOS_DLL_DECL mob_shadowmoon_channelerAI : public ScriptedAI
 {
     mob_shadowmoon_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 ShadowBolt_Timer;

@@ -1,9 +1,9 @@
 #include "precompiled.h"
 #include "trial_of_the_crusader.h"
 
-struct MANGOS_DLL_DECL instance_toc10 : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_toc10 : public InstanceData
 {
-    instance_toc10(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_toc10(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER+1];
 	std::string strInstData;

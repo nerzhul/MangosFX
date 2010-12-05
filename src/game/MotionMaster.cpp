@@ -28,6 +28,7 @@
 #include "PointMovementGenerator.h"
 #include "TargetedMovementGenerator.h"
 #include "WaypointMovementGenerator.h"
+#include "RandomMovementGenerator.h"
 
 #include <cassert>
 
@@ -233,6 +234,40 @@ void MotionMaster::MoveIdle()
 {
     if( empty() || !isStatic( top() ) )
         push( &si_idleMovement );
+}
+
+void MotionMaster::MoveRandom()
+{
+    if (i_owner->GetTypeId() == TYPEID_PLAYER)
+    {
+		sLog.outError("%u attempt to move random.", i_owner->GetGUID());
+    }
+    else
+    {
+        //DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "%s move random.", m_owner->GetObjectGuid().GetString().c_str());
+        Mutate(new RandomMovementGenerator<Creature>(*i_owner));
+    }
+}
+
+void MotionMaster::MoveWaypoint()
+{
+    if (i_owner->GetTypeId() == TYPEID_UNIT)
+    {
+        if (GetCurrentMovementGeneratorType() == WAYPOINT_MOTION_TYPE)
+        {
+            sLog.outError("Creature %s (Entry %u) attempt to MoveWaypoint() but creature is already using waypoint", i_owner->GetGUID(), i_owner->GetEntry());
+            return;
+        }
+
+        Creature* creature = (Creature*)i_owner;
+
+        //DEBUG_FILTER_LOG(LOG_FILTER_AI_AND_MOVEGENSS, "Creature %s (Entry %u) start MoveWaypoint()", m_owner->GetObjectGuid().GetString().c_str(), m_owner->GetEntry());
+        Mutate(new WaypointMovementGenerator<Creature>(*creature));
+    }
+    else
+    {
+        sLog.outError("Non-creature %s attempt to MoveWaypoint()", i_owner->GetGUID());
+    }
 }
 
 void

@@ -150,7 +150,7 @@
 				Name="VCLinkerTool"
 				LinkLibraryDependencies="false"
 				AdditionalDependencies="E:\mangos400\win\VC90\mangosd__Win32_Release\mangosd.lib ACE.lib"
-				OutputFile="$(OutDir)/MaNGOSScript.dll"
+  			OutputFile="$(OutDir)/MaNGOSScript.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\..\..\..\win\VC90\mangosd__Win32_Release;..\..\..\..\dep\lib\win32_release\"
 				GenerateDebugInformation="false"
@@ -1185,6 +1185,42 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="blackrock_caverns"
+					>
+				</Filter>
+				<Filter
+					Name="grim_batol"
+					>
+				</Filter>
+				<Filter
+					Name="waterthrone"
+					>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_commander_ulthok.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_erunak_stonespeak.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_lade_nazjar.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_ozumat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\instance_waterthrone.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\waterthrone.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="examples"
@@ -1584,6 +1620,18 @@
 						RelativePath="..\scripts\kalimdor\zulfarrak\zulfarrak.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="origin_halls"
+					>
+				</Filter>
+				<Filter
+					Name="tolvir"
+					>
+				</Filter>
+				<Filter
+					Name="vortex_pinnacle"
+					>
 				</Filter>
 			</Filter>
 			<Filter
@@ -2112,66 +2160,6 @@
 						RelativePath="..\scripts\northrend\vault_of_archavon\vault_of_archavon.h"
 						>
 					</File>
-					<Filter
-						Name="utgarde_keep"
-						>
-						<Filter
-							Name="utgarde_keep"
-							>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_ingvar.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_keleseth.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_skarvald_and_dalronn.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\instance_utgarde_keep.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.h"
-								>
-							</File>
-						</Filter>
-						<Filter
-							Name="utgarde_pinnacle"
-							>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_gortok.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_skadi.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_svala.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_ymiron.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\instance_utgarde_pinnacle.cpp"
-								>
-							</File>
-							<File
-								RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\utgarde_pinnacle.h"
-								>
-							</File>
-						</Filter>
-					</Filter>
 				</Filter>
 				<Filter
 					Name="violet_hold"
@@ -2384,6 +2372,66 @@
 						RelativePath="..\scripts\northrend\rubis_sanctum\trashboss_zarithrian.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="utgarde_keep"
+					>
+					<Filter
+						Name="utgarde_keep"
+						>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_ingvar.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_keleseth.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\boss_skarvald_and_dalronn.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\instance_utgarde_keep.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_keep\utgarde_keep.h"
+							>
+						</File>
+					</Filter>
+					<Filter
+						Name="utgarde_pinnacle"
+						>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_gortok.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_skadi.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_svala.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\boss_ymiron.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\instance_utgarde_pinnacle.cpp"
+							>
+						</File>
+						<File
+							RelativePath="..\scripts\northrend\utgarde_keep\utgarde_pinnacle\utgarde_pinnacle.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -2906,6 +2954,18 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="cataclysm"
+				>
+				<Filter
+					Name="stoneheart"
+					>
+				</Filter>
+				<Filter
+					Name="fourwind_throne"
+					>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -2968,14 +3028,6 @@
 			</File>
 			<File
 				RelativePath="..\include\sc_grid_searchers.h"
-				>
-			</File>
-			<File
-				RelativePath="..\include\sc_instance.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\include\sc_instance.h"
 				>
 			</File>
 		</Filter>

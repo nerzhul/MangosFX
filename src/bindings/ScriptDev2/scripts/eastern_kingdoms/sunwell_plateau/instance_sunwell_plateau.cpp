@@ -21,9 +21,9 @@ EndScriptData */
 5 - Kil'Jaeden
 */
 
-struct MANGOS_DLL_DECL instance_sunwell_plateau : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_sunwell_plateau : public InstanceData
 {
-    instance_sunwell_plateau(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_sunwell_plateau(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

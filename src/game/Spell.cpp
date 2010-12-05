@@ -47,6 +47,7 @@
 #include "OutdoorPvP.h"
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvPWG.h"
+#include "ClassSpellHandler.h"
 
 #define SPELL_CHANNEL_UPDATE_INTERVAL (1 * IN_MILLISECONDS)
 
@@ -365,7 +366,7 @@ Spell::Spell( Unit* Caster, SpellEntry const *info, bool triggered, uint64 origi
 {
 	if(!Caster || !info)
 		return;
-    ASSERT( info == sSpellStore.LookupEntry( info->Id ) && "`info` must be pointer to sSpellStore element");
+    ASSERT((info == sSpellStore.LookupEntry(info->Id) || info == sSpellMgr.LookupSpecialEntry(info->Id)) && "`info` must be pointer to sSpellStore element");
 
     if (Caster->GetTypeId() != TYPEID_PLAYER && Caster->IsInWorld() && Caster->GetMap()->IsRaidOrHeroicDungeon())
 	{
@@ -599,6 +600,7 @@ void Spell::FillTargetMap()
                     case TARGET_POINT_AT_NW:
                     case TARGET_POINT_AT_SE:
                     case TARGET_POINT_AT_SW:
+					case TARGET_RANDOM_NEARBY_DEST:
                         // need some target for processing
                         SetTargetMap(i, effectI->EffectImplicitTargetA, tmpUnitMap);
                         SetTargetMap(i, effectI->EffectImplicitTargetB, tmpUnitMap);
@@ -1081,6 +1083,8 @@ void Spell::DoAllEffectOnTarget(TargetInfo *target)
         caster->CalculateSpellDamage(&damageInfo, m_damage, m_spellInfo, m_attackType);
         caster->DealDamageMods(damageInfo.target, damageInfo.damage, &damageInfo.absorb);
 
+	damageInfo.overkill = damageInfo.target->GetHealth() < damageInfo.damage ? damageInfo.damage - damageInfo.target->GetHealth(): 0;
+
         // Send log damage message to client
         caster->SendSpellNonMeleeDamageLog(&damageInfo);
 
@@ -1527,6 +1531,16 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							unMaxTargets = 3;
 					}
 					break;
+				case 69766:
+					if(m_originalCaster)
+					{
+						if(m_originalCaster->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_NORMAL || 
+							m_originalCaster->GetMap()->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC)
+							unMaxTargets = 2;
+						else
+							unMaxTargets = 5;
+					}
+					break;
 				case 69674:
 				case 63830:
 					switch(m_caster->GetMap()->GetDifficulty())
@@ -1688,7 +1702,14 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 							
 						if ((*iter)->GetEntry() == i_spellST->second.targetEntry)
 						{
-							targetUnitMap.push_back((*iter));
+							if (i_spellST->second.type == SPELL_TARGET_TYPE_DEAD && ((Creature*)(*iter))->isCorpse())
+							{
+								targetUnitMap.push_back((*iter));
+							}
+							else if (i_spellST->second.type == SPELL_TARGET_TYPE_CREATURE && (*iter)->isAlive())
+							{
+								targetUnitMap.push_back((*iter));
+							}
 							break;
 						}
 					}
@@ -3220,7 +3241,8 @@ void Spell::cast(bool skipCheck)
     // CAST SPELL
     SendSpellCooldown();
 
-    TakePower();
+	if(m_spellInfo->powerType != POWER_RUNIC_POWER) 
+	    TakePower();
     TakeReagents();                                         // we must remove reagents before HandleEffects to allow place crafted item in same slot
 
     SendCastResult(castResult);
@@ -3245,6 +3267,9 @@ void Spell::cast(bool skipCheck)
         handle_immediate();
     }
 
+	if(m_spellInfo->powerType == POWER_RUNIC_POWER)
+		TakePower();
+
     SetExecutedCurrently(false);
 }
 
@@ -3256,14 +3281,7 @@ void Spell::handle_immediate()
         int32 duration = GetSpellDuration(m_spellInfo);
         if (duration)
         {
-            // Apply duration mod
-            if(Player* modOwner = m_caster->GetSpellModOwner())
-                modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
-
-			if (m_spellInfo->AttributesEx5 & SPELL_ATTR_EX5_AFFECTED_BY_HASTE)
-                duration = int32(duration * m_caster->GetFloatValue(UNIT_MOD_CAST_SPEED));
-
-            m_spellState = SPELL_STATE_CASTING;
+			m_spellState = SPELL_STATE_CASTING;
             SendChannelStart(duration);
         }
     }
@@ -3708,6 +3726,15 @@ void Spell::finish(bool ok)
 					m_caster->CastCustomSpell(m_caster,63283,&efBP,&efBP,NULL,false);
 			}
 			break;
+		case SPELLFAMILY_PRIEST:
+			// Player of Healing
+			if(m_spellInfo->GetSpellFamilyFlags() & UI64LIT(0x200))
+			{
+				// remove lucky hazard
+				m_caster->RemoveAurasDueToSpell(63731);
+				m_caster->RemoveAurasDueToSpell(63734);
+				m_caster->RemoveAurasDueToSpell(63735);
+			}
 	 }
 	 
 	 switch(m_spellInfo->Id)
@@ -4296,7 +4323,7 @@ void Spell::SendChannelStart(uint32 duration)
         }
     }
 
-	//duration = ApplyHasteToChannelSpell(duration, m_spellInfo, this);
+	duration = ApplyHasteToChannelSpell(duration, m_spellInfo, this);
     WorldPacket data( MSG_CHANNEL_START, (8+4+4) );
     data.append(m_caster->GetPackGUID());
     data << uint32(m_spellInfo->Id);
@@ -4418,6 +4445,13 @@ void Spell::TakePower()
     }
 
     Powers powerType = Powers(m_spellInfo->powerType);
+
+	//ugly hack for 0RP cost spells causing client!=server RP bug
+	if(powerType == POWER_RUNIC_POWER && m_powerCost==0)
+	{
+		m_caster->ModifyPower(powerType,1);
+		m_powerCost=1;
+	}
 
     if(powerType == POWER_RUNE)
     {
@@ -4807,7 +4841,7 @@ SpellCastResult Spell::CheckCast(bool strict)
             // this case can be triggered if rank not found (too low-level target for first rank)
             if (m_caster->GetTypeId() == TYPEID_PLAYER && !IsPassiveSpell(m_spellInfo) && !m_CastItem)
             {
-                for(int i = 0; i < 3; ++i)
+                for(int i = 0; i < MAX_EFFECT_INDEX; ++i)
                 {
 					SpellEffectEntry const* effectI = m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
 					if(!effectI)

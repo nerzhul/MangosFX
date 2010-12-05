@@ -67,6 +67,7 @@
 #include "OutdoorPvPMgr.h"
 #include "OutdoorPvPWG.h"
 #include "ClassSpellHandler.h"
+#include "PlayerBot.h"
 
 #include <cmath>
 
@@ -528,6 +529,13 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
 
 	m_calendarEvents.clear();
 	
+	m_LookingForGroup.roles = ROLE_NONE;
+	m_LookingForGroup.comment = "";
+	m_dungeonId = 0;
+
+	m_isBot = false;
+	m_playerbot = NULL;
+
 	SetRandomBGDone(false);
 }
 
@@ -595,8 +603,6 @@ void Player::CleanupsBeforeDelete()
 
 bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 class_, uint8 gender, uint8 skin, uint8 face, uint8 hairStyle, uint8 hairColor, uint8 facialHair, uint8 outfitId )
 {
-    //FIXME: outfitId not used in player creating
-
     Object::_Create(guidlow, 0, HIGHGUID_PLAYER);
 
     m_name = name;
@@ -1457,6 +1463,12 @@ void Player::Update( uint32 p_time )
     //because we don't want player's ghost teleported from graveyard
     if(IsHasDelayedTeleport() && !GetVehicle())
         TeleportTo(m_teleport_dest, m_teleport_options);
+
+	
+	if (isBot() && GetPlayerBot())
+	{	
+		GetPlayerBot()->Update(p_time);
+	}
 }
 
 void Player::setDeathState(DeathState s)
@@ -2410,7 +2422,7 @@ void Player::SetGameMaster(bool on)
 
         m_ExtraFlags &= ~ PLAYER_EXTRA_GM_ON;
         setFactionForRace(getRace());
-		if(this->GetSession()->GetSecurity() > SEC_COADMIN)
+		if(GetSession()->GetSecurity() > SEC_COADMIN)
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_DEVELOPER);
 		else
 			RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_GM);
@@ -6106,7 +6118,7 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
         z = GetPositionZ();
 
         // group update
-        if(GetGroup() && (old_x != x || old_y != y))
+        if(GetGroup())
             SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
 
 		if (IsVehicle())
@@ -6116,7 +6128,7 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
     // code block for underwater state update
     UpdateUnderwaterState(m, x, y, z);
 
-    CheckExploreSystem();
+	CheckAreaExploreAndOutdoor(); 
 
     return true;
 }
@@ -6178,7 +6190,7 @@ void Player::SendMovieStart(uint32 MovieId)
     SendDirectMessage(&data);
 }
 
-void Player::CheckExploreSystem()
+void Player::CheckAreaExploreAndOutdoor() // Add Outdoor support
 {
     if (!isAlive())
         return;
@@ -6186,8 +6198,14 @@ void Player::CheckExploreSystem()
     if (isInFlight())
         return;
 
-    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ());
-    if(areaFlag==0xffff)
+	bool isOutdoor;
+    uint16 areaFlag = GetBaseMap()->GetAreaFlag(GetPositionX(),GetPositionY(),GetPositionZ(), &isOutdoor);
+    if (!isOutdoor)
+	{
+		Unmount(); 
+	}
+
+    if (areaFlag==0xffff)
         return;
     int offset = areaFlag / 32;
 
@@ -7015,13 +7033,17 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
     if(slot >= INVENTORY_SLOT_BAG_END || !item)
         return;
 
-    // not apply/remove mods for broken item
-    if(item->IsBroken())
-        return;
-
     ItemPrototype const *proto = item->GetProto();
 
     if(!proto)
+        return;
+
+// Fixed one bug with broken items and meta gems
+	if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
+        CorrectMetaGemEnchants(slot, apply);
+ 	
+    // not apply/remove mods for broken item
+    if(item->IsBroken())
         return;
 
     sLog.outDetail("applying mods for item %u ",item->GetGUIDLow());
@@ -7037,9 +7059,6 @@ void Player::_ApplyItemMods(Item *item, uint8 slot,bool apply)
 
     ApplyItemEquipSpell(item,apply);
     ApplyEnchantment(item, apply);
-
-    if(proto->Socket[0].Color)                              //only (un)equipping of items with sockets can influence metagems, so no need to waste time with normal items
-        CorrectMetaGemEnchants(slot, apply);
 
     sLog.outDebug("_ApplyItemMods complete.");
 }
@@ -12439,7 +12458,7 @@ void Player::UpdateItemDuration(uint32 time, bool realtimeonly)
     if (m_itemDuration.empty())
         return;
 
-    sLog.outDebug("Player::UpdateItemDuration(%u,%u)", time, realtimeonly);
+    //sLog.outDebug("Player::UpdateItemDuration(%u,%u)", time, realtimeonly);
 
     for(ItemDurationList::const_iterator itr = m_itemDuration.begin(); itr != m_itemDuration.end(); )
     {
@@ -15429,7 +15448,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
 
     SetUInt32Value(PLAYER_BYTES, fields[9].GetUInt32());
     SetUInt32Value(PLAYER_BYTES_2, fields[10].GetUInt32());
-    SetUInt32Value(PLAYER_BYTES_3, (fields[49].GetUInt16() & 0xFFFE) | fields[6].GetUInt8());
+    SetUInt32Value(PLAYER_BYTES_3, (fields[49].GetUInt16() & 0xFFFE) | fields[5].GetUInt8()); // Fix Gender error
     SetUInt32Value(PLAYER_FLAGS, fields[11].GetUInt32());
     SetInt32Value(PLAYER_FIELD_WATCHED_FACTION_INDEX, fields[48].GetInt32());
 
@@ -17392,7 +17411,6 @@ void Player::_SaveInventory()
 
         if (test == NULL)
         {
-            sLog.outError("Player(Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the player doesn't have an item at that position!", GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow());
 			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
 			m_itemUpdateQueue.erase(itr);
             error = true;
@@ -17402,7 +17420,9 @@ void Player::_SaveInventory()
             sLog.outError("Player(Name: %s)::_SaveInventory - the bag(%d) and slot(%d) values for the item with guid %d are incorrect, the item with guid %d is there instead!", GetName(), item->GetBagSlot(), item->GetSlot(), item->GetGUIDLow(), test->GetGUIDLow());
 			DestroyItem(item->GetBagSlot(),item->GetSlot(),true);
 			DestroyItem(test->GetBagSlot(),test->GetSlot(),true);
-			m_itemUpdateQueue.erase(itr);
+			std::vector<Item*>::iterator itr2 = itr;
+			--itr;
+			m_itemUpdateQueue.erase(itr2);
 			error = true;
         }
     }
@@ -17940,6 +17960,7 @@ void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
         case MINI_PET:
             m_miniPet = 0;
             break;
+		case PROTECTOR_PET:
         case GUARDIAN_PET:
             RemoveGuardian(pet);
             break;
@@ -18969,12 +18990,12 @@ bool Player::BuyItemFromVendor(uint64 vendorguid, uint32 item, uint8 count, uint
             if (iece->reqhonorpoints)
 			{
 				honorPoints = iece->reqhonorpoints;
-				ModifyHonorPoints( - int32(honorPoints) );
+				ModifyHonorPoints( - int32(honorPoints*count) );
 			}
             if (iece->reqarenapoints)
 			{
                 arenaPoints = iece->reqarenapoints;
-				ModifyArenaPoints( - int32(arenaPoints));
+				ModifyArenaPoints( - int32(arenaPoints*count));
 			}
 
             for (uint8 i = 0; i < 5; ++i)
@@ -22899,6 +22920,9 @@ void Player::AddWintergraspBuffIfCan(uint32 _mapid)
 	}
 	else
 		RemoveAurasDueToSpell(57940);
+
+	if(_mapid == 0 || _mapid == 1 || _mapid == 530 || _mapid == 571)
+		RemoveAurasDueToSpell(72221);
 }
 
 bool Player::IsWintergraspPortalActive()
@@ -23100,4 +23124,14 @@ void Player::ForceProcOnDamage(Unit *victim, const SpellEntry *spell, bool isCri
 			}
 		}
 	}
+}
+
+// Merging
+
+void Player::CleanUpAfterTaxiFlight()
+{
+    m_taxi.ClearTaxiDestinations();        // not destinations, clear source node
+    Unmount();
+    RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_TAXI_FLIGHT);
+    getHostileRefManager().setOnlineOfflineState(true);
 }

@@ -31,6 +31,24 @@
 
 SpellMgr::SpellMgr()
 {
+	SpecialSpellMap.clear();
+
+/*	SpellEntry* spell = new SpellEntry();
+	spell->Id = 56817;
+	spell->Attributes = 384;
+	spell->CastingTimeIndex = 1;
+	spell->procFlags = 16;
+	spell->procChance = 101;
+	spell->procCharges = 1;
+	spell->baseLevel = 67;
+	spell->spellLevel = 67;
+	spell->DurationIndex = 1;
+	spell->rangeIndex = 1;
+	spell->EquippedItemClass = -1;
+	spell->Effect[0] = 6;
+	spell->EffectImplicitTargetA[0] = 1;
+	spell->SpellFamilyName = 6;
+	SpecialSpellMap[56817] = spell;*/
 }
 
 SpellMgr::~SpellMgr()
@@ -3681,6 +3699,16 @@ DiminishingGroup GetDiminishingReturnsGroupForSpell(SpellEntry const* spellproto
                 return DIMINISHING_POLYMORPH_GOUGE_SAP;
             break;
         }
+		case SPELLFAMILY_HUNTER:
+        {
+            // Hunter's mark
+            if ((spellproto->GetSpellFamilyFlags() & UI64LIT(0x00000000400)) && spellproto->SpellIconID == 538)
+                return DIMINISHING_LIMITONLY;
+            // Scatter Shot
+            if ((spellproto->GetSpellFamilyFlags() & UI64LIT(0x00000040000)) && spellproto->SpellIconID == 132)
+                return DIMINISHING_NONE;
+            break;
+        }
         default:
             break;
     }
@@ -3731,6 +3759,13 @@ int32 GetDiminishingReturnsLimitDuration(DiminishingGroup group, SpellEntry cons
             // Wyvern Sting
             if (spellproto->GetSpellFamilyFlags() & UI64LIT(0x0000100000000000))
                 return 6000;
+			
+			//Merging
+			// Hunter's Mark reduce by 2 minutes in PVP
+            if (spellproto->GetSpellFamilyFlags() & UI64LIT(0x0000000000000400))
+                return 120 * IN_MILLISECONDS;
+            //End Merging
+
             break;
         }
         case SPELLFAMILY_PALADIN:
@@ -3892,6 +3927,9 @@ int32 ApplyHasteToChannelSpell(int32 orginalDuration, SpellEntry const* spellInf
             if (spell->IsRangedSpell() && !spell->IsAutoRepeat())
                 orginalDuration = int32(orginalDuration * spell->GetCaster()->m_modAttackSpeedPct[RANGED_ATTACK]);
         }
+
+		if(spell->GetCaster()->HasAura(44401) && spellInfo->GetSpellFamilyName() == SPELLFAMILY_MAGE && spellInfo->GetSpellFamilyFlags() & 0x800) // Hack for Missile Barrage
+			orginalDuration = 2500;
     }
     return orginalDuration;
 }

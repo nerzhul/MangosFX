@@ -39,6 +39,8 @@
 #include "ArenaTeam.h"
 #include "Language.h"
 
+#include "PlayerBot.h"
+
 // config option SkipCinematics supported values
 enum CinematicsSkipMode
 {
@@ -133,6 +135,64 @@ class CharacterHandler
             }
             session->HandlePlayerLogin((LoginQueryHolder*)holder);
         }
+
+        void HandlePlayerBotLoginCallback(QueryResult * /*dummy*/, SqlQueryHolder *holder)
+        {
+            if(!holder) 
+				return;
+
+            LoginQueryHolder *lqh = (LoginQueryHolder *)holder;
+
+            if(!lqh || !lqh->GetAccountId())
+            {
+				error_log("Bot : Erreur holder");
+                if(holder) 
+					delete holder;
+
+                return;
+            }
+
+            WorldSession *botSession = new WorldSession(lqh->GetAccountId(), NULL, SEC_PLAYER, true, 0, LOCALE_frFR);
+
+            if(!botSession)
+            {
+				error_log("Bot : Erreur session");
+
+                if(holder) 
+					delete holder;
+
+                if(botSession) 
+					delete botSession;
+
+                return;
+            }
+
+            botSession->m_Address = "BOT";
+            botSession->m_expansion = 2;
+
+            uint64 guid = lqh->GetGuid();
+
+            if(!guid)
+            {
+				error_log("Bot: Erreur guid");
+                if(holder) 
+					delete holder;
+
+                if(botSession) 
+					delete botSession;
+
+                return;
+            }
+
+            botSession->HandlePlayerLogin(lqh);
+
+			PlayerBot *bot = new PlayerBot(botSession);
+			Player *plr = botSession->GetPlayer();
+			bot->SetPlayer(plr);
+			plr->SetPlayerBot(bot);
+			plr->SetBot(true);
+
+		}
 } chrHandler;
 
 void WorldSession::HandleCharEnum(QueryResult * result)
@@ -1559,4 +1619,25 @@ void WorldSession::HandleEquipmentSetUse(WorldPacket &recv_data)
     WorldPacket data(SMSG_EQUIPMENT_SET_USE_RESULT, 1);
     data << uint8(0);                                       // 4 - equipment swap failed - inventory is full
     SendPacket(&data);
+}
+
+void WorldSession::AddPlayerBot(uint64 playerGuid)
+{
+    if (sObjectMgr.GetPlayer(playerGuid))
+        return;
+
+    uint32 accountId = sObjectMgr.GetPlayerAccountIdByGUID(playerGuid);
+    if (accountId == 0)
+        return;
+
+    LoginQueryHolder *holder = new LoginQueryHolder(accountId, playerGuid);
+    if(!holder->Initialize())
+    {
+        delete holder;                                      
+        return;
+    }
+
+    CharacterDatabase.DelayQueryHolder(&chrHandler, &CharacterHandler::HandlePlayerBotLoginCallback, holder);
+	
+
 }

@@ -26,7 +26,7 @@ EndScriptData */
 
 bool GOHello_go_containment_sphere(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;
@@ -43,14 +43,16 @@ bool GOHello_go_containment_sphere(Player* pPlayer, GameObject* pGo)
     return true;
 }
 
-struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_nexus : public InstanceData
 {
-    instance_nexus(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_nexus(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;
 
     uint64 m_uiAnomalusGUID;
+	uint64 m_uiKeristraszaGUID;
+	uint64 m_uiTelestraGUID;
 
     uint64 m_uiTelestrasContainmentSphereGUID;
     uint64 m_uiAnomalusContainmentSphereGUID;
@@ -61,6 +63,8 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
         memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
 
         m_uiAnomalusGUID = 0;
+		m_uiKeristraszaGUID = 0;
+		m_uiTelestraGUID = 0;
 
         m_uiTelestrasContainmentSphereGUID = 0;
         m_uiAnomalusContainmentSphereGUID = 0;
@@ -107,6 +111,19 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
             case NPC_ANOMALUS:
                 m_uiAnomalusGUID = pCreature->GetGUID();
                 break;
+			case NPC_KERISTRASZA:
+				m_uiKeristraszaGUID = pCreature->GetGUID();
+				pCreature->SetAuraStack(47543,pCreature,1);
+				pCreature->SetFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
+				{
+					pCreature->RemoveAurasDueToSpell(47543);
+					pCreature->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+				}
+				break;
+			case NPC_TELESTRA:
+				m_uiTelestraGUID = pCreature->GetGUID();
+				break;
         }
     }
 
@@ -115,7 +132,12 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
         switch(uiType)
         {
             case NPC_ANOMALUS:
+			case TYPE_ANOMALUS:
                 return m_uiAnomalusGUID;
+			case TYPE_KERISTRASZA:
+				return m_uiKeristraszaGUID;
+			case TYPE_TELESTRA:
+				return m_uiTelestraGUID;
         }
 
         return 0;
@@ -133,6 +155,17 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                 return m_auiEncounter[2];
             case TYPE_KERISTRASZA:
                 return m_auiEncounter[3];
+			case DATA_NB_BOSS_DOWN:
+				uint32 resp = 0;
+				if(GetData(TYPE_ORMOROK) == DONE)
+					resp++;
+				if(GetData(TYPE_TELESTRA) == DONE)
+					resp += 2;
+				if(GetData(TYPE_ANOMALUS) == DONE)
+					resp += 4;
+				if(GetData(TYPE_KERISTRASZA) == DONE)
+					resp += 8;
+				return resp;
         }
 
         return 0;
@@ -151,6 +184,12 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                     if (GameObject* pGo = instance->GetGameObject(m_uiTelestrasContainmentSphereGUID))
                         pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
                 }
+				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
+					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
+						cr->RemoveAurasDueToSpell(47543);
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
                 break;
             case TYPE_ANOMALUS:
                 m_auiEncounter[1] = uiData;
@@ -159,6 +198,12 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                     if (GameObject* pGo = instance->GetGameObject(m_uiAnomalusContainmentSphereGUID))
                         pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
                 }
+				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
+					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
+						cr->RemoveAurasDueToSpell(47543);
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
                 break;
             case TYPE_ORMOROK:
                 m_auiEncounter[2] = uiData;
@@ -167,18 +212,19 @@ struct MANGOS_DLL_DECL instance_nexus : public ScriptedInstance
                     if (GameObject* pGo = instance->GetGameObject(m_uiOrmoroksContainmentSphereGUID))
                         pGo->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
                 }
-                break;
+				if(GetData(TYPE_TELESTRA) == DONE && GetData(TYPE_ANOMALUS) == DONE && GetData(TYPE_ORMOROK) == DONE)
+					if(Creature* cr = GetCreatureInMap(m_uiKeristraszaGUID))
+					{
+						cr->RemoveAurasDueToSpell(47543);
+						cr->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
+					}
+                 break;
             case TYPE_KERISTRASZA:
                 m_auiEncounter[3] = uiData;
                 break;
             default:
                 error_log("SD2: Instance Nexus: ERROR SetData = %u for type %u does not exist/not implemented.", uiType, uiData);
                 break;
-        }
-
-        if (m_auiEncounter[0] == SPECIAL && m_auiEncounter[1] == SPECIAL && m_auiEncounter[2] == SPECIAL)
-        {
-            // release Keristrasza from her prison here
         }
 
         if (uiData == DONE)

@@ -82,13 +82,12 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
 
     boss_svalaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_difficulty = pCreature->GetMap()->GetDifficulty();
         m_bIsIntroDone = false;
         Reset();
     }
 
-    ScriptedInstance* pInstance;
     bool m_difficulty;
 	MobEventTasks Tasks;
 
@@ -153,7 +152,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
         {
             if (pInstance && pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
             {
-                pInstance->SetData(TYPE_SVALA, SPECIAL);
+                SetInstanceData(TYPE_SVALA, SPECIAL);
 
                 float fX, fY, fZ;
                 me->GetClosePoint(fX, fY, fZ, me->GetObjectBoundingRadius(), 16.0f, 0.0f);
@@ -240,7 +239,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
     {
         if (!CanDoSomething())
         {
-			if(pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
+			if(pInstance && pInstance->GetData(TYPE_SVALA) == IN_PROGRESS)
 				m_bIsIntroDone = false;
 
             if (m_bIsIntroDone)
@@ -275,7 +274,7 @@ struct MANGOS_DLL_DECL boss_svalaAI : public ScriptedAI
                         case 5:
                             DoScriptText(SAY_INTRO_5, me);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-							pInstance->SetData(TYPE_SVALA, DONE);
+							SetInstanceData(TYPE_SVALA, DONE);
                             m_bIsIntroDone = true;
                             break;
                     }
@@ -396,7 +395,7 @@ CreatureAI* GetAI_boss_svala(Creature* pCreature)
 
 bool AreaTrigger_at_svala_intro(Player* pPlayer, AreaTriggerEntry* pAt)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_SVALA) == NOT_STARTED)
             pInstance->SetData(TYPE_SVALA, IN_PROGRESS);

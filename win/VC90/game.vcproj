@@ -862,6 +862,14 @@
 					RelativePath="..\..\src\game\SpellHandler.cpp"
 					>
 				</File>
+				<File
+					RelativePath="..\..\src\game\SpellMgr.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\SpellMgr.h"
+					>
+				</File>
 				<Filter
 					Name="ClassSpell"
 					>
@@ -1219,6 +1227,10 @@
 				Name="LFG"
 				>
 				<File
+					RelativePath="..\..\src\game\LFG.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\src\game\LFGHandler.cpp"
 					>
 				</File>
@@ -1384,23 +1396,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\SpellMgr.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\SpellMgr.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\StatSystem.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TemporarySummon.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\TemporarySummon.h"
 				>
 			</File>
 			<File
@@ -1452,6 +1448,22 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\Player.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PlayerBot.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\PlayerBot.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\TemporarySummon.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\TemporarySummon.h"
 					>
 				</File>
 				<File
@@ -1837,42 +1849,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\game\ThreatManager.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="ClusterSockets"
-			>
-			<File
-				RelativePath="..\..\src\game\cClusterSession.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cClusterSession.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cIncludes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cPacketOpcodes.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketTCP.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\cSocketUDP.h"
 				>
 			</File>
 		</Filter>

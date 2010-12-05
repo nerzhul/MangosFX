@@ -57,13 +57,12 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
 {
     boss_harbinger_skyrissAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Intro = false;
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     bool Intro;
@@ -110,8 +109,8 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HARBINGERSKYRISS,DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_HARBINGERSKYRISS,DONE);
     }
 
     void KilledUnit(Unit* victim)
@@ -142,7 +141,7 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
     {
         if (!Intro && !me->isInCombat())
         {
-            if (!m_pInstance)
+            if (!pInstance)
                 return;
 
             if (Intro_Timer < diff)
@@ -151,14 +150,14 @@ struct MANGOS_DLL_DECL boss_harbinger_skyrissAI : public ScriptedAI
                 {
                     case 1:
                         DoScriptText(SAY_INTRO, me);
-                        if (GameObject* pSphere = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_SPHERE_SHIELD)))
+                        if (GameObject* pSphere = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_SPHERE_SHIELD)))
                             pSphere->SetGoState(GO_STATE_ACTIVE);
                         ++Intro_Phase;
                         Intro_Timer = 25000;
                         break;
                     case 2:
                         DoScriptText(SAY_AGGRO, me);
-                        if (Unit *mellic = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_MELLICHAR)))
+                        if (Unit *mellic = Unit::GetUnit(*me, pInstance->GetData64(DATA_MELLICHAR)))
                         {
                             //should have a better way to do this. possibly spell exist.
                             mellic->setDeathState(JUST_DIED);
@@ -259,12 +258,11 @@ struct MANGOS_DLL_DECL boss_harbinger_skyriss_illusionAI : public ScriptedAI
 {
     boss_harbinger_skyriss_illusionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     void Reset() { }

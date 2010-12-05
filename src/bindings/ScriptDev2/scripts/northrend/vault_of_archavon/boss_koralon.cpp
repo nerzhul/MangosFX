@@ -38,7 +38,7 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
         BB = false;
 
         if(pInstance)
-			pInstance->SetData(TYPE_KORALON, NOT_STARTED);
+			SetInstanceData(TYPE_KORALON, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
@@ -46,12 +46,12 @@ struct MANGOS_DLL_DECL boss_koralonAI : public LibDevFSAI
         DoCast(me, SPELL_BURNING_FURY_AURA);
 
         if(pInstance) 
-			pInstance->SetData(TYPE_KORALON, IN_PROGRESS);
+			SetInstanceData(TYPE_KORALON, IN_PROGRESS);
     }
 
     void JustDied(Unit *killer)
     {
-        if(pInstance) pInstance->SetData(TYPE_KORALON, DONE);
+        if(pInstance) SetInstanceData(TYPE_KORALON, DONE);
 		GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : CONQUETE);
     }
 

@@ -36,9 +36,9 @@ EndScriptData */
 const int MAX_ENCOUNTER = 6;
 const int MAX_GENERATOR = 4;
 
-struct MANGOS_DLL_DECL instance_serpentshrine_cavern : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_serpentshrine_cavern : public InstanceData
 {
-    instance_serpentshrine_cavern(Map* pMap) : ScriptedInstance(pMap) { Initialize(); };
+    instance_serpentshrine_cavern(Map* pMap) : InstanceData(pMap) { Initialize(); };
 
     uint64 m_uiSharkkis;
     uint64 m_uiTidalvess;

@@ -61,12 +61,11 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 {
     boss_heiganAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsRegularMode = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsRegularMode;
 	MobEventTasks Tasks;
 
@@ -88,8 +87,8 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
         phase = 0;
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_HEIGAN, NOT_STARTED);
+        if(pInstance)
+            SetInstanceData(TYPE_HEIGAN, NOT_STARTED);
     }
 
     void AttackStart(Unit* pWho)
@@ -160,8 +159,8 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
             case 2: DoScriptText(SAY_AGGRO3, me); break;
         }
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_HEIGAN, IN_PROGRESS);
+        if(pInstance)
+            SetInstanceData(TYPE_HEIGAN, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* victim)
@@ -173,8 +172,8 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if(m_pInstance)
-            m_pInstance->SetData(TYPE_HEIGAN, DONE);
+        if(pInstance)
+            SetInstanceData(TYPE_HEIGAN, DONE);
 		GiveEmblemsToGroup((!m_bIsRegularMode) ? VAILLANCE : HEROISME);
     }
 
@@ -190,7 +189,7 @@ struct MANGOS_DLL_DECL boss_heiganAI : public ScriptedAI
 
 		if (Erupt_Timer < diff)
         {
-            m_pInstance->SetData(DATA_HEIGAN_ERUPT, eruptSection);
+            SetInstanceData(DATA_HEIGAN_ERUPT, eruptSection);
 
             if (eruptSection == 0)
                 eruptDirection = true;
@@ -243,10 +242,9 @@ struct MANGOS_DLL_DECL npc_heigan_eruptionAI : public ScriptedAI
 {
     npc_heigan_eruptionAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+        pInstance = (pCreature->GetInstanceData());
         Reset();
     }
-    ScriptedInstance* pInstance;
  
     uint32 phase;
     uint32 safeSpot;

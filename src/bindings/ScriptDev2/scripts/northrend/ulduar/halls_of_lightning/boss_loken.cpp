@@ -66,12 +66,11 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
 {
     boss_lokenAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     bool m_bIsHeroic;
     bool m_bIsAura;
@@ -94,8 +93,8 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
 
         m_uiHealthAmountModifier = 1;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LOKEN, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_LOKEN, NOT_STARTED);
 
 		Map::PlayerList const &PlayerList =  me->GetMap()->GetPlayers();
 		for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
@@ -107,8 +106,8 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LOKEN, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_LOKEN, IN_PROGRESS);
 
 		Map::PlayerList const &PlayerList =  me->GetMap()->GetPlayers();
 		for (Map::PlayerList::const_iterator i = PlayerList.begin(); i != PlayerList.end(); ++i)
@@ -128,8 +127,10 @@ struct MANGOS_DLL_DECL boss_lokenAI : public ScriptedAI
             if (i->getSource()->isAlive() && i->getSource()->isTargetableForAttack())
 				i->getSource()->RemoveAurasDueToSpell(SPELL_PULSING_SHOCKWAVE_AURA);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LOKEN, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_LOKEN, DONE);
+		GiveRandomReward();
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void KilledUnit(Unit* pVictim)

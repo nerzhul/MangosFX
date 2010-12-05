@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL hyjalAI : public ScriptedAI
     hyjalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         memset(m_aSpells, 0, sizeof(m_aSpells));
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
@@ -164,8 +164,6 @@ struct MANGOS_DLL_DECL hyjalAI : public ScriptedAI
     void SpellHitTarget(Unit*, const SpellEntry*);
 
     public:
-
-        ScriptedInstance* m_pInstance;
 
         uint64 m_uiBossGUID[2];
 

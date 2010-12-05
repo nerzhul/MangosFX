@@ -59,11 +59,9 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
 {
     boss_brutallusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiSlashTimer;
     uint32 m_uiBurnTimer;
@@ -80,16 +78,16 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
         m_uiLoveTimer = urand(10000, 17000);
 
         //TODO: correct me when pre-event implemented
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_BRUTALLUS, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(YELL_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_BRUTALLUS, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -106,8 +104,8 @@ struct MANGOS_DLL_DECL boss_brutallusAI : public ScriptedAI
     {
         DoScriptText(YELL_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BRUTALLUS, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_BRUTALLUS, DONE);
     }
 
     void SpellHitTarget(Unit* pCaster, const SpellEntry* pSpell)
@@ -192,7 +190,7 @@ CreatureAI* GetAI_boss_brutallus(Creature* pCreature)
 
 bool AreaTrigger_at_madrigosa(Player* pPlayer, AreaTriggerEntry* pAt)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         //this simply set encounter state, and trigger ice barrier become active
         //bosses can start pre-event based on this new state

@@ -1,9 +1,9 @@
 #include "precompiled.h"
 #include "pit_of_saron.h"
 
-struct MANGOS_DLL_DECL instance_pit_of_saron : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_pit_of_saron : public InstanceData
 {
-    instance_pit_of_saron(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_pit_of_saron(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 	std::string strInstData;

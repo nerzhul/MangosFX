@@ -63,7 +63,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 			{
 				case RAID_DIFFICULTY_10MAN_NORMAL:
 				case RAID_DIFFICULTY_25MAN_NORMAL:
-					pInstance->SetData(TYPE_GormoktheImpaler, DONE);
+					SetInstanceData(TYPE_GormoktheImpaler, DONE);
 					if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 						((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_JORM);
 					break;
@@ -71,7 +71,7 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 				case RAID_DIFFICULTY_25MAN_HEROIC:
 					if(Spawnable)
 					{
-						pInstance->SetData(TYPE_GormoktheImpaler, DONE);
+						SetInstanceData(TYPE_GormoktheImpaler, DONE);
 						if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_JORM);
 					}
@@ -90,8 +90,8 @@ struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
     {
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_GormoktheImpaler, IN_PROGRESS);
-			pInstance->SetData(TYPE_EVENT_BEAST, IN_PROGRESS);
+            SetInstanceData(TYPE_GormoktheImpaler, IN_PROGRESS);
+			SetInstanceData(TYPE_EVENT_BEAST, IN_PROGRESS);
 		}
     }
 
@@ -260,7 +260,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_Acidmaw, DONE);
+            SetInstanceData(TYPE_Acidmaw, DONE);
 		if (Creature* Dreadscale = GetInstanceCreature(TYPE_Dreadscale))
 		{
 			if(Dreadscale->isAlive())
@@ -279,7 +279,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 				{
 					case RAID_DIFFICULTY_10MAN_NORMAL:
 					case RAID_DIFFICULTY_25MAN_NORMAL:
-						pInstance->SetData(TYPE_Acidmaw, DONE);
+						SetInstanceData(TYPE_Acidmaw, DONE);
 						if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						break;
@@ -287,7 +287,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 					case RAID_DIFFICULTY_25MAN_HEROIC:
 						if(Spawnable)
 						{
-							pInstance->SetData(TYPE_Acidmaw, DONE);
+							SetInstanceData(TYPE_Acidmaw, DONE);
 							if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 								((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						}
@@ -322,7 +322,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 				Dreadscale->AddThreat(pWho);
 
         if (pInstance)
-            pInstance->SetData(TYPE_Acidmaw, IN_PROGRESS);
+            SetInstanceData(TYPE_Acidmaw, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -443,7 +443,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_Dreadscale, DONE);
+            SetInstanceData(TYPE_Dreadscale, DONE);
 		if (Creature* Acidmaw = GetInstanceCreature(TYPE_Acidmaw))
 		{
 			if(Acidmaw->isAlive())
@@ -463,7 +463,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 					case RAID_DIFFICULTY_10MAN_NORMAL:
 					case RAID_DIFFICULTY_25MAN_NORMAL:
 						if(pInstance)
-							pInstance->SetData(TYPE_Dreadscale, DONE);
+							SetInstanceData(TYPE_Dreadscale, DONE);
 						if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 							((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						break;
@@ -472,7 +472,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 						if(Spawnable)
 						{
 							if(pInstance)
-								pInstance->SetData(TYPE_Dreadscale, DONE);
+								SetInstanceData(TYPE_Dreadscale, DONE);
 							if (Creature* Ann = GetInstanceCreature(DATA_ANNOUNCER))
 								((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_BEASTS_YETI);
 						}
@@ -507,7 +507,7 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 			if(Acidmaw->isAlive())
 				Acidmaw->AddThreat(pWho);
         if (pInstance)
-            pInstance->SetData(TYPE_Dreadscale, IN_PROGRESS);
+            SetInstanceData(TYPE_Dreadscale, IN_PROGRESS);
 
     }
 
@@ -633,13 +633,12 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 {
     boss_Icehowl_AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = me->GetMap()->GetDifficulty();
 
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
 	MobEventTasks Tasks;
 	Difficulty m_bIsHeroic;
 	uint8 phase;
@@ -666,13 +665,13 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
+        if (pInstance)
 		{
-            m_pInstance->SetData(TYPE_Icehowl, DONE);
-			m_pInstance->SetData(TYPE_EVENT_BEAST, DONE);
-			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_FORDRING))))
+            SetInstanceData(TYPE_Icehowl, DONE);
+			SetInstanceData(TYPE_EVENT_BEAST, DONE);
+			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FORDRING))))
 				Speak(CHAT_TYPE_SAY,16041,"La menagerie monstrueuse est vaincue !",tmp);
-			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_ANNOUNCER))))
+			if (Creature* tmp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ANNOUNCER))))
 				tmp->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NOT_SELECTABLE);
 		}
 		switch(m_bIsHeroic)
@@ -696,16 +695,16 @@ struct MANGOS_DLL_DECL boss_Icehowl_AI : public ScriptedAI
 	void KilledUnit(Unit* victim)
 	{
 		if(victim->GetTypeId() == TYPEID_PLAYER)
-			if(m_pInstance)
-				m_pInstance->SetData(TYPE_TRY,1);
+			if(pInstance)
+				SetInstanceData(TYPE_TRY,1);
 	}
 
     void Aggro(Unit* pWho)
     {
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_Icehowl, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_Icehowl, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

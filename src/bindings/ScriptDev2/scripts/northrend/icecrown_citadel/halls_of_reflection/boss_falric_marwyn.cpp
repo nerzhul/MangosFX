@@ -103,7 +103,7 @@ struct MANGOS_DLL_DECL boss_falricAI : public LibDevFSAI
     void JustDied(Unit* killer)
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
-	   pInstance->SetData(TYPE_FALRIC,DONE);
+	   SetInstanceData(TYPE_FALRIC,DONE);
 	   Say(16713,"Marwyn... Charge toi d'eux...");
     }
 };
@@ -162,7 +162,7 @@ struct MANGOS_DLL_DECL boss_marwynAI : public LibDevFSAI
     void JustDied(Unit* killer)
     {
        GiveEmblemsToGroup(m_difficulty ? TRIOMPHE : 0,1,true);
-	   pInstance->SetData(TYPE_MARWYN,DONE);
+	   SetInstanceData(TYPE_MARWYN,DONE);
 	   Say(16737,"Oui... courrez... courrez vers votre destin. Son etreinte froide et amere... vous attend.");
     }
 };

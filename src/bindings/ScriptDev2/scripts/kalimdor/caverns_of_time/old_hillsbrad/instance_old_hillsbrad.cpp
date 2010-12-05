@@ -35,9 +35,9 @@ enum
     QUEST_ENTRY_DIVERSION       = 10283
 };
 
-struct MANGOS_DLL_DECL instance_old_hillsbrad : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_old_hillsbrad : public InstanceData
 {
-    instance_old_hillsbrad(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_old_hillsbrad(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     uint32 m_uiBarrelCount;

@@ -103,6 +103,7 @@ World::World()
 
     m_defaultDbcLocale = LOCALE_enUS;
     m_availableDbcLocaleMask = 0;
+	plb_count = 0;
 }
 
 /// World destructor
@@ -201,8 +202,7 @@ void World::AddSession(WorldSession* s)
     addSessQueue.add(s);
 }
 
-void
-World::AddSession_ (WorldSession* s)
+void World::AddSession_ (WorldSession* s)
 {
     ASSERT (s);
 
@@ -656,7 +656,7 @@ void World::LoadConfigSettings(bool reload)
     m_configs[CONFIG_STRICT_CHARTER_NAMES]               = sConfig.GetIntDefault ("StrictCharterNames", 0);
     m_configs[CONFIG_STRICT_PET_NAMES]                   = sConfig.GetIntDefault ("StrictPetNames",     0);
 
-    m_configs[CONFIG_MIN_PLAYER_NAME]                    = sConfig.GetIntDefault ("MinPlayerName",  2);
+	m_configs[CONFIG_MIN_PLAYER_NAME]                    = sConfig.GetIntDefault ("MinPlayerName",  2);
     if(m_configs[CONFIG_MIN_PLAYER_NAME] < 1 || m_configs[CONFIG_MIN_PLAYER_NAME] > MAX_PLAYER_NAME)
     {
         sLog.outError("MinPlayerName (%i) must be in range 1..%u. Set to 2.",m_configs[CONFIG_MIN_PLAYER_NAME],MAX_PLAYER_NAME);
@@ -1101,6 +1101,9 @@ void World::LoadConfigSettings(bool reload)
         sLog.outError("Visibility.Distance.InFlight can't be greater %f",MAX_VISIBILITY_DISTANCE-m_VisibleObjectGreyDistance);
         m_MaxVisibleDistanceInFlight = MAX_VISIBILITY_DISTANCE - m_VisibleObjectGreyDistance;
     }
+	
+	// Dungeon finder
+    m_configs[CONFIG_DUNGEON_FINDER] = sConfig.GetIntDefault ("Dungeon_Finder", 1);
 
     ///- Read the "Data" directory from the config file
     std::string dataPath = sConfig.GetStringDefault("DataDir","./");
@@ -1118,8 +1121,11 @@ void World::LoadConfigSettings(bool reload)
         sLog.outString("Using DataDir %s",m_dataPath.c_str());
     }
 
-    bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", false);
-    bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", false);
+	// Unmount indoor
+	m_configs[CONFIG_BOOL_VMAP_INDOOR_CHECK] = sConfig.GetIntDefault("vmap.enableIndoorCheck", 1);
+
+    bool enableLOS = sConfig.GetBoolDefault("vmap.enableLOS", true);
+    bool enableHeight = sConfig.GetBoolDefault("vmap.enableHeight", true);
     std::string ignoreMapIds = sConfig.GetStringDefault("vmap.ignoreMapIds", "");
     std::string ignoreSpellIds = sConfig.GetStringDefault("vmap.ignoreSpellIds", "");
     VMAP::VMapFactory::createOrGetVMapManager()->setEnableLineOfSightCalc(enableLOS);
@@ -1534,7 +1540,9 @@ void World::SetInitialWorldSettings()
 
 	///- Initialize Looking For Group
  	sLog.outString("Starting Looking For Group System");
-	sLFGMgr.InitLFG();
+//	sLFGMgr.InitLFG(); // Merging
+	sLFGMgr.LoadDungeonEncounters();
+	sLFGMgr.LoadRewards();
 
     ///- Initialize Battlegrounds
     sLog.outString( "Starting BattleGround System" );
@@ -2360,7 +2368,7 @@ void World::SetPlayerLimit( int32 limit, bool needUpdate )
 
 void World::UpdateMaxSessionCounters()
 {
-    m_maxActiveSessionCount = std::max(m_maxActiveSessionCount,uint32(m_sessions.size()-m_QueuedPlayer.size()));
+    m_maxActiveSessionCount = std::max(m_maxActiveSessionCount,uint32(m_sessions.size()-m_QueuedPlayer.size()) + sWorld.GetCountBot());
     m_maxQueuedSessionCount = std::max(m_maxQueuedSessionCount,uint32(m_QueuedPlayer.size()));
 }
 

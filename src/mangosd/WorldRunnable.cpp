@@ -76,7 +76,7 @@ void WorldRunnable::run()
 
         #ifdef WIN32
             if (m_ServiceStatus == 0) World::StopNow(SHUTDOWN_EXIT_CODE);
-            while (m_ServiceStatus == 2) Sleep(1000);
+			while (m_ServiceStatus == 2) ACE_Based::Thread::Sleep(1000);
         #endif
     }
 

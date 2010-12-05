@@ -45,12 +45,11 @@ struct MANGOS_DLL_DECL boss_aeonusAI : public ScriptedAI
 {
     boss_aeonusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 SandBreath_Timer;
@@ -88,8 +87,8 @@ struct MANGOS_DLL_DECL boss_aeonusAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RIFT,DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_RIFT,DONE);
     }
 
     void KilledUnit(Unit *victim)

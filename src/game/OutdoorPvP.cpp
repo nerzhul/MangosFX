@@ -186,7 +186,14 @@ bool OPvPCapturePoint::DelObject(uint32 type)
     if(!m_Objects[type])
         return false;
 
-    GameObject *obj = sMapMgr.FindMap(530)->GetGameObject(m_Objects[type]);
+	Map* map = sMapMgr.FindMap(530);
+	if(!map)
+	{
+		m_Objects[type] = 0;
+        return false;
+	}
+
+    GameObject *obj = map->GetGameObject(m_Objects[type]);
     if(!obj)
     {
         m_Objects[type] = 0;

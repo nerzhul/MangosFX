@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "scholomance.h"
 
-struct MANGOS_DLL_DECL instance_scholomance : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_scholomance : public InstanceData
 {
-    instance_scholomance(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_scholomance(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

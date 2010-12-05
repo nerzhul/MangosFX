@@ -250,12 +250,12 @@ struct AchievementCriteriaEntry
             uint32  teamtype;                               // 3 {2,3,5}
         } highest_team_rating;
 
-        // ACHIEVEMENT_CRITERIA_TYPE_REACH_TEAM_RATING      = 39
+        // ACHIEVEMENT_CRITERIA_TYPE_HIGHEST_PERSONAL_RATING      = 39
         struct
         {
             uint32  teamtype;                               // 3 {2,3,5}
             uint32  teamrating;                             // 4
-        } reach_team_rating;
+        } highest_personal_rating;
 
         // ACHIEVEMENT_CRITERIA_TYPE_LEARN_SKILL_LEVEL      = 40
         struct
@@ -496,6 +496,17 @@ struct AchievementCriteriaEntry
     //uint32 unk2;                                          // 16 all zeros
     //uint32 moreRequirement[3];                            // 17-19
     //uint32 moreRequirementValue[3];                       // 20-22
+						                                   // 30 show order
+
+	// helpers
+    bool IsExplicitlyStartedTimedCriteria() const
+    {
+        if (!timeLimit)
+            return false;
+
+        // in case raw.value == timedCriteriaMiscId in timedCriteriaMiscId stored spellid/itemids for cast/use, so repeating aura start at first cast/use until fails
+        return requiredType == ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_QUEST || raw.field3 != timedCriteriaMiscId;
+    }
 };
 
 struct AreaTableEntry
@@ -1743,6 +1754,7 @@ struct MANGOS_DLL_SPEC SpellEntry
     uint32 GetStartRecoveryCategory() const;
     uint32 GetSpellLevel() const;
     int32 GetEquippedItemClass() const;
+	int32 GetEquippedItemSubClassMask() const;
     uint32 GetSpellFamilyName() const;
 	uint64 GetSpellFamilyFlags() const;
 	uint32 GetSpellFamilyFlags2() const;
@@ -1775,7 +1787,7 @@ struct MANGOS_DLL_SPEC SpellEntry
     uint32 GetTargets() const;
     uint32 GetEffectApplyAuraNameByIndex(SpellEffectIndex index) const;
 
-private:
+	private:
     // prevent creating custom entries (copy data from original in fact)
     SpellEntry(SpellEntry const&);                      // DON'T must have implementation
 };
@@ -1897,8 +1909,10 @@ struct SummonPropertiesEntry
     uint32  Id;                                             // 0
     uint32  Group;                                          // 1, enum SummonPropGroup
     uint32  FactionId;                                      // 2,                        14 rows > 0
-    uint32  Type;                                           // 3, enum SummonPropType
-    uint32  Slot;                                           // 4,   if type = SUMMON_PROP_TYPE_TOTEM, its actual slot    0-6
+    uint32  Title;                                          // 3, enum UnitNameSummonTitle	
+    uint32  Slot;                                           // 4, if title = UNITNAME_SUMMON_TITLE_TOTEM, its actual slot (0-6).
+                                                            //    if title = UNITNAME_SUMMON_TITLE_COMPANION, slot=6 -> defensive guardian, in other cases criter/minipet
+                                                            //    Slot may have other uses, selection of pet type in some cases?    
     uint32  Flags;                                          // 5, enum SummonPropFlags
 };
 

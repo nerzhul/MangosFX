@@ -82,7 +82,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 		pPos.clear();
 		roc_pos.clear();
 		if (pInstance)
-            pInstance->SetData(TYPE_HODIR, NOT_STARTED);
+            SetInstanceData(TYPE_HODIR, NOT_STARTED);
     }
 
     void KilledUnit(Unit *victim){}
@@ -90,7 +90,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
     void JustDied(Unit *victim)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_HODIR, DONE);
+            SetInstanceData(TYPE_HODIR, DONE);
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
     }
 
@@ -101,7 +101,7 @@ struct MANGOS_DLL_DECL boss_hodirAI : public LibDevFSAI
 
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_HODIR, IN_PROGRESS);
+            SetInstanceData(TYPE_HODIR, IN_PROGRESS);
 			((instance_ulduar*)pInstance)->FreezeAllHodirAdds();
 		}
 		InitPlayers();

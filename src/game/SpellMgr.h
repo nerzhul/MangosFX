@@ -26,6 +26,7 @@
 #include "SpellAuraDefines.h"
 #include "DBCStructure.h"
 #include "DBCStores.h"
+#include "ItemPrototype.h"
 #include "Database/SQLStorage.h"
 
 #include "Utilities/UnorderedMapSet.h"
@@ -462,6 +463,14 @@ inline uint32 GetDispellMask(DispelType dispel)
     else
         return (1 << dispel);
 }
+// Merging
+inline bool IsRangedWeaponSpell(SpellEntry const* spellInfo)
+{
+    //spell->DmgClass == SPELL_DAMAGE_CLASS_RANGED should be checked outside
+	return (spellInfo->GetSpellFamilyName() == SPELLFAMILY_HUNTER && !(spellInfo->GetSpellFamilyFlags() & 0x10000000)) // for 53352, cannot find better way
+		|| (spellInfo->GetEquippedItemSubClassMask() & ITEM_SUBCLASS_MASK_WEAPON_RANGED);
+}
+///End Merging
 
 int32 ApplyHasteToChannelSpell(int32 orginalDuration, SpellEntry const* spellInfo, Spell const* spell);
 
@@ -1030,7 +1039,15 @@ class SpellMgr
         {
             return SpellAreaForAreaMapBounds(mSpellAreaForAreaMap.lower_bound(area_id),mSpellAreaForAreaMap.upper_bound(area_id));
         }
+		
+		SpellEntry* LookupSpecialEntry(uint32 spellId)
+		{
+			std::map<uint32,SpellEntry*>::iterator itr = SpecialSpellMap.find(spellId);
+			if(itr == SpecialSpellMap.end())
+				return NULL;
 
+			return itr->second;
+		}
     // Modifiers
     public:
         static SpellMgr& Instance();
@@ -1076,6 +1093,9 @@ class SpellMgr
         SpellAreaForQuestMap mSpellAreaForQuestEndMap;
         SpellAreaForAuraMap  mSpellAreaForAuraMap;
         SpellAreaForAreaMap  mSpellAreaForAreaMap;
+
+		// special
+		std::map<uint32,SpellEntry*> SpecialSpellMap;
 };
 
 #define sSpellMgr SpellMgr::Instance()

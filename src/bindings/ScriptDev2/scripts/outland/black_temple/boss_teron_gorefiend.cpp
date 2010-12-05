@@ -186,11 +186,9 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
 {
     boss_teron_gorefiendAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 IncinerateTimer;
     uint32 SummonDoomBlossomTimer;
@@ -226,8 +224,8 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GOREFIEND, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_GOREFIEND, NOT_STARTED);
     }
 
     void MoveInLineOfSight(Unit* pWho)
@@ -237,8 +235,8 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
         {
             if (me->IsWithinDistInMap(pWho, VISIBLE_RANGE) && me->IsWithinLOSInMap(pWho))
             {
-                if (m_pInstance)
-                    m_pInstance->SetData(TYPE_GOREFIEND, IN_PROGRESS);
+                if (pInstance)
+                    SetInstanceData(TYPE_GOREFIEND, IN_PROGRESS);
 
                 me->GetMotionMaster()->Clear(false);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -261,8 +259,8 @@ struct MANGOS_DLL_DECL boss_teron_gorefiendAI : public ScriptedAI
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GOREFIEND, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_GOREFIEND, DONE);
 
         DoScriptText(SAY_DEATH, me);
     }

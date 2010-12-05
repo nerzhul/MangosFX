@@ -24,12 +24,11 @@ struct MANGOS_DLL_DECL boss_krystallusAI : public ScriptedAI
 	Unit* target;
     boss_krystallusAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 	
 	void Reset()

@@ -77,12 +77,10 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
 {
     boss_high_king_maulgarAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiCouncil, 0, sizeof(m_auiCouncil));
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiArcingSmash_Timer;
     uint32 m_uiMightyBlow_Timer;
@@ -119,8 +117,8 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
             }
         }
 
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
-            m_pInstance->SetData(TYPE_MAULGAR_EVENT, NOT_STARTED);
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
+            SetInstanceData(TYPE_MAULGAR_EVENT, NOT_STARTED);
     }
 
     void KilledUnit()
@@ -137,16 +135,16 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         //we risk being DONE before adds are in fact dead
-        m_pInstance->SetData(TYPE_MAULGAR_EVENT, DONE);
+        SetInstanceData(TYPE_MAULGAR_EVENT, DONE);
     }
 
     void Aggro(Unit *pWho)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         GetCouncil();
@@ -155,20 +153,20 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
 
         me->CallForHelp(50.0f);
 
-        if (m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
-            m_pInstance->SetData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
+        if (pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+            SetInstanceData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
     }
 
     void GetCouncil()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         //get council member's guid to respawn them if needed
-        m_auiCouncil[0] = m_pInstance->GetData64(DATA_KIGGLER);
-        m_auiCouncil[1] = m_pInstance->GetData64(DATA_BLINDEYE);
-        m_auiCouncil[2] = m_pInstance->GetData64(DATA_OLM);
-        m_auiCouncil[3] = m_pInstance->GetData64(DATA_KROSH);
+        m_auiCouncil[0] = pInstance->GetData64(DATA_KIGGLER);
+        m_auiCouncil[1] = pInstance->GetData64(DATA_BLINDEYE);
+        m_auiCouncil[2] = pInstance->GetData64(DATA_OLM);
+        m_auiCouncil[3] = pInstance->GetData64(DATA_KROSH);
     }
 
     void EventCouncilDeath()
@@ -189,7 +187,7 @@ struct MANGOS_DLL_DECL boss_high_king_maulgarAI : public ScriptedAI
             return;
 
         //someone evaded!
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
         {
             EnterEvadeMode();
             return;
@@ -262,31 +260,29 @@ struct MANGOS_DLL_DECL Council_Base_AI : public ScriptedAI
 {
     Council_Base_AI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
     }
-
-    ScriptedInstance* m_pInstance;
 
     void JustReachedHome()
     {
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
-            m_pInstance->SetData(TYPE_MAULGAR_EVENT, NOT_STARTED);
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == IN_PROGRESS)
+            SetInstanceData(TYPE_MAULGAR_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit *pWho)
     {
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
-            m_pInstance->SetData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+            SetInstanceData(TYPE_MAULGAR_EVENT, IN_PROGRESS);
 
         me->CallForHelp(50.0f);
     }
 
     void JustDied(Unit* pVictim)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        Creature* pMaulgar = (Creature*)Unit::GetUnit((*me), m_pInstance->GetData64(DATA_MAULGAR));
+        Creature* pMaulgar = (Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_MAULGAR));
 
         if (pMaulgar->isAlive())
         {
@@ -319,7 +315,7 @@ struct MANGOS_DLL_DECL boss_olm_the_summonerAI : public Council_Base_AI
             return;
 
         //someone evaded!
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
         {
             EnterEvadeMode();
             return;
@@ -409,7 +405,7 @@ struct MANGOS_DLL_DECL boss_kiggler_the_crazedAI : public Council_Base_AI
             return;
 
         //someone evaded!
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
         {
             EnterEvadeMode();
             return;
@@ -478,7 +474,7 @@ struct MANGOS_DLL_DECL boss_blindeye_the_seerAI : public Council_Base_AI
             return;
 
         //someone evaded!
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
         {
             EnterEvadeMode();
             return;
@@ -553,7 +549,7 @@ struct MANGOS_DLL_DECL boss_krosh_firehandAI : public Council_Base_AI
             return;
 
         //someone evaded!
-        if (m_pInstance && m_pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
+        if (pInstance && pInstance->GetData(TYPE_MAULGAR_EVENT) == NOT_STARTED)
         {
             EnterEvadeMode();
             return;

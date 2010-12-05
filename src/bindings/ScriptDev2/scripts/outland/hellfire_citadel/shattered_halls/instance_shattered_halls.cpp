@@ -31,9 +31,9 @@ enum
     NPC_NETHEKURSE      = 16807
 };
 
-struct MANGOS_DLL_DECL instance_shattered_halls : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_shattered_halls : public InstanceData
 {
-    instance_shattered_halls(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_shattered_halls(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     uint64 m_uiNethekurseGUID;

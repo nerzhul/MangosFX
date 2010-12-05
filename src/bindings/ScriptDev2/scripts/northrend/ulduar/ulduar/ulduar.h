@@ -142,9 +142,9 @@ struct MANGOS_DLL_DECL boss_stormcaller_brundirAI: public LibDevFSAI
 	void Reset();
 };
 
-struct MANGOS_DLL_DECL instance_ulduar : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_ulduar : public InstanceData
 {
-    instance_ulduar(Map* pMap) : ScriptedInstance(pMap)
+    instance_ulduar(Map* pMap) : InstanceData(pMap)
 	{ 
 		thisMap = pMap;
 		Initialize(); 

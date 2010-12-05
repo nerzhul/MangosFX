@@ -70,12 +70,11 @@ struct MANGOS_DLL_DECL boss_nadoxAI : public ScriptedAI
 	
 	boss_nadoxAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -184,13 +183,11 @@ struct MANGOS_DLL_DECL add_nadox : public ScriptedAI // Add
     	 
 	add_nadox(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         
     }
     
-	ScriptedInstance* m_pInstance;
-		
 	void UpdateAI(const uint32 diff) // Début Script add
 
 	{

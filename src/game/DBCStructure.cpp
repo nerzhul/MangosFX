@@ -189,6 +189,12 @@ int32 SpellEntry::GetEquippedItemClass() const
     return items ? items->EquippedItemClass : -1;
 }
 
+int32 SpellEntry::GetEquippedItemSubClassMask() const
+{
+    SpellEquippedItemsEntry const* items = GetSpellEquippedItems();
+	return items ? items->EquippedItemSubClassMask : -1;
+}
+
 uint32 SpellEntry::GetSpellFamilyName() const
 {
     SpellClassOptionsEntry const* classOpt = GetSpellClassOptions();

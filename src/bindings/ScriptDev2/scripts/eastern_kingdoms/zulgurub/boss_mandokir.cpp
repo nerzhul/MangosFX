@@ -89,11 +89,9 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
 {
     boss_mandokirAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiWatch_Timer;
     uint32 m_uiCleave_Timer;
@@ -130,8 +128,8 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_OHGAN, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_OHGAN, NOT_STARTED);
 
         std::list<Creature*> lSpirits;                      //despawn spirits
         GetCreatureListWithEntryInGrid(lSpirits, me, NPC_CHAINED_SPIRIT, DEFAULT_VISIBILITY_INSTANCE);
@@ -156,8 +154,8 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
             {
                 DoScriptText(SAY_DING_KILL, me);
 
-                if (m_pInstance)
-                    if (Unit* jTemp = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_JINDO)))
+                if (pInstance)
+                    if (Unit* jTemp = Unit::GetUnit(*me, pInstance->GetData64(DATA_JINDO)))
                         if (jTemp->isAlive())
                             DoScriptText(SAY_GRATS_JINDO, jTemp);
 
@@ -311,7 +309,7 @@ struct MANGOS_DLL_DECL boss_mandokirAI : public ScriptedAI
         }
 
         //Checking if Ohgan is dead. If yes Mandokir will enrage.
-        if (!m_bRaptorDead && m_pInstance && m_pInstance->GetData(TYPE_OHGAN) == DONE)
+        if (!m_bRaptorDead && pInstance && pInstance->GetData(TYPE_OHGAN) == DONE)
         {
             DoCastMe( SPELL_ENRAGE);
             DoScriptText(EMOTE_RAGE, me);
@@ -327,11 +325,9 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
 {
     mob_ohganAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiSunderArmor_Timer;
 
@@ -342,8 +338,8 @@ struct MANGOS_DLL_DECL mob_ohganAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_OHGAN, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_OHGAN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)

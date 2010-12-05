@@ -19,6 +19,7 @@ class SpellCastTargets;
 class Map;
 class Unit;
 class WorldObject;
+class LFGMgr;
 
 #define MAX_SCRIPTS         5000                            //72 bytes each (approx 351kb)
 #define VISIBLE_RANGE       (166.0f)                        //MAX visible range (size of grid)

@@ -119,12 +119,10 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 {
     boss_lady_vashjAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiShieldGeneratorChannel, 0, sizeof(m_auiShieldGeneratorChannel));
         Reset();
     }
-
-    ScriptedInstance *m_pInstance;                          // the instance
 
     uint64 m_auiShieldGeneratorChannel[MAX_SHIELD_GEN];
 
@@ -169,8 +167,8 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
 
         RemoveAllShieldGenerators();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, NOT_STARTED);
     }
 
     void RemoveAllShieldGenerators()
@@ -197,8 +195,8 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             case 3: DoScriptText(SAY_AGGRO4, me); break;
         }
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, IN_PROGRESS);
     }
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
@@ -265,8 +263,8 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_LADYVASHJ_EVENT, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_LADYVASHJ_EVENT, DONE);
     }
 
     void CastShootOrMultishot()
@@ -466,7 +464,7 @@ struct MANGOS_DLL_DECL boss_lady_vashjAI : public ScriptedAI
             if (m_uiCheck_Timer < diff)
             {
                 //Start m_uiPhase 3
-                if (m_pInstance && m_pInstance->GetData(TYPE_VASHJ_PHASE3_CHECK) == DONE)
+                if (pInstance && pInstance->GetData(TYPE_VASHJ_PHASE3_CHECK) == DONE)
                 {
                     DoScriptText(SAY_PHASE3, me);
 
@@ -495,20 +493,18 @@ struct MANGOS_DLL_DECL mob_enchanted_elementalAI : public ScriptedAI
 {
     mob_enchanted_elementalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         SetCombatMovement(false);
         Reset();
     }
-
-    ScriptedInstance *m_pInstance;                          // the instance
 
     void Reset() { }
 
     void MoveInLineOfSight(Unit* pWho)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (Unit* pVashj = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LADYVASHJ)))
+            if (Unit* pVashj = Unit::GetUnit((*me), pInstance->GetData64(DATA_LADYVASHJ)))
             {
                 if (pVashj->IsWithinDistInMap(me, ATTACK_DISTANCE))
                 {
@@ -531,12 +527,10 @@ struct MANGOS_DLL_DECL mob_tainted_elementalAI : public ScriptedAI
 {
     mob_tainted_elementalAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         SetCombatMovement(false);
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;                          // the instance
 
     // timers
     uint32 m_uiPoisonBolt_Timer;
@@ -570,11 +564,9 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
 {
     mob_toxic_sporebatAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiToxicSpore_Timer;
     uint32 m_uiCheck_Timer;
@@ -605,10 +597,10 @@ struct MANGOS_DLL_DECL mob_toxic_sporebatAI : public ScriptedAI
         //m_uiCheck_Timer
         if (m_uiCheck_Timer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
                 //check if vashj is death
-                Unit* pVashj = Unit::GetUnit((*me), m_pInstance->GetData64(DATA_LADYVASHJ));
+                Unit* pVashj = Unit::GetUnit((*me), pInstance->GetData64(DATA_LADYVASHJ));
                 if (!pVashj || !pVashj->isAlive())
                 {
                     //remove
@@ -668,11 +660,9 @@ struct MANGOS_DLL_DECL mob_shield_generator_channelAI : public ScriptedAI
 {
     mob_shield_generator_channelAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;                          // the instance
 
     void Reset() { }
 
@@ -682,7 +672,7 @@ struct MANGOS_DLL_DECL mob_shield_generator_channelAI : public ScriptedAI
 //this is wrong, alternative script needed
 bool ItemUse_item_tainted_core(Player* pPlayer, Item* pItem, SpellCastTargets const& sctTargets)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pPlayer->GetInstanceData());
+    InstanceData* pInstance = (pPlayer->GetInstanceData());
 
     if (!pInstance)
     {

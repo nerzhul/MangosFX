@@ -31,9 +31,9 @@ EndScriptData */
 4 - Harbinger Skyriss event, 5 sub-events
 */
 
-struct MANGOS_DLL_DECL instance_arcatraz : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_arcatraz : public InstanceData
 {
-    instance_arcatraz(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_arcatraz(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

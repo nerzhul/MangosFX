@@ -38,11 +38,9 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
 {
     boss_emperor_dagran_thaurissanAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiHandOfThaurissan_Timer;
     uint32 m_uiAvatarOfFlame_Timer;
@@ -63,10 +61,10 @@ struct MANGOS_DLL_DECL boss_emperor_dagran_thaurissanAI : public ScriptedAI
 
     void JustDied(Unit* pVictim)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pPrincess = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_PRINCESS)))
+        if (Creature* pPrincess = pInstance->instance->GetCreature(pInstance->GetData64(DATA_PRINCESS)))
         {
             if (pPrincess->isAlive())
             {
@@ -144,11 +142,9 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
 {
     boss_moira_bronzebeardAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiHeal_Timer;
     uint32 m_uiMindBlast_Timer;
@@ -177,9 +173,9 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (Creature* pEmperor = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_EMPEROR)))
+            if (Creature* pEmperor = pInstance->instance->GetCreature(pInstance->GetData64(DATA_EMPEROR)))
             {
                 // if evade, then check if he is alive. If not, start make portal
                 if (!pEmperor->isAlive())
@@ -224,7 +220,7 @@ struct MANGOS_DLL_DECL boss_moira_bronzebeardAI : public ScriptedAI
         //Heal_Timer
         if (m_uiHeal_Timer < diff)
         {
-            if (Creature* pEmperor = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_EMPEROR)))
+            if (Creature* pEmperor = pInstance->instance->GetCreature(pInstance->GetData64(DATA_EMPEROR)))
             {
                 if (pEmperor->isAlive() && pEmperor->GetHealth() < pEmperor->GetMaxHealth())
                     DoCast(pEmperor, SPELL_HEAL);

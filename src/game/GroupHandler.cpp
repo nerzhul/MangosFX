@@ -265,22 +265,38 @@ void WorldSession::HandleGroupUninviteGuidOpcode(WorldPacket & recv_data)
         return;
     }
 
-    PartyResult res = GetPlayer()->CanUninviteFromGroup();
-    if(res != ERR_PARTY_RESULT_OK)
-    {
+	PartyResult res = GetPlayer()->CanUninviteFromGroup();
+	if(res != ERR_PARTY_RESULT_OK && res != ERR_NOT_LEADER) // Checking user type correctly
+	{
         SendPartyResult(PARTY_OP_LEAVE, "", res);
         return;
     }
-
+	
     Group* grp = GetPlayer()->GetGroup();
     if(!grp)
         return;
 
-    if(grp->IsMember(guid))
+	//Adding LFG Support
+	if(grp->IsMember(guid))
     {
-        Player::RemoveFromGroup(grp,guid);
+		if(grp->isLFGGroup())
+		{
+			if( res == ERR_NOT_LEADER )
+			{
+				sLFGMgr.InitBoot(grp,GetPlayer()->GetGUIDLow(),guid,"Expulsion");
+			}
+			else
+			{
+				Player::RemoveFromGroup(grp,guid);
+			}
+		}
+        else
+		{
+			Player::RemoveFromGroup(grp,guid);
+		}
         return;
     }
+	//End Adding LFG Support
 
     if(Player* plr = grp->GetInvited(guid))
     {
@@ -299,28 +315,42 @@ void WorldSession::HandleGroupUninviteOpcode(WorldPacket & recv_data)
     // player not found
     if(!normalizePlayerName(membername))
         return;
-
+	
     // can't uninvite yourself
     if(GetPlayer()->GetName() == membername)
     {
         sLog.outError("WorldSession::HandleGroupUninviteOpcode: leader %s(%d) tried to uninvite himself from the group.", GetPlayer()->GetName(), GetPlayer()->GetGUIDLow());
         return;
     }
-
+	
     PartyResult res = GetPlayer()->CanUninviteFromGroup();
     if(res != ERR_PARTY_RESULT_OK)
     {
         SendPartyResult(PARTY_OP_LEAVE, "", res);
         return;
     }
-
-    Group* grp = GetPlayer()->GetGroup();
+   
+	Group* grp = GetPlayer()->GetGroup();
     if(!grp)
         return;
 
     if(uint64 guid = grp->GetMemberGUID(membername))
     {
-        Player::RemoveFromGroup(grp,guid);
+		if(grp->isLFGGroup())
+		{
+			if(Player* plr = sObjectMgr.GetPlayer(guid))
+			{
+				sLFGMgr.InitBoot(grp,GetPlayer()->GetGUIDLow(),plr->GetGUIDLow(),"");
+			}
+			else
+			{
+				Player::RemoveFromGroup(grp,guid);
+			}
+		}
+        else
+		{
+			Player::RemoveFromGroup(grp,guid);
+		}
         return;
     }
 

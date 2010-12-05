@@ -31,7 +31,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
 {
     boss_dredAI(Creature *pCreature) : ScriptedAI(pCreature)
     {
-        pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
     }
@@ -39,7 +39,6 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
     uint32 RaptorCallTimer;
 	bool m_bIsHeroic;
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -57,8 +56,8 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
 
         if (pInstance)
         {
-            pInstance->SetData(DATA_DRED_EVENT,NOT_STARTED);
-            pInstance->SetData(DATA_KING_DRED_ACHIEV, 0);
+            SetInstanceData(DATA_DRED_EVENT,NOT_STARTED);
+            SetInstanceData(DATA_KING_DRED_ACHIEV, 0);
         }
 
         RaptorCallTimer    = urand(20000,25000);
@@ -67,7 +66,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
     void EnterCombat(Unit* who)
     {
         if (pInstance)
-            pInstance->SetData(DATA_DRED_EVENT,IN_PROGRESS);
+            SetInstanceData(DATA_DRED_EVENT,IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -98,7 +97,7 @@ struct MANGOS_DLL_DECL boss_dredAI : public ScriptedAI
     {
         if (pInstance)
         {
-            pInstance->SetData(DATA_DRED_EVENT,DONE);
+            SetInstanceData(DATA_DRED_EVENT,DONE);
 
             /* todo : HF
 			if (m_bIsHeroic && pInstance->GetData(DATA_KING_DRED_ACHIEV) == 6)
@@ -118,11 +117,10 @@ struct MANGOS_DLL_DECL npc_drakkari_gutripperAI : public ScriptedAI
 {
     npc_drakkari_gutripperAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -148,7 +146,7 @@ struct MANGOS_DLL_DECL npc_drakkari_gutripperAI : public ScriptedAI
         {
             if (me->GetMap()->GetDifficulty() && pInstance->GetData(DATA_DRED_EVENT) == IN_PROGRESS && pInstance->GetData(DATA_KING_DRED_ACHIEV) < 6)
             {
-                pInstance->SetData(DATA_KING_DRED_ACHIEV, pInstance->GetData(DATA_KING_DRED_ACHIEV) + 1);
+                SetInstanceData(DATA_KING_DRED_ACHIEV, pInstance->GetData(DATA_KING_DRED_ACHIEV) + 1);
             }
         }
     }
@@ -163,11 +161,10 @@ struct MANGOS_DLL_DECL npc_drakkari_scytheclawAI : public ScriptedAI
 {
     npc_drakkari_scytheclawAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		Reset();
     }
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -193,7 +190,7 @@ struct MANGOS_DLL_DECL npc_drakkari_scytheclawAI : public ScriptedAI
         {
             if (me->GetMap()->GetDifficulty() && pInstance->GetData(DATA_DRED_EVENT) == IN_PROGRESS && pInstance->GetData(DATA_KING_DRED_ACHIEV) < 6)
             {
-                pInstance->SetData(DATA_KING_DRED_ACHIEV, pInstance->GetData(DATA_KING_DRED_ACHIEV) + 1);
+                SetInstanceData(DATA_KING_DRED_ACHIEV, pInstance->GetData(DATA_KING_DRED_ACHIEV) + 1);
             }
         }
     }

@@ -38,12 +38,11 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 {
     boss_grobbulusAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = !pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
 	MobEventTasks Tasks;
@@ -61,22 +60,22 @@ struct MANGOS_DLL_DECL boss_grobbulusAI : public ScriptedAI
 		else
 			Tasks.AddEvent(SPELL_SLIME_SPRAY,20000,20000,15000,TARGET_MAIN);
 	
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GROBBULUS, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_GROBBULUS, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
 		Tasks.CleanMyAdds();
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GROBBULUS, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_GROBBULUS, DONE);
 		GiveEmblemsToGroup((m_bIsHeroic) ? VAILLANCE : HEROISME);
     }
 
     void Aggro(Unit *who)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_GROBBULUS, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_GROBBULUS, IN_PROGRESS);
     }
 
     void SpellHitTarget(Unit *target, const SpellEntry *spell)
@@ -129,12 +128,11 @@ struct MANGOS_DLL_DECL mob_grobbulusnueeAI : public ScriptedAI
 {
     mob_grobbulusnueeAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
 	void Reset()

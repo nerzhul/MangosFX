@@ -39,6 +39,8 @@ SpellEffectEntry const* GetSpellEffectEntry(uint32 spellId, SpellEffectIndex eff
 int32 GetAreaFlagByAreaID(uint32 area_id);                  // -1 if not found
 uint32 GetAreaFlagByMapId(uint32 mapid);
 
+WMOAreaTableEntry const* GetWMOAreaTableEntryByTripple(int32 rootid, int32 adtid, int32 groupid);
+
 MANGOS_DLL_SPEC AreaTableEntry const* GetAreaEntryByAreaID(uint32 area_id);
 MANGOS_DLL_SPEC AreaTableEntry const* GetAreaEntryByAreaFlagAndMap(uint32 area_flag,uint32 map_id);
 

@@ -52,12 +52,12 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 
 	boss_galdarahAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
 	}
 
-	ScriptedInstance* m_pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 
@@ -104,6 +104,7 @@ struct MANGOS_DLL_DECL boss_galdarahAI : public ScriptedAI
 	{
 		DoScriptText(SAY_DEATH, me);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
 	}
 
 	void UpdateAI(const uint32 diff)

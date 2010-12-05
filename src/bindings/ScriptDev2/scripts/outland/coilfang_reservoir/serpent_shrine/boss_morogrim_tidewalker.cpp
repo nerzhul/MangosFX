@@ -73,11 +73,9 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
 {
     boss_morogrim_tidewalkerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;                          // the instance
 
     // timers
     uint32 m_uiTidalWave_Timer;
@@ -98,16 +96,16 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
         m_bEarthquake = false;
         m_bPhase2     = false;
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MOROGRIM_EVENT, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_MOROGRIM_EVENT, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
     {
         DoScriptText(SAY_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MOROGRIM_EVENT, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_MOROGRIM_EVENT, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -124,8 +122,8 @@ struct MANGOS_DLL_DECL boss_morogrim_tidewalkerAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_MOROGRIM_EVENT, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_MOROGRIM_EVENT, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)

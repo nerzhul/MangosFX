@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "zulgurub.h"
 
-struct MANGOS_DLL_DECL instance_zulgurub : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_zulgurub : public InstanceData
 {
-    instance_zulgurub(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_zulgurub(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     //If all High Priest bosses were killed. Lorkhan, Zath and Ohgan are added too.
     uint32 m_auiEncounter[MAX_ENCOUNTER];

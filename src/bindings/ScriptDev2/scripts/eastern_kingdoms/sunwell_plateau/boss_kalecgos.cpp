@@ -80,7 +80,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 {
     boss_kalecgosAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
 
         /*if (pCreature->getFaction() != 14)
         {
@@ -90,8 +90,6 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiArcaneBuffetTimer;
     uint32 m_uiFrostBreathTimer;
@@ -123,16 +121,16 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
             // Reset Sathrovarr too
-            if (Creature* pSath = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SATHROVARR)))
+            if (Creature* pSath = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SATHROVARR)))
             {
                 if (pSath->isAlive() && pSath->getVictim())
                     pSath->AI()->EnterEvadeMode();
             }
 
-            m_pInstance->SetData(TYPE_KALECGOS, NOT_STARTED);
+            SetInstanceData(TYPE_KALECGOS, NOT_STARTED);
         }
     }
 
@@ -140,8 +138,8 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
     {
         DoScriptText(SAY_EVIL_AGGRO, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KALECGOS, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_KALECGOS, IN_PROGRESS);
     }
 
     void DamageTaken(Unit* done_by, uint32 &damage)
@@ -170,7 +168,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
     void SendToInnerVeil(Unit* pTarget)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
             //just a hack for not implemented spell effect 144
             ((Player*)pTarget)->TeleportTo(pTarget->GetMapId(), pTarget->GetPositionX(), pTarget->GetPositionY(), pTarget->GetPositionZ()-125.0f, pTarget->GetOrientation());
@@ -178,7 +176,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
             pTarget->CastSpell(pTarget, SPELL_SPECTRAL_REALM_FORCE_FACTION, true);
             pTarget->CastSpell(pTarget, SPELL_SPECTRAL_REALM, true);
 
-            m_pInstance->SetData64(DATA_PLAYER_SPECTRAL_REALM, pTarget->GetGUID());
+            pInstance->SetData64(DATA_PLAYER_SPECTRAL_REALM, pTarget->GetGUID());
         }
     }
 
@@ -206,10 +204,10 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
     {
         debug_log("SD2: KALEC: Beginning Outro");
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pSathrovarr = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SATHROVARR)))
+        if (Creature* pSathrovarr = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SATHROVARR)))
         {
             pSathrovarr->DealDamage(pSathrovarr, pSathrovarr->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
 
@@ -217,7 +215,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
             pSathrovarr->SendMonsterMove(KALECGOS_ARENA[0], KALECGOS_ARENA[1], KALECGOS_ARENA[2], SPLINETYPE_NORMAL, SPLINEFLAG_NONE, 0);
         }
 
-        if (Creature* pKalec = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_KALECGOS_HUMAN)))
+        if (Creature* pKalec = pInstance->instance->GetCreature(pInstance->GetData64(DATA_KALECGOS_HUMAN)))
         {
             pKalec->DeleteThreatList();
             pKalec->SetVisibility(VISIBILITY_OFF);
@@ -236,8 +234,8 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
         if (id)
         {
-            if (m_pInstance)
-                m_pInstance->SetData(TYPE_KALECGOS, DONE);
+            if (pInstance)
+                SetInstanceData(TYPE_KALECGOS, DONE);
 
             me->SetVisibility(VISIBILITY_OFF);
             me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
@@ -251,7 +249,7 @@ struct MANGOS_DLL_DECL boss_kalecgosAI : public ScriptedAI
 
         if (!m_bEnraged && ((me->GetHealth()*100 / me->GetMaxHealth()) < 10))
         {
-            if (Unit* pSathrovarr = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SATHROVARR)))
+            if (Unit* pSathrovarr = Unit::GetUnit(*me, pInstance->GetData64(DATA_SATHROVARR)))
                 pSathrovarr->CastSpell(pSathrovarr, SPELL_CRAZED_RAGE, true);
 
             DoCastMe( SPELL_CRAZED_RAGE, true);
@@ -338,11 +336,9 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
 {
     boss_sathrovarrAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 CorruptingStrikeTimer;
     uint32 CurseOfBoundlessAgonyTimer;
@@ -367,10 +363,10 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
     {
         DoScriptText(SAY_SATH_AGGRO, me);
 
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Unit* pKalec = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_KALECGOS_HUMAN)))
+        if (Unit* pKalec = Unit::GetUnit(*me, pInstance->GetData64(DATA_KALECGOS_HUMAN)))
         {
             me->AddThreat(pKalec, 10000000.0f);
             pKalec->AddThreat(me, 10000000.0f);
@@ -387,12 +383,12 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
 
             DoScriptText(SAY_SATH_DEATH, me);
 
-            if (!m_pInstance)
+            if (!pInstance)
                 return;
 
-            m_pInstance->SetData(DATA_SET_SPECTRAL_CHECK, 5000);
+            SetInstanceData(DATA_SET_SPECTRAL_CHECK, 5000);
 
-            if (Creature* pKalecgos = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_KALECGOS_DRAGON)))
+            if (Creature* pKalecgos = pInstance->instance->GetCreature(pInstance->GetData64(DATA_KALECGOS_DRAGON)))
             {
                 ((boss_kalecgosAI*)pKalecgos->AI())->m_bChecked = false;
                 ((boss_kalecgosAI*)pKalecgos->AI())->m_bUncorrupted = true;
@@ -412,7 +408,7 @@ struct MANGOS_DLL_DECL boss_sathrovarrAI : public ScriptedAI
 
         if (!m_bEnraged && ((me->GetHealth()*100 / me->GetMaxHealth()) <= 10))
         {
-            if (Unit* pKalecgos = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_KALECGOS_DRAGON)))
+            if (Unit* pKalecgos = Unit::GetUnit(*me, pInstance->GetData64(DATA_KALECGOS_DRAGON)))
                 pKalecgos->CastSpell(pKalecgos, SPELL_CRAZED_RAGE, true);
 
             DoCastMe( SPELL_CRAZED_RAGE, true);
@@ -453,11 +449,9 @@ struct MANGOS_DLL_DECL boss_kalecgos_humanoidAI : public ScriptedAI
 {
     boss_kalecgos_humanoidAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 RevitalizeTimer;
     uint32 HeroicStrikeTimer;
@@ -494,9 +488,9 @@ struct MANGOS_DLL_DECL boss_kalecgos_humanoidAI : public ScriptedAI
 
         if (RevitalizeTimer < diff)
         {
-            if (m_pInstance)
+            if (pInstance)
             {
-                /*Unit* pUnit = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_RANDOM_SPECTRAL_PLAYER));
+                /*Unit* pUnit = Unit::GetUnit(*me, pInstance->GetData64(DATA_RANDOM_SPECTRAL_PLAYER));
                 if (pUnit)
                     DoCast(pUnit, SPELL_REVITALIZE);*/
                 RevitalizeTimer = 30000;
@@ -528,7 +522,7 @@ bool GOHello_go_spectral_rift(Player* pPlayer, GameObject* pGo)
     if (pGo->GetGoType() != GAMEOBJECT_TYPE_GOOBER)
         return true;
 
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pPlayer->HasAura(SPELL_SPECTRAL_EXHAUSTION, 0))
             return true;

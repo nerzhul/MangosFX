@@ -805,7 +805,7 @@ LootStoreItem const * LootTemplate::LootGroup::Roll() const
 {
     if (!ExplicitlyChanced.empty())                         // First explicitly chanced entries are checked
     {
-        float Roll = rand_chance()*2;
+        float Roll = rand_chance(); //*2; Why reduce by 50% ?
 
         for (uint32 i=0; i<ExplicitlyChanced.size(); ++i)    //check each explicitly chanced entry in the template and modify its chance based on quality.
         {

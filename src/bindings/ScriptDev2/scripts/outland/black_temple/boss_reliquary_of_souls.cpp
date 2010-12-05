@@ -135,11 +135,9 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
         SufferingGUID = 0;
         DesireGUID = 0;
         AngerGUID = 0;
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint64 SufferingGUID;
     uint64 DesireGUID;
@@ -180,8 +178,8 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RELIQUIARY, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_RELIQUIARY, NOT_STARTED);
     }
 
     void DespawnEssences()
@@ -212,8 +210,8 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
 
                 if (!me->getVictim())
                 {
-                    if (m_pInstance)
-                        m_pInstance->SetData(TYPE_RELIQUIARY, IN_PROGRESS);
+                    if (pInstance)
+                        SetInstanceData(TYPE_RELIQUIARY, IN_PROGRESS);
 
                     Phase = 1;
 
@@ -266,8 +264,8 @@ struct MANGOS_DLL_DECL boss_reliquary_of_soulsAI : public ScriptedAI
 
     void JustDied(Unit* killer)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_RELIQUIARY, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_RELIQUIARY, DONE);
     }
 
     void UpdateAI(const uint32 diff)

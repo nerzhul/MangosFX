@@ -361,8 +361,7 @@ inline void LoadDBC(LocalData& localeData,barGoLink& bar, StoreProblemList& errl
 
                     continue;
                 }
-            }
-
+			}
             std::string dbc_filename_loc = dbc_path + localStr->name + "/" + filename;
             if(!storage.LoadStringsFrom(dbc_filename_loc.c_str(),localStr->locale))
                 localeData.availableDbcLocales &= ~(1<<i);  // mark as not available for speedup next checks
@@ -1033,6 +1032,15 @@ bool IsPointInAreaTriggerZone(AreaTriggerEntry const* atEntry, uint32 mapid, flo
     }
 
     return true;
+}
+
+WMOAreaTableEntry const* GetWMOAreaTableEntryByTripple(int32 rootid, int32 adtid, int32 groupid)
+{
+        WMOAreaInfoByTripple::iterator i = sWMOAreaInfoByTripple.find(WMOAreaTableTripple(rootid, adtid, groupid));
+            if(i == sWMOAreaInfoByTripple.end())
+                        return NULL;
+                return i->second;
+
 }
 
 // script support functions

@@ -78,6 +78,7 @@ enum
     NPC_CITY_MAN                    = 28167,
     NPC_CRAZY_MAN					= 28169,
     NPC_ZOMBIE                      = 27737,
+	NPC_INVIS_SIGHT					= 20562,
 
     SPELL_FEAR                      = 39176,
     SPELL_CHAIN_N					= 52696,
@@ -134,6 +135,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
        Exorcism_Timer = 7300;
 	   EscortStart = Caisses = false;
 	   
+	   me->setFaction(35);
 		me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
         me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 		CheckTimer = 1000;
@@ -175,7 +177,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 	void JustDied(Unit *killer)
     {
          if (pInstance)
-            pInstance->SetData(TYPE_ARTHAS_EVENT, DONE);
+            SetInstanceData(TYPE_ARTHAS_EVENT, DONE);
     }
 
 	void AttackStart(Unit* pWho)
@@ -279,7 +281,7 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
                 break;
             case 41:
                 FinalFight = 1;
-               me->setFaction(35);
+               me->setFaction(culling_faction->getFaction());
                phaseAI = 95;
                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -355,352 +357,421 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
            switch(phase)
            {
               case 1:
-					  me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
-					  me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-					  me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-					   if(Creature* Uther =me->SummonCreature(26528,1794.357f,1272.183f,141.558f,1.37f,TEMPSUMMON_TIMED_DESPAWN,180000))
-						   UtherGUID = Uther->GetGUID();
-					   if (Creature* pJaina = GetClosestCreatureWithEntry(me, NPC_JAINA, 50.0f))
-							JainaGUID = pJaina->GetGUID();
-					   if(Creature* Uther = GetGuidCreature(UtherGUID))
-					   {
-						   Uther->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
-						  me->GetMotionMaster()->MovePoint(0, 1903.167f, 1291.573f, 143.32f);
-						   Uther->GetMotionMaster()->MovePoint(0, 1897.018f, 1287.487f, 143.481f);
-						  me->SetUInt64Value(UNIT_FIELD_TARGET, Uther->GetGUID());
-						   Uther->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-					   }
-                       ++phase;
-                       phasetim = 17000;
-                       break;
+					me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
+					me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
+					me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+					if(Creature* Uther =me->SummonCreature(26528,1794.357f,1272.183f,141.558f,1.37f,TEMPSUMMON_TIMED_DESPAWN,180000))
+						UtherGUID = Uther->GetGUID();
+				   
+					if (Creature* pJaina = GetClosestCreatureWithEntry(me, NPC_JAINA, 50.0f))
+						JainaGUID = pJaina->GetGUID();
+					else if (Unit* pJaina = me->SummonCreature(NPC_JAINA,1895.48f,1292.66f,143.706f,0.023475f,TEMPSUMMON_DEAD_DESPAWN,180000))
+						JainaGUID = pJaina->GetGUID();
+
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+					{
+						Uther->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
+						me->GetMotionMaster()->MovePoint(0, 1903.167f, 1291.573f, 143.32f);
+						Uther->GetMotionMaster()->MovePoint(0, 1897.018f, 1287.487f, 143.481f);
+						me->SetUInt64Value(UNIT_FIELD_TARGET, Uther->GetGUID());
+						Uther->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+					}
+					++phase;
+					phasetim = 17000;
+					break;
+
              case 3:
-                   DoScriptText(SAY_INTRO01, me);
-                   ++phase;
-                   phasetim = 2000;
-                   break;
+					DoScriptText(SAY_INTRO01, me);
+					++phase;
+					phasetim = 2000;
+					break;
+
              case 5:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-                       DoScriptText(SAY_INTRO02, Uther);
-                   ++phase;
-                   phasetim = 8000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+						DoScriptText(SAY_INTRO02, Uther);
+					++phase;
+					phasetim = 8000;
+					break;
+
              case 7:
-				  me->AddSplineFlag(SPLINEFLAG_WALKMODE);
-				  DoScriptText(SAY_INTRO03, me);
-				  me->GetMotionMaster()->MovePoint(0, 1911.087f, 1314.263f, 150.026f);
-				   ++phase;
-				   phasetim = 9000;
-				   break;
+					me->AddSplineFlag(SPLINEFLAG_WALKMODE);
+					DoScriptText(SAY_INTRO03, me);
+					me->GetMotionMaster()->MovePoint(0, 1911.087f, 1314.263f, 150.026f);
+					++phase;
+					phasetim = 9000;
+					break;
+
              case 9:
-                 if(Creature* Jaina = GetGuidCreature(JainaGUID))
-					Jaina->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-                   DoScriptText(SAY_INTRO04, me);
-                   ++phase;
-                   phasetim = 10000;
-                   break;
+					if(Creature* Jaina = GetGuidCreature(JainaGUID))
+						Jaina->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+					DoScriptText(SAY_INTRO04, me);
+					++phase;
+					phasetim = 10000;
+					break;
+
              case 11:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
                        DoScriptText(SAY_INTRO05, Uther);
-                   ++phase;
-                   phasetim = 1000;
-                   break;
-             case 13:
-                   DoScriptText(SAY_INTRO06, me);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					++phase;
+					phasetim = 1000;
+					break;
+			 
+			 case 13:
+	                DoScriptText(SAY_INTRO06, me);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 15:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-                       DoScriptText(SAY_INTRO07, Uther);
-                   ++phase;
-                   phasetim = 6000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+						DoScriptText(SAY_INTRO07, Uther);
+					++phase;
+					phasetim = 6000;
+					break;
+
              case 17:
-                   DoScriptText(SAY_INTRO08, me);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					DoScriptText(SAY_INTRO08, me);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 19:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-                       DoScriptText(SAY_INTRO09, Uther);
-                   ++phase;
-                   phasetim = 8000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+						DoScriptText(SAY_INTRO09, Uther);
+					++phase;
+					phasetim = 8000;
+					break;
+
              case 21:
-                   DoScriptText(SAY_INTRO10, me);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					DoScriptText(SAY_INTRO10, me);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 23:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-                       DoScriptText(SAY_INTRO11, Uther);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+						DoScriptText(SAY_INTRO11, Uther);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 25:
-                   DoScriptText(SAY_INTRO12, me);
-                   ++phase;
-                   phasetim = 11000;
-                   break;
+					DoScriptText(SAY_INTRO12, me);
+					++phase;
+					phasetim = 11000;
+					break;
+
              case 27:
-				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
-                       DoScriptText(SAY_INTRO13, Jaina);
-                   ++phase;
-                   phasetim = 3000;
-                   break;
+					if(Creature* Jaina = GetGuidCreature(JainaGUID))
+						DoScriptText(SAY_INTRO13, Jaina);
+					++phase;
+					phasetim = 3000;
+					break;
+
              case 29:
 					DoScriptText(SAY_INTRO14, me);
-                   ++phase;
-                   phasetim = 9000;
-                   break;
+					++phase;
+					phasetim = 9000;
+					break;
+
              case 31:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-                       DoScriptText(SAY_INTRO15, Uther);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+						DoScriptText(SAY_INTRO15, Uther);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 33:
-				 if(Creature* Uther = GetGuidCreature(UtherGUID))
-				 {
-                       Uther->AddSplineFlag(SPLINEFLAG_WALKMODE);
-                       Uther->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
-				 }
-                   ++phase;
-                   phasetim = 1000;
-                   break;
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
+					{
+						Uther->AddSplineFlag(SPLINEFLAG_WALKMODE);
+						Uther->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
+					}
+					++phase;
+					phasetim = 1000;
+					break;
+
              case 35:
-                 me->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
-				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
-                       Jaina->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
-                   ++phase;
-                   phasetim = 1000;
-                   break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
+					if(Creature* Jaina = GetGuidCreature(JainaGUID))
+						Jaina->GetMotionMaster()->MovePoint(0, 1794.357f,1272.183f,140.558f);
+					++phase;
+					phasetim = 1000;
+					break;
+
              case 37:
-                   DoScriptText(SAY_INTRO16, me);
-                   ++phase;
-                   phasetim = 1000;
-                   break;
+					DoScriptText(SAY_INTRO16, me);
+					++phase;
+					phasetim = 1000;
+					break;
+
              case 39:
-				 if(Creature* Jaina = GetGuidCreature(JainaGUID))
-                       DoScriptText(SAY_INTRO17, Jaina);
-                   ++phase;
-                   phasetim = 3000;
-                   break;
+					if(Creature* Jaina = GetGuidCreature(JainaGUID))
+						DoScriptText(SAY_INTRO17, Jaina);
+					++phase;
+					phasetim = 3000;
+					break;
+
              case 41:
-                  me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-                  me->GetMotionMaster()->MovePoint(0, 1902.959f,1295.127f,143.388f);
-				   ++phase;
-				   phasetim = 10000;
-				   break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+					me->GetMotionMaster()->MovePoint(0, 1902.959f,1295.127f,143.388f);
+					++phase;
+					phasetim = 10000;
+					break;
+
              case 43:
-                   me->GetMotionMaster()->MovePoint(0, 1913.726f,1287.407f,141.927f);
-                   ++phase;
-                   phasetim = 6000;
-                   break;
+					me->GetMotionMaster()->MovePoint(0, 1913.726f,1287.407f,141.927f);
+					++phase;
+					phasetim = 6000;
+					break;
+
              case 45:
-                   DoScriptText(SAY_INTRO18, me);
-                   me->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
-                   ++phase;
-                   phasetim = 10000;
-                   break;
+					DoScriptText(SAY_INTRO18, me);
+					me->SetUInt64Value(UNIT_FIELD_TARGET, JainaGUID);
+					++phase;
+					phasetim = 10000;
+					break;
+
              case 47:
-                  me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
-                  me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-				   if(Creature* Jaina = GetGuidCreature(JainaGUID))
+					me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
+					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+					if(Creature* Jaina = GetGuidCreature(JainaGUID))
 						Jaina->SetVisibility(VISIBILITY_OFF);
-				   if(Creature* Uther = GetGuidCreature(UtherGUID))
+					if(Creature* Uther = GetGuidCreature(UtherGUID))
 						Uther->SetVisibility(VISIBILITY_OFF);
-                  me->GetMotionMaster()->MovePoint(0, 1990.833f,1293.391f,145.467f);
-                   ++phase;
-                   phasetim = 12000;
-                   break;
+					me->GetMotionMaster()->MovePoint(0, 1990.833f,1293.391f,145.467f);
+					++phase;
+					phasetim = 12000;
+					break;
+
              case 49:
-                   me->GetMotionMaster()->MovePoint(0, 1997.003f,1317.776f,142.963f);
-				   ++phase;
-				   phasetim = 5000;
-				   break;
+					me->GetMotionMaster()->MovePoint(0, 1997.003f,1317.776f,142.963f);
+					++phase;
+					phasetim = 5000;
+					break;
+
              case 51:
-                   me->GetMotionMaster()->MovePoint(0, 2019.631f,1326.084f,142.929f);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					me->GetMotionMaster()->MovePoint(0, 2019.631f,1326.084f,142.929f);
+					++phase;
+					phasetim = 4000;
+					break;
+
              case 53:
-                   me->GetMotionMaster()->MovePoint(0, 2026.469f,1287.088f,143.596f);
-                   ++phase;
-                   phasetim = 6000;
-                   break;
+					me->GetMotionMaster()->MovePoint(0, 2026.469f,1287.088f,143.596f);
+					++phase;
+					phasetim = 6000;
+					break;
+
              case 55:
-				 {
-					   Creature* Cityman =me->SummonCreature(NPC_CITY_MAN,2091.977f,1275.021f,140.757f,0.558f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
-					   if(Cityman)
-						   CitymanGUID = Cityman->GetGUID();
-					   Creature* Crazyman =me->SummonCreature(NPC_CRAZY_MAN,2093.514f,1275.842f,140.408f,3.801f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,60000);
-					   if(Crazyman)
-						   CrazymanGUID = Crazyman->GetGUID();
-					  me->GetMotionMaster()->MovePoint(0, 2050.660f,1287.333f,142.671f);
-				 }
-                   ++phase;
-                   phasetim = 6000;
-                   break;
+					{
+					Creature* Cityman =me->SummonCreature(NPC_CITY_MAN,2091.977f,1275.021f,140.757f,0.558f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,45000);//Merging
+					if(Cityman)
+						CitymanGUID = Cityman->GetGUID();
+					
+					Creature* Crazyman =me->SummonCreature(NPC_CRAZY_MAN,2093.514f,1275.842f,140.408f,3.801f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,55000); //Merging
+					if(Crazyman)
+						CrazymanGUID = Crazyman->GetGUID();
+					
+					me->GetMotionMaster()->MovePoint(0, 2050.660f,1287.333f,142.671f);
+					
+					++phase;
+					phasetim = 6000;
+					break;
+					}
              case 57:
-					if(Creature* Stalker =me->SummonCreature(20562,2026.469f,1287.088f,143.596f,1.37f,TEMPSUMMON_TIMED_DESPAWN,14000))
+					if(Creature* Stalker =me->SummonCreature(NPC_INVIS_SIGHT,2026.469f,1287.088f,143.596f,1.37f,TEMPSUMMON_TIMED_DESPAWN,14000))
+					{
 						StalkerGUID = Stalker->GetGUID();
-					me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
-                   ++phase;
-                   phasetim = 1000;
-                   break;
+						me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
+					}
+					++phase;
+					phasetim = 1000;
+					break;
+
              case 59:
-				DoScriptText(SAY_ENTER01, me);
-				++phase;
-				phasetim = 12000;
-				break;
+					DoScriptText(SAY_ENTER01, me);
+					++phase;
+					phasetim = 12000;
+					break;
+
              case 61:
-				me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
-				me->AddSplineFlag(SPLINEFLAG_WALKMODE);
-				me->GetMotionMaster()->MovePoint(0, 2081.447f,1287.770f,141.3241f);
-				++phase;
-				phasetim = 15000;
-				break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
+					me->AddSplineFlag(SPLINEFLAG_WALKMODE);
+					me->GetMotionMaster()->MovePoint(0, 2081.447f,1287.770f,141.3241f);
+					++phase;
+					phasetim = 15000;
+					break;
+
              case 63:
-				me->SetUInt64Value(UNIT_FIELD_TARGET, CitymanGUID);
-				if(Creature* Cityman = GetGuidCreature(CitymanGUID))
-				{
-				   Cityman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-				   Cityman->AddSplineFlag(SPLINEFLAG_WALKMODE);
-				   Cityman->GetMotionMaster()->MovePoint(0, 2088.625f,1279.191f,140.743f);
-				}
-				++phase;
-				phasetim = 2000;
-				break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, CitymanGUID);
+					if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+					{
+						Cityman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+						Cityman->AddSplineFlag(SPLINEFLAG_WALKMODE);
+						Cityman->GetMotionMaster()->MovePoint(0, 2088.625f,1279.191f,140.743f);
+					}
+					++phase;
+					phasetim = 2000;
+					break;
              case 65:
-				 if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+					if(Creature* Cityman = GetGuidCreature(CitymanGUID))
 						DoScriptText(SAY_ENTER02, Cityman);
-                   ++phase;
-                   phasetim = 4000;
-                   break;
+					++phase;
+					phasetim = 4000;
+					break;
+
             case 67:
-				me->GetMotionMaster()->MovePoint(0, 2087.689f,1280.344f,140.73f);
-				DoScriptText(SAY_ENTER03, me);
-				++phase;
-				phasetim = 3000;
-				break;
+					me->GetMotionMaster()->MovePoint(0, 2087.689f,1280.344f,140.73f);
+					DoScriptText(SAY_ENTER03, me);
+					++phase;
+					phasetim = 3000;
+					break;
+
             case 69:
-                   me->HandleEmoteCommand(37);
-                   ++phase;
-                   phasetim = 1000;
-                   break;
+					me->HandleEmoteCommand(37);
+					++phase;
+					phasetim = 1000;
+					break;
+
             case 71:
-				if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
-				{
-                   DoScriptText(SAY_ENTER04, Crazyman);
-                   Crazyman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-                   if(Creature* Cityman = GetGuidCreature(CitymanGUID))
-					   Kill(Cityman);
-                  me->SetUInt64Value(UNIT_FIELD_TARGET, CrazymanGUID);
-                  me->GetMotionMaster()->MovePoint(0, 2092.154f,1276.645f,140.52f);
-				}
-				   ++phase;
-				   phasetim = 3000;
-				   break;
+					if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
+					{
+						DoScriptText(SAY_ENTER04, Crazyman);
+						me->SetUInt64Value(UNIT_FIELD_TARGET, CrazymanGUID);
+						Crazyman->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());	
+
+						if(Creature* Cityman = GetGuidCreature(CitymanGUID))
+							Cityman->CastSpell(Cityman,8226,false);
+							
+					}
+					
+					me->GetMotionMaster()->MovePoint(0, 2092.154f,1276.645f,140.52f);
+					
+					++phase;
+					phasetim = 5000;
+					break;
             case 73:
-               me->HandleEmoteCommand(37);
-			   ++phase;
-			   phasetim = 1000;
-			   break;
+					me->HandleEmoteCommand(38);
+					++phase;
+					phasetim = 1000;
+					break;
+
             case 75:
-				if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
-                    Kill(Crazyman);
-			   ++phase;
-			   phasetim = 1000;
-			   break;
+					if(Creature* Crazyman = GetGuidCreature(CrazymanGUID))
+						Crazyman->CastSpell(Crazyman,8226,false);
+						
+					++phase;
+					phasetim = 1000;
+					break;
            case 77:
-			   if(Creature* Stalker = GetGuidCreature(StalkerGUID))
-                  Stalker = me->SummonCreature(20562,2081.447f,1287.770f,141.3241f,1.37f,TEMPSUMMON_TIMED_DESPAWN,70000);
-               me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
-               DoScriptText(SAY_ENTER05, me);
-			   ++phase;
-			   phasetim = 3000;
-			   break;
+	
+					me->GetMotionMaster()->MovePoint(0, 2091.179f,1278.065f,140.476f);
+					if(Creature* StalkerJ = me->SummonCreature(NPC_INVIS_SIGHT,2081.447f,1287.770f,141.3241f,1.37f,TEMPSUMMON_TIMED_DESPAWN,10000))
+					{
+						StalkerGUID = StalkerJ->GetGUID();	
+						me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
+					}
+			              
+					DoScriptText(SAY_ENTER05, me);
+					++phase;
+					phasetim = 3000;
+					break;
+
            case 79:
-			   if(Creature* StalkerM = me->SummonCreature(20562,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
-			   {
-				   StalkerMGUID = StalkerM->GetGUID();
-				   StalkerM->CastSpell(StalkerM,63793,false);
-			   }
-               ++phase;
-               phasetim = 1000;
-               break;
+					if(Creature* StalkerM = me->SummonCreature(NPC_INVIS_SIGHT,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
+					{
+						StalkerMGUID = StalkerM->GetGUID();
+						me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
+				   
+					}
+					++phase;
+					phasetim = 1000;
+					break;
+
            case 81:
-               if(Creature* TempMalganis =me->SummonCreature(26533,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,29000))
-			   {
-				   DoScriptText(SAY_ENTER06, TempMalganis);
-				   TempMalganisGUID = TempMalganis->GetGUID();
-				   me->SetUInt64Value(UNIT_FIELD_TARGET, TempMalganisGUID);
-				   TempMalganis->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
-				   TempMalganis->setFaction(35);
-			   }
-			   ++phase;
-			   phasetim = 11000;
-			   break;
+					if(Creature* TempMalganis =me->SummonCreature(26533,2117.349f,1288.624f,136.271f,1.37f,TEMPSUMMON_TIMED_DESPAWN,60000))
+					{
+						if (Creature* pStalkerM = GetGuidCreature(StalkerMGUID))
+							TempMalganis->CastSpell(pStalkerM,63793,false);
+
+						TempMalganisGUID = TempMalganis->GetGUID();
+						DoScriptText(SAY_ENTER06, TempMalganis);
+						TempMalganis->SetUInt64Value(UNIT_FIELD_TARGET, me->GetGUID());
+						TempMalganis->setFaction(35);
+
+					me->SetUInt64Value(UNIT_FIELD_TARGET, TempMalganisGUID);
+					}
+					++phase;
+					phasetim = 11000;
+					break;
+
            case 83:
-                       phasetim = 500;
-                        if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
-                        {
-							if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+                    phasetim = 500;
+                    if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
+                    {
+						if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+						{
+							if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CITY_MAN, 100.0f))
 							{
-								if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CITY_MAN, 100.0f))
-								{
-									TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
-									uiZombie_counter++;
-								}
+								TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
+								TempZombie->AddThreat(me,100.0f);
+								uiZombie_counter++;
 							}
-                        }
-                        else
-                        {
-                            uiZombie_counter = 0;
-                            ++phase;
-                        }
-                        break;            
+						}
+                    }
+                    else
+                    {
+						uiZombie_counter = 0;
+                        ++phase;
+                    }
+                    break;
+
            case 85:
-                       phasetim = 500;
-                        if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
-                        {
-							if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+                    phasetim = 500;
+                    if (uiZombie_counter < ENCOUNTER_ZOMBIE_NUMBER)
+                    {
+						if(Creature* StalkerM = GetGuidCreature(StalkerMGUID))
+						{
+							if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CRAZY_MAN, 100.0f))
 							{
-								if (Creature* TempZombie = GetClosestCreatureWithEntry(StalkerM, NPC_CRAZY_MAN, 100.0f))
-								{
-									TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
-									uiZombie_counter++;
-								}
+								TempZombie->UpdateEntry(NPC_ZOMBIE, 0);
+								TempZombie->AddThreat(me,100.0f);
+								uiZombie_counter++;
 							}
-                        }
-                        else
-                        {
-                            uiZombie_counter = 0;
-                            ++phase;
-                        }
-                        break;            
+						}
+                    }
+					else
+                    {
+						uiZombie_counter = 0;
+                        ++phase;
+                    }
+                    break;            
+
            case 87:
-			   if(Creature* TempMalganis = GetGuidCreature(TempMalganisGUID))
-                   DoScriptText(SAY_ENTER07, TempMalganis);
-				me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
-               ++phase;
-               phasetim = 17000;
-               break;             
+					if(Creature* TempMalganis = GetGuidCreature(TempMalganisGUID))
+	                   DoScriptText(SAY_ENTER07, TempMalganis);
+
+					me->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
+					++phase;
+					phasetim = 17000;
+					break;             
+
            case 89:
-               me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerMGUID);
-               DoScriptText(SAY_ENTER08, me);
-			   ++phase;
-			   phasetim = 7000;
-			   break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerMGUID);
+					DoScriptText(SAY_ENTER08, me);
+					++phase;
+					phasetim = 7000;
+					break;
+
            case 91:
-				me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
-               DoScriptText(SAY_ENTER09, me);
-               ++phase;
-               phasetim = 12000;
-               break;
+					me->SetUInt64Value(UNIT_FIELD_TARGET, StalkerGUID);
+					DoScriptText(SAY_ENTER09, me);
+					++phase;
+					phasetim = 12000;
+					break;
+
            case 93:
-					pInstance->SetData(TYPE_VAGUE_EVENT,IN_PROGRESS);
+					SetInstanceData(TYPE_VAGUE_EVENT,IN_PROGRESS);
 					phaseAI = 95;
 					me->SetUInt64Value(UNIT_FIELD_TARGET, 0);
                     ++phase;
@@ -711,7 +782,8 @@ struct MANGOS_DLL_DECL npc_arthasAI : public npc_escortAI
 		   if (phasetim <= diff)
 		   {
 			   ++phase;
-			   phasetim = 330000;
+			   phasetim = 33000;
+			  
 		   }
 		   else
 				phasetim -= diff;
@@ -795,11 +867,9 @@ struct MANGOS_DLL_DECL npc_patriciaAI : public ScriptedAI
 {
     npc_patriciaAI(Creature *c) : ScriptedAI(c) 
 	{
-	   pInstance = (ScriptedInstance*)c->GetInstanceData();
+	   pInstance = c->GetInstanceData();
 	   Reset();
 	}
-
-	ScriptedInstance* pInstance;
 
 	uint32 Step;
 	uint32 Steptim;
@@ -917,11 +987,9 @@ struct MANGOS_DLL_DECL dark_conversionAI : public ScriptedAI
 {
     dark_conversionAI(Creature *c) : ScriptedAI(c) 
 	{
-	  pInstance = (ScriptedInstance*)c->GetInstanceData();
+	  pInstance = c->GetInstanceData();
 	  Reset();
 	}
-
-	ScriptedInstance* pInstance;
 
 	Unit* Target;
 	Creature* Arthas;
@@ -1026,19 +1094,25 @@ struct MANGOS_DLL_DECL npc_time_riftCSAI : public ScriptedAI
           {
 			 case 1:
 				 if(Creature* Drakonian01 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+				 {
 					Drakonian01->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 }
 				 ++Step;
 				 Steptim = 3000;
 				 break;
 			 case 3:
 				 if(Creature* Drakonian02 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+				 {
 					Drakonian02->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 }
 				 ++Step;
 				 Steptim = 3000;
 				 break; 
 			case 5:   
 				 if(Creature*Drakonian03 = me->SummonCreature(NPC_DRAKONIAN,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ()+1,3.229f,TEMPSUMMON_TIMED_OR_DEAD_DESPAWN,900000))
+				 {
 					Drakonian03->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
+				 }
 				 ++Step;
 				 Steptim = 3000;
 				 break;  

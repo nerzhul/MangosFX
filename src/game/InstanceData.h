@@ -21,22 +21,43 @@
 
 #include "Common.h"
 
-class Map;
-class Unit;
+#include "Object.h"
+#include "Unit.h"
+#include "Creature.h"
+#include "Map.h"
+
 class Player;
 class GameObject;
-class Creature;
 
 #define DATA_NB_BOSS_DOWN 999
+
+enum EncounterState
+{
+    NOT_STARTED   = 0,
+    IN_PROGRESS   = 1,
+    FAIL          = 2,
+    DONE          = 3,
+    SPECIAL       = 4
+};
+
+#define OUT_SAVE_INST_DATA             debug_log("LibDevFS: Saving Instance Data for Instance %s (Map %d, Instance Id %d)", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
+#define OUT_SAVE_INST_DATA_COMPLETE    debug_log("LibDevFS: Saving Instance Data for Instance %s (Map %d, Instance Id %d) completed.", instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
+#define OUT_LOAD_INST_DATA(a)          debug_log("LibDevFS: Loading Instance Data for Instance %s (Map %d, Instance Id %d). Input is '%s'", instance->GetMapName(), instance->GetId(), instance->GetInstanceId(), a)
+#define OUT_LOAD_INST_DATA_COMPLETE    debug_log("LibDevFS: Instance Data Load for Instance %s (Map %d, Instance Id: %d) is complete.",instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
+#define OUT_LOAD_INST_DATA_FAIL        error_log("LibDevFS: Unable to load Instance Data for Instance %s (Map %d, Instance Id: %d).",instance->GetMapName(), instance->GetId(), instance->GetInstanceId())
 
 class MANGOS_DLL_SPEC InstanceData
 {
     public:
 
-        explicit InstanceData(Map *map) : instance(map) {}
+        explicit InstanceData(Map *map) : instance(map), m_dungeonEntry(0) {}
         virtual ~InstanceData() {}
 
-        Map *instance;
+        Map* instance;
+		uint32 m_dungeonEntry;
+
+		void SetLFGDungeon(uint32 dungeonEntry) { m_dungeonEntry = dungeonEntry; }
+		uint32 GetLFGDungeon() { return m_dungeonEntry; }
 
         //On creation, NOT load.
         virtual void Initialize() {}
@@ -96,7 +117,44 @@ class MANGOS_DLL_SPEC InstanceData
         // This is used for such things are heroic loot
         virtual bool CheckConditionCriteriaMeet(Player const* source, uint32 map_id, uint32 instance_condition_id);
 
+		// Achievements
 		void CompleteAchievementForGroup(uint32 AchId);
 		void CompleteAchievementForPlayer(Player* plr, uint32 AchId);
+
+		// World States
+		void DoUpdateWorldState(uint32 uiStateId, uint32 uiStateData);
+		
+		// GameObjects
+		void CloseDoor(uint64 guid);
+		void OpenDoor(uint64 guid);
+		GameObject* GetGoInMap(uint64 guid)	{ return instance ? instance->GetGameObject(guid) : NULL; }
+        void DoUseDoorOrButton(uint64 uiGuid, uint32 uiWithRestoreTime = 0, bool bUseAlternativeState = false);
+		void DoRespawnGameObject(uint64 uiGuid, uint32 uiTimeToDespawn = MINUTE);
+	
+		// Units
+		Unit* GetUnitInMap(uint64 guid) { return instance ? instance->GetCreatureOrPetOrVehicle(guid) : NULL; }
+		Creature* GetCreatureInMap(uint64 guid)	
+		{
+			Unit* u = GetUnitInMap(guid);
+			if(!u) return NULL;
+			return (u->GetTypeId() == TYPEID_UNIT) ? (Creature*)GetUnitInMap(guid) : NULL; 
+		}
+		void DespawnCreatures(std::vector<uint64> &spVect)
+		{
+			for (std::vector<uint64>::iterator itr = spVect.begin(); itr != spVect.end();++itr)
+			{
+				if(Creature* cr = GetCreatureInMap(*itr))
+				{
+					cr->ForcedDespawn(2000);
+					cr->SetPhaseMask(0x2,true);
+				}
+			}
+			spVect.clear();
+		}
+		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
+		void AutoFreeze(Creature* cr);
+
+		// Player Selection
+		Player* GetClosestPlayer(Unit* u, float maxRange = 100.0f);
 };
 #endif

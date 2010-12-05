@@ -78,7 +78,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public LibDevFSAI
     {
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_JARAXXUS, DONE);
+            SetInstanceData(TYPE_JARAXXUS, DONE);
 			Speak(CHAT_TYPE_SAY,16147,"Un autre prendra ma place. Votre monde est condamné.");
 			if (Creature* Ann = ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(DATA_ANNOUNCER) : 0)))
 				((npc_toc10_announcerAI*)Ann->AI())->StartEvent(NULL,EVENT_TYPE_JARAXXUS_OUTRO);
@@ -106,7 +106,7 @@ struct MANGOS_DLL_DECL boss_jaraxxusAI : public LibDevFSAI
         me->SetInCombatWithZone();
 
         if (pInstance)
-            pInstance->SetData(TYPE_JARAXXUS, IN_PROGRESS);
+            SetInstanceData(TYPE_JARAXXUS, IN_PROGRESS);
 
 		Yell(16144,"Devant vous se tient Jaraxxus seigneur Eredar de la Légion Ardente !");
     }

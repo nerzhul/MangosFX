@@ -31,9 +31,9 @@ EndScriptData */
 3 - Sjonnir The Ironshaper
 */
 
-struct MANGOS_DLL_DECL instance_halls_of_stone : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_halls_of_stone : public InstanceData
 {
-    instance_halls_of_stone(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_halls_of_stone(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

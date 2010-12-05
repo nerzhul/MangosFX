@@ -43,7 +43,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     else
     {
         m_OutdoorPvPSet.push_back(pOP);
-        sLog.outError("OutdoorPvP : HP successfully initiated.");
+		sLog.outDebug("OutdoorPvP : HP successfully initiated.");
     }
 	/*
     pOP = new OutdoorPvPNA;
@@ -69,10 +69,10 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     else
     {
         m_OutdoorPvPSet.push_back(pOP);
-        sLog.outError("OutdoorPvP : TF successfully initiated.");
+        sLog.outDebug("OutdoorPvP : TF successfully initiated.");
     }
 	
-    /*pOP = new OutdoorPvPZM;
+    pOP = new OutdoorPvPZM;
     // respawn, init variables
     if(!pOP->SetupOutdoorPvP())
     {
@@ -83,7 +83,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     {
         m_OutdoorPvPSet.push_back(pOP);
         sLog.outError("OutdoorPvP : ZM successfully initiated.");
-    }*/
+    }
 	
     pOP = new OutdoorPvPSI;
     // respawn, init variables
@@ -95,7 +95,7 @@ void OutdoorPvPMgr::InitOutdoorPvP()
     else
     {
         m_OutdoorPvPSet.push_back(pOP);
-        sLog.outError("OutdoorPvP : SI successfully initiated.");
+        sLog.outDebug("OutdoorPvP : SI successfully initiated.");
     }
 	/*
     pOP = new OutdoorPvPEP;

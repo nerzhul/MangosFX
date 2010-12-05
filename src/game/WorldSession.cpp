@@ -196,8 +196,9 @@ bool WorldSession::Update(uint32 /*diff*/)
                             LogUnexpectedOpcode(packet, "the player has not logged in yet");
                     }
                     else if(_player->IsInWorld())
+					{
                         ExecuteOpcode(opHandle, packet);
-
+					}
                     // lag can cause STATUS_LOGGEDIN opcodes to arrive after the player started a transfer
                     break;
                 case STATUS_LOGGEDIN_OR_RECENTLY_LOGGEDOUT:
@@ -305,8 +306,7 @@ void WorldSession::LogoutPlayer(bool Save)
     if (_player)
     {
 		sTicketMgr.Delete(_player->GetGUID());
-		/*if(_player->m_lookingForGroup.group)
-			_player->m_lookingForGroup.group->RemovePlayer(_player->GetGUID());*/
+		sLFGMgr.Leave(_player);
 			
         if (uint64 lguid = GetPlayer()->GetLootGUID())
             DoLootRelease(lguid);

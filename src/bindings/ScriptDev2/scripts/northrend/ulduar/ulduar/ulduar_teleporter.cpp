@@ -24,7 +24,7 @@ The teleporter appears to be active and stable.
 
 bool GoHello_ulduar_teleporter( Player *pPlayer, GameObject *pGO )
 {
-    ScriptedInstance *pInstance = (ScriptedInstance *) pGO->GetInstanceData();
+    InstanceData *pInstance = pGO->GetInstanceData();
     if(!pInstance) return true;
 
     pPlayer->ADD_GOSSIP_ITEM(0, "Teleportation au camp de base", GOSSIP_SENDER_MAIN, BASE_CAMP);

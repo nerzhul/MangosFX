@@ -53,12 +53,11 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
 {
     npc_shadowfang_prisonerAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_uiNpcEntry = pCreature->GetEntry();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     uint32 m_uiNpcEntry;
 
     void WaypointReached(uint32 uiPoint)
@@ -87,8 +86,8 @@ struct MANGOS_DLL_DECL npc_shadowfang_prisonerAI : public npc_escortAI
                 else
                     DoScriptText(SAY_POST1_DOOR_AD, me);
 
-                if (m_pInstance)
-                    m_pInstance->SetData(TYPE_FREE_NPC, DONE);
+                if (pInstance)
+                    SetInstanceData(TYPE_FREE_NPC, DONE);
                 break;
             case 13:
                 if (m_uiNpcEntry != NPC_ASH)
@@ -107,7 +106,7 @@ CreatureAI* GetAI_npc_shadowfang_prisoner(Creature* pCreature)
 
 bool GossipHello_npc_shadowfang_prisoner(Player* pPlayer, Creature* pCreature)
 {
-    ScriptedInstance* pInstance = ((ScriptedInstance*)pCreature->GetInstanceData());
+    InstanceData* pInstance = (pCreature->GetInstanceData());
 
     if (pInstance && pInstance->GetData(TYPE_FREE_NPC) != DONE && pInstance->GetData(TYPE_RETHILGORE) == DONE)
         pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_DOOR, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);

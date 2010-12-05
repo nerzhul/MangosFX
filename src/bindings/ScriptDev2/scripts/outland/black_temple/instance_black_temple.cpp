@@ -36,9 +36,9 @@ EndScriptData */
 8 - Illidan Stormrage Event
 */
 
-struct MANGOS_DLL_DECL instance_black_temple : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_black_temple : public InstanceData
 {
-    instance_black_temple(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_black_temple(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

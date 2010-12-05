@@ -58,12 +58,11 @@ struct MANGOS_DLL_DECL boss_sjonnirAI : public ScriptedAI
 
     boss_sjonnirAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     void Reset()
@@ -89,6 +88,8 @@ struct MANGOS_DLL_DECL boss_sjonnirAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
+		GiveRandomReward();
+		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }
 
     void UpdateAI(const uint32 diff)

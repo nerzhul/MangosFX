@@ -33,9 +33,9 @@ EndScriptData */
 3  - Kael'thas Sunstrider
 */
 
-struct MANGOS_DLL_DECL instance_magisters_terrace : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_magisters_terrace : public InstanceData
 {
-    instance_magisters_terrace(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_magisters_terrace(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

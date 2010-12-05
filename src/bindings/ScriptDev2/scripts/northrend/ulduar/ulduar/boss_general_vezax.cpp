@@ -67,7 +67,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 		Yell(15546,"Hahahaha, ces horreurs qui attendent...");
         if (pInstance)
 		{
-            pInstance->SetData(TYPE_VEZAX, DONE);
+            SetInstanceData(TYPE_VEZAX, DONE);
 			if(SaroniteDown)
 				pInstance->CompleteAchievementForGroup(m_difficulty ? 3188 : 3181);
 		}
@@ -79,7 +79,7 @@ struct MANGOS_DLL_DECL boss_vezaxAI : public LibDevFSAI
 		Yell(15542,"Votre destruction annoncera un nouveau monde de souffrance");
 		DoCastMe(SPELL_AURA_OF_DESPAIR);
         if (pInstance)
-            pInstance->SetData(TYPE_VEZAX, IN_PROGRESS);
+            SetInstanceData(TYPE_VEZAX, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)

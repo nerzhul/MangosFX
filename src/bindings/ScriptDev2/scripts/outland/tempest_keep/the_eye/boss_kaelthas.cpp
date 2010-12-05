@@ -156,7 +156,7 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
 {
     advisorbase_ai(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bDoubled_Health = false;
         Reset();
     }
@@ -164,7 +164,6 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
     uint32 m_uiAdvisor_Speech;
 
     public:
-    ScriptedInstance* m_pInstance;
     bool m_bFakeDeath;
     bool m_bDoubled_Health;
     uint32 m_uiDelayRes_Timer;
@@ -187,9 +186,9 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
         //reset encounter
-        if (m_pInstance && (m_pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_1_ADVISOR || m_pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_3_ADVISOR_ALL))
+        if (pInstance && (pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_1_ADVISOR || pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_3_ADVISOR_ALL))
         {
-            if (Creature* pKaelthas = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_KAELTHAS)))
+            if (Creature* pKaelthas = pInstance->instance->GetCreature(pInstance->GetData64(DATA_KAELTHAS)))
                 pKaelthas->AI()->EnterEvadeMode();
         }
     }
@@ -225,7 +224,7 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance && m_pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_3_ADVISOR_ALL)
+        if (pInstance && pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_3_ADVISOR_ALL)
             DoScriptText(m_uiAdvisor_Speech, me);
     }
 
@@ -235,14 +234,14 @@ struct MANGOS_DLL_DECL advisorbase_ai : public ScriptedAI
             return;
 
         //Prevent glitch if in fake death
-        if (m_bFakeDeath && m_pInstance && m_pInstance->GetData(TYPE_KAELTHAS_PHASE) != PHASE_0_NOT_BEGUN)
+        if (m_bFakeDeath && pInstance && pInstance->GetData(TYPE_KAELTHAS_PHASE) != PHASE_0_NOT_BEGUN)
         {
             damage = 0;
             return;
         }
 
         //Don't really die in phase 1 & 3, only die after that
-        if (m_pInstance && m_pInstance->GetData(TYPE_KAELTHAS_PHASE) != PHASE_0_NOT_BEGUN)
+        if (pInstance && pInstance->GetData(TYPE_KAELTHAS_PHASE) != PHASE_0_NOT_BEGUN)
         {
             //prevent death
             damage = 0;
@@ -296,12 +295,10 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 {
     boss_kaelthasAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         memset(&m_auiAdvisorGuid, 0, sizeof(m_auiAdvisorGuid));
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiFireball_Timer;
     uint32 m_uiArcaneDisruption_Timer;
@@ -348,8 +345,8 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_0_NOT_BEGUN);
+        if (pInstance)
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_0_NOT_BEGUN);
     }
 
     void PrepareAdvisors()
@@ -368,13 +365,13 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
     void StartEvent()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        m_auiAdvisorGuid[0] = m_pInstance->GetData64(DATA_THALADRED);
-        m_auiAdvisorGuid[1] = m_pInstance->GetData64(DATA_SANGUINAR);
-        m_auiAdvisorGuid[2] = m_pInstance->GetData64(DATA_CAPERNIAN);
-        m_auiAdvisorGuid[3] = m_pInstance->GetData64(DATA_TELONICUS);
+        m_auiAdvisorGuid[0] = pInstance->GetData64(DATA_THALADRED);
+        m_auiAdvisorGuid[1] = pInstance->GetData64(DATA_SANGUINAR);
+        m_auiAdvisorGuid[2] = pInstance->GetData64(DATA_CAPERNIAN);
+        m_auiAdvisorGuid[3] = pInstance->GetData64(DATA_TELONICUS);
 
         if (!m_auiAdvisorGuid[0] || !m_auiAdvisorGuid[1] || !m_auiAdvisorGuid[2] || !m_auiAdvisorGuid[3])
         {
@@ -384,7 +381,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
             m_uiPhase = PHASE_4_SOLO;
 
-            m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
 
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
@@ -399,7 +396,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
             DoScriptText(SAY_INTRO, me);
 
-            m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_1_ADVISOR);
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_1_ADVISOR);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             m_uiPhaseSubphase = 0;
@@ -426,7 +423,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 }
                 else if (me->GetMap()->IsDungeon())
                 {
-                    if (m_pInstance && m_pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_0_NOT_BEGUN && !m_uiPhase)
+                    if (pInstance && pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_0_NOT_BEGUN && !m_uiPhase)
                         StartEvent();
 
                     pWho->SetInCombatWith(me);
@@ -438,7 +435,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
     void Aggro(Unit* pWho)
     {
-        if (m_pInstance && m_pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_0_NOT_BEGUN && !m_uiPhase)
+        if (pInstance && pInstance->GetData(TYPE_KAELTHAS_PHASE) == PHASE_0_NOT_BEGUN && !m_uiPhase)
             StartEvent();
     }
 
@@ -477,8 +474,8 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
 
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_6_COMPLETE);
+        if (pInstance)
+            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_6_COMPLETE);
 
         for(uint8 i = 0; i < MAX_ADVISORS; ++i)
         {
@@ -654,7 +651,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                         if (pAdvisor && (pAdvisor->getStandState() == UNIT_STAND_STATE_DEAD))
                         {
                             m_uiPhase = PHASE_2_WEAPON;
-                            m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_2_WEAPON);
+                            SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_2_WEAPON);
 
                             DoScriptText(SAY_PHASE2_WEAPON, me);
 
@@ -697,7 +694,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     if (m_uiPhase_Timer < diff)
                     {
                         DoScriptText(SAY_PHASE3_ADVANCE, me);
-                        m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_3_ADVISOR_ALL);
+                        SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_3_ADVISOR_ALL);
                         m_uiPhase = PHASE_3_ADVISOR_ALL;
                         m_uiPhaseSubphase = 0;
                     }
@@ -735,7 +732,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                     DoScriptText(SAY_PHASE4_INTRO2, me);
                     m_uiPhase = PHASE_4_SOLO;
 
-                    m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
+                    SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_4_SOLO);
 
                     // Sometimes people can collect Aggro in Phase 1-3. Reset threat before releasing Kael.
                     DoResetThreat();
@@ -850,7 +847,7 @@ struct MANGOS_DLL_DECL boss_kaelthasAI : public ScriptedAI
                 {
                     if (me->GetHealth()*100 / me->GetMaxHealth() < 50)
                     {
-                        m_pInstance->SetData(TYPE_KAELTHAS_PHASE, PHASE_5_GRAVITY);
+                        SetInstanceData(TYPE_KAELTHAS_PHASE, PHASE_5_GRAVITY);
                         m_uiPhase = PHASE_5_GRAVITY;
                         m_uiPhase_Timer = 10000;
 

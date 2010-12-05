@@ -11,6 +11,7 @@ class MANGOS_DLL_SPEC RogueSpellHandler
 		void HandleSchoolDmg(Spell *spell,int32 &damage,SpellEffectIndex i);
 		bool HandleEffectDummy(Spell* spell, int32 &damage, SpellEffectIndex i);
 		//void HandleDummyAuraProc(Unit* u, Spell* dummy, uint32 &trig_sp_id);
+		void HandleAuraDummyWithApply(Aura* aura,Unit* caster,Unit* target);
 };
 
 #define sRogueSpellHandler MaNGOS::Singleton<RogueSpellHandler>::Instance()

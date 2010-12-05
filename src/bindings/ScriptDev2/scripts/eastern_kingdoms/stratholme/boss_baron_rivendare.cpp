@@ -79,11 +79,9 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
 {
     boss_baron_rivendareAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 ShadowBolt_Timer;
     uint32 Cleave_Timer;
@@ -103,8 +101,8 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BARON,IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_BARON,IN_PROGRESS);
     }
 
     void JustSummoned(Creature* summoned)
@@ -115,8 +113,8 @@ struct MANGOS_DLL_DECL boss_baron_rivendareAI : public ScriptedAI
 
     void JustDied(Unit* Killer)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_BARON,DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_BARON,DONE);
     }
 
     void UpdateAI(const uint32 diff)

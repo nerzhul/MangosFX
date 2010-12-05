@@ -296,7 +296,7 @@ Unit* SentinelAbilityAura::GetTriggerTarget() const
         case SPELL_THUNDER_BUFF:
         case SPELL_MSTRIKE_BUFF:
         case SPELL_STORM_BUFF:
-            return aOwner->me->getVictim();
+            return aOwner->getMyself()->getVictim();
 
         case SPELL_MANAB_BUFF:
             return aOwner->GetHatedManaUser();
@@ -306,12 +306,12 @@ Unit* SentinelAbilityAura::GetTriggerTarget() const
         case SPELL_REFLECTSFr_BUFF:
         case SPELL_THORNS_BUFF:
         default:
-            return aOwner->me;
+			return aOwner->getMyself();
     }
 }
 
 SentinelAbilityAura::SentinelAbilityAura(aqsentinelAI *abilityOwner, SpellEntry *spell, uint32 ability, uint32 eff)
-: Aura(spell, eff, NULL, abilityOwner->me, abilityOwner->me, NULL)
+: Aura(spell, eff, NULL, abilityOwner->getMyself(), abilityOwner->getMyself(), NULL)
 {
     aOwner = abilityOwner;
     abilityId = ability;

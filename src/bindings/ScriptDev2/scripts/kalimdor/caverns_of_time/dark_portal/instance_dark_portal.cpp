@@ -50,9 +50,9 @@ static Wave RiftWaves[]=
     {NPC_AEONUS, 0}
 };
 
-struct MANGOS_DLL_DECL instance_dark_portal : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_dark_portal : public InstanceData
 {
-    instance_dark_portal(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_dark_portal(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

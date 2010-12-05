@@ -32,6 +32,8 @@
 #define MAX_RAID_SIZE 40
 #define MAX_RAID_SUBGROUPS (MAX_RAID_SIZE / MAX_GROUP_SIZE)
 #define TARGET_ICON_COUNT 8
+#define GROUP_MAX_LFG_KICKS 3
+#define GROUP_LFG_KICK_VOTES_NEEDED 3
 
 enum RollVote
 {
@@ -52,6 +54,13 @@ enum RollVoteMask
 	
 	ROLL_VOTE_MASK_ALL        = 0x0F,
 	ROLL_VOTE_MASK_NO_NEED    = ROLL_VOTE_MASK_ALL & ~ROLL_VOTE_MASK_NEED,
+};
+
+enum LfgDungeonStatus // Merging
+{
+    LFG_STATUS_SAVED     = 0,
+    LFG_STATUS_NOT_SAVED = 1,
+    LFG_STATUS_COMPLETE  = 2,
 };
 
 enum GroupMemberOnlineStatus
@@ -169,6 +178,8 @@ class MANGOS_DLL_SPEC Group
             std::string name;
             uint8       group;
             bool        assistant;
+			uint8       flags;
+            uint8       roles;
         };
         typedef std::list<MemberSlot> MemberSlotList;
         typedef MemberSlotList::const_iterator member_citerator;
@@ -206,6 +217,35 @@ class MANGOS_DLL_SPEC Group
         void   SetLootThreshold(ItemQualities threshold) { m_lootThreshold = threshold; }
         void   Disband(bool hideDestroy=false);
 
+		// Dungeon Finder //Merging
+        void   SetLfgQueued(bool queued) { m_LfgQueued = queued; }
+        bool   isLfgQueued() { return m_LfgQueued; }
+        void   SetLfgStatus(uint8 status) { m_LfgStatus = status; }
+        uint8  GetLfgStatus() { return m_LfgStatus; }
+        bool   isLfgDungeonComplete() const { return m_LfgStatus == LFG_STATUS_COMPLETE; }
+        void   SetLfgDungeonEntry(uint32 dungeonEntry) { m_LfgDungeonEntry = dungeonEntry; }
+        uint32 GetLfgDungeonEntry(bool id = true)
+        {
+            if (id)
+                return (m_LfgDungeonEntry & 0x00FFFFFF);
+            else
+                return m_LfgDungeonEntry;
+        }
+        bool   isLfgKickActive() const { return m_LfgkicksActive; }
+        void   SetLfgKickActive(bool active) { m_LfgkicksActive = active; }
+        uint8  GetLfgKicks() const { return m_Lfgkicks; }
+        void   SetLfgKicks(uint8 kicks) { m_Lfgkicks = kicks; }
+        void   SetLfgRoles(uint64 guid, const uint8 roles)
+        {
+            member_witerator slot = _getMemberWSlot(guid);
+            if (slot == m_memberSlots.end())
+                return;
+
+            slot->roles = roles;
+            SendUpdate();
+        }
+		bool isLFGGroup()  const { return m_groupType & GROUPTYPE_LFD; }
+
         // properties accessories
 		uint32 GetId() const { return m_Id; }
         bool IsFull() const { return (m_groupType == GROUPTYPE_NORMAL) ? (m_memberSlots.size() >= MAX_GROUP_SIZE) : (m_memberSlots.size() >= MAX_RAID_SIZE); }
@@ -214,6 +254,8 @@ class MANGOS_DLL_SPEC Group
         bool IsCreated()   const { return GetMembersCount() > 0; }
         const uint64& GetLeaderGUID() const { return m_leaderGuid; }
         const char * GetLeaderName() const { return m_leaderName.c_str(); }
+        const uint64& GetGUID() const { return m_guid; }
+		uint32 GetLowGUID() const { return GUID_LOPART(m_guid); }
         LootMethod    GetLootMethod() const { return m_lootMethod; }
         const uint64& GetLooterGuid() const { return m_looterGuid; }
         ItemQualities GetLootThreshold() const { return m_lootThreshold; }
@@ -282,6 +324,7 @@ class MANGOS_DLL_SPEC Group
         }
 
         // some additional raid methods
+		void ConvertToLFG(); // Merging
         void ConvertToRaid();
 
         void SetBattlegroundGroup(BattleGround *bg) { m_bgGroup = bg; }
@@ -465,5 +508,12 @@ class MANGOS_DLL_SPEC Group
         BoundInstancesMap   m_boundInstances[MAX_DIFFICULTY];
         uint8*              m_subGroupsCounts;
 		bool				WGGroup;
+
+		uint64              m_guid; // Add LFG Support
+		bool                m_LfgQueued;
+        uint8               m_LfgStatus;
+        uint32              m_LfgDungeonEntry;
+        uint8               m_Lfgkicks;
+        bool                m_LfgkicksActive;
 };
 #endif

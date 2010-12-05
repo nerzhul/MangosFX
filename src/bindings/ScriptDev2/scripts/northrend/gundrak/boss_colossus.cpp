@@ -48,12 +48,11 @@ struct MANGOS_DLL_DECL boss_colossusAI : public ScriptedAI
 
 	boss_colossusAI(Creature* pCreature) : ScriptedAI(pCreature)
 	{
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
 		Reset();
 	}
 
-	ScriptedInstance* m_pInstance;
 	bool m_bIsHeroic;
 	MobEventTasks Tasks;
 

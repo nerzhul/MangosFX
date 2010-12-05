@@ -491,7 +491,6 @@ void AddScripts()
     AddSC_battleground();
 
     //custom
-
     //examples
     AddSC_example_creature();
     AddSC_example_escort();

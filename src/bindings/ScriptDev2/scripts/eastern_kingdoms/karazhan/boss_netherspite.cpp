@@ -130,11 +130,9 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
 {
     boss_netherspiteAI(Creature* pCreature) : ScriptedAI(pCreature) 
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     Phases Active_Phase;
     Events Active_Event;
@@ -156,11 +154,11 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
 
     void Reset()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
             //door opens
-            m_pInstance->SetData(TYPE_NETHERSPITE, NOT_STARTED);
-            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
+            SetInstanceData(TYPE_NETHERSPITE, NOT_STARTED);
+            if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
         }
 
@@ -415,13 +413,13 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
 
     void Aggro(Unit *who)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_NETHERSPITE, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_NETHERSPITE, IN_PROGRESS);
 
-        if (m_pInstance)
+        if (pInstance)
         {
             //door closes
-            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
+            if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
                 pDoor->SetGoState(GO_STATE_READY);
         }
         SwitchPhase();
@@ -645,12 +643,12 @@ struct MANGOS_DLL_DECL boss_netherspiteAI : public ScriptedAI
             }
         }
 
-        m_pInstance->SetData(TYPE_NETHERSPITE, DONE);
+        SetInstanceData(TYPE_NETHERSPITE, DONE);
 
-        if (m_pInstance)
+        if (pInstance)
         {
             //door opens
-            if (GameObject* pDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
+            if (GameObject* pDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_MASSIVE_DOOR)))
                 pDoor->SetGoState(GO_STATE_ACTIVE);
         }
         else

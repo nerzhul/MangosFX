@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "icecrown_citadel.h"
 
-struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_icecrown_citadel : public InstanceData
 {
-    instance_icecrown_citadel(Map* pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_icecrown_citadel(Map* pMap) : InstanceData(pMap) {Initialize();}
 
     std::string strInstData;
     uint32 m_auiEncounter[MAX_ENCOUNTER];
@@ -214,7 +214,6 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public ScriptedInstance
 				break;
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
-				AutoFreeze(pCreature);
 				break;
 			case 37006:
 				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());

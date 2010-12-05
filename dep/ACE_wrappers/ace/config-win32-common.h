@@ -168,7 +168,7 @@
 // below if you need to raise or lower it.
 
 #if !defined (FD_SETSIZE)
-#define FD_SETSIZE 1024
+#define FD_SETSIZE 4096
 #endif /* FD_SETSIZE */
 
 

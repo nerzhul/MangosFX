@@ -1,5 +1,4 @@
-/*
- * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
+/* Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,6 +31,7 @@
 Vehicle::Vehicle(Unit *unit, VehicleEntry const *vehInfo) : Creature(CREATURE_SUBTYPE_VEHICLE), m_vehicleId(0), 
 me(unit), m_vehicleInfo(vehInfo),m_vRegenTimer(4000)
 {
+	m_updateFlag = UPDATEFLAG_NONE;
     m_updateFlag = (UPDATEFLAG_LIVING | UPDATEFLAG_HAS_POSITION | UPDATEFLAG_VEHICLE);
 	m_duration = DAY * IN_MILLISECONDS * 7;
     InitSeats();
@@ -208,16 +208,18 @@ void Vehicle::Update(uint32 diff)
 void Vehicle::Die()
 {
     sLog.outDebug("Vehicle::Die %u", me->GetEntry());
-    for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr)
+	for (SeatMap::iterator itr = m_Seats.begin(); itr != m_Seats.end(); ++itr) // Remove everything from a vehicle
         if(Unit *passenger = itr->second.passenger)
             if(passenger->HasUnitTypeMask(UNIT_MASK_ACCESSORY))
-                passenger->setDeathState(JUST_DIED);
+                ((TemporarySummon*)passenger)->UnSummon();
+
     RemoveAllPassengers();
 }
 
 void Vehicle::Reset()
 {
     sLog.outDebug("Vehicle::Reset");
+
     if(true || me->GetEntry() == 32930)
     {
         if (me->GetTypeId() == TYPEID_PLAYER)
@@ -312,6 +314,7 @@ void Vehicle::InstallAccessory(uint32 entry, int8 seatId, bool minion)
         if(minion)
             accessory->AddUnitTypeMask(UNIT_MASK_ACCESSORY);
         accessory->EnterVehicle(this, seatId);
+		accessory->setFaction(me->getFaction());
 
 		if(accessory->isVehicle())
 			accessory->BuildVehicleInfo(accessory);
@@ -331,6 +334,10 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	unit->SetVehicleGUID(me->GetGUID());
 
+	if(unit->GetTypeId() == TYPEID_PLAYER)
+		if (unit->isInCombat())
+			return false;
+
 	seat->second.passenger = unit;
 	if(unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->IsVehicle())
     {
@@ -343,15 +350,16 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		ChangeSeatFlag(seatId, SEAT_FULL);
 
     SetVehicleId(m_vehicleInfo->m_ID);
-    
-	/*if(unit->GetTypeId() == TYPEID_PLAYER)
+
+/*
+	if(unit->GetTypeId() == TYPEID_PLAYER)
     {
         WorldPacket data0(SMSG_FORCE_MOVE_ROOT, 10);
         data0.append(unit->GetPackGUID());
         data0 << (uint32)((seat->second.vs_flags & SF_CAN_CAST) ?2 : 0);
         unit->SendMessageToSet(&data0,true);
-    }*/
-
+    }
+*/
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ROOT);
 	unit->m_movementInfo.AddMovementFlag(MOVEFLAG_ONTRANSPORT);
 
@@ -373,6 +381,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 
 	if(me->IsInWorld())
 	{
+
 		WorldPacket data(SMSG_MONSTER_MOVE_TRANSPORT, 60);
 		data.append(unit->GetPackGUID());
 		data.append(me->GetPackGUID());
@@ -391,6 +400,7 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 		data << unit->GetTransOffsetY();
 		data << unit->GetTransOffsetZ();
 		unit->SendMessageToSet(&data, true);
+
 	}
 
 	if((seat->second.vs_flags & SF_MAIN_RIDER /*temp fix*/|| seat->first == 0) && (me->GetTypeId() == TYPEID_UNIT && !((Creature*)me)->isHostileVehicle()))
@@ -454,7 +464,6 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
         data2 << (uint32)(2);
         me->SendMessageToSet(&data2,false);
     }
-
 	/*if(!((Creature*)me)->isHostileVehicle())
 	//if(GetVehicleFlags() & VF_NON_SELECTABLE)
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);*/

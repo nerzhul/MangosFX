@@ -89,6 +89,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
         m_bIsResurrected = false;
 		axe_here = false;
 		AnnhyldeGUID = 0;
+		SetInstanceData(TYPE_INGVAR,NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -97,6 +98,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
             return;
 		phase = 1;
         DoScriptText(m_bIsResurrected ? SAY_AGGRO_SECOND : SAY_AGGRO_FIRST, me);
+		SetInstanceData(TYPE_INGVAR,IN_PROGRESS);
 		if(m_bIsResurrected)
 		{
 			if(!m_difficulty)
@@ -112,7 +114,11 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
     {
         DoScriptText(m_bIsResurrected ? SAY_DEATH_SECOND : SAY_DEATH_FIRST, me);
 		if(m_bIsResurrected)
+		{
+			SetInstanceData(TYPE_INGVAR,DONE);
 			GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
+			GiveRandomReward();
+		}
     }
 
     void KilledUnit(Unit* pVictim)
@@ -218,6 +224,7 @@ struct MANGOS_DLL_DECL boss_ingvarAI : public LibDevFSAI
 				else if(rez_phase == 6)
 				{
 					DoCastMe(SPELL_INGVAR_MORPH);
+					me->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
 					m_bIsResurrected = true;
 					rez_phase = 7;
 				}

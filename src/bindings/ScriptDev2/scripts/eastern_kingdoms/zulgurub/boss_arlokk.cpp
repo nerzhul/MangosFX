@@ -26,7 +26,7 @@ EndScriptData */
 
 bool GOHello_go_gong_of_bethekk(Player* pPlayer, GameObject* pGo)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData())
+    if (InstanceData* pInstance = pGo->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_ARLOKK) == DONE || pInstance->GetData(TYPE_ARLOKK) == IN_PROGRESS)
             return true;
@@ -60,11 +60,9 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 {
     boss_arlokkAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiShadowWordPain_Timer;
     uint32 m_uiGouge_Timer;
@@ -109,8 +107,8 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ARLOKK, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_ARLOKK, NOT_STARTED);
 
         //we should be summoned, so despawn
         me->ForcedDespawn();
@@ -123,8 +121,8 @@ struct MANGOS_DLL_DECL boss_arlokkAI : public ScriptedAI
         me->SetDisplayId(MODEL_ID_NORMAL);
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_ARLOKK, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_ARLOKK, DONE);
     }
 
     void DoSummonPhanters()

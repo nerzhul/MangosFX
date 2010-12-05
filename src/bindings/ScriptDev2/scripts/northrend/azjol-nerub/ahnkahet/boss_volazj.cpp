@@ -56,12 +56,11 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
 {
     boss_volazjAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 	MobEventTasks Tasks;
 	uint32 phasing_Timer;
@@ -105,6 +104,7 @@ struct MANGOS_DLL_DECL boss_volazjAI : public ScriptedAI
     {
         DoScriptText(urand(0, 1) ? SAY_DEATH_1 : SAY_DEATH_2, me);
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
+		GiveRandomReward();
     }
 
     void UpdateAI(const uint32 diff)

@@ -24,9 +24,9 @@ EndScriptData */
 #include "precompiled.h"
 #include "ahnkahet.h"
 
-struct MANGOS_DLL_DECL instance_ahnkahet : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_ahnkahet : public InstanceData
 {
-    instance_ahnkahet(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_ahnkahet(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

@@ -521,6 +521,7 @@ class ChatHandler
 		bool HandleAchievementAdd(const char* args);
 		bool HandleAddPOI(const char *args);
 		bool HandleDebugEnterVehicle(const char * args);
+		bool HandlePlayerbotCommand(const char * args);
 		bool HandleCompleteRecupCommand(const char *args);
 		bool HandleDebugDualSpecCommand(const char *args);
 		bool HandleTestPacketCommand(const char *args);

@@ -86,8 +86,11 @@ EndScriptData */
 #define CREATURE_CYCLONE        18412
 #define CREATURE_CRONE          18168
 
-void SummonCroneIfReady(ScriptedInstance* pInstance, Creature* pCreature)
+void SummonCroneIfReady(InstanceData* pInstance, Creature* pCreature)
 {
+	if(!pInstance)
+		return;
+
     pInstance->SetData(DATA_OPERA_OZ_DEATHCOUNT, SPECIAL);  // Increment DeathCount
 
     if (pInstance->GetData(DATA_OPERA_OZ_DEATHCOUNT) == 4)
@@ -435,11 +438,9 @@ struct MANGOS_DLL_DECL boss_roarAI : public ScriptedAI
 {
     boss_roarAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 AggroTimer;
     uint32 MangleTimer;
@@ -484,8 +485,8 @@ struct MANGOS_DLL_DECL boss_roarAI : public ScriptedAI
     {
         DoScriptText(SAY_ROAR_DEATH, me);
 
-        if (m_pInstance)
-            SummonCroneIfReady(m_pInstance, me);
+        if (pInstance)
+            SummonCroneIfReady(pInstance, me);
     }
 
     void KilledUnit(Unit* victim)
@@ -533,11 +534,9 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
 {
     boss_croneAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 CycloneTimer;
     uint32 ChainLightningTimer;
@@ -564,15 +563,15 @@ struct MANGOS_DLL_DECL boss_croneAI : public ScriptedAI
     {
         DoScriptText(SAY_CRONE_DEATH, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
-            if (GameObject* pLDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
+            if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pRDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
+            if (GameObject* pRDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
                 pRDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pSideEntrance = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
+            if (GameObject* pSideEntrance = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
                 pSideEntrance->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
         }
     }
@@ -716,11 +715,9 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
 {
     boss_bigbadwolfAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 ChaseTimer;
     uint32 FearTimer;
@@ -757,15 +754,15 @@ struct MANGOS_DLL_DECL boss_bigbadwolfAI : public ScriptedAI
     {
         DoPlaySoundToSet(me, SOUND_WOLF_DEATH);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
-            if (GameObject* pLDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
+            if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pRDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
+            if (GameObject* pRDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
                 pRDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pSideEntrance = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
+            if (GameObject* pSideEntrance = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
                 pSideEntrance->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
         }
     }
@@ -914,14 +911,12 @@ struct MANGOS_DLL_DECL boss_julianneAI : public ScriptedAI
 {
     boss_julianneAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         EntryYellTimer = 1000;
         AggroYellTimer = 10000;
         IsFakingDeath = false;
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 EntryYellTimer;
     uint32 AggroYellTimer;
@@ -1002,15 +997,15 @@ struct MANGOS_DLL_DECL boss_julianneAI : public ScriptedAI
     {
         DoScriptText(SAY_JULIANNE_DEATH02, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
-            if (GameObject* pLDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
+            if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pRDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
+            if (GameObject* pRDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
                 pRDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pSideEntrance = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
+            if (GameObject* pSideEntrance = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
                 pSideEntrance->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
         }
     }
@@ -1027,13 +1022,11 @@ struct MANGOS_DLL_DECL boss_romuloAI : public ScriptedAI
 {
     boss_romuloAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
         EntryYellTimer = 8000;
         AggroYellTimer = 15000;
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint64 JulianneGUID;
     uint32 Phase;
@@ -1097,15 +1090,15 @@ struct MANGOS_DLL_DECL boss_romuloAI : public ScriptedAI
     {
         DoScriptText(SAY_ROMULO_DEATH, me);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            m_pInstance->SetData(TYPE_OPERA, DONE);
+            SetInstanceData(TYPE_OPERA, DONE);
 
-            if (GameObject* pLDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
+            if (GameObject* pLDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORLEFT)))
                 pLDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pRDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
+            if (GameObject* pRDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_STAGEDOORRIGHT)))
                 pRDoor->SetGoState(GO_STATE_ACTIVE);
-            if (GameObject* pSideEntrance = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
+            if (GameObject* pSideEntrance = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_SIDE_ENTRANCE_DOOR)))
                 pSideEntrance->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
         }
     }

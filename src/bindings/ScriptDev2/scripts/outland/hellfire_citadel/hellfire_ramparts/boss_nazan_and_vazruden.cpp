@@ -65,12 +65,11 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
 {
     boss_vazrudenAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     bool m_bHealthBelow;
@@ -94,8 +93,8 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VAZRUDEN, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_VAZRUDEN, DONE);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -105,7 +104,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
 
     void PrepareAndDescendMount()
     {
-        if (Creature* pHerald = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_HERALD)))
+        if (Creature* pHerald = pInstance->instance->GetCreature(pInstance->GetData64(DATA_HERALD)))
         {
             if (pHerald->HasSplineFlag(SPLINEFLAG_WALKMODE))
                 pHerald->RemoveSplineFlag(SPLINEFLAG_WALKMODE);
@@ -123,7 +122,7 @@ struct MANGOS_DLL_DECL boss_vazrudenAI : public ScriptedAI
 
         if (!m_bHealthBelow && (me->GetHealth()*100 / me->GetMaxHealth()) <= 30)
         {
-            if (m_pInstance)
+            if (pInstance)
                 PrepareAndDescendMount();
 
             m_bHealthBelow = true;
@@ -146,12 +145,11 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
     boss_vazruden_heraldAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
         pCreature->SetActiveObjectState(true);
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->IsRegularDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
     bool m_bIsHeroic;
 
     uint32 m_uiMovementTimer;
@@ -168,7 +166,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
 
     void MoveInLineOfSight(Unit* pWho)
     {
-        if (m_pInstance && m_pInstance->GetData(TYPE_NAZAN) != IN_PROGRESS)
+        if (pInstance && pInstance->GetData(TYPE_NAZAN) != IN_PROGRESS)
             return;
 
         ScriptedAI::MoveInLineOfSight(pWho);
@@ -176,7 +174,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
 
     void MovementInform(uint32 uiType, uint32 uiPointId)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         if (uiType == WAYPOINT_MOTION_TYPE)
@@ -184,7 +182,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             if (m_uiMovementTimer)
                 return;
 
-            if (m_pInstance->GetData(TYPE_NAZAN) == SPECIAL)
+            if (pInstance->GetData(TYPE_NAZAN) == SPECIAL)
             {
                 me->SetCombatStartPosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
                 m_uiMovementTimer = 1000;
@@ -198,7 +196,7 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
             else if (uiPointId == POINT_ID_COMBAT)
             {
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                m_pInstance->SetData(TYPE_NAZAN, IN_PROGRESS);
+                SetInstanceData(TYPE_NAZAN, IN_PROGRESS);
             }
         }
     }
@@ -235,14 +233,14 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
 
     void JustSummoned(Creature* pSummoned)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_VAZRUDEN, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_VAZRUDEN, IN_PROGRESS);
     }
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_NAZAN, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_NAZAN, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -251,9 +249,9 @@ struct MANGOS_DLL_DECL boss_vazruden_heraldAI : public ScriptedAI
         {
             if (m_uiMovementTimer <= diff)
             {
-                if (m_pInstance)
+                if (pInstance)
                 {
-                    if (m_pInstance->GetData(TYPE_VAZRUDEN) == IN_PROGRESS)
+                    if (pInstance->GetData(TYPE_VAZRUDEN) == IN_PROGRESS)
                         DoMoveToHold();
                     else
                         DoMoveToCenter();

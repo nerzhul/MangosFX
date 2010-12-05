@@ -73,9 +73,9 @@ inline uint32 GetEruptionSection(float x, float y)
     return 3;
 }
 
-struct MANGOS_DLL_DECL instance_naxxramas : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_naxxramas : public InstanceData
 {
-    instance_naxxramas(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_naxxramas(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 	std::set<GameObject*> HeiganEruption[4];

@@ -31,9 +31,9 @@ EndScriptData */
 4 - Murmur event
 */
 
-struct MANGOS_DLL_DECL instance_shadow_labyrinth : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_shadow_labyrinth : public InstanceData
 {
-    instance_shadow_labyrinth(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_shadow_labyrinth(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;

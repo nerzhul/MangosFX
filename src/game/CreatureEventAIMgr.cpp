@@ -36,10 +36,10 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Texts(bool check_entry_use)
     m_CreatureEventAI_TextMap.clear();
 
     // Load EventAI Text
-    sObjectMgr.LoadMangosStrings(WorldDatabase,"creature_ai_texts",MIN_CREATURE_AI_TEXT_STRING_ID,MAX_CREATURE_AI_TEXT_STRING_ID);
+    sObjectMgr.LoadMangosStrings(LocalisationDatabase,"creature_ai_texts",MIN_CREATURE_AI_TEXT_STRING_ID,MAX_CREATURE_AI_TEXT_STRING_ID);
 
     // Gather Additional data from EventAI Texts
-    QueryResult *result = WorldDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
+    QueryResult *result = LocalisationDatabase.Query("SELECT entry, sound, type, language, emote FROM creature_ai_texts");
 
     sLog.outString("Loading EventAI Texts additional data...");
     if (result)
@@ -457,6 +457,8 @@ void CreatureEventAIMgr::LoadCreatureEventAI_Scripts()
 
                 case EVENT_T_BUFFED:
                 case EVENT_T_TARGET_BUFFED:
+				case EVENT_T_MISSING_AURA:
+                case EVENT_T_TARGET_MISSING_AURA:
                 {
                     SpellEntry const* pSpell = sSpellStore.LookupEntry(temp.buffed.spellId);
                     if (!pSpell)

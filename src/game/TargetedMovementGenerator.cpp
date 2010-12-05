@@ -21,6 +21,7 @@
 #include "Errors.h"
 #include "Creature.h"
 #include "DestinationHolderImp.h"
+#include "PathFinder.h"
 #include "World.h"
 //#include "ace/High_Res_Timer.h"
 

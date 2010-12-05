@@ -29,9 +29,9 @@ EndScriptData */
 2 - Gruul event
 */
 
-struct MANGOS_DLL_DECL instance_gruuls_lair : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_gruuls_lair : public InstanceData
 {
-    instance_gruuls_lair(Map *pMap) : ScriptedInstance(pMap) {Initialize();}
+    instance_gruuls_lair(Map *pMap) : InstanceData(pMap) {Initialize();}
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strSaveData;

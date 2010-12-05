@@ -41,7 +41,7 @@ enum
 
 bool GossipHello_boss_gloomrel(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == NOT_STARTED)
         {
@@ -77,7 +77,7 @@ bool GossipSelect_boss_gloomrel(Player* pPlayer, Creature* pCreature, uint32 uiS
             break;
         case GOSSIP_ACTION_INFO_DEF+22:
             pPlayer->CLOSE_GOSSIP_MENU();
-            if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+            if (InstanceData* pInstance = pCreature->GetInstanceData())
             {
                 //are 5 minutes expected? go template may have data to despawn when used at quest
                 pInstance->DoRespawnGameObject(pInstance->GetData64(DATA_GO_CHALICE),MINUTE*5);
@@ -106,11 +106,9 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 {
     boss_doomrelAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiCallToFight_Timer;
     uint8 m_uiDwarfRound;
@@ -131,14 +129,14 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, FAIL);
+        if (pInstance)
+            SetInstanceData(TYPE_TOMB_OF_SEVEN, FAIL);
     }
 
     void JustDied(Unit *victim)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_TOMB_OF_SEVEN, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -152,17 +150,17 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
         switch(uiPhase)
         {
             case 0:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_ANGERREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_ANGERREL));
             case 1:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SEETHREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_SEETHREL));
             case 2:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_DOPEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_DOPEREL));
             case 3:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_GLOOMREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_GLOOMREL));
             case 4:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_VILEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_VILEREL));
             case 5:
-                return m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_HATEREL));
+                return pInstance->instance->GetCreature(pInstance->GetData64(DATA_HATEREL));
             case 6:
                 return me;
         }
@@ -190,9 +188,9 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (m_pInstance->GetData(TYPE_TOMB_OF_SEVEN) == IN_PROGRESS)
+            if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == IN_PROGRESS)
             {
                 if (m_uiDwarfRound < MAX_DWARF)
                 {
@@ -206,7 +204,7 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
                         m_uiCallToFight_Timer -= diff;
                 }
             }
-            else if (m_pInstance->GetData(TYPE_TOMB_OF_SEVEN) == FAIL)
+            else if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == FAIL)
             {
                 for (m_uiDwarfRound = 0; m_uiDwarfRound < MAX_DWARF; ++m_uiDwarfRound)
                     CallToFight(false);
@@ -214,8 +212,8 @@ struct MANGOS_DLL_DECL boss_doomrelAI : public ScriptedAI
                 m_uiDwarfRound = 0;
                 m_uiCallToFight_Timer = 0;
 
-                if (m_pInstance)
-                    m_pInstance->SetData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
+                if (pInstance)
+                    SetInstanceData(TYPE_TOMB_OF_SEVEN, NOT_STARTED);
             }
         }
 
@@ -241,7 +239,7 @@ CreatureAI* GetAI_boss_doomrel(Creature* pCreature)
 
 bool GossipHello_boss_doomrel(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_TOMB_OF_SEVEN) == NOT_STARTED)
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_CHALLENGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -259,7 +257,7 @@ bool GossipSelect_boss_doomrel(Player* pPlayer, Creature* pCreature, uint32 uiSe
             pPlayer->CLOSE_GOSSIP_MENU();
             DoScriptText(SAY_DOOMREL_START_EVENT, pCreature, pPlayer);
             // start event
-            if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+            if (InstanceData* pInstance = pCreature->GetInstanceData())
                 pInstance->SetData(TYPE_TOMB_OF_SEVEN, IN_PROGRESS);
 
             break;

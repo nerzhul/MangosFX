@@ -119,13 +119,11 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 {
     boss_shade_of_akamaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         m_lChannelersGUIDList.clear();
         m_lSorcerersGUIDList.clear();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     std::list<uint64> m_lChannelersGUIDList;
     std::list<uint64> m_lSorcerersGUIDList;
@@ -179,8 +177,8 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 
     void JustReachedHome()
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHADE, NOT_STARTED);
+        if (pInstance)
+            SetInstanceData(TYPE_SHADE, NOT_STARTED);
 
         RespawnChannelersIfDeadOrEvade();
     }
@@ -239,11 +237,11 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 
     void DespawnSorceres()
     {
-        if (!m_lSorcerersGUIDList.empty() && m_pInstance)
+        if (!m_lSorcerersGUIDList.empty() && pInstance)
         {
             for(std::list<uint64>::iterator itr = m_lSorcerersGUIDList.begin(); itr != m_lSorcerersGUIDList.end(); ++itr)
             {
-                if (Creature* pSorcerer = m_pInstance->instance->GetCreature(*itr))
+                if (Creature* pSorcerer = pInstance->instance->GetCreature(*itr))
                 {
                     if (pSorcerer->isAlive())
                         pSorcerer->ForcedDespawn();
@@ -254,11 +252,11 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 
     void RespawnChannelersIfDeadOrEvade()
     {
-        if (!m_lChannelersGUIDList.empty() && m_pInstance)
+        if (!m_lChannelersGUIDList.empty() && pInstance)
         {
             for(std::list<uint64>::iterator itr = m_lChannelersGUIDList.begin(); itr != m_lChannelersGUIDList.end(); ++itr)
             {
-                if (Creature* pChanneler = m_pInstance->instance->GetCreature(*itr))
+                if (Creature* pChanneler = pInstance->instance->GetCreature(*itr))
                 {
                     if (!pChanneler->isAlive())
                         pChanneler->Respawn();
@@ -301,8 +299,8 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_SHADE, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_SHADE, DONE);
     }
 
     void UpdateAI(const uint32 diff)
@@ -324,7 +322,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
                     m_afSpawnLoc[uiRand].m_fX, m_afSpawnLoc[uiRand].m_fY, m_afSpawnLoc[uiRand].m_fZ, m_afSpawnLoc[uiRand].m_fO,
                     TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 25000))
                 {
-                    if (Unit* pAkama = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_AKAMA_SHADE)))
+                    if (Unit* pAkama = Unit::GetUnit(*me, pInstance->GetData64(DATA_AKAMA_SHADE)))
                         pDefender->AI()->AttackStart(pAkama);
                 }
 
@@ -343,7 +341,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
 
             if (m_uiDeathCount >= 6)
             {
-                if (Unit* pAkama = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_AKAMA_SHADE)))
+                if (Unit* pAkama = Unit::GetUnit(*me, pInstance->GetData64(DATA_AKAMA_SHADE)))
                 {
                     if (pAkama && pAkama->isAlive())
                     {
@@ -365,7 +363,7 @@ struct MANGOS_DLL_DECL boss_shade_of_akamaAI : public ScriptedAI
         {
             if (m_uiReduceHealthTimer < diff)
             {
-                if (Unit* pAkama = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_AKAMA_SHADE)))
+                if (Unit* pAkama = Unit::GetUnit(*me, pInstance->GetData64(DATA_AKAMA_SHADE)))
                 {
                     if (pAkama->isAlive())
                     {
@@ -406,11 +404,9 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
     {
         m_bIsShadeDead = false;
         m_bCanStartCombat = false;
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiDestructivePoisonTimer;
     uint32 m_uiLightningBoltTimer;
@@ -453,16 +449,16 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
     void BeginEvent()
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pShade = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+        if (Creature* pShade = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SHADEOFAKAMA)))
         {
             if (boss_shade_of_akamaAI* pShadeAI = dynamic_cast<boss_shade_of_akamaAI*>(pShade->AI()))
                 pShadeAI->PrepareChannelers();
 
             // Prevent players from trying to restart event
-            m_pInstance->SetData(TYPE_SHADE, IN_PROGRESS);
+            SetInstanceData(TYPE_SHADE, IN_PROGRESS);
 
             me->RemoveFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
@@ -481,7 +477,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
     void MovementInform(uint32 uiMoveType, uint32 uiPointId)
     {
-        if (uiMoveType != POINT_MOTION_TYPE || !m_pInstance)
+        if (uiMoveType != POINT_MOTION_TYPE || !pInstance)
             return;
 
         switch(uiPointId)
@@ -490,7 +486,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
                 ++m_uiWayPointId;
                 break;
             case 1:
-                if (Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+                if (Unit* pShade = Unit::GetUnit(*me, pInstance->GetData64(DATA_SHADEOFAKAMA)))
                 {
                     DoCast(pShade, SPELL_AKAMA_SOUL_RETRIEVE);
                     m_uiEndingTalkCount = 0;
@@ -507,12 +503,12 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (!m_bIsEventBegun || !m_pInstance)
+        if (!m_bIsEventBegun || !pInstance)
             return;
 
         if (!m_bCanStartCombat)
         {
-            if (Creature* pShade = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+            if (Creature* pShade = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SHADEOFAKAMA)))
             {
                 if (!pShade->isAlive())
                 {
@@ -551,7 +547,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
         {
             if (m_uiCheckTimer < diff)
             {
-                if (Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+                if (Unit* pShade = Unit::GetUnit(*me, pInstance->GetData64(DATA_SHADEOFAKAMA)))
                 {
                     if (!pShade->isAlive())
                     {
@@ -677,7 +673,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
         if (m_uiDestructivePoisonTimer < diff)
         {
-            if (Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+            if (Unit* pShade = Unit::GetUnit(*me, pInstance->GetData64(DATA_SHADEOFAKAMA)))
             {
                 if (pShade->isAlive())
                     DoCast(pShade, SPELL_DESTRUCTIVE_POISON);
@@ -702,7 +698,7 @@ struct MANGOS_DLL_DECL npc_akamaAI : public ScriptedAI
 
 bool GossipHello_npc_akama(Player* pPlayer, Creature* pCreature)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData())
+    if (InstanceData* pInstance = pCreature->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_SHADE) != DONE)
             pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
@@ -729,18 +725,16 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
 {
     mob_ashtongue_channelerAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-
     void Reset()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
             //self-resurrect if encounter not done and we are dead
-            if (!me->isAlive() && m_pInstance->GetData(TYPE_SHADE) != DONE)
+            if (!me->isAlive() && pInstance->GetData(TYPE_SHADE) != DONE)
                 me->Respawn();
 
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -752,10 +746,10 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pShade = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+        if (Creature* pShade = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SHADEOFAKAMA)))
         {
             if (pShade->isAlive())
             {
@@ -773,9 +767,9 @@ struct MANGOS_DLL_DECL mob_ashtongue_channelerAI : public ScriptedAI
             return;
 
         //start channel (not nice way to start channeling)
-        if (!me->IsNonMeleeSpellCasted(false) && !me->getVictim() && m_pInstance)
+        if (!me->IsNonMeleeSpellCasted(false) && !me->getVictim() && pInstance)
         {
-            if (Creature* pShade = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+            if (Creature* pShade = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SHADEOFAKAMA)))
                 me->CastSpell(pShade, SPELL_SHADE_SOUL_CHANNEL, false);
         }
     }
@@ -785,11 +779,9 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
 {
     mob_ashtongue_sorcererAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiCheckTimer;
     bool m_bStartBanishing;
@@ -805,10 +797,10 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
 
     void JustDied(Unit* pKiller)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pShade = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SHADEOFAKAMA)))
+        if (Creature* pShade = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SHADEOFAKAMA)))
         {
             if (pShade->isAlive())
             {
@@ -822,12 +814,12 @@ struct MANGOS_DLL_DECL mob_ashtongue_sorcererAI : public ScriptedAI
 
     void UpdateAI(const uint32 diff)
     {
-        if (m_bStartBanishing || !m_pInstance)
+        if (m_bStartBanishing || !pInstance)
             return;
 
         if (m_uiCheckTimer < diff)
         {
-            Unit* pShade = Unit::GetUnit(*me, m_pInstance->GetData64(DATA_SHADEOFAKAMA));
+            Unit* pShade = Unit::GetUnit(*me, pInstance->GetData64(DATA_SHADEOFAKAMA));
 
             if (pShade && pShade->isAlive() && me->isAlive())
             {

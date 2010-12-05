@@ -65,7 +65,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     void Aggro(Unit* pWho)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SAURFANG, IN_PROGRESS);
+            SetInstanceData(TYPE_SAURFANG, IN_PROGRESS);
 		DoCastMe(SPELL_BLOOD_LINK);
 		Yell(16694,"Par la puissance du Roi Liche");
     }
@@ -169,7 +169,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     void JustDied(Unit* pKiller)
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SAURFANG, DONE);
+            SetInstanceData(TYPE_SAURFANG, DONE);
 
 		switch(m_difficulty)
 		{
@@ -194,7 +194,7 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
     void JustReachedHome()
     {
         if (pInstance)
-            pInstance->SetData(TYPE_SAURFANG, FAIL);
+            SetInstanceData(TYPE_SAURFANG, FAIL);
     }
 
     void UpdateAI(const uint32 diff)

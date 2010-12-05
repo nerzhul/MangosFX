@@ -74,11 +74,9 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 {
     boss_halazziAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiPhase;
     uint32 m_uiPhaseCounter;
@@ -105,16 +103,16 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
 
         me->SetMaxHealth(me->GetCreatureInfo()->maxhealth);
 
-        if (m_pInstance)
+        if (pInstance)
         {
-            if (Creature* pSpiritLynx = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SPIRIT_LYNX)))
+            if (Creature* pSpiritLynx = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SPIRIT_LYNX)))
                 pSpiritLynx->ForcedDespawn();
         }
     }
 
     void JustReachedHome()
     {
-        m_pInstance->SetData(TYPE_HALAZZI, NOT_STARTED);
+        SetInstanceData(TYPE_HALAZZI, NOT_STARTED);
     }
 
     void Aggro(Unit* pWho)
@@ -122,8 +120,8 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
         me->SetInCombatWithZone();
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HALAZZI, IN_PROGRESS);
+        if (pInstance)
+            SetInstanceData(TYPE_HALAZZI, IN_PROGRESS);
     }
 
     void KilledUnit(Unit* pVictim)
@@ -138,8 +136,8 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
     {
         DoScriptText(SAY_DEATH, me);
 
-        if (m_pInstance)
-            m_pInstance->SetData(TYPE_HALAZZI, DONE);
+        if (pInstance)
+            SetInstanceData(TYPE_HALAZZI, DONE);
     }
 
     void JustSummoned(Creature* pSummoned)
@@ -199,7 +197,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         }
         else
         {
-            Creature* pSpiritLynx = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_SPIRIT_LYNX));
+            Creature* pSpiritLynx = pInstance->instance->GetCreature(pInstance->GetData64(DATA_SPIRIT_LYNX));
 
             if (me->GetHealth()*10 < me->GetMaxHealth() ||
                 (pSpiritLynx && pSpiritLynx->GetHealth()*10 < pSpiritLynx->GetMaxHealth()))
@@ -249,7 +247,7 @@ struct MANGOS_DLL_DECL boss_halazziAI : public ScriptedAI
         {
             if (m_uiCheckTimer < diff)
             {
-                if (m_pInstance)
+                if (pInstance)
                     PhaseChange();
                 else
                     m_uiPhase = PHASE_FINAL;
@@ -326,11 +324,9 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
 {
     boss_spirit_lynxAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     uint32 m_uiFrenzyTimer;
     uint32 m_uiShredArmorTimer;
@@ -348,10 +344,10 @@ struct MANGOS_DLL_DECL boss_spirit_lynxAI : public ScriptedAI
 
     void KilledUnit(Unit* pVictim)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
-        if (Creature* pHalazzi = m_pInstance->instance->GetCreature(m_pInstance->GetData64(DATA_HALAZZI)))
+        if (Creature* pHalazzi = pInstance->instance->GetCreature(pInstance->GetData64(DATA_HALAZZI)))
             pHalazzi->AI()->KilledUnit(pVictim);
     }
 

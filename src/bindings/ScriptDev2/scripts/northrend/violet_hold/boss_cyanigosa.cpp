@@ -54,12 +54,12 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
 	 
 	boss_cyanigosaAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
         m_bIsHeroic = pCreature->GetMap()->GetDifficulty();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
 	bool m_bIsHeroic;
 	    
     void UpdateAI(const uint32 diff)
@@ -106,6 +106,7 @@ struct MANGOS_DLL_DECL boss_cyanigosaAI : public ScriptedAI
     void JustDied(Unit* pKiller)
     {
         DoScriptText(SAY_DEATH, me);
+		GiveRandomReward();
     }
 
     void KilledUnit(Unit* pVictim)

@@ -294,6 +294,7 @@ AC_CONFIG_FILES([
    src/mangosd/Makefile
    src/Cluster-Basic/Makefile
    src/Cluster-Loots/Makefile
+   src/Cluster-BG/Makefile
    src/Cluster-Quests/Makefile
    src/bindings/Makefile
    src/bindings/ScriptDev2/Makefile

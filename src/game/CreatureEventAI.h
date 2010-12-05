@@ -60,6 +60,8 @@ enum EventAI_Type
     EVENT_T_TARGET_BUFFED           = 24,                   // Param1 = SpellID, Param2 = Number of Time STacked, Param3/4 Repeat Min/Max
     EVENT_T_SUMMONED_JUST_DIED      = 25,                   // CreatureId, RepeatMin, RepeatMax
     EVENT_T_SUMMONED_JUST_DESPAWN   = 26,                   // CreatureId, RepeatMin, RepeatMax
+	EVENT_T_MISSING_AURA            = 27,                   // Param1 = SpellID, Param2 = Number of time stacked expected, Param3/4 Repeat Min/Max
+    EVENT_T_TARGET_MISSING_AURA     = 28,                   // Param1 = SpellID, Param2 = Number of time stacked expected, Param3/4 Repeat Min/Max
 
     EVENT_T_END,
 };
@@ -512,6 +514,8 @@ struct CreatureEventAI_Event
         } receive_emote;
         // EVENT_T_BUFFED                                   = 23
         // EVENT_T_TARGET_BUFFED                            = 24
+		// EVENT_T_MISSING_AURA                             = 27
+        // EVENT_T_TARGET_MISSING_AURA                      = 28
         struct
         {
             uint32 spellId;

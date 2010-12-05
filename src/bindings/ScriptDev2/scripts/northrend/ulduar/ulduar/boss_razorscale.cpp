@@ -106,14 +106,14 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
         me->ApplySpellImmune(1, IMMUNITY_EFFECT,SPELL_EFFECT_ATTACK_ME, true);
 
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, NOT_STARTED);
+           SetInstanceData(TYPE_RAZORSCALE, NOT_STARTED);
     }
 
     void JustDied(Unit* Killer)
     {
 		GiveEmblemsToGroup((m_difficulty) ? CONQUETE : VAILLANCE);
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, DONE);
+           SetInstanceData(TYPE_RAZORSCALE, DONE);
     }
 	
 	void CallRazorscale()
@@ -121,7 +121,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
 		Phase = PHASE_FLY_I;
 		FlyPhase();
 		if (pInstance)
-           pInstance->SetData(TYPE_RAZORSCALE, IN_PROGRESS);
+           SetInstanceData(TYPE_RAZORSCALE, IN_PROGRESS);
 		AggroAllPlayers(350.0f);
 	}
 
@@ -318,7 +318,7 @@ struct MANGOS_DLL_DECL boss_razorscaleAI : public LibDevFSAI
 
 bool GossipHello_npc_RazorScale(Player* pPlayer, Creature* pCreature)
 {
-	if(((ScriptedInstance*)pCreature->GetInstanceData())->GetData(TYPE_RAZORSCALE) != NOT_STARTED)
+	if((pCreature->GetInstanceData())->GetData(TYPE_RAZORSCALE) != NOT_STARTED)
 		return false;
 
     pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Appeler Tranchecaille !", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
@@ -331,7 +331,7 @@ bool GossipSelect_npc_RazorScale(Player* pPlayer, Creature* pCreature, uint32 ui
     switch(uiAction)
     {
         case GOSSIP_ACTION_INFO_DEF+1:
-			if (Creature *Rzsc =(Creature*) Unit::GetUnit(*pCreature, ((ScriptedInstance*)pCreature->GetInstanceData())->GetData64(TYPE_RAZORSCALE)))
+			if (Creature *Rzsc =(Creature*) Unit::GetUnit(*pCreature, (pCreature->GetInstanceData())->GetData64(TYPE_RAZORSCALE)))
 			{
 				((boss_razorscaleAI*)Rzsc->AI())->CallRazorscale();
 			}

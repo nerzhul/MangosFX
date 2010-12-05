@@ -293,6 +293,10 @@ enum ItemSubclassWeapon
 
 #define MAX_ITEM_SUBCLASS_WEAPON                  21
 
+#define ITEM_SUBCLASS_MASK_WEAPON_RANGED (\
+    (1 << ITEM_SUBCLASS_WEAPON_BOW) | (1 << ITEM_SUBCLASS_WEAPON_GUN) |\
+    (1 << ITEM_SUBCLASS_WEAPON_CROSSBOW) | (1 << ITEM_SUBCLASS_WEAPON_THROWN))
+
 enum ItemSubclassGem
 {
     ITEM_SUBCLASS_GEM_RED                       = 0,

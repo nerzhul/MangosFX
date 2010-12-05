@@ -128,7 +128,7 @@ struct CreatureInfo
     uint32  MechanicImmuneMask;
     uint32  flags_extra;
     uint32  ScriptID;
-	uint32  VehicleId;
+    uint32  VehicleId;
 
     // helpers
     SkillType GetRequiredLootSkill() const
@@ -412,6 +412,7 @@ class MANGOS_DLL_SPEC Creature : public Unit
         bool isTemporarySummon() const { return m_subtype == CREATURE_SUBTYPE_TEMPORARY_SUMMON; }
 		bool IsVehicle() const  { return m_subtype == CREATURE_SUBTYPE_VEHICLE; }
 
+		bool isCorpse() { return getDeathState() ==  CORPSE; }
         void SetCorpseDelay(uint32 delay) { m_corpseDelay = delay; }
         bool isRacialLeader() const { return GetCreatureInfo()->RacialLeader; }
         bool isCivilian() const { return GetCreatureInfo()->flags_extra & CREATURE_FLAG_EXTRA_CIVILIAN; }

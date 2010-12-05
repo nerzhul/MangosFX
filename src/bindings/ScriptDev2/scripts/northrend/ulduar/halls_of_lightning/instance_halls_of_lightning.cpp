@@ -31,9 +31,9 @@ EndScriptData */
 3 - Loken
 */
 
-struct MANGOS_DLL_DECL instance_halls_of_lightning : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_halls_of_lightning : public InstanceData
 {
-    instance_halls_of_lightning(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_halls_of_lightning(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
 

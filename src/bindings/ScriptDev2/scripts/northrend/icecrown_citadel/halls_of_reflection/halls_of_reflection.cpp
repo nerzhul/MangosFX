@@ -303,7 +303,7 @@ CreatureAI* GetAI_HoR_fLead_frostmourne(Creature* pCreature)
 
 bool AreaTrigger_FrostmourneAltar(Player* pPlayer, AreaTriggerEntry *at)
 {
-    if (ScriptedInstance* pInstance = (ScriptedInstance*)pPlayer->GetInstanceData())
+    if (InstanceData* pInstance = pPlayer->GetInstanceData())
     {
         if (pInstance->GetData(TYPE_EVENT_FROSTMOURNE) == IN_PROGRESS || pInstance->GetData(TYPE_DIAL_FROSTMOURNE) == IN_PROGRESS
 			|| pInstance->GetData(TYPE_EVENT_FROSTMOURNE) == DONE)

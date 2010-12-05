@@ -183,6 +183,8 @@ public:
     float  getLiquidLevel(float x, float y);
     uint8  getTerrainType(float x, float y);
     ZLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, LiquidData *data = 0);
+	
+	
 };
 
 struct CreatureMover
@@ -206,10 +208,6 @@ struct InstanceTemplate
     uint32 parent;
     uint32 levelMin;
     uint32 levelMax;
-    float startLocX;
-    float startLocY;
-    float startLocZ;
-    float startLocO;
     uint32 script_id;
 };
 
@@ -309,7 +307,7 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
 
         ZLiquidStatus getLiquidStatus(float x, float y, float z, uint8 ReqLiquidType, LiquidData *data = 0) const;
 
-        uint16 GetAreaFlag(float x, float y, float z) const;
+		uint16 GetAreaFlag(float x, float y, float z, bool* isOutdoors = NULL) const;
         uint8 GetTerrainType(float x, float y ) const;
         float GetWaterLevel(float x, float y ) const;
         bool IsUnderWater(float x, float y, float z) const;
@@ -320,17 +318,17 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
 
         uint32 GetAreaId(float x, float y, float z) const
         {
-            return GetAreaIdByAreaFlag(GetAreaFlag(x,y,z),i_id);
+            return GetAreaIdByAreaFlag(GetAreaFlag(x,y,z,0),i_id);
         }
 
         uint32 GetZoneId(float x, float y, float z) const
         {
-            return GetZoneIdByAreaFlag(GetAreaFlag(x,y,z),i_id);
+            return GetZoneIdByAreaFlag(GetAreaFlag(x,y,z,0),i_id);
         }
 
         void GetZoneAndAreaId(uint32& zoneid, uint32& areaid, float x, float y, float z) const
         {
-            GetZoneAndAreaIdByAreaFlag(zoneid,areaid,GetAreaFlag(x,y,z),i_id);
+            GetZoneAndAreaIdByAreaFlag(zoneid,areaid,GetAreaFlag(x,y,z,0),i_id);
         }
 
         virtual void MoveAllCreaturesInMoveList();
@@ -439,6 +437,9 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
 		template<class NOTIFIER> void VisitWorld(const float &x, const float &y, float radius, NOTIFIER &notifier);
 		template<class NOTIFIER> void VisitGrid(const float &x, const float &y, float radius, NOTIFIER &notifier);
 		static bool IsWintergraspBuffValidMap(uint32 mapid);
+
+		bool GetAreaInfo(float x, float y, float z, uint32 &mogpflags, int32 &adtId, int32 &rootId, int32 &groupId) const;
+		bool IsOutdoors(float x, float y, float z) const;
         
     private:
         void LoadMapAndVMap(int gx, int gy);

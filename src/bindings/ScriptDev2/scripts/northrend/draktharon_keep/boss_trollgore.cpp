@@ -44,7 +44,7 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
 {
     boss_trollgoreAI(Creature *c) : ScriptedAI(c)
     {
-        pInstance = (ScriptedInstance*)c->GetInstanceData();
+        pInstance = c->GetInstanceData();
 		m_bIsHeroic = c->GetMap()->GetDifficulty();
 		Reset();
     }
@@ -53,7 +53,6 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
 
     bool bAchiev,m_bIsHeroic;
 
-    ScriptedInstance* pInstance;
 	MobEventTasks Tasks;
 
     void Reset()
@@ -87,7 +86,7 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
 				me->RemoveAurasDueToSpell(SPELL_CONSUME);
         
         if (pInstance)
-            pInstance->SetData(DATA_TROLLGORE_EVENT, NOT_STARTED);
+            SetInstanceData(DATA_TROLLGORE_EVENT, NOT_STARTED);
     }
 
     void EnterCombat(Unit* who)
@@ -95,7 +94,7 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
         DoScriptText(SAY_AGGRO, me);
 
         if (pInstance)
-            pInstance->SetData(DATA_TROLLGORE_EVENT, IN_PROGRESS);
+            SetInstanceData(DATA_TROLLGORE_EVENT, IN_PROGRESS);
     }
 
     void UpdateAI(const uint32 diff)
@@ -155,7 +154,7 @@ struct MANGOS_DLL_DECL boss_trollgoreAI : public ScriptedAI
         {
             /*if (bAchiev)
                 pInstance->DoCompleteAchievement(ACHIEV_CONSUMPTION_JUNCTION);*/
-            pInstance->SetData(DATA_TROLLGORE_EVENT, DONE);
+            SetInstanceData(DATA_TROLLGORE_EVENT, DONE);
         }
 		GiveEmblemsToGroup(m_bIsHeroic ? HEROISME : 0,1,true);
     }

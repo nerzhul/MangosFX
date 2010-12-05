@@ -61,9 +61,9 @@ enum boss_doors{
 
 
 
-struct MANGOS_DLL_DECL instance_violethold : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_violethold : public InstanceData
 {
-	instance_violethold(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+	instance_violethold(Map* pMap) : InstanceData(pMap) {Initialize();};
 	uint8 m_uiRiftWaveId;
 	uint32 m_auiEncounter[MAX_ENCOUNTER];
 	uint16 m_BossCount;
@@ -647,8 +647,10 @@ bool GossipHello_npc_Sinclari(Player* pPlayer, Creature* pCreature)
 
 bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
 {
-	ScriptedInstance* m_pInstance;
-	m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+	InstanceData* pInstance = pCreature->GetInstanceData();
+
+	if(!pInstance)
+		return false;
 
     switch(uiAction)
     {
@@ -658,7 +660,7 @@ bool GossipSelect_npc_Sinclari(Player* pPlayer, Creature* pCreature, uint32 uiSe
             break;
 		case GOSSIP_ACTION_INFO_DEF+2:
 			pPlayer->CLOSE_GOSSIP_MENU();
-			m_pInstance->SetData(1,1);
+			pInstance->SetData(1,1);
 			pCreature->AddSplineFlag(SPLINEFLAG_WALKMODE);
 			pCreature->GetMotionMaster()->MovePoint(0, 1817.122f, 804.02f, 45.01f);
 			break;
@@ -736,11 +738,9 @@ CreatureAI* GetAI_portal_add(Creature* pCreature)
 
 struct MANGOS_DLL_DECL seal_AddAI : public ScriptedAI
 {	
-    ScriptedInstance* m_pInstance;
-
 	seal_AddAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-		m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+		pInstance = pCreature->GetInstanceData();
 		Reset();
 	}
 
@@ -749,8 +749,8 @@ struct MANGOS_DLL_DECL seal_AddAI : public ScriptedAI
 	void DamageTaken(Unit* pwho, uint32 &dmg)
 	{
 		dmg = 0;
-		if(m_pInstance)
-			m_pInstance->SetData(4,0);
+		if(pInstance)
+			SetInstanceData(4,0);
 	}
 };
 

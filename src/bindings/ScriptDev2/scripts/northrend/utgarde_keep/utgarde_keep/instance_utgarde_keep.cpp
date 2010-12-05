@@ -24,23 +24,30 @@ EndScriptData */
 #include "precompiled.h"
 #include "utgarde_keep.h"
 
-struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
+struct MANGOS_DLL_DECL instance_utgarde_keep : public InstanceData
 {
-    instance_utgarde_keep(Map* pMap) : ScriptedInstance(pMap) {Initialize();};
+    instance_utgarde_keep(Map* pMap) : InstanceData(pMap) {Initialize();};
 
     uint32 m_auiEncounter[MAX_ENCOUNTER];
     std::string strInstData;
 
+	// Boss
     uint64 m_uiKelesethGUID;
     uint64 m_uiSkarvaldGUID;
     uint64 m_uiDalronnGUID;
 
+	// unk
     uint64 m_uiBellow1GUID;
     uint64 m_uiBellow2GUID;
     uint64 m_uiBellow3GUID;
     uint64 m_uiForgeFire1GUID;
     uint64 m_uiForgeFire2GUID;
     uint64 m_uiForgeFire3GUID;
+
+	// Doors
+	uint64 m_doorBoss2GUID;
+	uint64 m_doorBoss3GUID;
+	uint64 m_doorEndGUID;
 
     void Initialize()
     {
@@ -56,6 +63,10 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
         m_uiForgeFire1GUID = 0;
         m_uiForgeFire2GUID = 0;
         m_uiForgeFire3GUID = 0;
+
+		m_doorBoss2GUID = 0;
+		m_doorBoss3GUID = 0;
+		m_doorEndGUID = 0;
     }
 
     void OnCreatureCreate(Creature* pCreature)
@@ -102,21 +113,69 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
                 if (m_auiEncounter[2] == DONE)
                     pGo->SetGoState(GO_STATE_ACTIVE);
                 break;
+			case GO_DOOR_BOSS_2:
+				m_doorBoss2GUID = pGo->GetGUID();
+				if(GetData(TYPE_SKARVALD) == NOT_STARTED || GetData(TYPE_SKARVALD) == DONE)
+					CloseDoor(m_doorBoss2GUID);
+				break;
+			case GO_DOOR_BOSS_3:
+				m_doorBoss3GUID = pGo->GetGUID();
+				if(GetData(TYPE_INGVAR) == NOT_STARTED || GetData(TYPE_INGVAR) == DONE)
+					CloseDoor(m_doorBoss3GUID);
+				break;
+			case GO_DOOR_END:
+				m_doorEndGUID = pGo->GetGUID();
+				if(GetData(TYPE_INGVAR) == DONE)
+					OpenDoor(m_doorBoss3GUID);
+				break;
         }
     }
+
+	uint32 GetData(uint32 uiType)
+	{
+		switch(uiType)
+		{
+			case TYPE_KELESETH:
+			case TYPE_SKARVALD:
+			case TYPE_INGVAR:
+				return m_auiEncounter[uiType];
+			case DATA_NB_BOSS_DOWN:
+				uint32 resp = 0;
+				if(GetData(TYPE_KELESETH) == DONE)
+					resp++;
+				if(GetData(TYPE_SKARVALD) == DONE)
+					resp += 2;
+				if(GetData(TYPE_INGVAR) == DONE)
+					resp += 4;
+				return resp;
+		}
+		return 0;
+	}
 
     void SetData(uint32 uiType, uint32 uiData)
     {
         switch(uiType)
         {
-            case GO_BELLOW_1:
-                m_auiEncounter[0] = uiData;
+            case TYPE_KELESETH:
+                m_auiEncounter[TYPE_KELESETH] = uiData;
                 break;
-            case GO_BELLOW_2:
-                m_auiEncounter[1] = uiData;
+            case TYPE_SKARVALD:
+                m_auiEncounter[TYPE_SKARVALD] = uiData;
+				if(uiData == IN_PROGRESS)
+					OpenDoor(m_doorBoss2GUID);
+				else if(uiData == NOT_STARTED || uiData == DONE)
+					CloseDoor(m_doorBoss2GUID);
                 break;
-            case GO_BELLOW_3:
-                m_auiEncounter[2] = uiData;
+            case TYPE_INGVAR:
+                m_auiEncounter[TYPE_INGVAR] = uiData;
+				if(uiData == IN_PROGRESS)
+					OpenDoor(m_doorBoss3GUID);
+				else if(uiData == NOT_STARTED || uiData == DONE)
+				{
+					CloseDoor(m_doorBoss3GUID);
+					if(uiData == DONE)
+						OpenDoor(m_doorEndGUID);
+				}
                 break;
         }
 
@@ -125,7 +184,7 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
             OUT_SAVE_INST_DATA;
 
             std::ostringstream saveStream;
-            saveStream << m_auiEncounter[0] << " " << m_auiEncounter[1] << " " << m_auiEncounter[2];
+            saveStream << m_auiEncounter[TYPE_KELESETH] << " " << m_auiEncounter[TYPE_SKARVALD] << " " << m_auiEncounter[TYPE_INGVAR];
 
             strInstData = saveStream.str();
 
@@ -176,7 +235,7 @@ struct MANGOS_DLL_DECL instance_utgarde_keep : public ScriptedInstance
         OUT_LOAD_INST_DATA(in);
 
         std::istringstream loadStream(in);
-        loadStream >> m_auiEncounter[0] >> m_auiEncounter[1] >> m_auiEncounter[2];
+        loadStream >> m_auiEncounter[TYPE_KELESETH] >> m_auiEncounter[TYPE_SKARVALD] >> m_auiEncounter[TYPE_INGVAR];
 
         for(uint8 i = 0; i < MAX_ENCOUNTER; ++i)
         {

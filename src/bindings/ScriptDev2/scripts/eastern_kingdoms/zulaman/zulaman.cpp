@@ -41,17 +41,15 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
 {
     npc_forest_frogAI(Creature* pCreature) : ScriptedAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
-
-    ScriptedInstance* m_pInstance;
 
     void Reset() { }
 
     void DoSpawnRandom()
     {
-        if (m_pInstance)
+        if (pInstance)
         {
             uint32 cEntry = 0;
             switch(urand(0, 10))
@@ -69,18 +67,18 @@ struct MANGOS_DLL_DECL npc_forest_frogAI : public ScriptedAI
                 case 10: cEntry = 24455; break;             //Hollee
             }
 
-            if (!m_pInstance->GetData(TYPE_RAND_VENDOR_1))
+            if (!pInstance->GetData(TYPE_RAND_VENDOR_1))
                 if (!urand(0, 9))
                     cEntry = 24408;                         //Gunter
 
-            if (!m_pInstance->GetData(TYPE_RAND_VENDOR_2))
+            if (!pInstance->GetData(TYPE_RAND_VENDOR_2))
                 if (!urand(0, 9))
                     cEntry = 24409;                         //Kyren
 
             if (cEntry) me->UpdateEntry(cEntry);
 
-            if (cEntry == 24408) m_pInstance->SetData(TYPE_RAND_VENDOR_1,DONE);
-            if (cEntry == 24409) m_pInstance->SetData(TYPE_RAND_VENDOR_2,DONE);
+            if (cEntry == 24408) SetInstanceData(TYPE_RAND_VENDOR_1,DONE);
+            if (cEntry == 24409) SetInstanceData(TYPE_RAND_VENDOR_2,DONE);
         }
     }
 
@@ -120,15 +118,13 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
 {
     npc_harrison_jones_zaAI(Creature* pCreature) : npc_escortAI(pCreature)
     {
-        m_pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+        pInstance = pCreature->GetInstanceData();
         Reset();
     }
 
-    ScriptedInstance* m_pInstance;
-
     void WaypointReached(uint32 i)
     {
-        if (!m_pInstance)
+        if (!pInstance)
             return;
 
         switch(i)
@@ -136,7 +132,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
             case 1:
                 DoScriptText(SAY_AT_GONG, me);
 
-                if (GameObject* pEntranceDoor = m_pInstance->instance->GetGameObject(m_pInstance->GetData64(DATA_GO_GONG)))
+                if (GameObject* pEntranceDoor = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GO_GONG)))
                     pEntranceDoor->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_UNK1);
 
                 //Start bang gong for 2min
@@ -147,7 +143,7 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
                 DoScriptText(SAY_OPEN_ENTRANCE, me);
                 break;
            case 4:
-                m_pInstance->SetData(TYPE_EVENT_RUN,IN_PROGRESS);
+                SetInstanceData(TYPE_EVENT_RUN,IN_PROGRESS);
                 //TODO: Spawn group of Amani'shi Savage and make them run to entrance
                 break;
         }
@@ -166,14 +162,14 @@ struct MANGOS_DLL_DECL npc_harrison_jones_zaAI : public npc_escortAI
         SetEscortPaused(bOnHold);
 
         //Stop banging gong if still
-        if (m_pInstance && m_pInstance->GetData(TYPE_EVENT_RUN) == SPECIAL && me->HasAura(SPELL_BANGING_THE_GONG))
+        if (pInstance && pInstance->GetData(TYPE_EVENT_RUN) == SPECIAL && me->HasAura(SPELL_BANGING_THE_GONG))
             me->RemoveAurasDueToSpell(SPELL_BANGING_THE_GONG);
     }
 };
 
 bool GossipHello_npc_harrison_jones_za(Player* pPlayer, Creature* pCreature)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pCreature->GetInstanceData();
+    InstanceData* pInstance = pCreature->GetInstanceData();
 
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
@@ -207,7 +203,7 @@ CreatureAI* GetAI_npc_harrison_jones_za(Creature* pCreature)
 //Unsure how this Gong must work. Here we always return false to allow Mangos always process further.
 bool GOHello_go_strange_gong(Player* pPlayer, GameObject* pGo)
 {
-    ScriptedInstance* pInstance = (ScriptedInstance*)pGo->GetInstanceData();
+    InstanceData* pInstance = pGo->GetInstanceData();
 
     if (!pInstance)
         return false;

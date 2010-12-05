@@ -30,14 +30,6 @@
 #include "Unit.h"
 #include "Util.h"
 
-char const* petTypeSuffix[MAX_PET_TYPE] =
-{
-    "'s Minion",                                            // SUMMON_PET
-    "'s Pet",                                               // HUNTER_PET
-    "'s Guardian",                                          // GUARDIAN_PET
-    "'s Companion"                                          // MINI_PET
-};
-
 Pet::Pet(PetType type) :
 Creature(CREATURE_SUBTYPE_PET), m_removed(false), m_petType(type), m_happinessTimer(7500), m_duration(0), m_resetTalentsCost(0),
 m_bonusdamage(0), m_resetTalentsTime(0), m_usedTalentCount(0), m_auraUpdateMask(0), m_loading(false),m_needSave(true),
@@ -51,6 +43,8 @@ m_declinedname(NULL), m_petModeFlags(PET_MODE_DEFAULT)
 
     if(type == MINI_PET)                                    // always passive
         charmInfo->SetReactState(REACT_PASSIVE);
+	 else if(type == PROTECTOR_PET)                          // always defensive 
+        charmInfo->SetReactState(REACT_DEFENSIVE);
     else if(type == GUARDIAN_PET)                           // always aggressive
         charmInfo->SetReactState(REACT_AGGRESSIVE);
 }
@@ -281,6 +275,7 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
         LearnPetPassives();
         CastPetAuras(current);
     }
+	SynchronizeLevelWithOwner();
 
     if (getPetType() == SUMMON_PET && !current)             //all (?) summon pets come with full health when called, but not when they are current
     {
@@ -342,7 +337,6 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
 
     m_loading = false;
 
-    SynchronizeLevelWithOwner();
     return true;
 }
 
@@ -1060,6 +1054,7 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
             break;
         }
         case GUARDIAN_PET:
+		case PROTECTOR_PET:
             SetUInt32Value(UNIT_FIELD_PETEXPERIENCE, 0);
             SetUInt32Value(UNIT_FIELD_PETNEXTLEVELEXP, 1000);
 

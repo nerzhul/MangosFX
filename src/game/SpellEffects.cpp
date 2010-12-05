@@ -363,6 +363,15 @@ void Spell::EffectSchoolDMG(SpellEffectEntry const* effect)
                         damage = unitTarget->GetMaxHealth() / 10;
                         break;
                     }
+					// percent max target health
+                    case 29142:                             // Eyesore Blaster
+                    case 35139:                             // Throw Boom's Doom
+                    case 49882:                             // Leviroth Self-Impale
+                    case 55269:                             // Deathly Stare
+                    {
+                        damage = damage * unitTarget->GetMaxHealth() / 100;
+                        break;
+                    }
                     // Hand of Rekoning (name not have typos ;) )
                     case 67485:
                         damage += uint32(0.5f * m_caster->GetTotalAttackPowerValue(BASE_ATTACK));
@@ -950,7 +959,11 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
 				{
 					//Quest 11626
 					if(unitTarget->GetEntry() == 26452 && unitTarget->GetHealth() > 87100)
+					{
 						m_caster->DealDamage(unitTarget,87100, NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+						unitTarget->CastSpell(unitTarget, 47172, true);
+						((Creature*)unitTarget)->AI()->AttackStart(m_caster);
+					}
 					return;
 				}
 				case 46361: // FSS mob beta
@@ -1218,6 +1231,22 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
 
                     return;
                 }
+				case 51420:                                 // Digging for Treasure Ping
+				{
+					if (!unitTarget || unitTarget->GetTypeId() != TYPEID_UNIT)
+						return;
+					
+					// only spell related protector pets exist currently
+                    Pet* pPet = m_caster->GetProtectorPet();
+					if (!pPet)
+						return;
+					
+					pPet->SetFacingToObject(unitTarget);
+					// Digging for Treasure
+					pPet->CastSpell(unitTarget, 51405, true);
+					((Creature*)unitTarget)->ForcedDespawn(1);
+					return;
+				}
                 case 51582:                                 // Rocket Boots Engaged (Rocket Boots Xtreme and Rocket Boots Xtreme Lite)
                 {
                     if (m_caster->GetTypeId() != TYPEID_PLAYER)
@@ -1380,6 +1409,34 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                     m_caster->CastSpell(m_caster, 54586, true);
                     return;
                 }
+				case 53475:                                 // Set Oracle Faction Friendly
+				case 53487:                                 // Set Wolvar Faction Honored
+				case 54015:                                 // Set Oracle Faction Honored
+				{
+					if (m_caster->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					switch(effect->EffectIndex)
+					{
+						case EFFECT_INDEX_0:
+						{
+							Player* pPlayer = (Player*)m_caster;
+							uint32 faction_id = m_currentBasePoints[effect->EffectIndex];
+							int32  rep_change = m_currentBasePoints[EFFECT_INDEX_1];
+							FactionEntry const* factionEntry = sFactionStore.LookupEntry(faction_id);
+							if (!factionEntry)
+								return;
+							
+							// set rep to baserep + basepoints (expecting spillover for oposite faction -> become hated)
+							pPlayer->GetReputationMgr().SetReputation(factionEntry, rep_change);
+							break;
+						}
+						case EFFECT_INDEX_2:
+							// unclear what this effect is for.
+							break;
+					}
+					return;
+				}
 				case 54171:                                 // Divine Storm
                 {
                     // split between targets
@@ -1712,8 +1769,8 @@ void Spell::EffectDummy(SpellEffectEntry const* effect)
                 if (!unitTarget)
                     return;
 
-                int hurt = 0;
-                int heal = 0;
+                uint32 hurt = 0;
+                uint32 heal = 0;
                 switch(m_spellInfo->Id)
                 {
                     case 47540: hurt = 47758; heal = 47757; break;
@@ -2673,6 +2730,21 @@ void Spell::EffectApplyAura(SpellEffectEntry const* effect)
         return;
     }
 
+	// Mixology support
+	if(caster->GetTypeId() == TYPEID_PLAYER && Aur->GetSpellProto()->GetSpellFamilyName() == SPELLFAMILY_POTION && caster->HasAura(53042))
+    {
+        SpellSpecific spellSpec = GetSpellSpecific(Aur->GetSpellProto()->Id);
+        if(spellSpec == SPELL_BATTLE_ELIXIR || spellSpec == SPELL_GUARDIAN_ELIXIR || spellSpec == SPELL_FLASK_ELIXIR)
+        {
+			SpellEffectEntry const* effect0 = Aur->GetSpellProto()->GetSpellEffect(EFFECT_INDEX_0);
+			if(effect0 && caster->HasSpell(effect0->EffectTriggerSpell))
+            {
+               duration *= 2.0f;
+               Aur->GetModifier()->m_amount *= 1.3f;
+            }
+        }
+    }
+
     if(duration != Aur->GetAuraMaxDuration())
     {
         Aur->SetAuraMaxDuration(duration);
@@ -3554,13 +3626,13 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
         case SUMMON_PROP_GROUP_WILD:
         case SUMMON_PROP_GROUP_FRIENDLY:
         {
-            switch(summon_prop->Type)
+            switch(summon_prop->Title)
             {
-                case SUMMON_PROP_TYPE_OTHER:
+                case UNITNAME_SUMMON_TITLE_NONE:
                 {
                     // those are classical totems - effectbasepoints is their hp and not summon ammount!
-                    //SUMMON_TYPE_TOTEM = 121: 23035, battlestands
-                    //SUMMON_TYPE_TOTEM2 = 647: 52893, Anti-Magic Zone (npc used)
+                    ///121: 23035, battlestands
+                    //647: 52893, Anti-Magic Zone (npc used)
                     if(prop_id == 121 || prop_id == 647)
 
 						EffectSummonTotem(effect);
@@ -3568,38 +3640,66 @@ void Spell::EffectSummonType(SpellEffectEntry const* effect)
                         EffectSummonWild(effect, summon_prop->FactionId);
                     break;
                 }
-                case SUMMON_PROP_TYPE_SUMMON:
-                case SUMMON_PROP_TYPE_GUARDIAN:
-                case SUMMON_PROP_TYPE_ARMY:
-                case SUMMON_PROP_TYPE_DK:
-                case SUMMON_PROP_TYPE_CONSTRUCT:
+            
+				case UNITNAME_SUMMON_TITLE_PET:
+                case UNITNAME_SUMMON_TITLE_MINION:	
+                case UNITNAME_SUMMON_TITLE_RUNEBLADE:
+					EffectSummonWild(effect, summon_prop->FactionId);
+                    break;
+				case UNITNAME_SUMMON_TITLE_GUARDIAN:
+                {
+                    if (prop_id == 61)                      // mixed guardians, totems, statues
+                    {
+                        // * Stone Statue, etc  -- fits much better totem AI
+                        if (m_spellInfo->SpellIconID == 2056)
+                            EffectSummonTotem(effect);
+                        else
+                        {
+                            // possible sort totems/guardians only by summon creature type
+                            CreatureInfo const* cInfo = sObjectMgr.GetCreatureTemplate(effect->EffectMiscValue);
+
+                            if (!cInfo)
+                                return;
+
+                            // FIXME: not all totems and similar cases seelcted by this check...
+                            if (cInfo->type == CREATURE_TYPE_TOTEM)
+                                EffectSummonTotem(effect);
+                            else
+                                EffectSummonGuardian(effect, summon_prop->FactionId);
+                        }
+                    }
+                    else
+                        EffectSummonGuardian(effect, summon_prop->FactionId);
+                    break;
+                }
+				case UNITNAME_SUMMON_TITLE_CONSTRUCT:
                 {
                      // JC golems - 32804, etc  -- fits much better totem AI
                     if(m_spellInfo->SpellIconID == 2056)
 						EffectSummonTotem(effect);
-                    if(prop_id == 832) // scrapbot
+                    else if(prop_id == 832) // scrapbot
 						EffectSummonWild(effect, summon_prop->FactionId);
                     else
 						EffectSummonGuardian(effect, summon_prop->FactionId);
                     break;
                 }
-                case SUMMON_PROP_TYPE_TOTEM:
+                case UNITNAME_SUMMON_TITLE_TOTEM:
 					EffectSummonTotem(effect, summon_prop->Slot);
                     break;
-                case SUMMON_PROP_TYPE_CRITTER:
+                case UNITNAME_SUMMON_TITLE_COMPANION:
                     EffectSummonCritter(effect, summon_prop->FactionId);
                     break;
-                case SUMMON_PROP_TYPE_PHASING:
-                case SUMMON_PROP_TYPE_LIGHTWELL:
-                case SUMMON_PROP_TYPE_REPAIR_BOT:
+                case UNITNAME_SUMMON_TITLE_OPPONENT:
+                case UNITNAME_SUMMON_TITLE_LIGHTWELL:
+                case UNITNAME_SUMMON_TITLE_BUTLER:
                     EffectSummonWild(effect, summon_prop->FactionId);
                     break;
-                case SUMMON_PROP_TYPE_SIEGE_VEH:
-                case SUMMON_PROP_TYPE_DRAKE_VEH:
+                case UNITNAME_SUMMON_TITLE_VEHICLE:
+                case UNITNAME_SUMMON_TITLE_MOUNT:
                     EffectSummonVehicle(effect);
                     break;
                 default:
-                    sLog.outError("EffectSummonType: Unhandled summon type %u", summon_prop->Type);
+					sLog.outError("EffectSummonType: Unhandled summon title %u", summon_prop->Title);
                 break;
             }
             break;
@@ -3741,9 +3841,7 @@ void Spell::EffectSummon(SpellEffectEntry const* effect)
 		creature->InitPetCreateSpells();
 		creature->InitLevelupSpellsForLevel();
 
-		std::string name = m_caster->GetName();
-		name.append(petTypeSuffix[creature->getPetType()]);
-		creature->SetName( name );
+		spawnCreature->SetName("");                             // generated by client
 
 		map->Add((Creature*)creature);
 
@@ -4155,9 +4253,16 @@ void Spell::EffectSummonWild(SpellEffectEntry const* effect, uint32 forceFaction
 
 void Spell::EffectSummonGuardian(SpellEffectEntry const* effect, uint32 forceFaction)
 {
+	if(!effect)
+		return;
+
     uint32 pet_entry = effect->EffectMiscValue;
     if (!pet_entry)
         return;
+
+	SummonPropertiesEntry const* propEntry = sSummonPropertiesStore.LookupEntry(effect->EffectMiscValueB);	
+	if (!propEntry)
+		return;
 
     // in another case summon new
     uint32 level = m_caster->getLevel();
@@ -4202,7 +4307,7 @@ void Spell::EffectSummonGuardian(SpellEffectEntry const* effect, uint32 forceFac
 
     for(int32 count = 0; count < amount; ++count)
     {
-        Pet* spawnCreature = new Pet(GUARDIAN_PET);
+        Pet* spawnCreature = new Pet(propEntry->Title == UNITNAME_SUMMON_TITLE_COMPANION ? PROTECTOR_PET : GUARDIAN_PET);
 
         Map *map = m_caster->GetMap();
         uint32 pet_number = sObjectMgr.GeneratePetNumber();
@@ -4247,6 +4352,7 @@ void Spell::EffectSummonGuardian(SpellEffectEntry const* effect, uint32 forceFac
         if (duration > 0)
             spawnCreature->SetDuration(duration);
 		
+		//spawnCreature->SetName(""); 
         spawnCreature->SetOwnerGUID(m_caster->GetGUID());
         spawnCreature->setPowerType(POWER_MANA);
         spawnCreature->SetUInt32Value(UNIT_NPC_FLAGS, spawnCreature->GetCreatureInfo()->npcflag);
@@ -4776,6 +4882,8 @@ void Spell::EffectSummonPet(SpellEffectEntry const* effect)
     NewSummon->AIM_Initialize();
     NewSummon->SetHealth(NewSummon->GetMaxHealth());
     NewSummon->SetPower(POWER_MANA, NewSummon->GetMaxPower(POWER_MANA));
+
+	//spawnCreature->SetName("");                           // generated by client
 
     map->Add((Creature*)NewSummon);
 
@@ -6251,7 +6359,7 @@ void Spell::EffectScriptEffect(SpellEffectEntry const* effect)
                         //}
                     }
                     if (spellId)
-                        m_caster->CastCustomSpell(target, spellId, &basePoint, 0, 0, false);
+                        m_caster->CastCustomSpell(target, spellId, &basePoint, 0, 0, true);
                     return;
                 }
                 case 53412:                                 // Invigoration (pet triggered script, master targeted)
@@ -6560,7 +6668,7 @@ void Spell::EffectDuel(SpellEffectEntry const* effect)
     }
 
     AreaTableEntry const* casterAreaEntry = GetAreaEntryByAreaID(caster->GetZoneId());
-	uint32 AreaIdForDalaran = caster->GetMap()->GetAreaFlag(caster->GetPositionX(),caster->GetPositionY(),caster->GetPositionZ());
+	uint32 AreaIdForDalaran = caster->GetMap()->GetAreaFlag(caster->GetPositionX(),caster->GetPositionY(),caster->GetPositionZ(),0);
     if(casterAreaEntry && (casterAreaEntry->flags & AREA_FLAG_CAPITAL) && AreaIdForDalaran != 2549)
     {
         SendCastResult(SPELL_FAILED_NO_DUELING);            // Dueling isn't allowed here
@@ -6568,7 +6676,7 @@ void Spell::EffectDuel(SpellEffectEntry const* effect)
     }
 
     AreaTableEntry const* targetAreaEntry = GetAreaEntryByAreaID(target->GetZoneId());
-	AreaIdForDalaran = target->GetMap()->GetAreaFlag(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+	AreaIdForDalaran = target->GetMap()->GetAreaFlag(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ(),0);
 	if(targetAreaEntry && (targetAreaEntry->flags & AREA_FLAG_CAPITAL) && AreaIdForDalaran != 2549)
     {
         SendCastResult(SPELL_FAILED_NO_DUELING);            // Dueling isn't allowed here
@@ -6776,6 +6884,7 @@ void Spell::EffectSummonTotem(SpellEffectEntry const* effect, uint8 slot)
     if(slot < MAX_TOTEM_SLOT)
         m_caster->m_TotemSlot[slot] = pTotem->GetGUID();
 
+	//pTotem->SetName("");                                    // generated by client
     pTotem->SetOwner(m_caster->GetGUID());
     pTotem->SetTypeBySummonSpell(m_spellInfo);              // must be after Create call where m_spells initilized
 
@@ -7442,6 +7551,7 @@ void Spell::EffectSummonCritter(SpellEffectEntry const* effect, uint32 forceFact
         return;
     }
 
+	//critter->SetName("");                                   // generated by client
     critter->SetOwnerGUID(m_caster->GetGUID());
     critter->SetCreatorGUID(m_caster->GetGUID());
 
@@ -7459,9 +7569,6 @@ void Spell::EffectSummonCritter(SpellEffectEntry const* effect, uint32 forceFact
     if(duration > 0)
         critter->SetDuration(duration);
 
-    std::string name = player->GetName();
-    name.append(petTypeSuffix[critter->getPetType()]);
-    critter->SetName( name );
     player->SetMiniPet(critter);
 
     map->Add((Creature*)critter);
@@ -7685,6 +7792,13 @@ void Spell::EffectModifyThreatPercent(SpellEffectEntry const* effect)
 {
     if(!unitTarget)
         return;
+
+	// Useless to reduce threat we dont have
+	if(unitTarget->getThreatManager().getThreat(m_caster) <= 0)
+	{
+		unitTarget->getThreatManager().RemoveFromList(m_caster);
+		return;
+	}
 
     unitTarget->getThreatManager().modifyThreatPercent(m_caster, damage);
 }

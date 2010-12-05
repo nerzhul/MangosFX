@@ -37,19 +37,17 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public LibDevFSAI
 		AddEvent(SPELL_CORRUPTING_BLIGHT,6000,5000,2000);
     }
     
-    ScriptedInstance* pInstance;
-
     void Reset()
     {
 		ResetTimers();
         /*if (pInstance)
-            pInstance->SetData(DATA_INFINITE_EVENT, NOT_STARTED);*/
+            SetInstanceData(DATA_INFINITE_EVENT, NOT_STARTED);*/
     }
     
     void EnterCombat(Unit* who)
     {
 		/*if (pInstance)
-            pInstance->SetData(DATA_INFINITE_EVENT, IN_PROGRESS);*/
+            SetInstanceData(DATA_INFINITE_EVENT, IN_PROGRESS);*/
     }
 
     void AttackStart(Unit* who) {}
@@ -68,7 +66,7 @@ struct MANGOS_DLL_DECL boss_infiniteAI : public LibDevFSAI
     void JustDied(Unit* killer)
     {
         /*if (pInstance)
-            pInstance->SetData(DATA_INFINITE_EVENT, DONE);*/
+            SetInstanceData(DATA_INFINITE_EVENT, DONE);*/
 		GiveEmblemsToGroup(m_difficulty ? HEROISME : 0,1,true);
     }
 };
