@@ -2317,7 +2317,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
                 {
                     if (!preventDeathSpell &&
 						GetTypeId()==TYPEID_PLAYER &&           // Only players
-						!((Player*)this)->HasSpellCooldown(31231) &&
+						!((Player*)pVictim)->HasSpellCooldown(31231) &&
 						// Only if no cooldown
 						roll_chance_i((*i)->GetModifier()->m_amount))
 						// Only if roll
