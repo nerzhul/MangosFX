@@ -4060,6 +4060,9 @@ void ObjectMgr::LoadQuests(bool ClusterIgnore)
         {
 			SpellEffectEntry const* effect = spellInfo->GetSpellEffect(SpellEffectIndex(j));
 
+			if(!effect)
+				continue;
+
             if(effect->Effect != SPELL_EFFECT_QUEST_COMPLETE)
                 continue;
 
@@ -4793,6 +4796,8 @@ void ObjectMgr::LoadEventScripts()
             for(int j=0; j<3; ++j)
             {
 				SpellEffectEntry const* effect = spell->GetSpellEffect(SpellEffectIndex(j));
+				if(!effect)
+					continue;
                 if(effect->Effect == SPELL_EFFECT_SEND_EVENT)
                 {
                     if (effect->EffectMiscValue)

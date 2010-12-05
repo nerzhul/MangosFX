@@ -2684,13 +2684,16 @@ void SpellMgr::LoadSpellPetAuras()
         else
         {
             SpellEntry const* spellInfo = sSpellStore.LookupEntry(spell);
-			SpellEffectEntry const* effectE = spellInfo->GetSpellEffect(SpellEffectIndex(eff));
             if (!spellInfo)
             {
                 sLog.outErrorDb("Spell %u listed in `spell_pet_auras` does not exist", spell);
 				WorldDatabase.PExecute("DELETE FROM spell_pet_auras where entry=%u",spell);
                 continue;
             }
+
+			SpellEffectEntry const* effectE = spellInfo->GetSpellEffect(SpellEffectIndex(eff));
+			if(!effectE)
+				continue;
 
             if (effectE->Effect != SPELL_EFFECT_DUMMY &&
                (effectE->Effect != SPELL_EFFECT_APPLY_AURA ||
