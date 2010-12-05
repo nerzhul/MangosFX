@@ -964,6 +964,7 @@ void AuthSocket::LoadRealmlist(ByteBuffer &pkt, uint32 acctid)
         case 11159:                                         // 3.3.0a
         case 11403:                                         // 3.3.2
         case 11723:                                         // 3.3.3a
+		case 12340:                                         // 3.3.5a
         default:                                            // and later
         {
             pkt << uint32(0);
@@ -1003,7 +1004,7 @@ void AuthSocket::LoadRealmlist(ByteBuffer &pkt, uint32 acctid)
 
                 pkt << uint8(i->second.icon);               // realm type (this is second column in Cfg_Configs.dbc)
                 pkt << uint8(lock);                         // flags, if 0x01, then realm locked
-                pkt << uint8(realmFlags);                   // see enum RealmFlags
+                pkt << uint8(REALM_FLAG_NONE);                   // see enum RealmFlags
                 pkt << i->first;                            // name
                 pkt << i->second.address;                   // address
                 pkt << float(i->second.populationLevel);

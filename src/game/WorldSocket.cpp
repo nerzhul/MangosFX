@@ -245,15 +245,23 @@ int WorldSocket::open (void *a)
 
     // Send startup packet.
 	WorldPacket packet (SMSG_AUTH_CHALLENGE, 37);
-    BigNumber seed1;
+	/*BigNumber seed1;
 	seed1.SetRand(16 * 8);
 	packet.append(seed1.AsByteArray(16), 16);               // new encryption seeds
 	BigNumber seed2;
 	seed2.SetRand(16 * 8);
 	packet.append(seed2.AsByteArray(16), 16);               // new encryption seeds
-
-	packet << uint8(1);                                     // 1...31
-    packet << uint32(m_Seed);
+*/
+	packet << uint32(0);
+	packet << uint32(0);
+	packet << uint32(m_Seed);
+	packet << uint32(0);
+	packet << uint8(1);
+	packet << uint32(0);
+	packet << uint32(0);
+	packet << uint32(0);
+	packet << uint32(0);
+	packet << uint32(0);
 
     if (SendPacket (packet) == -1)
         return -1;
@@ -476,8 +484,9 @@ int WorldSocket::handle_input_header (void)
     EndianConvertReverse(header.size);
     EndianConvert(header.cmd);
 
-    if ((header.size < 4) || (header.size > 10240) || (header.cmd  > 10240))
+    if ((header.size < 4) || (header.size > 10240))
     {
+		error_log("header.size %u header.cmd %u",header.size,header.cmd);
         sLog.outError ("WorldSocket::handle_input_header: client sent malformed packet size = %d , cmd = %d",
                        header.size, header.cmd);
 
@@ -733,7 +742,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 {
     // NOTE: ATM the socket is singlethread, have this in mind ...
     uint8 digest[20];
-    uint32 clientSeed, id, security;
+    uint32 clientSeed, id, security, addonsize;
     uint16 ClientBuild;
     uint8 expansion = 0;
     LocaleConstant locale;
@@ -743,14 +752,30 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     WorldPacket packet;
 
     // Read the content of the packet
-    recvPacket.read(digest, 20);
-    recvPacket.read_skip<uint64>();
-    recvPacket.read_skip<uint32>();
-    recvPacket >> clientSeed;
-    recvPacket >> ClientBuild;
-    recvPacket.read_skip<uint8>();
-    recvPacket >> account;
-    recvPacket.read_skip<uint32>();                         // addon data size
+    uint8 unk15;
+	uint64 unk4;
+	uint32 unk6;
+	uint32 unk8;
+	uint32 unk10;
+	uint32 unk12;
+	uint8 unk16;
+
+	recvPacket >> unk15 >> digest[15];
+	recvPacket >> ClientBuild;
+	recvPacket >> digest[5] >> digest[19];
+	recvPacket >> unk4;
+	recvPacket >> digest[13] >> digest[10] >> digest[1];
+	recvPacket >> unk6;
+	recvPacket >> digest[12] >> digest[4] >> digest[18] >> digest[8];
+	recvPacket >> unk8;
+	recvPacket >> digest[11] >> digest[9] >> digest[2];
+	recvPacket >> unk10;
+	recvPacket >> digest[6] >> digest[16];
+	recvPacket >> unk12;
+	recvPacket >> clientSeed;
+	recvPacket >> unk16 >> digest[7] >> digest[0] >> digest[3] >> digest[17] >> digest[14];
+	recvPacket >> account;
+	recvPacket >> addonsize;
 
     DEBUG_LOG ("WorldSocket::HandleAuthSession: client %u, account %s, clientseed %X",
                 ClientBuild,

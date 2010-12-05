@@ -543,12 +543,9 @@ struct AreaPOIEntry
     float y;                //13
     float z;                //14
     uint32 mapId;           //15
-    //uint32 val1;          //16
     uint32 zoneId;          //17
-    //char* name[16];       //18-33
-    //uint32 name_flag;     //34
-    //char* name2[16];      //35-50
-    //uint32 name_flag2;    //51
+    //char* name;       //18-33
+    //char* name2;      //35-50
     uint32 worldState;      //52
     //uint32 val2;          //53
 };
