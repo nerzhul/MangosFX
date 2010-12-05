@@ -1193,6 +1193,34 @@
 					Name="grim_batol"
 					>
 				</Filter>
+				<Filter
+					Name="waterthrone"
+					>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_commander_ulthok.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_erunak_stonespeak.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_lade_nazjar.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\boss_ozumat.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\instance_waterthrone.cpp"
+						>
+					</File>
+					<File
+						RelativePath="..\scripts\eastern_kingdoms\waterthrone\waterthrone.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="examples"
@@ -1595,6 +1623,14 @@
 				</Filter>
 				<Filter
 					Name="origin_halls"
+					>
+				</Filter>
+				<Filter
+					Name="tolvir"
+					>
+				</Filter>
+				<Filter
+					Name="vortex_pinnacle"
 					>
 				</Filter>
 			</Filter>
@@ -2922,23 +2958,11 @@
 				Name="cataclysm"
 				>
 				<Filter
-					Name="tolvir"
-					>
-				</Filter>
-				<Filter
-					Name="waterthrone"
-					>
-				</Filter>
-				<Filter
 					Name="stoneheart"
 					>
 				</Filter>
 				<Filter
 					Name="fourwind_throne"
-					>
-				</Filter>
-				<Filter
-					Name="vortex_pinnacle"
 					>
 				</Filter>
 			</Filter>
