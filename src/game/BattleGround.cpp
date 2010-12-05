@@ -957,11 +957,12 @@ void BattleGround::EndBattleGround(uint32 winner)
 			sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
 			plr->GetSession()->SendPacket(&data);
 		}
+		/* TEMP CRASHFIX
 		else if(PlayerBot* bot = plr->GetPlayerBot())
 		{
 			plr->LeaveBattleground();
 			plr->GetSession()->HandleMoveWorldportAckOpcode();
-		}
+		}*/
         plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);
     }
 
