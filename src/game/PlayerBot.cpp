@@ -108,6 +108,19 @@ void PlayerBot::Update(uint32 diff)
 	// CombatHandler for all classes
 	if(HasDecidedToFight())
 	{
+		if(!bot->GetSelection())
+		{
+			m_decideToFight = false;
+			return;
+		}
+
+		if(Player* plr = sObjectMgr.GetPlayer(bot->GetSelection()))
+			if(plr->isAlive())
+			{
+				m_decideToFight = false;
+				return;
+			}
+
 		switch(bot->getClass())
 		{
 			case CLASS_WARRIOR:
@@ -359,6 +372,12 @@ Unit* PlayerBot::SearchTargetAroundMe()
 		if(pPlayer->GetDistance2d(bot) > 50.0f)
 			continue;
 
+		if(!pPlayer->isAlive())
+			continue;
+		
+		if(pPlayer->GetBGTeam() == bot->GetTeam())
+			continue;
+
 		if(!tmpTarget || tmpTarget->GetDistance2d(bot) > pPlayer->GetDistance2d(bot))
 			tmpTarget = pPlayer;
 	}
@@ -410,6 +429,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 					return;
 				}
 				bot->SetSelection(seekTarget->GetGUID());
+				m_decideToFight = true;
 			}
 			break;
 		}

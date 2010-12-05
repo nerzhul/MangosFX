@@ -1185,6 +1185,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="blackrock_caverns"
+					>
+				</Filter>
+				<Filter
+					Name="grim_batol"
+					>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="examples"
@@ -1584,6 +1592,10 @@
 						RelativePath="..\scripts\kalimdor\zulfarrak\zulfarrak.cpp"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="origin_halls"
+					>
 				</Filter>
 			</Filter>
 			<Filter
@@ -2905,6 +2917,30 @@
 					RelativePath="..\scripts\special_events\crazy_ias.cpp"
 					>
 				</File>
+			</Filter>
+			<Filter
+				Name="cataclysm"
+				>
+				<Filter
+					Name="tolvir"
+					>
+				</Filter>
+				<Filter
+					Name="waterthrone"
+					>
+				</Filter>
+				<Filter
+					Name="stoneheart"
+					>
+				</Filter>
+				<Filter
+					Name="fourwind_throne"
+					>
+				</Filter>
+				<Filter
+					Name="vortex_pinnacle"
+					>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
