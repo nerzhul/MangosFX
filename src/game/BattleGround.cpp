@@ -868,6 +868,8 @@ void BattleGround::EndBattleGround(uint32 winner)
         }
     }
 
+	std::vector<Player*> botToRemove;
+	botToRemove.clear();
     for(BattleGroundPlayerMap::iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
     {
         uint32 team = itr->second.Team;
@@ -957,15 +959,18 @@ void BattleGround::EndBattleGround(uint32 winner)
 			sBattleGroundMgr.BuildBattleGroundStatusPacket(&data, this, plr->GetBattleGroundQueueIndex(bgQueueTypeId), STATUS_IN_PROGRESS, TIME_TO_AUTOREMOVE, GetStartTime(), GetArenaType());
 			plr->GetSession()->SendPacket(&data);
 		}
-		/* TEMP CRASHFIX
 		else if(PlayerBot* bot = plr->GetPlayerBot())
 		{
-			plr->LeaveBattleground();
-			plr->GetSession()->HandleMoveWorldportAckOpcode();
-		}*/
+			botToRemove.push_back(plr);
+		}
         plr->GetAchievementMgr().UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_COMPLETE_BATTLEGROUND, 1);
     }
 
+	for(std::vector<Player*>::iterator itr = botToRemove.begin(); itr != botToRemove.end(); ++itr)
+	{
+		(*itr)->LeaveBattleground();
+		(*itr)->GetSession()->HandleMoveWorldportAckOpcode();
+	}
     if (isArena() && isRated() && winner_arena_team && loser_arena_team)
     {
         // update arena points only after increasing the player's match count!
