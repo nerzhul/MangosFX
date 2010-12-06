@@ -1815,8 +1815,8 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>, WorldTypeMapContainer > world_unit_searcher(searcher);
                 TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyFriendlyUnitInObjectRangeCheck>, GridTypeMapContainer >  grid_unit_searcher(searcher);
 
-                cell.Visit(p, world_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
-                cell.Visit(p, grid_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
+				cell.Visit(p, world_unit_searcher, *m_caster->GetMap(), *m_caster, max_range);
+                cell.Visit(p, grid_unit_searcher, *m_caster->GetMap(), *m_caster, max_range); 
             }
 
             if(tempTargetUnitMap.empty())
@@ -1850,7 +1850,6 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             {
                 if(!prev->IsWithinDist(*next, CHAIN_SPELL_JUMP_RADIUS))
                     break;
-
                 if(!prev->IsWithinLOSInMap(*next))
                 {
                     ++next;
@@ -1910,8 +1909,9 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                     TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyAoETargetUnitInObjectRangeCheck>, WorldTypeMapContainer> world_unit_searcher(searcher);
                     TypeContainerVisitor<MaNGOS::UnitListSearcher<MaNGOS::AnyAoETargetUnitInObjectRangeCheck>, GridTypeMapContainer>  grid_unit_searcher(searcher);
 
-                    cell.Visit(p, world_unit_searcher, *m_caster->GetMap(), *pUnitTarget, max_range);
-                    cell.Visit(p, grid_unit_searcher, *m_caster->GetMap(), *pUnitTarget, max_range);
+					cell.Visit(p, world_unit_searcher, *m_caster->GetMap(), *m_caster, max_range); 
+                    cell.Visit(p, grid_unit_searcher, *m_caster->GetMap(), *m_caster, max_range); 
+
                 }
                 if (tempTargetUnitMap.empty())
                     break;
@@ -1930,11 +1930,13 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 {
                     if (!prev->IsWithinDist (*next,CHAIN_SPELL_JUMP_RADIUS))
                         break;
-                    if (!prev->IsWithinLOSInMap (*next))
+                  
+					if (!prev->IsWithinLOSInMap (*next))
                     {
                         ++next;
                         continue;
                     }
+					
                     prev = *next;
                     targetUnitMap.push_back(prev);
                     tempTargetUnitMap.erase(next);
@@ -2332,6 +2334,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
                 targetUnitMap.push_back(pUnitTarget);
             else
             {
+
                 unMaxTargets = EffectChainTarget;
                 float max_range = radius + unMaxTargets * CHAIN_SPELL_JUMP_RADIUS;
 
