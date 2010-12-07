@@ -4901,9 +4901,12 @@ SpellCastResult Spell::CheckCast(bool strict)
         }
 
         // check pet presents
-        for(int j = 0; j < 3; ++j)
+        for(int j = 0; j < MAX_EFFECT_INDEX; ++j)
         {
 			SpellEffectEntry const* effectJ = m_spellInfo->GetSpellEffect(SpellEffectIndex(j));
+			if(!effectJ)
+				continue;
+
             if(effectJ->EffectImplicitTargetA == TARGET_PET)
             {
                 target = m_caster->GetPet();
