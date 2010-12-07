@@ -225,11 +225,13 @@ int32 CompareAuraRanks(uint32 spellId_1, uint32 effIndex_1, uint32 spellId_2, ui
 SpellSpecific GetSpellSpecific(uint32 spellId)
 {
     SpellEntry const *spellInfo = sSpellStore.LookupEntry(spellId);
+	
+    if(!spellInfo)
+        return SPELL_NORMAL;
+
 	SpellEffectEntry const* effect0 = spellInfo->GetSpellEffect(EFFECT_INDEX_0);
 	SpellEffectEntry const* effect1 = spellInfo->GetSpellEffect(EFFECT_INDEX_1);
 	SpellEffectEntry const* effect2 = spellInfo->GetSpellEffect(EFFECT_INDEX_2);
-    if(!spellInfo)
-        return SPELL_NORMAL;
 
     switch(spellInfo->GetSpellFamilyName())
     {

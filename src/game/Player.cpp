@@ -3989,17 +3989,14 @@ Mail* Player::GetMail(uint32 id)
 
 void Player::_SetCreateBits(UpdateMask *updateMask, Player *target) const
 {
-    if(target == this)
+    uint32 valuesCount = m_valuesCount;
+	if(GetTypeId() == TYPEID_PLAYER && target != this)
+		valuesCount = MAX_VALUES_COUNT_OTHER_PLAYER;
+    
+	for(uint16 index = 0; index < m_valuesCount; index++)
     {
-        Object::_SetCreateBits(updateMask, target);
-    }
-    else
-    {
-        for(uint16 index = 0; index < m_valuesCount; index++)
-        {
-            if(GetUInt32Value(index) != 0 && updateVisualBits.GetBit(index))
-                updateMask->SetBit(index);
-        }
+        if(GetUInt32Value(index) != 0 && updateVisualBits.GetBit(index))
+            updateMask->SetBit(index);
     }
 }
 
@@ -4112,6 +4109,8 @@ void Player::InitVisibleBits()
 
 void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target ) const
 {
+	Unit::BuildCreateUpdateBlockForPlayer( data, target );
+
     for(int i = 0; i < EQUIPMENT_SLOT_END; ++i)
     {
         if(m_items[i] == NULL)
@@ -4137,8 +4136,6 @@ void Player::BuildCreateUpdateBlockForPlayer( UpdateData *data, Player *target )
             m_items[i]->BuildCreateUpdateBlockForPlayer( data, target );
         }
     }
-
-    Unit::BuildCreateUpdateBlockForPlayer( data, target );
 }
 
 void Player::DestroyForPlayer( Player *target, bool anim ) const

@@ -458,62 +458,6 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         }
     }
 
-    // 0x8
-    if(updateFlags & UPDATEFLAG_LOWGUID)
-    {
-        switch(GetTypeId())
-        {
-            case TYPEID_OBJECT:
-            case TYPEID_ITEM:
-            case TYPEID_CONTAINER:
-            case TYPEID_GAMEOBJECT:
-            case TYPEID_DYNAMICOBJECT:
-            case TYPEID_CORPSE:
-                *data << uint32(GetGUIDLow());              // GetGUIDLow()
-                break;
-            case TYPEID_UNIT:
-                *data << uint32(0x0000000B);                // unk, can be 0xB or 0xC
-                break;
-            case TYPEID_PLAYER:
-                if(updateFlags & UPDATEFLAG_SELF)
-                    *data << uint32(0x0000002F);            // unk, can be 0x15 or 0x22
-                else
-                    *data << uint32(0x00000008);            // unk, can be 0x7 or 0x8
-                break;
-            default:
-                *data << uint32(0x00000000);                // unk
-                break;
-        }
-    }
-
-    // 0x10
-    if(updateFlags & UPDATEFLAG_HIGHGUID)
-    {
-        switch(GetTypeId())
-        {
-            case TYPEID_OBJECT:
-            case TYPEID_ITEM:
-            case TYPEID_CONTAINER:
-            case TYPEID_GAMEOBJECT:
-            case TYPEID_DYNAMICOBJECT:
-            case TYPEID_CORPSE:
-                *data << uint32(GetGUIDHigh());             // GetGUIDHigh()
-                break;
-            case TYPEID_UNIT:
-                *data << uint32(0x0000000B);                // unk, can be 0xB or 0xC
-                break;
-            case TYPEID_PLAYER:
-                if(updateFlags & UPDATEFLAG_SELF)
-                    *data << uint32(0x0000002F);            // unk, can be 0x15 or 0x22
-                else
-                    *data << uint32(0x00000008);            // unk, can be 0x7 or 0x8
-                break;
-            default:
-                *data << uint32(0x00000000);                // unk
-                break;
-        }
-    }
-
     // 0x4
     if(updateFlags & UPDATEFLAG_HAS_ATTACKING_TARGET)       // packed guid (current target guid)
     {
@@ -529,18 +473,35 @@ void Object::BuildMovementUpdate(ByteBuffer * data, uint16 updateFlags) const
         *data << uint32(getMSTime());                       // ms time
     }
 
-    // 0x80
+	// 0x80
     if(updateFlags & UPDATEFLAG_VEHICLE)                    // unused for now
     {
         *data << uint32(((Unit*)this)->GetVehicleKit()->GetVehicleInfo()->m_ID);  // vehicle id
         *data << float(((WorldObject*)this)->GetOrientation());                                  // facing adjustment
     }
 
+	// 0x800
+	if (updateFlags & UPDATEFLAG_UNK2)
+	{
+		*data << uint16(0) << uint16(0) << uint16(0); //unk
+	}
+
     // 0x200
     if(updateFlags & UPDATEFLAG_ROTATION)
     {
         *data << uint64(((GameObject*)this)->GetRotation());
     }
+
+	// 0x1000
+	if(updateFlags & UPDATEFLAG_UNK3)
+	{
+		uint8 bytes = 0;
+		*data << bytes;
+		for(uint8 i = 0; i < bytes; i++) //example :P
+		{
+			*data << uint32(0);
+		}
+	}
 }
 
 void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *updateMask, Player *target) const
@@ -791,9 +752,13 @@ bool Object::LoadValues(const char* data)
     return true;
 }
 
-void Object::_SetUpdateBits(UpdateMask *updateMask, Player* /*target*/) const
+void Object::_SetUpdateBits(UpdateMask *updateMask, Player* target) const
 {
-    for( uint16 index = 0; index < m_valuesCount; ++index )
+	uint32 valuesCount = m_valuesCount;
+	if(GetTypeId() == TYPEID_PLAYER && target != this)
+		valuesCount = MAX_VALUES_COUNT_OTHER_PLAYER;
+
+    for( uint16 index = 0; index < valuesCount; ++index )
     {
         if(m_uint32Values_mirror[index]!= m_uint32Values[index])
             updateMask->SetBit(index);

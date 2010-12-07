@@ -105,7 +105,7 @@ bool UpdateData::BuildPacket(WorldPacket *packet)
 {
     ASSERT(packet->empty());                                // shouldn't happen
 
-    ByteBuffer buf(4 + (m_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * m_outOfRangeGUIDs.size()) + m_data.wpos());
+    ByteBuffer buf(1+4 + (m_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * m_outOfRangeGUIDs.size()) + m_data.wpos());
 
     buf << (uint32) (!m_outOfRangeGUIDs.empty() ? m_blockCount + 1 : m_blockCount);
 
