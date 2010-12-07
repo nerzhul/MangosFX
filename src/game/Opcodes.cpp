@@ -23,23 +23,25 @@
 #include "Opcodes.h"
 #include "WorldSession.h"
 
-OpcodeHandler opcodeTable[NUM_MSG_TYPES];
+//OpcodeHandler opcodeTable[NUM_MSG_TYPES];
+std::map<uint16,OpcodeHandler*> opcodeMap;
 
 static void DefineOpcode( int opcode, const char* name, SessionStatus status, void (WorldSession::*handler)(WorldPacket& recvPacket) )
 {
-	opcodeTable[opcode].name = name;
+	/*opcodeTable[opcode].name = name;
 	opcodeTable[opcode].status = status;
-	opcodeTable[opcode].handler = handler;
+	opcodeTable[opcode].handler = handler;*/
+	opcodeMap[opcode] = new OpcodeHandler(name,status,handler);
 }
 
 #define OPCODE( name, status, handler ) DefineOpcode( name, #name, status, handler )
 
 void InitOpcodeTable()
 {
-	for( int i = 0; i < NUM_MSG_TYPES; ++i )
+	/*for( int i = 0; i < NUM_MSG_TYPES; ++i )
 	{
 		DefineOpcode( i, "UNKNOWN", STATUS_NEVER, &WorldSession::Handle_NULL );
-	}
+	}*/
     /*0x000*/ //OPCODE( MSG_NULL_ACTION,                              STATUS_NEVER,    &WorldSession::Handle_NULL                     );
     /*0x001*/ //OPCODE( CMSG_BOOTME,                                  STATUS_NEVER,    &WorldSession::Handle_NULL                     );
     /*0x002*/ //OPCODE( CMSG_DBLOOKUP,                                STATUS_NEVER,    &WorldSession::Handle_NULL                     );

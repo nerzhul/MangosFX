@@ -183,10 +183,17 @@ bool WorldSession::Update(uint32 /*diff*/)
                         packet->GetOpcode());
         #endif*/
 
-        OpcodeHandler& opHandle = opcodeTable[packet->GetOpcode()];
+		std::map<uint16,OpcodeHandler*>::iterator itr = opcodeMap.find(packet->GetOpcode());
+		if(itr == opcodeMap.end())
+		{
+			error_log("Unreferenced opcode catched %u",packet->GetOpcode());
+			continue;
+		}
+			
+		OpcodeHandler* opHandle = itr->second;
         try
         {
-            switch (opHandle.status)
+            switch (opHandle->status)
             {
                 case STATUS_LOGGEDIN:
                     if(!_player)
@@ -197,7 +204,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                     }
                     else if(_player->IsInWorld())
 					{
-                        ExecuteOpcode(opHandle, packet);
+                        ExecuteOpcode(*opHandle, packet);
 					}
                     // lag can cause STATUS_LOGGEDIN opcodes to arrive after the player started a transfer
                     break;
@@ -208,7 +215,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                     }
                     else
                         // not expected _player or must checked in packet hanlder
-                        ExecuteOpcode(opHandle, packet);
+                        ExecuteOpcode(*opHandle, packet);
                     break;
                 case STATUS_TRANSFER:
                     if(!_player)
@@ -216,7 +223,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                     else if(_player->IsInWorld())
                         LogUnexpectedOpcode(packet, "the player is still in world");
                     else
-                        ExecuteOpcode(opHandle, packet);
+                        ExecuteOpcode(*opHandle, packet);
                     break;
                 case STATUS_AUTHED:
                     // prevent cheating with skip queue wait
@@ -231,7 +238,7 @@ bool WorldSession::Update(uint32 /*diff*/)
                     if (packet->GetOpcode() != CMSG_SET_ACTIVE_VOICE_CHANNEL)
                         m_playerRecentlyLogout = false;
 
-                    ExecuteOpcode(opHandle, packet);
+                    ExecuteOpcode(*opHandle, packet);
                     break;
                 case STATUS_NEVER:
                     sLog.outError( "SESSION: received not allowed opcode %s (0x%.4X)",

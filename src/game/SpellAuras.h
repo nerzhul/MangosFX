@@ -232,6 +232,7 @@ class MANGOS_DLL_SPEC Aura
 
         void SetModifier(AuraType t, int32 a, uint32 pt, int32 miscValue);
         Modifier*       GetModifier()       { return &m_modifier; }
+		int32 GetAmount() { return GetModifier()->m_amount; }
         Modifier const* GetModifier() const { return &m_modifier; }
         int32 GetMiscValue() const { return m_spellEffect ? m_spellEffect->EffectMiscValue : 0; }
         int32 GetMiscBValue() const { return m_spellEffect ? m_spellEffect->EffectMiscValueB : 0; }

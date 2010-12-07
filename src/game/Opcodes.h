@@ -1348,19 +1348,28 @@ struct OpcodeHandler
     char const* name;
     SessionStatus status;
     void (WorldSession::*handler)(WorldPacket& recvPacket);
+	OpcodeHandler(char const* _name,SessionStatus _status,void (WorldSession::*_handler)(WorldPacket& recvPacket))
+	{
+		name = _name;
+		status = _status;
+		handler = _handler;
+	}
 };
 
 void InitOpcodeTable();
 
-extern OpcodeHandler opcodeTable[NUM_MSG_TYPES];
-
+extern std::map<uint16,OpcodeHandler*> opcodeMap;
 /// Lookup opcode name for human understandable logging
 inline const char* LookupOpcodeName(uint16 id)
 {
     if (id >= NUM_MSG_TYPES)
         return "Received unknown opcode, it's more than max!";
 
-    return opcodeTable[id].name;
+	std::map<uint16,OpcodeHandler*>::iterator itr = opcodeMap.find(id);
+	if(itr == opcodeMap.end())
+		return "Unref opcode !";
+
+	return itr->second->name;
 }
 #endif
 /// @}
