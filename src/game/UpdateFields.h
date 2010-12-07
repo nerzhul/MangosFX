@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2005-2009 MaNGOS <http://getmangos.com/>
+ *
+ * Copyright (C) 2008-2010 Trinity <http://www.trinitycore.org/>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -8,18 +10,18 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
 #ifndef _UPDATEFIELDS_AUTO_H
 #define _UPDATEFIELDS_AUTO_H
 
-// Auto generated for version 4, 0, 3, 13117
+// Auto generated for version 4, 0, 3, 13287
 
 enum EObjectFields
 {
@@ -174,20 +176,22 @@ enum EUnitFields
     UNIT_FIELD_BASE_HEALTH                    = OBJECT_END + 0x0083, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
     UNIT_FIELD_BYTES_2                        = OBJECT_END + 0x0084, // Size: 1, Type: BYTES, Flags: PUBLIC
     UNIT_FIELD_ATTACK_POWER                   = OBJECT_END + 0x0085, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_ATTACK_POWER_MODS              = OBJECT_END + 0x0086, // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_ATTACK_POWER_MULTIPLIER        = OBJECT_END + 0x0087, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_RANGED_ATTACK_POWER            = OBJECT_END + 0x0088, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_RANGED_ATTACK_POWER_MODS       = OBJECT_END + 0x0089, // Size: 1, Type: TWO_SHORT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER = OBJECT_END + 0x008A, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_MINRANGEDDAMAGE                = OBJECT_END + 0x008B, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_MAXRANGEDDAMAGE                = OBJECT_END + 0x008C, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_POWER_COST_MODIFIER            = OBJECT_END + 0x008D, // Size: 7, Type: INT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_POWER_COST_MULTIPLIER          = OBJECT_END + 0x0094, // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_MAXHEALTHMODIFIER              = OBJECT_END + 0x009B, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
-    UNIT_FIELD_HOVERHEIGHT                    = OBJECT_END + 0x009C, // Size: 1, Type: FLOAT, Flags: PUBLIC
-    UNIT_FIELD_MAXITEMLEVEL                   = OBJECT_END + 0x009D, // Size: 1, Type: INT, Flags: PUBLIC
-    UNIT_END                                  = OBJECT_END + 0x009E,
-
+    UNIT_FIELD_ATTACK_POWER_MOD_POS           = OBJECT_END + 0x0086, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_ATTACK_POWER_MOD_NEG           = OBJECT_END + 0x0087, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_ATTACK_POWER_MULTIPLIER        = OBJECT_END + 0x0088, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_RANGED_ATTACK_POWER            = OBJECT_END + 0x0089, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_RANGED_ATTACK_POWER_MOD_POS    = OBJECT_END + 0x008A, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_RANGED_ATTACK_POWER_MOD_NEG    = OBJECT_END + 0x008B, // Size: 1, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_RANGED_ATTACK_POWER_MULTIPLIER = OBJECT_END + 0x008C, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_MINRANGEDDAMAGE                = OBJECT_END + 0x008D, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_MAXRANGEDDAMAGE                = OBJECT_END + 0x008E, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_POWER_COST_MODIFIER            = OBJECT_END + 0x008F, // Size: 7, Type: INT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_POWER_COST_MULTIPLIER          = OBJECT_END + 0x0096, // Size: 7, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_MAXHEALTHMODIFIER              = OBJECT_END + 0x009D, // Size: 1, Type: FLOAT, Flags: PRIVATE, OWNER
+    UNIT_FIELD_HOVERHEIGHT                    = OBJECT_END + 0x009E, // Size: 1, Type: FLOAT, Flags: PUBLIC
+    UNIT_FIELD_MAXITEMLEVEL                   = OBJECT_END + 0x009F, // Size: 1, Type: INT, Flags: PUBLIC
+    UNIT_END                                  = OBJECT_END + 0x00A0,
+	
     PLAYER_DUEL_ARBITER                       = UNIT_END + 0x0000, // Size: 2, Type: LONG, Flags: PUBLIC
     PLAYER_FLAGS                              = UNIT_END + 0x0002, // Size: 1, Type: INT, Flags: PUBLIC
     PLAYER_GUILDRANK                          = UNIT_END + 0x0003, // Size: 1, Type: INT, Flags: PUBLIC
@@ -486,7 +490,7 @@ enum EUnitFields
     PLAYER_FIELD_BUYBACK_TIMESTAMP_1          = UNIT_END + 0x0476, // Size: 12, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_KILLS                        = UNIT_END + 0x0482, // Size: 1, Type: TWO_SHORT, Flags: PRIVATE
     PLAYER_FIELD_LIFETIME_HONORBALE_KILLS     = UNIT_END + 0x0483, // Size: 1, Type: INT, Flags: PRIVATE
-    PLAYER_FIELD_BYTES2                       = UNIT_END + 0x0484, // Size: 1, Type: 6, Flags: PRIVATE
+    PLAYER_FIELD_BYTES2                       = UNIT_END + 0x0484, // Size: 1, Type: TWO_BYTES_SHORT, Flags: PRIVATE
     PLAYER_FIELD_WATCHED_FACTION_INDEX        = UNIT_END + 0x0485, // Size: 1, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_COMBAT_RATING_1              = UNIT_END + 0x0486, // Size: 26, Type: INT, Flags: PRIVATE
     PLAYER_FIELD_ARENA_TEAM_INFO_1_1          = UNIT_END + 0x04A0, // Size: 21, Type: INT, Flags: PRIVATE
@@ -507,6 +511,8 @@ enum EUnitFields
     PLAYER_FIELD_HOME_REALM_TIME_OFFSET       = UNIT_END + 0x04FF, // Size: 1, Type: INT, Flags: PRIVATE
     PLAYER_END                                = UNIT_END + 0x0500,
 };
+
+#define MAX_VALUES_COUNT_OTHER_PLAYER PLAYER_FIELD_INV_SLOT_HEAD
 
 enum EGameObjectFields
 {
