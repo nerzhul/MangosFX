@@ -1350,6 +1350,8 @@ struct OpcodeHandler
     void (WorldSession::*handler)(WorldPacket& recvPacket);
 };
 
+void InitOpcodeTable();
+
 extern OpcodeHandler opcodeTable[NUM_MSG_TYPES];
 
 /// Lookup opcode name for human understandable logging

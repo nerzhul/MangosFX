@@ -1174,7 +1174,7 @@ void World::SetInitialWorldSettings()
     if (!sObjectMgr.LoadMangosStrings())
         exit(1);                                            // Error message displayed in function already
 
-    ///- Update the realm entry in the database with the realm type from the config file
+	///- Update the realm entry in the database with the realm type from the config file
     //No SQL injection as values are treated as integers
 
     // not send custom type REALM_FFA_PVP to realm list
@@ -1609,6 +1609,10 @@ void World::SetInitialWorldSettings()
 
 	sWorld.LockWorld(false);
 	sWorld.lastPckMap.clear();
+
+	sLog.outString();
+	sLog.outString("Loading Opcodes...");
+	InitOpcodeTable();
 }
 
 void World::DetectDBCLang()

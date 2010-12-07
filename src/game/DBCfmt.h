@@ -20,16 +20,16 @@
 #define MANGOS_DBCSFRM_H
 
 const char Achievementfmt[]="niixsxiixixxii";
-const char AchievementCriteriafmt[]="niiiiiiiisixiiixx";
-const char AreaTableEntryfmt[]="iiinixxxxxisixxxxxxxxxxx";
+const char AchievementCriteriafmt[]="niiiiiiiisiiiiixxxxxxxx";
+const char AreaTableEntryfmt[]="iiinixxxxxisixxxxxxxxxxxx";
 const char AreaGroupEntryfmt[]="niiiiiii";
-const char AreaPOIEntryfmt[]="niiiiiiiiiiifffiiix";
+const char AreaPOIEntryfmt[]="niiiiiiiiiiifffiixxixx";
 const char AreaTriggerEntryfmt[]="nifffxxxfffff";
 const char ArmorLocationfmt[]="nfffff";
 const char AuctionHouseEntryfmt[]="niiix";
 const char BankBagSlotPricesEntryfmt[]="ni";
 const char BarberShopStyleEntryfmt[]="nixxxiii";
-const char BattlemasterListEntryfmt[]="niiiiiiiiixsiiiixx";
+const char BattlemasterListEntryfmt[]="niiiiiiiiixsiiiiiii";
 const char CharStartOutfitEntryfmt[]="diiiiiiiiiiiiiiiiiiiiiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 const char CharTitlesEntryfmt[]="nxsxix";
 const char ChatChannelsEntryfmt[]="iixsx";
@@ -76,10 +76,10 @@ const char ItemLimitCategoryEntryfmt[]="nxii";
 const char ItemRandomPropertiesfmt[]="nxiiiiis";
 const char ItemRandomSuffixfmt[]="nsxiiiiiiiiii";
 const char ItemSetEntryfmt[]="dsxxxxxxxxxxxxxxxxxiiiiiiiiiiiiiiiiii";
-const char LFGDungeonEntryfmt[]="nxxxxxxxxxxxxxxxxxiiiiiiixixxixixxxxxxxxxxxxxxxxx";
+const char LFGDungeonEntryfmt[]="nxiiiiiiixixxixix";
 const char LockEntryfmt[]="niiiiiiiiiiiiiiiiiiiiiiiixxxxxxxx";
 const char MailTemplateEntryfmt[]="nxs";
-const char MapEntryfmt[]="nxixxxsixxixiffxixxx";
+const char MapEntryfmt[]="nxixxxsixxixiffxiiix";
 const char MapDifficultyEntryfmt[]="diixiix";
 const char MovieEntryfmt[]="nxxx";
 const char QuestFactionRewardfmt[]="niiiiiiiiii";
@@ -128,10 +128,10 @@ const char TaxiPathEntryfmt[]="niii";
 const char TaxiPathNodeEntryfmt[]="diiifffiiii";
 const char TotemCategoryEntryfmt[]="nxii";
 const char VehicleEntryfmt[]="niffffiiiiiiiifffffffffffffffssssfifiixx";
-const char VehicleSeatEntryfmt[]="niiffffffffffiiiiiifffffffiiifffiiiiiiiffiiiiixxxxxxxxxxxxxxxxxxxxxxxxxxx";
+const char VehicleSeatEntryfmt[]="niiffffffffffiiiiiifffffffiiifffiiiiiiiffiiiiixxxxxxxxxxxxxxxxxxxx";
 const char WMOAreaTableEntryfmt[]="niiixxxxxiixxxx";
 const char WorldMapAreaEntryfmt[]="xinxffffixxx";
-const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxxxx";
+const char WorldMapOverlayEntryfmt[]="nxiiiixxxxxxxxx";
 const char WorldSafeLocsEntryfmt[]="nifffx";
 
 #endif

@@ -2029,7 +2029,11 @@ void AchievementGlobalMgr::LoadAchievementCriteriaList()
         if(!criteria)
             continue;
 
-        ASSERT(criteria->requiredType < ACHIEVEMENT_CRITERIA_TYPE_TOTAL && "Not updated ACHIEVEMENT_CRITERIA_TYPE_TOTAL?");
+        if(criteria->requiredType >= ACHIEVEMENT_CRITERIA_TYPE_TOTAL)
+		{
+			error_log("criteria->requiredType > ACHIEVEMENT_CRITERIA_TYPE_TOTAL : %u",criteria->requiredType);
+			continue;
+		}
 
         m_AchievementCriteriasByType[criteria->requiredType].push_back(criteria);
         m_AchievementCriteriaListByAchievement[criteria->referredAchievement].push_back(criteria);

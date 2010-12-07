@@ -8367,6 +8367,7 @@ void ObjectMgr::LoadTrainerSpell()
         if(!spellinfo)
         {
             sLog.outErrorDb("Table `npc_trainer` for Trainer (Entry: %u ) has non existing spell %u, ignore", entry,spell);
+			WorldDatabase.PExecute("DELETE from npc_trainer where spell = %u and entry = %u",spell,entry);
             continue;
         }
 

@@ -612,8 +612,9 @@ struct BattlemasterListEntry
     uint32 HolidayWorldStateId;                             // 13 new 3.1
     uint32 minLevel;                                        // 14, min level (sync with PvPDifficulty.dbc content)
     uint32 maxLevel;                                        // 15, max level (sync with PvPDifficulty.dbc content)
-    //uint32 maxGroupSizeRated;                             // 16 4.0.1
-    //uint32 maxPlayers;                                    // 17 4.0.1
+    uint32 maxGroupSizeRated;                               // 16 4.0.1
+    uint32 maxPlayers;                                      // 17 4.0.1
+	uint32 rated;                                           // 18 4.0.3 isRated? == 2
 };
 
 /*struct Cfg_CategoriesEntry

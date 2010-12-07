@@ -2207,7 +2207,7 @@ void SpellMgr::LoadSpellChains()
         if(!sSpellStore.LookupEntry(spell_id))
         {
             sLog.outErrorDb("Spell %u listed in `spell_chain` does not exist",spell_id);
-			WorldDatabase.PExecute("DELETE FROM spell_chain where entry=%u",spell_id);
+			WorldDatabase.PExecute("DELETE FROM spell_chain where spell_id = %u",spell_id);
             continue;
         }
 

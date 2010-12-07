@@ -1347,4 +1347,4 @@ void InitOpcodeTable()
     /*0x518*/ OPCODE( SMSG_UNKNOWN_1304,                            STATUS_NEVER,    &WorldSession::Handle_ServerSide               );
     /*0x519*/ OPCODE( UMSG_UNKNOWN_1305,                            STATUS_NEVER,    &WorldSession::Handle_NULL                     );
     /*0x51A*/ OPCODE( UMSG_UNKNOWN_1306,                            STATUS_NEVER,    &WorldSession::Handle_NULL                     );
-};
+}
