@@ -276,8 +276,6 @@ libmangosgame_a_SOURCES = \
 	SpellMgr.cpp \
 	SpellMgr.h \
 	StatSystem.cpp \
-	SuperCreatureAI.cpp \
-	SuperCreatureAI.h \
 	TargetedMovementGenerator.cpp \
 	TargetedMovementGenerator.h \
 	TaxiHandler.cpp \
