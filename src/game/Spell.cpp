@@ -5608,9 +5608,12 @@ SpellCastResult Spell::CheckCast(bool strict)
         }
     }
 
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < MAX_EFFECT_INDEX; ++i)
     {
 		SpellEffectEntry const* effectI = m_spellInfo->GetSpellEffect(SpellEffectIndex(i));
+		if(!effectI)
+			continue;
+
         switch(effectI->EffectApplyAuraName)
         {
             case SPELL_AURA_DUMMY:
