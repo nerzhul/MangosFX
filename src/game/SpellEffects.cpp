@@ -357,6 +357,17 @@ void Spell::EffectSchoolDMG(uint32 effect_idx)
                         damage = unitTarget->GetMaxHealth() / 2;
                         break;
                     }
+					// Explode
+					case 47496:
+					{
+						// Special Effect only for caster (ghoul in this case)
+						if (unitTarget->GetEntry() == 26125 && (unitTarget->GetGUID() == m_caster->GetGUID()))
+						{
+							// After explode the ghoul must be killed
+							unitTarget->DealDamage(unitTarget, unitTarget->GetMaxHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+						}
+						break;
+					}
                     // Tympanic Tantrum
                     case 62775:
                     {
@@ -2163,9 +2174,10 @@ void Spell::EffectDummy(uint32 i)
                 return;
             }
             break;
+		
+		case SPELLFAMILY_DEATHKNIGHT:
 		case SPELLFAMILY_ROGUE:
 		case SPELLFAMILY_MAGE:
-        case SPELLFAMILY_DEATHKNIGHT:
 			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,SpellEffectIndex(i)))
 				return;
             break;
@@ -3889,6 +3901,13 @@ void Spell::EffectDispel(uint32 i)
         Aura *aur = (*itr).second;
 		if (aur && (1<<aur->GetSpellProto()->Dispel) & dispelMask)
         {
+			if(aur->GetSpellProto()->Dispel == DISPEL_DISEASE)
+			{
+				// Unholy Blight hack
+				if(unitTarget->HasAura(50536))
+					continue;
+			}
+
             if(aur->GetSpellProto()->Dispel == DISPEL_MAGIC)
             {
                 bool positive = true;
@@ -3902,12 +3921,6 @@ void Spell::EffectDispel(uint32 i)
                 if (positive == unitTarget->IsFriendlyTo(m_caster))
                     continue;
             }
-			else if(aur->GetSpellProto()->Dispel == DISPEL_DISEASE)
-			{
-				// Unholy Blight hack
-				if(unitTarget->HasAura(50536))
-					continue;
-			}
             // Add aura to dispel list (all stack cases)
             for(int8 k = 0; k < aur->GetStackAmount(); ++k)
                 dispel_list.push_back(aur);
@@ -4852,6 +4865,23 @@ void Spell::EffectSummonPet(uint32 i)
 
     if(NewSummon->getPetType() == SUMMON_PET)
     {
+		// Remove Demonic Sacrifice auras (new pet)
+		Unit::AuraList const& auraClassScripts = m_caster->GetAurasByType(SPELL_AURA_OVERRIDE_CLASS_SCRIPTS);
+		for(Unit::AuraList::const_iterator itr = auraClassScripts.begin(); itr != auraClassScripts.end();)
+		{
+			if((*itr)->GetModifier()->m_miscvalue == 2228)
+			{
+				m_caster->RemoveAurasDueToSpell((*itr)->GetId());
+				itr = auraClassScripts.begin();
+			}
+				else
+					++itr;
+		}
+		// Summoned creature is ghoul.
+		if (NewSummon->GetEntry() == 26125)
+		// He must have energy bar instead of mana
+		NewSummon->setPowerType(POWER_ENERGY);
+
         // generate new name for summon pet
         std::string new_name = sObjectMgr.GeneratePetName(petentry);
         if(!new_name.empty())
@@ -5620,6 +5650,30 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
                     return;
                 }
+				case 46584: // Raise dead
+				{
+					// We will get here ONLY when we have a corpse of humanoid that gives honor or XP.
+					// If we have active pet, then we should not cast the spell again.
+					if(m_caster->GetPet())
+					{
+						if (m_caster->GetTypeId()==TYPEID_PLAYER)
+							((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
+						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
+						return;
+					}
+					// Do we have talent Master of Ghouls?
+					if(m_caster->HasSpell(52143))
+					// Summon ghoul as a pet
+						m_caster->CastSpell(unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),52150,true);
+					else
+					// Summon ghoul as a guardian
+						m_caster->CastSpell(unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),46585,true);
+
+					((Creature*)unitTarget)->setDeathState(ALIVE);
+					// Used to prevent further EffectDummy execution
+					finish();
+					return; //break;
+				}
                 // Goblin Weather Machine
                 case 46203:
                 {
@@ -6481,50 +6535,64 @@ void Spell::EffectScriptEffect(uint32 effIndex)
         }
         case SPELLFAMILY_DEATHKNIGHT:
         {
+			if(m_spellInfo->SpellIconID == 1737)
+			{
+				// Living ghoul as a target
+				if (unitTarget->GetEntry() == 26125 && unitTarget->isAlive())
+				{
+					int32 bp = unitTarget->GetMaxHealth()*0.25f;
+					unitTarget->CastCustomSpell(unitTarget,47496,&bp,NULL,NULL,true);
+				}
+				else
+					return;
+			}
+
             switch(m_spellInfo->Id)
             {
-				// Raise Dead
-                case 46584:
+				//Raise dead effect
+				case 46584:
                 {
-                    if (m_caster->GetTypeId() != TYPEID_PLAYER)
-                        return;
-                    Player* p_caster = (Player*)m_caster;
+					if (m_caster->GetTypeId() != TYPEID_PLAYER)
+						return;
+					// We can have a summoned pet/guardian only in 2 cases:
+					// 1. It was summoned from corpse in EffectScriptEffect.
+					if (getState() == SPELL_STATE_FINISHED)
+						return;
+					// 2. Cooldown of Raise Dead is finished and we want to repeat the cast with active pet.
+					if (((Player*)m_caster)->GetPet())
+					{
+						((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
+						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
+						return;
+					}
+					// We will get here ONLY if we have no corpse.
+					bool allow_cast = false;
+					// We do not need any reagent if we have Glyph of Raise Dead.
+					if (m_caster->HasAura(60200))
+						allow_cast = true;
+					else
+					// We need Corpse Dust to cast a spell.
+						if (((Player*)m_caster)->HasItemCount(37201,1))
+						{
+							((Player*)m_caster)->DestroyItemCount(37201,1,true);
+							allow_cast = true;
+						}
 
-                    // do nothing if ghoul summon already exsists (in fact not possible, but...)
-                    if (p_caster->FindGuardianWithEntry(m_currentBasePoints[0]+1) || p_caster->GetPet())
-                    {
-                        p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
-                        SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
-                        finish(false);
-                        return;
-                    }
+					if (allow_cast)
+					{
+						if (m_caster->HasSpell(52143))
+							m_caster->CastSpell(m_caster,52150,true);
+						else
+							m_caster->CastSpell(m_caster,46585,true);
+					}
+					else
+					{
+						((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
+						SendCastResult(SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
+					}
+					return;
+				}
 
-                    // check if "Glyph of Raise Dead" ,corpse- or "Corpse Dust" is available
-                    bool canCast = p_caster->CanNoReagentCast(m_spellInfo) || FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck>();
-                    if (!canCast && p_caster->HasItemCount(37201,1))
-                    {
-                        p_caster->DestroyItemCount(37201, 1, true);
-                        canCast = true;
-                    }
-
-                    // remove spellcooldown if can't cast and send result
-                    if (!canCast)
-                    {
-                        p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
-                        SendCastResult(SPELL_FAILED_REAGENTS);
-                        finish(false);
-                        return;
-                    }
-
-					// check for "Master of Ghouls", id's stored in basepoints
-					uint32 spId = 46585;
-					if(p_caster->HasSpell(52143))
-                        spId = 52150;
-
-					m_caster->CastSpell(m_caster,spId,true);
-
-                    break;
-                }
                 // Pestilence
                 case 50842:
                 {
@@ -6587,7 +6655,8 @@ void Spell::EffectScriptEffect(uint32 effIndex)
         return;
 
     sLog.outDebug("Spell ScriptStart spellid %u in EffectScriptEffect ", m_spellInfo->Id);
-    m_caster->GetMap()->ScriptsStart(sSpellScripts, m_spellInfo->Id, m_caster, unitTarget);
+    //m_caster->GetMap()->ScriptsStart(sSpellScripts, m_spellInfo->Id, m_caster, unitTarget);
+	m_caster->GetMap()->ScriptsStart(sSpellScripts, uint32(m_spellInfo->Id | (effIndex << 24)), m_caster, unitTarget);
 }
 
 void Spell::EffectSanctuary(uint32 /*i*/)
