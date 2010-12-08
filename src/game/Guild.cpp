@@ -785,7 +785,7 @@ void Guild::Query(WorldSession *session)
 {
     WorldPacket data(SMSG_GUILD_QUERY_RESPONSE, (8*32+200));// we can only guess size
 
-    data << m_Id;
+    data << uint64(m_Id);
     data << m_Name;
 
     for (size_t i = 0 ; i < GUILD_RANKS_MAX_COUNT; ++i)     // show always 10 ranks
@@ -795,6 +795,12 @@ void Guild::Query(WorldSession *session)
         else
             data << (uint8)0;                               // null string
     }
+
+	for(int i = 0; i < 10; i++)
+		data << uint32(0);                                  // something new in Cata (link with rank.)
+	
+	for(int i = 0; i < 10; i++)
+		data << uint32(0);                                  // something new in Cata (link with rank.)
 
     data << uint32(m_EmblemStyle);
     data << uint32(m_EmblemColor);

@@ -2450,7 +2450,7 @@ enum PetDiet
 #define CHAIN_SPELL_JUMP_RADIUS 10
 
 // Max values for Guild & Guild Bank
-#define GUILD_BANK_MAX_TABS         6                       // send by client for money log also
+#define GUILD_BANK_MAX_TABS         8                       // send by client for money log also
 #define GUILD_BANK_MAX_SLOTS        98
 #define GUILD_BANK_MAX_LOGS         25
 #define GUILD_BANK_MONEY_LOGS_TAB   100                     // used for money log in DB

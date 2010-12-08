@@ -732,8 +732,9 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder *holder)
         {
             data.Initialize(SMSG_GUILD_EVENT, (2+guild->GetMOTD().size()+1));
             data << uint8(GE_MOTD);
-            data << uint8(1);
+            data << uint8(2);
             data << guild->GetMOTD();
+			data << uint8(0);
             SendPacket(&data);
             DEBUG_LOG( "WORLD: Sent guild-motd (SMSG_GUILD_EVENT)" );
 
