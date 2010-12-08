@@ -39,11 +39,19 @@ bool Player::UpdateStats(Stats stat)
 
     SetStat(stat, int32(value));
 
-    if(stat == STAT_STAMINA || stat == STAT_INTELLECT)
+    //if(stat == STAT_STAMINA || stat == STAT_INTELLECT)
+	if(stat == STAT_STAMINA || stat == STAT_INTELLECT || stat == STAT_STRENGTH)
     {
         Pet *pet = GetPet();
         if(pet)
+		{
             pet->UpdateStats(stat);
+			if (getClass() == CLASS_DEATH_KNIGHT && pet->getPetType() == SUMMON_PET)
+			{
+				pet->RemoveAllAuras();
+				pet->CastPetAuras(true);
+			}
+		}
     }
 
     switch(stat)
@@ -871,18 +879,39 @@ bool Pet::UpdateStats(Stats stat)
     float value  = GetTotalStatValue(stat);
 
     Unit *owner = GetOwner();
-    if ( stat == STAT_STAMINA )
+
+
+	if (this->GetEntry() == 26125 && (stat == STAT_STAMINA || stat == STAT_STRENGTH))
+    {
+		if (stat == STAT_STAMINA)
+			if (this->m_oldStamina == owner->GetStat(stat))
+				return true;
+			else 
+				this->m_oldStamina = owner->GetStat(stat);
+
+		float mod;
+        switch (stat)
+        {
+            case STAT_STAMINA:  mod = 0.3f; break;                // Default Owner's Stamina scale
+            case STAT_STRENGTH: mod = 0.7f; break;                // Default Owner's Strength scale
+            default: break;
+        }
+   
+        value += float(owner->GetStat(stat)) * mod;
+
+    }
+	else if ( stat == STAT_STAMINA )
     {
         if(owner)
             value += float(owner->GetStat(stat)) * 0.3f;
     }
-                                                            //warlock's and mage's pets gain 30% of owner's intellect
+
+	//warlock's and mage's pets gain 30% of owner's intellect
     else if ( stat == STAT_INTELLECT && getPetType() == SUMMON_PET )
     {
         if(owner && (owner->getClass() == CLASS_WARLOCK || owner->getClass() == CLASS_MAGE) )
             value += float(owner->GetStat(stat)) * 0.3f;
     }
-
     SetStat(stat, int32(value));
 
     switch(stat)
@@ -965,6 +994,7 @@ void Pet::UpdateMaxHealth()
 		case 1863:  multiplier = 9.1f;  break;  // Succubus
 		case 1860:                              // Voidwalker
 		case 17252: multiplier = 11.0f; break;  // Felguard
+		case 26150: multiplier = 5.4f;  break;	// Ghoul
 		default:    multiplier = 10.0f; break;
 	}
 
@@ -972,7 +1002,6 @@ void Pet::UpdateMaxHealth()
     value  *= GetModifierValue(unitMod, BASE_PCT);
     value  += GetModifierValue(unitMod, TOTAL_VALUE) + stamina * multiplier;
     value  *= GetModifierValue(unitMod, TOTAL_PCT);
-
     SetMaxHealth((uint32)value);
 }
 
@@ -1024,6 +1053,12 @@ void Pet::UpdateAttackPowerAndDamage(bool ranged)
             bonusAP = owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.22f;
             SetBonusDamage( int32(owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.1287f));
         }
+		//ghouls benefit from deathknight's attack power
+		else if(getPetType() == SUMMON_PET && owner->getClass() == CLASS_DEATH_KNIGHT)
+		{
+			bonusAP = owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.82f;
+			SetBonusDamage( int32(owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.8287f));
+		}
         //demons benefit from warlocks shadow or fire damage
         else if(getPetType() == SUMMON_PET && owner->getClass() == CLASS_WARLOCK)
         {

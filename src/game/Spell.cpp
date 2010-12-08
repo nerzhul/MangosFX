@@ -480,7 +480,8 @@ WorldObject* Spell::FindCorpseUsing()
 
     WorldObject* result = NULL;
 
-    T u_check(m_caster, max_range);
+    //T u_check(m_caster, max_range);
+	T u_check(((Player*)m_caster), max_range);
     MaNGOS::WorldObjectSearcher<T> searcher(m_caster, result, u_check);
 
     TypeContainerVisitor<MaNGOS::WorldObjectSearcher<T>, GridTypeMapContainer > grid_searcher(searcher);
@@ -493,6 +494,52 @@ WorldObject* Spell::FindCorpseUsing()
     }
 
     return result;
+}
+
+bool Spell::FillCustomTargetMap(uint32 i, UnitList &targetUnitMap)
+{
+	float radius;
+
+	if (m_spellInfo->EffectRadiusIndex[i])
+		radius = GetSpellRadius(sSpellRadiusStore.LookupEntry(m_spellInfo->EffectRadiusIndex[i]));
+	else
+		radius = GetSpellMaxRange(sSpellRangeStore.LookupEntry(m_spellInfo->rangeIndex));
+
+	// Resulting effect depends on spell that we want to cast
+	switch (m_spellInfo->Id)
+	{
+		case 46584: // Raise Dead
+		{
+			WorldObject* result = FindCorpseUsing <MaNGOS::RaiseDeadObjectCheck> ();
+
+			if(result)
+			{
+				switch(result->GetTypeId())
+				{
+					case TYPEID_UNIT:
+						targetUnitMap.push_back((Unit*)result);
+						break;
+					
+					default:
+						break;
+				};
+			};
+			break;
+		}
+		break;
+
+		case 47496: // Ghoul's explode
+		{
+			FillAreaTargets(targetUnitMap,m_targets.m_destX, m_targets.m_destY,radius,PUSH_DEST_CENTER,SPELL_TARGETS_AOE_DAMAGE);
+			break;
+		}
+		break;
+
+		default:
+		return false;
+		break;
+	}
+	return true;
 }
 
 // explicitly instantiate for use in SpellEffects.cpp
@@ -592,6 +639,10 @@ void Spell::FillTargetMap()
                         SetTargetMap(i, m_spellInfo->EffectImplicitTargetA[i], tmpUnitMap);
                         SetTargetMap(i, m_spellInfo->EffectImplicitTargetB[i], tmpUnitMap);
                         break;
+					case TARGET_AREAEFFECT_CUSTOM:
+					case TARGET_ALL_ENEMY_IN_AREA_INSTANT:
+						if (FillCustomTargetMap(i,tmpUnitMap)) 
+							break;
                     default:
                         SetTargetMap(i, m_spellInfo->EffectImplicitTargetB[i], tmpUnitMap);
                         break;
@@ -650,6 +701,9 @@ void Spell::FillTargetMap()
                     case TARGET_EFFECT_SELECT:
                         SetTargetMap(i, m_spellInfo->EffectImplicitTargetA[i], tmpUnitMap);
                         break;
+					case TARGET_RANDOM_NEARBY_DEST:
+						SetTargetMap(SpellEffectIndex(i), m_spellInfo->EffectImplicitTargetA[i], tmpUnitMap);
+						break;
                     // most A/B target pairs is self->negative and not expect adding caster to target list
                     default:
                         SetTargetMap(i, m_spellInfo->EffectImplicitTargetB[i], tmpUnitMap);
@@ -1618,9 +1672,15 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
             {
                 // caster included here?
                 FillAreaTargets(targetUnitMap, dest_x, dest_y, radius, PUSH_DEST_CENTER, SPELL_TARGETS_AOE_DAMAGE);
-            }
-            else
-                targetUnitMap.push_back(m_caster);
+           
+			}
+/*            else
+                targetUnitMap.push_back(m_caster);*/
+			else if (IsPositiveSpell(m_spellInfo->Id))
+						targetUnitMap.push_back(m_caster);
+			// This targetMode is often used as 'last' implicitTarget for positive spells, that just require coordinates
+			// and no unitTarget (e.g. summon effects). As MaNGOS always needs a unitTarget we add just the caster here.
+ 
 
             break;
         }
@@ -4758,8 +4818,9 @@ SpellCastResult Spell::CheckCast(bool strict)
             else if (target->HasAura(m_spellInfo->excludeTargetAuraSpell))
                 return SPELL_FAILED_CASTER_AURASTATE;
         }
-
-        bool non_caster_target = target != m_caster && !IsSpellWithCasterSourceTargetsOnly(m_spellInfo);
+		
+       
+		bool non_caster_target = target != m_caster && !IsSpellWithCasterSourceTargetsOnly(m_spellInfo);
 
         if(non_caster_target)
         {

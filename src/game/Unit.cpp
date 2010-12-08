@@ -7947,6 +7947,10 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                         triggered_spell_id = 66978; break;
                     case 49930:                             // Rank 6
                         triggered_spell_id = 66979; break;
+					
+						// Rune Strike
+                    case 56815: 
+						triggered_spell_id = 66217; break;                            // Rank 1
                     default:
                         return false;
                 }
@@ -8046,7 +8050,9 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 					{
 						uint16 cd = player->GetRuneCooldown(i);
 						if(!cd)
+						{
 							player->ConvertRune(i, RUNE_DEATH, dummySpell->Id);
+						}
 						else // there is a cd
 							player->SetNeedConvertRune(i, true, dummySpell->Id);
 						// no break because it converts all
@@ -8067,8 +8073,13 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 			// Rune strike
 			if (dummySpell->Id == 56817)
 			{
-				RemoveAurasDueToSpell(56817);
-				return true;
+				//RemoveAurasDueToSpell(56817);
+				//return true;
+				//Must proc only from Rune strike (56815) 
+				if (procSpell)
+ 					if (procSpell->Id != 56815)
+ 				        return false;
+
 			}
 			// Hungering Cold - not break from diseases
 			if (dummySpell->SpellIconID == 2797)
@@ -9703,7 +9714,14 @@ void Unit::SetPet(Pet* pet)
     SetPetGUID(pet ? pet->GetGUID() : 0);
 
     if(pet && GetTypeId() == TYPEID_PLAYER)
+	{
         ((Player*)this)->SendPetGUIDs();
+		// set infinite cooldown for summon spell
+
+		SpellEntry const *spellInfo = sSpellStore.LookupEntry(pet->GetUInt32Value(UNIT_CREATED_BY_SPELL));
+		if (spellInfo && spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
+			((Player*)this)->AddSpellAndCategoryCooldowns(spellInfo, 0, NULL,true);
+	}
 
     // FIXME: hack, speed must be set only at follow
     if(pet && GetTypeId()==TYPEID_PLAYER)
@@ -9719,6 +9737,12 @@ void Unit::SetCharm(Unit* pet)
 void Unit::AddGuardian( Pet* pet )
 {
     m_guardianPets.insert(pet->GetGUID());
+	if(GetTypeId() == TYPEID_PLAYER)
+	{
+		SpellEntry const *spellInfo = sSpellStore.LookupEntry(pet->GetUInt32Value(UNIT_CREATED_BY_SPELL));
+		if (spellInfo && spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
+		((Player*)this)->AddSpellAndCategoryCooldowns(spellInfo, 0, NULL,true);
+	}
 }
 
 void Unit::RemoveGuardian( Pet* pet )
@@ -12596,6 +12620,10 @@ void Unit::setDeathState(DeathState s)
     if (m_deathState != ALIVE && s == ALIVE)
     {
         //_ApplyAllAuraMods();
+
+		// Reset display id on resurection - needed by corpse explosion to cleanup after display change
+		if (!HasAuraType(SPELL_AURA_TRANSFORM))
+            SetDisplayId(GetNativeDisplayId());
     }
     m_deathState = s;
 }
@@ -14007,7 +14035,9 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                 }
 				// Rune Strike
 				if (procExtra & (PROC_EX_DODGE | PROC_EX_PARRY) && getClass() == CLASS_DEATH_KNIGHT)
+				{
 					CastSpell(this, 56817, true);
+				}
             }
         }
     }

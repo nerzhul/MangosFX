@@ -255,6 +255,7 @@ class Pet : public Creature
 		bool    m_needSave;                                 // is pet needed to be saved in DB (for chained - only originally first in chain)
         uint64  m_auraUpdateMask;
         bool    m_loading;
+		float	m_oldStamina;
 
         DeclinedName *m_declinedname;
 
