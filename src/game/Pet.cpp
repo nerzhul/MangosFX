@@ -200,9 +200,6 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
             SetUInt32Value(UNIT_FIELD_BYTES_0, 2048);
             SetUInt32Value(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE);
                                                             // this enables popup window (pet dismiss, cancel)
-			// DK ghouls have energy
-			if (cinfo->family == CREATURE_FAMILY_GHOUL)
-				setPowerType(POWER_ENERGY);
             break;
         case HUNTER_PET:
             SetUInt32Value(UNIT_FIELD_BYTES_0, 0x02020100);
@@ -250,6 +247,22 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
         CharacterDatabase.PExecute("UPDATE character_pet SET slot = '%u' WHERE owner = '%u' AND id = '%u'",
             PET_SAVE_AS_CURRENT, ownerid, m_charmInfo->GetPetNumber());
         CharacterDatabase.CommitTransaction();
+    }
+
+	// Send fake summon spell cast - this is needed for correct cooldown application for spells
+    // Example: 46584 - without this cooldown (which should be set always when pet is loaded) isn't set clientside
+    // TODO: pets should be summoned from real cast instead of just faking it?
+    if (GetUInt32Value(UNIT_CREATED_BY_SPELL))
+    {
+        WorldPacket data(SMSG_SPELL_GO, (8+8+4+4+2));
+        data.append(owner->GetPackGUID());
+        data.append(owner->GetPackGUID());
+        data << uint8(0);
+        data << uint32(GetUInt32Value(UNIT_CREATED_BY_SPELL));
+        data << uint32(256); // CAST_FLAG_UNKNOWN3
+        data << uint32(0);
+        SendMessageToSet(&data, true);
+		sLog.outError("Erreur");
     }
 
     // load action bar, if data broken will fill later by default spells.
@@ -967,20 +980,21 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 						{
 							int32 attackPower = int32(owner->GetInt32Value(UNIT_FIELD_ATTACK_POWER));
 							float multiplier = 0.25f;
-							float healmultip = 0.15f;
+							float healmultip = 0.30f;
 							uint32 strenght = 0;
+							
 							if(owner->HasAura(58686))
 							{
-								strenght += owner->GetStat(STAT_STRENGTH)* 0.4f;
-								healmultip += 0.4f;
+								strenght += owner->GetStat(STAT_STRENGTH)* 0.7f;
+								healmultip *= 1.4f;
 							}
-							int32 bonusmelee = int32(attackPower * 0.25f + strenght);
 							
+							int32 bonusmelee = int32(attackPower * 0.25f + strenght);
 							SetAttackTime(BASE_ATTACK, 1500);
 							setPowerType(POWER_ENERGY);
 							SetMaxPower(POWER_ENERGY,100);
 							SetPower(POWER_ENERGY,100);
-							SetCreateHealth(GetMaxHealth() + uint32(owner->GetHealth() * healmultip));
+							SetCreateHealth(uint32(owner->getLevel() * 55 ) + uint32(owner->GetHealth() * healmultip));
 						}
 						break;
 					}

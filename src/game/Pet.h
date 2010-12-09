@@ -252,10 +252,9 @@ class Pet : public Creature
         PetType m_petType;
         int32   m_duration;                                 // time until unsummon (used mostly for summoned guardians and not used for controlled pets)
         int32   m_bonusdamage;
-		bool    m_needSave;                                 // is pet needed to be saved in DB (for chained - only originally first in chain)
+		bool    m_needSave;                                 // is pet needed to be saved in DB (for chai7ned - only originally first in chain)
         uint64  m_auraUpdateMask;
         bool    m_loading;
-		float	m_oldStamina;
 
         DeclinedName *m_declinedname;
 
