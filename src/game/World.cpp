@@ -260,6 +260,7 @@ void World::AddSession_ (WorldSession* s)
     packet << uint8 (0);                                    // BillingPlanFlags
     packet << uint32 (0);                                   // BillingTimeRested
     packet << uint8 (s->Expansion());                       // 0 - normal, 1 - TBC, must be set in database manually for each account
+	packet << uint8 (2);                                    // In my only dump, same as extension.
     s->SendPacket (&packet);
 
     s->SendAddonsInfo();

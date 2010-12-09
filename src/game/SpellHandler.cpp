@@ -289,10 +289,11 @@ void WorldSession::HandleGameobjectReportUse(WorldPacket& recvPacket)
 
 void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
 {
-    uint32 spellId;
+    uint32 spellId,unk_401;
     uint8  cast_count, unk_flags;
     recvPacket >> cast_count;
     recvPacket >> spellId;
+	recvPacket >> unk_401;
     recvPacket >> unk_flags;                                // flags (if 0x02 - some additional data are received)
 
 	if(!GetPlayer())

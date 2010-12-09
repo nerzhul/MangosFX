@@ -483,6 +483,7 @@ Player::Player (WorldSession *session): Unit(), m_achievementMgr(this), m_reputa
             m_Glyphs[i][g] = 0;
 
         m_talents[i] = new PlayerTalentMap();
+		m_branchSpec[i] = 0;
     }
 
     for (int i = 0; i < BASEMOD_END; ++i)
@@ -657,6 +658,8 @@ bool Player::Create( uint32 guidlow, const std::string& name, uint8 race, uint8 
     SetInGuild(0);
     SetUInt32Value( PLAYER_GUILDRANK, 0 );
     SetUInt32Value( PLAYER_GUILD_TIMESTAMP, 0 );
+	SetUInt32Value(PLAYER_GUILDDELETE_DATE, 0);
+	SetUInt32Value(PLAYER_GUILDLEVEL, 1);
 
     SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES, 0 );        // 0=disabled
     SetUInt64Value( PLAYER__FIELD_KNOWN_TITLES1, 0 );       // 0=disabled
@@ -3889,6 +3892,14 @@ bool Player::resetTalents(bool no_cost)
         }
     }
 
+	for (uint32 i = 0; i < sTalentTreePrimarySpellsStore.GetNumRows(); ++i)
+	{
+		TalentTreePrimarySpellsEntry const *talentInfo = sTalentTreePrimarySpellsStore.LookupEntry(i);
+		if (!talentInfo || talentInfo->TalentTabID != GetTalentBranchSpec(m_activeSpec))
+			continue;
+		removeSpell(talentInfo->SpellID, true);
+	}
+
     for (unsigned int i = 0; i < sTalentStore.GetNumRows(); ++i)
     {
         TalentEntry const *talentInfo = sTalentStore.LookupEntry(i);
@@ -3955,6 +3966,8 @@ bool Player::resetTalents(bool no_cost)
         m_resetTalentsCost = cost;
         m_resetTalentsTime = time(NULL);
     }
+
+	m_branchSpec[m_activeSpec] = 0;
 
     //FIXME: remove pet before or after unlearn spells? for now after unlearn to allow removing of talent related, pet affecting auras
     RemovePet(NULL,PET_SAVE_NOT_IN_SLOT, true);
@@ -4082,11 +4095,12 @@ void Player::InitVisibleBits()
     updateVisualBits.SetBit(PLAYER_FLAGS);
     //updateVisualBits.SetBit(PLAYER_GUILDID);
     updateVisualBits.SetBit(PLAYER_GUILDRANK);
+	updateVisualBits.SetBit(PLAYER_GUILDLEVEL);
     updateVisualBits.SetBit(PLAYER_BYTES);
     updateVisualBits.SetBit(PLAYER_BYTES_2);
     updateVisualBits.SetBit(PLAYER_BYTES_3);
     updateVisualBits.SetBit(PLAYER_DUEL_TEAM);
-    updateVisualBits.SetBit(PLAYER_GUILD_TIMESTAMP);
+    //updateVisualBits.SetBit(PLAYER_GUILD_TIMESTAMP);
 	updateVisualBits.SetBit(UNIT_NPC_FLAGS);
 
     // PLAYER_QUEST_LOG_x also visible bit on official (but only on party/raid)...
@@ -5372,6 +5386,8 @@ void Player::UpdateRating(CombatRating cr)
         case CR_WEAPON_SKILL_OFFHAND:
         case CR_WEAPON_SKILL_RANGED:
             break;
+		case CR_MASTERY:                                    // Not implemented
+			break;
         case CR_EXPERTISE:
             if(affectStats)
             {
@@ -6590,7 +6606,7 @@ bool Player::RewardHonor(Unit *uVictim, uint32 groupsize, float honor)
             ApplyModUInt32Value(PLAYER_FIELD_KILLS, 1, true);
             // and those in a lifetime
             ApplyModUInt32Value(PLAYER_FIELD_LIFETIME_HONORBALE_KILLS, 1, true);
-            UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL);
+            //UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_EARN_HONORABLE_KILL);
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HK_CLASS, pVictim->getClass());
             UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_HK_RACE, pVictim->getRace());
         }
@@ -8563,8 +8579,75 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
     sLog.outDebug("Sending SMSG_INIT_WORLD_STATES to Map:%u, Zone: %u", mapid, zoneid);
 
     uint32 count = 0;                                       // count of world states in packet
-
-    WorldPacket data(SMSG_INIT_WORLD_STATES, (4+4+4+2+8*8));// guess
+	uint16 NumberOfFields = 0;
+	switch (zoneid)
+    {
+        case 0:
+        case 1:
+        case 4:
+        case 8:
+        case 10:
+        case 11:
+        case 12:
+        case 36:
+        case 38:
+        case 40:
+        case 41:
+        case 51:
+        case 267:
+        case 1519:
+        case 1537:
+        case 2257:
+        case 2918:
+            NumberOfFields = 8;
+            break;
+        case 139:
+            NumberOfFields = 41;
+            break;
+        case 1377:
+            NumberOfFields = 15;
+            break;
+        case 2597:
+            NumberOfFields = 83;
+            break;
+        case 3277:
+            NumberOfFields = 16;
+            break;
+        case 3358:
+        case 3820:
+            NumberOfFields = 40;
+            break;
+        case 3483:
+            NumberOfFields = 27;
+            break;
+        case 3518:
+            NumberOfFields = 39;
+            break;
+        case 3519:
+            NumberOfFields = 38;
+            break;
+        case 3521:
+            NumberOfFields = 37;
+            break;
+        case 3698:
+        case 3702:
+        case 3968:
+            NumberOfFields = 11;
+            break;
+        case 4378:
+            NumberOfFields = 11;
+            break;
+        case 3703:
+            NumberOfFields = 11;
+            break;
+        case 4384:
+            NumberOfFields = 30;
+            break;
+         default:
+            NumberOfFields = 12;
+            break;
+    }
+    WorldPacket data(SMSG_INIT_WORLD_STATES, (4+4+4+2+8*NumberOfFields));// guess
     data << uint32(mapid);                                  // mapid
     data << uint32(zoneid);                                 // zone id
     data << uint32(areaid);                                 // area id, new 2.1.0
@@ -15822,6 +15905,7 @@ bool Player::LoadFromDB( uint32 guid, SqlQueryHolder *holder )
     }
  
 	_LoadTalents(holder->GetResult(PLAYER_LOGIN_QUERY_LOADTALENTS));
+	_LoadTalentBranchSpecs(holder->GetResult(PLAYER_LOGIN_QUERY_LOADTALENTBRANCHSPECS));
 	
 	_LoadGlyphs(holder->GetResult(PLAYER_LOGIN_QUERY_LOADGLYPHS));
     _LoadAuras(holder->GetResult(PLAYER_LOGIN_QUERY_LOADAURAS), time_diff);
@@ -17250,6 +17334,7 @@ void Player::SaveToDB()
     _SaveDailyQuestStatus();
 	_SaveWeeklyQuestStatus();
 	_SaveTalents();
+	_SaveTalentBranchSpecs();
     _SaveSpells();
     _SaveSpellCooldowns();
     _SaveActions();
@@ -19944,13 +20029,14 @@ void Player::SendInitialPacketsAfterAddToMap()
 	if(getClass() == CLASS_DEATH_KNIGHT)
         ResyncRunes(MAX_RUNES);
 
-	WorldPacket data0(SMSG_SET_PHASE_SHIFT, 4);
+	/*WorldPacket data0(SMSG_SET_PHASE_SHIFT, 4);
     data0 << uint32(GetPhaseMask());
-    GetSession()->SendPacket(&data0);
+    GetSession()->SendPacket(&data0);*/
 
     // update zone
     uint32 newzone, newarea;
     GetZoneAndAreaId(newzone,newarea);
+	SendInitWorldStates(newzone, newarea);
     UpdateZone(newzone,newarea);                            // also call SendInitWorldStates();
 
     ResetTimeSync();
@@ -21458,7 +21544,9 @@ void Player::AutoStoreLoot(uint8 bag, uint8 slot, uint32 loot_id, LootStore cons
 
 uint32 Player::CalculateTalentsPoints() const
 {
-    uint32 base_talent = getLevel() < 10 ? 0 : getLevel()-9;
+	uint32 base_talent = 0;
+	if(getLevel() >= 10)
+		base_talent = (((getLevel() - 10 + 1) - ( ((getLevel() - 10 + 1) % 2) == 1 ? 1 : 0))/2)+1;
 
     if(getClass() != CLASS_DEATH_KNIGHT)
         return uint32(base_talent * sWorld.getRate(RATE_TALENT));
@@ -22073,6 +22161,7 @@ void Player::BuildPlayerTalentsInfoData(WorldPacket *data)
         for(uint32 specIdx = 0; specIdx < m_specsCount; ++specIdx)
         {
             uint8 talentIdCount = 0;
+			*data << uint32(GetTalentBranchSpec(specIdx));  //branchSpec
             size_t pos = data->wpos();
             *data << uint8(talentIdCount);                  // [PH], talentIdCount
 
@@ -22590,6 +22679,32 @@ void Player::_SaveGlyphs()
     }
 }
 
+void Player::_SaveTalentBranchSpecs()
+{
+	CharacterDatabase.PExecute("DELETE FROM character_branchspec WHERE guid='%u'",GetGUIDLow());
+	for (uint8 spec = 0; spec < m_specsCount; ++spec)
+	{
+		CharacterDatabase.PExecute("INSERT INTO character_branchspec VALUES('%u', '%u', '%u')",
+			GetGUIDLow(), spec, GetTalentBranchSpec(spec));
+	}
+}
+
+void Player::_LoadTalentBranchSpecs(QueryResult* result)
+{
+	// SetPQuery(PLAYER_LOGIN_QUERY_LOADTALENTBRANCHSPECS, "SELECT branchSpec, spec FROM character_branchspec WHERE guid = '%u'", GUID_LOPART(m_guid));
+	if(result)
+	{
+		do
+		{
+			Field *fields = result->Fetch();
+			uint32 branchSpec = fields[0].GetUInt32();
+			uint8 spec = fields[1].GetUInt32();
+			SetTalentBranchSpec(branchSpec, spec);
+		}
+		while (result->NextRow());
+	}
+}
+
 void Player::_LoadTalents(QueryResult *result)
 {
     // SetPQuery(PLAYER_LOGIN_QUERY_LOADTALENTS, "SELECT spell, spec FROM character_talent WHERE guid = '%u'", GUID_LOPART(m_guid));
@@ -22704,6 +22819,14 @@ void Player::ActivateSpec(uint8 spec)
         }
     }
 
+	for (uint32 i = 0; i < sTalentTreePrimarySpellsStore.GetNumRows(); ++i)
+	{
+		TalentTreePrimarySpellsEntry const *talentInfo = sTalentTreePrimarySpellsStore.LookupEntry(i);
+		if (!talentInfo || talentInfo->TalentTabID != GetTalentBranchSpec(m_activeSpec))
+			continue;
+		removeSpell(talentInfo->SpellID, true);
+	}
+
     // set glyphs
     for (uint8 slot = 0; slot < MAX_GLYPH_SLOT_INDEX; ++slot)
     {
@@ -22745,6 +22868,16 @@ void Player::ActivateSpec(uint8 spec)
             }
         }
     }
+
+	for (uint32 i = 0; i < sTalentTreePrimarySpellsStore.GetNumRows(); ++i)
+	{
+		TalentTreePrimarySpellsEntry const *talentInfo = sTalentTreePrimarySpellsStore.LookupEntry(i);
+		
+		if (!talentInfo || talentInfo->TalentTabID != GetTalentBranchSpec(spec))
+			continue;
+		
+		learnSpell(talentInfo->SpellID, 0, true);
+	}
 
     // set glyphs
     for (uint8 slot = 0; slot < MAX_GLYPH_SLOT_INDEX; ++slot) 

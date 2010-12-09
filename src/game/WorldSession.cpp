@@ -97,6 +97,7 @@ void WorldSession::SendPacket(WorldPacket const* packet)
 		if (!m_Socket)
 			return;
 
+		error_log("SendPacket %u %s",packet->GetOpcode(),LookupOpcodeName(packet->GetOpcode()));
 		if(GetPlayer())
 			sWorld.setLastPckFor(GetPlayer()->GetGUID(), packet);
 

@@ -31,10 +31,10 @@ void WorldSession::HandleGuildQueryOpcode(WorldPacket& recvPacket)
 {
     sLog.outDebug("WORLD: Received CMSG_GUILD_QUERY");
 
-    uint32 guildId;
+    uint64 guildId;
     recvPacket >> guildId;
 
-    if(Guild *guild = sObjectMgr.GetGuildById(guildId))
+    if(Guild *guild = sObjectMgr.GetGuildById(uint32(guildId)))
     {
         guild->Query(this);
         return;

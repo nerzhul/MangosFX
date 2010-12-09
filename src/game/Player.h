@@ -827,7 +827,8 @@ enum PlayerLoginQueryIndex
     PLAYER_LOGIN_QUERY_LOADSKILLS               = 25,
 	PLAYER_LOGIN_QUERY_LOADWEKLYQUESTSTATUS     = 26,
 	PLAYER_LOGIN_QUERY_LOADCALENDAREVENTS		= 27,
-    MAX_PLAYER_LOGIN_QUERY                      = 28
+	PLAYER_LOGIN_QUERY_LOADTALENTBRANCHSPECS	= 28,
+    MAX_PLAYER_LOGIN_QUERY                      = 29
 };
 
 enum PlayerDelayedOperations
@@ -1523,8 +1524,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void learnQuestRewardedSpells(Quest const* quest);
         void learnSpellHighRank(uint32 spellid);
 
-        uint32 GetFreeTalentPoints() const { return 0;/*GetUInt32Value(PLAYER_CHARACTER_POINTS1);*/ }
-        void SetFreeTalentPoints(uint32 points) { /*SetUInt32Value(PLAYER_CHARACTER_POINTS1,points);*/ }
+        uint32 GetFreeTalentPoints() const { return m_freeTalentPoints; }
+        void SetFreeTalentPoints(uint32 points) { m_freeTalentPoints = points; }
         bool resetTalents(bool no_cost = false);
         uint32 resetTalentsCost() const;
         void InitTalentForLevel();
@@ -1536,6 +1537,9 @@ class MANGOS_DLL_SPEC Player : public Unit
 
 		bool AddTalent(uint32 spell, uint8 spec, bool learning); // dual spec
 		bool HasTalent(uint32 spell_id, uint8 spec) const; // dual spec
+
+		void SetTalentBranchSpec(uint32 branchSpec, uint8 spec) { m_branchSpec[spec] = branchSpec; }
+		uint32 GetTalentBranchSpec(uint8 spec) const { return m_branchSpec[spec]; }
 
         uint32 CalculateTalentsPoints() const;
 
@@ -2386,6 +2390,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void _LoadExploredZones(const char* data);
 		void _LoadTitles(const char* data);
         void _LoadTalents(QueryResult *result);
+		void _LoadTalentBranchSpecs(QueryResult *result);
 
         /*********************************************************/
         /***                   SAVE SYSTEM                     ***/
@@ -2404,6 +2409,7 @@ class MANGOS_DLL_SPEC Player : public Unit
         void _SaveBGData();
 		void _SaveGlyphs();
         void _SaveTalents();
+		void _SaveTalentBranchSpecs();
 
         void _SetCreateBits(UpdateMask *updateMask, Player *target) const;
         void _SetUpdateBits(UpdateMask *updateMask, Player *target) const;
@@ -2466,6 +2472,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         uint32 m_activeSpec;
         uint32 m_specsCount;
 
+		uint32 m_branchSpec[MAX_TALENT_SPECS];
+		uint32 m_freeTalentPoints;
 		uint32 m_Glyphs[MAX_TALENT_SPECS][MAX_GLYPH_SLOT_INDEX]; // dual spec
 
         ActionButtonList m_actionButtons;
