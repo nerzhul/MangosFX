@@ -8070,17 +8070,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 triggered_spell_id = dummySpell->EffectTriggerSpell[effIndex];
                 break;
             }
-			// Rune strike
-			if (dummySpell->Id == 56817)
-			{
-				//RemoveAurasDueToSpell(56817);
-				//return true;
-				//Must proc only from Rune strike (56815) 
-				if (procSpell)
- 					if (procSpell->Id != 56815)
- 				        return false;
-
-			}
+			
 			// Hungering Cold - not break from diseases
 			if (dummySpell->SpellIconID == 2797)
 			{
@@ -14033,11 +14023,6 @@ void Unit::ProcDamageAndSpellFor( bool isVictim, Unit * pTarget, uint32 procFlag
                     ((Player*)this)->AddComboPoints(pTarget, 1);
                     StartReactiveTimer( REACTIVE_OVERPOWER );
                 }
-				// Rune Strike
-				if (procExtra & (PROC_EX_DODGE | PROC_EX_PARRY) && getClass() == CLASS_DEATH_KNIGHT)
-				{
-					CastSpell(this, 56817, true);
-				}
             }
         }
     }
