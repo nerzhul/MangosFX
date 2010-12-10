@@ -4302,6 +4302,13 @@ void Spell::EffectSummonGuardian(uint32 i, uint32 forceFaction)
 		}
 	}
 
+	switch(m_spellInfo->Id)
+	{
+		case 46619:
+			amount = 1;
+			break;
+	}
+
     for(int32 count = 0; count < amount; ++count)
     {
         Pet* spawnCreature = new Pet(propEntry->Title == UNITNAME_SUMMON_TITLE_COMPANION ? PROTECTOR_PET : GUARDIAN_PET);
