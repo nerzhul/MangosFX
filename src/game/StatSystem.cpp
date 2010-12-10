@@ -881,13 +881,13 @@ bool Pet::UpdateStats(Stats stat)
     Unit *owner = GetOwner();
 
 
-	if (this->GetEntry() == 26125 && (stat == STAT_STAMINA || stat == STAT_STRENGTH))
+	if (GetEntry() == 26125 && (stat == STAT_STAMINA || stat == STAT_STRENGTH))
     {
 		if (stat == STAT_STAMINA)
-			if (this->m_oldStamina == owner->GetStat(stat))
+			if (m_oldStamina == owner->GetStat(stat))
 				return true;
 			else 
-				this->m_oldStamina = owner->GetStat(stat);
+				m_oldStamina = owner->GetStat(stat);
 
 		float mod;
         switch (stat)

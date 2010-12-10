@@ -16163,7 +16163,7 @@ bool Unit::isGoodToChangeTargetAfterSpell(SpellEntry const* spell)
 		spell->Effect[2] == SPELL_EFFECT_ADD_COMBO_POINTS)
 		return false;
 
-	switch(spell)
+	switch(spell->Id)
 	{
 		case 100:
 			return false;
