@@ -1,6 +1,11 @@
 #include "precompiled.h"
 #include "vault_of_archavon.h"
 
+enum Spells
+{
+	SPELL_FROZEN_MASS		= 71993;
+};
+
 struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
 {
     boss_toravonAI(Creature* pCreature) : LibDevFSAI(pCreature)
@@ -12,17 +17,17 @@ struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
-		SetInstanceData(TYPE_TORAVON, NOT_STARTED);
+		SetInstanceData(DATA_TORAVON, NOT_STARTED);
     }
 
     void Aggro(Unit *who)
     {
-		SetInstanceData(TYPE_TORAVON, IN_PROGRESS);
+		SetInstanceData(DATA_TORAVON, IN_PROGRESS);
     }
 
     void JustDied(Unit *killer)
     {
-        SetInstanceData(TYPE_TORAVON, DONE);
+        SetInstanceData(DATA_TORAVON, DONE);
 		GiveEmblemsToGroup(m_difficulty ? GIVRE : TRIOMPHE,3);
     }
 
