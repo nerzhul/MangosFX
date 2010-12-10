@@ -883,12 +883,6 @@ bool Pet::UpdateStats(Stats stat)
 
 	if (GetEntry() == 26125 && (stat == STAT_STAMINA || stat == STAT_STRENGTH))
     {
-		if (stat == STAT_STAMINA)
-			if (m_oldStamina == owner->GetStat(stat))
-				return true;
-			else 
-				m_oldStamina = owner->GetStat(stat);
-
 		float mod;
         switch (stat)
         {

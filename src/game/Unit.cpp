@@ -6865,10 +6865,11 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
 							if(Aura* pAura2 = GetAura(57934, EFFECT_INDEX_1))
 							{
 								if(Unit* target = GetUnit(*this, pAura2->GetModMisc()))
-									CastSpell(target, 57933, true);
+									if(target != this)
+										CastSpell(target, 57933, true);
 							}
 							uint32 spDuration = 6000;
-							// trick of the trade glyp
+							// trick of the trade glyph
 							if(HasAura(63256))
 								spDuration += 4000;
 							pAura->SetAuraMaxDuration(spDuration);

@@ -3,7 +3,7 @@
 
 enum Npc
 {
-	NPC_TORAVON_ORB		= 38461;
+	NPC_TORAVON_ORB		= 38461,
 };
 
 enum Spells
@@ -69,7 +69,7 @@ struct MANGOS_DLL_DECL toravon_frozenOrbAI : public LibDevFSAI
     toravon_frozenOrbAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
 		InitInstance();
-		MakeHostileStalker();
+		me->SetDisplayId(16925);
     }
 
 	bool die;
