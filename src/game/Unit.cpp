@@ -9864,7 +9864,7 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
             if(Unit* magnet = (*itr)->GetCaster())
                 if(magnet->IsWithinLOSInMap(this) && magnet->isAlive())
 				{
-					if(isGoodToChangeTargetAfterSpell(spellInfo->Id))
+					if(isGoodToChangeTargetAfterSpell(spellInfo))
 					{
 						if (magnet->HasAura(8178)) 
 							magnet->RemoveAura(8178,3);
@@ -9885,7 +9885,7 @@ Unit* Unit::SelectMagnetTarget(Unit *victim, SpellEntry const *spellInfo)
 						if(magnet->HasAura(3411))
 							magnet->RemoveAurasDueToSpell(3411);
 
-						if(!spellInfo || isGoodToChangeTargetAfterSpell(spellInfo->Id))
+						if(!spellInfo || isGoodToChangeTargetAfterSpell(spellInfo))
 							return magnet;
 					}
     }
@@ -16156,8 +16156,13 @@ void Unit::DoPetAction(Player* owner, uint8 flag, uint32 spellid, uint64 guid1, 
     }
 }
 
-bool Unit::isGoodToChangeTargetAfterSpell(uint32 spell)
+bool Unit::isGoodToChangeTargetAfterSpell(SpellEntry const* spell)
 {
+	if(spell->Effect[0] == SPELL_EFFECT_ADD_COMBO_POINTS ||
+		spell->Effect[1] == SPELL_EFFECT_ADD_COMBO_POINTS ||
+		spell->Effect[2] == SPELL_EFFECT_ADD_COMBO_POINTS)
+		return false;
+
 	switch(spell)
 	{
 		case 100:

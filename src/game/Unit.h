@@ -1995,7 +1995,7 @@ class MANGOS_DLL_SPEC Unit : public WorldObject
         bool HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggredByAura, SpellEntry const *procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown);
         bool HandleOverrideClassScriptAuraProc(Unit *pVictim, uint32 damage, Aura* triggredByAura, SpellEntry const *procSpell, uint32 cooldown);
         bool HandleMendingAuraProc(Aura* triggeredByAura);
-		bool isGoodToChangeTargetAfterSpell(uint32 spell);
+		bool isGoodToChangeTargetAfterSpell(SpellEntry const* spell);
         // player or player's pet
         float GetCombatRatingReduction(CombatRating cr) const;
 		float BDSpellDamageHacks();

@@ -55,6 +55,39 @@ CreatureAI* GetAI_boss_toravon(Creature* pCreature)
     return new boss_toravonAI(pCreature);
 }
 
+struct MANGOS_DLL_DECL toravon_frozenOrbAI : public LibDevFSAI
+{
+    toravon_frozenOrbAI(Creature* pCreature) : LibDevFSAI(pCreature)
+    {
+		InitInstance();
+		MakeHostileInvisibleStalker();
+    }
+
+
+    void Reset()
+    {
+		ResetTimers();
+    }
+
+    void Aggro(Unit *who)
+    {
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (!CanDoSomething())
+            return;
+		UpdateEvent(diff);
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+CreatureAI* GetAI_toravon_frozenOrb(Creature* pCreature)
+{
+    return new toravon_frozenOrbAI(pCreature);
+}
+
 void AddSC_boss_toravon()
 {
     Script *newscript;
@@ -62,5 +95,10 @@ void AddSC_boss_toravon()
     newscript = new Script;
     newscript->Name = "boss_toravon";
     newscript->GetAI = &GetAI_boss_toravon;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
+    newscript->Name = "toravon_frozen_orb";
+    newscript->GetAI = &GetAI_toravon_frozenOrb;
     newscript->RegisterSelf();
 }
