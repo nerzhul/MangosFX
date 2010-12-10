@@ -6549,48 +6549,64 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
             switch(m_spellInfo->Id)
             {
+				if(!unitTarget)
+					return;
+				
+
 				//Raise dead effect
 				case 46584:
                 {
 					if (m_caster->GetTypeId() != TYPEID_PLAYER)
 						return;
-					// We can have a summoned pet/guardian only in 2 cases:
-					// 1. It was summoned from corpse in EffectScriptEffect.
+					
 					if (getState() == SPELL_STATE_FINISHED)
 						return;
-					// 2. Cooldown of Raise Dead is finished and we want to repeat the cast with active pet.
-					if (((Player*)m_caster)->GetPet())
+					
+					Player* p_caster = (Player*)m_caster;
+					
+					if (p_caster->GetPet() || p_caster->FindGuardianWithEntry(26125))
 					{
-						((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
 						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
+                        finish(false);
 						return;
 					}
-					// We will get here ONLY if we have no corpse.
-					bool allow_cast = false;
-					// We do not need any reagent if we have Glyph of Raise Dead.
-					if (m_caster->HasAura(60200))
-						allow_cast = true;
-					else
-					// We need Corpse Dust to cast a spell.
-						if (((Player*)m_caster)->HasItemCount(37201,1))
+					
+					bool allow_cast = unitTarget && unitTarget != m_caster;
+					
+					if(!allow_cast)
+					{
+						if (p_caster->HasAura(60200))
+							allow_cast = true;
+						else if(p_caster->HasItemCount(37201,1))
 						{
-							((Player*)m_caster)->DestroyItemCount(37201,1,true);
+							p_caster->DestroyItemCount(37201,1,true);
 							allow_cast = true;
 						}
 
-					if (allow_cast)
-					{
-						if (m_caster->HasSpell(52143))
-							m_caster->CastSpell(m_caster,52150,true);
-						else
-							m_caster->CastSpell(m_caster,46585,true);
 					}
-					else
+
+					if (!allow_cast)
 					{
-						((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
-						SendCastResult(SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
+						p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
+                        SendCastResult(SPELL_FAILED_REAGENTS);
+                        finish(false);
+                        return;
 					}
-					return;
+
+					// check for "Master of Ghouls"
+                    uint32 spell = uint32(p_caster->HasSpell(52143) ? 52150 : 46585);
+
+					// if no corpse found
+                    if (unitTarget == m_caster)
+                    {
+                        float x, y, z;
+                        p_caster->GetClosePoint(x, y, z, p_caster->GetObjectBoundingRadius(), PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                        p_caster->CastSpell(x, y, z, spell, true);
+                    }
+                    else if (unitTarget)
+                        p_caster->CastSpell(unitTarget, spell, true, NULL, NULL, unitTarget->GetGUID() );
+ 
+                     break;
 				}
 
                 // Pestilence
