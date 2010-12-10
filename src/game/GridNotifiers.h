@@ -539,20 +539,36 @@ namespace MaNGOS
     class RaiseDeadObjectCheck
     {
         public:
-            RaiseDeadObjectCheck(Unit* funit, float range) : i_funit(funit), i_range(range) {}
-            bool operator()(Creature* u)
+			RaiseDeadObjectCheck(Unit const* fobj, float range)
             {
-                if (i_funit->GetTypeId()!=TYPEID_PLAYER || !((Player*)i_funit)->isHonorOrXPTarget(u) ||
-                    u->getDeathState() != CORPSE || u->isDeadByDefault() || u->isInFlight() ||
-                    ( u->GetCreatureTypeMask() & (1 << (CREATURE_TYPE_HUMANOID-1)) )==0 ||
-                    (u->GetDisplayId() != u->GetNativeDisplayId()))
+                i_range = range;
+
+                if (fobj && fobj->GetTypeId() == TYPEID_PLAYER)
+                    i_fobj = (Player const*)fobj;
+                else
+                    i_fobj = NULL;
+            }
+            WorldObject const& GetFocusObject() const { return *i_fobj; }
+            bool operator()(Player* u)
+            {
+                if (i_fobj->IsFriendlyTo(u) || u->isAlive() || u->HasAuraType(SPELL_AURA_GHOST) || u->getDeathState()!=CORPSE ||
+					u->isInFlight() || !((Player*)i_fobj)->isHonorOrXPTarget(u) || u->GetDisplayId() != u->GetNativeDisplayId() )
                     return false;
 
-                return i_funit->IsWithinDistInMap(u, i_range);
+                return i_fobj->IsWithinDistInMap(u, i_range);
+            }
+            bool operator()(Creature* u)
+            {
+                if (((Player*)i_fobj)->isHonorOrXPTarget(u) || u->GetDisplayId() != u->GetNativeDisplayId() ||
+					u->getDeathState() != CORPSE || u->isDeadByDefault() || u->isInFlight() ||
+                    ( u->GetCreatureTypeMask() & (1 << (CREATURE_TYPE_HUMANOID-1)) )==0)
+                    return false;
+
+                return i_fobj->IsWithinDistInMap(u, i_range);
             }
             template<class NOT_INTERESTED> bool operator()(NOT_INTERESTED*) { return false; }
         private:
-            Unit* const i_funit;
+            Player const* i_fobj;
             float i_range;
     };
 

@@ -219,6 +219,9 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
     if(owner->IsPvP())
         SetPvP(true);
 
+	if (spellInfo && spellInfo->Attributes & SPELL_ATTR_DISABLED_WHILE_ACTIVE)
+        owner->AddSpellAndCategoryCooldowns(spellInfo, 0, NULL,true);
+
     if(owner->IsFFAPvP())
         SetFFAPvP(true);
 
@@ -497,7 +500,11 @@ void Pet::setDeathState(DeathState s)                       // overwrite virtual
 				// Raise Dead hack
 				if (spellInfo->SpellFamilyName == SPELLFAMILY_DEATHKNIGHT && spellInfo->SpellFamilyFlags & 0x1000)
 					if (spellInfo = sSpellStore.LookupEntry(46584))
+					{
 						p_owner->SendCooldownEvent(spellInfo);
+						p_owner->SendCooldownEvent(sSpellStore.LookupEntry(46585));
+						p_owner->SendCooldownEvent(sSpellStore.LookupEntry(52150));
+					}
 			}
         }
     }
@@ -985,16 +992,16 @@ bool Pet::InitStatsForLevel(uint32 petlevel, Unit* owner)
 							
 							if(owner->HasAura(58686))
 							{
-								strenght += owner->GetStat(STAT_STRENGTH)* 0.7f;
+								strenght += owner->GetStat(STAT_STRENGTH)* 1.4f;
 								healmultip *= 1.4f;
 							}
 							
-							int32 bonusmelee = int32(attackPower * 0.25f + strenght);
+							int32 bonusmelee = int32(attackPower * 0.30f + strenght* 1.2);
 							SetAttackTime(BASE_ATTACK, 1500);
 							setPowerType(POWER_ENERGY);
 							SetMaxPower(POWER_ENERGY,100);
 							SetPower(POWER_ENERGY,100);
-							SetCreateHealth(uint32(owner->getLevel() * 55 ) + uint32(owner->GetHealth() * healmultip));
+							SetCreateHealth(uint32(owner->getLevel() * 55 ) + uint32((owner->GetStat(STAT_STAMINA) * healmultip))* 5.4);
 						}
 						break;
 					}
@@ -1982,6 +1989,11 @@ bool Pet::Create(uint32 guidlow, Map *map, uint32 phaseMask, uint32 Entry, uint3
     if(getPetType() == MINI_PET)                            // always non-attackable
         SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
+	// Bloodworms
+    if (GetEntry() == 28017)
+        CastSpell(this, 50453, true);
+
+     
     return true;
 }
 

@@ -508,6 +508,7 @@ bool Spell::FillCustomTargetMap(uint32 i, UnitList &targetUnitMap)
 	// Resulting effect depends on spell that we want to cast
 	switch (m_spellInfo->Id)
 	{
+		/*
 		case 46584: // Raise Dead
 		{
 			WorldObject* result = FindCorpseUsing <MaNGOS::RaiseDeadObjectCheck> ();
@@ -527,7 +528,7 @@ bool Spell::FillCustomTargetMap(uint32 i, UnitList &targetUnitMap)
 			break;
 		}
 		break;
-
+*/
 		case 47496: // Ghoul's explode
 		{
 			FillAreaTargets(targetUnitMap,m_targets.m_destX, m_targets.m_destY,radius,PUSH_DEST_CENTER,SPELL_TARGETS_AOE_DAMAGE);
@@ -1701,6 +1702,58 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				targetUnitMap.push_back(m_caster);
 				break;
 			}
+			//Raise Dead
+            if (m_spellInfo->Id == 46584)
+            {
+                Unit *unitTarget = m_targets.getUnitTarget();
+                targetUnitMap.remove(m_caster);
+
+                if (unitTarget && unitTarget != m_caster)
+                {
+                    MaNGOS::RaiseDeadObjectCheck ec_chk(m_caster, radius);
+                    if (ec_chk(unitTarget) )
+                    {
+                        targetUnitMap.push_back(unitTarget);
+                        break;
+                    }
+                }
+
+                WorldObject* result = FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck> ();
+
+                if(result && (result->GetTypeId() == TYPEID_UNIT || result->GetTypeId() == TYPEID_PLAYER) )
+                    targetUnitMap.push_back((Unit*)result);
+                else
+                    targetUnitMap.push_back(m_caster);
+
+                break;
+            }
+
+			//Raise Dead
+            if (m_spellInfo->Id == 46584)
+            {
+                 Unit *unitTarget = m_targets.getUnitTarget();
+ 
+                 targetUnitMap.remove(m_caster);
+ 
+                 if (unitTarget && unitTarget != m_caster)
+                 {
+                    MaNGOS::RaiseDeadObjectCheck ec_chk(m_caster, radius);
+                    if (ec_chk(unitTarget) )
+                    {
+                         targetUnitMap.push_back(unitTarget);
+                         break;
+					}
+                }
+ 
+                WorldObject* result = FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck> ();
+ 
+                if(result && (result->GetTypeId() == TYPEID_UNIT || result->GetTypeId() == TYPEID_PLAYER) )
+                    targetUnitMap.push_back((Unit*)result);
+                else
+					targetUnitMap.push_back(m_caster);
+ 
+				break;
+            }
 
 			UnitList tempTargetUnitMap;
 			SpellScriptTargetBounds bounds = sSpellMgr.GetSpellScriptTargetBounds(m_spellInfo->Id);

@@ -81,7 +81,8 @@ class DBCStorage
 
 			uint32 sqlRecordCount = 0;
             uint32 sqlHighestIndex = 0;
-            /*Field *fields = NULL;
+            
+			Field *fields = NULL;
 			QueryResult * result;
 
 			// Load data from sql
@@ -108,12 +109,113 @@ class DBCStorage
                         return false;
                     }
                 }
-            }*/
+            }
             char * sqlDataTable;
             fieldCount = dbc.GetCols();
             m_dataTable = (T*)dbc.AutoProduceData(fmt,nCount,(char**&)indexTable, sqlRecordCount, sqlHighestIndex, sqlDataTable);
             m_stringPoolList.push_back(dbc.AutoProduceStrings(fmt,(char*)m_dataTable));
 
+			// Insert sql data into arrays
+            if (sql && result)
+            {
+                if (indexTable)
+                {
+                    uint32 offset = 0;
+                    uint32 rowIndex = dbc.GetNumRows();
+                    do
+                    {
+                        if (!fields)
+                            fields = result->Fetch();
+
+                        if(sql->indexPos >= 0)
+                        {
+                            uint32 id = fields[sql->sqlIndexPos].GetUInt32();
+                            if (indexTable[id])
+                            {
+                                sLog.outError("Index %d already exists in dbc:'%s'", id, sql->sqlTableName.c_str());
+                                return false;
+                            }
+                            indexTable[id]=(T*)&sqlDataTable[offset];
+                        }
+                        else
+                            indexTable[rowIndex]=(T*)&sqlDataTable[offset];
+                        uint32 columnNumber = 0;
+                        uint32 sqlColumnNumber = 0;
+
+                        for (; columnNumber < sql->formatString->size(); ++columnNumber)
+                        {
+                            if ((*sql->formatString)[columnNumber] == FT_SQL_ABSENT)
+                            {
+                                switch(fmt[columnNumber])
+                                {
+                                    case FT_FLOAT:
+                                        *((float*)(&sqlDataTable[offset]))= 0.0f;
+                                        offset+=4;
+                                        break;
+                                    case FT_IND:
+                                    case FT_INT:
+                                        *((uint32*)(&sqlDataTable[offset]))=uint32(0);
+                                        offset+=4;
+                                        break;
+                                    case FT_BYTE:
+                                        *((uint8*)(&sqlDataTable[offset]))=uint8(0);
+                                        offset+=1;
+                                        break;
+                                    case FT_STRING:
+                                        // Beginning of the pool - empty string
+                                        *((char**)(&sqlDataTable[offset]))=m_stringPoolList.back();
+                                        offset+=sizeof(char*);
+                                        break;
+                                }
+                            }
+                            else if ((*sql->formatString)[columnNumber] == FT_SQL_PRESENT)
+                            {
+                                bool validSqlColumn = true;
+                                switch(fmt[columnNumber])
+                                {
+                                    case FT_FLOAT:
+                                        *((float*)(&sqlDataTable[offset]))=fields[sqlColumnNumber].GetFloat();
+                                        offset+=4;
+                                        break;
+                                    case FT_IND:
+                                    case FT_INT:
+                                        *((uint32*)(&sqlDataTable[offset]))=fields[sqlColumnNumber].GetUInt32();
+                                        offset+=4;
+                                        break;
+                                    case FT_BYTE:
+                                        *((uint8*)(&sqlDataTable[offset]))=fields[sqlColumnNumber].GetUInt8();
+                                        offset+=1;
+                                        break;
+                                    case FT_STRING:
+                                        sLog.outError("Unsupported data type in table '%s' at char %d", sql->sqlTableName.c_str(), columnNumber);
+                                        return false;
+                                    case FT_SORT:
+                                        break;
+                                    default:
+                                        validSqlColumn = false;
+                                }
+                                if (validSqlColumn && (columnNumber != (sql->formatString->size()-1)))
+                                    sqlColumnNumber++;
+                            }
+                            else
+                            {
+                                sLog.outError("Incorrect sql format string '%s' at char %d", sql->sqlTableName.c_str(), columnNumber);
+                                return false;
+                            }
+                        }
+                        if (sqlColumnNumber != (result->GetFieldCount()-1))
+                        {
+                            sLog.outError("SQL and DBC format strings are not matching for table: '%s' (Normally %u - Here %u)", sql->sqlTableName.c_str(), sqlColumnNumber , result->GetFieldCount()-1);
+                            return false;
+                        }
+
+                        fields = NULL;
+                        ++rowIndex;
+                    }while (result->NextRow());
+                }
+            }
+
+            // error in dbc file at loading if NULL
             return indexTable!=NULL;
         }
 
