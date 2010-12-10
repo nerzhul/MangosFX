@@ -6978,23 +6978,17 @@ void Aura::HandleShapeshiftBoosts(bool apply)
 					
 					m_target->RemoveAurasDueToSpell(HotWSpellId);
 					// BD Hack for HeartOfTheWild
-					if (form == FORM_CAT) // Remove stamina aura stack
-					{
-						m_target->RemoveAurasDueToSpell(19255);
-						m_target->RemoveAurasDueToSpell(19256);
-						m_target->RemoveAurasDueToSpell(19257);
-						m_target->RemoveAurasDueToSpell(19258);
-						m_target->RemoveAurasDueToSpell(19259);
-					}
-					else if ((form == FORM_DIREBEAR)) // Remove PA aura stack
-					{
-						m_target->RemoveAurasDueToSpell(30902);
-						m_target->RemoveAurasDueToSpell(30903);
-						m_target->RemoveAurasDueToSpell(30904);
-						m_target->RemoveAurasDueToSpell(30905);
-						m_target->RemoveAurasDueToSpell(30906);
-					}
-
+					// Remove PA and stamina aura stack
+					m_target->RemoveAurasDueToSpell(19255);
+					m_target->RemoveAurasDueToSpell(19256);
+					m_target->RemoveAurasDueToSpell(19257);
+					m_target->RemoveAurasDueToSpell(19258);
+					m_target->RemoveAurasDueToSpell(19259);
+					m_target->RemoveAurasDueToSpell(30902);
+					m_target->RemoveAurasDueToSpell(30903);
+					m_target->RemoveAurasDueToSpell(30904);
+					m_target->RemoveAurasDueToSpell(30905);
+					m_target->RemoveAurasDueToSpell(30906);
 				}
 			}
 		}
