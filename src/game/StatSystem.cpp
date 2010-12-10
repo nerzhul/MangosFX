@@ -881,25 +881,8 @@ bool Pet::UpdateStats(Stats stat)
     Unit *owner = GetOwner();
 
 
-	if (this->GetEntry() == 26125 && (stat == STAT_STAMINA || stat == STAT_STRENGTH))
-    {
-		if (stat == STAT_STAMINA)
-			if (this->m_oldStamina == owner->GetStat(stat))
-				return true;
-			else 
-				this->m_oldStamina = owner->GetStat(stat);
-
-		float mod;
-        switch (stat)
-        {
-            case STAT_STAMINA:  mod = 0.3f; break;                // Default Owner's Stamina scale
-            case STAT_STRENGTH: mod = 0.7f; break;                // Default Owner's Strength scale
-            default: break;
-        }
-   
-        value += float(owner->GetStat(stat)) * mod;
-
-    }
+	if (this->GetEntry() == 26125 && (stat == STAT_STRENGTH) && (owner->getClass() == CLASS_DEATH_KNIGHT) )
+        value += float(owner->GetStat(stat)) * 0.6f;
 	else if ( stat == STAT_STAMINA )
     {
         if(owner)
