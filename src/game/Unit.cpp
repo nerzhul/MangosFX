@@ -5858,6 +5858,18 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 33494;
                     break;
                 }
+				// Health Leech (used by Bloodworms)
+                case 50453:
+                {
+                    Unit *owner = GetOwner();
+                    if (!owner)
+                        return false;
+
+                    triggered_spell_id = 50454;
+                    basepoints0 = int32(damage*1.69);
+                    target = owner;
+                    break;
+                }
                 // Vampiric Aura (boss spell)
                 case 38196:
                 {
