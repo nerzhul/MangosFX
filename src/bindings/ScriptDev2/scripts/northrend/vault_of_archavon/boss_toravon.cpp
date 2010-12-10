@@ -3,7 +3,11 @@
 
 enum Spells
 {
-	SPELL_FROZEN_MASS		= 71993;
+	SPELL_FROZEN_MASS		= 71993,
+	SPELL_FROZEN_ORB		= 72091,
+	SPELL_WHITE_SNOW		= 72034,
+	SPELL_FROZEN_FLOOR		= 72090,
+	SPELL_STONE				= 63080,
 };
 
 struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
@@ -11,6 +15,11 @@ struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
     boss_toravonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
 		InitInstance();
+		AddEventOnTank(SPELL_FROZEN_MASS,5000,10000);
+		AddEvent(SPELL_FROZEN_ORB,12000,30000);
+		AddEventOnMe(SPELL_WHITE_SNOW,1000,50000);
+		AddEventOnTank(SPELL_FROZEN_FLOOR,20000,30000);
+		AddEvent(SPELL_STONE,24000,15000);
     }
 
 
