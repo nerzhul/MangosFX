@@ -1757,9 +1757,12 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 if (spellInfo_1->SpellIconID == 329 && spellInfo_2->SpellIconID == 329 && spellInfo_2->SpellVisual[0] == 7625)
 					return false;
 
-				// Shadow form & Interior fire
-				if (spellInfo_1->SpellIconID ==  1552 && spellInfo_2->SpellIconID == 51 ||
-					spellInfo_1->SpellIconID ==  51 && spellInfo_2->SpellIconID == 1552)
+				// Interior fire Multi stack
+				if (spellInfo_1->SpellIconID == 1552 && spellInfo_2->SpellIconID == 1552 && spellInfo_1->Id != spellInfo_2->Id)
+					return true;
+
+				// Shadow form multi stack
+				if (spellInfo_1->SpellIconID == 51 && spellInfo_2->SpellIconID == 51 && spellInfo_1->Id != spellInfo_2->Id)
 					return true;
             }
             break;
