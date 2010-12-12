@@ -3060,6 +3060,10 @@
 			>
 		</File>
 		<File
+			RelativePath="..\Makefile.am"
+			>
+		</File>
+		<File
 			RelativePath="..\ScriptMgr.cpp"
 			>
 		</File>

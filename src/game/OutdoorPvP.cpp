@@ -408,7 +408,7 @@ void OutdoorPvP::SendUpdateWorldState(uint32 field, uint32 value)
     if(m_sendUpdate)
         for (uint8 i = 0; i < 2; ++i)
             for (PlayerSet::iterator itr = m_players[i].begin(); itr != m_players[i].end(); ++itr)
-				if((*itr)->GetSession())
+				if((*itr)->GetSession() && (*itr)->IsInWorld())
 					(*itr)->SendUpdateWorldState(field, value);
 }
 
