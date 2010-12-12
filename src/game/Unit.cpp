@@ -15000,7 +15000,6 @@ bool Unit::IsTriggeredAtSpellProcEvent(Unit *pVictim, Aura* aura, SpellEntry con
         modOwner->ApplySpellMod(spellProto->Id,SPELLMOD_FREQUENCY_OF_SUCCESS,chance);
     }
 
-	// fss mod
 	// Fingers of Frost: save roll for re-use in Frostbite trigger
 	if(aura->GetSpellProto()->EffectTriggerSpell[aura->GetEffIndex()] == 44544)
 	{

@@ -1756,6 +1756,11 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
                 //Renewed hope and gift of the naaru(have diff spell families)
                 if (spellInfo_1->SpellIconID == 329 && spellInfo_2->SpellIconID == 329 && spellInfo_2->SpellVisual[0] == 7625)
 					return false;
+
+				// Shadow form & Interior fire
+				if (spellInfo_1->SpellIconID ==  1552 && spellInfo_2->SpellIconID == 51 ||
+					spellInfo_1->SpellIconID ==  51 && spellInfo_2->SpellIconID == 1552)
+					return true;
             }
             break;
         case SPELLFAMILY_DRUID:

@@ -9623,6 +9623,7 @@ bool Aura::IsForcedVisibleAura() const
 		case 53138:
 		case 53137:
 		case 44544:
+		case 44545:
 		case 51466:
 		case 51470:
 		case 28878:
