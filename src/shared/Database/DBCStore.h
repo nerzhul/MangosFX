@@ -23,6 +23,7 @@
 #include "../Log.h"
 #include "Field.h"
 #include "QueryResult.h"
+#include "DatabaseEnv.h"
 
 struct SqlDbc
 {
