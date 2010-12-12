@@ -44,11 +44,11 @@ struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
 	{
 		if(spell->Id == 72091)
 		{
-			/*if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
 			{
 				CallCreature(38461,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,pWho->GetPositionX(),pWho->GetPositionY(),pWho->GetPositionZ());
 				CallCreature(38461,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,pWho->GetPositionX(),pWho->GetPositionY(),pWho->GetPositionZ());
-			}*/
+			}
 		}
 	}
 

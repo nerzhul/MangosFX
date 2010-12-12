@@ -1498,6 +1498,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				case 59870:                                 // Glare of the Tribunal (h) (Halls of Stone)
 				case 69248:
 				case 72274:
+				case 72091:
                     unMaxTargets = 1;
                     break;
                 case 28542:                                 // Life Drain
