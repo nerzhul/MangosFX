@@ -6094,14 +6094,13 @@ bool Player::SetPosition(float x, float y, float z, float orientation, bool tele
         x = GetPositionX();
         y = GetPositionY();
         z = GetPositionZ();
+	}
+	// group update
+    if(GetGroup())
+		SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
 
-        // group update
-        if(GetGroup())
-            SetGroupUpdateFlag(GROUP_UPDATE_FLAG_POSITION);
-
-		if (IsVehicle())
-			GetVehicleKit()->RelocatePassengers(x,y,z,orientation,GetMap());
-    }
+	if (IsVehicle())
+		GetVehicleKit()->RelocatePassengers(x,y,z,orientation,GetMap());
 
     // code block for underwater state update
     UpdateUnderwaterState(m, x, y, z);
