@@ -102,6 +102,7 @@ struct MANGOS_DLL_DECL toravon_frozenOrbAI : public LibDevFSAI
     void Reset()
     {
 		ResetTimers();
+		ModifyAuraStack(72067);
 		ModifyAuraStack(SPELL_AURA_FROZEN_ORB);
 		die = false;
     }
