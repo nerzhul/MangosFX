@@ -90,7 +90,8 @@ struct MANGOS_DLL_DECL instance_vault_of_archavon : public InstanceData
                 }
 				break;
 			case NPC_TORAVON:
-				AutoFreeze(pCreature);
+				m_uiToravonGUID = pCreature->GetGUID();
+				//AutoFreeze(pCreature);
                 break;
         }
     }

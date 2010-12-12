@@ -24,23 +24,39 @@ struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
     boss_toravonAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
 		InitInstance();
-		AddEventOnTank(SPELL_FROZEN_MASS,5000,10000);
 		AddEvent(SPELL_FROZEN_ORB,12000,30000);
-		AddEventOnMe(SPELL_WHITE_SNOW,1000,50000);
+		AddEventMaxPrioOnMe(SPELL_WHITE_SNOW,1000,50000);
 		AddEvent(SPELL_FROZEN_FLOOR,20000,30000);
-		AddEvent(SPELL_STONE,24000,15000);
     }
 
+
+	uint32 stone_Timer;
 
     void Reset()
     {
 		ResetTimers();
+		CleanMyAdds();
 		SetInstanceData(DATA_TORAVON, NOT_STARTED);
+		stone_Timer = 24000;
     }
+
+	void SpellHitTarget(Unit* pWho, const SpellEntry* spell)
+	{
+		if(spell->Id == 72091)
+		{
+			CallCreature(38461,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,pWho->GetPositionX(),pWho->GetPositionY(),pWho->GetPositionZ());
+			if(m_difficulty == RAID_DIFFICULTY_25MAN_NORMAL)
+			{
+				CallCreature(38461,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,pWho->GetPositionX(),pWho->GetPositionY(),pWho->GetPositionZ());
+				CallCreature(38461,TEN_MINS,PREC_COORDS,AGGRESSIVE_RANDOM,pWho->GetPositionX(),pWho->GetPositionY(),pWho->GetPositionZ());
+			}
+		}
+	}
 
     void Aggro(Unit *who)
     {
 		SetInstanceData(DATA_TORAVON, IN_PROGRESS);
+		ModifyAuraStack(SPELL_FROZEN_MASS);
     }
 
     void JustDied(Unit *killer)
@@ -53,6 +69,16 @@ struct MANGOS_DLL_DECL boss_toravonAI : public LibDevFSAI
     {
         if (!CanDoSomething())
             return;
+
+		if(stone_Timer <= diff)
+		{
+			if(Unit* target = GetRandomUnit(2))
+				ModifyAuraStack(SPELL_STONE,1,target);
+			stone_Timer = urand(15000,20000);
+		}
+		else
+			stone_Timer -= diff;
+
 		UpdateEvent(diff);
 
         DoMeleeAttackIfReady();
@@ -95,8 +121,6 @@ struct MANGOS_DLL_DECL toravon_frozenOrbAI : public LibDevFSAI
             return;
 
 		UpdateEvent(diff);
-
-        DoMeleeAttackIfReady();
     }
 };
 
