@@ -126,17 +126,15 @@ void Vehicle::InstallAllAccessories()
             break;
         case 33109:InstallAccessory(33167,1);break;
         case 33060:InstallAccessory(33067,7);break;
-        case 33113:
-            InstallAccessory(33114,0);
-            InstallAccessory(33114,1);
+        case 33113: // Flame leviathan
             InstallAccessory(33114,2);
             InstallAccessory(33114,3);
             InstallAccessory(33139,7);
             break;
-        case 33114:
+        /*case 33114:
             InstallAccessory(33143,2); // Overload Control Device
             InstallAccessory(33142,1); // Leviathan Defense Turret
-            break;
+            break;*/
         case 33214:InstallAccessory(33218,1,false);break; // Mechanolift 304-A
         case 35637:InstallAccessory(34705,0,false);break;
         case 35633:InstallAccessory(34702,0,false);break;
