@@ -265,7 +265,6 @@ bool Pet::LoadPetFromDB( Player* owner, uint32 petentry, uint32 petnumber, bool 
         data << uint32(256); // CAST_FLAG_UNKNOWN3
         data << uint32(0);
         SendMessageToSet(&data, true);
-		sLog.outError("Erreur");
     }
 
     // load action bar, if data broken will fill later by default spells.
