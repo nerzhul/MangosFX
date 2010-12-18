@@ -810,6 +810,15 @@ class SpellMgr
             if( itr != mSpellBonusMap.end( ) )
                 return &itr->second;
 
+			// Not found, try lookup for 1 spell rank if exist
+            if (uint32 rank_1 = GetFirstSpellInChain(spellId))
+            {
+                SpellBonusMap::const_iterator itr2 = mSpellBonusMap.find(rank_1);
+                if (itr2 != mSpellBonusMap.end())
+                    return &itr2->second;
+            }
+
+
             return NULL;
         }
 

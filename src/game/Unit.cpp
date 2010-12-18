@@ -7111,6 +7111,14 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 triggered_spell_id = 54203;
                 break;
             }
+			if (dummySpell->SpellIconID == 3017)
+			{
+					target = this;
+					triggered_spell_id = 31930;
+					// replenishment
+					CastSpell(this,57669,true, castItem, triggeredByAura);
+					break;
+			}
             switch(dummySpell->Id)
             {
                 // Judgement of Light
@@ -7236,9 +7244,10 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     break;
                 }
                 // Judgements of the Wise
-                case 31876:
+				case 31876:
                 case 31877:
                 case 31878:
+				
                     // triggered only at casted Judgement spells, not at additional Judgement effects
                     if(!procSpell || procSpell->Category != 1210)
                         return false;
@@ -7249,6 +7258,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     // Replenishment
                     CastSpell(this, 57669, true, NULL, triggeredByAura);
                     break;
+				
                 // Paladin Tier 6 Trinket (Ashtongue Talisman of Zeal)
                 case 40470:
                 {
@@ -10265,8 +10275,8 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
     if (SpellBonusEntry const* bonus = sSpellMgr.GetSpellBonusData(spellProto->Id))
     {
         float coeff = 0.0f;
-		
-		// New Engine for Applying Bonus dommage for testing purpose
+
+		// Fix bonus damage
 		//Merging
 		if (damagetype == DOT)
         {
@@ -10276,22 +10286,23 @@ uint32 Unit::SpellDamageBonus(Unit *pVictim, SpellEntry const *spellProto, uint3
                 WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
                 float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
                 APbonus += GetTotalAttackPowerValue(attType);
-                DoneTotal += int32(bonus->dot_damage * stack * coeff * APbonus);
+                DoneTotal += int32(bonus->dot_damage * stack * APbonus);
 				//sLog.outDebugSpell("SpellDamageBonus DOT - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
             }
         }
         else
         {
             coeff = bonus->direct_damage;
-            if (bonus->direct_damage > 0)
+			if (bonus->ap_bonus > 0)
             {
                 WeaponAttackType attType = (IsRangedWeaponSpell(spellProto) && spellProto->DmgClass != SPELL_DAMAGE_CLASS_MELEE) ? RANGED_ATTACK : BASE_ATTACK;
                 float APbonus = (float) pVictim->GetTotalAuraModifier(attType == BASE_ATTACK ? SPELL_AURA_MELEE_ATTACK_POWER_ATTACKER_BONUS : SPELL_AURA_RANGED_ATTACK_POWER_ATTACKER_BONUS);
                 APbonus += GetTotalAttackPowerValue(attType);
-                DoneTotal += int32(bonus->direct_damage * stack * coeff * APbonus);
+                DoneTotal += int32(bonus->ap_bonus * stack * APbonus);
 				//sLog.outDebugSpell("SpellDamageBonus Direct Damage - Done Total : %i - coeff : %i - APBonus : %i",DoneTotal,coeff,APbonus);
             }
         }
+
 		// End Merging
 
         // Spellmod SpellBonusDamage
