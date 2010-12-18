@@ -7111,6 +7111,7 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 triggered_spell_id = 54203;
                 break;
             }
+
             switch(dummySpell->Id)
             {
                 // Judgement of Light
@@ -8844,7 +8845,10 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 ((Player*)this)->RemoveSpellCategoryCooldown(1209, true);
             break;
         }
-        // Maelstrom Weapon
+
+		/* Remove Maelstrom Weapon support inside Core, let's DB work's !
+
+		// Maelstrom Weapon
         case 53817:
         {
             // have rank dependent proc chance, ignore too often cases
@@ -8855,6 +8859,7 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
                 return false;
             break;
         }
+		*/
         // Brain Freeze
         case 57761:
         {
