@@ -7418,6 +7418,10 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                 case 48265:                                 // Unholy Presence
                 case 48266:                                 // Blood Presence
                 {
+					// Blood Presence Bonus
+					 if (GetId() == 48266)
+                        GetCaster()->CastSpell(GetCaster(), 63611, true);
+
                     // else part one per 3 pair
                     if (GetId()==48263 || GetId()==48265)   // Frost Presence or Unholy Presence
                     {
@@ -8185,13 +8189,15 @@ void Aura::PeriodicTick()
             pdamage = pCaster->SpellDamageBonus(m_target, GetSpellProto(), pdamage, DOT, GetStackAmount());
             bool isCrit = IsCritFromAbilityAura(pCaster, pdamage);
 
-            // send critical in hit info for threat calculation
             if (isCrit)
             {
                 cleanDamage.hitOutCome = MELEE_HIT_CRIT;
                 // Resilience - reduce crit damage
                 pdamage -= m_target->GetSpellCritDamageReduction(pdamage);
             }
+
+            if (IS_PLAYER_GUID(GetCasterGUID()))
+                pdamage -= m_target->GetSpellDamageReduction(pdamage);
 
             pCaster->CalcAbsorbResist(m_target, GetSpellSchoolMask(GetSpellProto()), DOT, pdamage, &absorb, &resist, !(GetSpellProto()->AttributesEx2 & SPELL_ATTR_EX2_CANT_REFLECTED));
 
