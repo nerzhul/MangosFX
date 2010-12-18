@@ -7111,14 +7111,6 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                 triggered_spell_id = 54203;
                 break;
             }
-			if (dummySpell->SpellIconID == 3017)
-			{
-					target = this;
-					triggered_spell_id = 31930;
-					// replenishment
-					CastSpell(this,57669,true, castItem, triggeredByAura);
-					break;
-			}
             switch(dummySpell->Id)
             {
                 // Judgement of Light
