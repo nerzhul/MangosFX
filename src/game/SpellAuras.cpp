@@ -7418,9 +7418,12 @@ void Aura::HandleSpellSpecificBoosts(bool apply)
                 case 48265:                                 // Unholy Presence
                 case 48266:                                 // Blood Presence
                 {
+
+
 					// Blood Presence Bonus
 					 if (GetId() == 48266)
                         GetCaster()->CastSpell(GetCaster(), 63611, true);
+
 
                     // else part one per 3 pair
                     if (GetId()==48263 || GetId()==48265)   // Frost Presence or Unholy Presence
