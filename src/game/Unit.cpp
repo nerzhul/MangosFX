@@ -8847,7 +8847,6 @@ bool Unit::HandleProcTriggerSpell(Unit *pVictim, uint32 damage, Aura* triggeredB
         }
 
 		/* Remove Maelstrom Weapon support inside Core, let's DB work's !
-
 		// Maelstrom Weapon
         case 53817:
         {
@@ -9605,6 +9604,7 @@ void Unit::ModifyAuraState(AuraState flag, bool apply)
                     if(itr->second->state == PLAYERSPELL_REMOVED) continue;
                     SpellEntry const *spellInfo = sSpellStore.LookupEntry(itr->first);
                     if (!spellInfo || !IsPassiveSpell(spellInfo)) continue;
+					if ( (spellInfo->Id == 44441 && !HasAura(64349)) || (spellInfo->Id == 44440 && !HasAura(64350))) continue; // Piercy Payback checking!
                     if (spellInfo->CasterAuraState == flag)
                         CastSpell(this, itr->first, true, NULL);
                 }
