@@ -508,27 +508,6 @@ bool Spell::FillCustomTargetMap(uint32 i, UnitList &targetUnitMap)
 	// Resulting effect depends on spell that we want to cast
 	switch (m_spellInfo->Id)
 	{
-		/*
-		case 46584: // Raise Dead
-		{
-			WorldObject* result = FindCorpseUsing <MaNGOS::RaiseDeadObjectCheck> ();
-
-			if(result)
-			{
-				switch(result->GetTypeId())
-				{
-					case TYPEID_UNIT:
-						targetUnitMap.push_back((Unit*)result);
-						break;
-					
-					default:
-						break;
-				};
-			};
-			break;
-		}
-		break;
-*/
 		case 47496: // Ghoul's explode
 		{
 			FillAreaTargets(targetUnitMap,m_targets.m_destX, m_targets.m_destY,radius,PUSH_DEST_CENTER,SPELL_TARGETS_AOE_DAMAGE);
@@ -537,7 +516,7 @@ bool Spell::FillCustomTargetMap(uint32 i, UnitList &targetUnitMap)
 		break;
 
 		default:
-		return false;
+			return false;
 		break;
 	}
 	return true;
@@ -1703,33 +1682,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				targetUnitMap.push_back(m_caster);
 				break;
 			}
-			//Raise Dead
-            if (m_spellInfo->Id == 46584)
-            {
-                Unit *unitTarget = m_targets.getUnitTarget();
-                targetUnitMap.remove(m_caster);
-
-                if (unitTarget && unitTarget != m_caster)
-                {
-                    MaNGOS::RaiseDeadObjectCheck ec_chk(m_caster, radius);
-                    if (ec_chk(unitTarget) )
-                    {
-                        targetUnitMap.push_back(unitTarget);
-                        break;
-                    }
-                }
-
-                WorldObject* result = FindCorpseUsing<MaNGOS::RaiseDeadObjectCheck> ();
-
-                if(result && (result->GetTypeId() == TYPEID_UNIT || result->GetTypeId() == TYPEID_PLAYER) )
-                    targetUnitMap.push_back((Unit*)result);
-                else
-                    targetUnitMap.push_back(m_caster);
-
-                break;
-            }
-
-			//Raise Dead
+			// Raise Dead
             if (m_spellInfo->Id == 46584)
             {
                  Unit *unitTarget = m_targets.getUnitTarget();
@@ -1754,6 +1707,47 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 					targetUnitMap.push_back(m_caster);
  
 				break;
+            }
+/*
+			// Corpse Explosion
+			case 49158:
+            case 51325:
+            case 51326:
+            case 51327:
+            case 51328:
+            
+			// Search for ghoul if our ghoul or dead body not valid unit target
+            if (!(m_targets.getUnitTarget() && ((m_targets.getUnitTarget()->GetEntry() == 26125 && m_targets.getUnitTarget()->GetGUID() == m_caster->GetGUID())
+				|| (m_targets.getUnitTarget()->getDeathState() == CORPSE
+					&& m_targets.getUnitTarget()->GetDisplayId() == m_targets.getUnitTarget()->GetNativeDisplayId()
+					&& m_targets.getUnitTarget()->GetTypeId() == TYPEID_UNIT
+					&& !((Creature*)m_targets.getUnitTarget())->isDeadByDefault()
+					&& !(m_targets.getUnitTarget()->GetCreatureTypeMask() & CREATURE_TYPEMASK_MECHANICAL_OR_ELEMENTAL)
+					&& m_targets.getUnitTarget()->GetDisplayId() == m_targets.getUnitTarget()->GetNativeDisplayId()))))          
+			{
+                CleanupTargetList();
+                WorldObject* result = FindCorpseUsing <MaNGOS::ExplodeCorpseObjectCheck> ();
+
+                if (result)
+                {
+                   switch (result->GetTypeId())
+                   {
+                        case TYPEID_UNIT:
+                        case TYPEID_PLAYER:
+                            m_targets.setUnitTarget((Unit*)result);
+							break;
+                        default:
+							break;
+					}
+                }
+                else
+                {
+                    if (m_caster->GetTypeId() == TYPEID_PLAYER)
+						((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
+					
+					SendCastResult(SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW);
+					finish(false);
+				}
             }
 
 			UnitList tempTargetUnitMap;
@@ -1800,7 +1794,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 						++itr;
 				}
 			}
-			break;
+			break;*/
 		}
 		case TARGET_AREAEFFECT_CUSTOM_2:
         {
@@ -3265,6 +3259,10 @@ void Spell::cast(bool skipCheck)
 			{
 				case 34026:
 					AddTriggeredSpell(34027);
+					break;
+
+				case 56453:
+					AddPrecastSpell(67544);                     // Lock and Load Marker
 					break;
 			}
 			break;
