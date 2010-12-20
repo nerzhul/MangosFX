@@ -2447,6 +2447,22 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
                     RemainingDamage -= absorbed;
                     continue;
                 }
+				// Will of the Necropolis
+				if (spellProto->Id == 52284 || spellProto->Id == 52285 || spellProto->Id == 52286)
+                {
+					int32 old_hp = (int32)pVictim->GetHealth();
+					int32 remainingHp = old_hp - RemainingDamage;
+
+					int32 min35Hp = int32(pVictim->GetMaxHealth() * 0.35f); // triggered by damage which deals less than 35% of your health
+					int32 min5Hp = int32(pVictim->GetMaxHealth() * 0.05f); // triggered by damage which deals less than 5% of your health in 3.3.3 patch
+					
+                    if ( (remainingHp < min35Hp && old_hp >= min35Hp) || (remainingHp < min5Hp && old_hp >= min5Hp) )
+                    {
+						uint32 absorbed = uint32(currentAbsorb * RemainingDamage * 0.01f);
+                        RemainingDamage -= absorbed;
+                    }
+                    continue;
+                }
                 // Anti-Magic Shell (on single party/raid member)
                 if (spellProto->Id == 50462)
                 {
