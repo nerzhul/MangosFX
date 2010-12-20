@@ -2700,6 +2700,7 @@ void Unit::CalcAbsorbResist(Unit *pVictim,SpellSchoolMask schoolMask, DamageEffe
                     int32 healAmount = pVictim->GetMaxHealth() * preventDeathAmount / 100;
                     pVictim->CastCustomSpell(pVictim, 48153, &healAmount, NULL, NULL, true);
                     pVictim->RemoveAurasDueToSpell(preventDeathSpell->Id);
+					pVictim->RemoveAura(preventDeathSpell->Id,0,0,AURA_REMOVE_BY_CANCEL);
                     RemainingDamage = 0;
                 }
                 break;
@@ -4682,7 +4683,7 @@ bool Unit::RemoveNoStackAurasDueToAura(Aura *Aur)
     return true;
 }
 
-void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except)
+void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except,AuraRemoveMode removeMode)
 {
     spellEffectPair spair = spellEffectPair(spellId, effindex);
 	if(!HasAura(spellId,effindex))
@@ -4692,7 +4693,7 @@ void Unit::RemoveAura(uint32 spellId, uint32 effindex, Aura* except)
     {
         if(iter->second!=except)
         {
-            RemoveAura(iter);
+            RemoveAura(iter,removeMode);
             iter = m_Auras.lower_bound(spair);
         }
         else
@@ -4927,10 +4928,10 @@ void Unit::RemoveSingleAuraByCasterSpell(uint32 spellId, uint32 effindex, uint64
     }
 }
 
-void Unit::RemoveAurasDueToSpell(uint32 spellId, Aura* except)
+void Unit::RemoveAurasDueToSpell(uint32 spellId, Aura* except,AuraRemoveMode removeMode)
 {
     for (int i = 0; i < 3; ++i)
-        RemoveAura(spellId,i,except);
+        RemoveAura(spellId,i,except,removeMode);
 }
 
 void Unit::RemoveAurasDueToItemSpell(Item* castItem,uint32 spellId)
