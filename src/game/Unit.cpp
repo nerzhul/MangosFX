@@ -5061,7 +5061,8 @@ void Unit::RemoveAura(AuraMap::iterator &i, AuraRemoveMode mode)
     if (Aur->_RemoveAura())
     {
         // last aura in stack removed
-        if (mode != AURA_REMOVE_BY_DELETE && IsSpellLastAuraEffect(Aur->GetSpellProto(),Aur->GetEffIndex()))
+        //if (mode != AURA_REMOVE_BY_DELETE && IsSpellLastAuraEffect(Aur->GetSpellProto(),Aur->GetEffIndex()))
+		if (mode != AURA_REMOVE_BY_DELETE)
             Aur->HandleSpellSpecificBoosts(false);
     }
 
@@ -6608,6 +6609,20 @@ bool Unit::HandleDummyAuraProc(Unit *pVictim, uint32 damage, Aura* triggeredByAu
                     triggered_spell_id = 56161;
                     break;
                 }
+				// Priest T10 Healer 2P Bonus
+                case 70770:
+				{
+                    // Flash Heal
+                    if (procSpell->SpellFamilyFlags & 0x800)
+                    {
+                        triggered_spell_id = 70772;
+                        SpellEntry const* blessHealing = sSpellStore.LookupEntry(triggered_spell_id);
+                        if (!blessHealing)
+                            return false;
+                        basepoints0 = int32(triggerAmount * damage / 100 / (GetSpellMaxDuration(blessHealing) / blessHealing->EffectAmplitude[0]));
+                    }
+					break;
+				}
             }
             break;
         }
