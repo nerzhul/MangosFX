@@ -5061,8 +5061,7 @@ void Unit::RemoveAura(AuraMap::iterator &i, AuraRemoveMode mode)
     if (Aur->_RemoveAura())
     {
         // last aura in stack removed
-        //if (mode != AURA_REMOVE_BY_DELETE && IsSpellLastAuraEffect(Aur->GetSpellProto(),Aur->GetEffIndex()))
-		if (mode != AURA_REMOVE_BY_DELETE)
+        if (mode != AURA_REMOVE_BY_DELETE && IsSpellLastAuraEffect(Aur->GetSpellProto(),Aur->GetEffIndex()))
             Aur->HandleSpellSpecificBoosts(false);
     }
 
