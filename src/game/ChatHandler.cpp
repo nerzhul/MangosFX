@@ -65,7 +65,7 @@ std::string deleteUnneededSpaces(const char* text)
 	bool space = false;
 	while (*text != '\0')
     {
-		if(*text == ' ' && space)
+		if((*text == ' ' || *text == '|') && space)
 		{
 			++text;
 			continue;
@@ -78,7 +78,6 @@ std::string deleteUnneededSpaces(const char* text)
 			space = false;
         ++text;
     }
-
 	return str;  
 }
 
@@ -208,6 +207,9 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
+
 			if(GetPlayer()->getLevel() < 10 && type == CHAT_MSG_YELL)
 			{
 				ChatHandler(this).SendSysMessage("Vous ne respectez pas les conditions requises pour pouvoir parler en /crier");
@@ -238,6 +240,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             if(!normalizePlayerName(to))
             {
@@ -296,6 +300,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             // if player is in battleground, he cannot say to battleground members by /p
             Group *group = GetPlayer()->GetOriginalGroup();
@@ -332,6 +338,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             if (GetPlayer()->GetGuildId())
                 if (Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId()))
@@ -356,6 +364,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             if (GetPlayer()->GetGuildId())
                 if (Guild *guild = sObjectMgr.GetGuildById(GetPlayer()->GetGuildId()))
@@ -380,6 +390,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             // if player is in battleground, he cannot say to battleground members by /ra
             Group *group = GetPlayer()->GetOriginalGroup();
@@ -412,6 +424,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             // if player is in battleground, he cannot say to battleground members by /ra
             Group *group = GetPlayer()->GetOriginalGroup();
@@ -442,6 +456,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             Group *group = GetPlayer()->GetGroup();
             if(!group || !group->isRaidGroup() || !(group->IsLeader(GetPlayer()->GetGUID()) || group->IsAssistant(GetPlayer()->GetGUID())))
@@ -468,6 +484,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
             Group *group = GetPlayer()->GetGroup();
@@ -494,6 +512,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             // battleground raid is always in Player->GetGroup(), never in GetOriginalGroup()
             Group *group = GetPlayer()->GetGroup();
@@ -521,6 +541,8 @@ void WorldSession::HandleMessagechatOpcode( WorldPacket & recv_data )
                 break;
 
 			msg = deleteUnneededSpaces(msg.c_str());
+			if(msg.empty())
+				return;
 
             if(ChannelMgr* cMgr = channelMgr(_player->GetTeam()))
                 if(Channel *chn = cMgr->GetChannel(channel, _player))

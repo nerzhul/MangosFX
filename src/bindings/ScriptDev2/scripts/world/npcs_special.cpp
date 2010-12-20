@@ -1037,6 +1037,52 @@ bool GossipSelect_npc_kingdom_of_dalaran_quests(Player* pPlayer, Creature* pCrea
     return true;
 }
 
+#define GOSSIP_ITEM_BAD_COND "Conditions d'acces au Click To Play invalides. J'ai compris."
+
+enum GossipBdSpecVendors
+{
+	GOSSIP_ITEM_START,
+	GOSSIP_ITEM_BAGS,
+	GOSSIP_ITEM_PVP_SPEC_1,
+	GOSSIP_ITEM_PVP_SPEC_2,
+	GOSSIP_ITEM_PVP_SPEC_3,
+	GOSSIP_ITEM_PVE_SPEC_1, // DPS, druid feral, mage, warlock, priest, rogue, hunt, shaman amelio, warrior, paladin, dk
+	GOSSIP_ITEM_PVE_SPEC_2, // Heal, Paladin, Druid, Priest,  shaman
+	GOSSIP_ITEM_PVE_SPEC_3, // Tank, war, druid, paladin, dk
+	GOSSIP_ITEM_PVE_SPEC_4, // special, druid balance, shaman elem
+
+};
+bool GossipHello_bd_special_vendor(Player* pPlayer, Creature* pCreature)
+{
+    if (pCreature->isQuestGiver())
+        pPlayer->PrepareQuestMenu(pCreature->GetGUID());
+
+	if(pPlayer->getLevel() != 1)
+	{
+		//pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_GRANT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+	}
+	else
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+	
+    pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
+    return true;
+}
+
+bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32 uiSender, uint32 uiAction)
+{
+	switch(uiAction)
+	{
+		case GOSSIP_ACTION_INFO_DEF+1:
+		{
+			
+			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+2:
+			break;
+	}
+    return true;
+}
+
 /*######
 ## npc_lunaclaw_spirit
 ######*/
