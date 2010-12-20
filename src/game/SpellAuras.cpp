@@ -7889,7 +7889,6 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                             }
                         }
                     }
-
                     break;
                 case SPELLFAMILY_MAGE:
                     // Frost Ward, Fire Ward
@@ -7946,6 +7945,36 @@ void Aura::HandleSchoolAbsorb(bool apply, bool Real)
                 m_target->CastSpell(m_target, 55080, true, NULL, this);
             }
         }
+
+		 //Glyph of Guardian Spirit
+					if (m_spellProto->Id == 47788)
+			        {
+						if (!(m_removeMode == AURA_REMOVE_BY_DEFAULT))
+                            return;
+
+			            if (m_target->IsInWorld() && GetStackAmount()>0)
+			            {
+			                if (caster)
+			                    if (caster->HasAura(63231))
+			                    {
+
+			                        ((Player*)caster)->RemoveSpellCooldown(47788,true); //server CD set
+			                        ((Player*)caster)->AddSpellCooldown(47788,0,time(NULL)+60);
+			                        
+									WorldPacket data(SMSG_SPELL_COOLDOWN,8+1+4+4); //client CD set
+			                        data << caster->GetGUID();
+			                        data << uint8(0x0);
+			                        data << m_spellProto->Id;
+			                        data << uint32(60000);
+			                        ((Player*)caster)->GetSession()->SendPacket(&data);
+						
+
+			                    }
+                        
+			            }
+			        }
+
+
 
         if (caster &&
             // Power Word: Shield
