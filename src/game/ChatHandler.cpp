@@ -65,7 +65,7 @@ std::string deleteUnneededSpaces(const char* text)
 	bool space = false;
 	while (*text != '\0')
     {
-		if((*text == ' ' || *text == '|') && space)
+		if((*text == ' ') && space)
 		{
 			++text;
 			continue;

@@ -1038,11 +1038,11 @@ bool GossipSelect_npc_kingdom_of_dalaran_quests(Player* pPlayer, Creature* pCrea
 }
 
 #define GOSSIP_ITEM_BAD_COND "Conditions d'acces au Click To Play invalides. J'ai compris."
+#define GOSSIP_ITEM_START "Je souhaite utiliser le Click to Play"
+#define GOSSIP_ITEM_PVE "Je souhaite obtenir mon stuff PvE"
 
 enum GossipBdSpecVendors
 {
-	GOSSIP_ITEM_START,
-	GOSSIP_ITEM_BAGS,
 	GOSSIP_ITEM_PVP_SPEC_1,
 	GOSSIP_ITEM_PVP_SPEC_2,
 	GOSSIP_ITEM_PVP_SPEC_3,
@@ -1059,7 +1059,7 @@ bool GossipHello_bd_special_vendor(Player* pPlayer, Creature* pCreature)
 
 	if(pPlayer->getLevel() != 1)
 	{
-		//pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_GRANT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 	}
 	else
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
@@ -1074,11 +1074,41 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 	{
 		case GOSSIP_ACTION_INFO_DEF+1:
 		{
-			
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
+			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 			break;
 		}
 		case GOSSIP_ACTION_INFO_DEF+2:
+		{
+			// Buys
+			pPlayer->SetBankBagSlotCount(6);
+			pPlayer->SetLevel(80);
+			pPlayer->UpdateSpecCount(2);
+			pPlayer->learnSpell(63645, 0,false);
+			pPlayer->learnSpell(63644, 0,false);
+			// monte
+			pPlayer->learnSpell(34093, 0,false);
+			// secou
+			pPlayer->learnSpell(45542,0,false);
+			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
+			// cuisine
+			pPlayer->learnSpell(51296,0,false);
+			pPlayer->SetSkill(185,pPlayer->GetSkillStep(185),450,450);
+			// peche
+			pPlayer->learnSpell(51294,0,false);
+			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
+
+
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PVE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
+			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+3
+		{
+
+			break;
+		}
+
 	}
     return true;
 }
