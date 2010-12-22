@@ -6471,7 +6471,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         break;
                     }
                 }
-				sLog.outDebug("Spell 1 : %u - Spell 2 : %u ",spellId1,spellId2); 
                 if (spellId1)
                     m_caster->CastSpell(unitTarget, spellId1, true);
                 if (spellId2)
@@ -6546,40 +6545,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 				if(!unitTarget)
 					return;
 				
-				//Raise Ally effect
-				case 61999:
-                {
-					if (m_caster->GetTypeId() != TYPEID_PLAYER)
-						return;
-					
-					if (getState() == SPELL_STATE_FINISHED)
-						return;
-					
-					Player* p_caster = (Player*)m_caster;
-					
-					if (p_caster->GetPet() || p_caster->FindGuardianWithEntry(26125))
-					{
-						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
-                        finish(false);
-						return;
-					}
-					bool allow_cast = unitTarget && unitTarget != m_caster && ((Player*)unitTarget)->GetGroup() == p_caster->GetGroup(); //&& ((Player*)unitTarget)->isDead();
-					
-					if (!allow_cast)
-					{
-						p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
-                        SendCastResult(SPELL_FAILED_NO_VALID_TARGETS);
-                        finish(false);
-                        return;
-					}
-
-					// if no corpse found
-                    if (unitTarget)
-                        p_caster->CastSpell(unitTarget, 46619, true, NULL, NULL, unitTarget->GetGUID() );
- 
-                     break;
-				}
-
 				//Raise dead effect
 				case 46584:
                 {
