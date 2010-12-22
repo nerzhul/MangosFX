@@ -1970,7 +1970,7 @@ void Spell::EffectDummy(uint32 i)
                     SpellEntry const* spell_proto = sSpellStore.LookupEntry(spell_id);
                     if (!spell_proto)
                         return;
-
+					
                     m_caster->CastSpell(unitTarget, spell_proto, true, NULL);
                     return;
                 }
@@ -2174,10 +2174,20 @@ void Spell::EffectDummy(uint32 i)
                 return;
             }
             break;
-		
+		case SPELLFAMILY_MAGE:
+			{
+				case 31687: // Summon Water Elemental 
+				{ 
+					if (m_caster->HasAura(70937)) // Glyph of Eternal Water
+						m_caster->CastSpell(m_caster, 70908, true); 
+					else 
+						m_caster->CastSpell(m_caster, 70907, true); 
+					return; 
+				} 
+			}
 		case SPELLFAMILY_DEATHKNIGHT:
 		case SPELLFAMILY_ROGUE:
-		case SPELLFAMILY_MAGE:
+		
 			if(!sClassSpellHandler.HandleEffectDummy(this,m_damage,SpellEffectIndex(i)))
 				return;
             break;
@@ -5657,30 +5667,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 
                     return;
                 }
-				case 46584: // Raise dead
-				{
-					// We will get here ONLY when we have a corpse of humanoid that gives honor or XP.
-					// If we have active pet, then we should not cast the spell again.
-					if(m_caster->GetPet())
-					{
-						if (m_caster->GetTypeId()==TYPEID_PLAYER)
-							((Player*)m_caster)->RemoveSpellCooldown(m_spellInfo->Id,true);
-						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
-						return;
-					}
-					// Do we have talent Master of Ghouls?
-					if(m_caster->HasSpell(52143))
-					// Summon ghoul as a pet
-						m_caster->CastSpell(unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),52150,true);
-					else
-					// Summon ghoul as a guardian
-						m_caster->CastSpell(unitTarget->GetPositionX(),unitTarget->GetPositionY(),unitTarget->GetPositionZ(),46585,true);
-
-					((Creature*)unitTarget)->setDeathState(ALIVE);
-					// Used to prevent further EffectDummy execution
-					finish();
-					return; //break;
-				}
                 // Goblin Weather Machine
                 case 46203:
                 {
@@ -6460,7 +6446,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                 }
 
                 // offensive seals have aura dummy in 2 effect
-                Unit::AuraList const& m_dummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
+				Unit::AuraList const& m_dummyAuras = m_caster->GetAurasByType(SPELL_AURA_DUMMY);
                 for(Unit::AuraList::const_iterator itr = m_dummyAuras.begin(); itr != m_dummyAuras.end(); ++itr)
                 {
                     // search seal (offensive seals have judgement's aura dummy spell id in 2 effect
@@ -6485,6 +6471,7 @@ void Spell::EffectScriptEffect(uint32 effIndex)
                         break;
                     }
                 }
+				sLog.outDebug("Spell 1 : %u - Spell 2 : %u ",spellId1,spellId2); 
                 if (spellId1)
                     m_caster->CastSpell(unitTarget, spellId1, true);
                 if (spellId2)
@@ -6559,6 +6546,39 @@ void Spell::EffectScriptEffect(uint32 effIndex)
 				if(!unitTarget)
 					return;
 				
+				//Raise Ally effect
+				case 61999:
+                {
+					if (m_caster->GetTypeId() != TYPEID_PLAYER)
+						return;
+					
+					if (getState() == SPELL_STATE_FINISHED)
+						return;
+					
+					Player* p_caster = (Player*)m_caster;
+					
+					if (p_caster->GetPet() || p_caster->FindGuardianWithEntry(26125))
+					{
+						SendCastResult(SPELL_FAILED_ALREADY_HAVE_SUMMON);
+                        finish(false);
+						return;
+					}
+					bool allow_cast = unitTarget && unitTarget != m_caster && ((Player*)unitTarget)->GetGroup() == p_caster->GetGroup(); //&& ((Player*)unitTarget)->isDead();
+					
+					if (!allow_cast)
+					{
+						p_caster->RemoveSpellCooldown(m_spellInfo->Id, true);
+                        SendCastResult(SPELL_FAILED_NO_VALID_TARGETS);
+                        finish(false);
+                        return;
+					}
+
+					// if no corpse found
+                    if (unitTarget)
+                        p_caster->CastSpell(unitTarget, 46619, true, NULL, NULL, unitTarget->GetGUID() );
+ 
+                     break;
+				}
 
 				//Raise dead effect
 				case 46584:
@@ -6615,7 +6635,6 @@ void Spell::EffectScriptEffect(uint32 effIndex)
  
                      break;
 				}
-
                 // Pestilence
                 case 50842:
                 {
