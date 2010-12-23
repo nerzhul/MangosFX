@@ -1039,31 +1039,27 @@ bool GossipSelect_npc_kingdom_of_dalaran_quests(Player* pPlayer, Creature* pCrea
 
 #define GOSSIP_ITEM_BAD_COND "Conditions d'acces au Click To Play invalides. J'ai compris."
 #define GOSSIP_ITEM_START "Je souhaite utiliser le Click to Play"
-#define GOSSIP_ITEM_PVE "Je souhaite obtenir mon stuff PvE"
+#define GOSSIP_ITEM_PVE "J'ai mis les sacs et maintenant je souhaite obtenir mon stuff PvE"
+#define GOSSIP_ITEM_PVP "Je souhaite obtenir mon stuff PvP"
+#define GOSSIP_ITEM_SPEC_1 "Je souhaite obtenir un stuff DPS cac"
+#define GOSSIP_ITEM_SPEC_2 "Je souhaite obtenir un stuff heal"
+#define GOSSIP_ITEM_SPEC_3 "Je souhaite obtenir un stuff tank"
+#define GOSSIP_ITEM_SPEC_4 "Je souhaite obtenir un stuff DPS distant"
 
-enum GossipBdSpecVendors
-{
-	GOSSIP_ITEM_PVP_SPEC_1,
-	GOSSIP_ITEM_PVP_SPEC_2,
-	GOSSIP_ITEM_PVP_SPEC_3,
-	GOSSIP_ITEM_PVE_SPEC_1, // DPS, druid feral, mage, warlock, priest, rogue, hunt, shaman amelio, warrior, paladin, dk
-	GOSSIP_ITEM_PVE_SPEC_2, // Heal, Paladin, Druid, Priest,  shaman
-	GOSSIP_ITEM_PVE_SPEC_3, // Tank, war, druid, paladin, dk
-	GOSSIP_ITEM_PVE_SPEC_4, // special, druid balance, shaman elem
-
-};
 bool GossipHello_bd_special_vendor(Player* pPlayer, Creature* pCreature)
 {
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-	if(pPlayer->getLevel() != 1)
+	if(pPlayer->getLevel() != 1 || pPlayer->getClass() == CLASS_DEATH_KNIGHT && pPlayer->getLevel() == 55)
 	{
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 	}
 	else
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 	
+	//if(pPlayer->isClickToPlay())
+		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+8);
     pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     return true;
 }
@@ -1097,7 +1093,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			// peche
 			pPlayer->learnSpell(51294,0,false);
 			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
-
+			// 4 sacs
+			pPlayer->AddItem(41599,4);
 
 			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PVE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
 			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
@@ -1105,7 +1102,156 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 		}
 		case GOSSIP_ACTION_INFO_DEF+3:
 		{
+			if(pPlayer->getClass() == CLASS_MAGE || pPlayer->getClass() == CLASS_WARLOCK || pPlayer->getClass() == CLASS_PRIEST ||
+				pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_DEATH_KNIGHT || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_HUNTER)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+4);
 
+			if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_WARRIOR || pPlayer->getClass() == CLASS_DEATH_KNIGHT || pPlayer->getClass() == CLASS_PALADIN)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+5);
+
+			if(pPlayer->getClass() == CLASS_WARRIOR || pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_DEATH_KNIGHT ||
+				pPlayer->getClass() == CLASS_DRUID)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+6);
+
+			if(pPlayer->getClass() == CLASS_PRIEST || pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_DRUID)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+7);
+
+			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
+			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+4:
+		{
+			// STUFF DPS CASTER
+			if(pPlayer->getClass() == CLASS_HUNTER)
+			{
+				pPlayer->AddItem(45224);
+			}
+			else if(pPlayer->getClass() == CLASS_PRIEST)
+			{
+				pPlayer->AddItem(45541);
+			}
+			else // warlock, mage
+			{
+				pPlayer->AddItem(46042);
+			}
+		}
+		case GOSSIP_ACTION_INFO_DEF+5:
+		{
+			// STUFF DPS CAC
+			if(uiAction == GOSSIP_ACTION_INFO_DEF+5)
+			{
+				if(pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN || pPlayer->getClass() == CLASS_ROGUE)
+				{
+					pPlayer->AddItem(45224);
+				}
+				else // Warrior, pala, dk
+				{
+					pPlayer->AddItem(46320);
+				}
+			}
+		}
+		case GOSSIP_ACTION_INFO_DEF+6:
+		{
+			if(uiAction == GOSSIP_ACTION_INFO_DEF+6)
+			{
+				// STUFF TANK
+				if(pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_DEATH_KNIGHT ||
+					pPlayer->getClass() == CLASS_WARRIOR)
+				{
+					pPlayer->AddItem(45139);
+				}
+				else // druid
+				{
+					pPlayer->AddItem(45224);
+				}
+			}
+		}
+		case GOSSIP_ACTION_INFO_DEF+7:
+		{
+			// STUFF HEAL
+			if(uiAction == GOSSIP_ACTION_INFO_DEF+7)
+			{
+				pPlayer->AddItem(46321);
+			}
+			// Suite
+			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PVP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+9);
+			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
+			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+9:
+		{
+			if(pPlayer->getClass() == CLASS_MAGE || pPlayer->getClass() == CLASS_WARLOCK || pPlayer->getClass() == CLASS_PRIEST ||
+				pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_HUNTER)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+10);
+
+			if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_WARRIOR || pPlayer->getClass() == CLASS_DEATH_KNIGHT || pPlayer->getClass() == CLASS_PALADIN)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+11);
+
+			if(pPlayer->getClass() == CLASS_PRIEST || pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_SHAMAN ||
+				pPlayer->getClass() == CLASS_DRUID)
+				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+12);
+			
+			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+10:
+		{
+			// PVP dps caster
+			if(pPlayer->getClass() == CLASS_PRIEST)
+			{
+				pPlayer->AddItem(42070);
+			}
+			else if(pPlayer->getClass() == CLASS_MAGE || pPlayer->getClass() == CLASS_DRUID ||
+				pPlayer->getClass() == CLASS_WARLOCK || pPlayer->getClass() == CLASS_SHAMAN)
+			{
+				pPlayer->AddItem(42069);
+			}
+			else // hunt
+			{
+				pPlayer->AddItem(42074);
+			}
+		}
+		case GOSSIP_ACTION_INFO_DEF+11:
+		{
+			// PVP dps cac
+			if(uiAction == GOSSIP_ACTION_INFO_DEF+11)
+			{
+				if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID ||
+					pPlayer->getClass() == CLASS_SHAMAN)
+				{
+					pPlayer->AddItem(42074);
+				}
+				else // warrior, pala, dk
+				{
+					pPlayer->AddItem(42074);
+				}
+			}
+		}
+		case GOSSIP_ACTION_INFO_DEF+12:
+		{
+			// PVP heal
+			if(uiAction == GOSSIP_ACTION_INFO_DEF+12)
+			{
+				if(pPlayer->getClass() == CLASS_PRIEST || pPlayer->getClass() == CLASS_DRUID)
+				{
+					pPlayer->AddItem(42073);
+				}
+				else
+				{
+					pPlayer->AddItem(42069);
+				}
+			}
+			//...
+			// end
+			break;
+		}
+		case GOSSIP_ACTION_INFO_DEF+8:
+		{
+			// desactive le click to play
 			break;
 		}
 
