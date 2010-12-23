@@ -1103,7 +1103,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 			break;
 		}
-		case GOSSIP_ACTION_INFO_DEF+3
+		case GOSSIP_ACTION_INFO_DEF+3:
 		{
 
 			break;
