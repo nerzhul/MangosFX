@@ -1128,14 +1128,40 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			if(pPlayer->getClass() == CLASS_HUNTER)
 			{
 				pPlayer->AddItem(45224);
+				pPlayer->AddItem(45524);
+				pPlayer->AddItem(45562);
+				pPlayer->AddItem(45157);
+				pPlayer->AddItem(46048);
 			}
 			else if(pPlayer->getClass() == CLASS_PRIEST)
 			{
 				pPlayer->AddItem(45541);
+				pPlayer->AddItem(45240);
+				pPlayer->AddItem(45483);
+				pPlayer->AddItem(45515);
+				pPlayer->AddItem(45438);
 			}
-			else // warlock, mage
+			else // warlock, mage, druid, shaman
 			{
 				pPlayer->AddItem(46042);
+				pPlayer->AddItem(45515);
+				pPlayer->AddItem(45438);
+				if(pPlayer->getClass() == CLASS_SHAMAN)
+				{
+					pPlayer->AddItem(45531);
+					pPlayer->AddItem(45513);
+				}
+				else if(pPlayer->getClass() == CLASS_DRUID)
+				{
+					pPlayer->AddItem(45237);
+					pPlayer->AddItem(45565);
+				}
+				else // warlock, mage
+				{
+					pPlayer->AddItem(45272);
+					pPlayer->AddItem(45567);
+				}
+
 			}
 		}
 		case GOSSIP_ACTION_INFO_DEF+5:
@@ -1146,10 +1172,26 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				if(pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN || pPlayer->getClass() == CLASS_ROGUE)
 				{
 					pPlayer->AddItem(45224);
+					pPlayer->AddItem(45157);
+					pPlayer->AddItem(46048);
+					if(pPlayer->getClass() == CLASS_SHAMAN)
+					{
+						pPlayer->AddItem(46205);
+						pPlayer->AddItem(45562);
+					}
+					else if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID)
+					{
+						pPlayer->AddItem(45453);
+						pPlayer->AddItem(45162);
+					}
 				}
 				else // Warrior, pala, dk
 				{
 					pPlayer->AddItem(46320);
+					pPlayer->AddItem(45225);
+					pPlayer->AddItem(45559);
+					pPlayer->AddItem(45250);
+					pPlayer->AddItem(45106);
 				}
 			}
 		}
@@ -1162,10 +1204,18 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->getClass() == CLASS_WARRIOR)
 				{
 					pPlayer->AddItem(45139);
+					pPlayer->AddItem(45334);
+					pPlayer->AddItem(45560);
+					pPlayer->AddItem(45326);
+					pPlayer->AddItem(45871);
 				}
 				else // druid
 				{
 					pPlayer->AddItem(45224);
+					pPlayer->AddItem(46159);
+					pPlayer->AddItem(45232);
+					pPlayer->AddItem(46048);
+					pPlayer->AddItem(45456);
 				}
 			}
 		}
@@ -1175,6 +1225,28 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			if(uiAction == GOSSIP_ACTION_INFO_DEF+7)
 			{
 				pPlayer->AddItem(46321);
+				pPlayer->AddItem(45113);
+				pPlayer->AddItem(45438);
+				if(pPlayer->getClass() == CLASS_PALADIN)
+				{
+					pPlayer->AddItem(45167);
+					pPlayer->AddItem(45561);
+				}
+				else if(pPlayer->getClass() == CLASS_SHAMAN)
+				{
+					pPlayer->AddItem(45867);
+					pPlayer->AddItem(45563);
+				}
+				else if(pPlayer->getClass() == CLASS_PRIEST)
+				{
+					pPlayer->AddItem(45272);
+					pPlayer->AddItem(46050);
+				}
+				else // DRUID
+				{
+					pPlayer->AddItem(46186);
+					pPlayer->AddItem(45565);
+				}
 			}
 			// Suite
 			pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_PVP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+9);
@@ -1200,19 +1272,35 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 		}
 		case GOSSIP_ACTION_INFO_DEF+10:
 		{
+			pPlayer->AddItem(42116);
+			pPlayer->AddItem(48999);
 			// PVP dps caster
 			if(pPlayer->getClass() == CLASS_PRIEST)
 			{
 				pPlayer->AddItem(42070);
+				pPlayer->AddItem(41903);
 			}
 			else if(pPlayer->getClass() == CLASS_MAGE || pPlayer->getClass() == CLASS_DRUID ||
 				pPlayer->getClass() == CLASS_WARLOCK || pPlayer->getClass() == CLASS_SHAMAN)
 			{
 				pPlayer->AddItem(42069);
+				if(pPlayer->getClass() == CLASS_DRUID)
+				{
+					pPlayer->AddItem(41836);
+				}
+				else if(pPlayer->getClass() == CLASS_SHAMAN)
+				{
+					pPlayer->AddItem(41075);
+				}
+				else
+				{
+					pPlayer->AddItem(41903);
+				}
 			}
 			else // hunt
 			{
 				pPlayer->AddItem(42074);
+				pPlayer->AddItem(41230);
 			}
 		}
 		case GOSSIP_ACTION_INFO_DEF+11:
@@ -1220,14 +1308,25 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			// PVP dps cac
 			if(uiAction == GOSSIP_ACTION_INFO_DEF+11)
 			{
+				pPlayer->AddItem(42117);
+				pPlayer->AddItem(49000);
 				if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID ||
 					pPlayer->getClass() == CLASS_SHAMAN)
 				{
 					pPlayer->AddItem(42074);
+					if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID)
+					{
+						pPlayer->AddItem(41635);
+					}
+					else
+					{
+						pPlayer->AddItem(41230);
+					}
 				}
 				else // warrior, pala, dk
 				{
 					pPlayer->AddItem(42074);
+					pPlayer->AddItem(40882);
 				}
 			}
 		}
@@ -1236,13 +1335,31 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			// PVP heal
 			if(uiAction == GOSSIP_ACTION_INFO_DEF+12)
 			{
+				pPlayer->AddItem(48999);
+				pPlayer->AddItem(42116);
 				if(pPlayer->getClass() == CLASS_PRIEST || pPlayer->getClass() == CLASS_DRUID)
 				{
 					pPlayer->AddItem(42073);
+					if(pPlayer->getClass() == CLASS_DRUID)
+					{
+						pPlayer->AddItem(41621);
+					}
+					else
+					{
+						pPlayer->AddItem(41885);
+					}
 				}
-				else
+				else // paladin, shaman
 				{
 					pPlayer->AddItem(42069);
+					if(pPlayer->getClass() == CLASS_PALADIN)
+					{
+						pPlayer->AddItem(40977);
+					}
+					else
+					{
+						pPlayer->AddItem(41075);
+					}
 				}
 			}
 			//...
