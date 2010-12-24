@@ -83,6 +83,13 @@ class ByteBuffer
             put(pos,(uint8 *)&value,sizeof(value));
         }
 
+		ByteBuffer &operator<<(bool value)
+        {
+			uint8 val = value ? 1 : 0;
+            append<uint8>(val);
+            return *this;
+        }
+
         ByteBuffer &operator<<(uint8 value)
         {
             append<uint8>(value);

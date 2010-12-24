@@ -13315,23 +13315,23 @@ void Player::OnGossipSelect(WorldObject* pSource, uint32 gossipListId, uint32 me
 		case GOSSIP_OPTION_LEARNDUALSPEC:
         if(this->GetSpecsCount() == 1 && !(this->getLevel() < sWorld.getConfig(CONFIG_MIN_DUALSPEC_LEVEL)))
         {
-            if (this->GetMoney() < 10000000)
+            if (GetMoney() < 10000000)
             {
-                this->SendBuyError( BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
-                this->PlayerTalkClass->CloseGossip();
+                SendBuyError( BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
+                PlayerTalkClass->CloseGossip();
                 break;
             }
             else
             {
-                this->ModifyMoney(-10000000);
+                ModifyMoney(-10000000);
 
                 // Cast spells that teach dual spec
                 // Both are also ImplicitTarget self and must be cast by player
-                this->CastSpell(this,63680,true,NULL,NULL,this->GetGUID());
-                this->CastSpell(this,63624,true,NULL,NULL,this->GetGUID());
+                CastSpell(this,63680,true,NULL,NULL,GetGUID());
+                CastSpell(this,63624,true,NULL,NULL,GetGUID());
 
                 // Should show another Gossip text with "Congratulations..."
-                this->PlayerTalkClass->CloseGossip();
+                PlayerTalkClass->CloseGossip();
             }
         }
         break;

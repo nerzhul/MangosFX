@@ -4855,6 +4855,15 @@ bool ChatHandler::HandleQuestComplete(const char* args)
 
     uint32 entry = atol(cId);
 
+	if(m_session->GetSecurity() < SEC_GAMEMASTER)
+	{
+		if(player != m_session->GetPlayer())
+		{
+			SetSentErrorMessage(true);
+			SendSysMessage("Vous devez vous selectionner.");
+			return false;
+		}
+	}
     Quest const* pQuest = sObjectMgr.GetQuestTemplate(entry);
 
     // If player doesn't have the quest
@@ -4864,6 +4873,17 @@ bool ChatHandler::HandleQuestComplete(const char* args)
         SetSentErrorMessage(true);
         return false;
     }
+
+	if(m_session->GetSecurity() < SEC_GAMEMASTER)
+	{
+		if(!(entry == 12848 || entry == 12641 || entry == 12680 || entry == 12701 || entry == 12755 ||
+			entry == 12779 || entry == 12801 || entry == 13166))
+		{
+			SetSentErrorMessage(true);
+			SendSysMessage("Vous ne pouvez pas valider cette quete.");
+			return false;
+		}
+	}
 
     // Add quest items for quests that require items
     for(uint8 x = 0; x < QUEST_ITEM_OBJECTIVES_COUNT; ++x)
