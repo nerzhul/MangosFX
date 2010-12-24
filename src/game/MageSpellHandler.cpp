@@ -46,14 +46,6 @@ bool MageSpellHandler::HandleEffectDummy(Spell* spell, int32 &damage, SpellEffec
 			((Player*)m_caster)->RemoveSpellCooldown(12472,true);
 			return false;
 		}
-		case SPELL_WATER_ELEMENTAL:
-		{
-			if (m_caster->HasAura(70937))           // Glyph of Eternal Water (permanent limited by known spells version)
-				m_caster->CastSpell(m_caster, 70908, true);
-			else                                    // temporary version
-				m_caster->CastSpell(m_caster, 70907, true);
-			return false;
-		}
 		case SPELL_POLYMORPH:                                 // Polymorph Cast Visual
 		{
 			if (unitTarget && unitTarget->GetTypeId() == TYPEID_UNIT)

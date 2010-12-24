@@ -2176,15 +2176,21 @@ void Spell::EffectDummy(uint32 i)
             break;
 		case SPELLFAMILY_MAGE:
 			{
-				case 31687: // Summon Water Elemental 
-				{ 
-					if (m_caster->HasAura(70937)) // Glyph of Eternal Water
-						m_caster->CastSpell(m_caster, 70908, true); 
-					else 
-						m_caster->CastSpell(m_caster, 70907, true); 
-					return; 
-				} 
+				switch(m_spellInfo->Id)
+				{
+					case 31687: // Summon Water Elemental 
+					{ 
+						if (m_caster->HasAura(70937)) // Glyph of Eternal Water
+							m_caster->CastSpell(m_caster, 70908, true); 
+						else 
+							m_caster->CastSpell(m_caster, 70907, true); 
+						
+						return; 
+					} 
+				}
+				
 			}
+			break;
 		case SPELLFAMILY_DEATHKNIGHT:
 		case SPELLFAMILY_ROGUE:
 		
@@ -3754,6 +3760,7 @@ void Spell::EffectSummon(uint32 i)
     Pet* spawnCreature = new Pet(SUMMON_PET);
 
     int32 duration = GetSpellDuration(m_spellInfo);
+	
     if(Player* modOwner = m_caster->GetSpellModOwner())
         modOwner->ApplySpellMod(m_spellInfo->Id, SPELLMOD_DURATION, duration);
 
@@ -3775,10 +3782,13 @@ void Spell::EffectSummon(uint32 i)
             spawnCreature->Relocate(m_targets.m_destX, m_targets.m_destY, m_targets.m_destZ, -m_caster->GetOrientation());
         }
 
+		if (m_spellInfo->Id == 70908) // Hack for Glyph of Eternal Water
+			duration = 0;
+
         // set timer for unsummon
         if (duration > 0)
             spawnCreature->SetDuration(duration);
-
+		
 		if (amount)
         {
             --amount;
@@ -4919,7 +4929,7 @@ void Spell::EffectSummonPet(uint32 i)
     map->Add((Creature*)NewSummon);
 
     m_caster->SetPet(NewSummon);
-    sLog.outDebug("New Pet has guid %u", NewSummon->GetGUIDLow());
+    sLog.outDebug("New Pet has guid %u - %u", NewSummon->GetGUIDLow(),m_spellInfo->Id);
 
     if(m_caster->GetTypeId() == TYPEID_PLAYER)
     {
