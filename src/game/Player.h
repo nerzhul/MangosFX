@@ -1662,6 +1662,8 @@ class MANGOS_DLL_SPEC Player : public Unit
         void DuelComplete(DuelCompleteType type);
         void SendDuelCountdown(uint32 counter);
 
+		bool isDueling() const { return duel != NULL; }
+
         bool IsGroupVisibleFor(Player* p) const;
         bool IsInSameGroupWith(Player const* p) const;
         bool IsInSameRaidWith(Player const* p) const { return p==this || (GetGroup() != NULL && GetGroup() == p->GetGroup()); }
@@ -2195,6 +2197,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		PlayerBot* GetPlayerBot() { return m_playerbot;}
 		void SetPlayerBot(PlayerBot* plb) { m_playerbot = plb;}
 
+		uint8 GetTypeSpec() { return TypeSpec;};
 
         // Temporarily removed pet cache
         uint32 GetTemporaryUnsummonedPetNumber() const { return m_temporaryUnsummonedPetNumber; }
@@ -2644,6 +2647,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 
 		bool m_isBot;
 		PlayerBot* m_playerbot;
+
+		uint8 TypeSpec;
 };
 
 void AddItemsSetItem(Player*player,Item *item);
