@@ -699,6 +699,15 @@ void WorldSession::HandleTextEmoteOpcode( WorldPacket & recv_data )
 		GetPlayer()->CastSpell(GetPlayer(),70867,true);
 		unit->CastSpell(unit,70867,true);
 	}
+
+	// Christmas items on kissed pnj
+	if(GetPlayer() && unit && unit->GetTypeId() == TYPEID_UNIT && ((Creature*)unit)->GetEntry() == 15760 && emote_anim == 17)
+	{
+		if(urand(0,1))
+			GetPlayer()->AddItem(21519);
+		else
+			GetPlayer()->AddItem(34191);
+	}
 }
 
 void WorldSession::HandleChatIgnoredOpcode(WorldPacket& recv_data )
