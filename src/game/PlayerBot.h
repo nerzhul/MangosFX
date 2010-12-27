@@ -11,6 +11,38 @@ enum BotMode
 	MODE_DEFENDER	=	1,
 	MODE_OBJECTIVE	=	2,
 };
+
+enum BotChoice
+{
+	BCHOICE_PVP			=	0,
+	BCHOICE_FARM_MOBS,
+	BCHOICE_GO_ZONE,
+	BCHOICE_QUEST,
+	BCHOICE_EXPLORE,
+	BCHOICE_FARM_MINERALS,
+	BCHOICE_FARM_HERBS,
+	BCHOICE_FARM_LEATHER,
+	BCHOICE_FARM_CLOTH,
+	BCHOICE_LEARN_SPELLS,
+	BCHOICE_AUCTION,
+	MAX_BCHOICE			=	11,
+};
+
+typedef std::map<uint32,float> BotChance;
+class PlayerBotMgr
+{
+	public:
+		explicit PlayerBotMgr();
+		~PlayerBotMgr();
+
+		void LoadBotChoiceChances();
+	private:
+		BotChance m_choiceChances;
+
+};
+
+#define sPlayerBotMgr MaNGOS::Singleton<PlayerBotMgr>::Instance()
+
 class PlayerBot// : public Player
 {
 	public:
@@ -34,6 +66,8 @@ class PlayerBot// : public Player
 		void HandleAlterac(uint32 diff);
 
 		bool HasDecidedToFight() { return m_decideToFight; }
+
+		void ChooseToDoSomething();
 
 		Player* GetPlayer() { return bot; }
 		void SetPlayer(Player* plr) { bot = plr; }

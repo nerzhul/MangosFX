@@ -30,6 +30,7 @@
 #include "WorldPacket.h"
 #include "Weather.h"
 #include "Player.h"
+#include "PlayerBot.h"
 #include "Vehicle.h"
 #include "SkillExtraItems.h"
 #include "SkillDiscovery.h"
@@ -1459,8 +1460,10 @@ void World::SetInitialWorldSettings()
     sObjectMgr.LoadTrainerSpell();                              // must be after load CreatureTemplate
 
     sLog.outString( "Loading Waypoints..." );
-    sLog.outString();
     sWaypointMgr.Load();
+
+	sLog.outString("Loading PlayerBot Choice Chances...");
+	sPlayerBotMgr.LoadBotChoiceChances();
 
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();

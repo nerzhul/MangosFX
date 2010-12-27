@@ -1051,16 +1051,14 @@ bool GossipHello_bd_special_vendor(Player* pPlayer, Creature* pCreature)
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-	if(pPlayer->getLevel() != 1 || pPlayer->getClass() == CLASS_DEATH_KNIGHT && pPlayer->getLevel() == 55)
+	if(pPlayer->getLevel() == 1 && pPlayer->getClass() == CLASS_DEATH_KNIGHT && pPlayer->getLevel() == 55 && !pPlayer->isCTP())
 	{
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 	}
 	else
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-	
-	//if(pPlayer->isClickToPlay())
-		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BAD_COND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+8);
-    pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
+
+	pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
     return true;
 }
 
@@ -1375,6 +1373,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->getClass() == CLASS_DRUID)
 				pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_SPEC_2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+12);
 			
+			pPlayer->SEND_GOSSIP_MENU(pPlayer->GetGossipTextId(pCreature), pCreature->GetGUID());
 			break;
 		}
 		case GOSSIP_ACTION_INFO_DEF+10:

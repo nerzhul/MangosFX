@@ -1,6 +1,35 @@
 #include "PlayerBot.h"
+#include <Policies/SingletonImp.h>
 #include "ObjectMgr.h"
 #include "BattleGroundWS.h"
+
+INSTANTIATE_SINGLETON_1( PlayerBotMgr );
+
+PlayerBotMgr::PlayerBotMgr()
+{
+	m_choiceChances.clear();
+}
+
+PlayerBotMgr::~PlayerBotMgr()
+{
+	m_choiceChances.clear();
+}
+
+void PlayerBotMgr::LoadBotChoiceChances()
+{
+	uint32 count = 0;
+	m_choiceChances.clear();
+	if(QueryResult* result = WorldDatabase.PQuery("SELECT idchoice,chance FROM playerbot_choice_chance"))
+	{
+		do
+		{
+			Field* fields = result->Fetch();
+			m_choiceChances[fields[0].GetUInt32()] = fields[1].GetFloat();
+			count++;
+		} while(result->NextRow());
+	}
+	sLog.outString("Loaded %u PlayerBot chances by choice",count);
+}
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
@@ -92,7 +121,11 @@ void PlayerBot::Update(uint32 diff)
 {
 	ASSERT(bot);
 	
-	JoinBGQueueIfNotIn();
+	if(bot->isDead())
+	{
+	}
+
+	
 
 	if(m_sheduledBGJoin < DAY*HOUR)
 	{
@@ -157,6 +190,8 @@ void PlayerBot::Update(uint32 diff)
 	}
 	else
 	{
+		
+		
 		if(BattleGround* bg = bot->GetBattleGround())
 		{
 			switch(bg->GetTypeID(true))
@@ -175,9 +210,16 @@ void PlayerBot::Update(uint32 diff)
 					break;
 			}
 		}
+		else
+		{
+			ChooseToDoSomething();
+		}
 	}
 }
 
+void PlayerBot::ChooseToDoSomething()
+{
+}
 
 void PlayerBot::HandleRogueCombat()
 {
