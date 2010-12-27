@@ -388,7 +388,7 @@ void PlayerBot::HandleAuction()
 }
 void PlayerBot::HandleGoToCorpse()
 {
-	if(bot->getDeathState() == DEAD)
+	if(bot->getDeathState() == CORPSE)
 	{
 		bot->SetDeathTimer(0);
 		bot->BuildPlayerRepop();
