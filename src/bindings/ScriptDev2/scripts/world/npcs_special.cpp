@@ -1383,6 +1383,20 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			{
 				pPlayer->AddItem(42070);
 				pPlayer->AddItem(41903);
+				pPlayer->AddItem(41914);
+				pPlayer->AddItem(41933);
+				pPlayer->AddItem(41920);
+				pPlayer->AddItem(41939);
+				pPlayer->AddItem(41926);
+				pPlayer->AddItem(42126);
+				pPlayer->AddItem(42124);
+				pPlayer->AddItem(42132);
+				pPlayer->AddItem(42502);
+				pPlayer->AddItem(42525);
+				pPlayer->AddItem(42346);
+				pPlayer->AddItem(41897);
+				pPlayer->AddItem(42029);
+				pPlayer->AddItem(41908);
 			}
 			else if(pPlayer->getClass() == CLASS_MAGE || pPlayer->getClass() == CLASS_DRUID ||
 				pPlayer->getClass() == CLASS_WARLOCK || pPlayer->getClass() == CLASS_SHAMAN)
@@ -1391,20 +1405,91 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				if(pPlayer->getClass() == CLASS_DRUID)
 				{
 					pPlayer->AddItem(41836);
+					pPlayer->AddItem(41326);
+					pPlayer->AddItem(41280);
+					pPlayer->AddItem(41315);
+					pPlayer->AddItem(41292);
+					pPlayer->AddItem(41303);
+					pPlayer->AddItem(42126);
+					pPlayer->AddItem(42124);
+					pPlayer->AddItem(42132);
+					pPlayer->AddItem(44419);
+					pPlayer->AddItem(42583);
+					pPlayer->AddItem(41629);
+					pPlayer->AddItem(42029);
+					pPlayer->AddItem(41639);
 				}
 				else if(pPlayer->getClass() == CLASS_SHAMAN)
 				{
 					pPlayer->AddItem(41075);
+					pPlayer->AddItem(41018);
+					pPlayer->AddItem(41043);
+					pPlayer->AddItem(40991);
+					pPlayer->AddItem(41006);
+					pPlayer->AddItem(41032);
+					pPlayer->AddItem(42126);
+					pPlayer->AddItem(42124);
+					pPlayer->AddItem(42132);
+					pPlayer->AddItem(42564);
+					pPlayer->AddItem(42602);
+					pPlayer->AddItem(41069);
+					pPlayer->AddItem(42029);
+					pPlayer->AddItem(41064);
 				}
 				else
 				{
 					pPlayer->AddItem(41903);
+					if(pPlayer->getClass() == CLASS_MAGE)
+					{
+						pPlayer->AddItem(41945);
+						pPlayer->AddItem(41964);
+						pPlayer->AddItem(41951);
+						pPlayer->AddItem(41970);
+						pPlayer->AddItem(41958);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(44419);
+						pPlayer->AddItem(42502);
+						pPlayer->AddItem(41897);
+						pPlayer->AddItem(42029);
+						pPlayer->AddItem(41908);
+					}
+					else
+					{
+						pPlayer->AddItem(41992);
+						pPlayer->AddItem(42010);
+						pPlayer->AddItem(41997);
+						pPlayer->AddItem(42016);
+						pPlayer->AddItem(42004);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(44419);
+						pPlayer->AddItem(42502);
+						pPlayer->AddItem(41897);
+						pPlayer->AddItem(42029);
+						pPlayer->AddItem(41908);
+					}
 				}
 			}
 			else // hunt
 			{
 				pPlayer->AddItem(42074);
 				pPlayer->AddItem(41230);
+				pPlayer->AddItem(41156);
+				pPlayer->AddItem(41216);
+				pPlayer->AddItem(41086);
+				pPlayer->AddItem(41142);
+				pPlayer->AddItem(41204);
+				pPlayer->AddItem(42126);
+				pPlayer->AddItem(42124);
+				pPlayer->AddItem(42131);
+				pPlayer->AddItem(42490);
+				pPlayer->AddItem(41234);
+				pPlayer->AddItem(42317);
+				pPlayer->AddItem(42027);
+				pPlayer->AddItem(41224);
 			}
 		}
 		case GOSSIP_ACTION_INFO_DEF+11:
@@ -1421,16 +1506,113 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID)
 					{
 						pPlayer->AddItem(41635);
+						if(pPlayer->getClass() == CLASS_DRUID)
+						{
+							pPlayer->AddItem(41677);
+							pPlayer->AddItem(41714);
+							pPlayer->AddItem(41660);
+							pPlayer->AddItem(41772);
+							pPlayer->AddItem(41666);
+							pPlayer->AddItem(42126);
+							pPlayer->AddItem(42124);
+							pPlayer->AddItem(42131);
+							pPlayer->AddItem(42390);
+							pPlayer->AddItem(42588);
+							pPlayer->AddItem(41831);
+							pPlayer->AddItem(42027);
+							pPlayer->AddItem(41839);
+						}
+						else
+						{
+							pPlayer->AddItem(41671);
+							pPlayer->AddItem(41682);
+							pPlayer->AddItem(41649);
+							pPlayer->AddItem(41766);
+							pPlayer->AddItem(41654);
+							pPlayer->AddItem(42126);
+							pPlayer->AddItem(42124);
+							pPlayer->AddItem(42131);
+							pPlayer->AddItem(42450);
+							pPlayer->AddItem(42242);
+							pPlayer->AddItem(42248);
+							pPlayer->AddItem(41831);
+							pPlayer->AddItem(42027);
+							pPlayer->AddItem(41839);
+						}
 					}
 					else
 					{
 						pPlayer->AddItem(41230);
+						pPlayer->AddItem(41150);
+						pPlayer->AddItem(41210);
+						pPlayer->AddItem(41080);
+						pPlayer->AddItem(41136);
+						pPlayer->AddItem(41198);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42131);
+						pPlayer->AddItem(42607);
+						pPlayer->AddItem(41234);
+						pPlayer->AddItem(42027);
+						pPlayer->AddItem(42208);
+						pPlayer->AddItem(42227);
+						pPlayer->AddItem(41224);
 					}
 				}
 				else // warrior, pala, dk
 				{
 					pPlayer->AddItem(42074);
 					pPlayer->AddItem(40882);
+					if(pPlayer->getClass() == CLASS_DEATH_KNIGHT)
+					{
+						pPlayer->AddItem(40824);
+						pPlayer->AddItem(40863);
+						pPlayer->AddItem(40784);
+						pPlayer->AddItem(40806);
+						pPlayer->AddItem(40845);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42131);
+						pPlayer->AddItem(42317);
+						pPlayer->AddItem(42620);
+						pPlayer->AddItem(40879);
+						pPlayer->AddItem(42027);
+						pPlayer->AddItem(40888);
+					}
+					else if(pPlayer->getClass() == CLASS_PALADIN)
+					{
+						pPlayer->AddItem(40825);
+						pPlayer->AddItem(40864);
+						pPlayer->AddItem(40785);
+						pPlayer->AddItem(40805);
+						pPlayer->AddItem(40846);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42131);
+						pPlayer->AddItem(42317);
+						pPlayer->AddItem(42852);
+						pPlayer->AddItem(40879);
+						pPlayer->AddItem(42027);
+						pPlayer->AddItem(40888);
+					}
+					else
+					{
+						pPlayer->AddItem(40823);
+						pPlayer->AddItem(40862);
+						pPlayer->AddItem(40786);
+						pPlayer->AddItem(40804);
+						pPlayer->AddItem(40844);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42131);
+						pPlayer->AddItem(42317);
+						pPlayer->AddItem(42559);
+						pPlayer->AddItem(42450);
+						pPlayer->AddItem(40879);
+						pPlayer->AddItem(42027);
+						pPlayer->AddItem(42208);
+						pPlayer->AddItem(40888);
+					}
 				}
 			}
 		}
@@ -1447,10 +1629,37 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					if(pPlayer->getClass() == CLASS_DRUID)
 					{
 						pPlayer->AddItem(41621);
+						pPlayer->AddItem(41320);
+						pPlayer->AddItem(41274);
+						pPlayer->AddItem(41309);
+						pPlayer->AddItem(41286);
+						pPlayer->AddItem(41297);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(44419);
+						pPlayer->AddItem(42578);
+						pPlayer->AddItem(41616);
+						pPlayer->AddItem(42033);
+						pPlayer->AddItem(41624);
 					}
 					else
 					{
 						pPlayer->AddItem(41885);
+						pPlayer->AddItem(41853);
+						pPlayer->AddItem(41868);
+						pPlayer->AddItem(41858);
+						pPlayer->AddItem(41873);
+						pPlayer->AddItem(41863);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(42513);
+						pPlayer->AddItem(42531);
+						pPlayer->AddItem(42352);
+						pPlayer->AddItem(41880);
+						pPlayer->AddItem(42033);
+						pPlayer->AddItem(41892);
 					}
 				}
 				else // paladin, shaman
@@ -1459,10 +1668,37 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					if(pPlayer->getClass() == CLASS_PALADIN)
 					{
 						pPlayer->AddItem(40977);
+						pPlayer->AddItem(40932);
+						pPlayer->AddItem(40962);
+						pPlayer->AddItem(40905);
+						pPlayer->AddItem(40926);
+						pPlayer->AddItem(40938);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(42570);
+						pPlayer->AddItem(42614);
+						pPlayer->AddItem(42352);
+						pPlayer->AddItem(40974);
+						pPlayer->AddItem(42033);
+						pPlayer->AddItem(40982);
 					}
 					else
 					{
 						pPlayer->AddItem(41075);
+						pPlayer->AddItem(41012);
+						pPlayer->AddItem(41037);
+						pPlayer->AddItem(40990);
+						pPlayer->AddItem(41000);
+						pPlayer->AddItem(41026);
+						pPlayer->AddItem(42126);
+						pPlayer->AddItem(42124);
+						pPlayer->AddItem(42132);
+						pPlayer->AddItem(42570);
+						pPlayer->AddItem(42597);
+						pPlayer->AddItem(41048);
+						pPlayer->AddItem(42033);
+						pPlayer->AddItem(41059);
 					}
 				}
 			}
