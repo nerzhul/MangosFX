@@ -1132,6 +1132,15 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(45562);
 				pPlayer->AddItem(45157);
 				pPlayer->AddItem(46048);
+				pPlayer->AddItem(45836);
+				pPlayer->AddItem(45164);
+				pPlayer->AddItem(45143);
+				pPlayer->AddItem(45820);
+				pPlayer->AddItem(45543);
+				pPlayer->AddItem(45263);
+				pPlayer->AddItem(45931);
+				pPlayer->AddItem(45553);
+				pPlayer->AddItem(45454);
 			}
 			else if(pPlayer->getClass() == CLASS_PRIEST)
 			{
@@ -1140,28 +1149,57 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(45483);
 				pPlayer->AddItem(45515);
 				pPlayer->AddItem(45438);
+				pPlayer->AddItem(46045);
+				pPlayer->AddItem(45435);
+				pPlayer->AddItem(45848);
+				pPlayer->AddItem(51805);
+				pPlayer->AddItem(46068);
+				pPlayer->AddItem(46051);
+				pPlayer->AddItem(45446);
+				pPlayer->AddItem(45831);
+				pPlayer->AddItem(45275);
 			}
 			else // warlock, mage, druid, shaman
 			{
 				pPlayer->AddItem(46042);
 				pPlayer->AddItem(45515);
 				pPlayer->AddItem(45438);
+				pPlayer->AddItem(51805);
+				pPlayer->AddItem(46051);
+				pPlayer->AddItem(45446);
 				if(pPlayer->getClass() == CLASS_SHAMAN)
 				{
 					pPlayer->AddItem(45531);
 					pPlayer->AddItem(45513);
+					pPlayer->AddItem(45837);
+					pPlayer->AddItem(45118);
+					pPlayer->AddItem(45544);
+					pPlayer->AddItem(45440);
+					pPlayer->AddItem(45554);
+					pPlayer->AddItem(45187);
 				}
 				else if(pPlayer->getClass() == CLASS_DRUID)
 				{
 					pPlayer->AddItem(45237);
 					pPlayer->AddItem(45565);
+					pPlayer->AddItem(45839);
+					pPlayer->AddItem(45439);
+					pPlayer->AddItem(45847);
+					pPlayer->AddItem(45492);
+					pPlayer->AddItem(45185);
+					pPlayer->AddItem(45149);
 				}
 				else // warlock, mage
 				{
 					pPlayer->AddItem(45272);
 					pPlayer->AddItem(45567);
+					pPlayer->AddItem(46045);
+					pPlayer->AddItem(45150);
+					pPlayer->AddItem(40398);
+					pPlayer->AddItem(46068);
+					pPlayer->AddItem(45831);
+					pPlayer->AddItem(45275);
 				}
-
 			}
 		}
 		case GOSSIP_ACTION_INFO_DEF+5:
@@ -1169,20 +1207,35 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			// STUFF DPS CAC
 			if(uiAction == GOSSIP_ACTION_INFO_DEF+5)
 			{
+				pPlayer->AddItem(45263);
 				if(pPlayer->getClass() == CLASS_DRUID || pPlayer->getClass() == CLASS_SHAMAN || pPlayer->getClass() == CLASS_ROGUE)
 				{
 					pPlayer->AddItem(45224);
 					pPlayer->AddItem(45157);
 					pPlayer->AddItem(46048);
+					pPlayer->AddItem(51807);
+					pPlayer->AddItem(46038);
 					if(pPlayer->getClass() == CLASS_SHAMAN)
 					{
 						pPlayer->AddItem(46205);
 						pPlayer->AddItem(45562);
+						pPlayer->AddItem(45109);
+						pPlayer->AddItem(45164);
+						pPlayer->AddItem(45504);
+						pPlayer->AddItem(45543);
+						pPlayer->AddItem(45553);
+						pPlayer->AddItem(45454);
 					}
 					else if(pPlayer->getClass() == CLASS_ROGUE || pPlayer->getClass() == CLASS_DRUID)
 					{
 						pPlayer->AddItem(45453);
 						pPlayer->AddItem(45162);
+						pPlayer->AddItem(45325);
+						pPlayer->AddItem(45523);
+						pPlayer->AddItem(44011);
+						pPlayer->AddItem(45265);
+						pPlayer->AddItem(45829);
+						pPlayer->AddItem(45869);
 					}
 				}
 				else // Warrior, pala, dk
@@ -1192,6 +1245,14 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45559);
 					pPlayer->AddItem(45250);
 					pPlayer->AddItem(45106);
+					pPlayer->AddItem(45833);
+					pPlayer->AddItem(44006);
+					pPlayer->AddItem(45841);
+					pPlayer->AddItem(46040);
+					pPlayer->AddItem(45320);
+					pPlayer->AddItem(45931);
+					pPlayer->AddItem(45550);
+					pPlayer->AddItem(45888);
 				}
 			}
 		}
@@ -1199,6 +1260,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 		{
 			if(uiAction == GOSSIP_ACTION_INFO_DEF+6)
 			{
+				pPlayer->AddItem(45158);
+				pPlayer->AddItem(45507);
 				// STUFF TANK
 				if(pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_DEATH_KNIGHT ||
 					pPlayer->getClass() == CLASS_WARRIOR)
@@ -1208,6 +1271,13 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45560);
 					pPlayer->AddItem(45326);
 					pPlayer->AddItem(45871);
+					pPlayer->AddItem(45228);
+					pPlayer->AddItem(45502);
+					pPlayer->AddItem(40589);
+					pPlayer->AddItem(40387);
+					pPlayer->AddItem(45251);
+					pPlayer->AddItem(45111);
+					pPlayer->AddItem(45825);
 				}
 				else // druid
 				{
@@ -1216,6 +1286,13 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45232);
 					pPlayer->AddItem(46048);
 					pPlayer->AddItem(45456);
+					pPlayer->AddItem(45325);
+					pPlayer->AddItem(45993);
+					pPlayer->AddItem(44011);
+					pPlayer->AddItem(45945);
+					pPlayer->AddItem(45265);
+					pPlayer->AddItem(45829);
+					pPlayer->AddItem(45869);
 				}
 			}
 		}
@@ -1227,25 +1304,52 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(46321);
 				pPlayer->AddItem(45113);
 				pPlayer->AddItem(45438);
+				pPlayer->AddItem(45822);
+				pPlayer->AddItem(40532);
+				pPlayer->AddItem(45446);
 				if(pPlayer->getClass() == CLASS_PALADIN)
 				{
 					pPlayer->AddItem(45167);
 					pPlayer->AddItem(45561);
+					pPlayer->AddItem(45835);
+					pPlayer->AddItem(45226);
+					pPlayer->AddItem(45843);
+					pPlayer->AddItem(40590);
+					pPlayer->AddItem(45826);
+					pPlayer->AddItem(45269);
 				}
 				else if(pPlayer->getClass() == CLASS_SHAMAN)
 				{
 					pPlayer->AddItem(45867);
 					pPlayer->AddItem(45563);
+					pPlayer->AddItem(45943);
+					pPlayer->AddItem(45118);
+					pPlayer->AddItem(45544);
+					pPlayer->AddItem(45440);
+					pPlayer->AddItem(45151);
+					pPlayer->AddItem(45187);
 				}
 				else if(pPlayer->getClass() == CLASS_PRIEST)
 				{
 					pPlayer->AddItem(45272);
 					pPlayer->AddItem(46050);
+					pPlayer->AddItem(45273);
+					pPlayer->AddItem(45532);
+					pPlayer->AddItem(45848);
+					pPlayer->AddItem(46068);
+					pPlayer->AddItem(45831);
+					pPlayer->AddItem(45275);
 				}
 				else // DRUID
 				{
 					pPlayer->AddItem(46186);
 					pPlayer->AddItem(45565);
+					pPlayer->AddItem(45293);
+					pPlayer->AddItem(44007);
+					pPlayer->AddItem(45482);
+					pPlayer->AddItem(45492);
+					pPlayer->AddItem(45556);
+					pPlayer->AddItem(45149);
 				}
 			}
 			// Suite
@@ -1364,6 +1468,205 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			}
 			//...
 			// end
+			switch(pPlayer->getClass())
+			{
+				case CLASS_DRUID:
+					pPlayer->learnSpell(9634, 0,false);
+					pPlayer->learnSpell(768, 0,false);
+					pPlayer->learnSpell(6795, 0,false);
+					pPlayer->learnSpell(1066, 0,false);
+					pPlayer->learnSpell(6807, 0,false);
+					pPlayer->learnSpell(26997, 0,false);
+					pPlayer->learnSpell(33357, 0,false);
+					pPlayer->learnSpell(27008, 0,false);
+					pPlayer->learnSpell(62600, 0,false);
+					pPlayer->learnSpell(27004, 0,false);
+					pPlayer->learnSpell(5229, 0,false);
+					pPlayer->learnSpell(22570, 0,false);
+					pPlayer->learnSpell(1066, 0,false);
+					pPlayer->learnSpell(768, 0,false);
+					pPlayer->learnSpell(783, 0,false);
+					pPlayer->learnSpell(9846, 0,false);
+					pPlayer->learnSpell(20719, 0,false);
+					pPlayer->learnSpell(27000, 0,false);
+					pPlayer->learnSpell(27003, 0,false);
+					pPlayer->learnSpell(33745, 0,false);
+					pPlayer->learnSpell(27002, 0,false);
+					pPlayer->learnSpell(16857, 0,false);
+					pPlayer->learnSpell(24248, 0,false);
+					pPlayer->learnSpell(5225, 0,false);
+					pPlayer->learnSpell(27005, 0,false);
+					pPlayer->learnSpell(22842, 0,false);
+					pPlayer->learnSpell(9913, 0,false);
+					pPlayer->learnSpell(26998, 0,false);
+					pPlayer->learnSpell(5209, 0,false);
+					pPlayer->learnSpell(8983, 0,false);
+					pPlayer->learnSpell(27006, 0,false);
+					pPlayer->learnSpell(26995, 0,false);
+					pPlayer->learnSpell(26985, 0,false);
+					pPlayer->learnSpell(26988, 0,false);
+					pPlayer->learnSpell(22812, 0,false);
+					pPlayer->learnSpell(27009, 0,false);
+					pPlayer->learnSpell(26992, 0,false);
+					pPlayer->learnSpell(26986, 0,false);
+					pPlayer->learnSpell(18658, 0,false);
+					pPlayer->learnSpell(29166, 0,false);
+					pPlayer->learnSpell(770, 0,false);
+					pPlayer->learnSpell(27012, 0,false);
+					pPlayer->learnSpell(26989, 0,false);
+					pPlayer->learnSpell(2893, 0,false);
+					pPlayer->learnSpell(2782, 0,false);
+					pPlayer->learnSpell(26991, 0,false);
+					pPlayer->learnSpell(33763, 0,false);
+					pPlayer->learnSpell(26990, 0,false);
+					pPlayer->learnSpell(26982, 0,false);
+					pPlayer->learnSpell(26994, 0,false);
+					pPlayer->learnSpell(50764, 0,false);
+					pPlayer->learnSpell(26980, 0,false);
+					pPlayer->learnSpell(26979, 0,false);
+					pPlayer->learnSpell(26983, 0,false);
+					pPlayer->learnSpell(9634, 0,false);
+					pPlayer->learnSpell(33786, 0,false);
+					break;
+				case CLASS_HUNTER:
+					pPlayer->learnSpell(6991, 0,false);
+					pPlayer->learnSpell(982, 0,false);
+					pPlayer->learnSpell(1579, 0,false);
+					pPlayer->learnSpell(883, 0,false);
+					pPlayer->learnSpell(2641, 0,false);
+					pPlayer->learnSpell(8737, 0,false);
+					break;
+				case CLASS_PALADIN:
+					pPlayer->learnSpell(7328, 0,false);
+					pPlayer->learnSpell(750, 0,false);
+					break;
+				case CLASS_SHAMAN:
+					pPlayer->learnSpell(5394, 0,false);
+					pPlayer->learnSpell(8071, 0,false);
+					pPlayer->learnSpell(3599, 0,false);
+					pPlayer->learnSpell(8737, 0,false);
+					break;
+				case CLASS_WARLOCK:
+					pPlayer->learnSpell(688, 0,false);
+					pPlayer->learnSpell(697, 0,false);
+					pPlayer->learnSpell(712, 0,false);
+					pPlayer->learnSpell(691, 0,false);
+					break;
+				case CLASS_WARRIOR:
+					pPlayer->learnSpell(71, 0,false);
+					pPlayer->learnSpell(2458, 0,false);
+					pPlayer->learnSpell(20252, 0,false);
+					pPlayer->learnSpell(355, 0,false);
+					pPlayer->learnSpell(750, 0,false);
+					break;
+				case CLASS_MAGE:
+					pPlayer->learnSpell(33946, 0,false);
+					pPlayer->learnSpell(27125, 0,false);
+					pPlayer->learnSpell(33944, 0,false);
+					pPlayer->learnSpell(27131, 0,false);
+					pPlayer->learnSpell(130, 0,false);
+					pPlayer->learnSpell(2139, 0,false);
+					pPlayer->learnSpell(30451, 0,false);
+					pPlayer->learnSpell(475, 0,false);
+					pPlayer->learnSpell(27082, 0,false);
+					pPlayer->learnSpell(27127, 0,false);
+					pPlayer->learnSpell(27126, 0,false);
+					pPlayer->learnSpell(66, 0,false);
+					pPlayer->learnSpell(27090, 0,false);
+					pPlayer->learnSpell(27101, 0,false);
+					pPlayer->learnSpell(12826, 0,false);
+					pPlayer->learnSpell(38704, 0,false);
+					pPlayer->learnSpell(43987, 0,false);
+					pPlayer->learnSpell(1953, 0,false);
+					pPlayer->learnSpell(30449, 0,false);
+					pPlayer->learnSpell(30482, 0,false);
+					pPlayer->learnSpell(38692, 0,false);
+					pPlayer->learnSpell(27074, 0,false);
+					pPlayer->learnSpell(27086, 0,false);
+					pPlayer->learnSpell(27128, 0,false);
+					pPlayer->learnSpell(27079, 0,false);
+					pPlayer->learnSpell(7301, 0,false);
+					pPlayer->learnSpell(27124, 0,false);
+					pPlayer->learnSpell(27085, 0,false);
+					pPlayer->learnSpell(45438, 0,false);
+					pPlayer->learnSpell(27087, 0,false);
+					pPlayer->learnSpell(38697, 0,false);
+					pPlayer->learnSpell(32796, 0,false);
+					pPlayer->learnSpell(30455, 0,false);
+					pPlayer->learnSpell(27088, 0,false);
+					break;
+				case CLASS_ROGUE:
+					pPlayer->learnSpell(8643, 0,false);
+					pPlayer->learnSpell(1833, 0,false);
+					pPlayer->learnSpell(6774, 0,false);
+					pPlayer->learnSpell(51722, 0,false);
+					pPlayer->learnSpell(48689, 0,false);
+					pPlayer->learnSpell(32684, 0,false);
+					pPlayer->learnSpell(26865, 0,false);
+					pPlayer->learnSpell(8647, 0,false);
+					pPlayer->learnSpell(26884, 0,false);
+					pPlayer->learnSpell(48673, 0,false);
+					pPlayer->learnSpell(26867, 0,false);
+					pPlayer->learnSpell(26862, 0,false);
+					pPlayer->learnSpell(26863, 0,false);
+					pPlayer->learnSpell(1766, 0,false);
+					pPlayer->learnSpell(26669, 0,false);
+					pPlayer->learnSpell(27448, 0,false);
+					pPlayer->learnSpell(5938, 0,false);
+					pPlayer->learnSpell(11305, 0,false);
+					pPlayer->learnSpell(1776, 0,false);
+					pPlayer->learnSpell(11297, 0,false);
+					pPlayer->learnSpell(1787, 0,false);
+					pPlayer->learnSpell(31224, 0,false);
+					pPlayer->learnSpell(2094, 0,false);
+					pPlayer->learnSpell(1860, 0,false);
+					pPlayer->learnSpell(1842, 0,false);
+					pPlayer->learnSpell(2836, 0,false);
+					pPlayer->learnSpell(26889, 0,false);
+					pPlayer->learnSpell(1725, 0,false);
+					pPlayer->learnSpell(921, 0,false);
+					pPlayer->learnSpell(674, 0,false);
+					break;
+				case CLASS_PRIEST:
+					break;
+				case CLASS_DEATH_KNIGHT:
+					pPlayer->learnSpell(50977, 0,false);
+					pPlayer->learnSpell(53428, 0,false);
+					break;
+				
+				default:
+					break;
+			}
+			switch(pPlayer->getRace())
+			{
+				case RACE_HUMAN:
+				case RACE_DWARF:
+				case RACE_NIGHTELF:
+				case RACE_GNOME:
+				case RACE_DRAENEI:
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(932),42000);
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(72),24000);
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(946),42000);
+					break;
+				case RACE_ORC:
+				case RACE_UNDEAD_PLAYER:
+				case RACE_TAUREN:
+				case RACE_TROLL:
+				case RACE_BLOODELF:
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(934),42000);
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(947),42000);
+					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(76),24000);
+					break;
+				default:
+					break;
+			}
+			pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(942),24000);
+			pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(989),24000);
+			pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(935),24000);
+			pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(1011),24000);
+			
+			pPlayer->UpdateSkillsToMaxSkillsForLevel();
+			pPlayer->SaveToDB();
 			break;
 		}
 		case GOSSIP_ACTION_INFO_DEF+8:

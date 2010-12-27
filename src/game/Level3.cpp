@@ -6562,6 +6562,46 @@ bool ChatHandler::HandleDebugEnterVehicle(const char * args)
     return true;
 }
 
+bool ChatHandler::HandlePlayerbotListCommand(const char* args)
+{
+	if (!*args) // Need args !
+        return false;
+
+	char* lvlmin = strtok((char*)args, " ");
+	char* lvlmax = strtok(NULL, " ");
+
+	uint8 lvl1 = 1;
+	uint8 lvl2 = DEFAULT_MAX_LEVEL;
+	if(lvlmin) lvl1 = atoi(lvlmin);
+	if(lvlmax) lvl2 = atoi(lvlmax);
+	if(QueryResult* accList = loginDatabase.PQuery("SELECT id FROM account WHERE last_login < '%s' AND id not in (SELECT id from account_banned where active = 1))","2010-03-01 00:00:00"))
+	{
+		uint32 accid = accList->Fetch()->GetUInt32();
+		if(QueryResult* query = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' "
+			"AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
+		{
+			uint64 guid = query->Fetch()->GetUInt64();
+
+			Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
+			if (bot)
+				PSendSysMessage("Personnage deja connecte !");	
+			else
+			{
+				CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
+
+				m_session->AddPlayerBot(guid);
+
+				PSendSysMessage("Bot ajoute !");
+				sWorld.addCountBot();
+			}
+		}
+	}
+	else
+		SendSysMessage("Aucun compte valide");
+
+	return true;
+}
+
 bool ChatHandler::HandlePlayerbotCommand(const char* args)
 {
     if (!*args) // Need args !
