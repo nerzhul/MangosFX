@@ -6564,11 +6564,13 @@ bool ChatHandler::HandleDebugEnterVehicle(const char * args)
 
 bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 {
-	if (!*args) // Need args !
-        return false;
-
-	char* lvlmin = strtok((char*)args, " ");
-	char* lvlmax = strtok(NULL, " ");
+	char* lvlmin = NULL;
+	char* lvlmax = NULL;
+	if (*args)
+	{
+		lvlmin = strtok((char*)args, " ");
+		lvlmax = strtok(NULL, " ");
+	}
 
 	uint8 lvl1 = 1;
 	uint8 lvl2 = DEFAULT_MAX_LEVEL;
@@ -6576,11 +6578,14 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 	if(lvlmax) lvl2 = atoi(lvlmax);
 	if(QueryResult* accList = loginDatabase.PQuery("SELECT id FROM account WHERE last_login < '%s' AND id not in (SELECT id from account_banned where active = 1)","2010-03-01 00:00:00"))
 	{
+		error_log("TEST");
 		uint32 accid = accList->Fetch()->GetUInt32();
-		if(QueryResult* query = CharacterDatabase.PQuery("SELECT guid FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' "
+		if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' "
 			"AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
 		{
-			uint64 guid = query->Fetch()->GetUInt64();
+			error_log("TEST2");
+			std::string name = query->Fetch()->GetCppString();
+			uint64 guid = sObjectMgr.GetPlayerGUIDByName(name.c_str());
 
 			Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
 			if (bot)
