@@ -22727,7 +22727,6 @@ void Player::ActivateSpec(uint8 spec)
             }
         }
     }
-	uint8 spec = 0;
 	
 	for(uint8 i = 1; i < 3; ++i)
 	{
