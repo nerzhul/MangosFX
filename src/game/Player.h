@@ -2325,6 +2325,8 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void SetInBinding(bool bind) { bindTimer = bind; }
 		void SetBindingState(bool bind) { bindingState = bind; }
 
+		void SetCTP(bool ctp) { m_ctp = ctp; }
+		bool isCTP() { return m_ctp; }
     protected:
 
         uint32 m_contestedPvPTimer;
@@ -2645,6 +2647,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		LookingForGroup m_LookingForGroup;
 		uint32 m_dungeonId;
 
+		bool m_ctp;
 		bool m_isBot;
 		PlayerBot* m_playerbot;
 
