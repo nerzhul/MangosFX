@@ -17227,6 +17227,13 @@ void Player::SaveToDB()
 
 	if(isCTP())
 		CharacterDatabase.PExecute("UPDATE character_fss_addon SET is_ctp = '1' WHERE guid = '%u'",GetGUIDLow());
+	if(QueryResult* res = CharacterDatabase.PQuery("SELECT ctp_date FROM character_fss_addon WHERE guid = '%u'",GetGUIDLow()))
+	{
+		Field* field = res->Fetch();
+		std::string str = field->GetCppString();
+		if(str.size() < 5)
+			CharacterDatabase.PExecute("UPDATE character_fss_addon SET ctp_date = NOW() WHERE guid = '%u'",GetGUIDLow());
+	}
     CharacterDatabase.CommitTransaction();
 
     // save pet (hunter pet level and experience and all type pets health/mana).
