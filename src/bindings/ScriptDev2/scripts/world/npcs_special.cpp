@@ -1908,6 +1908,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			
 			pPlayer->UpdateSkillsToMaxSkillsForLevel();
 			pPlayer->SaveToDB();
+			pPlayer->CLOSE_GOSSIP_MENU();
 			break;
 		}
 		case GOSSIP_ACTION_INFO_DEF+8:

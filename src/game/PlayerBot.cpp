@@ -126,7 +126,7 @@ void PlayerBot::Update(uint32 diff)
 	
 	if(bot->isDead() && !bot->GetBattleGround() && bot->GetCorpse())
 	{
-		HandleGoToCorpse();
+		//HandleGoToCorpse();
 		return;
 	}
 
