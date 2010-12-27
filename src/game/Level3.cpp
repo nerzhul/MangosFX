@@ -6578,12 +6578,10 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 	if(lvlmax) lvl2 = atoi(lvlmax);
 	if(QueryResult* accList = loginDatabase.PQuery("SELECT id FROM account WHERE last_login < '%s' AND id not in (SELECT id from account_banned where active = 1)","2010-03-01 00:00:00"))
 	{
-		error_log("TEST");
 		Field *fields = accList->Fetch();
 		uint32 accid = fields[0].GetUInt32();
-		error_log("TEST2");
-		if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' "
-			"AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
+		error_log("account %u",accid);
+		if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
 		{
 			error_log("TEST3");
 			Field *fields2 = query->Fetch();
