@@ -2324,6 +2324,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void SetTimedBind(uint32 time) { m_timed_bind = time; }
 		void SetInBinding(bool bind) { bindTimer = bind; }
 		void SetBindingState(bool bind) { bindingState = bind; }
+		void SetDeathTimer(uint32 timer) { m_deathTimer = timer; }
 
 		void SetCTP(bool ctp) { m_ctp = ctp; }
 		bool isCTP() { return m_ctp; }

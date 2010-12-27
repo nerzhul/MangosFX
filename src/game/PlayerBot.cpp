@@ -39,6 +39,9 @@ PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 	bgTypeId = BATTLEGROUND_TYPE_NONE;
 	m_ginfo = 0;
 	sheduledBG = NULL;
+	chosen_point = 0;
+
+	choice_Timer = 0;
 	mode_Timer = 5000;
 	act_Timer = 1000;
 }
@@ -121,11 +124,11 @@ void PlayerBot::Update(uint32 diff)
 {
 	ASSERT(bot);
 	
-	if(bot->isDead())
+	if(bot->isDead() && !bot->GetBattleGround() && bot->GetCorpse())
 	{
+		HandleGoToCorpse();
+		return;
 	}
-
-	
 
 	if(m_sheduledBGJoin < DAY*HOUR)
 	{
@@ -190,35 +193,221 @@ void PlayerBot::Update(uint32 diff)
 	}
 	else
 	{
-		
-		
-		if(BattleGround* bg = bot->GetBattleGround())
-		{
-			switch(bg->GetTypeID(true))
-			{
-				case BATTLEGROUND_WS:
-					HandleWarsong(diff);
-					break;
-				case BATTLEGROUND_AB:
-					HandleArathi(diff);
-					break;
-				case BATTLEGROUND_AV:
-					HandleAlterac(diff);
-					break;
-				case BATTLEGROUND_EY:
-					HandleEyeOfTheStorm(diff);
-					break;
-			}
-		}
-		else
+		if(choice_Timer <= diff && !bot->InBattleGround() && !bot->InBattleGroundQueue())
 		{
 			ChooseToDoSomething();
+			choice_Timer = urand(600000,3600000);
+		}
+		else
+			choice_Timer -= diff;
+		
+		switch(m_choice)
+		{
+			case BCHOICE_PVP:
+			{
+				JoinBGQueueIfNotIn();
+
+				if(BattleGround* bg = bot->GetBattleGround())
+				{
+					switch(bg->GetTypeID(true))
+					{
+						case BATTLEGROUND_WS:
+							HandleWarsong(diff);
+							break;
+						case BATTLEGROUND_AB:
+							HandleArathi(diff);
+							break;
+						case BATTLEGROUND_AV:
+							HandleAlterac(diff);
+							break;
+						case BATTLEGROUND_EY:
+							HandleEyeOfTheStorm(diff);
+							break;
+					}
+				}
+				break;
+			}
+			case BCHOICE_AUCTION:
+			{
+				HandleAuction();
+				break;
+			}
+			case BCHOICE_BANK:
+			{
+				HandleBank();
+				break;
+			}
+			case BCHOICE_AFK:
+			default:
+				break;
 		}
 	}
 }
 
 void PlayerBot::ChooseToDoSomething()
 {
+	float randAct = float(urand(1,1000));
+	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
+	if(randAct < 200)
+		m_choice = BCHOICE_PVP;
+	else if(randAct < 300)
+		m_choice = BCHOICE_FARM_MOBS;
+	else if(randAct < 500)
+		m_choice = BCHOICE_GO_ZONE;
+	else if(randAct < 650)
+		m_choice = BCHOICE_QUEST;
+	else if(randAct < 600)
+		m_choice = BCHOICE_EXPLORE;
+	else if(randAct < 700)
+	{
+		m_choice = BCHOICE_FARM_MINERALS;
+		m_choice = BCHOICE_FARM_HERBS;
+		m_choice = BCHOICE_FARM_LEATHER;
+		m_choice = BCHOICE_FARM_CLOTH;
+	}
+	else if(randAct < 750)
+		m_choice = BCHOICE_LEARN_SPELLS;
+	else if(randAct < 800)
+	{
+		m_choice = BCHOICE_AUCTION;
+		chosen_point = 0;
+	}
+	else if(randAct < 900)
+	{
+		m_choice = BCHOICE_BANK;
+		chosen_point = 0;
+	}
+	else if(randAct < 1000)
+	{
+		m_choice = BCHOICE_AFK;
+		if(!bot->isAFK())
+			bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
+	}
+}
+
+float bank_coords[8][5] = {
+	{0,0,-8926.86,607.1f,99.55f},
+	{0,0,-8934.9f,622.5f,99.55f},
+	{0,0,-4880.33f,-986.4f,504.1f},
+	{0,0,-4897.9f,-1001.5f,504.1f},
+	{1,1,1622.76f,-4373.21f,12.1f},
+	{1,1,1629.96f,-4381.31f,20.1f},
+	{1,0,1588.73f,240.5f,-52.2f},
+	{1,0,1602.88f,240.7f,-52.2f},
+};
+
+float ah_coords[8][5] = {
+	{0,0,-8818.96f,661.1f,96.5f},
+	{0,0,-8820.6f,667.750f,96.5f},
+	{0,0,-4963.1f,-914.4f,504.9f},
+	{0,0,-4952.31f,-904.352f,504.9f},
+	{1,1,1689.611f,-4455.31f,20.1f},
+	{1,1,1668.98f,-4458.94f,20.1f},
+	{1,1,1682.99f,-4461.18f,20.1f},
+	{1,0,1646.63f,221.36f,-55.881f},
+
+};
+
+void PlayerBot::HandleBank()
+{
+	if(!chosen_point)
+		chosen_point = urand(1,5);
+
+	switch(bot->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_GNOME:
+		case RACE_NIGHTELF:
+		case RACE_DRAENEI:
+		case RACE_WORGEN:
+			if(bot->GetMapId() != bank_coords[(chosen_point-1)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
+			{
+				chosen_point = urand(1,5);
+				return;
+			}
+			if(bot->isMoving())
+				return;
+
+			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 1.0f)
+				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/100,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/100);
+			else
+			break;
+		case RACE_ORC:
+		case RACE_TROLL:
+		case RACE_TAUREN:
+		case RACE_BLOODELF:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_GOBLIN:
+			if(bot->GetMapId() != bank_coords[(chosen_point+3)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
+			{
+				chosen_point = urand(1,5);
+				return;
+			}
+			if(bot->isMoving())
+				return;
+			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 1.0f)
+				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/100,bank_coords[chosen_point+3][3]+urand(0,100)/100,bank_coords[chosen_point+3][4]+urand(0,100)/100);
+			else
+			break;
+	}
+}
+
+void PlayerBot::HandleAuction()
+{
+	if(!chosen_point)
+		chosen_point = urand(1,5);
+
+	switch(bot->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_GNOME:
+		case RACE_NIGHTELF:
+		case RACE_DRAENEI:
+		case RACE_WORGEN:
+			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1] || !bot->isMoving())
+				return;
+			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 1.0f)
+				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/100,ah_coords[chosen_point-1][3]+urand(0,100)/100,ah_coords[chosen_point-1][4]+urand(0,100)/100);
+			else
+			break;
+		case RACE_ORC:
+		case RACE_TROLL:
+		case RACE_TAUREN:
+		case RACE_BLOODELF:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_GOBLIN:
+			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1] || !bot->isMoving())
+				return;
+			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 1.0f)
+				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/100,ah_coords[chosen_point+3][3]+urand(0,100)/100,ah_coords[chosen_point+3][4]+urand(0,100)/100);
+			else
+			break;
+	}
+}
+void PlayerBot::HandleGoToCorpse()
+{
+	if(bot->getDeathState() == DEAD)
+	{
+		bot->SetDeathTimer(0);
+		bot->BuildPlayerRepop();
+        bot->RepopAtGraveyard();
+		return;
+	}
+
+	if(bot->GetDistance2d(bot->GetCorpse()))
+	{
+		bot->ResurrectPlayer(bot->InBattleGround() ? 1.0f : 0.5f);
+		bot->SpawnCorpseBones();
+		return;
+	}
+
+	if (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+	{
+		bot->GetMotionMaster()->Clear(false);
+		bot->GetMotionMaster()->MovePoint(0,bot->GetCorpse()->GetPositionX(),bot->GetCorpse()->GetPositionY(),bot->GetCorpse()->GetPositionZ()+0.1f);
+	}
 }
 
 void PlayerBot::HandleRogueCombat()

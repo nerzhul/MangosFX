@@ -25,6 +25,8 @@ enum BotChoice
 	BCHOICE_FARM_CLOTH,
 	BCHOICE_LEARN_SPELLS,
 	BCHOICE_AUCTION,
+	BCHOICE_AFK,
+	BCHOICE_BANK,
 	MAX_BCHOICE			=	11,
 };
 
@@ -60,10 +62,15 @@ class PlayerBot// : public Player
 		void HandleWarlockCombat();
 		void HandleDruidCombat();
 
+		void HandleGoToCorpse();
+
 		void HandleWarsong(uint32 diff);
 		void HandleArathi(uint32 diff);
 		void HandleEyeOfTheStorm(uint32 diff);
 		void HandleAlterac(uint32 diff);
+
+		void HandleAuction();
+		void HandleBank();
 
 		bool HasDecidedToFight() { return m_decideToFight; }
 
@@ -91,6 +98,11 @@ class PlayerBot// : public Player
 		Player* bot;
 		BotMode m_mode;
 		
+		BotChoice m_choice;
+		uint32 choice_Timer;
+
+		uint16 chosen_point;
+
 		// Timers
 		uint32 mode_Timer;
 		uint32 act_Timer;
