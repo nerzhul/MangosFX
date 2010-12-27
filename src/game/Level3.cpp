@@ -6578,30 +6578,34 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 	if(lvlmax) lvl2 = atoi(lvlmax);
 	if(QueryResult* accList = loginDatabase.PQuery("SELECT id FROM account WHERE last_login < '%s' AND id not in (SELECT id from account_banned where active = 1)","2010-03-01 00:00:00"))
 	{
-		Field *fields = accList->Fetch();
-		uint32 accid = fields[0].GetUInt32();
-		error_log("account %u",accid);
-		if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
+		do
 		{
-			error_log("TEST3");
-			Field *fields2 = query->Fetch();
-			std::string name = fields2[0].GetCppString();
-			uint64 guid = sObjectMgr.GetPlayerGUIDByName(name.c_str());
-
-			Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
-			if (bot)
-				PSendSysMessage("Personnage deja connecte !");	
-			else
+			Field *fields = accList->Fetch();
+			uint32 accid = fields[0].GetUInt32();
+			if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
 			{
-				CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
+				do
+				{
+					Field *fields2 = query->Fetch();
+					std::string name = fields2[0].GetCppString();
+					uint64 guid = sObjectMgr.GetPlayerGUIDByName(name.c_str());
 
-				m_session->AddPlayerBot(guid);
+					Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
+					if (bot)
+						PSendSysMessage("Personnage deja connecte !");	
+					else
+					{
+						CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
 
-				PSendSysMessage("Bot ajoute !");
-				sWorld.addCountBot();
+						m_session->AddPlayerBot(guid);
+
+						PSendSysMessage("Bot ajoute !");
+						sWorld.addCountBot();
+					}
+					error_log("TEST4");
+				} while(query->NextRow());
 			}
-			error_log("TEST4");
-		}
+		} while(accList->NextRow());
 	}
 	else
 		SendSysMessage("Aucun compte valide");
