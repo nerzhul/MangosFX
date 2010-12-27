@@ -2546,6 +2546,12 @@ void AddSC_npcs_special()
     newscript->RegisterSelf();
 
 	newscript = new Script;
+    newscript->Name = "npc_bd_click_to_play";
+    newscript->pGossipHello = &GossipHello_bd_special_vendor;
+    newscript->pGossipSelect = &GossipSelect_bd_special_vendor;
+    newscript->RegisterSelf();
+
+	newscript = new Script;
     newscript->Name = "npc_mirror_image";
     newscript->GetAI = &GetAI_npc_mirror_image;
     newscript->RegisterSelf();

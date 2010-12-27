@@ -2169,6 +2169,9 @@ void World::ForceLeaveArchavonVault()
 				if(!plr->IsWintergraspDefender() && !plr->isGameMaster())
 					if(plr->GetPositionX() > 5073.0f && plr->GetPositionX() < 5392.0f && plr->GetPositionY() > 2550.0f && plr->GetPositionY() < 3100.0f)
 						plr->DealDamage(plr,plr->GetMaxHealth(),NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
+
+				if(plr->IsWintergraspDefender() && plr->GetZoneId() == 4197 && !(plr->GetPositionX() > 5073.0f && plr->GetPositionX() < 5392.0f && plr->GetPositionY() > 2550.0f && plr->GetPositionY() < 3100.0f))
+					plr->TeleportTo(5532.66f,2842.69f,410.3f);
 			}
 		}
     }

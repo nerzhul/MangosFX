@@ -6591,15 +6591,11 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 					uint64 guid = sObjectMgr.GetPlayerGUIDByName(name.c_str());
 
 					Player* bot = (Player*)sObjectMgr.GetPlayer(guid);
-					if (bot)
-						PSendSysMessage("Personnage deja connecte !");	
-					else
+					if(!bot)
 					{
 						CharacterDatabase.DirectPExecute("UPDATE characters SET online = 1 WHERE guid = '%u'", guid);
 
 						m_session->AddPlayerBot(guid);
-
-						PSendSysMessage("Bot ajoute !");
 						sWorld.addCountBot();
 					}
 				} while(query->NextRow());
