@@ -1082,6 +1082,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			pPlayer->learnSpell(63644, 0,false);
 			// monte
 			pPlayer->learnSpell(34093, 0,false);
+			pPlayer->learnSpell(54197, 0,false);
+			pPlayer->learnSpell(48954, 0,false);
 			// secou
 			pPlayer->learnSpell(45542,0,false);
 			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
@@ -1888,6 +1890,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(932),42000);
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(72),24000);
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(946),42000);
+					pPlayer->learnSpell(32242,0,false);
 					break;
 				case RACE_ORC:
 				case RACE_UNDEAD_PLAYER:
@@ -1897,6 +1900,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(934),42000);
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(947),42000);
 					pPlayer->GetReputationMgr().SetReputation(GetFactionStore()->LookupEntry(76),24000);
+					pPlayer->learnSpell(32295,0,false);
 					break;
 				default:
 					break;
@@ -1908,7 +1912,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			
 			pPlayer->UpdateSkillsToMaxSkillsForLevel();
 			pPlayer->SaveToDB();
-			pPlayer->CLOSE_GOSSIP_MENU();
+			pPlayer->TeleportTo(571,5801.94f,839.66f,681.1f,0.0f);
+			//pPlayer->CLOSE_GOSSIP_MENU();
 			break;
 		}
 		case GOSSIP_ACTION_INFO_DEF+8:

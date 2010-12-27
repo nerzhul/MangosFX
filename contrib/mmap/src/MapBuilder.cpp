@@ -1364,19 +1364,19 @@ namespace MMAP
         //        return true;
         //}
 
-        if(m_skipContinents)
+        /*if(m_skipContinents)
             switch(mapID)
             {
                 /*case 0:
                 case 1:
                 case 530:
-                case 571:*/
+                case 571:
                     return true;
                 default:
                     break;
-            }
+            }*/
 
-        if(m_skipJunkMaps)
+       /* if(m_skipJunkMaps)
             switch(mapID)
             {
                 case 13:    // test.wdt
@@ -1394,9 +1394,9 @@ namespace MMAP
                     if(isTransportMap(mapID))
                         return true;
                     break;
-            }
+            }*/
 
-        if(m_skipBattlegrounds)
+        /*if(m_skipBattlegrounds)
             switch(mapID)
             {
                 case 30:    // AV
@@ -1409,7 +1409,7 @@ namespace MMAP
                     return true;
                 default:
                     break;
-            }
+            }*/
 
         return false;
     }
