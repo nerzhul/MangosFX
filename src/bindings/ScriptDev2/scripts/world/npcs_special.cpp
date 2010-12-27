@@ -1076,7 +1076,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 		{
 			// Buys
 			pPlayer->SetBankBagSlotCount(6);
-			pPlayer->SetLevel(80);
+			pPlayer->GiveLevel(80);
 			pPlayer->UpdateSpecCount(2);
 			pPlayer->learnSpell(63645, 0,false);
 			pPlayer->learnSpell(63644, 0,false);
