@@ -3429,7 +3429,7 @@ void Aura::HandleAuraModShapeshift(bool apply, bool Real)
 
     SpellShapeshiftEntry const* ssEntry = sSpellShapeshiftStore.LookupEntry(form);
 	SpellShapeshiftFormEntry const* ssFormEntry = sSpellShapeshiftFormStore.LookupEntry(form);
-    if (!ssEntry)
+    if (!ssEntry || !ssFormEntry)
     {
         sLog.outError("Unknown shapeshift form %u in spell %u", form, GetId());
         return;

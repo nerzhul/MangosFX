@@ -266,6 +266,7 @@ void GameObject::Update(uint32 p_time)
                             SetUInt32Value(GAMEOBJECT_FLAGS, GO_FLAG_NODESPAWN);
 
                             UpdateData udata;
+							udata.m_map = uint16(GetMapId());
                             WorldPacket packet;
                             BuildValuesUpdateBlockForPlayer(&udata,((Player*)caster));
                             udata.BuildPacket(&packet);

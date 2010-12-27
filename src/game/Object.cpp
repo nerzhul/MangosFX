@@ -197,10 +197,8 @@ void Object::BuildCreateUpdateBlockForPlayer(UpdateData *data, Player *target) c
     BuildMovementUpdate(&buf, updateFlags);
 
     UpdateMask updateMask;
-    if(GetTypeId() != TYPEID_PLAYER || target == this)
-		updateMask.SetCount(m_valuesCount);
-	else
-		updateMask.SetCount(MAX_VALUES_COUNT_OTHER_PLAYER);
+    updateMask.SetCount(m_valuesCount);
+
     _SetCreateBits(&updateMask, target);
     BuildValuesUpdate(updatetype, &buf, &updateMask, target);
     data->AddUpdateBlock(buf);
@@ -210,6 +208,7 @@ void Object::SendCreateUpdateToPlayer(Player* player)
 {
     // send create update to player
     UpdateData upd;
+	upd.m_map = uint16(player->GetMapId());
     WorldPacket packet;
 
     BuildCreateUpdateBlockForPlayer(&upd, player);
@@ -711,7 +710,7 @@ void Object::BuildValuesUpdate(uint8 updatetype, ByteBuffer * data, UpdateMask *
     }
     else                                                    // other objects case (no special index checks)
     {
-        for( uint16 index = 0; index < m_valuesCount; ++index )
+        for( uint16 index = 0; index < valuesCount; ++index )
         {
             if( updateMask->GetBit( index ) )
             {
@@ -773,9 +772,13 @@ void Object::_SetUpdateBits(UpdateMask *updateMask, Player* target) const
     }
 }
 
-void Object::_SetCreateBits(UpdateMask *updateMask, Player* /*target*/) const
+void Object::_SetCreateBits(UpdateMask *updateMask, Player* target) const
 {
-    for( uint16 index = 0; index < m_valuesCount; ++index )
+	uint32 valuesCount = m_valuesCount;
+    if(GetTypeId() == TYPEID_PLAYER && target != this)
+        valuesCount = MAX_VALUES_COUNT_OTHER_PLAYER;
+
+    for( uint16 index = 0; index < valuesCount; ++index )
     {
         if(GetUInt32Value(index) != 0)
             updateMask->SetBit(index);
@@ -1064,7 +1067,9 @@ void Object::BuildUpdateDataForPlayer(Player* pl, UpdateDataMapType& update_play
 
     if (iter == update_players.end())
     {
-        std::pair<UpdateDataMapType::iterator, bool> p = update_players.insert( UpdateDataMapType::value_type(pl, UpdateData()) );
+		UpdateData udata;
+		udata.m_map = uint16(pl->GetMapId());
+		std::pair<UpdateDataMapType::iterator, bool> p = update_players.insert(UpdateDataMapType::value_type(pl, udata));
         ASSERT(p.second);
         iter = p.first;
     }

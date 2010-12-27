@@ -27,11 +27,11 @@ class WorldPacket;
 enum OBJECT_UPDATE_TYPE
 {
     UPDATETYPE_VALUES               = 0,
-    UPDATETYPE_MOVEMENT             = 1,
+    UPDATETYPE_MOVEMENT             = 0xFF,
     UPDATETYPE_CREATE_OBJECT        = 2,
     UPDATETYPE_CREATE_OBJECT2       = 3,
     UPDATETYPE_OUT_OF_RANGE_OBJECTS = 4,
-    UPDATETYPE_NEAR_OBJECTS         = 5
+    UPDATETYPE_NEAR_OBJECTS         = 0xFF
 };
 
 enum OBJECT_UPDATE_FLAGS
@@ -64,11 +64,13 @@ class UpdateData
         void Clear();
 
         std::set<uint64> const& GetOutOfRangeGUIDs() const { return m_outOfRangeGUIDs; }
+		uint16 m_map;
 
     protected:
         uint32 m_blockCount;
         std::set<uint64> m_outOfRangeGUIDs;
         ByteBuffer m_data;
+		
 
         void Compress(void* dst, uint32 *dst_size, void* src, int src_size);
 };

@@ -934,6 +934,7 @@ void WorldSession::ExecuteOpcode(OpcodeHandler const& opHandle, WorldPacket* pac
 
     (this->*opHandle.handler)(*packet);
 
+	error_log("Recv opcode %s",opHandle.name);
     if (_player)
     {
         // can be not set in fact for login opcode, but this not create porblems.

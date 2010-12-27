@@ -52,7 +52,7 @@ namespace MaNGOS
         Player::ClientGUIDs i_clientGUIDs;
         std::set<WorldObject*> i_visibleNow;
 
-        explicit VisibleNotifier(Player &player) : i_player(player),i_clientGUIDs(player.m_clientGUIDs) {}
+		explicit VisibleNotifier(Player &player) : i_player(player),i_clientGUIDs(player.m_clientGUIDs) { i_data.m_map = uint16(player.GetMapId()); }
         template<class T> void Visit(GridRefManager<T> &m);
         void Visit(PlayerMapType &);
         void Notify(void);

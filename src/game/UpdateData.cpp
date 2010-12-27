@@ -25,7 +25,7 @@
 #include "World.h"
 #include <zlib/zlib.h>
 
-UpdateData::UpdateData() : m_blockCount(0)
+UpdateData::UpdateData() : m_blockCount(0), m_map(0)
 {
 }
 
@@ -105,9 +105,9 @@ bool UpdateData::BuildPacket(WorldPacket *packet)
 {
     ASSERT(packet->empty());                                // shouldn't happen
 
-    ByteBuffer buf(1+4 + (m_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * m_outOfRangeGUIDs.size()) + m_data.wpos());
+    ByteBuffer buf(2+4 + (m_outOfRangeGUIDs.empty() ? 0 : 1 + 4 + 9 * m_outOfRangeGUIDs.size()) + m_data.wpos());
 
-	buf << (uint16) 0;
+	buf << (uint16) m_map;
     buf << (uint32) (!m_outOfRangeGUIDs.empty() ? m_blockCount + 1 : m_blockCount);
 
     if(!m_outOfRangeGUIDs.empty())
@@ -123,7 +123,7 @@ bool UpdateData::BuildPacket(WorldPacket *packet)
 
     buf.append(m_data);
 
-    size_t pSize = buf.wpos();                              // use real used data size
+    /*size_t pSize = buf.wpos();                              // use real used data size
 
     if (pSize > 100 )                                       // compress large packets
     {
@@ -138,9 +138,10 @@ bool UpdateData::BuildPacket(WorldPacket *packet)
         packet->resize( destsize + sizeof(uint32) );
         packet->SetOpcode( SMSG_COMPRESSED_UPDATE_OBJECT );
     }
-    else                                                    // send small packets without compression
+    else   */                                                 // send small packets without compression
     {
         packet->append( buf );
+		packet->hexlike();
         packet->SetOpcode( SMSG_UPDATE_OBJECT );
     }
 

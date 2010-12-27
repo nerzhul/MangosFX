@@ -8647,7 +8647,7 @@ void Player::SendInitWorldStates(uint32 zoneid, uint32 areaid)
             NumberOfFields = 12;
             break;
     }
-    WorldPacket data(SMSG_INIT_WORLD_STATES, (4+4+4+2+8*NumberOfFields));// guess
+    WorldPacket data(SMSG_INIT_WORLD_STATES);// guess
     data << uint32(mapid);                                  // mapid
     data << uint32(zoneid);                                 // zone id
     data << uint32(areaid);                                 // area id, new 2.1.0
@@ -19995,15 +19995,14 @@ void Player::SendInitialPacketsBeforeAddToMap()
 
     SendInitialActionButtons();
     m_reputationMgr.SendInitialReputations();
+	m_achievementMgr.SendAllAchievementData();
 
     if(!isAlive())
         SendCorpseReclaimDelay(true);
 
-    SendInitWorldStates(GetZoneId(), GetAreaId());
+    //SendInitWorldStates(GetZoneId(), GetAreaId());
 
     SendEquipmentSetList();
-
-    m_achievementMgr.SendAllAchievementData();
 
     data.Initialize(SMSG_LOGIN_SETTIMESPEED, 4 + 4 + 4);
     data << uint32(secsToTimeBitFields(sWorld.GetGameTime()));
@@ -20103,12 +20102,12 @@ void Player::SendInitialPacketsAfterAddToMap()
 		GetSession()->SendPacket(&aura_update);
 	}
 	
- 	AddWintergraspBuffIfCan(GetMapId());
-	ExitVehicle();
+ 	//AddWintergraspBuffIfCan(GetMapId());
+	//ExitVehicle();
 	if(!CanSpeak())
 		SetAuraStack(1852,this,1);
 
-	SendSavedInstances();
+	//SendSavedInstances();
 }
 
 void Player::SendUpdateToOutOfRangeGroupMembers()
@@ -20560,6 +20559,7 @@ void Player::UpdateForQuestWorldObjects()
         return;
 
     UpdateData udata;
+	udata.m_map = uint16(GetMapId());
     WorldPacket packet;
     for(ClientGUIDs::const_iterator itr=m_clientGUIDs.begin(); itr!=m_clientGUIDs.end(); ++itr)
     {
