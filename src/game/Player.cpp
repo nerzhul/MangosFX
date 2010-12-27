@@ -17225,6 +17225,8 @@ void Player::SaveToDB()
     GetSession()->SaveTutorialsData();                      // changed only while character in game
 	_SaveGlyphs();
 
+	if(isCTP())
+		CharacterDatabase.PExecute("UPDATE character_fss_addon SET is_ctp = '1' WHERE guid = '%u'",GetGUIDLow());
     CharacterDatabase.CommitTransaction();
 
     // save pet (hunter pet level and experience and all type pets health/mana).
