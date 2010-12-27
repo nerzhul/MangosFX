@@ -1038,9 +1038,9 @@ bool GossipSelect_npc_kingdom_of_dalaran_quests(Player* pPlayer, Creature* pCrea
 }
 
 #define GOSSIP_ITEM_BAD_COND "Conditions d'acces au Click To Play invalides. J'ai compris."
-#define GOSSIP_ITEM_START "Je souhaite utiliser le Click to Play"
-#define GOSSIP_ITEM_PVE "J'ai mis les sacs et maintenant je souhaite obtenir mon stuff PvE"
-#define GOSSIP_ITEM_PVP "Je souhaite obtenir mon stuff PvP"
+#define GOSSIP_ITEM_START "Je souhaite utiliser le Click to Play, je ne devrai pas quitter cette fenetre avant d'avoir fini"
+#define GOSSIP_ITEM_PVE "J'ai mis les sacs et maintenant je souhaite obtenir mon stuff PvE (16 emplacements)"
+#define GOSSIP_ITEM_PVP "Je souhaite obtenir mon stuff PvP (16 emplacements)"
 #define GOSSIP_ITEM_SPEC_1 "Je souhaite obtenir un stuff DPS cac"
 #define GOSSIP_ITEM_SPEC_2 "Je souhaite obtenir un stuff heal"
 #define GOSSIP_ITEM_SPEC_3 "Je souhaite obtenir un stuff tank"
@@ -1051,7 +1051,7 @@ bool GossipHello_bd_special_vendor(Player* pPlayer, Creature* pCreature)
     if (pCreature->isQuestGiver())
         pPlayer->PrepareQuestMenu(pCreature->GetGUID());
 
-	if(pPlayer->getLevel() == 1 && pPlayer->getClass() == CLASS_DEATH_KNIGHT && pPlayer->getLevel() == 55 && !pPlayer->isCTP())
+	if((pPlayer->getLevel() == 1 || pPlayer->getClass() == CLASS_DEATH_KNIGHT && pPlayer->getLevel() == 55) && !pPlayer->isCTP())
 	{
 		pPlayer->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 	}
@@ -1092,7 +1092,10 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			pPlayer->learnSpell(51294,0,false);
 			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
 			// 4 sacs
-			pPlayer->AddItem(41599,4);
+			pPlayer->AddItem(41599);
+			pPlayer->AddItem(41599);
+			pPlayer->AddItem(41599);
+			pPlayer->AddItem(41599);
 
 			pPlayer->SetCTP(true);
 
