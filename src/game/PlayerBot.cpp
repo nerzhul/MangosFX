@@ -388,18 +388,18 @@ void PlayerBot::HandleAuction()
 }
 void PlayerBot::HandleGoToCorpse()
 {
-	if(bot->getDeathState() == CORPSE)
-	{
-		bot->SetDeathTimer(0);
-		bot->BuildPlayerRepop();
-        bot->RepopAtGraveyard();
-		return;
-	}
-
 	if(bot->GetDistance2d(bot->GetCorpse()))
 	{
 		bot->ResurrectPlayer(bot->InBattleGround() ? 1.0f : 0.5f);
 		bot->SpawnCorpseBones();
+		return;
+	}
+
+	if(bot->getDeathState() == CORPSE) // need to be before prev condition
+	{
+		bot->SetDeathTimer(0);
+		bot->BuildPlayerRepop();
+        bot->RepopAtGraveyard();
 		return;
 	}
 
