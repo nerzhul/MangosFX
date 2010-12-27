@@ -6602,7 +6602,6 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 						PSendSysMessage("Bot ajoute !");
 						sWorld.addCountBot();
 					}
-					error_log("TEST4");
 				} while(query->NextRow());
 			}
 		} while(accList->NextRow());
