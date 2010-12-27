@@ -1092,7 +1092,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 			pPlayer->SetSkill(185,pPlayer->GetSkillStep(185),450,450);
 			// peche
 			pPlayer->learnSpell(51294,0,false);
-			pPlayer->SetSkill(129,pPlayer->GetSkillStep(129),450,450);
+			pPlayer->SetSkill(356,pPlayer->GetSkillStep(356),450,450);
 			// 4 sacs
 			pPlayer->AddItem(41599);
 			pPlayer->AddItem(41599);
