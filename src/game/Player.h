@@ -2326,6 +2326,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		void SetBindingState(bool bind) { bindingState = bind; }
 		void SetDeathTimer(uint32 timer) { m_deathTimer = timer; }
 
+		void SetQuestRewardTalentCount(uint32 t) { m_questRewardTalentCount = t; }
 		void SetCTP(bool ctp) { m_ctp = ctp; }
 		bool isCTP() { return m_ctp; }
     protected:
