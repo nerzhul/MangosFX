@@ -44,6 +44,7 @@ PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 	choice_Timer = 0;
 	mode_Timer = 5000;
 	act_Timer = 1000;
+	react_Timer = 100;
 }
 
 PlayerBot::~PlayerBot()
@@ -201,46 +202,52 @@ void PlayerBot::Update(uint32 diff)
 		else
 			choice_Timer -= diff;
 		
-		switch(m_choice)
+		if(react_Timer <= diff)
 		{
-			case BCHOICE_PVP:
+			switch(m_choice)
 			{
-				JoinBGQueueIfNotIn();
-
-				if(BattleGround* bg = bot->GetBattleGround())
+				case BCHOICE_PVP:
 				{
-					switch(bg->GetTypeID(true))
+					JoinBGQueueIfNotIn();
+
+					if(BattleGround* bg = bot->GetBattleGround())
 					{
-						case BATTLEGROUND_WS:
-							HandleWarsong(diff);
-							break;
-						case BATTLEGROUND_AB:
-							HandleArathi(diff);
-							break;
-						case BATTLEGROUND_AV:
-							HandleAlterac(diff);
-							break;
-						case BATTLEGROUND_EY:
-							HandleEyeOfTheStorm(diff);
-							break;
+						switch(bg->GetTypeID(true))
+						{
+							case BATTLEGROUND_WS:
+								HandleWarsong(diff);
+								break;
+							case BATTLEGROUND_AB:
+								HandleArathi(diff);
+								break;
+							case BATTLEGROUND_AV:
+								HandleAlterac(diff);
+								break;
+							case BATTLEGROUND_EY:
+								HandleEyeOfTheStorm(diff);
+								break;
+						}
 					}
+					break;
 				}
-				break;
+				case BCHOICE_AUCTION:
+				{
+					HandleAuction();
+					break;
+				}
+				case BCHOICE_BANK:
+				{
+					HandleBank();
+					break;
+				}
+				case BCHOICE_AFK:
+				default:
+					break;
 			}
-			case BCHOICE_AUCTION:
-			{
-				HandleAuction();
-				break;
-			}
-			case BCHOICE_BANK:
-			{
-				HandleBank();
-				break;
-			}
-			case BCHOICE_AFK:
-			default:
-				break;
+			react_Timer = 700;
 		}
+		else
+			react_Timer -= diff;
 	}
 }
 

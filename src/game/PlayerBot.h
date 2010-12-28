@@ -106,6 +106,7 @@ class PlayerBot// : public Player
 		// Timers
 		uint32 mode_Timer;
 		uint32 act_Timer;
+		uint32 react_Timer;
 
 		BattleGround* sheduledBG;
 		BattleGroundTypeId bgTypeId;
