@@ -74,7 +74,7 @@ void PlayerBotMgr::LoadBotCoordinates()
 {
 	uint32 count = 0;
 	CleanCoordinates();
-	if(QueryResult* result = WorldDatabase.PQuery("SELECT type,faction,map,x,y,z,id,range,maxdist FROM playerbot_coordinates"))
+	if(QueryResult* result = WorldDatabase.PQuery("SELECT `type`,`faction`,`map`,`x`,`y`,`z`,`id`,`range`,`maxdist` FROM playerbot_coordinates"))
 	{
 		do
 		{
