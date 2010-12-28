@@ -545,7 +545,6 @@ void PlayerBot::ChooseToDoSomething()
 
 	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MOBS)*10.0f;
 
-	error_log("Maxch %f",maxCh);
 	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_FARM_MOBS;
@@ -554,7 +553,6 @@ void PlayerBot::ChooseToDoSomething()
 
 	maxCh += sPlayerBotMgr.GetChance(BCHOICE_GO_ZONE)*10.0f;
 
-	error_log("Maxch %f",maxCh);
 	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_GO_ZONE;
