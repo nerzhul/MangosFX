@@ -66,6 +66,8 @@ class PlayerBotMgr
 		BotCoords mail_a;
 		BotCoords bank_h;
 		BotCoords bank_a;
+		BotCoords random_h;
+		BotCoords random_a;
 
 };
 
@@ -98,6 +100,7 @@ class PlayerBot// : public Player
 		void HandleAuction();
 		void HandleBank();
 		void HandleMail();
+		void HandleGoZone();
 
 		void HandleFearZone();
 

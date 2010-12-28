@@ -111,6 +111,21 @@ void PlayerBotMgr::LoadBotCoordinates()
 						bank_h[fields[6].GetUInt32()] = bc;
 					break;
 				}
+				case BCOORD_RANDOM:
+				{
+					BotCoord* bc = new BotCoord();
+					bc->mapId = fields[2].GetUInt32();
+					bc->x = fields[3].GetFloat();
+					bc->y = fields[4].GetFloat();
+					bc->z = fields[5].GetFloat();
+					bc->range = fields[7].GetFloat();
+					bc->maxdist = fields[8].GetFloat();
+					if(fields[1].GetUInt32() == 0)
+						random_a[fields[6].GetUInt32()] = bc;
+					else
+						random_h[fields[6].GetUInt32()] = bc;
+					break;
+				}
 				default:
 					break;
 			}
@@ -150,6 +165,18 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 				}
 				break;
 			}
+			case BCOORD_RANDOM:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,random_a.size()-1);
+				for(BotCoords::const_iterator itr = random_a.begin(); itr != random_a.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
+			}
 		}
 	}
 	else if(faction == HORDE)
@@ -173,6 +200,18 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 				uint32 pos = 0;
 				uint32 idxchosen = urand(0,bank_h.size()-1);
 				for(BotCoords::const_iterator itr = bank_h.begin(); itr != bank_h.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
+			}
+			case BCOORD_RANDOM:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,random_h.size()-1);
+				for(BotCoords::const_iterator itr = random_h.begin(); itr != random_h.end(); ++itr)
 				{
 					if(pos == idxchosen)
 						return itr->first;
@@ -206,6 +245,13 @@ BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx
 					return itr->second;
 				break;
 			}
+			case BCOORD_RANDOM:
+			{
+				BotCoords::iterator itr = random_a.find(idx);
+				if(itr != random_a.end())
+					return itr->second;
+				break;
+			}
 		}
 	}
 	else if(faction == HORDE)
@@ -223,6 +269,13 @@ BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx
 			{
 				BotCoords::iterator itr = bank_h.find(idx);
 				if(itr != bank_h.end())
+					return itr->second;
+				break;
+			}
+			case BCOORD_RANDOM:
+			{
+				BotCoords::iterator itr = random_h.find(idx);
+				if(itr != random_h.end())
 					return itr->second;
 				break;
 			}
@@ -452,6 +505,9 @@ void PlayerBot::Update(uint32 diff)
 				case BCHOICE_MAIL:
 					HandleMail();
 					break;
+				case BCHOICE_GO_ZONE:
+					HandleGoZone();
+					break;
 				case BCHOICE_AFK:
 				default:
 					break;
@@ -475,7 +531,11 @@ void PlayerBot::ChooseToDoSomething()
 	else if(randAct < 200) // 10%
 		m_choice = BCHOICE_FARM_MOBS;
 	else if(randAct < 300) // 10%
+	{
 		m_choice = BCHOICE_GO_ZONE;
+		chosen_point = 0;
+		choice_Timer = urand(60000,600000);
+	}
 	else if(randAct < 330) // 3%
 		m_choice = BCHOICE_QUEST;
 	else if(randAct < 360) // 3%
@@ -493,21 +553,21 @@ void PlayerBot::ChooseToDoSomething()
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
-		choice_Timer = urand(60000,1200000);
+		choice_Timer = urand(60000,600000);
 	}
 	else if(randAct < 730) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
-		choice_Timer = urand(60000,1200000);
+		choice_Timer = urand(60000,600000);
 	}
 	else if(randAct < 850) // 12%
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
-		choice_Timer = urand(60000,1200000);
+		choice_Timer = urand(60000,600000);
 	}
-	else if(randAct < 1000) // 5%
+	else if(randAct < 1000) // 15%
 	{
 		m_choice = BCHOICE_AFK;
 		if(!bot->isAFK())
@@ -614,6 +674,75 @@ void PlayerBot::HandleBank()
 			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
+				return;
+			}
+
+			if(bot->isMoving() || !bc)
+				return;
+
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			{
+				bot->GetMotionMaster()->Clear(false);
+				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+			}
+			break;
+		}
+	}
+}
+
+void PlayerBot::HandleGoZone()
+{
+	switch(bot->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_GNOME:
+		case RACE_NIGHTELF:
+		case RACE_DRAENEI:
+		case RACE_WORGEN:
+		{
+			if(!chosen_point)
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_RANDOM);
+				return;
+			}
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_RANDOM,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_RANDOM);
+				return;
+			}
+
+			if(bot->isMoving())
+				return;
+
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			{
+				bot->GetMotionMaster()->Clear(false);
+				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+			}
+			break;
+		}
+		case RACE_ORC:
+		case RACE_TROLL:
+		case RACE_TAUREN:
+		case RACE_BLOODELF:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_GOBLIN:
+		{
+			if(!chosen_point)
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_RANDOM);
+				return;
+			}
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_RANDOM,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_RANDOM);
 				return;
 			}
 

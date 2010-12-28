@@ -1164,6 +1164,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(45446);
 				pPlayer->AddItem(45831);
 				pPlayer->AddItem(45275);
+				pPlayer->AddItem(40395); // w
 			}
 			else // warlock, mage, druid, shaman
 			{
@@ -1183,6 +1184,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45440);
 					pPlayer->AddItem(45554);
 					pPlayer->AddItem(45187);
+					pPlayer->AddItem(40395); // w
 				}
 				else if(pPlayer->getClass() == CLASS_DRUID)
 				{
@@ -1194,6 +1196,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45492);
 					pPlayer->AddItem(45185);
 					pPlayer->AddItem(45149);
+					pPlayer->AddItem(40395); // w
 				}
 				else // warlock, mage
 				{
@@ -1323,6 +1326,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(40590);
 					pPlayer->AddItem(45826);
 					pPlayer->AddItem(45269);
+					pPlayer->AddItem(40395); // w 
 				}
 				else if(pPlayer->getClass() == CLASS_SHAMAN)
 				{
@@ -1334,6 +1338,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45440);
 					pPlayer->AddItem(45151);
 					pPlayer->AddItem(45187);
+					pPlayer->AddItem(40395); // w
 				}
 				else if(pPlayer->getClass() == CLASS_PRIEST)
 				{
@@ -1345,6 +1350,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(46068);
 					pPlayer->AddItem(45831);
 					pPlayer->AddItem(45275);
+					pPlayer->AddItem(40395); // w
 				}
 				else // DRUID
 				{
@@ -1356,6 +1362,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45492);
 					pPlayer->AddItem(45556);
 					pPlayer->AddItem(45149);
+					pPlayer->AddItem(40395); // w
 				}
 			}
 			// Suite
@@ -1880,6 +1887,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(7328, 0,false);
 					break;
 				case CLASS_SHAMAN:
+					pPlayer->learnSpell(1180,0,false);
 					pPlayer->learnSpell(196, 0, false);
 					pPlayer->learnSpell(5394, 0,false);
 					pPlayer->learnSpell(197, 0, false);
@@ -1942,6 +1950,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(8737, 0,false);
 					break;
 				case CLASS_WARLOCK:
+					pPlayer->learnSpell(1180,0,false);
 					pPlayer->learnSpell(688, 0,false);
 					pPlayer->learnSpell(697, 0,false);
 					pPlayer->learnSpell(712, 0,false);
@@ -1977,6 +1986,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(47809, 0,false);
 					break;
 				case CLASS_WARRIOR:
+					pPlayer->learnSpell(1180,0,false);
 					pPlayer->learnSpell(196, 0, false);
 					pPlayer->learnSpell(197, 0, false);
 					pPlayer->learnSpell(71, 0,false);
@@ -2027,6 +2037,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(2458, 0,false);
 					break;
 				case CLASS_MAGE:
+					pPlayer->learnSpell(1180,0,false);
 					pPlayer->learnSpell(33946, 0,false);
 					pPlayer->learnSpell(27125, 0,false);
 					pPlayer->learnSpell(33944, 0,false);
@@ -2063,6 +2074,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(27088, 0,false);
 					break;
 				case CLASS_ROGUE:
+					pPlayer->learnSpell(1180,0,false);
 					pPlayer->learnSpell(196, 0, false);
 					pPlayer->learnSpell(8643, 0,false);
 					pPlayer->learnSpell(1833, 0,false);
