@@ -125,7 +125,7 @@ void PlayerBot::Update(uint32 diff)
 {
 	ASSERT(bot);
 	
-	if(bot->isDead() && !bot->GetBattleGround() && bot->GetCorpse())
+	if(bot->isDead() && !bot->GetBattleGround())
 	{
 		HandleGoToCorpse();
 		return;
@@ -336,7 +336,7 @@ void PlayerBot::HandleBank()
 			if(bot->isMoving())
 				return;
 
-			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 2.0f)
+			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/100,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/100);
@@ -356,7 +356,7 @@ void PlayerBot::HandleBank()
 			}
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 2.0f)
+			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/100,bank_coords[chosen_point+3][3]+urand(0,100)/100,bank_coords[chosen_point+3][4]+urand(0,100)/100);
@@ -386,7 +386,7 @@ void PlayerBot::HandleAuction()
 			}
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 2.0f)
+			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/100,ah_coords[chosen_point-1][3]+urand(0,100)/100,ah_coords[chosen_point-1][4]+urand(0,100)/100);
@@ -406,7 +406,7 @@ void PlayerBot::HandleAuction()
 			}
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 2.0f)
+			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/100,ah_coords[chosen_point+3][3]+urand(0,100)/100,ah_coords[chosen_point+3][4]+urand(0,100)/100);
@@ -417,7 +417,7 @@ void PlayerBot::HandleAuction()
 }
 void PlayerBot::HandleGoToCorpse()
 {
-	if(bot->getDeathState() == DEAD && bot->GetDistance2d(bot->GetCorpse()))
+	if(bot->HasAura(8326) && bot->GetCorpse() && bot->GetDistance2d(bot->GetCorpse()) < 5.0f)
 	{
 		bot->ResurrectPlayer(bot->InBattleGround() ? 1.0f : 0.5f);
 		bot->SpawnCorpseBones();
@@ -433,7 +433,7 @@ void PlayerBot::HandleGoToCorpse()
 		return;
 	}
 
-	if (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+	if (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE && bot->GetCorpse())
 	{
 		bot->GetMotionMaster()->Clear(false);
 		bot->GetMotionMaster()->MovePoint(0,bot->GetCorpse()->GetPositionX(),bot->GetCorpse()->GetPositionY(),bot->GetCorpse()->GetPositionZ()+0.1f);
