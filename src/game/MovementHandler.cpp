@@ -337,7 +337,7 @@ void WorldSession::HandleMovementOpcodes( WorldPacket & recv_data )
     /* process position-change */
     movementInfo.UpdateTime(getMSTime());
 
-	if(move && mover->IsInWorld())
+	if(mover && mover->IsInWorld())
 	{
 		WorldPacket data(opcode, recv_data.size());
 		data.appendPackGUID(mover->GetGUID());                  // write guid
