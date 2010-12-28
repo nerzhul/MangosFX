@@ -2016,7 +2016,7 @@ bool ChatHandler::HandleTeleNameCommand(const char * args)
 
         std::string chrNameLink = playerLink(target_name);
 
-        if(target->IsBeingTeleported()==true)
+		if(target->IsBeingTeleported()==true && !target->isBot())
         {
             PSendSysMessage(LANG_IS_TELEPORTED, chrNameLink.c_str());
             SetSentErrorMessage(true);

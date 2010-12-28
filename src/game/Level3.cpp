@@ -6566,16 +6566,22 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 {
 	char* lvlmin = NULL;
 	char* lvlmax = NULL;
+	char* limit = NULL;
 	if (*args)
 	{
 		lvlmin = strtok((char*)args, " ");
 		lvlmax = strtok(NULL, " ");
+		limit = strtok(NULL, " ");
 	}
 
 	uint8 lvl1 = 1;
 	uint8 lvl2 = DEFAULT_MAX_LEVEL;
+	uint16 _limit = 15000;
 	if(lvlmin) lvl1 = atoi(lvlmin);
 	if(lvlmax) lvl2 = atoi(lvlmax);
+	if(limit) _limit = atoi(limit);
+
+	uint16 count = 0;
 	if(QueryResult* accList = loginDatabase.PQuery("SELECT id FROM account WHERE last_login < '%s' AND id not in (SELECT id from account_banned where active = 1)","2010-05-01 00:00:00"))
 	{
 		do
@@ -6597,8 +6603,9 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 
 						m_session->AddPlayerBot(guid);
 						sWorld.addCountBot();
+						count++;
 					}
-				} while(query->NextRow());
+				} while(query->NextRow() && count < _limit);
 			}
 		} while(accList->NextRow());
 	}

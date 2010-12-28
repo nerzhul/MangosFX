@@ -125,11 +125,19 @@ void PlayerBot::Update(uint32 diff)
 {
 	ASSERT(bot);
 	
-	if(bot->isDead() && !bot->GetBattleGround())
+	if(react_Timer <= diff)
 	{
-		HandleGoToCorpse();
-		return;
+		react_Timer = 1200;
+		if(bot->isDead() && !bot->GetBattleGround())
+		{
+			HandleGoToCorpse();
+			return;
+		}
+
 	}
+	else
+		react_Timer -= diff;
+
 
 	if(m_sheduledBGJoin < DAY*HOUR)
 	{
@@ -244,7 +252,7 @@ void PlayerBot::Update(uint32 diff)
 				default:
 					break;
 			}
-			react_Timer = 700;
+			react_Timer = 1200;
 		}
 		else
 			react_Timer -= diff;
@@ -417,19 +425,18 @@ void PlayerBot::HandleAuction()
 }
 void PlayerBot::HandleGoToCorpse()
 {
+	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
+	{
+		bot->BuildPlayerRepop();
+        bot->RepopAtGraveyard();
+		bot->GetSession()->HandleMoveWorldportAckOpcode();
+		return;
+	}
+
 	if(bot->HasAura(8326) && bot->GetCorpse() && bot->GetDistance2d(bot->GetCorpse()) < 5.0f)
 	{
 		bot->ResurrectPlayer(bot->InBattleGround() ? 1.0f : 0.5f);
 		bot->SpawnCorpseBones();
-		return;
-	}
-
-	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
-	{
-		bot->SetDeathTimer(0);
-		bot->BuildPlayerRepop();
-        bot->RepopAtGraveyard();
-		bot->GetSession()->HandleMoveWorldportAckOpcode();
 		return;
 	}
 
