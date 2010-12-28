@@ -532,11 +532,10 @@ void PlayerBot::ChooseToDoSomething()
 {
 	float randAct = float(urand(1,1000));
 	float maxCh = 0.0f;
-
 	choice_Timer = urand(600000,1800000);
 	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_PVP);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_PVP)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -544,16 +543,18 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MOBS);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MOBS)*10.0f;
 
+	error_log("Maxch %f",maxCh);
 	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_FARM_MOBS;
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_GO_ZONE);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_GO_ZONE)*10.0f;
 
+	error_log("Maxch %f",maxCh);
 	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_GO_ZONE;
@@ -562,7 +563,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_QUEST);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_QUEST)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -570,7 +571,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_EXPLORE);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_EXPLORE)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -578,7 +579,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MINERALS);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MINERALS)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -589,7 +590,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_LEARN_SPELLS);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_LEARN_SPELLS)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -597,7 +598,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_AUCTION);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_AUCTION)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -607,7 +608,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_BANK);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_BANK)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -617,7 +618,7 @@ void PlayerBot::ChooseToDoSomething()
 		return;
 	}
 
-	maxCh += sPlayerBotMgr.GetChance(BCHOICE_MAIL);
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_MAIL)*10.0f;
 
 	if(randAct < maxCh)
 	{
@@ -920,7 +921,7 @@ void PlayerBot::HandleMail()
 				return;
 			}
 
-			if(bot->isMoving() || !bc)
+			if(bot->isMoving())
 				return;
 
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
