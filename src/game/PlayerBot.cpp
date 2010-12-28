@@ -31,6 +31,15 @@ void PlayerBotMgr::LoadBotChoiceChances()
 	sLog.outString(">> Loaded %u PlayerBot chances by choice",count);
 }
 
+float PlayerBotMgr::GetChance(BotChoice bc)
+{
+	BotChance::iterator itr = m_choiceChances.find(uint32(bc));
+	if(itr != m_choiceChances.end())
+		return itr->second;
+
+	return 0.0f;
+}
+
 void PlayerBotMgr::CleanCoordinates()
 {
 	for(BotCoords::iterator itr = mail_a.begin(); itr != mail_a.end();)
@@ -522,58 +531,106 @@ void PlayerBot::Update(uint32 diff)
 void PlayerBot::ChooseToDoSomething()
 {
 	float randAct = float(urand(1,1000));
+	float maxCh = 0.0f;
 
 	choice_Timer = urand(600000,1800000);
 	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
 
-	if(randAct < 100) // 10%
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_PVP);
+
+	if(randAct < maxCh)
+	{
 		m_choice = BCHOICE_PVP;
-	else if(randAct < 170) // 7%
+		return;
+	}
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MOBS);
+
+	if(randAct < maxCh)
+	{
 		m_choice = BCHOICE_FARM_MOBS;
-	else if(randAct < 330) // 16%
+		return;
+	}
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_GO_ZONE);
+
+	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_GO_ZONE;
 		chosen_point = 0;
 		choice_Timer = urand(30000,540000);
+		return;
 	}
-	else if(randAct < 360) // 3%
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_QUEST);
+
+	if(randAct < maxCh)
+	{
 		m_choice = BCHOICE_QUEST;
-	else if(randAct < 390) // 3%
+		return;
+	}
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_EXPLORE);
+
+	if(randAct < maxCh)
+	{
 		m_choice = BCHOICE_EXPLORE;
-	else if(randAct < 490) // 10%
+		return;
+	}
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_FARM_MINERALS);
+
+	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_FARM_MINERALS;
 		m_choice = BCHOICE_FARM_HERBS;
 		m_choice = BCHOICE_FARM_LEATHER;
 		m_choice = BCHOICE_FARM_CLOTH;
+		return;
 	}
-	else if(randAct < 520) // 3%
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_LEARN_SPELLS);
+
+	if(randAct < maxCh)
+	{
 		m_choice = BCHOICE_LEARN_SPELLS;
-	else if(randAct < 630) // 12%
+		return;
+	}
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_AUCTION);
+
+	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
 		choice_Timer = urand(60000,540000);
+		return;
 	}
-	else if(randAct < 750) // 12%
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_BANK);
+
+	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
 		choice_Timer = urand(30000,400000);
+		return;
 	}
-	else if(randAct < 870) // 12%
+
+	maxCh += sPlayerBotMgr.GetChance(BCHOICE_MAIL);
+
+	if(randAct < maxCh)
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
 		choice_Timer = urand(40000,400000);
+		return;
 	}
-	else if(randAct < 1000) // 13%
-	{
-		m_choice = BCHOICE_AFK;
-		if(!bot->isAFK())
-			bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
-		choice_Timer = urand(60000,3600000);
-	}
+
+	m_choice = BCHOICE_AFK;
+	if(!bot->isAFK())
+		bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
+	choice_Timer = urand(60000,3600000);
 }
 
 float ah_coords[8][5] = {
@@ -640,7 +697,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f ||  bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_BANK);
 				return;
@@ -671,7 +728,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
 				return;
@@ -709,7 +766,7 @@ void PlayerBot::HandleGoZone()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_RANDOM,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_RANDOM);
 				return;
@@ -740,7 +797,7 @@ void PlayerBot::HandleGoZone()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_RANDOM,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_RANDOM);
 				return;
@@ -826,7 +883,7 @@ void PlayerBot::HandleMail()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_MAIL,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_MAIL);
 				return;
@@ -857,7 +914,7 @@ void PlayerBot::HandleMail()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_MAIL,chosen_point);
 
-			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_MAIL);
 				return;

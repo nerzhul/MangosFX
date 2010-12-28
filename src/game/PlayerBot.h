@@ -57,6 +57,9 @@ class PlayerBotMgr
 		void LoadBotChoiceChances();
 		void LoadBotCoordinates();
 		
+		// Chances
+		float GetChance(BotChoice bc);
+		// Coordinates
 		void CleanCoordinates();
 		uint32 GetRandomPoint(uint32 faction,BotCoordType bcType);
 		BotCoord* GetPoint(uint32 faction, BotCoordType bcType, uint32 idx);
