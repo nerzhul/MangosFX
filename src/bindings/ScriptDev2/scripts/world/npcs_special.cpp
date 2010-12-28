@@ -1829,6 +1829,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(10246, 0,false);
 					break;
 				case CLASS_PALADIN:
+					pPlayer->learnSpell(196, 0, false);
+					pPlayer->learnSpell(197, 0, false);
 					pPlayer->learnSpell(7328, 0,false);
 					pPlayer->learnSpell(750, 0,false);
 					pPlayer->learnSpell(27149, 0,false);
@@ -1878,7 +1880,9 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(7328, 0,false);
 					break;
 				case CLASS_SHAMAN:
+					pPlayer->learnSpell(196, 0, false);
 					pPlayer->learnSpell(5394, 0,false);
+					pPlayer->learnSpell(197, 0, false);
 					pPlayer->learnSpell(8071, 0,false);
 					pPlayer->learnSpell(3599, 0,false);
 					pPlayer->learnSpell(8737, 0,false);
@@ -1973,6 +1977,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(47809, 0,false);
 					break;
 				case CLASS_WARRIOR:
+					pPlayer->learnSpell(196, 0, false);
+					pPlayer->learnSpell(197, 0, false);
 					pPlayer->learnSpell(71, 0,false);
 					pPlayer->learnSpell(2458, 0,false);
 					pPlayer->learnSpell(20252, 0,false);
@@ -2057,6 +2063,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(27088, 0,false);
 					break;
 				case CLASS_ROGUE:
+					pPlayer->learnSpell(196, 0, false);
 					pPlayer->learnSpell(8643, 0,false);
 					pPlayer->learnSpell(1833, 0,false);
 					pPlayer->learnSpell(6774, 0,false);
@@ -2130,6 +2137,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					break;
 				case CLASS_DEATH_KNIGHT:
 					pPlayer->SetQuestRewardTalentCount(45);
+					pPlayer->learnSpell(196, 0, false);
+					pPlayer->learnSpell(197, 0, false);
 					pPlayer->learnSpell(50977, 0,false);
 					pPlayer->learnSpell(53428, 0,false);
 					pPlayer->learnSpell(51425, 0,false);
@@ -2165,7 +2174,6 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(47476, 0,false);
 					pPlayer->learnSpell(48778, 0,false);
 					break;
-				
 				default:
 					break;
 			}
