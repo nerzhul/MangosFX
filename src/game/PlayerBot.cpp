@@ -424,7 +424,7 @@ void PlayerBot::HandleGoToCorpse()
 		return;
 	}
 
-	if(bot->getDeathState() == CORPSE) // need to be before prev condition
+	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
 	{
 		bot->SetDeathTimer(0);
 		bot->BuildPlayerRepop();
