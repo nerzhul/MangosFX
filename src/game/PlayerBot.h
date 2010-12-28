@@ -32,7 +32,21 @@ enum BotChoice
 	MAX_BCHOICE			=	15,
 };
 
+enum BotCoordType
+{
+	BCOORD_MAIL		= 0,
+	BCOORD_BANK		= 1,
+	BCOORD_AH		= 2,
+};
+
+struct BotCoord
+{
+	float x,y,z;
+	uint32 mapId;
+};
+
 typedef std::map<uint32,float> BotChance;
+typedef std::map<uint32,BotCoord*> BotCoords;
 class PlayerBotMgr
 {
 	public:
@@ -40,8 +54,15 @@ class PlayerBotMgr
 		~PlayerBotMgr();
 
 		void LoadBotChoiceChances();
+		void LoadBotCoordinates();
+		
+		void CleanCoordinates();
+		uint32 GetRandomPoint(uint32 faction,BotCoordType bcType);
+		BotCoord* GetPoint(uint32 faction, BotCoordType bcType, uint32 idx);
 	private:
 		BotChance m_choiceChances;
+		BotCoords mail_h;
+		BotCoords mail_a;
 
 };
 

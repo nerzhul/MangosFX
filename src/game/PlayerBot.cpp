@@ -28,7 +28,132 @@ void PlayerBotMgr::LoadBotChoiceChances()
 			count++;
 		} while(result->NextRow());
 	}
-	sLog.outString("Loaded %u PlayerBot chances by choice",count);
+	sLog.outString(">> Loaded %u PlayerBot chances by choice",count);
+}
+
+void PlayerBotMgr::CleanCoordinates()
+{
+	for(BotCoords::iterator itr = mail_a.begin(); itr != mail_a.end();)
+	{
+		BotCoords::iterator next = ++itr;
+		--itr;
+		delete itr->second;
+		mail_a.erase(itr);
+		itr = next;
+	}
+
+	for(BotCoords::iterator itr = mail_h.begin(); itr != mail_h.end();)
+	{
+		BotCoords::iterator next = ++itr;
+		--itr;
+		delete itr->second;
+		mail_h.erase(itr);
+		itr = next;
+	}
+}
+
+void PlayerBotMgr::LoadBotCoordinates()
+{
+	uint32 count = 0;
+	CleanCoordinates();
+	if(QueryResult* result = WorldDatabase.PQuery("SELECT type,faction,map,x,y,z,id FROM playerbot_coordinates"))
+	{
+		do
+		{
+			Field* fields = result->Fetch();
+			switch(BotCoordType(fields[0].GetUInt32()))
+			{
+				case BCOORD_MAIL:
+				{
+					BotCoord* bc = new BotCoord();
+					bc->mapId = fields[2].GetUInt32();
+					bc->x = fields[3].GetFloat();
+					bc->y = fields[4].GetFloat();
+					bc->z = fields[5].GetFloat();
+					if(fields[1].GetUInt32() == 0)
+						mail_a[fields[6].GetUInt32()] = bc;
+					else
+						mail_h[fields[6].GetUInt32()] = bc;
+					break;
+				}
+				default:
+					break;
+			}
+			count++;
+		} while(result->NextRow());
+	}
+}
+
+uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
+{
+	if(faction == ALLIANCE)
+	{
+		switch(bcType)
+		{
+			case BCOORD_MAIL:
+			{
+				uint32 mcount = mail_a.size();
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,mail_a.size()-1);
+				for(BotCoords::const_iterator itr = mail_a.begin(); itr != mail_a.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+			}
+		}
+	}
+	else if(faction == HORDE)
+	{
+		switch(bcType)
+		{
+			case BCOORD_MAIL:
+			{
+				uint32 mcount = mail_h.size();
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,mail_h.size()-1);
+				for(BotCoords::const_iterator itr = mail_h.begin(); itr != mail_h.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx)
+{
+	if(faction == ALLIANCE)
+	{
+		switch(bcType)
+		{
+			case BCOORD_MAIL:
+			{
+				BotCoords::iterator itr = mail_a.find(idx);
+				if(itr != mail_a.end())
+					return itr->second;
+			}
+		}
+	}
+	else if(faction == HORDE)
+	{
+		switch(bcType)
+		{
+			case BCOORD_MAIL:
+			{
+				BotCoords::iterator itr = mail_h.find(idx);
+				if(itr != mail_h.end())
+					return itr->second;
+			}
+		}
+	}
+
+	return 0;
 }
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
@@ -346,15 +471,23 @@ float ah_coords[8][5] = {
 
 };
 
-float mail_coords[8][5] = {
+float mail_coords[16][5] = {
 	{0,0,-8876.24f,650.1f,96.04f}, // st
 	{0,0,-8861.96f,637.72f,96.26f}, // st
 	{0,0,-4910.7f,-973.8f,501.5f}, // if
 	{0,0,-4828.0f,-1283.34f,501.87f}, // if
+	{0,571,5798.49f,559.17f,650.76f}, // dala
+	{0,571,5868.86f,638.0f,647.35f}, // dala
+	{0,571,5887.64f,716.18f,640.65f}, // dala
+	{0,571,5916.48f,617.74f,646.36f}, // dala
 	{1,1,1613.4f,-4391.57f,10.54f}, // og
 	{1,1,1721.7f,-4405.35f,35.87f}, // og
 	{1,1,1862.37f,-4547.16f,28.47f}, // og
 	{1,0,1558.56f,190.44f,-62.2f}, // uc
+	{1,571,5798.49f,559.17f,650.76f}, // dala
+	{1,571,5868.86f,638.0f,647.35f}, // dala
+	{1,571,5887.64f,716.18f,640.65f}, // dala
+	{1,571,5916.48f,617.74f,646.36f}, // dala
 };
 
 bool PlayerBot::isInHostileZoneWithoutLevel()
@@ -452,7 +585,7 @@ void PlayerBot::HandleAuction()
 		case RACE_NIGHTELF:
 		case RACE_DRAENEI:
 		case RACE_WORGEN:
-			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1])
+			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
 			{
 				chosen_point = urand(1,4);
 				return;
@@ -471,7 +604,7 @@ void PlayerBot::HandleAuction()
 		case RACE_BLOODELF:
 		case RACE_UNDEAD_PLAYER:
 		case RACE_GOBLIN:
-			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1])
+			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
 			{
 				chosen_point = urand(1,4);
 				return;
@@ -489,9 +622,6 @@ void PlayerBot::HandleAuction()
 
 void PlayerBot::HandleMail()
 {
-	if(!chosen_point)
-		chosen_point = urand(1,4);
-
 	switch(bot->getRace())
 	{
 		case RACE_HUMAN:
@@ -500,40 +630,65 @@ void PlayerBot::HandleMail()
 		case RACE_NIGHTELF:
 		case RACE_DRAENEI:
 		case RACE_WORGEN:
-			if(bot->GetMapId() != mail_coords[(chosen_point-1)][1])
+		{
+			if(!chosen_point)
 			{
-				chosen_point = urand(1,4);
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_MAIL);
 				return;
 			}
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_MAIL,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_MAIL);
+				return;
+			}
+
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(mail_coords[chosen_point-1][2],mail_coords[chosen_point-1][3],mail_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,mail_coords[chosen_point-1][2]+urand(0,100)/50,mail_coords[chosen_point-1][3]+urand(0,100)/50,mail_coords[chosen_point-1][4]);
+				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);
 			}
 			break;
+		}
 		case RACE_ORC:
 		case RACE_TROLL:
 		case RACE_TAUREN:
 		case RACE_BLOODELF:
 		case RACE_UNDEAD_PLAYER:
 		case RACE_GOBLIN:
-			if(bot->GetMapId() != mail_coords[(chosen_point+3)][1])
+		{
+			if(!chosen_point)
 			{
-				chosen_point = urand(1,4);
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_MAIL);
 				return;
 			}
-			if(bot->isMoving())
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_MAIL,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_MAIL);
 				return;
-			if(bot->GetDistance(mail_coords[chosen_point+3][2],mail_coords[chosen_point+3][3],mail_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			}
+
+			if(bot->isMoving() || !bc)
+				return;
+
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,mail_coords[chosen_point+3][2]+urand(0,100)/50,mail_coords[chosen_point+3][3]+urand(0,100)/50,mail_coords[chosen_point+3][4]);
+				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);
 			}
 			break;
+		}
 	}
 }
+
 void PlayerBot::HandleGoToCorpse()
 {
 	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
