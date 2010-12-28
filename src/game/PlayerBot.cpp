@@ -523,51 +523,51 @@ void PlayerBot::ChooseToDoSomething()
 {
 	float randAct = float(urand(1,1000));
 
-	choice_Timer = urand(600000,3600000);
+	choice_Timer = urand(600000,1800000);
 	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
 
 	if(randAct < 100) // 10%
 		m_choice = BCHOICE_PVP;
-	else if(randAct < 200) // 10%
+	else if(randAct < 170) // 7%
 		m_choice = BCHOICE_FARM_MOBS;
-	else if(randAct < 300) // 10%
+	else if(randAct < 330) // 16%
 	{
 		m_choice = BCHOICE_GO_ZONE;
 		chosen_point = 0;
 		choice_Timer = urand(60000,600000);
 	}
-	else if(randAct < 330) // 3%
-		m_choice = BCHOICE_QUEST;
 	else if(randAct < 360) // 3%
+		m_choice = BCHOICE_QUEST;
+	else if(randAct < 390) // 3%
 		m_choice = BCHOICE_EXPLORE;
-	else if(randAct < 460) // 10%
+	else if(randAct < 490) // 10%
 	{
 		m_choice = BCHOICE_FARM_MINERALS;
 		m_choice = BCHOICE_FARM_HERBS;
 		m_choice = BCHOICE_FARM_LEATHER;
 		m_choice = BCHOICE_FARM_CLOTH;
 	}
-	else if(randAct < 490) // 3%
+	else if(randAct < 520) // 3%
 		m_choice = BCHOICE_LEARN_SPELLS;
-	else if(randAct < 610) // 12%
+	else if(randAct < 630) // 12%
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
 		choice_Timer = urand(60000,600000);
 	}
-	else if(randAct < 730) // 12%
+	else if(randAct < 750) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
 		choice_Timer = urand(60000,600000);
 	}
-	else if(randAct < 850) // 12%
+	else if(randAct < 870) // 12%
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
 		choice_Timer = urand(60000,600000);
 	}
-	else if(randAct < 1000) // 15%
+	else if(randAct < 1000) // 13%
 	{
 		m_choice = BCHOICE_AFK;
 		if(!bot->isAFK())
