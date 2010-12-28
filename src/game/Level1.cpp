@@ -437,6 +437,8 @@ bool ChatHandler::HandleNamegoCommand(const char* args)
         float x,y,z;
         m_session->GetPlayer()->GetClosePoint(x,y,z,target->GetObjectBoundingRadius());
         target->TeleportTo(m_session->GetPlayer()->GetMapId(),x,y,z,target->GetOrientation());
+		if(target->isBot())
+			target->GetSession()->HandleMoveWorldportAckOpcode();
     }
     else
     {
