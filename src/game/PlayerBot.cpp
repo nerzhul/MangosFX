@@ -292,22 +292,26 @@ void PlayerBot::ChooseToDoSomething()
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
+		choice_Timer = urand(60000,1200000);
 	}
 	else if(randAct < 830) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
+		choice_Timer = urand(60000,1200000);
 	}
 	else if(randAct < 950) // 12%
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
+		choice_Timer = urand(60000,1200000);
 	}
 	else if(randAct < 1000) // 5%
 	{
 		m_choice = BCHOICE_AFK;
 		if(!bot->isAFK())
 			bot->SetFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
+		choice_Timer = urand(60000,3600000);
 	}
 }
 
