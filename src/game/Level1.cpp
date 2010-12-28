@@ -2036,6 +2036,8 @@ bool ChatHandler::HandleTeleNameCommand(const char * args)
             target->SaveRecallPosition();
 
         target->TeleportTo(tele->mapId,tele->position_x,tele->position_y,tele->position_z,tele->orientation);
+		if(target->isBot())
+			target->GetSession()->HandleMoveWorldportAckOpcode();
     }
     else
     {

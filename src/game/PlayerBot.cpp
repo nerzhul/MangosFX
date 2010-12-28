@@ -126,7 +126,7 @@ void PlayerBot::Update(uint32 diff)
 	
 	if(bot->isDead() && !bot->GetBattleGround() && bot->GetCorpse())
 	{
-		//HandleGoToCorpse();
+		HandleGoToCorpse();
 		return;
 	}
 
@@ -388,7 +388,7 @@ void PlayerBot::HandleAuction()
 }
 void PlayerBot::HandleGoToCorpse()
 {
-	if(bot->GetDistance2d(bot->GetCorpse()))
+	if(bot->getDeathState() == DEAD && bot->GetDistance2d(bot->GetCorpse()))
 	{
 		bot->ResurrectPlayer(bot->InBattleGround() ? 1.0f : 0.5f);
 		bot->SpawnCorpseBones();
@@ -400,6 +400,7 @@ void PlayerBot::HandleGoToCorpse()
 		bot->SetDeathTimer(0);
 		bot->BuildPlayerRepop();
         bot->RepopAtGraveyard();
+		bot->GetSession()->HandleMoveWorldportAckOpcode();
 		return;
 	}
 
