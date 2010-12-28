@@ -329,8 +329,11 @@ void PlayerBot::HandleBank()
 			if(bot->isMoving())
 				return;
 
-			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 1.0f)
+			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 2.0f)
+			{
+				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/100,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/100);
+			}
 			else
 			break;
 		case RACE_ORC:
@@ -346,8 +349,11 @@ void PlayerBot::HandleBank()
 			}
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 1.0f)
+			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 2.0f)
+			{
+				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/100,bank_coords[chosen_point+3][3]+urand(0,100)/100,bank_coords[chosen_point+3][4]+urand(0,100)/100);
+			}
 			else
 			break;
 	}
@@ -366,10 +372,18 @@ void PlayerBot::HandleAuction()
 		case RACE_NIGHTELF:
 		case RACE_DRAENEI:
 		case RACE_WORGEN:
-			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1] || !bot->isMoving())
+			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1])
+			{
+				chosen_point = urand(1,5);
 				return;
-			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 1.0f)
+			}
+			if(bot->isMoving())
+				return;
+			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 2.0f)
+			{
+				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/100,ah_coords[chosen_point-1][3]+urand(0,100)/100,ah_coords[chosen_point-1][4]+urand(0,100)/100);
+			}
 			else
 			break;
 		case RACE_ORC:
@@ -378,10 +392,18 @@ void PlayerBot::HandleAuction()
 		case RACE_BLOODELF:
 		case RACE_UNDEAD_PLAYER:
 		case RACE_GOBLIN:
-			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1] || !bot->isMoving())
+			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1])
+			{
+				chosen_point = urand(1,5);
 				return;
-			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 1.0f)
+			}
+			if(bot->isMoving())
+				return;
+			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 2.0f)
+			{
+				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/100,ah_coords[chosen_point+3][3]+urand(0,100)/100,ah_coords[chosen_point+3][4]+urand(0,100)/100);
+			}
 			else
 			break;
 	}

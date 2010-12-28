@@ -693,7 +693,9 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
 
 void ScriptedAI::Relocate(float x, float y, float z, bool fly, float Time)
 {
-	me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);
+	me->GetMotionMaster()->Clear(false);
+	me->GetMotionMaster()->MovePoint(0,x,y,z);
+	/*me->GetMap()->CreatureRelocation(me,x,y,z,0.0f);*/
 	me->SendMonsterMove(x,y,z, SPLINETYPE_NORMAL, (fly ? SPLINEFLAG_UNKNOWN7 : SPLINEFLAG_NONE), Time);
 }
 
@@ -1068,6 +1070,7 @@ Creature* LibDevFSAI::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc Where
 						tmp->AddThreat(tmptar,1000.0);
 					break;
 				case GO_TO_CREATOR:
+					tmp->GetMotionMaster()->Clear(false);
 					tmp->GetMotionMaster()->MovePoint(0,me->GetPositionX(),me->GetPositionY(),me->GetPositionZ());
 					break;
 				case NOTHING:
@@ -1182,6 +1185,7 @@ Creature* MobEventTasks::CallCreature(uint32 entry, uint32 Despawn, ZoneInvoc Wh
 						tmp->AddThreat(tmptar,1000.0);
 					break;
 				case GO_TO_CREATOR:
+					tmp->GetMotionMaster()->Clear(false);
 					tmp->GetMotionMaster()->MovePoint(0,thisCr->GetPositionX(),thisCr->GetPositionY(),thisCr->GetPositionZ());
 					break;
 				case NOTHING:
