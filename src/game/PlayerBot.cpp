@@ -82,6 +82,7 @@ void PlayerBotMgr::LoadBotCoordinates()
 			count++;
 		} while(result->NextRow());
 	}
+	sLog.outString(">> Loaded %u PlayerBot Coordinates",count);
 }
 
 uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
