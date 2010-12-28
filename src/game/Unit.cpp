@@ -15343,6 +15343,9 @@ void Unit::SendThreatClear()
 
 void Unit::SendThreatRemove(HostileReference* pHostileReference)
 {
+	if(GetTypeId() == TYPEID_PLAYER && ((Player*)this)->isBot())
+		return;
+
     //sLog.outDebug( "WORLD: Send SMSG_THREAT_REMOVE Message" );
     WorldPacket data(SMSG_THREAT_REMOVE, 8 + 8);
     data.append(GetPackGUID());

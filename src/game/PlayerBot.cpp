@@ -315,15 +315,23 @@ void PlayerBot::ChooseToDoSomething()
 	}
 }
 
-float bank_coords[8][5] = {
+float bank_coords[16][5] = {
 	{0,0,-8926.86,607.1f,99.55f}, // st
 	{0,0,-8934.9f,622.5f,99.55f}, // st
 	{0,0,-4880.33f,-986.4f,504.1f}, // if
 	{0,0,-4897.9f,-1001.5f,504.1f}, // if
+	{0,571,5978.61f,601.09f,650.63f}, // dala
+	{0,571,5984.12f,615.81f,650.63f}, // dala
+	{0,571,5629.49f,701.356f,651.99f}, // dala
+	{0,571,5623.01f,687.31f,651.99f}, // dala
 	{1,1,1622.76f,-4373.21f,12.1f}, // og
 	{1,1,1629.96f,-4381.31f,20.1f}, // og
 	{1,0,1588.73f,240.5f,-52.2f}, // uc
 	{1,0,1602.88f,240.7f,-52.2f}, // uc
+	{1,571,5978.61f,601.09f,650.63f}, // dala
+	{1,571,5984.12f,615.81f,650.63f}, // dala
+	{1,571,5629.49f,701.356f,651.99f}, // dala
+	{1,571,5623.01f,687.31f,651.99f}, // dala
 };
 
 float ah_coords[8][5] = {
@@ -385,7 +393,7 @@ bool PlayerBot::isInHostileZoneWithoutLevel()
 void PlayerBot::HandleBank()
 {
 	if(!chosen_point)
-		chosen_point = urand(1,5);
+		chosen_point = urand(1,8);
 
 	switch(bot->getRace())
 	{
@@ -395,9 +403,9 @@ void PlayerBot::HandleBank()
 		case RACE_NIGHTELF:
 		case RACE_DRAENEI:
 		case RACE_WORGEN:
-			if(bot->GetMapId() != bank_coords[(chosen_point-1)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
+			if(bot->GetMapId() != bank_coords[(chosen_point-1)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,8);
 				return;
 			}
 			if(bot->isMoving())
@@ -415,17 +423,17 @@ void PlayerBot::HandleBank()
 		case RACE_BLOODELF:
 		case RACE_UNDEAD_PLAYER:
 		case RACE_GOBLIN:
-			if(bot->GetMapId() != bank_coords[(chosen_point+3)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1))
+			if(bot->GetMapId() != bank_coords[(chosen_point+7)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,8);
 				return;
 			}
 			if(bot->isMoving())
 				return;
-			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			if(bot->GetDistance(bank_coords[chosen_point+7][2],bank_coords[chosen_point+7][3],bank_coords[chosen_point+7][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/50,bank_coords[chosen_point+3][3]+urand(0,100)/50,bank_coords[chosen_point+3][4]);
+				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+7][2]+urand(0,100)/50,bank_coords[chosen_point+7][3]+urand(0,100)/50,bank_coords[chosen_point+7][4]);
 			}
 			break;
 	}
@@ -434,7 +442,7 @@ void PlayerBot::HandleBank()
 void PlayerBot::HandleAuction()
 {
 	if(!chosen_point)
-		chosen_point = urand(1,5);
+		chosen_point = urand(1,4);
 
 	switch(bot->getRace())
 	{
@@ -446,7 +454,7 @@ void PlayerBot::HandleAuction()
 		case RACE_WORGEN:
 			if(bot->GetMapId() != ah_coords[(chosen_point-1)][1])
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,4);
 				return;
 			}
 			if(bot->isMoving())
@@ -465,7 +473,7 @@ void PlayerBot::HandleAuction()
 		case RACE_GOBLIN:
 			if(bot->GetMapId() != ah_coords[(chosen_point+3)][1])
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,4);
 				return;
 			}
 			if(bot->isMoving())
@@ -482,7 +490,7 @@ void PlayerBot::HandleAuction()
 void PlayerBot::HandleMail()
 {
 	if(!chosen_point)
-		chosen_point = urand(1,5);
+		chosen_point = urand(1,4);
 
 	switch(bot->getRace())
 	{
@@ -494,7 +502,7 @@ void PlayerBot::HandleMail()
 		case RACE_WORGEN:
 			if(bot->GetMapId() != mail_coords[(chosen_point-1)][1])
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,4);
 				return;
 			}
 			if(bot->isMoving())
@@ -513,7 +521,7 @@ void PlayerBot::HandleMail()
 		case RACE_GOBLIN:
 			if(bot->GetMapId() != mail_coords[(chosen_point+3)][1])
 			{
-				chosen_point = urand(1,5);
+				chosen_point = urand(1,4);
 				return;
 			}
 			if(bot->isMoving())
