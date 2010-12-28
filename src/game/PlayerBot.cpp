@@ -133,7 +133,12 @@ void PlayerBot::Update(uint32 diff)
 			HandleGoToCorpse();
 			return;
 		}
-
+		
+		if(!bot->isDead() && isInHostileZoneWithoutLevel())
+		{
+			HandleFearZone();
+			return;
+		}
 	}
 	else
 		react_Timer -= diff;
@@ -205,7 +210,6 @@ void PlayerBot::Update(uint32 diff)
 		if(choice_Timer <= diff && !bot->InBattleGround() && !bot->InBattleGroundQueue())
 		{
 			ChooseToDoSomething();
-			choice_Timer = urand(600000,3600000);
 		}
 		else
 			choice_Timer -= diff;
@@ -239,15 +243,14 @@ void PlayerBot::Update(uint32 diff)
 					break;
 				}
 				case BCHOICE_AUCTION:
-				{
 					HandleAuction();
 					break;
-				}
 				case BCHOICE_BANK:
-				{
 					HandleBank();
 					break;
-				}
+				case BCHOICE_MAIL:
+					HandleMail();
+					break;
 				case BCHOICE_AFK:
 				default:
 					break;
@@ -262,37 +265,45 @@ void PlayerBot::Update(uint32 diff)
 void PlayerBot::ChooseToDoSomething()
 {
 	float randAct = float(urand(1,1000));
+
+	choice_Timer = urand(600000,3600000);
 	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
-	if(randAct < 200)
+
+	if(randAct < 200) // 20%
 		m_choice = BCHOICE_PVP;
-	else if(randAct < 300)
+	else if(randAct < 300) // 10%
 		m_choice = BCHOICE_FARM_MOBS;
-	else if(randAct < 500)
+	else if(randAct < 400) // 10%
 		m_choice = BCHOICE_GO_ZONE;
-	else if(randAct < 650)
+	else if(randAct < 430) // 3%
 		m_choice = BCHOICE_QUEST;
-	else if(randAct < 600)
+	else if(randAct < 460) // 3%
 		m_choice = BCHOICE_EXPLORE;
-	else if(randAct < 700)
+	else if(randAct < 560) // 10%
 	{
 		m_choice = BCHOICE_FARM_MINERALS;
 		m_choice = BCHOICE_FARM_HERBS;
 		m_choice = BCHOICE_FARM_LEATHER;
 		m_choice = BCHOICE_FARM_CLOTH;
 	}
-	else if(randAct < 750)
+	else if(randAct < 590) // 3%
 		m_choice = BCHOICE_LEARN_SPELLS;
-	else if(randAct < 800)
+	else if(randAct < 710) // 12%
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
 	}
-	else if(randAct < 900)
+	else if(randAct < 830) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
 	}
-	else if(randAct < 1000)
+	else if(randAct < 950) // 12%
+	{
+		m_choice = BCHOICE_MAIL;
+		chosen_point = 0;
+	}
+	else if(randAct < 1000) // 5%
 	{
 		m_choice = BCHOICE_AFK;
 		if(!bot->isAFK())
@@ -301,28 +312,72 @@ void PlayerBot::ChooseToDoSomething()
 }
 
 float bank_coords[8][5] = {
-	{0,0,-8926.86,607.1f,99.55f},
-	{0,0,-8934.9f,622.5f,99.55f},
-	{0,0,-4880.33f,-986.4f,504.1f},
-	{0,0,-4897.9f,-1001.5f,504.1f},
-	{1,1,1622.76f,-4373.21f,12.1f},
-	{1,1,1629.96f,-4381.31f,20.1f},
-	{1,0,1588.73f,240.5f,-52.2f},
-	{1,0,1602.88f,240.7f,-52.2f},
+	{0,0,-8926.86,607.1f,99.55f}, // st
+	{0,0,-8934.9f,622.5f,99.55f}, // st
+	{0,0,-4880.33f,-986.4f,504.1f}, // if
+	{0,0,-4897.9f,-1001.5f,504.1f}, // if
+	{1,1,1622.76f,-4373.21f,12.1f}, // og
+	{1,1,1629.96f,-4381.31f,20.1f}, // og
+	{1,0,1588.73f,240.5f,-52.2f}, // uc
+	{1,0,1602.88f,240.7f,-52.2f}, // uc
 };
 
 float ah_coords[8][5] = {
-	{0,0,-8818.96f,661.1f,96.5f},
-	{0,0,-8820.6f,667.750f,96.5f},
-	{0,0,-4963.1f,-914.4f,504.9f},
-	{0,0,-4952.31f,-904.352f,504.9f},
-	{1,1,1689.611f,-4455.31f,20.1f},
-	{1,1,1668.98f,-4458.94f,20.1f},
-	{1,1,1682.99f,-4461.18f,20.1f},
-	{1,0,1646.63f,221.36f,-55.881f},
+	{0,0,-8818.96f,661.1f,96.5f}, // st
+	{0,0,-8820.6f,667.750f,96.5f}, // st
+	{0,0,-4963.1f,-914.4f,504.9f}, // if
+	{0,0,-4952.31f,-904.352f,504.9f}, // if
+	{1,1,1689.611f,-4455.31f,20.1f}, // og
+	{1,1,1668.98f,-4458.94f,20.1f}, // og
+	{1,1,1682.99f,-4461.18f,20.1f}, // og
+	{1,0,1646.63f,221.36f,-55.881f}, // uc
 
 };
 
+float mail_coords[8][5] = {
+	{0,0,-8876.24f,650.1f,96.04f}, // st
+	{0,0,-8861.96f,637.72f,96.26f}, // st
+	{0,0,-4910.7f,-973.8f,501.5f}, // if
+	{0,0,-4828.0f,-1283.34f,501.87f}, // if
+	{1,1,1613.4f,-4391.57f,10.54f}, // og
+	{1,1,1721.7f,-4405.35f,35.87f}, // og
+	{1,1,1862.37f,-4547.16f,28.47f}, // og
+	{1,0,1558.56f,190.44f,-62.2f}, // uc
+};
+
+bool PlayerBot::isInHostileZoneWithoutLevel()
+{
+	uint32 zId = bot->GetZoneId();
+	
+	if(bot->getLevel() < 75)
+	{
+		switch(bot->getRace())
+		{
+			case RACE_HUMAN:
+			case RACE_DWARF:
+			case RACE_GNOME:
+			case RACE_NIGHTELF:
+			case RACE_DRAENEI:
+			case RACE_WORGEN:
+				// Capitals
+				if(zId == 1637 || zId == 3487 || zId == 1638 || zId == 1497)
+					return true;
+				break;
+			case RACE_ORC:
+			case RACE_TROLL:
+			case RACE_TAUREN:
+			case RACE_BLOODELF:
+			case RACE_UNDEAD_PLAYER:
+			case RACE_GOBLIN:
+				// Capitals
+				if(zId == 1657 || zId == 3557 || zId == 1519 || zId == 1537)
+					return true;
+				break;
+		}
+	}
+
+	return false;
+}
 void PlayerBot::HandleBank()
 {
 	if(!chosen_point)
@@ -419,6 +474,54 @@ void PlayerBot::HandleAuction()
 			break;
 	}
 }
+
+void PlayerBot::HandleMail()
+{
+	if(!chosen_point)
+		chosen_point = urand(1,5);
+
+	switch(bot->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_GNOME:
+		case RACE_NIGHTELF:
+		case RACE_DRAENEI:
+		case RACE_WORGEN:
+			if(bot->GetMapId() != mail_coords[(chosen_point-1)][1])
+			{
+				chosen_point = urand(1,5);
+				return;
+			}
+			if(bot->isMoving())
+				return;
+			if(bot->GetDistance(mail_coords[chosen_point-1][2],mail_coords[chosen_point-1][3],mail_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			{
+				bot->GetMotionMaster()->Clear(false);
+				bot->GetMotionMaster()->MovePoint(0,mail_coords[chosen_point-1][2]+urand(0,100)/50,mail_coords[chosen_point-1][3]+urand(0,100)/50,mail_coords[chosen_point-1][4]);
+			}
+			break;
+		case RACE_ORC:
+		case RACE_TROLL:
+		case RACE_TAUREN:
+		case RACE_BLOODELF:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_GOBLIN:
+			if(bot->GetMapId() != mail_coords[(chosen_point+3)][1])
+			{
+				chosen_point = urand(1,5);
+				return;
+			}
+			if(bot->isMoving())
+				return;
+			if(bot->GetDistance(mail_coords[chosen_point+3][2],mail_coords[chosen_point+3][3],mail_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			{
+				bot->GetMotionMaster()->Clear(false);
+				bot->GetMotionMaster()->MovePoint(0,mail_coords[chosen_point+3][2]+urand(0,100)/50,mail_coords[chosen_point+3][3]+urand(0,100)/50,mail_coords[chosen_point+3][4]);
+			}
+			break;
+	}
+}
 void PlayerBot::HandleGoToCorpse()
 {
 	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
@@ -440,6 +543,38 @@ void PlayerBot::HandleGoToCorpse()
 	{
 		bot->GetMotionMaster()->Clear(false);
 		bot->GetMotionMaster()->MovePoint(0,bot->GetCorpse()->GetPositionX(),bot->GetCorpse()->GetPositionY(),bot->GetCorpse()->GetPositionZ()+0.1f);
+	}
+}
+
+void PlayerBot::HandleFearZone()
+{
+	uint32 zId = bot->GetZoneId();
+	
+	if(bot->getLevel() < 75)
+	{
+		switch(bot->getRace())
+		{
+			case RACE_HUMAN:
+			case RACE_DWARF:
+			case RACE_GNOME:
+			case RACE_NIGHTELF:
+			case RACE_DRAENEI:
+			case RACE_WORGEN:
+				// Capitals
+				if(zId == 1637 || zId == 3487 || zId == 1638 || zId == 1497)
+					return;
+				break;
+			case RACE_ORC:
+			case RACE_TROLL:
+			case RACE_TAUREN:
+			case RACE_BLOODELF:
+			case RACE_UNDEAD_PLAYER:
+			case RACE_GOBLIN:
+				// Capitals
+				if(zId == 1657 || zId == 3557 || zId == 1519 || zId == 1537)
+					return ;
+				break;
+		}
 	}
 }
 

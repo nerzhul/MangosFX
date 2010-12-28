@@ -27,7 +27,9 @@ enum BotChoice
 	BCHOICE_AUCTION,
 	BCHOICE_AFK,
 	BCHOICE_BANK,
-	MAX_BCHOICE			=	11,
+	BCHOICE_ATTACK_CAP,
+	BCHOICE_MAIL,
+	MAX_BCHOICE			=	15,
 };
 
 typedef std::map<uint32,float> BotChance;
@@ -71,8 +73,12 @@ class PlayerBot// : public Player
 
 		void HandleAuction();
 		void HandleBank();
+		void HandleMail();
+
+		void HandleFearZone();
 
 		bool HasDecidedToFight() { return m_decideToFight; }
+		bool isInHostileZoneWithoutLevel();
 
 		void ChooseToDoSomething();
 
