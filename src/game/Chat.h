@@ -309,6 +309,7 @@ class ChatHandler
         bool HandleQuestRemove(const char * args);
         bool HandleQuestComplete(const char * args);
 
+		bool HandleReloadAllPlayerBotCommand(const char* args);
         bool HandleReloadAllCommand(const char* args);
         bool HandleReloadAllAchievementCommand(const char* args);
         bool HandleReloadAllAreaCommand(const char* args);

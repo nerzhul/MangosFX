@@ -399,6 +399,7 @@ ChatCommand * ChatHandler::getCommandTable()
         { "all_quest",      SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadAllQuestCommand,      "", NULL },
         { "all_scripts",    SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadAllScriptsCommand,    "", NULL },
         { "all_spell",      SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadAllSpellCommand,      "", NULL },
+		{ "all_playerbot",	SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadAllPlayerBotCommand,  "", NULL },
 
         { "config",         SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadConfigCommand,        "", NULL },
 
@@ -690,7 +691,7 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "achievementadd",	SEC_ADMINISTRATOR,	false, &ChatHandler::HandleAchievementAdd,			    "", NULL },
 		{ "lastpacket",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleGetLastPacketCommand,	    "", NULL },
 		{ "bot",            SEC_ADMINISTRATOR,  false, &ChatHandler::HandlePlayerbotCommand,			"", NULL },
-		{ "botlist",		SEC_ADMINISTRATOR,  false, &ChatHandler::HandlePlayerbotListCommand,			"", NULL },
+		{ "botlist",		SEC_ADMINISTRATOR,  true, &ChatHandler::HandlePlayerbotListCommand,			"", NULL },
         { NULL,             0,                  false, NULL,											"", NULL }
 
     };

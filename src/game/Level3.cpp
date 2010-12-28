@@ -79,6 +79,13 @@ bool ChatHandler::HandleReloadAllCommand(const char*)
     return true;
 }
 
+bool ChatHandler::HandleReloadAllPlayerBotCommand(const char*)
+{
+	sPlayerBotMgr.LoadBotCoordinates();
+	sPlayerBotMgr.LoadBotChoiceChances();
+	return true;
+}
+
 bool ChatHandler::HandleReloadAllAchievementCommand(const char*)
 {
     HandleReloadAchievementCriteriaRequirementCommand("");
