@@ -2078,6 +2078,38 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->SetQuestRewardTalentCount(45);
 					pPlayer->learnSpell(50977, 0,false);
 					pPlayer->learnSpell(53428, 0,false);
+					pPlayer->learnSpell(51425, 0,false);
+					pPlayer->learnSpell(45524, 0,false);
+					pPlayer->learnSpell(57623, 0,false);
+					pPlayer->learnSpell(59921, 0,false);
+					pPlayer->learnSpell(61455, 0,false);
+					pPlayer->learnSpell(56815, 0,false);
+					pPlayer->learnSpell(47528, 0,false);
+					pPlayer->learnSpell(3714, 0,false);
+					pPlayer->learnSpell(48263, 0,false);
+					pPlayer->learnSpell(47568, 0,false);
+					pPlayer->learnSpell(48792, 0,false);
+					pPlayer->learnSpell(49909, 0,false);
+					pPlayer->learnSpell(42650, 0,false);
+					pPlayer->learnSpell(48707, 0,false);
+					pPlayer->learnSpell(49999, 0,false);
+					pPlayer->learnSpell(49921, 0,false);
+					pPlayer->learnSpell(49938, 0,false);
+					pPlayer->learnSpell(59879, 0,false);
+					pPlayer->learnSpell(49576, 0,false);
+					pPlayer->learnSpell(48265, 0,false);
+					pPlayer->learnSpell(61999, 0,false);
+					pPlayer->learnSpell(46584, 0,false);
+					pPlayer->learnSpell(49410, 0,false);
+					pPlayer->learnSpell(45529, 0,false);
+					pPlayer->learnSpell(49930, 0,false);
+					pPlayer->learnSpell(49941, 0,false);
+					pPlayer->learnSpell(48743, 0,false);
+					pPlayer->learnSpell(50842, 0,false);
+					pPlayer->learnSpell(48266, 0,false);
+					pPlayer->learnSpell(56222, 0,false);
+					pPlayer->learnSpell(47476, 0,false);
+					pPlayer->learnSpell(48778, 0,false);
 					break;
 				
 				default:
