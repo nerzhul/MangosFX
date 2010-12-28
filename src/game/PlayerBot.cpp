@@ -534,7 +534,7 @@ void PlayerBot::ChooseToDoSomething()
 	{
 		m_choice = BCHOICE_GO_ZONE;
 		chosen_point = 0;
-		choice_Timer = urand(60000,600000);
+		choice_Timer = urand(30000,540000);
 	}
 	else if(randAct < 360) // 3%
 		m_choice = BCHOICE_QUEST;
@@ -553,19 +553,19 @@ void PlayerBot::ChooseToDoSomething()
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
-		choice_Timer = urand(60000,600000);
+		choice_Timer = urand(60000,540000);
 	}
 	else if(randAct < 750) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
-		choice_Timer = urand(60000,600000);
+		choice_Timer = urand(30000,400000);
 	}
 	else if(randAct < 870) // 12%
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
-		choice_Timer = urand(60000,600000);
+		choice_Timer = urand(40000,400000);
 	}
 	else if(randAct < 1000) // 13%
 	{
