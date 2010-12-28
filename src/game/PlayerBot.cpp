@@ -347,7 +347,7 @@ void PlayerBot::HandleBank()
 			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/100,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/100);
+				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/50,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/50);
 			}
 			else
 			break;
@@ -367,7 +367,7 @@ void PlayerBot::HandleBank()
 			if(bot->GetDistance(bank_coords[chosen_point+3][2],bank_coords[chosen_point+3][3],bank_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/100,bank_coords[chosen_point+3][3]+urand(0,100)/100,bank_coords[chosen_point+3][4]+urand(0,100)/100);
+				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/50,bank_coords[chosen_point+3][3]+urand(0,100)/50,bank_coords[chosen_point+3][4]+urand(0,100)/50);
 			}
 			else
 			break;
@@ -397,7 +397,7 @@ void PlayerBot::HandleAuction()
 			if(bot->GetDistance(ah_coords[chosen_point-1][2],ah_coords[chosen_point-1][3],ah_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/100,ah_coords[chosen_point-1][3]+urand(0,100)/100,ah_coords[chosen_point-1][4]+urand(0,100)/100);
+				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/50,ah_coords[chosen_point-1][3]+urand(0,100)/50,ah_coords[chosen_point-1][4]+urand(0,100)/50);
 			}
 			else
 			break;
@@ -417,7 +417,7 @@ void PlayerBot::HandleAuction()
 			if(bot->GetDistance(ah_coords[chosen_point+3][2],ah_coords[chosen_point+3][3],ah_coords[chosen_point+3][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/100,ah_coords[chosen_point+3][3]+urand(0,100)/100,ah_coords[chosen_point+3][4]+urand(0,100)/100);
+				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/50,ah_coords[chosen_point+3][3]+urand(0,100)/50,ah_coords[chosen_point+3][4]+urand(0,100)/50);
 			}
 			else
 			break;
