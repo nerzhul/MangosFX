@@ -349,7 +349,6 @@ void PlayerBot::HandleBank()
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/50,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]+urand(0,100)/50);
 			}
-			else
 			break;
 		case RACE_ORC:
 		case RACE_TROLL:
@@ -369,7 +368,6 @@ void PlayerBot::HandleBank()
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+3][2]+urand(0,100)/50,bank_coords[chosen_point+3][3]+urand(0,100)/50,bank_coords[chosen_point+3][4]+urand(0,100)/50);
 			}
-			else
 			break;
 	}
 }
@@ -399,7 +397,6 @@ void PlayerBot::HandleAuction()
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point-1][2]+urand(0,100)/50,ah_coords[chosen_point-1][3]+urand(0,100)/50,ah_coords[chosen_point-1][4]+urand(0,100)/50);
 			}
-			else
 			break;
 		case RACE_ORC:
 		case RACE_TROLL:
@@ -419,7 +416,6 @@ void PlayerBot::HandleAuction()
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,ah_coords[chosen_point+3][2]+urand(0,100)/50,ah_coords[chosen_point+3][3]+urand(0,100)/50,ah_coords[chosen_point+3][4]+urand(0,100)/50);
 			}
-			else
 			break;
 	}
 }
