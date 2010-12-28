@@ -50,13 +50,31 @@ void PlayerBotMgr::CleanCoordinates()
 		mail_h.erase(itr);
 		itr = next;
 	}
+
+	for(BotCoords::iterator itr = bank_a.begin(); itr != bank_a.end();)
+	{
+		BotCoords::iterator next = ++itr;
+		--itr;
+		delete itr->second;
+		bank_a.erase(itr);
+		itr = next;
+	}
+
+	for(BotCoords::iterator itr = bank_h.begin(); itr != bank_h.end();)
+	{
+		BotCoords::iterator next = ++itr;
+		--itr;
+		delete itr->second;
+		bank_h.erase(itr);
+		itr = next;
+	}
 }
 
 void PlayerBotMgr::LoadBotCoordinates()
 {
 	uint32 count = 0;
 	CleanCoordinates();
-	if(QueryResult* result = WorldDatabase.PQuery("SELECT type,faction,map,x,y,z,id FROM playerbot_coordinates"))
+	if(QueryResult* result = WorldDatabase.PQuery("SELECT type,faction,map,x,y,z,id,range,maxdist FROM playerbot_coordinates"))
 	{
 		do
 		{
@@ -70,10 +88,27 @@ void PlayerBotMgr::LoadBotCoordinates()
 					bc->x = fields[3].GetFloat();
 					bc->y = fields[4].GetFloat();
 					bc->z = fields[5].GetFloat();
+					bc->range = fields[7].GetFloat();
+					bc->maxdist = fields[8].GetFloat();
 					if(fields[1].GetUInt32() == 0)
 						mail_a[fields[6].GetUInt32()] = bc;
 					else
 						mail_h[fields[6].GetUInt32()] = bc;
+					break;
+				}
+				case BCOORD_BANK:
+				{
+					BotCoord* bc = new BotCoord();
+					bc->mapId = fields[2].GetUInt32();
+					bc->x = fields[3].GetFloat();
+					bc->y = fields[4].GetFloat();
+					bc->z = fields[5].GetFloat();
+					bc->range = fields[7].GetFloat();
+					bc->maxdist = fields[8].GetFloat();
+					if(fields[1].GetUInt32() == 0)
+						bank_a[fields[6].GetUInt32()] = bc;
+					else
+						bank_h[fields[6].GetUInt32()] = bc;
 					break;
 				}
 				default:
@@ -93,7 +128,6 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 		{
 			case BCOORD_MAIL:
 			{
-				uint32 mcount = mail_a.size();
 				uint32 pos = 0;
 				uint32 idxchosen = urand(0,mail_a.size()-1);
 				for(BotCoords::const_iterator itr = mail_a.begin(); itr != mail_a.end(); ++itr)
@@ -102,6 +136,19 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 						return itr->first;
 					++pos;
 				}
+				break;
+			}
+			case BCOORD_BANK:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,bank_a.size()-1);
+				for(BotCoords::const_iterator itr = bank_a.begin(); itr != bank_a.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
 			}
 		}
 	}
@@ -111,7 +158,6 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 		{
 			case BCOORD_MAIL:
 			{
-				uint32 mcount = mail_h.size();
 				uint32 pos = 0;
 				uint32 idxchosen = urand(0,mail_h.size()-1);
 				for(BotCoords::const_iterator itr = mail_h.begin(); itr != mail_h.end(); ++itr)
@@ -120,6 +166,19 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 						return itr->first;
 					++pos;
 				}
+				break;
+			}
+			case BCOORD_BANK:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,bank_h.size()-1);
+				for(BotCoords::const_iterator itr = bank_h.begin(); itr != bank_h.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
 			}
 		}
 	}
@@ -138,6 +197,14 @@ BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx
 				BotCoords::iterator itr = mail_a.find(idx);
 				if(itr != mail_a.end())
 					return itr->second;
+				break;
+			}
+			case BCOORD_BANK:
+			{
+				BotCoords::iterator itr = bank_a.find(idx);
+				if(itr != bank_a.end())
+					return itr->second;
+				break;
 			}
 		}
 	}
@@ -150,6 +217,14 @@ BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx
 				BotCoords::iterator itr = mail_h.find(idx);
 				if(itr != mail_h.end())
 					return itr->second;
+				break;
+			}
+			case BCOORD_BANK:
+			{
+				BotCoords::iterator itr = bank_h.find(idx);
+				if(itr != bank_h.end())
+					return itr->second;
+				break;
 			}
 		}
 	}
@@ -395,38 +470,38 @@ void PlayerBot::ChooseToDoSomething()
 	choice_Timer = urand(600000,3600000);
 	bot->RemoveFlag(PLAYER_FLAGS, PLAYER_FLAGS_AFK);
 
-	if(randAct < 200) // 20%
+	if(randAct < 100) // 10%
 		m_choice = BCHOICE_PVP;
-	else if(randAct < 300) // 10%
+	else if(randAct < 200) // 10%
 		m_choice = BCHOICE_FARM_MOBS;
-	else if(randAct < 400) // 10%
+	else if(randAct < 300) // 10%
 		m_choice = BCHOICE_GO_ZONE;
-	else if(randAct < 430) // 3%
+	else if(randAct < 330) // 3%
 		m_choice = BCHOICE_QUEST;
-	else if(randAct < 460) // 3%
+	else if(randAct < 360) // 3%
 		m_choice = BCHOICE_EXPLORE;
-	else if(randAct < 560) // 10%
+	else if(randAct < 460) // 10%
 	{
 		m_choice = BCHOICE_FARM_MINERALS;
 		m_choice = BCHOICE_FARM_HERBS;
 		m_choice = BCHOICE_FARM_LEATHER;
 		m_choice = BCHOICE_FARM_CLOTH;
 	}
-	else if(randAct < 590) // 3%
+	else if(randAct < 490) // 3%
 		m_choice = BCHOICE_LEARN_SPELLS;
-	else if(randAct < 710) // 12%
+	else if(randAct < 610) // 12%
 	{
 		m_choice = BCHOICE_AUCTION;
 		chosen_point = 0;
 		choice_Timer = urand(60000,1200000);
 	}
-	else if(randAct < 830) // 12%
+	else if(randAct < 730) // 12%
 	{
 		m_choice = BCHOICE_BANK;
 		chosen_point = 0;
 		choice_Timer = urand(60000,1200000);
 	}
-	else if(randAct < 950) // 12%
+	else if(randAct < 850) // 12%
 	{
 		m_choice = BCHOICE_MAIL;
 		chosen_point = 0;
@@ -440,25 +515,6 @@ void PlayerBot::ChooseToDoSomething()
 		choice_Timer = urand(60000,3600000);
 	}
 }
-
-float bank_coords[16][5] = {
-	{0,0,-8926.86,607.1f,99.55f}, // st
-	{0,0,-8934.9f,622.5f,99.55f}, // st
-	{0,0,-4880.33f,-986.4f,504.1f}, // if
-	{0,0,-4897.9f,-1001.5f,504.1f}, // if
-	{0,571,5978.61f,601.09f,650.63f}, // dala
-	{0,571,5984.12f,615.81f,650.63f}, // dala
-	{0,571,5629.49f,701.356f,651.99f}, // dala
-	{0,571,5623.01f,687.31f,651.99f}, // dala
-	{1,1,1622.76f,-4373.21f,12.1f}, // og
-	{1,1,1629.96f,-4381.31f,20.1f}, // og
-	{1,0,1588.73f,240.5f,-52.2f}, // uc
-	{1,0,1602.88f,240.7f,-52.2f}, // uc
-	{1,571,5978.61f,601.09f,650.63f}, // dala
-	{1,571,5984.12f,615.81f,650.63f}, // dala
-	{1,571,5629.49f,701.356f,651.99f}, // dala
-	{1,571,5623.01f,687.31f,651.99f}, // dala
-};
 
 float ah_coords[8][5] = {
 	{0,0,-8818.96f,661.1f,96.5f}, // st
@@ -507,9 +563,6 @@ bool PlayerBot::isInHostileZoneWithoutLevel()
 }
 void PlayerBot::HandleBank()
 {
-	if(!chosen_point)
-		chosen_point = urand(1,8);
-
 	switch(bot->getRace())
 	{
 		case RACE_HUMAN:
@@ -518,39 +571,62 @@ void PlayerBot::HandleBank()
 		case RACE_NIGHTELF:
 		case RACE_DRAENEI:
 		case RACE_WORGEN:
-			if(bot->GetMapId() != bank_coords[(chosen_point-1)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+		{
+			if(!chosen_point)
 			{
-				chosen_point = urand(1,8);
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_BANK);
 				return;
 			}
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_BANK,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_BANK);
+				return;
+			}
+
 			if(bot->isMoving())
 				return;
 
-			if(bot->GetDistance(bank_coords[chosen_point-1][2],bank_coords[chosen_point-1][3],bank_coords[chosen_point-1][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point-1][2]+urand(0,100)/50,bank_coords[chosen_point-1][3]+urand(0,100)/100,bank_coords[chosen_point-1][4]);
+				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
 			}
 			break;
+		}
 		case RACE_ORC:
 		case RACE_TROLL:
 		case RACE_TAUREN:
 		case RACE_BLOODELF:
 		case RACE_UNDEAD_PLAYER:
 		case RACE_GOBLIN:
-			if(bot->GetMapId() != bank_coords[(chosen_point+7)][1] && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+		{
+			if(!chosen_point)
 			{
-				chosen_point = urand(1,8);
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
 				return;
 			}
-			if(bot->isMoving())
+
+			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_BANK,chosen_point);
+
+			if(!bc || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			{
+				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
 				return;
-			if(bot->GetDistance(bank_coords[chosen_point+7][2],bank_coords[chosen_point+7][3],bank_coords[chosen_point+7][4]) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			}
+
+			if(bot->isMoving() || !bc)
+				return;
+
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bank_coords[chosen_point+7][2]+urand(0,100)/50,bank_coords[chosen_point+7][3]+urand(0,100)/50,bank_coords[chosen_point+7][4]);
+				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
 			}
 			break;
+		}
 	}
 }
 
@@ -630,7 +706,7 @@ void PlayerBot::HandleMail()
 			if(bot->isMoving())
 				return;
 
-			if(bot->GetDistance(bc->x,bc->y,bc->z) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);
@@ -661,7 +737,7 @@ void PlayerBot::HandleMail()
 			if(bot->isMoving() || !bc)
 				return;
 
-			if(bot->GetDistance(bc->x,bc->y,bc->z) >= 2.0f && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
+			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
 				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);

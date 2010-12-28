@@ -37,11 +37,12 @@ enum BotCoordType
 	BCOORD_MAIL		= 0,
 	BCOORD_BANK		= 1,
 	BCOORD_AH		= 2,
+	BCOORD_RANDOM	= 3,
 };
 
 struct BotCoord
 {
-	float x,y,z;
+	float x,y,z,range,maxdist;
 	uint32 mapId;
 };
 
@@ -63,6 +64,8 @@ class PlayerBotMgr
 		BotChance m_choiceChances;
 		BotCoords mail_h;
 		BotCoords mail_a;
+		BotCoords bank_h;
+		BotCoords bank_a;
 
 };
 
