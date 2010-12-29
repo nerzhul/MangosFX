@@ -124,6 +124,8 @@ class PlayerBot// : public Player
 
 		void Update(uint32 diff);
 
+		// Use Go
+		void UseGameObject(uint64 go);
 		// Units
 		Unit* SearchTargetAroundMe();
 		// Movements
@@ -131,7 +133,9 @@ class PlayerBot// : public Player
 		void GoToCacIfIsnt(Unit* target);
 		void GoToRandomBGPoint(BattleGroundTypeId bgTypeId);
 		void GoPoint(float x,float y,float z) { bot->GetMotionMaster()->MovePoint(0,x,y,z); }
-		void GoPoint(BotCoord* bc) { GoPoint(bc->x+irand(-bc->range,bc->range)/100, bc->y+irand(-bc->range,bc->range)/100, bc->z); }
+		void GoPoint(BotCoord* bc);
+		bool isStaying() { return (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE); }
+		void GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId, uint32 diff);
 
 		// BG Handlers
 		void JoinBGQueueIfNotIn();

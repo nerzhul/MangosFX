@@ -1620,6 +1620,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool CanCreateWGVehicle();
 		void AddItem(uint32 entry,uint16 count=1);
 		Item* AddItemWithReturn(uint32 entry);
+		void AddItemAndEquip(uint32 entry,uint8 dst);
 
         int getCinematic()
         {

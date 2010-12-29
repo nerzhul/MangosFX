@@ -100,7 +100,7 @@ RandomMovementGenerator<Creature>::_setRandomLocation(Creature &creature)
 	float speed = traveller.Speed() * 0.001f; // in ms
 	uint32 traveltime = uint32(pointPath.GetTotalLength() / speed);
 	SplineFlags flags = creature.GetSplineFlags();
-	creature.SendMonsterMoveByPath(pointPath, 1, pointPath.size(), flags, traveltime);
+	creature.SendMonsterMoveByPath(pointPath, 0, pointPath.size(), flags, traveltime);
     creature.addUnitState(UNIT_STAT_ROAMING_MOVE);
 
     if (is_air_ok)

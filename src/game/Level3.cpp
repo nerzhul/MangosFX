@@ -6569,6 +6569,40 @@ bool ChatHandler::HandleDebugEnterVehicle(const char * args)
     return true;
 }
 
+bool ChatHandler::HandlePlayerEquipItemsCommand(const char* args)
+{
+	Unit* target = getSelectedUnit();
+	if(target->GetTypeId() != TYPEID_PLAYER)
+		return false;
+
+	Unit* plr = (Player*)plr;
+	switch(plr->getClass())
+	{
+		case CLASS_WARRIOR:
+			break;
+		case CLASS_DEATH_KNIGHT:
+			break;
+		case CLASS_PALADIN:
+			break;
+		case CLASS_SHAMAN:
+			break;
+		case CLASS_HUNTER:
+			break;
+		case CLASS_DRUID:
+			break;
+		case CLASS_ROGUE:
+			break;
+		case CLASS_MAGE:
+			break;
+		case CLASS_WARLOCK:
+			break;
+		case CLASS_PRIEST:
+			break;
+	}
+
+	return true;
+}
+
 bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 {
 	char* lvlmin = NULL;

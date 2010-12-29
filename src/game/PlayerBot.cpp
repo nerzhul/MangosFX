@@ -1,6 +1,8 @@
 #include "PlayerBot.h"
 #include <Policies/SingletonImp.h>
 #include "ObjectMgr.h"
+#include "GameObject.h"
+#include "BattleGroundAB.h"
 #include "BattleGroundWS.h"
 
 INSTANTIATE_SINGLETON_1( PlayerBotMgr );
@@ -507,9 +509,10 @@ void PlayerBot::Update(uint32 diff)
 		}
 
 		if(Player* plr = sObjectMgr.GetPlayer(bot->GetSelection()))
-			if(plr->isAlive())
+			if(plr->isAlive() || plr->GetDistance2d(bot) > 75.0f)
 			{
 				m_decideToFight = false;
+				bot->SetSelection(0);
 				return;
 			}
 
@@ -546,6 +549,7 @@ void PlayerBot::Update(uint32 diff)
 				HandleDruidCombat();
 				break;
 		}
+		return;
 	}
 	else
 	{
@@ -607,6 +611,15 @@ void PlayerBot::Update(uint32 diff)
 	}
 }
 
+void PlayerBot::GoPoint(BotCoord* bc)
+{
+	float x = bc->x+irand(-bc->range,bc->range)/100;
+	float y = bc->y+irand(-bc->range,bc->range)/100;
+	float z = bot->GetMap()->GetHeight(x,y,bc->z,100.0f);
+
+	Stay();
+	GoPoint(x,y,z);
+}
 void PlayerBot::ChooseToDoSomething()
 {
 	float randAct = float(urand(1,1000));
@@ -1243,6 +1256,8 @@ void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
 	switch(bgTypeId)
 	{
 		case BATTLEGROUND_WS:
+			if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,urand(154,169)))
+				GoPoint(bc);
 			break;
 	}
 }
@@ -1257,19 +1272,49 @@ Unit* PlayerBot::SearchTargetAroundMe()
 		if(!pPlayer)
 			continue;
 
-		if(pPlayer->GetDistance2d(bot) > 50.0f)
+		if(pPlayer->GetDistance2d(bot) > 44.0f)
 			continue;
 
 		if(!pPlayer->isAlive())
 			continue;
 		
-		if(pPlayer->GetBGTeam() == bot->GetTeam())
+		if(pPlayer->GetTeam() == bot->GetTeam())
+			continue;
+
+		if(pPlayer->isGameMaster())
 			continue;
 
 		if(!tmpTarget || tmpTarget->GetDistance2d(bot) > pPlayer->GetDistance2d(bot))
 			tmpTarget = pPlayer;
 	}
 	return tmpTarget;
+}
+
+void PlayerBot::UseGameObject(uint64 guid)
+{
+	GameObject *obj = bot->GetMap()->GetGameObject(guid);
+
+    if(!obj)
+        return;
+
+    obj->Use(bot);
+}
+
+void PlayerBot::GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId,uint32 diff)
+{
+	if(act_Timer <= diff && isStaying())
+	{
+		switch(bgTypeId)
+		{
+			case BATTLEGROUND_WS:
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,bot->GetTeam() == ALLIANCE ? 135 : 134))
+					GoPoint(bc);
+				break;
+		}
+		act_Timer = urand(3000,12000);
+	}
+	else
+		act_Timer -= diff;
 }
 
 void PlayerBot::HandleWarsong(uint32 diff)
@@ -1286,59 +1331,77 @@ void PlayerBot::HandleWarsong(uint32 diff)
 		mode_Timer -= diff;
 
 	if(bg->GetStatus() != STATUS_IN_PROGRESS)
+	{
+		GoToRandomBGStartingPoint(BATTLEGROUND_WS,diff);
 		return;
+	}
 
 	switch(m_mode)
 	{
 		case MODE_ATTACKER:
 		{
-			Player* flagOwner = NULL;
-			if(bgTeamId == BG_TEAM_ALLIANCE)
-				flagOwner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID());
-			else
-				flagOwner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID());
-			if(flagOwner && flagOwner->GetDistance2d(bot) < 45.0f)
+			if(act_Timer <= diff || isStaying())
 			{
-				if(!bot->GetSelection() != flagOwner->GetGUID())
-					bot->SetSelection(flagOwner->GetGUID());
+				Player* flagOwner = NULL;
+				if(bot->GetTeam() == ALLIANCE)
+					flagOwner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID());
+				else
+					flagOwner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID());
+				if(flagOwner && flagOwner->GetDistance2d(bot) < 45.0f)
+				{
+					if(!bot->GetSelection() != flagOwner->GetGUID())
+						bot->SetSelection(flagOwner->GetGUID());
 
-				if(bot->GetDistance2d(flagOwner) > 40.0f || 
-					(bot->getClass() == CLASS_DEATH_KNIGHT || bot->getClass() == CLASS_WARRIOR || bot->getClass() == CLASS_ROGUE) && bot->GetDistance2d(flagOwner) > 3.0f)
-				{
-					bot->GetMotionMaster()->MoveChase(flagOwner);
-					return;
-				}
-			}
-			else
-			{
-				Unit* seekTarget = SearchTargetAroundMe();
-				if(!seekTarget)
-				{
-					GoToRandomBGPoint(BATTLEGROUND_WS);
-					return;
+					if(bot->GetDistance2d(flagOwner) > 40.0f || 
+						(bot->getClass() == CLASS_DEATH_KNIGHT || bot->getClass() == CLASS_WARRIOR || bot->getClass() == CLASS_ROGUE) && bot->GetDistance2d(flagOwner) > 3.0f)
+					{
+						bot->GetMotionMaster()->MoveChase(flagOwner);
+						return;
+					}
 				}
 				else
+				{
+					Unit* seekTarget = SearchTargetAroundMe();
+					if(!seekTarget)
+					{
+						GoToRandomBGPoint(BATTLEGROUND_WS);
+						act_Timer = urand(4000,5000);
+						return;
+					}
 					bot->SetSelection(seekTarget->GetGUID());
-				m_decideToFight = true;
+					m_decideToFight = true;
+					act_Timer = urand(10000,30000);
+				}
 			}
+			else
+				act_Timer -= diff;
 			break;
 		}
 		case MODE_DEFENDER:
 		{
-			if(act_Timer <= diff)
+			if(act_Timer <= diff || bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				if(!HasDecidedToFight())
 				{
-					if(bot->GetBGTeam() == BG_TEAM_HORDE)
+					if(bot->GetTeam() == HORDE)
+					{
 						if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,134))
 							if(bot->GetDistance2d(bc->x,bc->y) > 50.0f)
 								GoPoint(bc);
-				}
-
-				if(Unit* seekTarget = SearchTargetAroundMe())
-				{
-					bot->SetSelection(seekTarget->GetGUID());
-					m_decideToFight = true;
+					}
+					else
+					{
+						if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,135))
+							if(bot->GetDistance2d(bc->x,bc->y) > 50.0f)
+								GoPoint(bc);
+					}
+					
+					if(Unit* seekTarget = SearchTargetAroundMe())
+					{
+						Stay();
+						bot->SetSelection(seekTarget->GetGUID());
+						m_decideToFight = true;
+					}
 				}
 				act_Timer = urand(750,1500);
 			}
@@ -1347,12 +1410,138 @@ void PlayerBot::HandleWarsong(uint32 diff)
 			break;
 		}
 		case MODE_OBJECTIVE:
+		{
+			if(act_Timer <= diff)
+			{
+				if(bot->GetTeam() == HORDE)
+				{
+					if(Player* flagowner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID()))
+					{
+						if(flagowner->GetDistance2d(bot) > 25.0f)
+							GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
+						else
+						{
+							bot->SetSelection(flagowner->GetGUID());
+							m_decideToFight = true;
+						}
+					}
+					else
+					{
+						if(Player* flagowner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID()))
+						{
+							if(flagowner == bot)
+							{
+								if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,136))
+								{
+									if(bot->GetDistance2d(bc->x,bc->y) > 2.0f)
+										GoPoint(bc);
+									else
+										bg->HandleAreaTrigger(bot,3647);
+								}
+							}
+							else if(flagowner->GetDistance2d(bot) > 25.0f)
+								GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
+							else
+							{
+								if(Unit* seekTarget = SearchTargetAroundMe())
+								{
+									Stay();
+									bot->SetSelection(seekTarget->GetGUID());
+									m_decideToFight = true;
+								}
+							}
+						}
+						else
+						{
+							if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,137))
+							{
+								if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+									GoPoint(bc);
+								else if(GameObject* go = bot->GetClosestGameObjectWithEntry(179830,10.0f))
+									UseGameObject(go->GetGUID());
+							}
+						}
+					}
+				}
+				else if(bot->GetTeam() == ALLIANCE)
+				{
+					if(Player* flagowner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID()))
+					{
+						if(flagowner->GetDistance2d(bot) > 25.0f)
+							GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
+						else
+						{
+							bot->SetSelection(flagowner->GetGUID());
+							m_decideToFight = true;
+						}
+					}
+					else
+					{
+						if(Player* flagowner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID()))
+						{
+							if(flagowner == bot)
+							{
+								if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,137))
+								{
+									if(bot->GetDistance2d(bc->x,bc->y) > 2.0f)
+										GoPoint(bc);
+									else
+										bg->HandleAreaTrigger(bot,3646);
+								}
+							}
+							else if(flagowner->GetDistance2d(bot) > 25.0f)
+								GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
+							else
+							{
+								if(Unit* seekTarget = SearchTargetAroundMe())
+								{
+									Stay();
+									bot->SetSelection(seekTarget->GetGUID());
+									m_decideToFight = true;
+								}
+							}
+						}
+						else
+						{
+							if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,136))
+							{
+								if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+									GoPoint(bc);
+								else if(GameObject* go = bot->GetClosestGameObjectWithEntry(179831,10.0f))
+									UseGameObject(go->GetGUID());
+							}
+						}
+					}
+				}
+
+				act_Timer = urand(1000,3000);
+			}
+			else
+				act_Timer -= diff;
 			break;
+		}
 	}
 }
 
 void PlayerBot::HandleArathi(uint32 diff)
 {
+	BattleGroundAB* bg = (BattleGroundAB*)bot->GetBattleGround();
+	BattleGroundTeamId bgTeamId = BattleGroundTeamId(bot->GetBGTeam());
+
+	if(mode_Timer <= diff)
+	{
+		m_mode = BotMode(urand(0,2));
+		mode_Timer = urand(30000,60000);
+	}
+	else
+		mode_Timer -= diff;
+
+	if(bg->GetStatus() != STATUS_IN_PROGRESS)
+	{
+		GoToRandomBGStartingPoint(BATTLEGROUND_AB,diff);
+		return;
+	}
+
 	switch(m_mode)
 	{
 		case MODE_ATTACKER:

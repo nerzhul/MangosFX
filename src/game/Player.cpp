@@ -22999,6 +22999,16 @@ Item* Player::AddItemWithReturn(uint32 entry)
 	return NULL;
 }
 
+void Player::AddItemAndEquip(uint32 entry,uint8 dst)
+{
+	Item* it = AddItemWithReturn(entry);
+	if(!it)
+		return;
+	WorldPacket data(CMSG_AUTOEQUIP_ITEM_SLOT,8+1);
+	data << uint64(it->GetGUID());
+	data << uint8(dst);
+	GetSession()->HandleAutoEquipItemSlotOpcode(data);
+}
 bool Player::RemoveCalendarEvent(uint64 eventId)
 {
 	cEventSet::iterator itr = m_calendarEvents.find(eventId);
