@@ -1287,6 +1287,12 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45251);
 					pPlayer->AddItem(45111);
 					pPlayer->AddItem(45825);
+					pPlayer->AddItem(45322);
+					if(pPlayer->getClass() == CLASS_PALADIN || pPlayer->getClass() == CLASS_WARRIOR)
+					{
+						pPlayer->AddItem(45700);
+						pPlayer->AddItem(45707);
+					}
 				}
 				else // druid
 				{
@@ -1494,11 +1500,13 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(41156);
 				pPlayer->AddItem(41216);
 				pPlayer->AddItem(41086);
+
 				pPlayer->AddItem(41142);
 				pPlayer->AddItem(41204);
 				pPlayer->AddItem(42126);
 				pPlayer->AddItem(42124);
 				pPlayer->AddItem(42131);
+
 				pPlayer->AddItem(42490);
 				pPlayer->AddItem(41234);
 				pPlayer->AddItem(42317);

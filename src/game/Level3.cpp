@@ -6595,7 +6595,7 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 		{
 			Field *fields = accList->Fetch();
 			uint32 accid = fields[0].GetUInt32();
-			if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member)",accid,lvl1,lvl2))
+			if(QueryResult* query = CharacterDatabase.PQuery("SELECT name FROM characters WHERE account = '%u' AND level >= '%u' and level <= '%u' AND online = 0 AND guid NOT IN (SELECT guid FROM guild_member WHERE guildid NOT IN (200,201,202,203,204,205,206))",accid,lvl1,lvl2))
 			{
 				do
 				{

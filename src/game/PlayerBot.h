@@ -38,8 +38,12 @@ enum BotCoordType
 	BCOORD_BANK		= 1,
 	BCOORD_AH		= 2,
 	BCOORD_RANDOM	= 3,
+	BCOORD_WARSONG	= 4,
+	BCOORD_ARATHI	= 5,
+	BCOORD_CYCLONE	= 6,
 };
 
+#define MAX_SUPPORTED_BG	3
 struct BotCoord
 {
 	float x,y,z,range,maxdist;
@@ -71,6 +75,9 @@ class PlayerBotMgr
 		BotCoords bank_a;
 		BotCoords random_h;
 		BotCoords random_a;
+		BotCoords warsong;
+		BotCoords arathi;
+		BotCoords eyeofthestorm;
 
 };
 
@@ -123,6 +130,8 @@ class PlayerBot// : public Player
 		void Stay();
 		void GoToCacIfIsnt(Unit* target);
 		void GoToRandomBGPoint(BattleGroundTypeId bgTypeId);
+		void GoPoint(float x,float y,float z) { bot->GetMotionMaster()->MovePoint(0,x,y,z); }
+		void GoPoint(BotCoord* bc) { GoPoint(bc->x+irand(-bc->range,bc->range)/100, bc->y+irand(-bc->range,bc->range)/100, bc->z); }
 
 		// BG Handlers
 		void JoinBGQueueIfNotIn();

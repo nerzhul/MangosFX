@@ -1619,6 +1619,7 @@ class MANGOS_DLL_SPEC Player : public Unit
 		bool IsWintergraspDefender();
 		bool CanCreateWGVehicle();
 		void AddItem(uint32 entry,uint16 count=1);
+		Item* AddItemWithReturn(uint32 entry);
 
         int getCinematic()
         {

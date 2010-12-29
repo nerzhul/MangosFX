@@ -4908,7 +4908,7 @@ void Player::RepopAtGraveyard()
     if(ClosestGrave)
     {
         TeleportTo(ClosestGrave->map_id, ClosestGrave->x, ClosestGrave->y, ClosestGrave->z, GetOrientation());
-        if(isDead())                                        // not send if alive, because it used in TeleportTo()
+        if(isDead() && !isBot())                                        // not send if alive, because it used in TeleportTo()
         {
             WorldPacket data(SMSG_DEATH_RELEASE_LOC, 4*4);  // show spirit healer position on minimap
             data << ClosestGrave->map_id;
@@ -22982,16 +22982,21 @@ bool Player::CanCreateWGVehicle()
 void Player::AddItem(uint32 entry,uint16 count)
 {
 	ItemPosCountVec dest;
-	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, 1, false);
+	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, count, false);
 	if (msg == EQUIP_ERR_OK)
 	{
-		uint16 i=0;
-		while(i<count)
-		{
+		for(uint16 i=0;i<count;i++)
 			m_session->GetPlayer()->StoreNewItem(dest, entry, true);
-			i++;
-		}
 	}
+}
+
+Item* Player::AddItemWithReturn(uint32 entry)
+{
+	ItemPosCountVec dest;
+	uint8 msg = m_session->GetPlayer()->CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, entry, 1, false);
+	if (msg == EQUIP_ERR_OK)
+		return m_session->GetPlayer()->StoreNewItem(dest, entry, true);
+	return NULL;
 }
 
 bool Player::RemoveCalendarEvent(uint64 eventId)

@@ -77,6 +77,15 @@ void PlayerBotMgr::CleanCoordinates()
 		bank_h.erase(itr);
 		itr = next;
 	}
+
+	for(BotCoords::iterator itr = warsong.begin(); itr != warsong.end();)
+	{
+		BotCoords::iterator next = ++itr;
+		--itr;
+		delete itr->second;
+		warsong.erase(itr);
+		itr = next;
+	}
 }
 
 void PlayerBotMgr::LoadBotCoordinates()
@@ -88,17 +97,17 @@ void PlayerBotMgr::LoadBotCoordinates()
 		do
 		{
 			Field* fields = result->Fetch();
+			BotCoord* bc = new BotCoord();
+			bc->mapId = fields[2].GetUInt32();
+			bc->x = fields[3].GetFloat();
+			bc->y = fields[4].GetFloat();
+			bc->z = fields[5].GetFloat();
+			bc->range = fields[7].GetFloat();
+			bc->maxdist = fields[8].GetFloat();
 			switch(BotCoordType(fields[0].GetUInt32()))
 			{
 				case BCOORD_MAIL:
 				{
-					BotCoord* bc = new BotCoord();
-					bc->mapId = fields[2].GetUInt32();
-					bc->x = fields[3].GetFloat();
-					bc->y = fields[4].GetFloat();
-					bc->z = fields[5].GetFloat();
-					bc->range = fields[7].GetFloat();
-					bc->maxdist = fields[8].GetFloat();
 					if(fields[1].GetUInt32() == 0)
 						mail_a[fields[6].GetUInt32()] = bc;
 					else
@@ -107,13 +116,6 @@ void PlayerBotMgr::LoadBotCoordinates()
 				}
 				case BCOORD_BANK:
 				{
-					BotCoord* bc = new BotCoord();
-					bc->mapId = fields[2].GetUInt32();
-					bc->x = fields[3].GetFloat();
-					bc->y = fields[4].GetFloat();
-					bc->z = fields[5].GetFloat();
-					bc->range = fields[7].GetFloat();
-					bc->maxdist = fields[8].GetFloat();
 					if(fields[1].GetUInt32() == 0)
 						bank_a[fields[6].GetUInt32()] = bc;
 					else
@@ -122,17 +124,25 @@ void PlayerBotMgr::LoadBotCoordinates()
 				}
 				case BCOORD_RANDOM:
 				{
-					BotCoord* bc = new BotCoord();
-					bc->mapId = fields[2].GetUInt32();
-					bc->x = fields[3].GetFloat();
-					bc->y = fields[4].GetFloat();
-					bc->z = fields[5].GetFloat();
-					bc->range = fields[7].GetFloat();
-					bc->maxdist = fields[8].GetFloat();
 					if(fields[1].GetUInt32() == 0)
 						random_a[fields[6].GetUInt32()] = bc;
 					else
 						random_h[fields[6].GetUInt32()] = bc;
+					break;
+				}
+				case BCOORD_WARSONG:
+				{
+					warsong[fields[6].GetUInt32()] = bc;
+					break;
+				}
+				case BCOORD_ARATHI:
+				{
+					arathi[fields[6].GetUInt32()] = bc;
+					break;
+				}
+				case BCOORD_CYCLONE:
+				{
+					eyeofthestorm[fields[6].GetUInt32()] = bc;
 					break;
 				}
 				default:
@@ -230,6 +240,48 @@ uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
 			}
 		}
 	}
+	else
+	{
+		switch(bcType)
+		{
+			case BCOORD_WARSONG:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,warsong.size()-1);
+				for(BotCoords::const_iterator itr = warsong.begin(); itr != warsong.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
+			}
+			case BCOORD_ARATHI:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,arathi.size()-1);
+				for(BotCoords::const_iterator itr = arathi.begin(); itr != arathi.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
+			}
+			case BCOORD_CYCLONE:
+			{
+				uint32 pos = 0;
+				uint32 idxchosen = urand(0,eyeofthestorm.size()-1);
+				for(BotCoords::const_iterator itr = eyeofthestorm.begin(); itr != eyeofthestorm.end(); ++itr)
+				{
+					if(pos == idxchosen)
+						return itr->first;
+					++pos;
+				}
+				break;
+			}
+		}
+	}
 
 	return 0;
 }
@@ -290,8 +342,35 @@ BotCoord* PlayerBotMgr::GetPoint(uint32 faction, BotCoordType bcType, uint32 idx
 			}
 		}
 	}
+	else
+	{
+		switch(bcType)
+		{
+			case BCOORD_WARSONG:
+			{
+				BotCoords::iterator itr = warsong.find(idx);
+				if(itr != warsong.end())
+					return itr->second;
+				break;
+			}
+			case BCOORD_ARATHI:
+			{
+				BotCoords::iterator itr = arathi.find(idx);
+				if(itr != arathi.end())
+					return itr->second;
+				break;
+			}
+			case BCOORD_CYCLONE:
+			{
+				BotCoords::iterator itr = eyeofthestorm.find(idx);
+				if(itr != eyeofthestorm.end())
+					return itr->second;
+				break;
+			}
+		}
+	}
 
-	return 0;
+	return NULL;
 }
 
 PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
@@ -708,7 +787,7 @@ void PlayerBot::HandleBank()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -739,7 +818,7 @@ void PlayerBot::HandleBank()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -777,7 +856,7 @@ void PlayerBot::HandleGoZone()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -808,7 +887,7 @@ void PlayerBot::HandleGoZone()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0, bc->x+urand(0,bc->range)/100, bc->y+urand(0,bc->range)/100, bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -894,7 +973,7 @@ void PlayerBot::HandleMail()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -925,7 +1004,7 @@ void PlayerBot::HandleMail()
 			if(bot->GetDistance(bc->x,bc->y,bc->z) >= bc->maxdist && bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE)
 			{
 				bot->GetMotionMaster()->Clear(false);
-				bot->GetMotionMaster()->MovePoint(0,bc->x+urand(0,100)/50,bc->y+urand(0,100)/50,bc->z);
+				GoPoint(bc);
 			}
 			break;
 		}
@@ -934,7 +1013,7 @@ void PlayerBot::HandleMail()
 
 void PlayerBot::HandleGoToCorpse()
 {
-	if(bot->getDeathState() == CORPSE && !bot->GetCorpse()) // need to be before prev condition
+	if(!bot->GetCorpse()) // need to be before prev condition
 	{
 		bot->BuildPlayerRepop();
         bot->RepopAtGraveyard();
@@ -1201,7 +1280,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 	if(mode_Timer <= diff)
 	{
 		m_mode = BotMode(urand(0,2));
-		mode_Timer = urand(60000,300000);
+		mode_Timer = urand(30000,60000);
 	}
 	else
 		mode_Timer -= diff;
@@ -1218,12 +1297,13 @@ void PlayerBot::HandleWarsong(uint32 diff)
 				flagOwner = sObjectMgr.GetPlayer(bg->GetHordeFlagPickerGUID());
 			else
 				flagOwner = sObjectMgr.GetPlayer(bg->GetAllianceFlagPickerGUID());
-			if(flagOwner)
+			if(flagOwner && flagOwner->GetDistance2d(bot) < 45.0f)
 			{
 				if(!bot->GetSelection() != flagOwner->GetGUID())
 					bot->SetSelection(flagOwner->GetGUID());
 
-				if(bot->GetDistance2d(flagOwner) > 40.0f)
+				if(bot->GetDistance2d(flagOwner) > 40.0f || 
+					(bot->getClass() == CLASS_DEATH_KNIGHT || bot->getClass() == CLASS_WARRIOR || bot->getClass() == CLASS_ROGUE) && bot->GetDistance2d(flagOwner) > 3.0f)
 				{
 					bot->GetMotionMaster()->MoveChase(flagOwner);
 					return;
@@ -1237,7 +1317,8 @@ void PlayerBot::HandleWarsong(uint32 diff)
 					GoToRandomBGPoint(BATTLEGROUND_WS);
 					return;
 				}
-				bot->SetSelection(seekTarget->GetGUID());
+				else
+					bot->SetSelection(seekTarget->GetGUID());
 				m_decideToFight = true;
 			}
 			break;
@@ -1246,11 +1327,19 @@ void PlayerBot::HandleWarsong(uint32 diff)
 		{
 			if(act_Timer <= diff)
 			{
-				if(bot->GetDistance(925.0f,1435.0f,324.618f) > 50.0f)
-					bot->GetMotionMaster()->MovePoint(0,urand(923,942),urand(1424,1447),330.618f);
-				if(!bot->isMovingOrTurning())
-					if(Unit* seekTarget = SearchTargetAroundMe())
-						bot->SetSelection(seekTarget->GetGUID());
+				if(!HasDecidedToFight())
+				{
+					if(bot->GetBGTeam() == BG_TEAM_HORDE)
+						if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,134))
+							if(bot->GetDistance2d(bc->x,bc->y) > 50.0f)
+								GoPoint(bc);
+				}
+
+				if(Unit* seekTarget = SearchTargetAroundMe())
+				{
+					bot->SetSelection(seekTarget->GetGUID());
+					m_decideToFight = true;
+				}
 				act_Timer = urand(750,1500);
 			}
 			else
