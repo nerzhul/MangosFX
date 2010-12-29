@@ -1852,7 +1852,6 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->learnSpell(27151, 0,false);
 					pPlayer->learnSpell(27153, 0,false);
 					pPlayer->learnSpell(27152, 0,false);
-					pPlayer->learnSpell(20223, 0,false);
 					pPlayer->learnSpell(25898, 0,false);
 					pPlayer->learnSpell(642, 0,false);
 					pPlayer->learnSpell(31789, 0,false);

@@ -1557,7 +1557,7 @@ void World::SetInitialWorldSettings()
 
 	/// - Initialize mmaps
 	sLog.outString("Loading All MMaps...");
-	sMMapMgr.LoadAllMMaps();
+	MMAP::MMapFactory::createOrGetMMapManager()->LoadAllMMaps();
 
 	///- Initialize outdoor pvp
     sLog.outString("Starting Outdoor PvP System");

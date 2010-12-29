@@ -109,7 +109,7 @@ namespace VMAP
                 ss2 >> map_num;
                 if (map_num >= 0)
                 {
-                    sLog.outDetail("Ignoring Map %i for VMaps", map_num);
+                    //sLog.outDetail("Ignoring Map %i for VMaps", map_num);
                     iIgnoreMapIds[map_num] = true;
                     // unload map in case it is loaded
                     unloadMap(map_num);

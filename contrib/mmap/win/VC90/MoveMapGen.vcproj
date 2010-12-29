@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="MoveMapGen"
 	ProjectGUID="{97193524-E639-4CBD-AFE4-0CFF84D9656E}"
 	RootNamespace="MoveMapGen"
@@ -119,7 +119,7 @@
 				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\..\src\;..\..\..\..\src\shared\vmap;..\..\..\..\dep\include\g3dlite\;..\..\..\..\src\framework\;..\..\..\..\dep\ACE_wrappers\;..\..\..\..\dep\recastnavigation\Detour\Include\;..\..\..\..\dep\recastnavigation\Recast\Include\;"
+				AdditionalIncludeDirectories="..\..\src\;..\..\..\..\src\shared\vmap;..\..\..\..\dep\include\g3dlite\;..\..\..\..\src\framework\;..\..\..\..\dep\ACE_wrappers\;..\..\..\..\dep\recastnavigation\Detour\Include\;..\..\..\..\dep\recastnavigation\Recast\Include\"
 				PreprocessorDefinitions="WIN32;NDEBUG;MMAP_GENERATOR;NO_CORE_FUNCS;"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -175,14 +175,6 @@
 			Name="generator"
 			>
 			<File
-				RelativePath="..\..\src\DebugAlloc.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\DebugAlloc.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\generator.cpp"
 				>
 			</File>
@@ -203,11 +195,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TileBuilder.cpp"
+				RelativePath="..\..\..\..\src\game\MoveMap.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\TileBuilder.h"
+				RelativePath="..\..\src\TerrainBuilder.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\TerrainBuilder.h"
 				>
 			</File>
 			<File

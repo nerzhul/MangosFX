@@ -558,15 +558,6 @@ class MANGOS_DLL_SPEC Map : public GridRefManager<NGridType>, public MaNGOS::Obj
             else
                 m_activeNonPlayers.erase(obj);
         }
-	public:
-		dtNavMesh* GetNavMesh() { return m_navMesh; }
-
-    private:
-        void LoadNavMesh(int gx, int gy);
-        void UnloadNavMesh(int gx, int gy);
-        dtNavMesh* m_navMesh;
-        UNORDERED_MAP<uint32, uint32> m_mmapTileMap;    // maps [map grid coords] to [dtTile coords]
-        // end movemap-related
 };
 
 enum InstanceResetMethod

@@ -202,6 +202,8 @@ class BattleGroundAB : public BattleGround
         /* achievement req. */
         bool IsAllNodesConrolledByTeam(uint32 team) const;  // overwrited
         bool IsTeamScores500Disadvantage(uint32 team) const { return m_TeamScores500Disadvantage[GetTeamIndexByTeamId(team)]; }
+
+		uint8 getNodePoint(uint8 idx) { return m_Nodes[idx]; }
     private:
         /* Gameobject spawning/despawning */
         void _CreateBanner(uint8 node, uint8 type, uint8 teamIndex, bool delay);

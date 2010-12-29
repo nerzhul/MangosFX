@@ -100,7 +100,7 @@ namespace VMAP
             WmoLiquid *iLiquid;
 #ifdef MMAP_GENERATOR
         public:
-            void getMeshData(std::vector<Vector3> &vertices, std::vector<MeshTriangle> &triangles);
+            void getPosInfo(uint32 &tilesX, uint32 &tilesY, Vector3 &corner) const;
 #endif
     };
     /*! Holds a model (converted M2 or WMO) in its original coordinate space */

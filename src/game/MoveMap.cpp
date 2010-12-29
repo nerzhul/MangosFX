@@ -24,149 +24,309 @@
 #include <Utilities/UnorderedMapSet.h>
 #include "World.h"
 
-INSTANTIATE_SINGLETON_1(MoveMapMgr);
-
-inline uint32 packTileID(uint32 tileX, uint32 tileY) { return tileX<<16 | tileY; }
-inline void unpackTileID(uint32 ID, uint32 &tileX, uint32 &tileY) { tileX = ID>>16; tileY = ID&0xFF; }
-
-void Map::LoadNavMesh(int gx, int gy)
+namespace MMAP
 {
-	// Dont load for Toc Raid because of collision pbs
-	if(i_id == 649)
-		return;
+    // ######################## MMapFactory ########################
+    // our global singelton copy
+    MMapManager *g_MMapManager = NULL;
 
-    char fileName[512];
-    FILE* file;
+    // stores list of mapids which do not use pathfinding
+    std::set<uint32>* g_mmapDisabledIds = NULL;
 
-    if(!m_navMesh)
+    MMapManager* MMapFactory::createOrGetMMapManager()
     {
-		m_navMesh = sMMapMgr.GetMMap(i_id);
-		if(!m_navMesh)
-		{
-			error_log("Error: mmap for map %u not found !",i_id);
-			return;
-		}
+        if(g_MMapManager == NULL)
+            g_MMapManager = new MMapManager();
+
+        return g_MMapManager;
     }
 
-    uint32 packedGridPos = packTileID(uint32(gx), uint32(gy));
-    if(m_mmapTileMap.find(packedGridPos) != m_mmapTileMap.end())
-        return;
-
-    // mmaps/0000000.mmtile
-    sprintf(fileName, "%smmaps/%03i%02i%02i.mmtile", sWorld.GetDataPath().c_str(), i_id, gx, gy);
-    file = fopen(fileName, "rb");
-
-    if(!file)
+    void MMapFactory::preventPathfindingOnMaps(const char* ignoreMapIds)
     {
-        sLog.outDebug("Error: Could not open mmtile file '%s'", fileName);
-        return;
+        if(!g_mmapDisabledIds)
+            g_mmapDisabledIds = new std::set<uint32>();
+
+        uint32 strLenght = strlen(ignoreMapIds)+1;
+        char* mapList = new char[strLenght];
+        memcpy(mapList, ignoreMapIds, sizeof(char)*strLenght);
+
+        char* idstr = strtok(mapList, ",");
+        while (idstr)
+        {
+            g_mmapDisabledIds->insert(uint32(atoi(idstr)));
+            idstr = strtok(NULL, ",");
+        }
+
+        delete[] mapList;
     }
 
-    fseek(file, 0, SEEK_END);
-    int length = ftell(file);
-    fseek(file, 0, SEEK_SET);
-
-    unsigned char* data =  new unsigned char[length];
-    fread(data, length, 1, file);
-    fclose(file);
-	
-
-    dtMeshHeader* header = (dtMeshHeader*)data;
-    if (header->magic != DT_NAVMESH_MAGIC)
+    bool MMapFactory::IsPathfindingEnabled(uint32 mapId)
     {
-        sLog.outError("Error: %03u%02i%02i.mmtile has an invalid header", i_id, gx, gy);
-        delete [] data;
-        return;
-    }
-    if (header->version != DT_NAVMESH_VERSION)
-    {
-        sLog.outError("Error: %03u%02i%02i.mmtile was built with Detour v%i, expected v%i",
-                              i_id, gx, gy,                 header->version, DT_NAVMESH_VERSION);
-        delete [] data;
-        return;
+        return true;
     }
 
-    if(!m_navMesh->addTile(data, length, DT_TILE_FREE_DATA))
+    void MMapFactory::clear()
     {
-        sLog.outDebug("Error: could not load %03u%02i%02i.mmtile into navmesh or data is already Loaded", i_id, gx, gy);
-        delete [] data;
-        return;
+        if(g_mmapDisabledIds)
+        {
+            delete g_mmapDisabledIds;
+            g_mmapDisabledIds = NULL;
+        }
+
+        if(g_MMapManager)
+        {
+            delete g_MMapManager;
+            g_MMapManager = NULL;
+        }
     }
 
-    // memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
+    // ######################## MMapManager ########################
+    MMapManager::~MMapManager()
+    {
+        for (MMapDataSet::iterator i = loadedMMaps.begin(); i != loadedMMaps.end(); ++i)
+            delete i->second;
 
-    /* Useless data
-	uint32 packedTilePos = packTileID(uint32(header->x), uint32(header->y));
-    m_mmapTileMap.insert(std::pair<uint32, uint32>(packedGridPos, packedTilePos));*/
-    sLog.outDetail("Loaded mmtile %03i[%02i,%02i] into %03i(%u)[%02i,%02i]", i_id, gx, gy, i_id, GetInstanceId(), header->x, header->y);
-}
+        // by now we should not have maps loaded
+        // if we had, tiles in MMapData->mmapLoadedTiles, their actual data is lost!
+    }
 
-void Map::UnloadNavMesh(int gx, int gy)
-{
-    /* Useless unload because dont load and tile is always loaded into navmesh
-	
-	uint32 packedGridPos = packTileID(uint32(gx), uint32(gy));
-    if(m_mmapTileMap.find(packedGridPos) == m_mmapTileMap.end())
-        return;
+    bool MMapManager::loadMapData(uint32 mapId)
+    {
+        // we already have this map loaded?
+        if (loadedMMaps.find(mapId) != loadedMMaps.end())
+            return true;
 
-    uint32 packedTilePos = m_mmapTileMap[packedGridPos];
-    uint32 tileX, tileY;
-    unpackTileID(packedTilePos, tileX, tileY);
+        // load and init dtNavMesh - read parameters from file
+        uint32 pathLen = sWorld.GetDataPath().length() + strlen("mmaps/%03i.mmap")+1;
+        char *fileName = new char[pathLen];
+        snprintf(fileName, pathLen, (sWorld.GetDataPath()+"mmaps/%03i.mmap").c_str(), mapId);
 
-    // unload, and mark as non loaded
-    //m_navMesh->removeTile(m_navMesh->getTileRefAt(int(tileX), int(tileY)), 0, 0);
-    m_mmapTileMap.erase(packedGridPos);*/
+        FILE* file = fopen(fileName, "rb");
+        if (!file)
+        {
+            sLog.outDebug("MMAP: Error: Could not open mmap file '%s'", fileName);
+            delete [] fileName;
+            return false;
+        }
 
-    sLog.outDetail("Unloaded mmtile %03i[%02i,%02i] from %03i(%u)", i_id, gx, gy, i_id, GetInstanceId());
-}
+        dtNavMeshParams params;
+        fread(&params, sizeof(dtNavMeshParams), 1, file);
+        fclose(file);
 
-bool MoveMapMgr::LoadMMap(uint32 id)
-{
-	char fileName[512];
-	FILE* file;
+        dtNavMesh* mesh = dtAllocNavMesh();
+        ASSERT(mesh);
+        if (DT_SUCCESS != mesh->init(&params))
+        {
+            dtFreeNavMesh(mesh);
+            sLog.outError("MMAP: Failed to initialize dtNavMesh for mmap %03u from file %s", mapId, fileName);
+            delete [] fileName;
+            return false;
+        }
 
-	sprintf(fileName, "%smmaps/%03i.mmap", sWorld.GetDataPath().c_str(), id);
-    file = fopen(fileName, "rb");
+        delete [] fileName;
 
-    if(!file)
+        // allocate mesh query
+        dtNavMeshQuery* query = dtAllocNavMeshQuery();
+        ASSERT(query);
+        if(DT_SUCCESS != query->init(mesh, 2048))
+        {
+            dtFreeNavMeshQuery(query);
+            dtFreeNavMesh(mesh);
+
+            sLog.outError("MMAP: Failed to initialize dtNavMeshQuery for mmap %03u", mapId);
+            return false;
+        }
+
+        // store inside our map list
+        MMapData* mmap_data = new MMapData(mesh, query);
+        mmap_data->mmapLoadedTiles.clear();
+
+        loadedMMaps.insert(std::pair<uint32, MMapData*>(mapId, mmap_data));
+        return true;
+    }
+
+    uint32 MMapManager::packTileID(int32 x, int32 y)
+    {
+        return uint32(x << 16 | y);
+    }
+
+    bool MMapManager::loadMap(uint32 mapId, int32 x, int32 y)
+    {
+        // make sure the mmap is loaded and ready to load tiles
+        if(!loadMapData(mapId))
+            return false;
+
+        // get this mmap data
+        MMapData* mmap = loadedMMaps[mapId];
+        ASSERT(mmap->navMesh);
+        ASSERT(mmap->navMeshQuery);
+
+        // check if we already have this tile loaded
+        uint32 packedGridPos = packTileID(x, y);
+        if (mmap->mmapLoadedTiles.find(packedGridPos) != mmap->mmapLoadedTiles.end())
+        {
+            sLog.outError("MMAP: Asked to load already loaded navmesh tile. %03u%02i%02i.mmtile", mapId, x, y);
+            return false;
+        }
+
+        // load this tile :: mmaps/MMMXXYY.mmtile
+        uint32 pathLen = sWorld.GetDataPath().length() + strlen("mmaps/%03i%02i%02i.mmtile")+1;
+        char *fileName = new char[pathLen];
+        snprintf(fileName, pathLen, (sWorld.GetDataPath()+"mmaps/%03i%02i%02i.mmtile").c_str(), mapId, x, y);
+
+        FILE *file = fopen(fileName, "rb");
+        if (!file)
+        {
+            sLog.outDebug("MMAP: Could not open mmtile file '%s'", fileName);
+            delete [] fileName;
+            return false;
+        }
+        delete [] fileName;
+
+        // read header
+        MmapTileHeader fileHeader;
+        fread(&fileHeader, sizeof(MmapTileHeader), 1, file);
+
+        if (fileHeader.mmapMagic != MMAP_MAGIC)
+        {
+            sLog.outError("MMAP: Bad header in mmap %03u%02i%02i.mmtile", mapId, x, y);
+            return false;
+        }
+
+        if (fileHeader.mmapVersion != MMAP_VERSION)
+        {
+            sLog.outError("MMAP: %03u%02i%02i.mmtile was built with generator v%i, expected v%i",
+                                                mapId, x, y, fileHeader.mmapVersion, MMAP_VERSION);
+            return false;
+        }
+
+        unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
+        ASSERT(data);
+
+        size_t result = fread(data, fileHeader.size, 1, file);
+        if(!result)
+        {
+            sLog.outError("MMAP: Bad header or data in mmap %03u%02i%02i.mmtile", mapId, x, y);
+            fclose(file);
+            return false;
+        }
+
+        fclose(file);
+
+        dtMeshHeader* header = (dtMeshHeader*)data;
+        dtTileRef tileRef = 0;
+
+        // memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
+        if(DT_SUCCESS == mmap->navMesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef))
+        {
+            mmap->mmapLoadedTiles.insert(std::pair<uint32, dtTileRef>(packedGridPos, tileRef));
+            sLog.outDetail("MMAP: Loaded mmtile %03i[%02i,%02i] into %03i[%02i,%02i]", mapId, x, y, mapId, header->x, header->y);
+            return true;
+        }
+        else
+        {
+            sLog.outError("MMAP: Could not load %03u%02i%02i.mmtile into navmesh", mapId, x, y);
+            dtFree(data);
+            return false;
+        }
+
         return false;
+    }
 
-    dtNavMeshParams params;
-    uint32 offset;
-    fread(&params, sizeof(dtNavMeshParams), 1, file);
-    fread(&offset, sizeof(uint32), 1, file);
-    fclose(file);
-
-    dtNavMesh* m_navMesh = dtAllocNavMesh();
-    if(!m_navMesh->init(&params))
+    bool MMapManager::unloadMap(uint32 mapId, int32 x, int32 y)
     {
-        delete m_navMesh;
-        m_navMesh = NULL;
-        sLog.outError("Error: Failed to initialize mmap %03u from file %s", id, fileName);
+        // check if we have this map loaded
+        if (loadedMMaps.find(mapId) == loadedMMaps.end())
+        {
+            // file may not exist, therefore not loaded
+            sLog.outDebug("MMAP: Asked to unload not loaded navmesh map. %03u%02i%02i.mmtile", mapId, x, y);
+            return false;
+        }
+
+        MMapData* mmap = loadedMMaps[mapId];
+
+        // check if we have this tile loaded
+        uint32 packedGridPos = packTileID(x, y);
+        if (mmap->mmapLoadedTiles.find(packedGridPos) == mmap->mmapLoadedTiles.end())
+        {
+            // file may not exist, therefore not loaded
+            sLog.outDebug("MMAP: Asked to unload not loaded navmesh tile. %03u%02i%02i.mmtile", mapId, x, y);
+            return false;
+        }
+
+        dtTileRef tileRef = mmap->mmapLoadedTiles[packedGridPos];
+
+        // unload, and mark as non loaded
+        if(DT_SUCCESS != mmap->navMesh->removeTile(tileRef, NULL, NULL))
+        {
+            // this is technically a memory leak
+            // if the grid is later reloaded, dtNavMesh::addTile will return error but no extra memory is used
+            // we cannot recover from this error - assert out
+            sLog.outError("MMAP: Could not unload %03u%02i%02i.mmtile from navmesh", mapId, x, y);
+            ASSERT(false);
+        }
+        else
+        {
+            mmap->mmapLoadedTiles.erase(packedGridPos);
+            sLog.outDetail("MMAP: Unloaded mmtile %03i[%02i,%02i] from %03i", mapId, x, y, mapId);
+            return true;
+        }
+
         return false;
     }
-	m_mmaps[id] = m_navMesh;
-	return true;
-}
 
-dtNavMesh* MoveMapMgr::GetMMap(uint32 id)
-{
-	mmaps::iterator itr = m_mmaps.find(id);
-	if(itr == m_mmaps.end())
-		return NULL;
+    bool MMapManager::unloadMap(uint32 mapId)
+    {
+        if (loadedMMaps.find(mapId) == loadedMMaps.end())
+        {
+            // file may not exist, therefore not loaded
+            sLog.outDebug("MMAP: Asked to unload not loaded navmesh map %03u", mapId);
+            return false;
+        }
 
-	return itr->second;
-}
+        // unload all tiles from given map
+        MMapData* mmap = loadedMMaps[mapId];
+        for (MMapTileSet::iterator i = mmap->mmapLoadedTiles.begin(); i != mmap->mmapLoadedTiles.end(); ++i)
+        {
+            uint32 x = (i->first >> 16);
+            uint32 y = (i->first & 0x0000FFFF);
+            if(DT_SUCCESS != mmap->navMesh->removeTile(i->second, NULL, NULL))
+                sLog.outError("MMAP: Could not unload %03u%02i%02i.mmtile from navmesh", mapId, x, y);
+            else
+                sLog.outDetail("MMAP: Unloaded mmtile %03i[%02i,%02i] from %03i", mapId, x, y, mapId);
+        }
 
-void MoveMapMgr::LoadAllMMaps()
-{
-	uint16 mapNb = 0;
-	for(uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
-        if(MapEntry const* map = sMapStore.LookupEntry(i))
-		{
-			LoadMMap(i);
-			mapNb++;
-		}
+        delete mmap;
+        loadedMMaps.erase(mapId);
+        return true;
+    }
 
-	sLog.outString(">> Loaded %u mmaps",mapNb);
+    dtNavMesh const* MMapManager::GetNavMesh(uint32 mapId)
+    {
+        if (loadedMMaps.find(mapId) == loadedMMaps.end())
+            return NULL;
+
+        return loadedMMaps[mapId]->navMesh;
+    }
+
+    dtNavMeshQuery const* MMapManager::GetNavMeshQuery(uint32 mapId)
+    {
+        if (loadedMMaps.find(mapId) == loadedMMaps.end())
+            return NULL;
+
+        return loadedMMaps[mapId]->navMeshQuery;
+    }
+
+	void MMapManager::LoadAllMMaps()
+	{
+		uint16 mapNb = 0;
+		for(uint32 i = 0; i < sMapStore.GetNumRows(); ++i)
+			if(MapEntry const* map = sMapStore.LookupEntry(i))
+			{
+				loadMapData(i);
+				mapNb++;
+			}
+
+		sLog.outString(">> Loaded %u mmaps",mapNb);
+	}
 }

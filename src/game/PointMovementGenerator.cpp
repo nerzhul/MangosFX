@@ -33,6 +33,7 @@ void PointMovementGenerator<T>::Initialize(T &unit)
     unit.addUnitState(UNIT_STAT_ROAMING|UNIT_STAT_ROAMING_MOVE);
     Traveller<T> traveller(unit);
     i_destinationHolder.SetDestination(traveller, i_x, i_y, i_z,false);
+
 	PathInfo path(&unit, i_x, i_y, i_z);
 	PointPath pointPath = path.getFullPath();
 	float speed = traveller.Speed() * 0.001f; // in ms
@@ -77,8 +78,13 @@ bool PointMovementGenerator<T>::Update(T &unit, const uint32 &diff)
     }
 
     unit.addUnitState(UNIT_STAT_ROAMING_MOVE);
-    Traveller<T> traveller(unit);
-    i_destinationHolder.UpdateTraveller(traveller, diff, false);
+    
+	Traveller<T> traveller(unit);
+    if(i_destinationHolder.UpdateTraveller(traveller, diff, false))
+	{
+		if(!IsActive(unit))
+			return true;
+	}
 
     if(i_destinationHolder.HasArrived())
     {

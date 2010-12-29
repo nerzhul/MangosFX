@@ -401,8 +401,10 @@ void PlayerBot::GoToCacIfIsnt(Unit* target)
 	if(!target)
 		return;
 
-	if(bot->GetDistance2d(target) >= 4.5f)
-		bot->GetMotionMaster()->MoveChase(target,3.0f);
+	if(bot->GetDistance2d(target) >= 2.0f)
+		GoPoint(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+	else
+		bot->SetFacingToObject(target);
 }
 
 void PlayerBot::Stay()
@@ -472,6 +474,9 @@ void PlayerBot::Update(uint32 diff)
 	if(react_Timer <= diff)
 	{
 		react_Timer = 1200;
+		if(bot->isDead() && bot->GetBattleGround())
+			Stay();
+
 		if(bot->isDead() && !bot->GetBattleGround())
 		{
 			HandleGoToCorpse();
@@ -511,9 +516,14 @@ void PlayerBot::Update(uint32 diff)
 		if(Player* plr = sObjectMgr.GetPlayer(bot->GetSelection()))
 			if(plr->isAlive() || plr->GetDistance2d(bot) > 75.0f)
 			{
-				m_decideToFight = false;
-				bot->SetSelection(0);
-				return;
+				if(Unit* target = SearchTargetAroundMe())
+					bot->SetSelection(target->GetGUID());
+				else
+				{
+					m_decideToFight = false;
+					bot->SetSelection(0);
+					return;
+				}
 			}
 
 		switch(bot->getClass())
@@ -788,7 +798,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f ||  bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f ||  bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_BANK);
 				return;
@@ -819,7 +829,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
 				return;
@@ -1259,6 +1269,10 @@ void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
 			if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,urand(154,169)))
 				GoPoint(bc);
 			break;
+		case BATTLEGROUND_AB:
+			if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,urand(216,231)))
+				GoPoint(bc);
+			break;
 	}
 }
 
@@ -1287,6 +1301,7 @@ Unit* PlayerBot::SearchTargetAroundMe()
 		if(!tmpTarget || tmpTarget->GetDistance2d(bot) > pPlayer->GetDistance2d(bot))
 			tmpTarget = pPlayer;
 	}
+	bot->CastSpell(tmpTarget,6603);
 	return tmpTarget;
 }
 
@@ -1308,6 +1323,10 @@ void PlayerBot::GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId,uint32 dif
 		{
 			case BATTLEGROUND_WS:
 				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,bot->GetTeam() == ALLIANCE ? 135 : 134))
+					GoPoint(bc);
+				break;
+			case BATTLEGROUND_AB:
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,bot->GetTeam() == ALLIANCE ? 195 : 194))
 					GoPoint(bc);
 				break;
 		}
@@ -1368,8 +1387,11 @@ void PlayerBot::HandleWarsong(uint32 diff)
 						act_Timer = urand(4000,5000);
 						return;
 					}
-					bot->SetSelection(seekTarget->GetGUID());
-					m_decideToFight = true;
+					if(bot->GetSelection() != seekTarget->GetGUID())
+					{
+						bot->SetSelection(seekTarget->GetGUID());
+						m_decideToFight = true;
+					}
 					act_Timer = urand(10000,30000);
 				}
 			}
@@ -1421,8 +1443,11 @@ void PlayerBot::HandleWarsong(uint32 diff)
 							GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
 						else
 						{
-							bot->SetSelection(flagowner->GetGUID());
-							m_decideToFight = true;
+							if(bot->GetSelection() != flagowner->GetGUID())
+							{
+								bot->SetSelection(flagowner->GetGUID());
+								m_decideToFight = true;
+							}
 						}
 					}
 					else
@@ -1446,8 +1471,11 @@ void PlayerBot::HandleWarsong(uint32 diff)
 								if(Unit* seekTarget = SearchTargetAroundMe())
 								{
 									Stay();
-									bot->SetSelection(seekTarget->GetGUID());
-									m_decideToFight = true;
+									if(bot->GetSelection() != seekTarget->GetGUID())
+									{
+										bot->SetSelection(seekTarget->GetGUID());
+										m_decideToFight = true;
+									}
 								}
 							}
 						}
@@ -1471,8 +1499,11 @@ void PlayerBot::HandleWarsong(uint32 diff)
 							GoPoint(flagowner->GetPositionX(),flagowner->GetPositionY(),flagowner->GetPositionZ()+0.1f);
 						else
 						{
-							bot->SetSelection(flagowner->GetGUID());
-							m_decideToFight = true;
+							if(bot->GetSelection() != flagowner->GetGUID())
+							{
+								bot->SetSelection(flagowner->GetGUID());
+								m_decideToFight = true;
+							}
 						}
 					}
 					else
@@ -1496,8 +1527,11 @@ void PlayerBot::HandleWarsong(uint32 diff)
 								if(Unit* seekTarget = SearchTargetAroundMe())
 								{
 									Stay();
-									bot->SetSelection(seekTarget->GetGUID());
-									m_decideToFight = true;
+									if(bot->GetSelection() != flagowner->GetGUID())
+									{
+										bot->SetSelection(seekTarget->GetGUID());
+										m_decideToFight = true;
+									}
 								}
 							}
 						}
@@ -1545,11 +1579,149 @@ void PlayerBot::HandleArathi(uint32 diff)
 	switch(m_mode)
 	{
 		case MODE_ATTACKER:
+		{
+			if(act_Timer <= diff || isStaying())
+			{
+				Unit* seekTarget = SearchTargetAroundMe();
+				if(!seekTarget)
+				{
+					GoToRandomBGPoint(BATTLEGROUND_AB);
+					act_Timer = urand(4000,15000);
+					return;
+				}
+				if(bot->GetSelection() != seekTarget->GetGUID())
+				{
+					bot->SetSelection(seekTarget->GetGUID());
+					m_decideToFight = true;
+				}
+				act_Timer = urand(10000,30000);
+			}
+			else
+				act_Timer -= diff;
 			break;
+		}
 		case MODE_DEFENDER:
+		{
+			if(act_Timer <= diff)
+			{
+				std::vector<uint8> goodNodes;
+				goodNodes.clear();
+				if(bot->GetTeam() == ALLIANCE)
+				{
+					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // st
+						goodNodes.push_back(0);
+					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // bs
+						goodNodes.push_back(1);
+					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // farm
+						goodNodes.push_back(2);
+					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // sci
+						goodNodes.push_back(3);
+					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // mine
+						goodNodes.push_back(4);
+				}
+				else
+					{
+					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // st
+						goodNodes.push_back(0);
+					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // bs
+						goodNodes.push_back(1);
+					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // farm
+						goodNodes.push_back(2);
+					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // sci
+						goodNodes.push_back(3);
+					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // mine
+						goodNodes.push_back(4);
+				}
+				if(goodNodes.empty())
+				{
+					m_mode = MODE_DEFENDER;
+					return;
+				}
+				uint32 pId = 0;
+				switch(urand(0,goodNodes.size()-1))
+				{
+					case 0:	pId = 196;	break;
+					case 1:	pId = 198;	break;
+					case 2:	pId = 200;	break;
+					case 3:	pId = 197;	break;
+					case 4:	pId = 199;	break;
+					
+				}
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,pId))
+				{
+					if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+						GoPoint(bc);
+					else
+					{
+					}
+				}
+				act_Timer = urand(10000,30000);
+			}
+			else
+				act_Timer -= diff;
 			break;
+		}
 		case MODE_OBJECTIVE:
+		{
+			if(act_Timer <= diff)
+			{
+				std::vector<uint8> goodNodes;
+				goodNodes.clear();
+				if(bot->GetTeam() == ALLIANCE)
+				{
+					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // st
+						goodNodes.push_back(0);
+					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // bs
+						goodNodes.push_back(1);
+					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // farm
+						goodNodes.push_back(2);
+					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // sci
+						goodNodes.push_back(3);
+					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // mine
+						goodNodes.push_back(4);
+				}
+				else
+					{
+					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // st
+						goodNodes.push_back(0);
+					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // bs
+						goodNodes.push_back(1);
+					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // farm
+						goodNodes.push_back(2);
+					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // sci
+						goodNodes.push_back(3);
+					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // mine
+						goodNodes.push_back(4);
+				}
+				if(goodNodes.empty())
+				{
+					m_mode = MODE_DEFENDER;
+					return;
+				}
+				uint32 pId = 0;
+				switch(urand(0,goodNodes.size()-1))
+				{
+					case 0:	pId = 196;	break;
+					case 1:	pId = 198;	break;
+					case 2:	pId = 200;	break;
+					case 3:	pId = 197;	break;
+					case 4:	pId = 199;	break;
+					
+				}
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,pId))
+				{
+					if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+						GoPoint(bc);
+					else
+					{
+					}
+				}
+				act_Timer = urand(10000,30000);
+			}
+			else
+				act_Timer -= diff;
 			break;
+		}
 	}
 }
 

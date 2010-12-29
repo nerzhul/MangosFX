@@ -1,20 +1,43 @@
+/*
+ * Copyright (C) 2005-2010 MaNGOS <http://getmangos.com/>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 #ifndef _MMAP_COMMON_H
 #define _MMAP_COMMON_H
 
 // stop warning spam from ACE includes
-#pragma warning(disable : 4996)
+#ifdef WIN32
+#  pragma warning( disable : 4996 )
+#endif
 
 #include <string>
 #include <vector>
 
-#include "platform/Define.h"
-#include "DebugAlloc.h"
+#include "Platform/Define.h"
+
+#ifndef WIN32
+    #include <stddef.h>
+    #include <dirent.h>
+#endif
 
 using namespace std;
 
 namespace MMAP
 {
-#ifndef WIN32
     inline bool matchWildcardFilter(const char* filter, const char* str)
     {
         if(!filter || !str)
@@ -46,11 +69,10 @@ namespace MMAP
 
         return ((*filter == '\0' || (*filter == '*' && *++filter == '\0')) && *str == '\0');
     }
-#endif
 
-    enum ListFilesResult : int
+    enum ListFilesResult
     {
-        LISTFILE_DIRECTORY_NOT_FOUND = -1,
+        LISTFILE_DIRECTORY_NOT_FOUND = 0,
         LISTFILE_OK = 1
     };
 
@@ -79,9 +101,8 @@ namespace MMAP
 
     #else
         const char *p = dirpath.c_str();
-        DIR * dirp;
+        DIR * dirp = opendir(p);
         struct dirent * dp;
-        dirp = opendir(p);
 
         while (dirp)
         {

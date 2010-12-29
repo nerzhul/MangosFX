@@ -40,6 +40,7 @@
 #include "MapInstanced.h"
 #include "InstanceSaveMgr.h"
 #include "VMapFactory.h"
+#include "MoveMap.h"
 
 #include "../recastnavigation/Detour/Include/DetourNavMesh.h"
 
@@ -69,9 +70,6 @@ Map::~Map()
 
     if(!m_scriptSchedule.empty())
         sWorld.DecreaseScheduledScriptCount(m_scriptSchedule.size());
-
-	if (m_navMesh)
-        m_navMesh = NULL;
 }
 
 bool Map::ExistMap(uint32 mapid,int gx,int gy)
@@ -190,7 +188,8 @@ void Map::LoadMapAndVMap(int gx,int gy)
     LoadMap(gx,gy);
     if(i_InstanceId == 0)
         LoadVMap(gx, gy);                                   // Only load the data for the base map
-	LoadNavMesh(gx,gy);
+	// load navmesh
+	MMAP::MMapFactory::createOrGetMMapManager()->loadMap(GetId(), gx, gy);
 }
 
 void Map::InitStateMachine()
@@ -215,8 +214,7 @@ Map::Map(uint32 id, time_t expiry, uint32 InstanceId, uint8 SpawnMode, Map* _par
   m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
   m_activeNonPlayersIter(m_activeNonPlayers.end()),
   i_gridExpiry(expiry), m_parentMap(_parent ? _parent : this),
-  m_hiDynObjectGuid(1), m_hiPetGuid(1), m_hiVehicleGuid(1),
-  m_navMesh(0)
+  m_hiDynObjectGuid(1), m_hiPetGuid(1), m_hiVehicleGuid(1)
 {
     for(unsigned int idx=0; idx < MAX_NUMBER_OF_GRIDS; ++idx)
     {
@@ -1125,7 +1123,6 @@ bool Map::UnloadGrid(const uint32 &x, const uint32 &y, bool pForce)
                 delete GridMaps[gx][gy];
             }
             VMAP::VMapFactory::createOrGetVMapManager()->unloadMap(GetId(), gx, gy);
-			UnloadNavMesh(gx, gy);
         }
         else
             ((MapInstanced*)m_parentMap)->RemoveGridMapReference(GridPair(gx, gy));
