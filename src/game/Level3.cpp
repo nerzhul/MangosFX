@@ -6575,7 +6575,7 @@ bool ChatHandler::HandlePlayerEquipItemsCommand(const char* args)
 	if(target->GetTypeId() != TYPEID_PLAYER)
 		return false;
 
-	Unit* plr = (Player*)plr;
+	Unit* plr = (Player*)target;
 	switch(plr->getClass())
 	{
 		case CLASS_WARRIOR:
@@ -6648,7 +6648,7 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 					}
 				} while(query->NextRow() && count < _limit);
 			}
-		} while(accList->NextRow());
+		} while(accList->NextRow() && count < _limit);
 	}
 	else
 		SendSysMessage("Aucun compte valide");

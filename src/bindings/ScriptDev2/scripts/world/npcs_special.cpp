@@ -1174,6 +1174,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 				pPlayer->AddItem(51805);
 				pPlayer->AddItem(46051);
 				pPlayer->AddItem(45446);
+				pPlayer->AddItem(45148);
 				if(pPlayer->getClass() == CLASS_SHAMAN)
 				{
 					pPlayer->AddItem(45531);
@@ -1208,6 +1209,8 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(46068);
 					pPlayer->AddItem(45831);
 					pPlayer->AddItem(45275);
+					pPlayer->AddItem(45713);
+					pPlayer->AddItem(45972);
 				}
 			}
 		}
@@ -1245,6 +1248,16 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 						pPlayer->AddItem(45265);
 						pPlayer->AddItem(45829);
 						pPlayer->AddItem(45869);
+						if(pPlayer->getClass() == CLASS_ROGUE)
+						{
+							pPlayer->AddItem(40386);
+							pPlayer->AddItem(40386);
+							pPlayer->AddItem(40385);
+						}
+						else
+						{
+							pPlayer->AddItem(45695);
+						}
 					}
 				}
 				else // Warrior, pala, dk
@@ -1262,6 +1275,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45931);
 					pPlayer->AddItem(45550);
 					pPlayer->AddItem(45888);
+					pPlayer->AddItem(49839);
 				}
 			}
 		}
@@ -1308,6 +1322,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45265);
 					pPlayer->AddItem(45829);
 					pPlayer->AddItem(45869);
+					pPlayer->AddItem(45695);
 				}
 			}
 		}
@@ -1333,6 +1348,7 @@ bool GossipSelect_bd_special_vendor(Player* pPlayer, Creature* pCreature, uint32
 					pPlayer->AddItem(45826);
 					pPlayer->AddItem(45269);
 					pPlayer->AddItem(40395); // w 
+					pPlayer->AddItem(45972);
 				}
 				else if(pPlayer->getClass() == CLASS_SHAMAN)
 				{

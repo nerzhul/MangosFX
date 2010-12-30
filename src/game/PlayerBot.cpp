@@ -379,7 +379,7 @@ PlayerBot::PlayerBot(WorldSession* session)//: Player(session)
 {
 	specIdx = 0;
 	m_decideToFight = false;
-	m_sheduledBGJoin = DAY*HOUR;
+	m_differedAction = DAY*HOUR;
 	bgTypeId = BATTLEGROUND_TYPE_NONE;
 	m_ginfo = 0;
 	sheduledBG = NULL;
@@ -410,6 +410,44 @@ void PlayerBot::GoToCacIfIsnt(Unit* target)
 void PlayerBot::Stay()
 {
 	bot->GetMotionMaster()->Clear();
+}
+
+void PlayerBot::TakeAppropriateMount()
+{
+	if(!bot->HasSpell(34093))
+		bot->learnSpell(34093,0,false);
+	if(!bot->HasSpell(54197))
+		bot->learnSpell(54197,0,false);
+	if(!bot->HasSpell(48954))
+		bot->learnSpell(48954,0,false);
+
+	switch(bot->GetMapId())
+	{
+		case 0:
+		case 1:
+		case 529:
+		case 489:
+			switch(bot->getRace())
+			{
+			case RACE_HUMAN:
+			case RACE_DWARF:
+			case RACE_NIGHTELF:
+			case RACE_DRAENEI:
+			case RACE_GNOME:
+				break;
+			case RACE_ORC:
+			case RACE_BLOODELF:
+			case RACE_TROLL:
+			case RACE_UNDEAD_PLAYER:
+			case RACE_TAUREN:
+				break;
+			}
+			break;
+		case 530:
+		case 571:
+			break;
+		
+	}
 }
 
 void PlayerBot::JoinBGQueueIfNotIn()
@@ -464,7 +502,8 @@ void PlayerBot::SheduleSendToBG(BattleGround* bg, BattleGroundTypeId btId, Group
 	sheduledBG = bg;
 	bgTypeId = btId;
 	m_ginfo = ginfo;
-	m_sheduledBGJoin = 1000;
+	m_differedAction = 1000;
+	differedAct = BCHOICE_PVP;
 }
 
 void PlayerBot::Update(uint32 diff)
@@ -492,16 +531,24 @@ void PlayerBot::Update(uint32 diff)
 	else
 		react_Timer -= diff;
 
-
-	if(m_sheduledBGJoin < DAY*HOUR)
+	if(m_differedAction < DAY*HOUR)
 	{
-		if(m_sheduledBGJoin <= diff)
+		if(m_differedAction <= diff)
 		{
-			SendToBg();
-			m_sheduledBGJoin = DAY*HOUR;
+			switch(differedAct)
+			{
+				case BCHOICE_PVP:
+					SendToBg();
+					break;
+				case BCHOICE_GO_ZONE:
+					GoPoint(registered_bc,true);
+					break;
+			}
+			m_differedAction = DAY*HOUR;
+			return;
 		}
 		else
-			m_sheduledBGJoin -= diff;
+			m_differedAction -= diff;
 	}
 
 	// CombatHandler for all classes
@@ -621,13 +668,24 @@ void PlayerBot::Update(uint32 diff)
 	}
 }
 
-void PlayerBot::GoPoint(BotCoord* bc)
+void PlayerBot::GoPoint(BotCoord* bc, bool ignoreMount)
 {
+	if(!bc)
+		return;
+
 	float x = bc->x+irand(-bc->range,bc->range)/100;
 	float y = bc->y+irand(-bc->range,bc->range)/100;
 	float z = bot->GetMap()->GetHeight(x,y,bc->z,100.0f);
 
 	Stay();
+	if(!ignoreMount && bot->GetDistance2d(x,y) > 45.0f && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 469 || bot->GetMapId() == 530 || bot->GetMapId() == 571 || bot->GetMapId() == 529))
+	{
+		TakeAppropriateMount();
+		m_differedAction = 2000;
+		differedAct = BCHOICE_GO_ZONE;
+		registered_bc = bc;
+		return;
+	}
 	GoPoint(x,y,z);
 }
 void PlayerBot::ChooseToDoSomething()
@@ -1326,7 +1384,7 @@ void PlayerBot::GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId,uint32 dif
 					GoPoint(bc);
 				break;
 			case BATTLEGROUND_AB:
-				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,bot->GetTeam() == ALLIANCE ? 195 : 194))
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,bot->GetTeam() == ALLIANCE ? 195 : 194))
 					GoPoint(bc);
 				break;
 		}
@@ -1459,7 +1517,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 								if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,136))
 								{
 									if(bot->GetDistance2d(bc->x,bc->y) > 2.0f)
-										GoPoint(bc);
+										GoPoint(bc,true);
 									else
 										bg->HandleAreaTrigger(bot,3647);
 								}
@@ -1515,7 +1573,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 								if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_WARSONG,137))
 								{
 									if(bot->GetDistance2d(bc->x,bc->y) > 2.0f)
-										GoPoint(bc);
+										GoPoint(bc,true);
 									else
 										bg->HandleAreaTrigger(bot,3646);
 								}

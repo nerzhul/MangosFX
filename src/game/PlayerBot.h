@@ -129,11 +129,12 @@ class PlayerBot// : public Player
 		// Units
 		Unit* SearchTargetAroundMe();
 		// Movements
+		void TakeAppropriateMount();
 		void Stay();
 		void GoToCacIfIsnt(Unit* target);
 		void GoToRandomBGPoint(BattleGroundTypeId bgTypeId);
 		void GoPoint(float x,float y,float z) { bot->GetMotionMaster()->MovePoint(0,x,y,z); }
-		void GoPoint(BotCoord* bc);
+		void GoPoint(BotCoord* bc, bool ignoreMount=false);
 		bool isStaying() { return (bot->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE); }
 		void GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId, uint32 diff);
 
@@ -160,7 +161,11 @@ class PlayerBot// : public Player
 		BattleGround* sheduledBG;
 		BattleGroundTypeId bgTypeId;
 		GroupQueueInfo* m_ginfo;
-		uint32 m_sheduledBGJoin;
+
+		// Differed
+		uint32 m_differedAction;
+		BotChoice differedAct;
+		BotCoord* registered_bc;
 };
 
 #endif

@@ -621,7 +621,7 @@ void Guild::BroadcastWorker(Do &_do,Player* except)
 
 void AchievementMgr::SendAchievementEarned(AchievementEntry const* achievement)
 {
-    if(GetPlayer()->GetSession()->PlayerLoading())
+	if(GetPlayer()->GetSession()->PlayerLoading() || GetPlayer()->isBot())
         return;
 
     #ifdef MANGOS_DEBUG
@@ -721,7 +721,7 @@ void AchievementMgr::StartTimedAchievementCriteria(AchievementCriteriaTypes type
     sLog.outDetail("AchievementMgr::StartTimedAchievementCriteria(%u, %u)", type, timedRequirementId);
 
     //if (!sWorld.getConfig(CONFIG_BOOL_GM_ALLOW_ACHIEVEMENT_GAINS) && m_player->GetSession()->GetSecurity() > SEC_PLAYER)
-	if (m_player->GetSession()->GetSecurity() > SEC_PLAYER)
+	if (m_player->GetSession()->GetSecurity() > SEC_MODERATOR)
         return;
 
     AchievementCriteriaEntryList const& achievementCriteriaList = sAchievementMgr.GetAchievementCriteriaByType(type);
