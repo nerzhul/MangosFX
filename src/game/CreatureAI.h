@@ -313,6 +313,12 @@ class MANGOS_DLL_SPEC CreatureAI
 		Creature* GetGuidCreature(uint64 guid) { return ((Creature*)GetGuidUnit(guid)); }
 		Creature* GetInstanceCreature(uint32 data) { return ((Creature*)Unit::GetUnit(*me, pInstance ? pInstance->GetData64(data) : 0)); }
 
+
+		// for instance type test
+		bool isRaid25() { return (m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC || RAID_DIFFICULTY_25MAN_NORMAL); }
+		bool isRaid10() { return (m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC || RAID_DIFFICULTY_10MAN_NORMAL); }
+		bool isHeroic() { return (m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC); }
+
 		// for timed Achievements
 		void ActivateTimeDown(uint32 Time) { TimedDownEnable = true; AchTimedDownTimer = Time; }
 		bool TimeDownSucceed() { return TimedDownEnable; }

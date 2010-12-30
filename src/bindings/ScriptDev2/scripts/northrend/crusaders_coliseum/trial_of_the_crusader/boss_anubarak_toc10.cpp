@@ -91,6 +91,10 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
     {
         InitInstance();
 		AddEventOnTank(SPELL_FREEZE_SLASH,15000,15000,0,1);
+		if(m_difficulty == RAID_DIFFICULTY_10MAN_NORMAL || m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC)
+			AddEvent(SPELL_PENETRATING_COLD,20000,20000,0,TARGET_RANDOM,1,0,false,2);
+		else
+			AddEvent(SPELL_PENETRATING_COLD,20000,20000,0,TARGET_RANDOM,1,0,false,5);
     }
 
     std::list<uint64> m_vBurrowGUID;
@@ -98,7 +102,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 
     uint32 m_uiPenetratingColdTimer;
     uint32 m_uiSummonNerubianTimer;
-    uint32 m_uiNerubianShadowStrikeTimer;
     uint32 m_uiSubmergeTimer;
     uint32 m_uiPursuingSpikeTimer;
     uint32 m_uiSummonScarabTimer;
@@ -117,7 +120,6 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
     {
 		ResetTimers();
         m_uiPenetratingColdTimer = 20*IN_MILLISECONDS;
-        m_uiNerubianShadowStrikeTimer = 30*IN_MILLISECONDS;
         m_uiSummonNerubianTimer = 10*IN_MILLISECONDS;
         m_uiSubmergeTimer = 80*IN_MILLISECONDS;
 
@@ -200,8 +202,8 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
                 pSummoned->CastSpell(pSummoned, SPELL_CHURNING_GROUND, false);
                 break;
             case NPC_SPIKE:
-                pSummoned->CombatStart(pTarget);
-                DoScriptText(EMOTE_SPIKE, me, pTarget);
+				pSummoned->AddThreat(pTarget,1.0f);
+                //DoScriptText(EMOTE_SPIKE, me, pTarget);
                 break;
         }
     }
@@ -218,7 +220,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 
     void EnterCombat(Unit* /*pWho*/)
     {
-        DoScriptText(SAY_AGGRO, me);
+        Speak(CHAT_TYPE_SAY,16234,"Ce terreau sera votre tombeau !");
         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
         me->SetInCombatWithZone();
         SetInstanceData(TYPE_ANUBARAK, IN_PROGRESS);
@@ -246,14 +248,8 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
         {
 			case 0:
 				UpdateEvent(diff,1);
-				if (m_uiPenetratingColdTimer <= uiDiff)
-				{
-					me->CastCustomSpell(SPELL_PENETRATING_COLD, SPELLVALUE_MAX_TARGETS, RAID_MODE(2, 5));
-					m_uiPenetratingColdTimer = 20*IN_MILLISECONDS;
-				} else m_uiPenetratingColdTimer -= uiDiff;
 
-				if (m_uiSummonNerubianTimer <= diff && (m_difficulty == RAID_DIFFICULTY_10MAN_HEROIC || m_difficulty == RAID_DIFFICULTY_25MAN_HEROIC 
-					|| !m_bReachedPhase3))
+				if (m_uiSummonNerubianTimer <= diff && (isHeroic()	|| !m_bReachedPhase3))
 				{
 					switch(m_difficulty)
 					{
@@ -275,19 +271,13 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 					}
 					
 					m_uiSummonNerubianTimer = 45*IN_MILLISECONDS;
-				} else m_uiSummonNerubianTimer -= uiDiff;
+				} else m_uiSummonNerubianTimer -= diff;
 
-				if (IsHeroic() && m_uiNerubianShadowStrikeTimer <= uiDiff)
-				{
-					Summons.DoAction(NPC_BURROWER, ACTION_SHADOW_STRIKE);
-					m_uiNerubianShadowStrikeTimer = 30*IN_MILLISECONDS;
-				} else m_uiNerubianShadowStrikeTimer -= uiDiff;
-
-				if (m_uiSubmergeTimer <= uiDiff && !m_bReachedPhase3 && !me->HasAura(SPELL_BERSERK))
+				if (m_uiSubmergeTimer <= diff && !m_bReachedPhase3 && !me->HasAura(SPELL_BERSERK))
 				{
 					m_uiStage = 1;
 					m_uiSubmergeTimer = 60*IN_MILLISECONDS;
-				} else m_uiSubmergeTimer -= uiDiff;
+				} else m_uiSubmergeTimer -= diff;
 				break;
 			case 1:
 				DoCastMe(SPELL_SUBMERGE_ANUBARAK);
@@ -301,7 +291,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 			case 2:
 				UpdateEvent(diff,3);
 
-				if (m_uiSummonScarabTimer <= uiDiff)
+				if (m_uiSummonScarabTimer <= diff)
 				{
 					/* WORKAROUND
 					 * - The correct implementation is more likely the comment below but it needs spell knowledge
@@ -310,48 +300,47 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 					uint32 at = urand(0, m_vBurrowGUID.size()-1);
 					for (uint32 k = 0; k < at; k++)
 						++i;
-					if (Creature *pBurrow = Unit::GetCreature(*me, *i))
+					if (Creature *pBurrow = GetGuidCreature(*i))
 						pBurrow->CastSpell(pBurrow, 66340, false);
 					m_uiScarabSummoned++;
 					m_uiSummonScarabTimer = 4*IN_MILLISECONDS;
-					if (m_uiScarabSummoned == 4) m_uiSummonScarabTimer = RAID_MODE(4, 20)*IN_MILLISECONDS;
+					if (m_uiScarabSummoned == 4) m_uiSummonScarabTimer = (isRaid10() ? 4 : 20) *IN_MILLISECONDS;
 
 					/*It seems that this spell have something more that needs to be taken into account
 					//Need more sniff info
 					DoCast(SPELL_SUMMON_BEATLES);
 					// Just to make sure it won't happen again in this phase
 					m_uiSummonScarabTimer = 90*IN_MILLISECONDS;*/
-				} else m_uiSummonScarabTimer -= uiDiff;
+				} else m_uiSummonScarabTimer -= diff;
 
-				if (m_uiSubmergeTimer <= uiDiff)
+				if (m_uiSubmergeTimer <= diff)
 				{
 					m_uiStage = 3;
 					m_uiSubmergeTimer = 80*IN_MILLISECONDS;
-				} else m_uiSubmergeTimer -= uiDiff;
+				} else m_uiSubmergeTimer -= diff;
 				break;
 			case 3:
 				m_uiStage = 0;
-				DoCast(SPELL_SPIKE_TELE);
+				DoCastMe(SPELL_SPIKE_TELE);
 				CleanMyAdds(NPC_SPIKE);
 				me->RemoveAurasDueToSpell(SPELL_SUBMERGE_ANUBARAK);
 				me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 				DoCastMe(SPELL_EMERGE_ANUBARAK);
 				me->GetMotionMaster()->MoveChase(me->getVictim());
 				m_uiSummonNerubianTimer = 10*IN_MILLISECONDS;
-				m_uiNerubianShadowStrikeTimer = 30*IN_MILLISECONDS;
 				m_uiSummonScarabTimer = 2*IN_MILLISECONDS;
 				break;
 		}
 
-		if (!IsHeroic())
+		if (!isHeroic())
 		{
-			if (m_uiSummonFrostSphereTimer <= uiDiff)
+			if (m_uiSummonFrostSphereTimer <= diff)
 			{
 				uint8 startAt = urand(0, 5);
 				uint8 i = startAt;
 				do
 				{
-					if (Unit *pSphere = Unit::GetCreature(*me, m_aSphereGUID[i]))
+					if (Unit *pSphere = GetGuidCreature(m_aSphereGUID[i]))
 					{
 						if (!pSphere->HasAura(SPELL_FROST_SPHERE))
 						{
@@ -395,13 +384,17 @@ struct MANGOS_DLL_DECL mob_swarm_scarabAI : public LibDevFSAI
     mob_swarm_scarabAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_ACID_MANDIBLE,5000,20000);
-		AddEventOnTank(SPELL_DETERMINATION,5000,10000,20000);
+		AddEventOnTank(SPELL_DETERMINATION,5000,10000,60000);
     }
 
     void Reset()
     {
 		ResetTimers();		
+		DoCastMe(SPELL_ACID_MANDIBLE);
+        me->SetInCombatWithZone();
+        if (Unit *pTarget = GetRandomUnit())
+			me->AddThreat(pTarget, 20000.0f);
+
     }
 
     void UpdateAI(const uint32 diff)
@@ -430,18 +423,17 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public LibDevFSAI
     mob_nerubian_borrowerAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_EXPOSE_WEAKNESS,5000,5000);
-		AddEventOnMe(SPELL_SPIDER_FRENZY,9000,10000,1000);
+		if(isHeroic())
+			AddEventOnTank(SPELL_SHADOW_STRIKE,25000,30000);
     }
 
-	uint32 Submerge_Timer;
-    bool submerged;
+	uint32 m_uiSpiderFrenzyTimer;
+    uint32 m_uiSubmergeTimer;
 
     void Reset()
     {
 		ResetTimers();
-		Submerge_Timer = 2000;
-        submerged = false;
+		m_uiSubmergeTimer = 30*IN_MILLISECONDS;
     }
 
 	void KilledUnit(Unit* victim)
@@ -455,27 +447,28 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
-		if(Submerge_Timer <= diff)
-		{
-			if (CheckPercentLife(20) && !submerged)
-			{
-				DoCastMe(SPELL_SUBMERGE_1);
-				submerged = true;
-				Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien s'enfouit");
-			}
-			Submerge_Timer = urand(20000,30000);
-		}
-		else
-			Submerge_Timer -= diff;
+		if (m_uiSubmergeTimer <= diff && CheckPercentLife(80))
+            {
+                if (me->HasAura(SPELL_SUBMERGE_EFFECT))
+                {
+                    me->RemoveAurasDueToSpell(SPELL_SUBMERGE_EFFECT);
+                    DoCastMe(SPELL_EMERGE_EFFECT);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+					if(Unit* u = GetRandomUnit())
+						me->AddThreat(u,1.0f);
+                }
+                else
+                {
+                    if (!me->HasAura(SPELL_PERMAFROST))
+                    {
+                        DoCastMe(SPELL_SUBMERGE_EFFECT);
+                        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                        me->CombatStop();
+                    }
+                }
+                m_uiSubmergeTimer = 20*IN_MILLISECONDS;
+            } else m_uiSubmergeTimer -= diff;
 
-        if (GetPercentLife() > 50.0f && submerged)
-        {
-             me->RemoveAurasDueToSpell(SPELL_SUBMERGE_1);
-             submerged = false;
-             Speak(CHAT_TYPE_TEXT_EMOTE,0,"Fouisseur nérubien sort du sol");
-         };
-
-		UpdateEvent(diff);
         DoMeleeAttackIfReady();
     }
 };
@@ -533,14 +526,32 @@ struct MANGOS_DLL_DECL anub_spikeAI : public LibDevFSAI
     anub_spikeAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
-		AddEventOnTank(SPELL_IMPALE,500,1500,500);
-		me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
     }
+
+	uint32 m_uiIncreaseSpeedTimer;
+    uint8  m_uiSpeed;
+    uint64 m_uiTargetGUID;
     
     void Reset()
     {
 		ResetTimers();
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE);
+        m_uiTargetGUID = 0;
+    }
+
+	void EnterCombat(Unit *pWho)
+    {
+        m_uiTargetGUID = pWho->GetGUID();
+        DoCast(pWho, SPELL_MARK);
+		me->SetSpeedRate(MOVE_RUN, 0.5f);
+        m_uiSpeed = 0;
+        m_uiIncreaseSpeedTimer = 1*IN_MILLISECONDS;
+        me->TauntApply(pWho);
+    }
+
+	void DamageTaken(Unit* /*pWho*/, uint32& uiDamage)
+    {
+            uiDamage = 0;
     }
 
 	void KilledUnit(Unit* victim)
@@ -551,7 +562,40 @@ struct MANGOS_DLL_DECL anub_spikeAI : public LibDevFSAI
 
     void UpdateAI(const uint32 diff)
     {
-		UpdateEvent(diff);
+		Unit* pTarget = GetGuidUnit(m_uiTargetGUID);
+        if (!pTarget || !pTarget->isAlive() || !pTarget->HasAura(SPELL_MARK))
+        {
+            if(Creature* pAnubarak = GetInstanceCreature(TYPE_ANUBARAK))
+                pAnubarak->CastSpell(pAnubarak, SPELL_SPIKE_TELE, false);
+			me->ForcedDespawn(50);
+            return;
+        }
+
+        if (m_uiIncreaseSpeedTimer)
+        {
+            if (m_uiIncreaseSpeedTimer <= diff)
+            {
+                switch (m_uiSpeed)
+                {
+                    case 0:
+                        DoCastMe(SPELL_SPIKE_SPEED1);
+                        DoCastMe(SPELL_SPIKE_TRAIL);
+                        m_uiSpeed = 1;
+                        m_uiIncreaseSpeedTimer = 7*IN_MILLISECONDS;
+                        break;
+                    case 1:
+                        DoCastMe(SPELL_SPIKE_SPEED2);
+                        m_uiSpeed = 2;
+                        m_uiIncreaseSpeedTimer = 7*IN_MILLISECONDS;
+                        break;
+                    case 2:
+                        DoCastMe(SPELL_SPIKE_SPEED3);
+                        m_uiIncreaseSpeedTimer = 0;
+                        break;
+                }
+            } else m_uiIncreaseSpeedTimer -= diff;
+        }
+
     }
 
 };
