@@ -327,7 +327,7 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 			ZoneInvoc WhereZone = ON_ME, float x = 0,float y = 0, float z = 0, bool force = false)
 			{ return CallCreature(entry, Despawn, WhereZone, AGGRESSIVE_RANDOM, x, y, z, force); }
 
-		void CleanMyAdds();
+		void CleanMyAdds(uint32 entry=0);
 
 		void GetNewTargetForMyAdds(Unit* target);
 

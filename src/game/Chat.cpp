@@ -692,6 +692,7 @@ ChatCommand * ChatHandler::getCommandTable()
 		{ "lastpacket",		SEC_ADMINISTRATOR,	false, &ChatHandler::HandleGetLastPacketCommand,	    "", NULL },
 		{ "bot",            SEC_ADMINISTRATOR,  false, &ChatHandler::HandlePlayerbotCommand,			"", NULL },
 		{ "botlist",		SEC_ADMINISTRATOR,  true, &ChatHandler::HandlePlayerbotListCommand,			"", NULL },
+		{ "botequip",		SEC_ADMINISTRATOR,  false, &ChatHandler::HandlePlayerEquipItemsCommand,			"", NULL },
         { NULL,             0,                  false, NULL,											"", NULL }
 
     };

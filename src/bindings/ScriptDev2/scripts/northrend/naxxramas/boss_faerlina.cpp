@@ -160,7 +160,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
             me->RemoveAllAuras();
             me->AttackStop();
 
-	if(pInstance) SetInstanceData(TYPE_ENR_FAERLINA,0);
+			SetInstanceData(TYPE_ENR_FAERLINA,0);
             DoCastMe( SPELL_WIDOWS_EMBRACE);
 
             m_bIsDead = true;
@@ -172,9 +172,8 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
 
 	void JustDied(Unit* Killer)
 	{
-	if(pInstance)	SetInstanceData(TYPE_ENR_FAERLINA,0);
-	if(pInstance)	SetInstanceData(TYPE_FAERLINA,DONE);
-
+		SetInstanceData(TYPE_ENR_FAERLINA,0);
+		SetInstanceData(TYPE_FAERLINA,DONE);
 	}
 
     void UpdateAI(const uint32 diff)
@@ -182,7 +181,7 @@ struct MANGOS_DLL_DECL mob_worshippersAI : public ScriptedAI
         if (m_uiDeathDelay_Timer != 0)
             if (m_uiDeathDelay_Timer <= diff)
             {
-if(pInstance)				SetInstanceData(TYPE_ENR_FAERLINA,0);
+				SetInstanceData(TYPE_ENR_FAERLINA,0);
                 me->DealDamage(me, me->GetHealth(), NULL, DIRECT_DAMAGE, SPELL_SCHOOL_MASK_NORMAL, NULL, false);
                 m_uiDeathDelay_Timer = 0;
             }

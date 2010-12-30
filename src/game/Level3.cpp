@@ -83,6 +83,7 @@ bool ChatHandler::HandleReloadAllPlayerBotCommand(const char*)
 {
 	sPlayerBotMgr.LoadBotCoordinates();
 	sPlayerBotMgr.LoadBotChoiceChances();
+	sPlayerBotMgr.LoadBotMounts();
 	return true;
 }
 

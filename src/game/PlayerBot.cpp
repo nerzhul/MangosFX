@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "BattleGroundAB.h"
 #include "BattleGroundWS.h"
+#include "BattleGroundEY.h"
 
 INSTANTIATE_SINGLETON_1( PlayerBotMgr );
 
@@ -154,6 +155,45 @@ void PlayerBotMgr::LoadBotCoordinates()
 		} while(result->NextRow());
 	}
 	sLog.outString(">> Loaded %u PlayerBot Coordinates",count);
+}
+
+void PlayerBotMgr::LoadBotMounts()
+{
+	uint32 count = 0;
+	for(MountList::iterator itr = mounts_a.begin(); itr != mounts_a.end();)
+	{
+		MountList::iterator next = ++itr;
+		--itr;
+		delete *itr;
+		mounts_a.erase(itr);
+		itr = next;
+	}
+	for(MountList::iterator itr = mounts_h.begin(); itr != mounts_h.end();)
+	{
+		MountList::iterator next = ++itr;
+		--itr;
+		delete *itr;
+		mounts_h.erase(itr);
+		itr = next;
+	}
+	if(QueryResult* result = WorldDatabase.PQuery("SELECT `faction`,`mountid`,`flying`,`reqrace` FROM playerbot_mount_list"))
+	{
+		do
+		{
+			Field* fields = result->Fetch();
+			MountObj* m_obj = new MountObj();
+			m_obj->mountId = fields[1].GetUInt32();
+			m_obj->flying = (fields[2].GetUInt8() > 0) ? true : false;
+			m_obj->reqrace = fields[3].GetUInt8();
+			if(fields[0].GetUInt32() == 0)
+				mounts_a.push_back(m_obj);
+			else
+				mounts_h.push_back(m_obj);
+			
+			count++;
+		} while(result->NextRow());
+	}
+	sLog.outString(">> Loaded %u PlayerBot Mounts",count);
 }
 
 uint32 PlayerBotMgr::GetRandomPoint(uint32 faction, BotCoordType bcType)
@@ -401,8 +441,11 @@ void PlayerBot::GoToCacIfIsnt(Unit* target)
 	if(!target)
 		return;
 
-	if(bot->GetDistance2d(target) >= 2.0f)
+	if(bot->GetDistance2d(target) >= 2.0f && isStaying())
+	{
+		bot->GetMotionMaster()->Clear();
 		GoPoint(target->GetPositionX(),target->GetPositionY(),target->GetPositionZ());
+	}
 	else
 		bot->SetFacingToObject(target);
 }
@@ -414,6 +457,9 @@ void PlayerBot::Stay()
 
 void PlayerBot::TakeAppropriateMount()
 {
+	if(bot->HasAuraType(SPELL_AURA_MOUNTED))
+		return;
+
 	if(!bot->HasSpell(34093))
 		bot->learnSpell(34093,0,false);
 	if(!bot->HasSpell(54197))
@@ -421,33 +467,87 @@ void PlayerBot::TakeAppropriateMount()
 	if(!bot->HasSpell(48954))
 		bot->learnSpell(48954,0,false);
 
+	std::vector<uint32> AllowedMounts;
+	AllowedMounts.clear();
+
+	MountList mount_list;
+	switch(bot->getRace())
+	{
+		case RACE_HUMAN:
+		case RACE_DWARF:
+		case RACE_NIGHTELF:
+		case RACE_GNOME:
+		case RACE_DRAENEI:
+			mount_list = sPlayerBotMgr.GetMountList(ALLIANCE);
+			break;
+		case RACE_ORC:
+		case RACE_UNDEAD_PLAYER:
+		case RACE_TAUREN:
+		case RACE_TROLL:
+		case RACE_BLOODELF:
+			mount_list = sPlayerBotMgr.GetMountList(HORDE);
+			break;
+		default:
+			break;
+	}
 	switch(bot->GetMapId())
 	{
 		case 0:
 		case 1:
 		case 529:
 		case 489:
-			switch(bot->getRace())
+			if(bot->getLevel() < 50)
+				return;
+			for(MountList::const_iterator itr = mount_list.begin(); itr != mount_list.end(); ++itr)
 			{
-			case RACE_HUMAN:
-			case RACE_DWARF:
-			case RACE_NIGHTELF:
-			case RACE_DRAENEI:
-			case RACE_GNOME:
-				break;
-			case RACE_ORC:
-			case RACE_BLOODELF:
-			case RACE_TROLL:
-			case RACE_UNDEAD_PLAYER:
-			case RACE_TAUREN:
-				break;
+				if(!(*itr)->flying && ((*itr)->reqrace == 0 || (*itr)->reqrace == bot->getRace()))
+					AllowedMounts.push_back((*itr)->mountId);
 			}
+			
 			break;
 		case 530:
-		case 571:
+			if(bot->getLevel() < 58)
+				return;
+			for(MountList::const_iterator itr = mount_list.begin(); itr != mount_list.end(); ++itr)
+			{
+				if((*itr)->reqrace == 0 || (*itr)->reqrace == bot->getRace())
+					AllowedMounts.push_back((*itr)->mountId);
+			}
 			break;
-		
+		case 571:
+			if(bot->getLevel() < 68)
+				return;
+			for(MountList::const_iterator itr = mount_list.begin(); itr != mount_list.end(); ++itr)
+			{
+				if(bot->GetZoneId() != 4395)
+				{
+					if((*itr)->reqrace == 0 || (*itr)->reqrace == bot->getRace())
+						AllowedMounts.push_back((*itr)->mountId);
+				}
+				else
+				{
+					if(!(*itr)->flying && ((*itr)->reqrace == 0 || (*itr)->reqrace == bot->getRace()))
+						AllowedMounts.push_back((*itr)->mountId);
+				}
+			}
+			break;
 	}
+	uint32 idx = 0;
+	uint32 sIdx = urand(0,AllowedMounts.size()-1);
+	if(AllowedMounts.size() > 0)
+	{
+		for(std::vector<uint32>::const_iterator itr = AllowedMounts.begin(); itr != AllowedMounts.end(); ++itr)
+		{
+			if(idx == sIdx)
+			{
+				bot->CastStop();
+				bot->CastSpell(bot,*itr);
+				return;
+			}
+			idx++;
+		}
+	}
+	m_differedAction = 0;
 }
 
 void PlayerBot::JoinBGQueueIfNotIn()
@@ -575,18 +675,12 @@ void PlayerBot::Update(uint32 diff)
 
 		switch(bot->getClass())
 		{
-			case CLASS_WARRIOR:
-				HandleWarriorCombat();
-				break;
-			case CLASS_PALADIN:
-				HandlePaladinCombat();
-				break;
+			case CLASS_WARRIOR: HandleWarriorCombat(diff); break;
+			case CLASS_PALADIN: HandlePaladinCombat(diff); break;
 			case CLASS_HUNTER:
 				HandleHunterCombat();
 				break;
-			case CLASS_ROGUE:
-				HandleRogueCombat();
-				break;
+			case CLASS_ROGUE: HandleRogueCombat(diff); break;
 			case CLASS_PRIEST:
 				HandlePriestCombat();
 				break;
@@ -599,9 +693,7 @@ void PlayerBot::Update(uint32 diff)
 			case CLASS_MAGE:
 				HandleMageCombat();
 				break;
-			case CLASS_WARLOCK:
-				HandleWarlockCombat();
-				break;
+			case CLASS_WARLOCK: HandleWarlockCombat(diff); break;
 			case CLASS_DRUID:
 				HandleDruidCombat();
 				break;
@@ -678,7 +770,8 @@ void PlayerBot::GoPoint(BotCoord* bc, bool ignoreMount)
 	float z = bot->GetMap()->GetHeight(x,y,bc->z,100.0f);
 
 	Stay();
-	if(!ignoreMount && bot->GetDistance2d(x,y) > 45.0f && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 469 || bot->GetMapId() == 530 || bot->GetMapId() == 571 || bot->GetMapId() == 529))
+	if(!ignoreMount && bot->GetDistance2d(x,y) > 42.0f && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 469 || bot->GetMapId() == 530 || 
+		bot->GetMapId() == 571 || bot->GetMapId() == 529 || bot->GetMapId() == 566))
 	{
 		TakeAppropriateMount();
 		m_differedAction = 2000;
@@ -856,7 +949,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f ||  bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f ||  bot->GetMapId() != bc->mapId)
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_BANK);
 				return;
@@ -887,7 +980,7 @@ void PlayerBot::HandleBank()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_BANK,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId)
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_BANK);
 				return;
@@ -925,7 +1018,7 @@ void PlayerBot::HandleGoZone()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_RANDOM,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId)
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_RANDOM);
 				return;
@@ -956,7 +1049,7 @@ void PlayerBot::HandleGoZone()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(HORDE,BCOORD_RANDOM,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 530 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId)
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(HORDE,BCOORD_RANDOM);
 				return;
@@ -1042,7 +1135,7 @@ void PlayerBot::HandleMail()
 
 			BotCoord* bc = sPlayerBotMgr.GetPoint(ALLIANCE,BCOORD_MAIL,chosen_point);
 
-			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId && (bot->GetMapId() == 0 || bot->GetMapId() == 1 || bot->GetMapId() == 571 && bot->GetZoneId() == 4395))
+			if(!bc || bot->GetDistance(bc->x,bc->y,bc->z) > 5000.0f || bot->GetMapId() != bc->mapId)
 			{
 				chosen_point = sPlayerBotMgr.GetRandomPoint(ALLIANCE,BCOORD_MAIL);
 				return;
@@ -1148,22 +1241,96 @@ void PlayerBot::HandleFearZone()
 	}
 }
 
-void PlayerBot::HandleRogueCombat()
+void PlayerBot::HandleRogueCombat(uint32 diff)
 {
-	if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
+	if(combat_Timer <= diff)
 	{
-		GoToCacIfIsnt(target);
-
-		switch(specIdx)
+		if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
 		{
-			case 0: // Assass
-				break;
-			case 1: // Combat
-				break;
-			case 2: // Finesse
-				break;
+			if(!bot->isInCombat())
+				bot->CastSpell(bot,1787);
+
+			GoToCacIfIsnt(target);
+			
+			if(target->HasAura(1776))
+				return;
+
+			if(bot->isInCombat() && (bot->GetHealth() * 100.0f / bot->GetMaxHealth() < 35.0f) && urand(0,1))
+				bot->CastSpell(bot,26669);
+
+			switch(specIdx)
+			{
+				case 0: // Assass
+					if(bot->HasAura(1787))
+						bot->CastSpell(target,1833);
+					if(target->IsNonMeleeSpellCasted(false))
+					{
+						if(bot->GetComboPoints() > 2)
+							bot->CastSpell(target,8643);
+						bot->CastSpell(target,1766);
+						bot->CastSpell(target,1776);
+					}
+					if(!bot->HasAura(6774))
+						if(bot->GetComboTarget() == target->GetGUID() && bot->GetComboPoints() > 3)
+							bot->CastSpell(target,6774);
+					bot->CastSpell(target,6603);
+					if(bot->GetComboTarget() == target->GetGUID())
+					{
+						if(bot->GetComboPoints() == 5)
+							bot->CastSpell(target,32684); // envenom
+					}
+					bot->CastSpell(target,26862); // perni
+					break;
+				case 1: // Combat
+					if(bot->HasAura(1787))
+						bot->CastSpell(target,1833);
+					if(target->IsNonMeleeSpellCasted(false))
+					{
+						if(bot->GetComboPoints() > 2)
+							bot->CastSpell(target,8643);
+						bot->CastSpell(target,1766);
+						bot->CastSpell(target,1776);
+					}
+					if(!bot->HasAura(6774))
+						if(bot->GetComboTarget() == target->GetGUID() && bot->GetComboPoints() > 3)
+							bot->CastSpell(target,6774);
+					bot->CastSpell(target,6603);
+					if(bot->GetComboTarget() == target->GetGUID())
+					{
+						if(bot->GetComboPoints() == 5)
+							bot->CastSpell(target,32684); // envenom
+					}
+					bot->CastSpell(target,32684);
+					bot->CastSpell(target,26862);
+					break;
+				case 2: // Finesse
+					if(bot->HasAura(1787))
+						bot->CastSpell(target,1833);
+					if(target->IsNonMeleeSpellCasted(false))
+					{
+						if(bot->GetComboPoints() > 2)
+							bot->CastSpell(target,8643);
+						bot->CastSpell(target,1766);
+						bot->CastSpell(target,1776);
+					}
+					if(!bot->HasAura(6774))
+						if(bot->GetComboTarget() == target->GetGUID() && bot->GetComboPoints() > 3)
+							bot->CastSpell(target,6774);
+					bot->CastSpell(target,6603);
+					if(bot->GetComboTarget() == target->GetGUID())
+					{
+						if(bot->GetComboPoints() == 5)
+							bot->CastSpell(target,32684); // envenom
+					}
+					bot->CastSpell(target,32684);
+					bot->CastSpell(target,26862);
+					break;
+			}
 		}
+		combat_Timer = 750;
 	}
+	else
+		combat_Timer -= diff;
 }
 
 void PlayerBot::HandleShamanCombat()
@@ -1231,17 +1398,30 @@ void PlayerBot::HandleMageCombat()
 	}
 }
 
-void PlayerBot::HandlePaladinCombat()
+void PlayerBot::HandlePaladinCombat(uint32 diff)
 {
-	switch(specIdx)
+	if(combat_Timer <= diff)
 	{
-		case 0: // vindicte
-			break;
-		case 1: // heal
-			break;
-		case 2: // proto
-			break;
+		if(Unit* target = Unit::GetUnit(*bot,bot->GetTargetGUID()))
+		{
+			switch(specIdx)
+			{
+				case 0: // vindicte
+					bot->Attack(target,true);
+					bot->CastSpell(target,6603);
+					break;
+				case 1: // heal
+					break;
+				case 2: // proto
+					bot->Attack(target,true);
+					bot->CastSpell(target,6603);
+					break;
+			}
+		}
+		combat_Timer = 750;
 	}
+	else
+		combat_Timer -= diff;
 }
 
 void PlayerBot::HandlePriestCombat()
@@ -1267,56 +1447,81 @@ void PlayerBot::HandlePriestCombat()
 #define SPELL_ENRAGE		2687
 #define SPELL_TOURBILLON	1680
 
-void PlayerBot::HandleWarriorCombat()
+void PlayerBot::HandleWarriorCombat(uint32 diff)
 {
-	if(bot->GetPower(POWER_RAGE) < 60)
+	if(combat_Timer <= diff)
 	{
-		bot->CastSpell(bot,SPELL_BERSERK);
-		bot->CastSpell(bot,SPELL_ENRAGE);
-	}
-
-	if(Unit* target = Unit::GetUnit(*bot,bot->GetSelection()))
-	{
-		GoToCacIfIsnt(target);
-
-		switch(specIdx)
+		if(bot->GetPower(POWER_RAGE) < 60)
 		{
-			case 0: // arme
-				if(!bot->HasAura(POSTURE_ARM))
-					bot->CastSpell(bot,POSTURE_ARM);
-				break;
-			case 1: // furie
-				if(!bot->HasAura(POSTURE_FURY))
-					bot->CastSpell(bot,POSTURE_FURY);
-
-				if(target->GetHealth() * 100.0f / target->GetMaxHealth() < 15.0f && bot->GetPower(POWER_RAGE) >= 35)
-					bot->CastSpell(target,SPELL_EXEC);
-				
-				bot->CastSpell(target,SPELL_TOURBILLON);
-				bot->CastSpell(target,SPELL_SANGUINAIRE);
-
-				if(bot->GetPower(POWER_RAGE) >= 40)
-					bot->CastSpell(target,SPELL_FRAPPE_HERO);
-				break;
-			case 2: // proto
-				if(!bot->HasAura(POSTURE_DEF))
-					bot->CastSpell(bot,POSTURE_DEF);
-				break;
+			bot->CastSpell(bot,SPELL_BERSERK);
+			bot->CastSpell(bot,SPELL_ENRAGE);
 		}
+
+		if(Unit* target = Unit::GetUnit(*bot,bot->GetSelection()))
+		{
+			GoToCacIfIsnt(target);
+	
+			bot->CastSpell(target,6603);
+			switch(specIdx)
+			{
+				case 0: // arme
+					if(!bot->HasAura(POSTURE_ARM))
+						bot->CastSpell(bot,POSTURE_ARM);
+					bot->Attack(target,true);
+					bot->CastSpell(target,12294); // mortal Str
+					if(bot->GetPower(POWER_RAGE) >= 40)
+						bot->CastSpell(target,SPELL_FRAPPE_HERO);
+					break;
+				case 1: // furie
+					if(!bot->HasAura(POSTURE_FURY))
+						bot->CastSpell(bot,POSTURE_FURY);
+
+					if(target->GetHealth() * 100.0f / target->GetMaxHealth() < 15.0f && bot->GetPower(POWER_RAGE) >= 35)
+						bot->CastSpell(target,SPELL_EXEC);
+					
+					bot->CastSpell(target,SPELL_TOURBILLON);
+					bot->CastSpell(target,SPELL_SANGUINAIRE);
+
+					if(bot->GetPower(POWER_RAGE) >= 40)
+						bot->CastSpell(target,SPELL_FRAPPE_HERO);
+					break;
+				case 2: // proto
+					if(!bot->HasAura(POSTURE_DEF))
+						bot->CastSpell(bot,POSTURE_DEF);
+					break;
+			}
+		}
+		combat_Timer = 750;
 	}
+	else
+		combat_Timer -= diff;
+
 }
 
-void PlayerBot::HandleWarlockCombat()
+void PlayerBot::HandleWarlockCombat(uint32 diff)
 {
-	switch(specIdx)
+	if(combat_Timer <= diff)
 	{
-		case 0: // affli
-			break;
-		case 1: // demono
-			break;
-		case 2: // destru
-			break;
+		if(Unit* target = Unit::GetUnit(*bot,bot->GetSelection()))
+		{
+			switch(specIdx)
+			{
+				case 0: // affli
+					break;
+				case 1: // demono
+					break;
+				case 2: // destru
+					if(bot->IsNonMeleeSpellCasted(false))
+					{
+						bot->CastSpell(target,47809);
+					}
+					break;
+			}
+		}
+		combat_Timer = 750;
 	}
+	else
+		combat_Timer -= diff;
 }
 
 void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
@@ -1329,6 +1534,10 @@ void PlayerBot::GoToRandomBGPoint(BattleGroundTypeId bgTypeId)
 			break;
 		case BATTLEGROUND_AB:
 			if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,urand(216,231)))
+				GoPoint(bc);
+			break;
+		case BATTLEGROUND_EY:
+			if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_CYCLONE,urand(234,264)))
 				GoPoint(bc);
 			break;
 	}
@@ -1385,6 +1594,10 @@ void PlayerBot::GoToRandomBGStartingPoint(BattleGroundTypeId bgTypeId,uint32 dif
 				break;
 			case BATTLEGROUND_AB:
 				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,bot->GetTeam() == ALLIANCE ? 195 : 194))
+					GoPoint(bc);
+				break;
+			case BATTLEGROUND_EY:
+				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_CYCLONE,bot->GetTeam() == ALLIANCE ? 233 : 232))
 					GoPoint(bc);
 				break;
 		}
@@ -1447,6 +1660,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 					}
 					if(bot->GetSelection() != seekTarget->GetGUID())
 					{
+						Stay();
 						bot->SetSelection(seekTarget->GetGUID());
 						m_decideToFight = true;
 					}
@@ -1528,9 +1742,9 @@ void PlayerBot::HandleWarsong(uint32 diff)
 							{
 								if(Unit* seekTarget = SearchTargetAroundMe())
 								{
-									Stay();
 									if(bot->GetSelection() != seekTarget->GetGUID())
 									{
+										Stay();
 										bot->SetSelection(seekTarget->GetGUID());
 										m_decideToFight = true;
 									}
@@ -1559,6 +1773,7 @@ void PlayerBot::HandleWarsong(uint32 diff)
 						{
 							if(bot->GetSelection() != flagowner->GetGUID())
 							{
+								Stay();
 								bot->SetSelection(flagowner->GetGUID());
 								m_decideToFight = true;
 							}
@@ -1584,9 +1799,9 @@ void PlayerBot::HandleWarsong(uint32 diff)
 							{
 								if(Unit* seekTarget = SearchTargetAroundMe())
 								{
-									Stay();
 									if(bot->GetSelection() != flagowner->GetGUID())
 									{
+										Stay();
 										bot->SetSelection(seekTarget->GetGUID());
 										m_decideToFight = true;
 									}
@@ -1644,15 +1859,20 @@ void PlayerBot::HandleArathi(uint32 diff)
 				if(!seekTarget)
 				{
 					GoToRandomBGPoint(BATTLEGROUND_AB);
-					act_Timer = urand(4000,15000);
+					if(isStaying())
+						act_Timer = urand(1,3000);
+					else
+						act_Timer = urand(4000,15000);
 					return;
 				}
+				act_Timer = urand(10000,30000);
 				if(bot->GetSelection() != seekTarget->GetGUID())
 				{
+					Stay();
 					bot->SetSelection(seekTarget->GetGUID());
 					m_decideToFight = true;
+					act_Timer = 1000;
 				}
-				act_Timer = urand(10000,30000);
 			}
 			else
 				act_Timer -= diff;
@@ -1666,33 +1886,33 @@ void PlayerBot::HandleArathi(uint32 diff)
 				goodNodes.clear();
 				if(bot->GetTeam() == ALLIANCE)
 				{
-					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // st
+					if(bg->getNodePoint(0) == BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(0) == BG_AB_NODE_STATUS_ALLY_OCCUPIED) // st
 						goodNodes.push_back(0);
-					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // bs
+					if(bg->getNodePoint(1) == BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(1) == BG_AB_NODE_STATUS_ALLY_OCCUPIED) // bs
 						goodNodes.push_back(1);
-					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // farm
+					if(bg->getNodePoint(2) == BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(2) == BG_AB_NODE_STATUS_ALLY_OCCUPIED) // farm
 						goodNodes.push_back(2);
-					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // sci
+					if(bg->getNodePoint(3) == BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(3) == BG_AB_NODE_STATUS_ALLY_OCCUPIED) // sci
 						goodNodes.push_back(3);
-					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_ALLY_OCCUPIED) // mine
+					if(bg->getNodePoint(4) == BG_AB_NODE_STATUS_ALLY_CONTESTED && bg->getNodePoint(4) == BG_AB_NODE_STATUS_ALLY_OCCUPIED) // mine
 						goodNodes.push_back(4);
 				}
 				else
 					{
-					if(bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(0) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // st
+					if(bg->getNodePoint(0) == BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(0) == BG_AB_NODE_STATUS_HORDE_OCCUPIED) // st
 						goodNodes.push_back(0);
-					if(bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(1) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // bs
+					if(bg->getNodePoint(1) == BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(1) == BG_AB_NODE_STATUS_HORDE_OCCUPIED) // bs
 						goodNodes.push_back(1);
-					if(bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(2) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // farm
+					if(bg->getNodePoint(2) == BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(2) == BG_AB_NODE_STATUS_HORDE_OCCUPIED) // farm
 						goodNodes.push_back(2);
-					if(bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(3) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // sci
+					if(bg->getNodePoint(3) == BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(3) == BG_AB_NODE_STATUS_HORDE_OCCUPIED) // sci
 						goodNodes.push_back(3);
-					if(bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(4) != BG_AB_NODE_STATUS_HORDE_OCCUPIED) // mine
+					if(bg->getNodePoint(4) == BG_AB_NODE_STATUS_HORDE_CONTESTED && bg->getNodePoint(4) == BG_AB_NODE_STATUS_HORDE_OCCUPIED) // mine
 						goodNodes.push_back(4);
 				}
 				if(goodNodes.empty())
 				{
-					m_mode = MODE_DEFENDER;
+					m_mode = MODE_ATTACKER;
 					return;
 				}
 				uint32 pId = 0;
@@ -1707,13 +1927,22 @@ void PlayerBot::HandleArathi(uint32 diff)
 				}
 				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,pId))
 				{
-					if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+					if(bot->GetDistance2d(bc->x,bc->y) > 35.0f)
+					{
 						GoPoint(bc);
+						act_Timer = urand(10000,30000);
+					}
 					else
 					{
+						Unit* seekTarget = SearchTargetAroundMe();
+						if(seekTarget)
+						{
+							bot->SetSelection(seekTarget->GetGUID());
+							m_decideToFight = true;
+						}
+						act_Timer = urand(1000,3000);
 					}
 				}
-				act_Timer = urand(10000,30000);
 			}
 			else
 				act_Timer -= diff;
@@ -1768,13 +1997,23 @@ void PlayerBot::HandleArathi(uint32 diff)
 				}
 				if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_ARATHI,pId))
 				{
-					if(bot->GetDistance2d(bc->x,bc->y) > 5.0f)
+					if(bot->GetDistance2d(bc->x,bc->y) > 15.0f)
+					{
 						GoPoint(bc);
+						act_Timer = urand(5000,10000);
+					}
 					else
 					{
+						Unit* seekTarget = SearchTargetAroundMe();
+						act_Timer = urand(1000,3000);
+						if(seekTarget)
+						{
+							bot->SetSelection(seekTarget->GetGUID());
+							m_decideToFight = true;
+							act_Timer = 1000;
+						}
 					}
 				}
-				act_Timer = urand(10000,30000);
 			}
 			else
 				act_Timer -= diff;
@@ -1785,6 +2024,94 @@ void PlayerBot::HandleArathi(uint32 diff)
 
 void PlayerBot::HandleEyeOfTheStorm(uint32 diff)
 {
+	BattleGroundEY* bg = (BattleGroundEY*)bot->GetBattleGround();
+	BattleGroundTeamId bgTeamId = BattleGroundTeamId(bot->GetBGTeam());
+
+	if(mode_Timer <= diff)
+	{
+		m_mode = BotMode(urand(0,5));
+		mode_Timer = urand(30000,60000);
+	}
+	else
+		mode_Timer -= diff;
+
+	if(bg->GetStatus() != STATUS_IN_PROGRESS)
+	{
+		GoToRandomBGStartingPoint(BATTLEGROUND_AB,diff);
+		return;
+	}
+
+	switch(m_mode)
+	{
+		case MODE_ATTACKER:
+		default:
+		{
+			if(act_Timer <= diff || isStaying())
+			{
+				Unit* seekTarget = SearchTargetAroundMe();
+				if(!seekTarget)
+				{
+					GoToRandomBGPoint(BATTLEGROUND_EY);
+					if(isStaying())
+						act_Timer = urand(1,3000);
+					else
+						act_Timer = urand(4000,15000);
+					return;
+				}
+				act_Timer = urand(10000,30000);
+				if(bot->GetSelection() != seekTarget->GetGUID())
+				{
+					bot->SetSelection(seekTarget->GetGUID());
+					m_decideToFight = true;
+					Stay();
+					act_Timer = 1000;
+				}
+			}
+			else
+				act_Timer -= diff;
+			break;
+		}
+		case MODE_DEFENDER:
+		case MODE_OBJECTIVE:
+		{
+			if(act_Timer <= diff)
+			{
+				if(isStaying())
+				{
+					Unit* seekTarget = SearchTargetAroundMe();
+					if(!seekTarget)
+					{
+						GoToRandomBGPoint(BATTLEGROUND_EY);
+						if(isStaying())
+							act_Timer = urand(1,3000);
+						else
+							act_Timer = urand(4000,15000);
+						return;
+					}
+					act_Timer = urand(10000,30000);
+					if(bot->GetSelection() != seekTarget->GetGUID())
+					{
+						bot->SetSelection(seekTarget->GetGUID());
+						m_decideToFight = true;
+						Stay();
+						act_Timer = 1000;
+					}
+				}
+				else
+				{
+					if(BotCoord* bc = sPlayerBotMgr.GetPoint(0,BCOORD_CYCLONE,urand(128,131)))
+					{
+						GoPoint(bc);
+						act_Timer = urand(10000,30000);
+					}
+				}
+			}
+			else
+				act_Timer -= diff;
+			break;
+		}
+
+	}
 }
 
 void PlayerBot::HandleAlterac(uint32 diff)

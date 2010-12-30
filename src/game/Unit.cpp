@@ -119,7 +119,7 @@ void MovementInfo::Read(ByteBuffer &data)
         data >> t_time;
         data >> t_seat;
 
-        if(moveFlags2 & MOVEFLAG2_UNK1)
+        if(moveFlags2 & MOVEFLAG2_INTERP_MOVEMENT)
             data >> t_time2;
     }
 
@@ -165,7 +165,7 @@ void MovementInfo::Write(ByteBuffer &data)
         data << t_time;
         data << t_seat;
 
-        if(moveFlags2 & MOVEFLAG2_UNK1)
+        if(moveFlags2 & MOVEFLAG2_INTERP_MOVEMENT)
             data << t_time2;
     }
 

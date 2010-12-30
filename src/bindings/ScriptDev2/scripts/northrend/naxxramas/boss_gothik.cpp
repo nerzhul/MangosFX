@@ -185,7 +185,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
         {
             SetInstanceData(TYPE_GOTHIK, IN_PROGRESS);
 
-            if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GOTHIK_GATE)))
+            if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(GO_MILI_GOTH_ENTRY_GATE)))
                 pGate->SetGoState(GO_STATE_READY);
         }
     }
@@ -222,7 +222,7 @@ struct MANGOS_DLL_DECL boss_gothikAI : public Scripted_NoMovementAI
 			if(blink == 8)
 			{
                 if (pInstance)
-					if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(DATA_GOTHIK_GATE)))
+					if (GameObject* pGate = pInstance->instance->GetGameObject(pInstance->GetData64(GO_MILI_GOTH_COMBAT_GATE)))
 						pGate->SetGoState(GO_STATE_ACTIVE);
 			}
 

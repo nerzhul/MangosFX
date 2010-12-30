@@ -198,13 +198,13 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
         {
             SetInstanceData(TYPE_FOUR_HORSEMEN, NOT_STARTED);
 
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KORTHAZZ))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_THANE))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_BLAUMEUX))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_BLAUMEUX))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ZELIEK))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_ZELIEK))))
                 if (!pTemp->isAlive())
                     pTemp->Respawn();
         }
@@ -239,13 +239,13 @@ struct MANGOS_DLL_DECL boss_rivendare_naxxAI : public ScriptedAI
         if (pInstance)
         {
             bool HorsemenDead = true;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_KORTHAZZ))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_THANE))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_BLAUMEUX))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_BLAUMEUX))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
-            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_ZELIEK))))
+            if (Creature* pTemp = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_ZELIEK))))
                 if (pTemp->isAlive())
                     HorsemenDead = false;
 

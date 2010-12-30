@@ -32,7 +32,7 @@ PathInfo::PathInfo(const Unit* owner, const float destX, const float destY, cons
 
     float x,y,z;
     m_sourceUnit->GetPosition(x, y, z);
-    PathNode startPoint(x, y, z);
+	PathNode startPoint(x, y, m_sourceUnit->GetMap()->GetHeight(x,y,z,100.0f));
     setStartPosition(startPoint);
 
     PATH_DEBUG("++ PathInfo::PathInfo for %u \n", m_sourceUnit->GetGUID());
@@ -63,13 +63,13 @@ PathInfo::~PathInfo()
 
 bool PathInfo::Update(const float destX, const float destY, const float destZ, bool useStraightPath)
 {
-    PathNode newDest(destX, destY, destZ);
+    PathNode newDest(destX, destY, m_sourceUnit->GetMap()->GetHeight(destX,destY,destZ,100.0f));
     PathNode oldDest = getEndPosition();
     setEndPosition(newDest);
 
     float x, y, z;
     m_sourceUnit->GetPosition(x, y, z);
-    PathNode newStart(x, y, z);
+    PathNode newStart(x, y, m_sourceUnit->GetMap()->GetHeight(x,y,z,100.0f));
     PathNode oldStart = getStartPosition();
     setStartPosition(newStart);
 

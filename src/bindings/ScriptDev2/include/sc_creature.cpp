@@ -1239,14 +1239,14 @@ void MobEventTasks::AddSummonEvent(uint32 entry, uint32 Timer, uint32 NormTimer,
 
 }
 
-void LibDevFSAI::CleanMyAdds()
+void LibDevFSAI::CleanMyAdds(uint32 entry)
 {
 	if(!MyAdds.empty())
 	{
 		for(std::vector<uint64>::iterator itr = MyAdds.begin(); itr < MyAdds.end(); ++itr)
 		{
 			if (Creature* cr = ((Creature*)Unit::GetUnit(*me,(*itr))))
-				if(cr->isAlive())
+				if(cr->isAlive() && (!entry || cr->GetEntry() == entry))
 					cr->ForcedDespawn(1000);
 		}
 		MyAdds.clear();

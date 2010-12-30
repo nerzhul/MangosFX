@@ -420,6 +420,19 @@ bool Vehicle::AddPassenger(Unit *unit, int8 seatId)
 				((Player*)unit)->SetFarSightGUID(me->GetGUID());
 
 				BuildVehicleActionBar((Player*)unit);
+
+				if(me->GetTypeId() == TYPEID_UNIT && (((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33060 || ((Creature*)me)->GetEntry() == 33109
+					|| ((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33062)) // all
+				{
+					((Player*)unit)->m_movementInfo.AddMovementFlag2(MOVEFLAG2_INTERP_TURNING);
+					((Player*)unit)->m_movementInfo.AddMovementFlag2(MOVEFLAG2_INTERP_PITCHING);
+				}
+
+				if(me->GetTypeId() == TYPEID_UNIT && (((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33060 || ((Creature*)me)->GetEntry() == 33109
+					|| ((Creature*)me)->GetEntry() == 28781))
+				{
+					((Player*)unit)->m_movementInfo.AddMovementFlag2(MOVEFLAG2_NO_JUMPING);
+				}
 			}
 			if((me->GetTypeId() == TYPEID_UNIT && ((Creature*)me)->isFlyingVehicle()) || me->HasAuraType(SPELL_AURA_FLY) || me->HasAuraType(SPELL_AURA_MOD_FLIGHT_SPEED_MOUNTED))
             {
@@ -584,6 +597,18 @@ void Vehicle::RemovePassenger(Unit *unit)
 				((Player*)unit)->RemovePetActionBar();
 
 				((Player*)unit)->SetFarSightGUID(0);
+				if(me->GetTypeId() == TYPEID_UNIT && (((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33060 || ((Creature*)me)->GetEntry() == 33109
+					|| ((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33062))
+				{
+					((Player*)unit)->m_movementInfo.RemoveMovementFlag2(MOVEFLAG2_INTERP_TURNING);
+					((Player*)unit)->m_movementInfo.RemoveMovementFlag2(MOVEFLAG2_INTERP_PITCHING);
+				}
+
+				if(me->GetTypeId() == TYPEID_UNIT && (((Creature*)me)->GetEntry() == 28781 || ((Creature*)me)->GetEntry() == 33060 || ((Creature*)me)->GetEntry() == 33109
+					|| ((Creature*)me)->GetEntry() == 28781))
+				{
+					((Player*)unit)->m_movementInfo.RemoveMovementFlag2(MOVEFLAG2_NO_JUMPING);
+				}	
             }
             unit->SetCharm(NULL);
             me->SetCharmerGUID(NULL);			

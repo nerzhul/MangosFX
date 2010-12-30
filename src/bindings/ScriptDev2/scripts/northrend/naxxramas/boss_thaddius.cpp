@@ -165,7 +165,7 @@ struct MANGOS_DLL_DECL mob_stalaggAI : public ScriptedAI
         if (DeathCheck_Timer < diff)
         {
             if (pInstance)
-                if (Creature* pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FEUGEN))))
+                if (Creature* pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_FEUGEN))))
                 {
                     if (!pFeugen->isAlive() && !m_bIsDeath)
                     {
@@ -285,7 +285,7 @@ struct MANGOS_DLL_DECL mob_feugenAI : public ScriptedAI
         if (DeathCheck_Timer < diff)
         {
             if (pInstance)
-                if (Creature* pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_STALAGG))))
+                if (Creature* pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_STALAGG))))
                 {
                     if (!pStalagg->isAlive() && !m_bIsDeath)
                     {
@@ -370,11 +370,11 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
 
         if (pInstance)
         {
-            if (Creature* pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_STALAGG))))
+            if (Creature* pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_STALAGG))))
                 if (!pStalagg->isAlive())
                     pStalagg->Respawn();
 
-            if (Creature* pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FEUGEN))))
+            if (Creature* pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_FEUGEN))))
                 if (!pFeugen->isAlive())
                     pFeugen->Respawn();
 
@@ -431,10 +431,10 @@ struct MANGOS_DLL_DECL boss_thaddiusAI : public ScriptedAI
                     bool m_bIsAlive = false;
                     Creature* pStalagg;
                     Creature* pFeugen;
-                    if (pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_STALAGG))))
+                    if (pStalagg = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_STALAGG))))
                         if (pStalagg->isAlive())
                             m_bIsAlive = true;
-                    if (pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(DATA_FEUGEN))))
+                    if (pFeugen = ((Creature*)Unit::GetUnit((*me), pInstance->GetData64(NPC_FEUGEN))))
                         if (pFeugen->isAlive())
                             m_bIsAlive = true;
 

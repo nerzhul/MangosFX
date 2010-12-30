@@ -1698,10 +1698,10 @@ float Map::GetHeight(float x, float y, float z, bool pUseVmaps, float maxSearchD
         float _mapheight = gmap->getHeight(x,y);
 
         // look from a bit higher pos to find the floor, ignore under surface case
-        if (z2 > _mapheight)
+        //if (z2 > _mapheight)
             mapHeight = _mapheight;
-        else
-            mapHeight = VMAP_INVALID_HEIGHT_VALUE;
+        /*else
+            mapHeight = VMAP_INVALID_HEIGHT_VALUE;*/
     }
     else
         mapHeight = VMAP_INVALID_HEIGHT_VALUE;
@@ -1721,11 +1721,11 @@ float Map::GetHeight(float x, float y, float z, bool pUseVmaps, float maxSearchD
             // look from a bit higher pos to find the floor
             vmapHeight = vmgr->getHeight(GetId(), x, y, z2, maxSearchDist);
         }
-        else
-            vmapHeight = VMAP_INVALID_HEIGHT_VALUE;
+        /*else
+            vmapHeight = VMAP_INVALID_HEIGHT_VALUE;*/
     }
-    else
-        vmapHeight = VMAP_INVALID_HEIGHT_VALUE;
+    /*else
+        vmapHeight = VMAP_INVALID_HEIGHT_VALUE;*/
 
     // mapHeight set for any above raw ground Z or <= INVALID_HEIGHT
     // vmapheight set for any under Z value or <= INVALID_HEIGHT

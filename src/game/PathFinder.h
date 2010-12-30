@@ -42,7 +42,7 @@ class Unit;
 #define MAX_PATH_LENGTH         2048
 #define MAX_POINT_PATH_LENGTH   2048
 
-#define SMOOTH_PATH_STEP_SIZE   6.0f
+#define SMOOTH_PATH_STEP_SIZE   3.0f
 #define SMOOTH_PATH_SLOP        0.4f
 
 #define VERTEX_SIZE       3

@@ -50,7 +50,15 @@ struct BotCoord
 	uint32 mapId;
 };
 
+struct MountObj
+{
+	uint32 mountId;
+	bool flying;
+	uint8 reqrace;
+};
+
 typedef std::map<uint32,float> BotChance;
+typedef std::vector<MountObj*> MountList;
 typedef std::map<uint32,BotCoord*> BotCoords;
 class PlayerBotMgr
 {
@@ -60,6 +68,7 @@ class PlayerBotMgr
 
 		void LoadBotChoiceChances();
 		void LoadBotCoordinates();
+		void LoadBotMounts();
 		
 		// Chances
 		float GetChance(BotChoice bc);
@@ -67,6 +76,8 @@ class PlayerBotMgr
 		void CleanCoordinates();
 		uint32 GetRandomPoint(uint32 faction,BotCoordType bcType);
 		BotCoord* GetPoint(uint32 faction, BotCoordType bcType, uint32 idx);
+		// Mounts
+		MountList GetMountList(uint32 faction) { return (faction == ALLIANCE) ? mounts_a : mounts_h; }
 	private:
 		BotChance m_choiceChances;
 		BotCoords mail_h;
@@ -78,6 +89,8 @@ class PlayerBotMgr
 		BotCoords warsong;
 		BotCoords arathi;
 		BotCoords eyeofthestorm;
+		MountList mounts_a;
+		MountList mounts_h;
 
 };
 
@@ -89,15 +102,15 @@ class PlayerBot// : public Player
 		explicit PlayerBot (WorldSession *session);
 		~PlayerBot();
 
-		void HandleWarriorCombat();
-		void HandlePaladinCombat();
+		void HandleWarriorCombat(uint32 diff);
+		void HandlePaladinCombat(uint32 diff);
 		void HandleHunterCombat();
-		void HandleRogueCombat();
+		void HandleRogueCombat(uint32 diff);
 		void HandlePriestCombat();
 		void HandleDKCombat();
 		void HandleShamanCombat();
 		void HandleMageCombat();
-		void HandleWarlockCombat();
+		void HandleWarlockCombat(uint32 diff);
 		void HandleDruidCombat();
 
 		void HandleGoToCorpse();
@@ -156,6 +169,7 @@ class PlayerBot// : public Player
 		// Timers
 		uint32 mode_Timer;
 		uint32 act_Timer;
+		uint32 combat_Timer;
 		uint32 react_Timer;
 
 		BattleGround* sheduledBG;

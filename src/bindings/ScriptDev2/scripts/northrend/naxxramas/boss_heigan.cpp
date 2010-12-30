@@ -272,7 +272,7 @@ struct MANGOS_DLL_DECL npc_heigan_eruptionAI : public ScriptedAI
     //Let's Dance!
     void DoErupt(uint32 safePlace)
     {
-        uint64 heiganGUID = pInstance->GetData64(NPC_HEIGAN);
+        uint64 heiganGUID = pInstance->GetData64(TYPE_HEIGAN);
         Map::PlayerList const &PlList = pInstance->instance->GetPlayers();
         if (PlList.isEmpty())
             return;

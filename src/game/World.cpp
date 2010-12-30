@@ -1468,6 +1468,9 @@ void World::SetInitialWorldSettings()
 	sLog.outString("Loading PlayerBot Coordinates...");
 	sPlayerBotMgr.LoadBotCoordinates();
 
+	sLog.outString("Loading PlayerBot Mounts...");
+	sPlayerBotMgr.LoadBotMounts();
+
     sLog.outString( "Loading GM tickets...");
     sTicketMgr.LoadGMTickets();
 
