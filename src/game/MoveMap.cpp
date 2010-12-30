@@ -92,6 +92,9 @@ namespace MMAP
 
     bool MMapManager::loadMapData(uint32 mapId)
     {
+		if(mapId == 649)
+			return false;
+
         // we already have this map loaded?
         if (loadedMMaps.find(mapId) != loadedMMaps.end())
             return true;
@@ -152,6 +155,9 @@ namespace MMAP
 
     bool MMapManager::loadMap(uint32 mapId, int32 x, int32 y)
     {
+		if(mapId == 649)
+			return false;
+
         // make sure the mmap is loaded and ready to load tiles
         if(!loadMapData(mapId))
             return false;
