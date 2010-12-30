@@ -366,7 +366,8 @@ MotionMaster::MoveCharge(float x, float y, float z, float speed, uint32 id)
 
 void MotionMaster::MoveFall(float z, uint32 id)
 {
-    i_owner->SetFlying(false);
+	i_owner->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+	i_owner->m_movementInfo.RemoveMovementFlag(MovementFlags(MOVEFLAG_CAN_FLY | MOVEFLAG_FLYING));
 	i_owner->SetFacingTo(i_owner->GetOrientation());
     //AddUnitMovementFlag(MOVEMENTFLAG_FALLING);
     MoveCharge(i_owner->GetPositionX(), i_owner->GetPositionY(), z, 3.0f, id);

@@ -680,14 +680,13 @@ void ScriptedAI::SetFlying(bool fly, Creature* who)
 
 	if (fly)
     {
-		who->SetReactState(REACT_PASSIVE);
-        who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x03);
+		who->SetByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+		who->m_movementInfo.AddMovementFlag(MovementFlags(MOVEFLAG_CAN_FLY | MOVEFLAG_FLYING));
     }
     else
     {
-		who->SetReactState(REACT_AGGRESSIVE);
-        who->SetUInt32Value(UNIT_FIELD_BYTES_0, 0);
-        who->SetUInt32Value(UNIT_FIELD_BYTES_1, 0);
+		who->RemoveByteFlag(UNIT_FIELD_BYTES_1, 3, 0x02);
+		who->m_movementInfo.RemoveMovementFlag(MovementFlags(MOVEFLAG_CAN_FLY | MOVEFLAG_FLYING));
     }
 }
 
