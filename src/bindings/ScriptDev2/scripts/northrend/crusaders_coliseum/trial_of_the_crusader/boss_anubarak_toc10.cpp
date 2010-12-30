@@ -167,6 +167,7 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
         for (int i=0; i < 10; i++)
             if (Creature* pTemp = CallCreature(NPC_SCARAB, TEN_MINS, PREC_COORDS, AGGRESSIVE_RANDOM, AnubarakLoc[1][0]+urand(0, 50)-25, AnubarakLoc[1][1]+urand(0, 50)-25, AnubarakLoc[1][2]))
                 pTemp->setFaction(31);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
     }
 
     void JustDied(Unit* /*pKiller*/)
@@ -483,6 +484,7 @@ struct MANGOS_DLL_DECL anub_sphereAI : public LibDevFSAI
     anub_sphereAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
         InitInstance();
+		me->setFaction(14);
     }
 
 	bool   m_bFall;
@@ -496,8 +498,8 @@ struct MANGOS_DLL_DECL anub_sphereAI : public LibDevFSAI
         SetFlying(true);
         me->SetDisplayId(25144);
         me->SetSpeedRate(MOVE_RUN, 0.5, false);
-        me->GetMotionMaster()->MoveRandom();
-        DoCastMe(SPELL_FROST_SPHERE);
+		me->GetMotionMaster()->MovePoint(0,me->GetPositionX() + irand(-3.0f,3.0f),me->GetPositionX() + irand(-3.0f,3.0f),me->GetPositionZ());
+        ModifyAuraStack(SPELL_FROST_SPHERE);
 
     }
 

@@ -1479,6 +1479,7 @@ void Spell::SetTargetMap(uint32 effIndex, uint32 targetMode, UnitList& targetUni
 				case 72274:
 				case 72091:
 				case 72093:
+				case 66332:
                     unMaxTargets = 1;
                     break;
                 case 28542:                                 // Life Drain
