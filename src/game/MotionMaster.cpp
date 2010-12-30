@@ -304,23 +304,27 @@ MotionMaster::MoveTargetedHome()
 
 void MotionMaster::MoveJump(float x, float y, float z, float speedXY, float speedZ)
 {
-    SplineFlags moveFlag = SplineFlags(SPLINEFLAG_TRAJECTORY | SPLINEFLAG_WALKMODE);
-    uint32 time = speedZ * 100;
+    uint32 moveFlag = SPLINEFLAG_TRAJECTORY | SPLINEFLAG_WALKMODE;
+    uint32 time = uint32(speedZ * 100);
 
-    i_owner->addUnitState(UNIT_STAT_JUMPING);
+    // Instantly interrupt non melee spells being casted
+    if (i_owner->IsNonMeleeSpellCasted(true))
+        i_owner->InterruptNonMeleeSpells(true);
+
+    i_owner->addUnitState(UNIT_STAT_FLEEING_MOVE | UNIT_STAT_JUMPING);
     if (i_owner->GetTypeId() == TYPEID_PLAYER)
     {
-        DEBUG_LOG("Player (GUID: %u) jump to point (X: %f Y: %f Z: %f)", i_owner->GetGUIDLow(), x, y, z);
+        //sLog->outStaticDebug("Player (GUID: %u) jump to point (X: %f Y: %f Z: %f)", i_owner->GetGUIDLow(), x, y, z);
         Mutate(new PointMovementGenerator<Player>(0,x,y,z));
     }
     else
     {
-        DEBUG_LOG("Creature (Entry: %u GUID: %u) jump to point (X: %f Y: %f Z: %f)",
-            i_owner->GetEntry(), i_owner->GetGUIDLow(), x, y, z);
+        /*sLog->outStaticDebug("Creature (Entry: %u GUID: %u) jump to point (X: %f Y: %f Z: %f)",
+            i_owner->GetEntry(), i_owner->GetGUIDLow(), x, y, z);*/
         Mutate(new PointMovementGenerator<Creature>(0,x,y,z));
     }
 
-    i_owner->SendMonsterMove(x, y, z, SPLINETYPE_NORMAL, moveFlag, time);
+    i_owner->SendMonsterMove(x, y, z, SplineType(moveFlag), SplineFlags(time), speedZ);
 }
 
 void
@@ -337,6 +341,35 @@ MotionMaster::MoveConfused()
             i_owner->GetEntry(), i_owner->GetGUIDLow() );
         Mutate(new ConfusedMovementGenerator<Creature>());
     }
+}
+
+void
+MotionMaster::MoveCharge(float x, float y, float z, float speed, uint32 id)
+{
+    if (GetCurrentMovementGeneratorType() != DISTRACT_MOTION_TYPE)
+        return;
+
+    i_owner->addUnitState(UNIT_STAT_FLEEING_MOVE);
+    if (i_owner->GetTypeId() == TYPEID_PLAYER)
+    {
+        //sLog->outStaticDebug("Player (GUID: %u) charge point (X: %f Y: %f Z: %f)", i_owner->GetGUIDLow(), x, y, z);
+        Mutate(new PointMovementGenerator<Player>(id,x,y,z));
+    }
+    else
+    {
+        /*sLog->outStaticDebug("Creature (Entry: %u GUID: %u) charge point (X: %f Y: %f Z: %f)",
+            i_owner->GetEntry(), i_owner->GetGUIDLow(), x, y, z);*/
+        Mutate(new PointMovementGenerator<Creature>(id,x,y,z));
+    }
+}
+
+
+void MotionMaster::MoveFall(float z, uint32 id)
+{
+    i_owner->SetFlying(false);
+	i_owner->SetFacingTo(i_owner->GetOrientation());
+    //AddUnitMovementFlag(MOVEMENTFLAG_FALLING);
+    MoveCharge(i_owner->GetPositionX(), i_owner->GetPositionY(), z, 3.0f, id);
 }
 
 void

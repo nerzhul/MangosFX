@@ -478,40 +478,76 @@ CreatureAI* GetAI_mob_nerubian_borrower(Creature* pCreature)
     return new mob_nerubian_borrowerAI(pCreature);
 }
 
-struct MANGOS_DLL_DECL anub_sphereAI : public ScriptedAI
+struct MANGOS_DLL_DECL anub_sphereAI : public LibDevFSAI
 {
-    anub_sphereAI(Creature* pCreature) : ScriptedAI(pCreature)
+    anub_sphereAI(Creature* pCreature) : LibDevFSAI(pCreature)
     {
-        Reset();
+        InitInstance();
     }
-    
-    uint32 explode_timer;
-    MobEventTasks Tasks;
+
+	bool   m_bFall;
+    uint32 m_uiPermafrostTimer;
+
     void Reset()
     {
-		Tasks.SetObjects(this,me);
-		explode_timer = DAY*HOUR;
-		SetCombatMovement(false);
+		m_bFall = false;
+        m_uiPermafrostTimer = 0;
+        me->SetReactState(REACT_PASSIVE);
+        SetFlying(true);
+        me->SetDisplayId(25144);
+        me->SetSpeedRate(MOVE_RUN, 0.5, false);
+        me->GetMotionMaster()->MoveRandom();
+        DoCastMe(SPELL_FROST_SPHERE);
+
     }
 
     void DamageTaken(Unit* u, uint32 &dmg)
     {
-		if(dmg >= me->GetHealth())
-		{
-			 dmg = 0;
-			 explode_timer = 1000;
-		}
+		if (me->GetHealth() < dmg)
+        {
+            dmg = 0;
+            if (!m_bFall)
+            {
+                m_bFall = true;
+                SetFlying(false);
+                me->GetMotionMaster()->MoveIdle();
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                //At hit the ground
+                me->GetMotionMaster()->MoveFall(142.2f, 0);
+
+                //me->FallGround(); //need correct vmap use (i believe it isn't working properly right now)
+            }
+        }
     }
+
+	void MovementInform(uint32 uiType, uint32 uiId)
+    {
+        if (uiType != POINT_MOTION_TYPE) return;
+
+        switch (uiId)
+        {
+            case 0:
+                m_uiPermafrostTimer = IN_MILLISECONDS;
+                break;
+        }
+    }
+
 
     void UpdateAI(const uint32 diff)
     {
-		if(explode_timer <= diff)
-		{
-			DoCastMe(SPELL_PERMAFROST);
-			Kill(me);
-		}
-		else 
-			explode_timer -= diff;
+		if (m_uiPermafrostTimer)
+        {
+            if (m_uiPermafrostTimer <= diff)
+            {
+                m_uiPermafrostTimer = 0;
+                me->RemoveAurasDueToSpell(SPELL_FROST_SPHERE);
+                me->SetDisplayId(11686);
+                me->SetFloatValue(OBJECT_FIELD_SCALE_X, 2.0f);
+                DoCastMe(SPELL_PERMAFROST_VISUAL);
+                DoCastMe(SPELL_PERMAFROST);
+            } else m_uiPermafrostTimer -= diff;
+        }
+
     }
 
 };

@@ -1443,6 +1443,9 @@ bool SpellMgr::IsNoStackSpellDueToSpell(uint32 spellId_1, uint32 spellId_2) cons
 					if(spellInfo_1->SpellIconID == 3087 && spellInfo_2->SpellIconID == 3087)
 						return false;
 
+					if(spellInfo_1->Id == 66128 && spellInfo_2->Id == 66128)
+						return false;
+
                     // Thunderfury
                     if ((spellInfo_1->Id == 21992 && spellInfo_2->Id == 27648) ||
                         (spellInfo_2->Id == 21992 && spellInfo_1->Id == 27648))

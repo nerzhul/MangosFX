@@ -1344,14 +1344,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\game\MotionMaster.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\game\MotionMaster.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\game\ObjectAccessor.cpp"
 				>
 			</File>
@@ -1644,6 +1636,14 @@
 				</File>
 				<File
 					RelativePath="..\..\src\game\IdleMovementGenerator.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MotionMaster.cpp"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\game\MotionMaster.h"
 					>
 				</File>
 				<File
