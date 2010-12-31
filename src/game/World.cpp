@@ -1618,6 +1618,9 @@ void World::SetInitialWorldSettings()
 
 	sWorld.LockWorld(false);
 	sWorld.lastPckMap.clear();
+
+	ChatHandler* ch = new ChatHandler();
+	ch->HandlePlayerbotListCommand("70 80 300");
 }
 
 void World::DetectDBCLang()
