@@ -1619,7 +1619,7 @@ void World::SetInitialWorldSettings()
 	sWorld.LockWorld(false);
 	sWorld.lastPckMap.clear();
 
-	ChatHandler* ch = new ChatHandler();
+	ChatHandler* ch = new ChatHandler((WorldSession*)NULL);
 	ch->HandlePlayerbotListCommand("70 80 300");
 }
 

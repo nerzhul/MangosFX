@@ -73,6 +73,9 @@ class ChatHandler
 
         bool isValidChatMessage(const char* msg);
 		bool HasSentErrorMessage() { return sentErrorMessage;}
+
+		bool HandlePlayerbotListCommand(const char * args);
+
     protected:
         explicit ChatHandler() : m_session(NULL) {}      // for CLI subclass
 
@@ -523,7 +526,7 @@ class ChatHandler
 		bool HandleAddPOI(const char *args);
 		bool HandleDebugEnterVehicle(const char * args);
 		bool HandlePlayerbotCommand(const char * args);
-		bool HandlePlayerbotListCommand(const char * args);
+		
 		bool HandlePlayerEquipItemsCommand(const char* args);
 		bool HandleCompleteRecupCommand(const char *args);
 		bool HandleDebugDualSpecCommand(const char *args);
