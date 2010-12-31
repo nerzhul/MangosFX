@@ -3926,6 +3926,51 @@ void Aura::HandleAuraTransform(bool apply, bool Real)
 						if(AchievementEntry const* pAE = GetAchievementStore()->LookupEntry(3456))
 							((Player*)m_target)->GetAchievementMgr().DoCompleteAchivement(pAE);
                 }
+				case 50517:                                 // Dread Corsair
+                case 51926:                                 // Corsair Costume
+                {
+                    // expected for players
+                    uint32 race = m_target->getRace();
+
+                    switch(race)
+                    {
+                        case RACE_HUMAN:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25037 : 25048);
+                            break;
+                        case RACE_ORC:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25039 : 25050);
+                            break;
+                        case RACE_DWARF:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25034 : 25045);
+                            break;
+                        case RACE_NIGHTELF:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25038 : 25049);
+                            break;
+                        case RACE_UNDEAD_PLAYER:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25042 : 25053);
+                            m_target;
+                        case RACE_TAUREN:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25040 : 25051);
+                            break;
+                        case RACE_GNOME:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25035 : 25046);
+                            break;
+                        case RACE_TROLL:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25041 : 25052);
+                            break;
+                        case RACE_GOBLIN:                   // not really player race (3.x), but model exist
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25036 : 25047);
+                            break;
+                        case RACE_BLOODELF:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25032 : 25043);
+                            break;
+                        case RACE_DRAENEI:
+                            m_target->SetDisplayId(m_target->getGender() == GENDER_MALE ? 25033 : 25044);
+                            break;
+                    }
+
+                    break;
+                }
                 default: break;
             }
         }
