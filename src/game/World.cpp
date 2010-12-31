@@ -1620,7 +1620,7 @@ void World::SetInitialWorldSettings()
 	sWorld.lastPckMap.clear();
 
 	ChatHandler* ch = new ChatHandler((WorldSession*)NULL);
-	ch->HandlePlayerbotListCommand("70 80 300");
+	ch->HandlePlayerbotListCommand(NULL);
 }
 
 void World::DetectDBCLang()

@@ -6616,9 +6616,9 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 		limit = strtok(NULL, " ");
 	}
 
-	uint8 lvl1 = 1;
+	uint8 lvl1 = 70;
 	uint8 lvl2 = DEFAULT_MAX_LEVEL;
-	uint16 _limit = 15000;
+	uint16 _limit = urand(250,400);
 	if(lvlmin) lvl1 = atoi(lvlmin);
 	if(lvlmax) lvl2 = atoi(lvlmax);
 	if(limit) _limit = atoi(limit);
