@@ -134,7 +134,9 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
         m_bIntro = true;
         m_bReachedPhase3 = false;
         m_uiTargetGUID = 0;
-        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
 		CleanMyAdds();
         m_vBurrowGUID.clear();
 
@@ -167,7 +169,9 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
         for (int i=0; i < 10; i++)
             if (Creature* pTemp = CallCreature(NPC_SCARAB, TEN_MINS, PREC_COORDS, AGGRESSIVE_RANDOM, AnubarakLoc[1][0]+urand(0, 50)-25, AnubarakLoc[1][1]+urand(0, 50)-25, AnubarakLoc[1][2]))
                 pTemp->setFaction(31);
-		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
     }
 
     void JustDied(Unit* /*pKiller*/)
@@ -282,8 +286,9 @@ struct MANGOS_DLL_DECL boss_anubarakEdCAI : public LibDevFSAI
 				break;
 			case 1:
 				DoCastMe(SPELL_SUBMERGE_ANUBARAK);
-				DoCastMe(SPELL_CLEAR_ALL_DEBUFFS);
-				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				ModifyAuraStack(SPELL_CLEAR_ALL_DEBUFFS);
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 				Yell(16240,"Aoum Na'akish ! Dévorez mes serviteurs !");
 				m_uiScarabSummoned = 0;
 				m_uiSummonScarabTimer = 4*IN_MILLISECONDS;
@@ -448,7 +453,7 @@ struct MANGOS_DLL_DECL mob_nerubian_borrowerAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
-		if (m_uiSubmergeTimer <= diff && CheckPercentLife(80))
+		if (m_uiSubmergeTimer <= diff || CheckPercentLife(80))
             {
                 if (me->HasAura(SPELL_SUBMERGE_EFFECT))
                 {
@@ -500,6 +505,9 @@ struct MANGOS_DLL_DECL anub_sphereAI : public LibDevFSAI
         me->SetSpeedRate(MOVE_RUN, 0.5, false);
 		me->GetMotionMaster()->MovePoint(0,me->GetPositionX() + irand(-3.0f,3.0f),me->GetPositionX() + irand(-3.0f,3.0f),me->GetPositionZ());
         ModifyAuraStack(SPELL_FROST_SPHERE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+		me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_OOC_NOT_ATTACKABLE);
 
     }
 
