@@ -6609,7 +6609,7 @@ bool ChatHandler::HandlePlayerbotListCommand(const char* args)
 	char* lvlmin = NULL;
 	char* lvlmax = NULL;
 	char* limit = NULL;
-	if (*args)
+	if (*args && strlen(args) > 0)
 	{
 		lvlmin = strtok((char*)args, " ");
 		lvlmax = strtok(NULL, " ");
