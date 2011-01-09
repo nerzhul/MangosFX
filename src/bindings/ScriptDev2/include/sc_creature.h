@@ -329,6 +329,8 @@ class MANGOS_DLL_SPEC LibDevFSAI : public ScriptedAI
 
 		void CleanMyAdds(uint32 entry=0);
 
+		void AddCustomAdd(uint64 guid) { MyAdds.push_back(guid); }
+
 		void GetNewTargetForMyAdds(Unit* target);
 
 		void Jump(float x, float y, float z, float speedXY, float speedZ) { me->GetMotionMaster()->MoveJump(x, y, z, speedXY, speedZ); }

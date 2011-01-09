@@ -62,6 +62,18 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 		checkRunic_Timer = 1000;
     }
 
+	void JustSummoned(Creature* summon)
+    {
+        if (Unit* target = GetRandomUnit(1))
+            summon->AI()->AttackStart(target);
+
+        if (isHeroic())
+            DoCast(summon, SPELL_SCENT_OF_BLOOD,true);
+
+		AddCustomAdd(summon->GetGUID());
+    }
+
+
     void Aggro(Unit* pWho)
     {
         if (pInstance)
@@ -174,14 +186,15 @@ struct MANGOS_DLL_DECL boss_saurfangAI : public LibDevFSAI
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				GiveEmblemsToGroup(TRIOMPHE,3);
+				GiveEmblemsToGroup(GIVRE,2);
+				GiveEmblemsToGroup(TRIOMPHE,1);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
 				GiveEmblemsToGroup(GIVRE,3);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,2);
-				GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(GIVRE,3);
+				GiveEmblemsToGroup(TRIOMPHE,1);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
 				GiveEmblemsToGroup(GIVRE,4);

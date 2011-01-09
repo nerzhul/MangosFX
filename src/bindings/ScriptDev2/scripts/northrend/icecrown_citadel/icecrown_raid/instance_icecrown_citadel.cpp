@@ -159,13 +159,11 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public InstanceData
 				break;
             case NPC_DEATHWHISPER: 
 				m_uiDeathwhisperGUID = pCreature->GetGUID();
-				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 					SetData(TYPE_DEATHWHISPER,DONE);
 				break;
             case NPC_SAURFANG: 
 				m_uiSaurfangGUID = pCreature->GetGUID();
-				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 				{
 					m_auiEncounter[TYPE_SAURFANG] = DONE;

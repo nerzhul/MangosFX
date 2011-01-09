@@ -87,14 +87,15 @@ struct MANGOS_DLL_DECL boss_marrowgarAI : public LibDevFSAI
 		switch(m_difficulty)
 		{
 			case RAID_DIFFICULTY_10MAN_NORMAL:
-				GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(GIVRE,1);
+				GiveEmblemsToGroup(TRIOMPHE,1);
 				break;
 			case RAID_DIFFICULTY_25MAN_NORMAL:
 				GiveEmblemsToGroup(GIVRE,2);
 				break;
 			case RAID_DIFFICULTY_10MAN_HEROIC:
-				GiveEmblemsToGroup(GIVRE,1);
-				GiveEmblemsToGroup(TRIOMPHE,2);
+				GiveEmblemsToGroup(GIVRE,2);
+				GiveEmblemsToGroup(TRIOMPHE,1);
 				break;
 			case RAID_DIFFICULTY_25MAN_HEROIC:
 				GiveEmblemsToGroup(GIVRE,3);
