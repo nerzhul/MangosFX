@@ -159,11 +159,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public InstanceData
 				break;
             case NPC_DEATHWHISPER: 
 				m_uiDeathwhisperGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 					SetData(TYPE_DEATHWHISPER,DONE);
 				break;
             case NPC_SAURFANG: 
 				m_uiSaurfangGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 				{
 					m_auiEncounter[TYPE_SAURFANG] = DONE;
@@ -171,11 +173,13 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public InstanceData
 				}
 				break;
 			case NPC_FESTERGUT:
+				if(isHeroic())	AutoFreeze(pCreature);
 				m_uiFestergutGUID = pCreature->GetGUID();
 				if(!pCreature->isAlive())
 					SetData(TYPE_FESTERGUT,DONE);
 				break;
 			case NPC_ROTFACE:
+				if(isHeroic())	AutoFreeze(pCreature);
 				m_uiRotfaceGUID = pCreature->GetGUID();
 				if(!pCreature->isAlive())
 					SetData(TYPE_ROTFACE,DONE);
@@ -185,35 +189,43 @@ struct MANGOS_DLL_DECL instance_icecrown_citadel : public InstanceData
 				if(!pCreature->isAlive())
 					SetData(TYPE_PUTRICIDE,DONE);
 				AutoFreeze(pCreature);
+				if(isHeroic())	AutoFreeze(pCreature);
 				break;
 			case NPC_PRINCE_KELESETH:
 				m_uiPrinceKelesethGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				break;
 			case NPC_PRINCE_VALANAR:
 				m_uiPrinceValanarGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 					SetData(TYPE_PRINCE_COUNCIL,DONE);
 				break;
 			case NPC_PRINCE_TALDARAM:
 				m_uiPrinceTaldaramGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				break;
 			case NPC_LANATHEL:
 				m_uiLanathelGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 					SetData(TYPE_LANATHEL,DONE);
 				break;
 			case NPC_DREAMWALKER:
 				m_uiDreamWalkerGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(GetData(TYPE_DREAMWALKER) == DONE)
 					pCreature->ForcedDespawn(100);
 				break;
 			case NPC_SINDRAGOSA:
 				m_uiSindragosaGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				if(!pCreature->isAlive())
 					SetData(TYPE_SINDRAGOSA,DONE);
 				break;
 			case NPC_LICHKING:
 				m_uiLichKingGUID = pCreature->GetGUID();
+				if(isHeroic())	AutoFreeze(pCreature);
 				break;
 			case 37006:
 				rotfacePoolsGUIDs.push_back(pCreature->GetGUID());

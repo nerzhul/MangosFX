@@ -173,9 +173,9 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
         if (!CanDoSomething())
             return;
 
-        if (Phase == 1)
+        if (Phase == 1 || isHeroic())
         {
-            if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1)
+            if ((me->GetPower(POWER_MANA)*100 / me->GetMaxPower(POWER_MANA)) < 1 && Phase == 1)
             {
                 Phase = 2;
 				me->RemoveAurasDueToSpell(SPELL_MANA_BARRIER);
@@ -184,7 +184,7 @@ struct MANGOS_DLL_DECL boss_deathwhisperAI : public LibDevFSAI
 				SetMovePhase();
                 return;
             }
-			else if(!me->HasAura(SPELL_MANA_BARRIER))
+			else if(!me->HasAura(SPELL_MANA_BARRIER) && Phase == 1)
 			{
 				DoCastMe(SPELL_MANA_BARRIER);
 			}

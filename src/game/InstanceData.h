@@ -154,6 +154,8 @@ class MANGOS_DLL_SPEC InstanceData
 		void DoSpeak(Unit* pwho, uint32 soundid, std::string text, uint8 type);
 		void AutoFreeze(Creature* cr);
 
+		bool isHeroic() { return (instance->GetDifficulty() == RAID_DIFFICULTY_25MAN_HEROIC || instance->GetDifficulty() == RAID_DIFFICULTY_10MAN_HEROIC); }
+
 		// Player Selection
 		Player* GetClosestPlayer(Unit* u, float maxRange = 100.0f);
 };

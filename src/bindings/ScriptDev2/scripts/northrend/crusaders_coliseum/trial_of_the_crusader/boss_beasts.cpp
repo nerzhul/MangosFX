@@ -11,6 +11,9 @@ enum GormoktheImpalerSpells
 	NPC_FRIGBOLD = 34800,
 };
 
+float TocCenter[4] = {563.672974f, 139.571f, 393.837006f, 0};    //  1 Center
+
+
 struct MANGOS_DLL_DECL boss_GormoktheImpaler_AI : public LibDevFSAI
 {
     boss_GormoktheImpaler_AI(Creature* pCreature) : LibDevFSAI(pCreature)
@@ -196,7 +199,9 @@ enum AcidmawSpells
 	SPELL_PARALYTIC_SPRAY = 66901,
 	SPELL_SWEEP = 66794,
 	SPELL_PARALYTIC_TOXIN = 66823,
-	SPELL_ENRAGE = 68335
+	SPELL_ENRAGE = 68335,
+	SPELL_SUBMERGE_0 = 53421,
+	SPELL_EMERGE_0 = 66947,
 };
 
 struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
@@ -219,6 +224,8 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 	bool Spawnable;
 	uint32 Spawn_Timer;
 	uint32 Spew_Timer;
+	uint8 submergephase;
+	uint32 submergeTimer;
 
     void Reset()
     {		
@@ -240,6 +247,7 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
 		phase_Timer = 10000;
 		Spawn_Timer = 180000;
 		Spew_Timer = 15100;
+		submergephase = 0;
 		AggroAllPlayers(150.0f);
     }
 	
@@ -325,25 +333,67 @@ struct MANGOS_DLL_DECL boss_Acidmaw_AI : public LibDevFSAI
             SetInstanceData(TYPE_Acidmaw, IN_PROGRESS);
     }
 
+	void SwitchPhase(uint32 diff) {
+		switch(submergephase)
+		{
+			case 1: // Submerge
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				DoCastMe(SPELL_SUBMERGE_0);
+				me->GetMotionMaster()->MovePoint(0, TocCenter[0]+urand(0, 80)-40, TocCenter[1]+urand(0, 80)-40, TocCenter[2]);
+				submergephase = 2;
+				submergeTimer = 5000;
+			case 2: // Wait til emerge
+				if (submergeTimer <= diff)
+				{
+					submergephase = 3;
+					submergeTimer = 50*IN_MILLISECONDS;
+				} else submergeTimer -= diff;
+				break;
+			case 3:
+				if(phase == 1)
+				{
+					me->SetDisplayId(29815);
+					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
+					DoCast(me, SPELL_EMERGE_0);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+					me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+					SetCombatMovement(false);
+					me->GetMotionMaster()->MoveIdle();
+					DoResetThreat();
+					submergephase = 0;
+					phase = 2;
+				}
+				else
+				{
+					me->SetDisplayId(29816);
+					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
+					DoCastMe(SPELL_EMERGE_0);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+					SetCombatMovement(true);
+					me->GetMotionMaster()->MoveChase(me->getVictim());
+					DoResetThreat();
+					submergephase = 0;
+					phase = 1;
+				}
+				break;
+		}
+	}
+
     void UpdateAI(const uint32 diff)
     {
 		if (!CanDoSomething())
             return;
 
+		if(submergephase)
+		{
+			SwitchPhase(diff);
+			return;
+		}
+
 		if(phase_Timer <= diff)
 		{
-			DoResetThreat();
-			if(phase == 1)
-			{
-				phase = 2;
-				SetMovePhase(false);
-			}
-			else
-			{
-				phase = 1;
-				SetMovePhase();
-			}
-
+			submergephase = 1;
 			phase_Timer = 45000;
 		}
 		else
@@ -385,7 +435,6 @@ CreatureAI* GetAI_boss_Acidmaw(Creature* pCreature)
     return new boss_Acidmaw_AI(pCreature);
 };
 
-
 enum DraedscaleSpells
 {
 	SPELL_BURNING_BITE = 66879,
@@ -417,6 +466,8 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 	bool Spawnable;
 	uint32 Spawn_Timer;
 	uint32 Check_Para_Timer;
+	uint8 submergephase;
+	uint32 submergeTimer;
 
     void Reset()
     {
@@ -432,7 +483,9 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 				Spawnable = true;
 				break;
 		}
-		phase = 1;
+		phase = 2;
+		submergephase = 0;
+		submergeTimer = 0;
 		phase_Timer = 55000;
 		Spawn_Timer = 180000;
 		CheckDistanceTimer = 1000;
@@ -545,19 +598,67 @@ struct MANGOS_DLL_DECL boss_Dreadscale_AI : public LibDevFSAI
 		}
 	}
 
+	void SwitchPhase(uint32 diff) {
+		switch(submergephase)
+		{
+			case 1: // Submerge
+				me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+				DoCastMe(SPELL_SUBMERGE_0);
+				me->GetMotionMaster()->MovePoint(0, TocCenter[0]+urand(0, 80)-40, TocCenter[1]+urand(0, 80)-40, TocCenter[2]);
+				submergephase = 2;
+				submergeTimer = 5000;
+			case 2: // Wait til emerge
+				if (submergeTimer <= diff)
+				{
+					submergephase = 3;
+					submergeTimer = 50*IN_MILLISECONDS;
+				} else submergeTimer -= diff;
+				break;
+			case 3:
+				if(phase == 1)
+				{
+					me->SetDisplayId(29815);
+					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
+					DoCast(me, SPELL_EMERGE_0);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+					me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+					SetCombatMovement(false);
+					me->GetMotionMaster()->MoveIdle();
+					DoResetThreat();
+					submergephase = 0;
+					phase = 2;
+				}
+				else
+				{
+					me->SetDisplayId(29816);
+					me->RemoveAurasDueToSpell(SPELL_SUBMERGE_0);
+					DoCastMe(SPELL_EMERGE_0);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_OOC_NOT_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+					me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
+					SetCombatMovement(true);
+					me->GetMotionMaster()->MoveChase(me->getVictim());
+					DoResetThreat();
+					submergephase = 0;
+					phase = 1;
+				}
+				break;
+		}
+	}
+
     void UpdateAI(const uint32 diff)
     {
-        if (!CanDoSomething())
+		if (!CanDoSomething())
             return;
+
+		if(submergephase)
+		{
+			SwitchPhase(diff);
+			return;
+		}
 
 		if(phase_Timer <= diff)
 		{
-			DoResetThreat();
-			if(phase == 1)
-				phase = 2;
-			else
-				phase = 1;
-
+			submergephase = 1;
 			phase_Timer = 45000;
 		}
 		else
